@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.compose
 
-import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
@@ -34,28 +33,25 @@ import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Loading
-import com.github.panpf.sketch.compose.internal.AsyncImageDisplayTarget
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
-import com.github.panpf.sketch.compose.internal.CrossfadePainter
-import com.github.panpf.sketch.compose.internal.findLeafChildPainter
 import com.github.panpf.sketch.compose.internal.toScale
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.compose.request.asPainter
+import com.github.panpf.sketch.compose.target.GenericComposeTarget
+import com.github.panpf.sketch.compose.transition.CrossfadeComposeTransition
+import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.ImageResult.Error
+import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.isDefault
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.target.DisplayTarget
 import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.transition.TransitionDisplayTarget
-import com.github.panpf.sketch.util.iterateSketchCountBitmapDrawable
-import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -78,9 +74,8 @@ class AsyncImageState internal constructor(
     private val inspectionMode: Boolean,
 ) : RememberObserver {
 
-    private val listener = MyListener()
-    private val target = AsyncImageDisplayTarget(MyAsyncImageDisplayTarget())
-    private val progressListener = MyProgressListener()
+    private val target = AsyncImageTarget()
+    private val listener = AsyncImageListener()
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
     private var rememberedCount = 0
@@ -97,7 +92,7 @@ class AsyncImageState internal constructor(
 
     var sketch: Sketch? by mutableStateOf(null)
         internal set
-    var request: DisplayRequest? by mutableStateOf(null)
+    var request: ImageRequest? by mutableStateOf(null)
         internal set
     var size: IntSize? by mutableStateOf(null)
         private set
@@ -110,7 +105,7 @@ class AsyncImageState internal constructor(
 
     var loadState: LoadState? by mutableStateOf(null)
         private set
-    var result: DisplayResult? by mutableStateOf(null)
+    var result: ImageResult? by mutableStateOf(null)
         private set
     var progress: Progress? by mutableStateOf(null)
         private set
@@ -146,14 +141,14 @@ class AsyncImageState internal constructor(
                     ),
                     transform = { it }
                 ).collect {
-                    val request = (it[0] as DisplayRequest).apply { validateRequest(this) }
+                    val request = (it[0] as ImageRequest).apply { validateRequest(this) }
                     val sketch = it[1] as Sketch
                     val globalImageOptions = sketch.globalImageOptions
                     val mergedOptions = request.defaultOptions?.merged(globalImageOptions)
                     val updatedRequest = request.newBuilder().default(mergedOptions).build()
-                    val placeholderDrawable = updatedRequest.placeholder
-                        ?.getDrawable(sketch, updatedRequest, null)
-                    painterState = Loading(placeholderDrawable?.toPainter())
+                    val placeholderImage = updatedRequest.placeholder
+                        ?.getImage(sketch, updatedRequest, null)
+                    painterState = Loading(placeholderImage?.asPainter())
                 }
             }
         } else {
@@ -166,7 +161,7 @@ class AsyncImageState internal constructor(
                     ),
                     transform = { it }
                 ).collect {
-                    val request = (it[0] as DisplayRequest).apply { validateRequest(this) }
+                    val request = (it[0] as ImageRequest).apply { validateRequest(this) }
                     val sketch = it[1] as Sketch
                     val contentScale = it[2] as ContentScale
                     loadImage(sketch, request, contentScale)
@@ -188,14 +183,15 @@ class AsyncImageState internal constructor(
         coroutineScope.cancel()
         this.coroutineScope = null
         (_painterState.painter as? RememberObserver)?.onForgotten()
-        updateState(Empty)
+        painterState = Empty
+        target.updatePainter(null)  // To trigger setIsDisplayed and onForgotten
     }
 
-    private fun validateRequest(request: DisplayRequest) {
+    private fun validateRequest(request: ImageRequest) {
         /*
          * Why are listener, progressListener, and target not allowed?
-         * Because they are usually created directly when used, this will cause the equals result to be false when DisplayRequest is repeatedly created in compose.
-         * Then DisplayRequest will eventually cause AsyncImage to be reorganized when used as a parameter of AsyncImage
+         * Because they are usually created directly when used, this will cause the equals result to be false when ImageRequest is repeatedly created in compose.
+         * Then ImageRequest will eventually cause AsyncImage to be reorganized when used as a parameter of AsyncImage
          */
         require(request.listener == null) {
             "listener is not supported in compose, please use AsyncImageState.loadState instead"
@@ -208,7 +204,7 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private fun loadImage(sketch: Sketch, request: DisplayRequest, contentScale: ContentScale?) {
+    private fun loadImage(sketch: Sketch, request: ImageRequest, contentScale: ContentScale?) {
         val coroutineScope = coroutineScope ?: return
         val noSetSize = request.definedOptions.resizeSizeResolver == null
         val noSetScale = request.definedOptions.resizeScaleDecider == null
@@ -216,7 +212,7 @@ class AsyncImageState internal constructor(
         if (noSetScale && contentScale == null) {
             return
         }
-        val fullRequest = request.newDisplayRequest {
+        val fullRequest = request.newRequest {
             if (noSetSize) {
                 resizeSize(sizeResolver)
             }
@@ -228,7 +224,18 @@ class AsyncImageState internal constructor(
             }
             target(target)
             listener(listener)
-            progressListener(progressListener)
+            progressListener(listener)
+            val transitionFactory = request.transitionFactory
+            if (transitionFactory is CrossfadeTransition.Factory) {
+                transitionFactory(
+                    CrossfadeComposeTransition.Factory(
+                        durationMillis = transitionFactory.durationMillis,
+                        fadeStart = transitionFactory.fadeStart,
+                        preferExactIntrinsicSize = transitionFactory.preferExactIntrinsicSize,
+                        alwaysUse = transitionFactory.alwaysUse
+                    )
+                )
+            }
         }
         cancelLoadImageJob()
         loadImageJob = coroutineScope.launch {
@@ -236,92 +243,77 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private fun updateState(input: PainterState) {
-        val oldPainterState = _painterState
-        val newPainterState = transform(input)
-        _painterState = newPainterState
-
-        val oldPainter = _painter
-        val newPainter = newPainterState.painter
-        // 'newPainter != null' is important.
-        // It makes it easier to implement crossfade animation between old and new painters.
-        // com.github.panpf.sketch.sample.ui.viewer.compose.ImagePagerComposeFragment#PagerBgImage() is an example.
-        if (newPainter != null || (request?.allowSetNullDrawable == true)) {
-            val crossfadePainter = maybeNewCrossfadePainter(
-                oldPainter = oldPainter,
-                newPainter = newPainter,
-                newPainterState = newPainterState
-            )
-            _painter = crossfadePainter ?: newPainter
-
-            // Manually forget and remember the old/new painters if we're already remembered.
-            if (coroutineScope != null && oldPainterState.painter !== newPainterState.painter) {
-                (oldPainterState.painter as? RememberObserver)?.onForgotten()
-                (newPainterState.painter as? RememberObserver)?.onRemembered()
-                updateDisplayed(oldPainterState.painter, newPainterState.painter)
-            }
-        }
-
-        // Notify the state listener.
-        onPainterState?.invoke(newPainterState)
-    }
-
-    /** Create and return a [CrossfadePainter] if requested. */
-    private fun maybeNewCrossfadePainter(
-        oldPainter: Painter?,
-        newPainter: Painter?,
-        newPainterState: PainterState
-    ): CrossfadePainter? {
-        val result = when (newPainterState) {
-            is PainterState.Success -> newPainterState.result
-            is PainterState.Error -> newPainterState.result
-            else -> null
-        } ?: return null
-
-        // Invoke the transition factory and wrap the painter in a `CrossfadePainter` if it returns a `CrossfadeTransformation`.
-        val transition =
-            result.request.transitionFactory?.create(fakeTransitionTarget, result, true)
-        return if (transition is CrossfadeTransition) {
-            val startPainter = oldPainter?.findLeafChildPainter() ?: oldPainter
-            CrossfadePainter(
-                start = startPainter,
-                end = newPainter,
-                contentScale = contentScale!!,
-                durationMillis = transition.durationMillis,
-                fadeStart = transition.fadeStart,
-                preferExactIntrinsicSize = transition.preferExactIntrinsicSize
-            )
-        } else {
-            null
-        }
-    }
-
-    private fun updateDisplayed(oldPainter: Painter?, newPainter: Painter?) {
-        newPainter?.takeIf { it is DrawablePainter }
-            ?.let { it as DrawablePainter }
-            ?.drawable?.iterateSketchCountBitmapDrawable {
-                it.countBitmap.setIsDisplayed(true, "AsyncImageState")
-            }
-        oldPainter?.takeIf { it is DrawablePainter }
-            ?.let { it as DrawablePainter }
-            ?.drawable?.iterateSketchCountBitmapDrawable {
-                it.countBitmap.setIsDisplayed(false, "AsyncImageState")
-            }
-    }
-
-    /**
-     * Convert this [Drawable] into a [Painter] using Compose primitives if possible.
-     *
-     * Very important, updateDisplayed() needs to set setIsDisplayed to keep SketchDrawable, SketchStateDrawable
-     */
-    private fun Drawable.toPainter() = DrawablePainter(mutate())
-    // Drawables from Sketch contain reference counting and therefore cannot be converted to the lower level Painter
-//        when (this) {
-//        is SketchDrawable -> DrawablePainter(mutate())
-//        is SketchStateDrawable -> DrawablePainter(mutate())
-//        is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
-//        is ColorDrawable -> ColorPainter(Color(color))
-//        else -> DrawablePainter(mutate())
+//    private fun updateState(input: PainterState) {
+//        val oldPainterState = _painterState
+//        val newPainterState = transform(input)
+//        _painterState = newPainterState
+//
+//        val oldPainter = _painter
+//        val newPainter = newPainterState.painter
+//        // 'newPainter != null' is important.
+//        // It makes it easier to implement crossfade animation between old and new painters.
+//        // com.github.panpf.sketch.sample.ui.viewer.compose.ImagePagerComposeFragment#PagerBgImage() is an example.
+//        if (newPainter != null || (request?.allowSetNullDrawable == true)) {
+//            val crossfadePainter = maybeNewCrossfadePainter(
+//                oldPainter = oldPainter,
+//                newPainter = newPainter,
+//                newPainterState = newPainterState
+//            )
+//            _painter = crossfadePainter ?: newPainter
+//
+//            // Manually forget and remember the old/new painters if we're already remembered.
+//            if (coroutineScope != null && oldPainterState.painter !== newPainterState.painter) {
+//                (oldPainterState.painter as? RememberObserver)?.onForgotten()
+//                (newPainterState.painter as? RememberObserver)?.onRemembered()
+//                updateDisplayed(oldPainterState.painter, newPainterState.painter)
+//            }
+//        }
+//
+//        // Notify the state listener.
+//        onPainterState?.invoke(newPainterState)
+//    }
+//
+//    /** Create and return a [CrossfadePainter] if requested. */
+//    private fun maybeNewCrossfadePainter(
+//        oldPainter: Painter?,
+//        newPainter: Painter?,
+//        newPainterState: PainterState
+//    ): CrossfadePainter? {
+//        val result = when (newPainterState) {
+//            is PainterState.Success -> newPainterState.result
+//            is PainterState.Error -> newPainterState.result
+//            else -> null
+//        } ?: return null
+//
+//        // Invoke the transition factory and wrap the painter in a `CrossfadePainter` if it returns a `CrossfadeTransformation`.
+//        val transition =
+//            result.request.transitionFactory?.create(fakeTransitionTarget, result, true)
+//        return if (transition is CrossfadeTransition) {
+//            val startPainter = oldPainter?.findLeafChildPainter() ?: oldPainter
+//            CrossfadePainter(
+//                start = startPainter,
+//                end = newPainter,
+//                contentScale = contentScale!!,
+//                durationMillis = transition.durationMillis,
+//                fadeStart = transition.fadeStart,
+//                preferExactIntrinsicSize = transition.preferExactIntrinsicSize
+//            )
+//        } else {
+//            null
+//        }
+//    }
+//
+//    private fun updateDisplayed(oldPainter: Painter?, newPainter: Painter?) {
+//        newPainter?.takeIf { it is DrawablePainter }
+//            ?.let { it as DrawablePainter }
+//            ?.drawable?.forEachSketchCountBitmapDrawable {
+//                it.countBitmap.setIsDisplayed(true, "AsyncImageState")
+//            }
+//        oldPainter?.takeIf { it is DrawablePainter }
+//            ?.let { it as DrawablePainter }
+//            ?.drawable?.forEachSketchCountBitmapDrawable {
+//                it.countBitmap.setIsDisplayed(false, "AsyncImageState")
+//            }
 //    }
 
     fun restart() {
@@ -340,44 +332,68 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private inner class MyListener : Listener<DisplayRequest, Success, Error> {
-        override fun onStart(request: DisplayRequest) {
+    private inner class AsyncImageListener : Listener, ProgressListener {
+
+        override fun onStart(request: ImageRequest) {
             this@AsyncImageState.result = null
             this@AsyncImageState.progress = null
             this@AsyncImageState.loadState = LoadState.Started(request)
         }
 
-        override fun onSuccess(request: DisplayRequest, result: Success) {
+        override fun onSuccess(request: ImageRequest, result: Success) {
             this@AsyncImageState.result = result
             this@AsyncImageState.loadState = LoadState.Success(request, result)
-            updateState(PainterState.Success(result.drawable.toPainter(), result))
         }
 
-        override fun onError(request: DisplayRequest, result: Error) {
-            this@AsyncImageState.result = result
-            this@AsyncImageState.loadState = LoadState.Error(request, result)
-            updateState(PainterState.Error(result.drawable?.toPainter(), result))
+        override fun onError(request: ImageRequest, error: Error) {
+            this@AsyncImageState.result = error
+            this@AsyncImageState.loadState = LoadState.Error(request, error)
         }
 
-        override fun onCancel(request: DisplayRequest) {
+        override fun onCancel(request: ImageRequest) {
             this@AsyncImageState.loadState = LoadState.Canceled(request)
         }
-    }
 
-    private inner class MyProgressListener : ProgressListener<DisplayRequest> {
         override fun onUpdateProgress(
-            request: DisplayRequest, totalLength: Long, completedLength: Long
+            request: ImageRequest, progress: Progress
         ) {
-            progress = Progress(totalLength = totalLength, completedLength = completedLength)
+            this@AsyncImageState.progress = progress
+        }
+
+        override fun toString(): String {
+            return "AsyncImageListener@${Integer.toHexString(hashCode())}"
         }
     }
 
-    private inner class MyAsyncImageDisplayTarget : DisplayTarget {
+    private inner class AsyncImageTarget : GenericComposeTarget() {
 
-        override val supportDisplayCount: Boolean = true
+        // TODO Compose GIF cannot be played
+        override var painter: Painter?
+            get() = _painter
+            set(newPainter) {
+                val oldPainter = _painter
+                (newPainter as? RememberObserver)?.onRemembered()
+                _painter = newPainter
+                (oldPainter as? RememberObserver)?.onForgotten()
+            }
 
-        override fun onStart(placeholder: Drawable?) {
-            updateState(Loading(placeholder?.toPainter()))
+        override fun onStart(requestContext: RequestContext, placeholder: Image?) {
+            super.onStart(requestContext, placeholder)
+            painterState = Loading(painter)
+        }
+
+        override fun onSuccess(requestContext: RequestContext, result: Image) {
+            super.onSuccess(requestContext, result)
+            painterState = PainterState.Success(painter!!)
+        }
+
+        override fun onError(requestContext: RequestContext, error: Image?) {
+            super.onError(requestContext, error)
+            painterState = PainterState.Error(painter)
+        }
+
+        override fun toString(): String {
+            return "AsyncImageTarget@${Integer.toHexString(hashCode())}"
         }
     }
 
@@ -410,17 +426,15 @@ sealed interface PainterState {
     /** The request was successful. */
     data class Success(
         override val painter: Painter,
-        val result: DisplayResult.Success,
     ) : PainterState
 
-    /** The request failed due to [DisplayResult.Error.throwable]. */
+    /** The request failed due to [ImageResult.Error.throwable]. */
     data class Error(
         override val painter: Painter?,
-        val result: DisplayResult.Error,
     ) : PainterState
 }
 
-private val fakeTransitionTarget = object : TransitionDisplayTarget {
-    override val drawable: Drawable? get() = null
-    override val supportDisplayCount: Boolean = true
-}
+//private val fakeTransitionTarget = object : TransitionTarget {
+//    override val drawable: Drawable? get() = null
+//    override val supportDisplayCount: Boolean = true
+//}

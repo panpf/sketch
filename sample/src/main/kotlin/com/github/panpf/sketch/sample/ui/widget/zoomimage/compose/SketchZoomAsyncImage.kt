@@ -28,7 +28,7 @@ import com.github.panpf.sketch.compose.internal.onPainterStateOf
 import com.github.panpf.sketch.compose.internal.transformOf
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.zoomimage.compose.ZoomState
 import com.github.panpf.zoomimage.compose.rememberZoomState
 import com.github.panpf.zoomimage.compose.subsampling.subsampling
@@ -55,14 +55,14 @@ import kotlin.math.roundToInt
  * )
  * ```
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is empty.
+ * @param uriEmpty A [Painter] that is displayed when the request's [ImageRequest.uriString] is empty.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -105,7 +105,7 @@ fun SketchZoomAsyncImage(
     onLongPress: ((Offset) -> Unit)? = null,
     onTap: ((Offset) -> Unit)? = null,
 ) = SketchZoomAsyncImage(
-    request = DisplayRequest(LocalContext.current, imageUri),
+    request = ImageRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -130,7 +130,7 @@ fun SketchZoomAsyncImage(
  *
  * ```kotlin
  * SketchZoomAsyncImage(
- *     request = DisplayRequest(LocalContext.current, "http://sample.com/sample.jpg") {
+ *     request = ImageRequest(LocalContext.current, "http://sample.com/sample.jpg") {
  *         placeholder(R.drawable.placeholder)
  *         crossfade()
  *     },
@@ -140,14 +140,14 @@ fun SketchZoomAsyncImage(
  * )
  * ```
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [ImageRequest.uriString] is null.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -169,7 +169,7 @@ fun SketchZoomAsyncImage(
 @Composable
 @NonRestartableComposable
 fun SketchZoomAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -222,7 +222,7 @@ fun SketchZoomAsyncImage(
  * )
  * ```
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -265,7 +265,7 @@ fun SketchZoomAsyncImage(
     onLongPress: ((Offset) -> Unit)? = null,
     onTap: ((Offset) -> Unit)? = null,
 ) = SketchZoomAsyncImage(
-    request = DisplayRequest(LocalContext.current, imageUri),
+    request = ImageRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -290,7 +290,7 @@ fun SketchZoomAsyncImage(
  *
  * ```kotlin
  * SketchZoomAsyncImage(
- *     request = DisplayRequest(LocalContext.current, "http://sample.com/sample.jpg") {
+ *     request = ImageRequest(LocalContext.current, "http://sample.com/sample.jpg") {
  *         placeholder(R.drawable.placeholder)
  *         crossfade()
  *     },
@@ -300,7 +300,7 @@ fun SketchZoomAsyncImage(
  * )
  * ```
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -325,7 +325,7 @@ fun SketchZoomAsyncImage(
  */
 @Composable
 fun SketchZoomAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -376,7 +376,7 @@ private fun onPainterState(
     context: Context,
     sketch: Sketch,
     state: ZoomState,
-    request: DisplayRequest,
+    request: ImageRequest,
     loadState: PainterState,
 ) {
     state.zoomable.logger.d { "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uriString}'" }
@@ -426,7 +426,7 @@ private fun IntSize.isNotEmpty(): Boolean = width > 0 && height > 0
  */
 @Composable
 private fun BaseZoomAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,

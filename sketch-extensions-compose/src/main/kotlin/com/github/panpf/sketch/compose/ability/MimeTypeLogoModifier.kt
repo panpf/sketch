@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.name
 
 /**
@@ -65,7 +65,7 @@ internal data class MimeTypeLogoElement(
     override fun InspectorInfo.inspectableProperties() {
         name = "MimeTypeLogo"
         properties["mimeType"] = state.result
-            ?.let { (it as? DisplayResult.Success) }
+            ?.let { (it as? ImageResult.Success) }
             ?.imageInfo?.mimeType
             ?: "null"
         properties["loadState"] = state.loadState?.name ?: "null"
@@ -82,7 +82,7 @@ internal class MimeTypeLogoNode(
         drawContent()
 
         val result = state.result
-        if (result is DisplayResult.Success) {
+        if (result is ImageResult.Success) {
             val mimeType = result.imageInfo.mimeType
             val painter = mimeTypeIconMap[mimeType]
             if (painter != null) {

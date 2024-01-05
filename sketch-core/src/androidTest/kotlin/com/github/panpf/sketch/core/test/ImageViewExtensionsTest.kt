@@ -21,7 +21,7 @@ import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayResult
+import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.disposeDisplay
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resources.AssetImages
@@ -70,17 +70,17 @@ class ImageViewExtensionsTest {
         val activity = TestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
-        Assert.assertNull(imageView.displayResult)
+        Assert.assertNull(imageView.imageResult)
 
         runBlocking {
             imageView.displayImage(AssetImages.jpeg.uri).job.join()
         }
-        Assert.assertTrue(imageView.displayResult is DisplayResult.Success)
+        Assert.assertTrue(imageView.imageResult is DisplayResult.Success)
 
         runBlocking {
             imageView.displayImage("asset://fake.jpeg").job.join()
         }
-        Assert.assertTrue(imageView.displayResult is DisplayResult.Error)
+        Assert.assertTrue(imageView.imageResult is DisplayResult.Error)
 
         runBlocking {
             imageView.displayImage(AssetImages.png.uri) {
@@ -91,7 +91,7 @@ class ImageViewExtensionsTest {
                 })
             }.job.join()
         }
-        Assert.assertNull(imageView.displayResult)
+        Assert.assertNull(imageView.imageResult)
     }
 
     class TestActivity : FragmentActivity() {

@@ -38,8 +38,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchUtils
@@ -648,10 +648,10 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
 
         val memoryCachePolicy: CachePolicy
         val disallowReuseBitmap: Boolean
-        val displayResult = SketchUtils.getResult(host.view)
-        if (displayResult != null && displayResult is DisplayResult.Success && displayResult.requestKey == requestKey) {
-            memoryCachePolicy = displayResult.request.memoryCachePolicy
-            disallowReuseBitmap = displayResult.request.disallowReuseBitmap
+        val imageResult = SketchUtils.getResult(host.view)
+        if (imageResult != null && imageResult is ImageResult.Success && imageResult.requestKey == requestKey) {
+            memoryCachePolicy = imageResult.request.memoryCachePolicy
+            disallowReuseBitmap = imageResult.request.disallowReuseBitmap
         } else {
             memoryCachePolicy = CachePolicy.ENABLED
             disallowReuseBitmap = false
@@ -676,15 +676,15 @@ class ZoomAbility : ViewAbility, AttachObserver, ScaleTypeObserver, DrawObserver
         }
     }
 
-    override fun onRequestStart(request: DisplayRequest) {
+    override fun onRequestStart(request: ImageRequest) {
         val view = host?.view ?: return
         this.sketch = SketchUtils.getSketch(view)
     }
 
-    override fun onRequestError(request: DisplayRequest, result: DisplayResult.Error) {
+    override fun onRequestError(request: ImageRequest, error: ImageResult.Error) {
     }
 
-    override fun onRequestSuccess(request: DisplayRequest, result: DisplayResult.Success) {
+    override fun onRequestSuccess(request: ImageRequest, result: ImageResult.Success) {
     }
 
     override fun setImageMatrix(imageMatrix: Matrix?): Boolean {

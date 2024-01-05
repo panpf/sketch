@@ -96,7 +96,7 @@ class SvgBitmapDecoder constructor(
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
 
-        val resizeSize = requestContext.resizeSize
+        val resizeSize = requestContext.resizeSize!!
         val dstWidth: Int
         val dstHeight: Int
         var transformedList: List<String>? = null

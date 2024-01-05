@@ -23,7 +23,7 @@ import android.os.Environment
 import androidx.core.graphics.ColorUtils
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.base.ActionResult
 import com.github.panpf.sketch.sketch
@@ -49,7 +49,7 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
         val application = application1
         val fetchResult = withContext(Dispatchers.IO) {
             val fetcher = application1.sketch.components
-                .newFetcherOrThrow(LoadRequest(application1, imageUri))
+                .newFetcherOrThrow(ImageRequest(application1, imageUri))
             fetcher.fetch()
         }.let {
             it.getOrNull()
@@ -90,7 +90,7 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
     suspend fun save(imageUri: String): ActionResult {
         val application = application1
         val fetcher = withContext(Dispatchers.IO) {
-            application.sketch.components.newFetcherOrThrow(LoadRequest(application, imageUri))
+            application.sketch.components.newFetcherOrThrow(ImageRequest(application, imageUri))
         }
         if (fetcher is FileUriFetcher) {
             return ActionResult.error("Local files do not need to be saved")

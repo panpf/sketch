@@ -30,17 +30,17 @@ fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): ImageR
         }
     }
 
-/**
- * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
- */
-fun DisplayRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): DisplayRequest.Builder =
-    apply {
-        if (enabled) {
-            setParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, true, null)
-        } else {
-            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
-        }
-    }
+///**
+// * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
+// */
+//fun DisplayRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): DisplayRequest.Builder =
+//    apply {
+//        if (enabled) {
+//            setParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, true, null)
+//        } else {
+//            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
+//        }
+//    }
 
 /**
  * Returns true if pause load when scrolling has been enabled
@@ -79,17 +79,17 @@ fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): I
         }
     }
 
-/**
- * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
- */
-fun DisplayRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): DisplayRequest.Builder =
-    apply {
-        if (ignore) {
-            setParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, true, null)
-        } else {
-            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
-        }
-    }
+///**
+// * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDrawableDecodeInterceptor]
+// */
+//fun DisplayRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): DisplayRequest.Builder =
+//    apply {
+//        if (ignore) {
+//            setParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, true, null)
+//        } else {
+//            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
+//        }
+//    }
 
 /**
  * Returns true if ignore pause load when scrolling has been enabled

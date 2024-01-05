@@ -21,8 +21,8 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Disposable
 import java.io.File
 
@@ -33,9 +33,9 @@ import java.io.File
  */
 fun ImageView.displayImage(
     uri: String?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
-    context.sketch.enqueue(DisplayRequest(this, uri, configBlock))
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
+    context.sketch.enqueue(ImageRequest(this, uri, configBlock))
 
 /**
  * Load the image from [uri] and display it on this [ImageView]
@@ -44,8 +44,8 @@ fun ImageView.displayImage(
  */
 fun ImageView.displayImage(
     uri: Uri?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
     displayImage(uri?.toString(), configBlock)
 
 /**
@@ -55,8 +55,8 @@ fun ImageView.displayImage(
  */
 fun ImageView.displayImage(
     @DrawableRes drawableResId: Int?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
     displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
@@ -66,8 +66,8 @@ fun ImageView.displayImage(
  */
 fun ImageView.displayImage(
     file: File?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
     displayImage(file?.let { newFileUri(it.path) }, configBlock)
 
 /**
@@ -77,8 +77,8 @@ fun ImageView.displayImage(
  */
 fun ImageView.displayAssetImage(
     assetFileName: String?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
     displayImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
 
 /**
@@ -88,8 +88,8 @@ fun ImageView.displayAssetImage(
  */
 fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int?,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
     displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
@@ -100,6 +100,6 @@ fun ImageView.displayResourceImage(
 fun ImageView.displayResourceImage(
     packageName: String,
     @DrawableRes drawableResId: Int,
-    configBlock: (DisplayRequest.Builder.() -> Unit)? = null
-): Disposable<DisplayResult> =
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable<ImageResult> =
     displayImage(newResourceUri(packageName, drawableResId), configBlock)

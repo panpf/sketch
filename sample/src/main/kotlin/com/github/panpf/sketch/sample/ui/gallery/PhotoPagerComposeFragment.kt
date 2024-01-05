@@ -61,8 +61,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
@@ -225,7 +225,7 @@ private fun PagerBgImage(
     val imageState = rememberAsyncImageState()
     LaunchedEffect(Unit) {
         snapshotFlow { imageState.result }.collect {
-            if (it is DisplayResult.Success) {
+            if (it is ImageResult.Success) {
                 val simplePalette = it.simplePalette
                 val accentColor = (simplePalette?.dominantSwatch?.rgb
                     ?: simplePalette?.lightVibrantSwatch?.rgb
@@ -241,7 +241,7 @@ private fun PagerBgImage(
         }
     }
     AsyncImage(
-        request = DisplayRequest(LocalContext.current, imageUri) {
+        request = ImageRequest(LocalContext.current, imageUri) {
             resize(
                 width = screenSize.width / 4,
                 height = screenSize.height / 4,

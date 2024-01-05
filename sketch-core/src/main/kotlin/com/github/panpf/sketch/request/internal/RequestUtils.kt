@@ -21,9 +21,7 @@ import android.os.Build.VERSION_CODES
 import androidx.core.net.toUri
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.util.Size
 
 internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().buildUpon().apply {
@@ -83,7 +81,7 @@ internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().bu
         }
 }.build().toString().let { Uri.decode(it) }
 
-internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUpon().apply {
+fun ImageRequest.newKey(): String = uriString.toUri().buildUpon().apply {
     depth.takeIf { it != NETWORK }?.let {
         appendQueryParameter("_depth", it.toString())
     }
@@ -98,65 +96,63 @@ internal fun ImageRequest.newKey(size: Size): String = uriString.toUri().buildUp
     }
 
     // TODO Define a Key interface. All interfaces that need to participate in key calculation implement this interface. Then SizeResolver, PrecisionDecider, ScaleDecider, BitmapDecodeInterceptor, DrawableDecodeInterceptor, RequestInterceptor, and bitmapConfig all implement this interface.
-    if (this@newKey is LoadRequest || this@newKey is DisplayRequest) {
-        bitmapConfig?.let {
-            appendQueryParameter("_bitmapConfig", it.key)
+    bitmapConfig?.let {
+        appendQueryParameter("_bitmapConfig", it.key)
+    }
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        colorSpace?.let {
+            appendQueryParameter("_colorSpace", it.name.replace(" ", "_"))
         }
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            colorSpace?.let {
-                appendQueryParameter("_colorSpace", it.name.replace(" ", "_"))
-            }
-        }
-        @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
-            appendQueryParameter("_preferQualityOverSpeed", true.toString())
-        }
+    }
+    @Suppress("DEPRECATION")
+    if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
+        appendQueryParameter("_preferQualityOverSpeed", true.toString())
+    }
 
-        // TODO Split into three parameters: _size, _precision, and _scale, weakening the concept of Resize
-        appendQueryParameter("_resize", newResizeKey(size))
-        transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+    appendQueryParameter("_size", resizeSizeResolver.toString())
+    appendQueryParameter("_precision", resizePrecisionDecider.toString())
+    appendQueryParameter("_scale", resizeScaleDecider.toString())
+    // TODO Add more attributes to key
+    transformations?.takeIf { it.isNotEmpty() }?.let { list ->
+        appendQueryParameter(
+            "_transformations",
+            list.joinToString(prefix = "[", postfix = "]", separator = ",") {
+                it.key.replace("Transformation", "")
+            }
+        )
+    }
+    if (disallowReuseBitmap) {
+        appendQueryParameter("_disallowReuseBitmap", true.toString())
+    }
+    if (ignoreExifOrientation) {
+        appendQueryParameter("_ignoreExifOrientation", true.toString())
+    }
+    resultCachePolicy.takeIf { it != ENABLED }?.let {
+        appendQueryParameter("_resultCachePolicy", it.name)
+    }
+    componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
             appendQueryParameter(
-                "_transformations",
-                list.joinToString(prefix = "[", postfix = "]", separator = ",") {
-                    it.key.replace("Transformation", "")
-                }
+                "_bitmapDecodeInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
             )
         }
-        if (disallowReuseBitmap) {
-            appendQueryParameter("_disallowReuseBitmap", true.toString())
-        }
-        if (ignoreExifOrientation) {
-            appendQueryParameter("_ignoreExifOrientation", true.toString())
-        }
-        resultCachePolicy.takeIf { it != ENABLED }?.let {
-            appendQueryParameter("_resultCachePolicy", it.name)
-        }
-        componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key }
-            .takeIf { it.isNotEmpty() }
-            ?.let { list ->
-                appendQueryParameter(
-                    "_bitmapDecodeInterceptors",
-                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                )
-            }
-    }
 
-    if (this@newKey is DisplayRequest) {
-        if (disallowAnimatedImage) {
-            appendQueryParameter("_disallowAnimatedImage", true.toString())
-        }
-        memoryCachePolicy.takeIf { it != ENABLED }?.let {
-            appendQueryParameter("_memoryCachePolicy", it.name)
-        }
-        componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key }
-            .takeIf { it.isNotEmpty() }
-            ?.let { list ->
-                appendQueryParameter(
-                    "_drawableDecodeInterceptors",
-                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                )
-            }
+    if (disallowAnimatedImage) {
+        appendQueryParameter("_disallowAnimatedImage", true.toString())
     }
+    memoryCachePolicy.takeIf { it != ENABLED }?.let {
+        appendQueryParameter("_memoryCachePolicy", it.name)
+    }
+    componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+        .takeIf { it.isNotEmpty() }
+        ?.let { list ->
+            appendQueryParameter(
+                "_drawableDecodeInterceptors",
+                list.joinToString(prefix = "[", postfix = "]", separator = ",")
+            )
+        }
 
     componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
         .takeIf { it.isNotEmpty() }

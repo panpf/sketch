@@ -25,10 +25,10 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.viewability.AttachObserver
 import com.github.panpf.sketch.viewability.ClickObserver
@@ -56,8 +56,8 @@ class RealViewAbilityManager(
     view: View
 ) : ViewAbilityManager {
 
-    private val displayRequestListener: DisplayRequestListener by lazy {
-        DisplayRequestListener(WeakReference(this@RealViewAbilityManager))
+    private val requestListener: RequestListener by lazy {
+        RequestListener(WeakReference(this@RealViewAbilityManager))
     }
     private val host = Host(view, container)
 
@@ -241,7 +241,7 @@ class RealViewAbilityManager(
         } ?: false
     }
 
-    private fun onRequestStart(request: DisplayRequest) {
+    private fun onRequestStart(request: ImageRequest) {
         requestListenerAbilityList?.forEach {
             it.onRequestStart(request)
         }
@@ -249,7 +249,7 @@ class RealViewAbilityManager(
         refreshOnLongClickListener()
     }
 
-    private fun onRequestError(request: DisplayRequest, result: Error) {
+    private fun onRequestError(request: ImageRequest, result: ImageResult.Error) {
         requestListenerAbilityList?.forEach {
             it.onRequestError(request, result)
         }
@@ -257,7 +257,7 @@ class RealViewAbilityManager(
         refreshOnLongClickListener()
     }
 
-    private fun onRequestSuccess(request: DisplayRequest, result: Success) {
+    private fun onRequestSuccess(request: ImageRequest, result: ImageResult.Success) {
         requestListenerAbilityList?.forEach {
             it.onRequestSuccess(request, result)
         }
@@ -265,11 +265,9 @@ class RealViewAbilityManager(
         refreshOnLongClickListener()
     }
 
-    private fun onUpdateRequestProgress(
-        request: DisplayRequest, totalLength: Long, completedLength: Long
-    ) {
+    private fun onUpdateRequestProgress(request: ImageRequest, progress: Progress) {
         requestProgressListenerAbilityList?.forEach {
-            it.onUpdateRequestProgress(request, totalLength, completedLength)
+            it.onUpdateRequestProgress(request, progress)
         }
     }
 
@@ -299,17 +297,17 @@ class RealViewAbilityManager(
         return imageMatrixAbilityList?.firstOrNull()?.getImageMatrix()
     }
 
-    override fun getRequestListener(): Listener<DisplayRequest, Success, Error>? {
+    override fun getRequestListener(): Listener? {
         return if (requestListenerAbilityList?.isNotEmpty() == true) {
-            displayRequestListener
+            requestListener
         } else {
             null
         }
     }
 
-    override fun getRequestProgressListener(): ProgressListener<DisplayRequest>? {
+    override fun getRequestProgressListener(): ProgressListener? {
         return if (requestProgressListenerAbilityList?.isNotEmpty() == true) {
-            displayRequestListener
+            requestListener
         } else {
             null
         }
@@ -378,29 +376,29 @@ class RealViewAbilityManager(
         }
     }
 
-    private class DisplayRequestListener(private val realView: WeakReference<RealViewAbilityManager>) :
-        Listener<DisplayRequest, Success, Error>,
-        ProgressListener<DisplayRequest> {
+    private class RequestListener(
+        private val realView: WeakReference<RealViewAbilityManager>
+    ) : Listener, ProgressListener {
 
-        override fun onStart(request: DisplayRequest) {
+        override fun onStart(request: ImageRequest) {
             super.onStart(request)
             realView.get()?.onRequestStart(request)
         }
 
-        override fun onError(request: DisplayRequest, result: Error) {
-            super.onError(request, result)
-            realView.get()?.onRequestError(request, result)
+        override fun onError(request: ImageRequest, error: ImageResult.Error) {
+            super.onError(request, error)
+            realView.get()?.onRequestError(request, error)
         }
 
-        override fun onSuccess(request: DisplayRequest, result: Success) {
+        override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
             super.onSuccess(request, result)
             realView.get()?.onRequestSuccess(request, result)
         }
 
         override fun onUpdateProgress(
-            request: DisplayRequest, totalLength: Long, completedLength: Long
+            request: ImageRequest, progress: Progress
         ) {
-            realView.get()?.onUpdateRequestProgress(request, totalLength, completedLength)
+            realView.get()?.onUpdateRequestProgress(request, progress)
         }
     }
 }

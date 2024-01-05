@@ -24,9 +24,11 @@ import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import kotlin.math.ceil
 
+internal val Bitmap.isImmutable: Boolean
+    get() = !isMutable
+
 internal val Bitmap.allocationByteCountCompat: Int
     get() = when {
-        this.isRecycled -> 0
         VERSION.SDK_INT >= VERSION_CODES.KITKAT -> this.allocationByteCount
         else -> this.byteCount
     }

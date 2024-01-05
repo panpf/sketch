@@ -16,24 +16,25 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
-class ProgressListeners<REQUEST : ImageRequest>(
-    val progressListenerList: List<ProgressListener<REQUEST>>,
-) : ProgressListener<REQUEST> {
+class ProgressListeners(
+    val progressListenerList: List<ProgressListener>,
+) : ProgressListener {
 
-    constructor(vararg listeners: ProgressListener<REQUEST>) : this(listeners.toList())
+    constructor(vararg listeners: ProgressListener) : this(listeners.toList())
 
-    override fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
+    override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
         progressListenerList.forEach {
-            it.onUpdateProgress(request, totalLength, completedLength)
+            it.onUpdateProgress(request, progress)
         }
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as ProgressListeners<*>
+        other as ProgressListeners
         if (progressListenerList != other.progressListenerList) return false
         return true
     }

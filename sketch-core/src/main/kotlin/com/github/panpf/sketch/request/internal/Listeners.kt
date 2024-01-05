@@ -16,35 +16,32 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult.Error
-import com.github.panpf.sketch.request.ImageResult.Success
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
-class Listeners<REQUEST : ImageRequest, SUCCESS_RESULT : Success, ERROR_RESULT : Error>(
-    val listenerList: List<Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>>
-) : Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT> {
+class Listeners(val listenerList: List<Listener>) : Listener {
 
-    constructor(vararg listeners: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>) : this(listeners.toList())
+    constructor(vararg listeners: Listener) : this(listeners.toList())
 
-    override fun onStart(request: REQUEST) {
+    override fun onStart(request: ImageRequest) {
         listenerList.forEach {
             it.onStart(request)
         }
     }
 
-    override fun onCancel(request: REQUEST) {
+    override fun onCancel(request: ImageRequest) {
         listenerList.forEach {
             it.onCancel(request)
         }
     }
 
-    override fun onError(request: REQUEST, result: ERROR_RESULT) {
+    override fun onError(request: ImageRequest, error: ImageResult.Error) {
         listenerList.forEach {
-            it.onError(request, result)
+            it.onError(request, error)
         }
     }
 
-    override fun onSuccess(request: REQUEST, result: SUCCESS_RESULT) {
+    override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
         listenerList.forEach {
             it.onSuccess(request, result)
         }
@@ -53,7 +50,7 @@ class Listeners<REQUEST : ImageRequest, SUCCESS_RESULT : Success, ERROR_RESULT :
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as Listeners<*, *, *>
+        other as Listeners
         if (listenerList != other.listenerList) return false
         return true
     }

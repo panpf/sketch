@@ -32,7 +32,10 @@ package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.asDrawable
+import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -42,8 +45,9 @@ import com.github.panpf.sketch.util.asOrNull
  * @param preferExactIntrinsicSize See [CrossfadeDrawable.preferExactIntrinsicSize].
  */
 class CrossfadeTransition @JvmOverloads constructor(
-    private val target: TransitionDisplayTarget,
-    private val result: DisplayResult,
+    private val requestContext: RequestContext,
+    private val target: TransitionViewTarget,
+    private val result: ImageResult,
     val durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
     val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
@@ -56,12 +60,12 @@ class CrossfadeTransition @JvmOverloads constructor(
 
     override fun transition() {
         val startDrawable = target.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: target.drawable
-        val endDrawable = result.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: result.drawable
+        val endDrawable = result.image?.asDrawable(requestContext.request.context.resources)
         if (startDrawable === endDrawable) {
             return
         }
 
-        val drawable = CrossfadeDrawable(
+        val crossfadeDrawable = CrossfadeDrawable(
             start = startDrawable,
             end = endDrawable,
             fitScale = fitScale,
@@ -70,8 +74,15 @@ class CrossfadeTransition @JvmOverloads constructor(
             preferExactIntrinsicSize = preferExactIntrinsicSize
         )
         when (result) {
-            is DisplayResult.Success -> target.onSuccess(drawable)
-            is DisplayResult.Error -> target.onError(drawable)
+            is ImageResult.Success -> target.onSuccess(
+                requestContext,
+                crossfadeDrawable.asSketchImage()
+            )
+
+            is ImageResult.Error -> target.onError(
+                requestContext,
+                crossfadeDrawable.asSketchImage()
+            )
         }
     }
 
@@ -87,23 +98,27 @@ class CrossfadeTransition @JvmOverloads constructor(
         }
 
         override fun create(
-            target: TransitionDisplayTarget,
-            result: DisplayResult,
+            requestContext: RequestContext,
+            target: TransitionTarget,
+            result: ImageResult,
             fitScale: Boolean
         ): Transition? {
-            val fromMemoryCache = result.asOrNull<DisplayResult.Success>()?.dataFrom == MEMORY_CACHE
-            return if (alwaysUse || !fromMemoryCache) {
-                CrossfadeTransition(
-                    target = target,
-                    result = result,
-                    durationMillis = durationMillis,
-                    fadeStart = fadeStart,
-                    preferExactIntrinsicSize = preferExactIntrinsicSize,
-                    fitScale = fitScale
-                )
-            } else {
-                null
+            if (target !is TransitionViewTarget) {
+                return null
             }
+            val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE
+            if (!alwaysUse && fromMemoryCache) {
+                return null
+            }
+            return CrossfadeTransition(
+                requestContext = requestContext,
+                target = target,
+                result = result,
+                durationMillis = durationMillis,
+                fadeStart = fadeStart,
+                preferExactIntrinsicSize = preferExactIntrinsicSize,
+                fitScale = fitScale
+            )
         }
 
         override fun equals(other: Any?): Boolean {

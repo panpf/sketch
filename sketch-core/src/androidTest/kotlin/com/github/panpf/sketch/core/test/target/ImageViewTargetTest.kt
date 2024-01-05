@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.target.ImageViewDisplayTarget
+import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
-class ImageViewDisplayTargetTest {
+class ImageViewTargetTest {
 
     @Test
     fun testDrawable() {
@@ -49,7 +49,7 @@ class ImageViewDisplayTargetTest {
         val imageView = ImageView(context)
         Assert.assertNull(imageView.drawable)
 
-        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
+        val imageViewTarget = ImageViewTarget(WeakReference(imageView))
         Assert.assertNull(imageViewTarget.drawable)
 
         val countBitmap = CountBitmap(
@@ -126,9 +126,9 @@ class ImageViewDisplayTargetTest {
         val context = getTestContext()
         val imageView1 = ImageView(context)
         val imageView2 = ImageView(context)
-        val element1 = ImageViewDisplayTarget(WeakReference(imageView1))
-        val element11 = ImageViewDisplayTarget(WeakReference(imageView1))
-        val element2 = ImageViewDisplayTarget(WeakReference(imageView2))
+        val element1 = ImageViewTarget(WeakReference(imageView1))
+        val element11 = ImageViewTarget(WeakReference(imageView1))
+        val element2 = ImageViewTarget(WeakReference(imageView2))
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

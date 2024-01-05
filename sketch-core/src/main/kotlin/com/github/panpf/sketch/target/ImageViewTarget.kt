@@ -31,25 +31,40 @@
 package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable
-import android.view.View
-import androidx.lifecycle.LifecycleObserver
+import android.widget.ImageView
+import java.lang.ref.WeakReference
 
 /**
- * A [Target] with an associated [View]. Prefer this to [Target] if the given drawables will only
- * be used by [view].
- *
- * Optionally, [ViewDisplayTarget]s can implement [LifecycleObserver]. They are automatically registered
- * when the request starts and unregistered when the request completes.
+ * A [Target] that handles setting images on an [ImageView].
  */
-interface ViewDisplayTarget<T : View> : DisplayTarget {
+open class ImageViewTarget constructor(
+    view: ImageView,
+) : GenericViewTarget<ImageView>(view) {
 
-    /**
-     * The [View] used by this [Target]. This field should be immutable.
-     */
-    val view: T?
+    private val viewReference: WeakReference<ImageView> = WeakReference(view)
 
-    /**
-     * The [view]'s current [Drawable].
-     */
-    var drawable: Drawable?
+    override val view: ImageView?
+        get() = viewReference.get()
+
+    override var drawable: Drawable?
+        get() = view?.drawable
+        set(value) {
+            view?.setImageDrawable(value)
+        }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as ImageViewTarget
+        if (view != other.view) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return view.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ImageViewDisplayTarget($view)"
+    }
 }

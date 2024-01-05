@@ -15,9 +15,10 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionDisplayTarget
+import com.github.panpf.sketch.transition.TransitionTarget
 
 class TestTransition : Transition {
 
@@ -28,8 +29,9 @@ class TestTransition : Transition {
     class Factory : Transition.Factory {
 
         override fun create(
-            target: TransitionDisplayTarget,
-            result: DisplayResult,
+            requestContext: RequestContext,
+            target: TransitionTarget,
+            result: ImageResult,
             fitScale: Boolean
         ): Transition {
             return TestTransition()

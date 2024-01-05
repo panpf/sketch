@@ -1,55 +1,55 @@
-/*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.github.panpf.sketch.test.utils
-
-import android.os.Looper
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.DownloadResult.Error
-import com.github.panpf.sketch.request.DownloadResult.Success
-import com.github.panpf.sketch.request.Listener
-
-class DownloadListenerSupervisor constructor(
-    private val name: String? = null,
-    private val callbackOnStart: (() -> Unit)? = null
-) : Listener<DownloadRequest, Success, Error> {
-
-    val callbackActionList = mutableListOf<String>()
-
-    override fun onStart(request: DownloadRequest) {
-        super.onStart(request)
-        check(Looper.getMainLooper() === Looper.myLooper())
-        callbackActionList.add("onStart" + (name?.let { ":$it" } ?: ""))
-        callbackOnStart?.invoke()
-    }
-
-    override fun onCancel(request: DownloadRequest) {
-        super.onCancel(request)
-        check(Looper.getMainLooper() === Looper.myLooper())
-        callbackActionList.add("onCancel" + (name?.let { ":$it" } ?: ""))
-    }
-
-    override fun onError(request: DownloadRequest, result: Error) {
-        super.onError(request, result)
-        check(Looper.getMainLooper() === Looper.myLooper())
-        callbackActionList.add("onError" + (name?.let { ":$it" } ?: ""))
-    }
-
-    override fun onSuccess(request: DownloadRequest, result: Success) {
-        super.onSuccess(request, result)
-        check(Looper.getMainLooper() === Looper.myLooper())
-        callbackActionList.add("onSuccess" + (name?.let { ":$it" } ?: ""))
-    }
-}
+///*
+// * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+//package com.github.panpf.sketch.test.utils
+//
+//import android.os.Looper
+//import com.github.panpf.sketch.request.DownloadRequest
+//import com.github.panpf.sketch.request.DownloadResult.Error
+//import com.github.panpf.sketch.request.DownloadResult.Success
+//import com.github.panpf.sketch.request.Listener
+//
+//class DownloadListenerSupervisor constructor(
+//    private val name: String? = null,
+//    private val callbackOnStart: (() -> Unit)? = null
+//) : Listener<DownloadRequest, Success, Error> {
+//
+//    val callbackActionList = mutableListOf<String>()
+//
+//    override fun onStart(request: DownloadRequest) {
+//        super.onStart(request)
+//        check(Looper.getMainLooper() === Looper.myLooper())
+//        callbackActionList.add("onStart" + (name?.let { ":$it" } ?: ""))
+//        callbackOnStart?.invoke()
+//    }
+//
+//    override fun onCancel(request: DownloadRequest) {
+//        super.onCancel(request)
+//        check(Looper.getMainLooper() === Looper.myLooper())
+//        callbackActionList.add("onCancel" + (name?.let { ":$it" } ?: ""))
+//    }
+//
+//    override fun onError(request: DownloadRequest, result: Error) {
+//        super.onError(request, result)
+//        check(Looper.getMainLooper() === Looper.myLooper())
+//        callbackActionList.add("onError" + (name?.let { ":$it" } ?: ""))
+//    }
+//
+//    override fun onSuccess(request: DownloadRequest, result: Success) {
+//        super.onSuccess(request, result)
+//        check(Looper.getMainLooper() === Looper.myLooper())
+//        callbackActionList.add("onSuccess" + (name?.let { ":$it" } ?: ""))
+//    }
+//}

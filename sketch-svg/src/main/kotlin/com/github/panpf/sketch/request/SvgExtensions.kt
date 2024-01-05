@@ -27,20 +27,20 @@ fun ImageRequest.Builder.svgBackgroundColor(@ColorInt color: Int): ImageRequest.
     setParameter(SVG_BACKGROUND_COLOR_KEY, color)
 }
 
-/**
- * Set the background color of the SVG image, the default is transparent
- */
-fun DisplayRequest.Builder.svgBackgroundColor(@ColorInt color: Int): DisplayRequest.Builder =
-    apply {
-        setParameter(SVG_BACKGROUND_COLOR_KEY, color)
-    }
-
-/**
- * Set the background color of the SVG image, the default is transparent
- */
-fun LoadRequest.Builder.svgBackgroundColor(@ColorInt color: Int): LoadRequest.Builder = apply {
-    setParameter(SVG_BACKGROUND_COLOR_KEY, color)
-}
+///**
+// * Set the background color of the SVG image, the default is transparent
+// */
+//fun DisplayRequest.Builder.svgBackgroundColor(@ColorInt color: Int): DisplayRequest.Builder =
+//    apply {
+//        setParameter(SVG_BACKGROUND_COLOR_KEY, color)
+//    }
+//
+///**
+// * Set the background color of the SVG image, the default is transparent
+// */
+//fun LoadRequest.Builder.svgBackgroundColor(@ColorInt color: Int): LoadRequest.Builder = apply {
+//    setParameter(SVG_BACKGROUND_COLOR_KEY, color)
+//}
 
 /**
  * Get the background color of the SVG image
@@ -69,20 +69,20 @@ fun ImageRequest.Builder.svgCss(css: String): ImageRequest.Builder = apply {
     setParameter(SVG_CSS_KEY, css)
 }
 
-/**
- * Set the background color of the SVG image, the default is transparent
- */
-fun DisplayRequest.Builder.svgCss(css: String): DisplayRequest.Builder =
-    apply {
-        setParameter(SVG_CSS_KEY, css)
-    }
-
-/**
- * Set the background color of the SVG image, the default is transparent
- */
-fun LoadRequest.Builder.svgCss(css: String): LoadRequest.Builder = apply {
-    setParameter(SVG_CSS_KEY, css)
-}
+///**
+// * Set the background color of the SVG image, the default is transparent
+// */
+//fun DisplayRequest.Builder.svgCss(css: String): DisplayRequest.Builder =
+//    apply {
+//        setParameter(SVG_CSS_KEY, css)
+//    }
+//
+///**
+// * Set the background color of the SVG image, the default is transparent
+// */
+//fun LoadRequest.Builder.svgCss(css: String): LoadRequest.Builder = apply {
+//    setParameter(SVG_CSS_KEY, css)
+//}
 
 /**
  * Get the background color of the SVG image

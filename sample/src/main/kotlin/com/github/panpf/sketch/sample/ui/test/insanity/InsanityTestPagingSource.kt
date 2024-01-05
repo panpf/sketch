@@ -21,7 +21,7 @@ import androidx.paging.PagingState
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
@@ -54,7 +54,7 @@ class InsanityTestPagingSource(private val context: Context) :
     private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
         uris.mapIndexed { index, uri ->
             val sketch = context.sketch
-            val fetcher = sketch.components.newFetcherOrThrow(LoadRequest(context, uri))
+            val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
             val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
             val imageInfo =
                 dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)

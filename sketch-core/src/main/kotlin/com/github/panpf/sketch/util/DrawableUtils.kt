@@ -18,6 +18,7 @@ package com.github.panpf.sketch.util
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import androidx.annotation.WorkerThread
@@ -91,3 +92,9 @@ internal fun Drawable.toNewBitmap(
     setBounds(oldLeft, oldTop, oldRight, oldBottom) // restore bounds
     return bitmap
 }
+
+internal val Drawable.width: Int
+    get() = (this as? BitmapDrawable)?.bitmap?.width ?: intrinsicWidth
+
+internal val Drawable.height: Int
+    get() = (this as? BitmapDrawable)?.bitmap?.height ?: intrinsicHeight

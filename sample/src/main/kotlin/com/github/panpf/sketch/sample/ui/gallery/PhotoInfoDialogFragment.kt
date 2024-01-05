@@ -15,21 +15,16 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeDrawable
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.DialogImageInfoBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
-import com.github.panpf.sketch.util.calculateBitmapByteCount
-import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.tools4k.lang.asOrThrow
 
 class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding>() {
@@ -63,8 +58,8 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
 
     companion object {
 
-        fun createNavDirections(displayResult: DisplayResult?): NavDirections {
-            val uri: String? = displayResult?.request?.uriString
+        fun createNavDirections(imageResult: ImageResult?): NavDirections {
+            val uri: String? = imageResult?.request?.uriString
             var optionsInfo: String? = null
             var imageInfo: String? = null
             var bitmapInfo: String? = null
@@ -72,47 +67,31 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
             var dataFromInfo: String? = null
             var transformedInfo: String? = null
             var throwableString: String? = null
-            if (displayResult is DisplayResult.Success) {
-                imageInfo = displayResult.imageInfo.run {
+            if (imageResult is ImageResult.Success) {
+                imageInfo = imageResult.imageInfo.run {
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
                 }
 
-                optionsInfo = displayResult.requestKey
-                    .replace(displayResult.request.uriString, "")
+                optionsInfo = imageResult.requestKey
+                    .replace(imageResult.request.uriString, "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")
                     .joinToString(separator = "\n")
 
-                bitmapInfo = displayResult.drawable.let {
-                    if (it is ResizeDrawable) it.drawable!! else it
-                }.let {
-                    if (it is SketchCountBitmapDrawable) {
-                        "${it.bitmap.width}x${it.bitmap.height}, ${it.bitmap.config}, ${
-                            it.bitmap.byteCount.toLong().formatFileSize()
-                        }"
-                    } else {
-                        "${it.intrinsicWidth}x${it.intrinsicHeight}, ${ARGB_8888}, ${
-                            calculateBitmapByteCount(
-                                it.intrinsicWidth,
-                                it.intrinsicHeight,
-                                ARGB_8888
-                            ).toLong().formatFileSize()
-                        }"
-                    }
+                bitmapInfo = imageResult.image.toString()
+
+                drawableInfo = imageResult.image.let {
+                    "${it.width}x${it.height}"
                 }
 
-                drawableInfo = displayResult.drawable.let {
-                    "${it.intrinsicWidth}x${it.intrinsicHeight}"
-                }
+                dataFromInfo = imageResult.dataFrom.name
 
-                dataFromInfo = displayResult.dataFrom.name
-
-                transformedInfo = displayResult.transformedList
+                transformedInfo = imageResult.transformedList
                     ?.joinToString(separator = "\n") { transformed ->
                         transformed.replace("Transformed", "")
                     }
-            } else if (displayResult is DisplayResult.Error) {
-                throwableString = displayResult.throwable.toString()
+            } else if (imageResult is ImageResult.Error) {
+                throwableString = imageResult.throwable.toString()
             }
 
             return NavMainDirections.actionPhotoInfoDialogFragment(

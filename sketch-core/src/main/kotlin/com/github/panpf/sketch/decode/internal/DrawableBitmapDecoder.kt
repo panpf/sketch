@@ -59,7 +59,7 @@ open class DrawableBitmapDecoder constructor(
                 "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
             )
         }
-        val resizeSize = requestContext.resizeSize
+        val resizeSize = requestContext.resizeSize!!
         var transformedList: List<String>? = null
         val dstSize =
             if (drawable is BitmapDrawable || request.resizeSizeResolver is DisplaySizeResolver) {

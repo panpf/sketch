@@ -24,8 +24,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
@@ -137,12 +135,12 @@ interface ViewAbilityManager {
     /**
      * Get request Listener
      */
-    fun getRequestListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>?
+    fun getRequestListener(): Listener?
 
     /**
      * Get request progress Listener
      */
-    fun getRequestProgressListener(): ProgressListener<DisplayRequest>?
+    fun getRequestProgressListener(): ProgressListener?
 
     fun onSaveInstanceState(): Bundle?
 

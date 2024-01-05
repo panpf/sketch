@@ -21,12 +21,12 @@ import android.graphics.drawable.Drawable
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.request.DisplayListenerProvider
+import com.github.panpf.sketch.request.ListenerProvider
 
 /**
  * Provides access services for ViewAbility registration, uninstallation, and event callbacks and properties
  */
-interface ViewAbilityContainer : DisplayListenerProvider {
+interface ViewAbilityContainer : ListenerProvider {
 
     fun getContext(): Context
 

@@ -30,7 +30,6 @@ import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
@@ -74,18 +73,20 @@ fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null
     return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }
 
-fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
-    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
+fun ImageRequest.toRequestContext(sketch: Sketch, resizeSize: Size? = null): RequestContext {
+    return RequestContext(sketch, this).apply {
+        this.resizeSize = resizeSize ?: runBlocking { resizeSizeResolver.size() }
+    }
 }
 
-fun LoadRequest.decode(sketch: Sketch): BitmapDecodeResult {
+fun ImageRequest.decode(sketch: Sketch): BitmapDecodeResult {
     val request = this@decode
     val fetchResult = runBlocking {
         sketch.components.newFetcherOrThrow(request).fetch()
     }.getOrThrow()
     return DefaultBitmapDecoder(
         sketch = sketch,
-        requestContext = request.toRequestContext(),
+        requestContext = request.toRequestContext(sketch),
         dataSource = fetchResult.dataSource.asOrThrow()
     ).let { runBlocking { it.decode() }.getOrThrow() }
 }

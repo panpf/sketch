@@ -30,6 +30,7 @@
  */
 package com.github.panpf.sketch.compose.internal
 
+import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -43,8 +44,10 @@ import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Error
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.PainterState.Success
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Scale
+import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlin.math.roundToInt
 import com.github.panpf.sketch.util.Size as SketchSize
 
@@ -54,25 +57,26 @@ fun transformOf(
     error: Painter?,
     uriEmpty: Painter?,
 ): (PainterState) -> PainterState {
-    return if (placeholder != null || error != null || uriEmpty != null) {
-        { state ->
-            when (state) {
-                is Loading -> {
-                    if (placeholder != null) state.copy(painter = placeholder) else state
-                }
-
-                is Error -> if (state.result.throwable is UriInvalidException) {
-                    if (uriEmpty != null) state.copy(painter = uriEmpty) else state
-                } else {
-                    if (error != null) state.copy(painter = error) else state
-                }
-
-                else -> state
-            }
-        }
-    } else {
-        DefaultTransform
-    }
+    // TODO Remove
+//    if (placeholder != null || error != null || uriEmpty != null) {
+//        return { state ->
+//            when (state) {
+//                is Loading -> {
+//                    if (placeholder != null) state.copy(painter = placeholder) else state
+//                }
+//
+//                is Error -> if (state.result.throwable is UriInvalidException) {
+//                    if (uriEmpty != null) state.copy(painter = uriEmpty) else state
+//                } else {
+//                    if (error != null) state.copy(painter = error) else state
+//                }
+//
+//                else -> state
+//            }
+//        }
+//    } else {
+        return  DefaultTransform
+//    }
 }
 
 @Stable
@@ -174,5 +178,50 @@ internal fun Painter.findLeafChildPainter(): Painter? {
         }
 
         else -> painter
+    }
+}
+
+/**
+ * Convert to the type specified by the generic, if this is null or cannot be converted return null
+ */
+internal inline fun <reified R> Any?.asOrNull(): R? {
+    return if (this != null && this is R) this else null
+}
+
+/**
+ * Convert this [Drawable] into a [Painter] using Compose primitives if possible.
+ *
+ * Very important, updateDisplayed() needs to set setIsDisplayed to keep SketchDrawable, SketchStateDrawable
+ */
+internal fun Drawable.toPainter() = DrawablePainter(mutate())
+// Drawables from Sketch contain reference counting and therefore cannot be converted to the lower level Painter
+//        when (this) {
+//        is SketchDrawable -> DrawablePainter(mutate())
+//        is SketchStateDrawable -> DrawablePainter(mutate())
+//        is BitmapDrawable -> BitmapPainter(bitmap.asImageBitmap(), filterQuality = filterQuality)
+//        is ColorDrawable -> ColorPainter(Color(color))
+//        else -> DrawablePainter(mutate())
+//    }
+
+/**
+ * Traverse all SketchCountBitmapDrawable in specified Drawable
+ */
+fun Painter.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
+    val painter = this
+    when {
+        painter is DrawablePainter && painter.drawable is SketchCountBitmapDrawable -> {
+            block(painter.drawable as SketchCountBitmapDrawable)
+        }
+
+        painter is CrossfadePainter -> {
+            painter.start?.forEachSketchCountBitmapDrawable(block)
+            painter.end?.forEachSketchCountBitmapDrawable(block)
+        }
+    }
+}
+
+fun Painter.updateIsDisplayed(displayed: Boolean, caller: String) {
+    this.forEachSketchCountBitmapDrawable {
+        it.countBitmap.setIsDisplayed(displayed, caller)
     }
 }

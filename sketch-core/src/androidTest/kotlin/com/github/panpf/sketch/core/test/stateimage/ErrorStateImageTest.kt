@@ -44,10 +44,10 @@ class ErrorStateImageTest {
 
         ErrorStateImage(DrawableStateImage(colorDrawable)).apply {
             Assert.assertFalse(stateList.isEmpty())
-            Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
+            Assert.assertEquals(colorDrawable, getImage(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable,
-                getDrawable(sketch, request, UriInvalidException(""))
+                getImage(sketch, request, UriInvalidException(""))
             )
         }
 
@@ -55,19 +55,19 @@ class ErrorStateImageTest {
             uriEmptyError(colorDrawable2)
         }.apply {
             Assert.assertFalse(stateList.isEmpty())
-            Assert.assertEquals(colorDrawable, getDrawable(sketch, request, null))
+            Assert.assertEquals(colorDrawable, getImage(sketch, request, null))
             Assert.assertEquals(
                 colorDrawable2,
-                getDrawable(sketch, request, UriInvalidException(""))
+                getImage(sketch, request, UriInvalidException(""))
             )
         }
 
         ErrorStateImage {
         }.apply {
             Assert.assertTrue(stateList.isEmpty())
-            Assert.assertNull(getDrawable(sketch, request, null))
+            Assert.assertNull(getImage(sketch, request, null))
             Assert.assertNull(
-                getDrawable(sketch, request, UriInvalidException(""))
+                getImage(sketch, request, UriInvalidException(""))
             )
         }
     }

@@ -30,8 +30,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.Keep
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.viewability.ViewAbility
@@ -185,11 +185,11 @@ open class AbsAbilityZoomImageView @JvmOverloads constructor(
         return viewAbilityManager?.getImageMatrix() ?: super.getImageMatrix()
     }
 
-    override fun getDisplayListener(): Listener<DisplayRequest, DisplayResult.Success, DisplayResult.Error>? {
+    override fun getListener(): Listener? {
         return viewAbilityManager?.getRequestListener()
     }
 
-    override fun getDisplayProgressListener(): ProgressListener<DisplayRequest>? {
+    override fun getProgressListener(): ProgressListener? {
         return viewAbilityManager?.getRequestProgressListener()
     }
 

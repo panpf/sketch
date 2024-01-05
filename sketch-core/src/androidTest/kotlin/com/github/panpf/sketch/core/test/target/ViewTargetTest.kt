@@ -21,24 +21,28 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.target.ViewDisplayTarget
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.target.ViewTarget
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ViewDisplayTargetTest {
+class ViewTargetTest {
 
     @Test
     fun test() {
         val context = getTestContext()
-        TestImageViewDisplayTarget(ImageView(context)).apply {
-            onStart(null)
-            onError(null)
-            onSuccess(ColorDrawable(Color.RED))
+        val requestContext = RequestContext(ImageRequest(context, null))
+        TestImageViewTarget(ImageView(context)).apply {
+            onStart(requestContext, null)
+            onError(requestContext, null)
+            onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
         }
     }
 
-    class TestImageViewDisplayTarget(override val view: ImageView) : ViewDisplayTarget<ImageView> {
+    class TestImageViewTarget(override val view: ImageView) : ViewTarget<ImageView> {
         override val supportDisplayCount: Boolean = false
         override var drawable: Drawable?
             get() = view.drawable

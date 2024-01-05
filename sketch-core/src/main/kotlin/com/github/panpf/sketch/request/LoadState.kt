@@ -20,21 +20,21 @@ package com.github.panpf.sketch.request
  */
 sealed interface LoadState {
 
-    val request: DisplayRequest
+    val request: ImageRequest
 
-    data class Started(override val request: DisplayRequest) : LoadState
+    data class Started(override val request: ImageRequest) : LoadState
 
     data class Success(
-        override val request: DisplayRequest,
-        val result: DisplayResult.Success
+        override val request: ImageRequest,
+        val result: ImageResult.Success
     ) : LoadState
 
     data class Error(
-        override val request: DisplayRequest,
-        val result: DisplayResult.Error
+        override val request: ImageRequest,
+        val result: ImageResult.Error
     ) : LoadState
 
-    data class Canceled(override val request: DisplayRequest) : LoadState
+    data class Canceled(override val request: ImageRequest) : LoadState
 }
 
 val LoadState.name: String

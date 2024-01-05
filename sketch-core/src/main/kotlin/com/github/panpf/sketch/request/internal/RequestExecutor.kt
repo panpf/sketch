@@ -15,34 +15,20 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
+import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.DisplayData
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.LoadData
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.stateimage.internal.toSketchStateDrawable
-import com.github.panpf.sketch.target.DisplayTarget
-import com.github.panpf.sketch.target.DownloadTarget
-import com.github.panpf.sketch.target.LoadTarget
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewDisplayTarget
-import com.github.panpf.sketch.transition.TransitionDisplayTarget
-import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
@@ -66,8 +52,7 @@ class RequestExecutor {
         // Wrap the request to manage its lifecycle.
         val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
-        var requestContext: RequestContext? = null
-        var firstRequestKey: String? = null
+        val requestContext = RequestContext(sketch, request)
 
         try {
             // Set up the request's lifecycle observers. Cancel the request when destroy
@@ -81,10 +66,9 @@ class RequestExecutor {
 
             // resolve resize size
             val resizeSize = request.resizeSizeResolver.size()
-            requestContext = RequestContext(request, resizeSize)
-            firstRequestKey = requestContext.key
+            requestContext.resizeSize = resizeSize
 
-            onStart(sketch, requestContext, firstRequestKey)
+            onStart(requestContext)
 
             // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
             val uriString = request.uriString
@@ -102,199 +86,103 @@ class RequestExecutor {
             ).proceed(requestContext.request)
             val imageData = result.getOrNull()
             if (imageData != null) {
-                val lastRequest: ImageRequest = requestContext.request
-                val successResult: ImageResult.Success = when {
-                    lastRequest is DisplayRequest && imageData is DisplayData -> DisplayResult.Success(
-                        request = lastRequest,
-                        requestKey = requestContext.key,
-                        requestCacheKey = requestContext.cacheKey,
-                        drawable = imageData.drawable
-                            .tryToResizeDrawable(lastRequest, requestContext.resizeSize),
-                        imageInfo = imageData.imageInfo,
-                        dataFrom = imageData.dataFrom,
-                        transformedList = imageData.transformedList,
-                        extras = imageData.extras,
-                    )
-
-                    lastRequest is LoadRequest && imageData is LoadData -> LoadResult.Success(
-                        request = lastRequest,
-                        requestKey = requestContext.key,
-                        requestCacheKey = requestContext.cacheKey,
-                        bitmap = imageData.bitmap,
-                        imageInfo = imageData.imageInfo,
-                        dataFrom = imageData.dataFrom,
-                        transformedList = imageData.transformedList,
-                        extras = imageData.extras,
-                    )
-
-                    lastRequest is DownloadRequest && imageData is DownloadData -> DownloadResult.Success(
-                        lastRequest, imageData
-                    )
-
-                    else -> throw UnsupportedOperationException("Unsupported ImageData: ${imageData::class.java}")
-                }
-                onSuccess(sketch, requestContext, firstRequestKey, successResult)
-                return successResult
+                return doSuccess(requestContext, imageData)
             } else {
-                val throwable = result.exceptionOrNull()!!
-                if (throwable is CancellationException) {
-                    throw throwable
-                } else {
-                    return doError(
-                        throwable = throwable,
-                        lastRequest = requestContext.request,
-                        sketch = sketch,
-                        requestContext = requestContext,
-                        firstRequestKey = firstRequestKey
-                    )
-                }
+                throw result.exceptionOrNull()!!
             }
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                onCancel(sketch, requestContext, firstRequestKey, request)
+                doCancel(requestContext)
                 throw throwable
             } else {
-                return doError(
-                    throwable = throwable,
-                    lastRequest = requestContext?.request ?: request,
-                    sketch = sketch,
-                    requestContext = requestContext,
-                    firstRequestKey = firstRequestKey
-                )
+                return doError(requestContext, throwable)
             }
         } finally {
-            requestContext?.completeCountDrawable("RequestCompleted")
+            requestContext.completeCountDrawable("RequestCompleted")
             requestDelegate.finish()
         }
     }
 
     @MainThread
-    private fun onStart(sketch: Sketch, requestContext: RequestContext, firstRequestKey: String) {
+    private fun onStart(requestContext: RequestContext) {
         val request = requestContext.request
         request.listener?.onStart(request)
-        sketch.logger.d(MODULE) {
-            "Request started. '${firstRequestKey}'"
+        requestContext.sketch.logger.d(MODULE) {
+            "Request started. '${requestContext.firstRequest.key}'"
         }
     }
 
     @MainThread
-    private fun onSuccess(
-        sketch: Sketch,
+    private fun doSuccess(
         requestContext: RequestContext,
-        firstRequestKey: String,
-        result: ImageResult.Success
-    ) {
+        imageData: ImageData
+    ): ImageResult.Success {
         val lastRequest = requestContext.request
+        val successImage =
+            imageData.image.resizeApplyToDrawable(lastRequest, requestContext.resizeSize)
+        val successResult = ImageResult.Success(
+            request = lastRequest,
+            image = successImage,
+            requestKey = requestContext.key,
+            requestCacheKey = requestContext.cacheKey,
+            imageInfo = imageData.imageInfo,
+            dataFrom = imageData.dataFrom,
+            transformedList = imageData.transformedList,
+            extras = imageData.extras,
+        )
         val target = lastRequest.target
-        when {
-            target is DisplayTarget && result is DisplayResult.Success -> {
-                setDrawable(target, result) {
-                    target.onSuccess(result.drawable)
-                }
-            }
-
-            target is LoadTarget && result is LoadResult.Success -> {
-                target.onSuccess(result.bitmap)
-            }
-
-            target is DownloadTarget && result is DownloadResult.Success -> {
-                target.onSuccess(result.data)
+        if (target != null) {
+            setDrawable(requestContext, target, successResult) {
+                target.onSuccess(requestContext, successResult.image)
             }
         }
-        lastRequest.listener?.onSuccess(lastRequest, result)
-        sketch.logger.d(MODULE) {
-            val logKey = newLogKey(requestContext, firstRequestKey, lastRequest)
-            when (result) {
-                is DisplayResult.Success -> {
-                    "Request Successful. ${result.drawable}. $logKey"
-                }
-
-                is LoadResult.Success -> {
-                    "Request Successful. ${result.bitmap.logString}. ${result.imageInfo}. ${result.transformedList}. $logKey"
-                }
-
-                is DownloadResult.Success -> {
-                    "Request Successful. ${result.data}. '${requestContext.key}'. $logKey"
-                }
-
-                else -> {
-                    "Request Successful. $logKey"
-                }
-            }
+        lastRequest.listener?.onSuccess(lastRequest, successResult)
+        requestContext.sketch.logger.d(MODULE) {
+            val logKey = newLogKey(requestContext, requestContext.firstRequest.key, lastRequest)
+            "Request Successful. ${successResult.image}. $logKey"
         }
+        return successResult
     }
 
     private fun doError(
+        requestContext: RequestContext,
         throwable: Throwable,
-        lastRequest: ImageRequest,
-        sketch: Sketch,
-        requestContext: RequestContext?,
-        firstRequestKey: String?
     ): ImageResult {
-        val errorResult: ImageResult.Error = when (lastRequest) {
-            is DisplayRequest -> {
-                val errorDrawable = getErrorDrawable(
-                    sketch = sketch,
-                    request = lastRequest,
-                    resizeSize = requestContext?.resizeSize,
-                    throwable = throwable
-                )
-                DisplayResult.Error(lastRequest, errorDrawable, throwable)
+        val sketch = requestContext.sketch
+        val lastRequest = requestContext.request
+        val errorImage = getErrorDrawable(
+            sketch = sketch,
+            request = lastRequest,
+            throwable = throwable
+        )?.resizeApplyToDrawable(lastRequest, requestContext.resizeSize)
+        val errorResult: ImageResult.Error = ImageResult.Error(
+            request = lastRequest,
+            image = errorImage,
+            throwable = throwable
+        )
+        val target = lastRequest.target
+        val throwable1 = errorResult.throwable
+        if (target != null) {
+            setDrawable(requestContext, target, errorResult) {
+                target.onError(requestContext, errorResult.image)
             }
-
-            is LoadRequest -> LoadResult.Error(lastRequest, throwable)
-            is DownloadRequest -> DownloadResult.Error(lastRequest, throwable)
-            else -> throw UnsupportedOperationException("Unsupported ImageRequest: ${lastRequest::class.java}")
         }
-
-        onError(sketch, requestContext, firstRequestKey, lastRequest, errorResult)
+        lastRequest.listener?.onError(lastRequest, errorResult)
+        val logKey = newLogKey(requestContext, requestContext.firstRequest.key, lastRequest)
+        val logMessage = "Request failed. ${throwable1.message}. $logKey"
+        when (throwable1) {
+            is DepthException -> sketch.logger.d(MODULE) { logMessage }
+            is SketchException -> sketch.logger.e(MODULE, logMessage)
+            else -> sketch.logger.e(MODULE, throwable1, logMessage)
+        }
         return errorResult
     }
 
     @MainThread
-    private fun onError(
-        sketch: Sketch,
-        requestContext: RequestContext?,
-        firstRequestKey: String?,
-        lastRequest: ImageRequest,
-        result: ImageResult.Error
-    ) {
-        val target = lastRequest.target
-        val throwable = result.throwable
-        when {
-            target is DisplayTarget && result is DisplayResult.Error -> {
-                setDrawable(target, result) {
-                    target.onError(result.drawable)
-                }
-            }
-
-            target is LoadTarget && result is LoadResult.Error -> {
-                target.onError(throwable)
-            }
-
-            target is DownloadTarget && result is DownloadResult.Error -> {
-                target.onError(throwable)
-            }
-        }
-        lastRequest.listener?.onError(lastRequest, result)
-        val logKey = newLogKey(requestContext, firstRequestKey, lastRequest)
-        val logMessage = "Request failed. ${throwable.message}. $logKey"
-        when (throwable) {
-            is DepthException -> sketch.logger.d(MODULE) { logMessage }
-            is SketchException -> sketch.logger.e(MODULE, logMessage)
-            else -> sketch.logger.e(MODULE, throwable, logMessage)
-        }
-    }
-
-    @MainThread
-    private fun onCancel(
-        sketch: Sketch,
-        requestContext: RequestContext?,
-        firstRequestKey: String?,
-        lastRequest: ImageRequest
-    ) {
-        sketch.logger.d(MODULE) {
-            val logKey = newLogKey(requestContext, firstRequestKey, lastRequest)
+    private fun doCancel(requestContext: RequestContext) {
+        val lastRequest = requestContext.request
+        requestContext.sketch.logger.d(MODULE) {
+            val logKey = newLogKey(requestContext, requestContext.firstRequest.key, lastRequest)
             "Request canceled. $logKey"
         }
         lastRequest.listener?.onCancel(lastRequest)
@@ -302,22 +190,24 @@ class RequestExecutor {
 
     @MainThread
     private fun setDrawable(
+        requestContext: RequestContext,
         target: Target?,
-        result: DisplayResult,
+        result: ImageResult,
         setDrawable: () -> Unit
     ) {
-        if (result.drawable == null) {
+        if (result.image == null) {
             return
         }
 
-        if (target !is TransitionDisplayTarget) {
+        if (target !is TransitionTarget) {
             setDrawable()
             return
         }
 
         val fitScale =
-            target.asOrNull<ViewDisplayTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
-        val transition = result.request.transitionFactory?.create(target, result, fitScale)
+            target.asOrNull<ViewTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
+        val transition =
+            result.request.transitionFactory?.create(requestContext, target, result, fitScale)
         if (transition == null) {
             setDrawable()
             return
@@ -329,19 +219,16 @@ class RequestExecutor {
     private fun getErrorDrawable(
         sketch: Sketch,
         request: ImageRequest,
-        resizeSize: Size?,
         throwable: Throwable
-    ): Drawable? {
+    ): Image? {
         val stateImage =
             if (throwable is UriInvalidException && throwable.message == uriEmptyMessage) {
                 request.uriEmpty
             } else {
                 request.error
             }
-        return (stateImage?.getDrawable(sketch, request, throwable)
-            ?: request.placeholder?.getDrawable(sketch, request, throwable))
-            ?.tryToResizeDrawable(request, resizeSize)
-            ?.toSketchStateDrawable()
+        return (stateImage?.getImage(sketch, request, throwable)
+            ?: request.placeholder?.getImage(sketch, request, throwable))
     }
 
     private fun newLogKey(

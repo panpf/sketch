@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.compose.AsyncImage
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
@@ -56,7 +56,7 @@ class AnimatablePlaceholderTestComposeFragment : BaseToolbarComposeFragment() {
                 arrayOf(AssetImages.jpeg.uri, AssetImages.webp.uri, AssetImages.bmp.uri)
             }
             val uriString = images[urlIndexState.value % images.size]
-            val request = DisplayRequest(LocalContext.current, uriString) {
+            val request = ImageRequest(LocalContext.current, uriString) {
                 memoryCachePolicy(CachePolicy.DISABLED)
                 resultCachePolicy(CachePolicy.DISABLED)
                 // TODO AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29

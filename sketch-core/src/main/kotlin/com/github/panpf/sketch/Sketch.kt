@@ -47,15 +47,10 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -63,7 +58,7 @@ import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterce
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.target.ViewDisplayTarget
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.SystemCallbacks
@@ -212,17 +207,17 @@ class Sketch private constructor(
      * Execute the DisplayRequest asynchronously.
      *
      * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
     @AnyThread
-    fun enqueue(request: DisplayRequest): Disposable<DisplayResult> {
+    fun enqueue(request: ImageRequest): Disposable<ImageResult> {
         val job = scope.async {
-            requestExecutor.execute(this@Sketch, request, enqueue = true) as DisplayResult
+            requestExecutor.execute(this@Sketch, request, enqueue = true)
         }
         val target = request.target
-        return if (target is ViewDisplayTarget<*>) {
+        return if (target is ViewTarget<*>) {
             target.view?.requestManager?.getDisposable(job) ?: OneShotDisposable(job)
         } else {
             OneShotDisposable(job)
@@ -233,87 +228,130 @@ class Sketch private constructor(
      * Execute the DisplayRequest synchronously in the current coroutine scope.
      *
      * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
      *
      * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
      */
-    suspend fun execute(request: DisplayRequest): DisplayResult =
+    suspend fun execute(request: ImageRequest): ImageResult =
         coroutineScope {
             val job = async(Dispatchers.Main.immediate) {
-                requestExecutor.execute(this@Sketch, request, enqueue = false) as DisplayResult
+                requestExecutor.execute(this@Sketch, request, enqueue = false)
             }
             // Update the current request attached to the view and await the result.
             val target = request.target
-            if (target is ViewDisplayTarget<*>) {
+            if (target is ViewTarget<*>) {
                 target.view?.requestManager?.getDisposable(job)
             }
             job.await()
         }
 
 
-    /**
-     * Execute the LoadRequest asynchronously.
-     *
-     * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
-     *
-     * @return A [Disposable] which can be used to cancel or check the status of the request.
-     */
-    @AnyThread
-    fun enqueue(request: LoadRequest): Disposable<LoadResult> {
-        val job = scope.async {
-            requestExecutor.execute(this@Sketch, request, enqueue = true) as LoadResult
-        }
-        return OneShotDisposable(job)
-    }
-
-    /**
-     * Execute the LoadRequest synchronously in the current coroutine scope.
-     *
-     * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
-     *
-     * @return A [LoadResult.Success] if the request completes successfully. Else, returns an [LoadResult.Error].
-     */
-    suspend fun execute(request: LoadRequest): LoadResult = coroutineScope {
-        val job = async(Dispatchers.Main.immediate) {
-            requestExecutor.execute(this@Sketch, request, enqueue = false) as LoadResult
-        }
-        job.await()
-    }
-
-
-    /**
-     * Execute the DownloadRequest asynchronously.
-     *
-     * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
-     *
-     * @return A [Disposable] which can be used to cancel or check the status of the request.
-     */
-    @AnyThread
-    fun enqueue(request: DownloadRequest): Disposable<DownloadResult> {
-        val job = scope.async {
-            requestExecutor.execute(this@Sketch, request, enqueue = true) as DownloadResult
-        }
-        return OneShotDisposable(job)
-    }
-
-    /**
-     * Execute the DownloadRequest synchronously in the current coroutine scope.
-     *
-     * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
-     *
-     * @return A [DownloadResult.Success] if the request completes successfully. Else, returns an [DownloadResult.Error].
-     */
-    suspend fun execute(request: DownloadRequest): DownloadResult =
-        coroutineScope {
-            val job = async(Dispatchers.Main.immediate) {
-                requestExecutor.execute(this@Sketch, request, enqueue = false) as DownloadResult
-            }
-            job.await()
-        }
+//    /**
+//     * Execute the DisplayRequest asynchronously.
+//     *
+//     * Note: The request will not start executing until Lifecycle state is STARTED
+//     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+//     *
+//     * @return A [Disposable] which can be used to cancel or check the status of the request.
+//     */
+//    @AnyThread
+//    fun enqueue(request: DisplayRequest): Disposable<DisplayResult> {
+//        val job = scope.async {
+//            requestExecutor.execute(this@Sketch, request, enqueue = true) as DisplayResult
+//        }
+//        val target = request.target
+//        return if (target is ViewDisplayTarget<*>) {
+//            target.view?.requestManager?.getDisposable(job) ?: OneShotDisposable(job)
+//        } else {
+//            OneShotDisposable(job)
+//        }
+//    }
+//
+//    /**
+//     * Execute the DisplayRequest synchronously in the current coroutine scope.
+//     *
+//     * Note: The request will not start executing until Lifecycle state is STARTED
+//     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+//     *
+//     * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
+//     */
+//    suspend fun execute(request: DisplayRequest): DisplayResult =
+//        coroutineScope {
+//            val job = async(Dispatchers.Main.immediate) {
+//                requestExecutor.execute(this@Sketch, request, enqueue = false) as DisplayResult
+//            }
+//            // Update the current request attached to the view and await the result.
+//            val target = request.target
+//            if (target is ViewDisplayTarget<*>) {
+//                target.view?.requestManager?.getDisposable(job)
+//            }
+//            job.await()
+//        }
+//
+//
+//    /**
+//     * Execute the LoadRequest asynchronously.
+//     *
+//     * Note: The request will not start executing until Lifecycle state is STARTED
+//     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+//     *
+//     * @return A [Disposable] which can be used to cancel or check the status of the request.
+//     */
+//    @AnyThread
+//    fun enqueue(request: LoadRequest): Disposable<LoadResult> {
+//        val job = scope.async {
+//            requestExecutor.execute(this@Sketch, request, enqueue = true) as LoadResult
+//        }
+//        return OneShotDisposable(job)
+//    }
+//
+//    /**
+//     * Execute the LoadRequest synchronously in the current coroutine scope.
+//     *
+//     * Note: The request will not start executing until Lifecycle state is STARTED
+//     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+//     *
+//     * @return A [LoadResult.Success] if the request completes successfully. Else, returns an [LoadResult.Error].
+//     */
+//    suspend fun execute(request: LoadRequest): LoadResult = coroutineScope {
+//        val job = async(Dispatchers.Main.immediate) {
+//            requestExecutor.execute(this@Sketch, request, enqueue = false) as LoadResult
+//        }
+//        job.await()
+//    }
+//
+//
+//    /**
+//     * Execute the DownloadRequest asynchronously.
+//     *
+//     * Note: The request will not start executing until Lifecycle state is STARTED
+//     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+//     *
+//     * @return A [Disposable] which can be used to cancel or check the status of the request.
+//     */
+//    @AnyThread
+//    fun enqueue(request: DownloadRequest): Disposable<DownloadResult> {
+//        val job = scope.async {
+//            requestExecutor.execute(this@Sketch, request, enqueue = true) as DownloadResult
+//        }
+//        return OneShotDisposable(job)
+//    }
+//
+//    /**
+//     * Execute the DownloadRequest synchronously in the current coroutine scope.
+//     *
+//     * Note: The request will not start executing until Lifecycle state is STARTED
+//     * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+//     *
+//     * @return A [DownloadResult.Success] if the request completes successfully. Else, returns an [DownloadResult.Error].
+//     */
+//    suspend fun execute(request: DownloadRequest): DownloadResult =
+//        coroutineScope {
+//            val job = async(Dispatchers.Main.immediate) {
+//                requestExecutor.execute(this@Sketch, request, enqueue = false) as DownloadResult
+//            }
+//            job.await()
+//        }
 
     /**
      * Cancel any new and in progress requests, clear the [MemoryCache] and [BitmapPool], and close any open

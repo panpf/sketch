@@ -18,7 +18,7 @@ package com.github.panpf.sketch.sample.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.execute
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sketch
@@ -41,7 +41,7 @@ class NotificationService : Service() {
         // Test whether result LruDiskCache:67 can use different cache folders under multi-process
         @Suppress("OPT_IN_USAGE")
         GlobalScope.launch(Dispatchers.Main) {
-            LoadRequest(this@NotificationService, AssetImages.statics.first().uri) {
+            ImageRequest(this@NotificationService, AssetImages.statics.first().uri) {
                 resize(200, 200)
             }.execute()
 

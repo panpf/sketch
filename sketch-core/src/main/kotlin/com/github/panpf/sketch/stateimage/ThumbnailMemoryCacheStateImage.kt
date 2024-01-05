@@ -1,13 +1,14 @@
 package com.github.panpf.sketch.stateimage
 
-import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.util.format
 import kotlin.math.abs
 
@@ -20,11 +21,11 @@ class ThumbnailMemoryCacheStateImage(
     private val defaultImage: StateImage? = null
 ) : StateImage {
 
-    override fun getDrawable(
+    override fun getImage(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable? {
+    ): Image? {
         val uri = uri ?: request.uriString
         val keys = sketch.memoryCache.keys()
         var targetCachedValue: MemoryCache.Value? = null
@@ -78,9 +79,9 @@ class ThumbnailMemoryCacheStateImage(
                 transformedList = targetCachedValue.transformedList,
                 extras = targetCachedValue.extras,
                 dataFrom = DataFrom.MEMORY_CACHE
-            )
+            ).asSketchImage()
         } else {
-            defaultImage?.getDrawable(sketch, request, throwable)
+            defaultImage?.getImage(sketch, request, throwable)
         }
     }
 

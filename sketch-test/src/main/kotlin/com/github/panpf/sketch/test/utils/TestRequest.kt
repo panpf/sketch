@@ -27,12 +27,11 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageRequest.Builder
-import com.github.panpf.sketch.request.ImageResult.Error
-import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -50,8 +49,8 @@ import com.github.panpf.sketch.transition.Transition
 class TestRequest(
     override val context: Context,
     override val uriString: String,
-    override val listener: Listener<ImageRequest, Success, Error>?,
-    override val progressListener: ProgressListener<ImageRequest>?,
+    override val listener: Listener?,
+    override val progressListener: ProgressListener?,
     override val target: Target?,
     override val lifecycleResolver: LifecycleResolver,
     override val definedOptions: ImageOptions,
@@ -115,6 +114,8 @@ class TestRequest(
         memoryCachePolicy = ENABLED,
         componentRegistry = null,
     )
+
+    override val key: String by lazy { newKey() }
 
     override fun newBuilder(configBlock: (Builder.() -> Unit)?): Builder {
         throw UnsupportedOperationException()

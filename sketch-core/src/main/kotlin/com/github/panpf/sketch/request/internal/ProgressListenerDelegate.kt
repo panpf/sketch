@@ -16,26 +16,27 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class ProgressListenerDelegate<REQUEST : ImageRequest>(
+class ProgressListenerDelegate(
     private val coroutineScope: CoroutineScope,
-    private val progressListener: ProgressListener<REQUEST>
+    private val progressListener: ProgressListener
 ) {
 
     private var lastDeferred: Deferred<*>? = null
 
-    fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
+    fun onUpdateProgress(request: ImageRequest, totalLength: Long, completedLength: Long) {
         val lastDeferred = this.lastDeferred
         if (lastDeferred?.isActive == true) {
             lastDeferred.cancel()
         }
         this.lastDeferred = coroutineScope.async(Dispatchers.Main) {
-            progressListener.onUpdateProgress(request, totalLength, completedLength)
+            progressListener.onUpdateProgress(request, Progress(totalLength, completedLength))
         }
     }
 }

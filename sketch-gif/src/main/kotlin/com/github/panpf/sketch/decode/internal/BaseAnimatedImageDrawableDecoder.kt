@@ -107,7 +107,7 @@ abstract class BaseAnimatedImageDrawableDecoder(
                     info.mimeType,
                     ExifInterface.ORIENTATION_UNDEFINED
                 )
-                val resizeSize = requestContext.resizeSize
+                val resizeSize = requestContext.resizeSize!!
                 val precision = request.resizePrecisionDecider.get(
                     imageWidth = info.size.width,
                     imageHeight = info.size.height,

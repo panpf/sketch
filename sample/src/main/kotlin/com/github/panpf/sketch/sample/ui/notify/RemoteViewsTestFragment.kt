@@ -27,14 +27,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestRemoteViewsBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
+import com.github.panpf.sketch.target.RemoteViewsTarget
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class RemoteViewsTestFragment : BaseToolbarBindingFragment<FragmentTestRemoteViewsBinding>() {
@@ -130,10 +130,10 @@ class RemoteViewsTestFragment : BaseToolbarBindingFragment<FragmentTestRemoteVie
                 setContent(remoteViews)
             }.build()
             val nextImageUri = imageUris[imageUriIndex++ % imageUris.size]
-            DisplayRequest(context, nextImageUri) {
+            ImageRequest(context, nextImageUri) {
                 resize(100.dp2px, 100.dp2px, scale = START_CROP)
                 target(
-                    RemoteViewsDisplayTarget(
+                    RemoteViewsTarget(
                         remoteViews = remoteViews,
                         imageViewId = R.id.image,
                         ignoreNullDrawable = true,

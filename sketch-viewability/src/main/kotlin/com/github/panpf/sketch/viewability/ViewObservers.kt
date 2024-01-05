@@ -22,9 +22,9 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.Progress
 
 /**
  * Mark as need to observe View
@@ -130,20 +130,16 @@ interface ImageMatrixObserver : ViewObserver {
  * Observe request event
  */
 interface RequestListenerObserver : ViewObserver {
-    fun onRequestStart(request: DisplayRequest)
-    fun onRequestError(request: DisplayRequest, result: Error)
-    fun onRequestSuccess(request: DisplayRequest, result: Success)
+    fun onRequestStart(request: ImageRequest)
+    fun onRequestError(request: ImageRequest, error: ImageResult.Error)
+    fun onRequestSuccess(request: ImageRequest, result: ImageResult.Success)
 }
 
 /**
  * Observe request progress event
  */
 interface RequestProgressListenerObserver : ViewObserver {
-    fun onUpdateRequestProgress(
-        request: DisplayRequest,
-        totalLength: Long,
-        completedLength: Long
-    )
+    fun onUpdateRequestProgress(request: ImageRequest, progress: Progress)
 }
 
 /**

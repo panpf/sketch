@@ -15,7 +15,39 @@
  */
 package com.github.panpf.sketch.target
 
+import androidx.annotation.MainThread
+import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.request.internal.RequestContext
+
 /**
  * A listener that accepts the result of an image request.
  */
-interface Target
+interface Target {
+    /**
+     * If display counting is not supported, memory caching will not be used.
+     * If true is returned, call the SketchCountBitmapDrawable.countBitmap.setIsDisplayed() method to record the number of impressions.
+     * Otherwise, there will be image confusion and crashes
+     */
+    val supportDisplayCount: Boolean
+
+    /**
+     * Called when the request starts.
+     */
+    @MainThread
+    fun onStart(requestContext: RequestContext, placeholder: Image?) {
+    }
+
+    /**
+     * Called if the request completes successfully.
+     */
+    @MainThread
+    fun onSuccess(requestContext: RequestContext, result: Image) {
+    }
+
+    /**
+     * Called if an error occurs while executing the request.
+     */
+    @MainThread
+    fun onError(requestContext: RequestContext, error: Image?) {
+    }
+}

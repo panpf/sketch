@@ -88,7 +88,7 @@ import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
-import com.github.panpf.sketch.target.ImageViewDisplayTarget
+import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestBitmapDecoder
@@ -164,7 +164,7 @@ class DisplayRequestTest {
             Assert.assertEquals("asset://sample.jpeg", uriString)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
-            Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView1)), this.target)
+            Assert.assertEquals(ImageViewTarget(WeakReference(imageView1)), this.target)
             Assert.assertEquals(
                 DefaultLifecycleResolver(ViewLifecycleResolver(imageView1)),
                 this.lifecycleResolver
@@ -313,7 +313,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView)), target)
+            Assert.assertEquals(ImageViewTarget(WeakReference(imageView)), target)
         }
 
         imageView.updateDisplayImageOptions {
@@ -321,7 +321,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView)), target)
+            Assert.assertEquals(ImageViewTarget(WeakReference(imageView)), target)
             Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
         }
 

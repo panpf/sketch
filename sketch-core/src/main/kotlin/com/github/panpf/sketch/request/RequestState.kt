@@ -15,52 +15,43 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.LoadState.Canceled
 import com.github.panpf.sketch.request.LoadState.Started
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class DisplayRequestState :
-    Listener<DisplayRequest, Success, Error>,
-    ProgressListener<DisplayRequest> {
+class RequestState : Listener, ProgressListener {
 
     private val _loadState = MutableStateFlow<LoadState?>(null)
     val loadState: StateFlow<LoadState?> = _loadState
 
-    private val _resultState = MutableStateFlow<DisplayResult?>(null)
-    val resultState: StateFlow<DisplayResult?> = _resultState
+    private val _resultState = MutableStateFlow<ImageResult?>(null)
+    val resultState: StateFlow<ImageResult?> = _resultState
 
     private val _progressState = MutableStateFlow<Progress?>(null)
     val progressState: StateFlow<Progress?> = _progressState
 
-    override fun onStart(request: DisplayRequest) {
+    override fun onStart(request: ImageRequest) {
         _resultState.value = null
         _progressState.value = null
         _loadState.value = Started(request)
     }
 
-    override fun onSuccess(request: DisplayRequest, result: Success) {
+    override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
         _resultState.value = result
         _loadState.value = LoadState.Success(request, result)
     }
 
-    override fun onError(request: DisplayRequest, result: Error) {
-        _resultState.value = result
-        _loadState.value = LoadState.Error(request, result)
+    override fun onError(request: ImageRequest, error: ImageResult.Error) {
+        _resultState.value = error
+        _loadState.value = LoadState.Error(request, error)
     }
 
-    override fun onCancel(request: DisplayRequest) {
+    override fun onCancel(request: ImageRequest) {
         _loadState.value = Canceled(request)
     }
 
-    override fun onUpdateProgress(
-        request: DisplayRequest,
-        totalLength: Long,
-        completedLength: Long
-    ) {
-        _progressState.value =
-            Progress(totalLength = totalLength, completedLength = completedLength)
+    override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
+        _progressState.value = progress
     }
 }

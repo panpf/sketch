@@ -24,21 +24,24 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.GlobalLifecycle
-import com.github.panpf.sketch.target.GenericViewDisplayTarget
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.target.GenericViewTarget
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class GenericViewDisplayTargetTest {
+class GenericViewTargetTest {
 
     @Test
     fun testIsStarted() {
         val context = getTestContext()
         val imageView = ImageView(context)
 
-        TestViewDisplayTarget(imageView).apply {
+        TestViewTarget(imageView).apply {
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
 
             onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
@@ -53,25 +56,26 @@ class GenericViewDisplayTargetTest {
     fun testAnimatableDrawable() {
         val context = getTestContext()
         val imageView = ImageView(context)
+        val requestContext = RequestContext(ImageRequest(context, null))
 
-        TestViewDisplayTarget(imageView).apply {
+        TestViewTarget(imageView).apply {
             val drawable = ColorDrawable(Color.RED)
-            onStart(drawable)
-            onError(drawable)
-            onSuccess(drawable)
+            onStart(requestContext, drawable.asSketchImage())
+            onError(requestContext, drawable.asSketchImage())
+            onSuccess(requestContext, drawable.asSketchImage())
 
             onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
 
-            onStart(drawable)
-            onError(drawable)
-            onSuccess(drawable)
+            onStart(requestContext, drawable.asSketchImage())
+            onError(requestContext, drawable.asSketchImage())
+            onSuccess(requestContext, drawable.asSketchImage())
         }
 
-        TestViewDisplayTarget(imageView).apply {
+        TestViewTarget(imageView).apply {
             val animatableDrawable = AnimatableDrawable(Color.RED)
             Assert.assertFalse(animatableDrawable.running)
 
-            onSuccess(animatableDrawable)
+            onSuccess(requestContext, animatableDrawable.asSketchImage())
             Assert.assertFalse(animatableDrawable.running)
 
             onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
@@ -83,16 +87,16 @@ class GenericViewDisplayTargetTest {
             onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
             Assert.assertTrue(animatableDrawable.running)
 
-            onSuccess(ColorDrawable(Color.RED))
+            onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
             Assert.assertFalse(animatableDrawable.running)
 
-            onSuccess(animatableDrawable)
+            onSuccess(requestContext, animatableDrawable.asSketchImage())
             Assert.assertTrue(animatableDrawable.running)
         }
     }
 
-    class TestViewDisplayTarget(override val view: ImageView) :
-        GenericViewDisplayTarget<ImageView>() {
+    class TestViewTarget(override val view: ImageView) :
+        GenericViewTarget<ImageView>() {
         override val supportDisplayCount: Boolean = false
         override var drawable: Drawable?
             get() = view.drawable

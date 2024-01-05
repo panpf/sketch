@@ -49,7 +49,7 @@ import org.junit.runner.RunWith
 import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
-class ViewDisplayTargetRequestManagerTest {
+class ViewTargetRequestManagerTest {
 
     @Test
     fun testRequestManagerProperty() {

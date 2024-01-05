@@ -25,7 +25,7 @@ import com.github.panpf.sketch.stateimage.saveCellularTrafficError
  * To save cellular traffic. Prohibit downloading images from the Internet if the current network is cellular,
  * Then can also cooperate with [saveCellularTrafficError] custom error image display
  *
- * @see DisplayRequest.Builder.saveCellularTraffic
+ * @see ImageRequest.Builder.saveCellularTraffic
  * @see ErrorStateImage.Builder.saveCellularTrafficError
  */
 class SaveCellularTrafficDisplayInterceptor constructor(
@@ -51,16 +51,12 @@ class SaveCellularTrafficDisplayInterceptor constructor(
     override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request
         val finalRequest = when {
-            request !is DisplayRequest -> {
-                request
-            }
-
             enabled && request.isSaveCellularTraffic
                     && !request.isIgnoredSaveCellularTraffic
                     && isCellularNetworkConnected(chain.sketch) -> {
                 if (request.depth != Depth.LOCAL) {
                     val oldDepth = request.depth
-                    request.newDisplayRequest {
+                    request.newRequest {
                         depth(Depth.LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
                         setParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY, oldDepth.name, null)
                     }
@@ -80,7 +76,7 @@ class SaveCellularTrafficDisplayInterceptor constructor(
                         }
                     }
                 if (oldDepth != null && request.depth != oldDepth) {
-                    request.newDisplayRequest {
+                    request.newRequest {
                         depth(oldDepth)
                         removeParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)
                     }

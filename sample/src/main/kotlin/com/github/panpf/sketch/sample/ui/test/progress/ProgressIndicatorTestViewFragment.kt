@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.drawable.internal.IconDrawable
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.R.transition
@@ -136,15 +136,15 @@ class ProgressIndicatorTestViewFragment :
             viewLifecycleOwner,
             State.STARTED
         ) { progress ->
-            val request = DisplayRequest(requireContext(), "http://sample.com/sample.jpeg")
+            val request = ImageRequest(requireContext(), "http://sample.com/sample.jpeg")
             val totalLength: Long = 100
-            val completedLength = (progress * totalLength).toLong()
+            val progress1 = com.github.panpf.sketch.request.Progress(100, (progress * totalLength).toLong())
             binding.image1.progressIndicatorAbility
-                .onUpdateRequestProgress(request, totalLength, completedLength)
+                .onUpdateRequestProgress(request, progress1)
             binding.image2.progressIndicatorAbility
-                .onUpdateRequestProgress(request, totalLength, completedLength)
+                .onUpdateRequestProgress(request, progress1)
             binding.image3.progressIndicatorAbility
-                .onUpdateRequestProgress(request, totalLength, completedLength)
+                .onUpdateRequestProgress(request, progress1)
         }
     }
 

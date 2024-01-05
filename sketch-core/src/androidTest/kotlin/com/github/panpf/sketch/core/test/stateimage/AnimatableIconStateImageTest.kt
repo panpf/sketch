@@ -47,7 +47,7 @@ class AnimatableIconStateImageTest {
         AnimatableIconStateImage(iconDrawable) {
             background(greenBgDrawable)
         }.apply {
-            getDrawable(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
+            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertEquals(greenBgDrawable, background)
                 Assert.assertNull(iconSize)
@@ -58,7 +58,7 @@ class AnimatableIconStateImageTest {
             iconSize(40)
             resBackground(android.R.drawable.bottom_bar)
         }.apply {
-            getDrawable(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
+            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertTrue(background is BitmapDrawable)
                 Assert.assertEquals(Size(40, 40), iconSize)
@@ -68,7 +68,7 @@ class AnimatableIconStateImageTest {
         AnimatableIconStateImage(iconDrawable) {
             colorBackground(Color.BLUE)
         }.apply {
-            getDrawable(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
+            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
                 Assert.assertNull(iconSize)
@@ -76,7 +76,7 @@ class AnimatableIconStateImageTest {
         }
 
         AnimatableIconStateImage(iconDrawable).apply {
-            getDrawable(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
+            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertNull(background)
                 Assert.assertNull(iconSize)
@@ -87,7 +87,7 @@ class AnimatableIconStateImageTest {
         AnimatableIconStateImage(android.R.drawable.ic_delete) {
             background(greenBgDrawable)
         }.apply {
-            Assert.assertNull(getDrawable(sketch, request, null))
+            Assert.assertNull(getImage(sketch, request, null))
         }
     }
 

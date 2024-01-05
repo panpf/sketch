@@ -31,7 +31,7 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.target.ImageViewDisplayTarget
+import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
@@ -51,7 +51,7 @@ class CrossfadeTransitionTest {
     fun testConstructor() {
         val context = getTestContext()
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
+        val imageViewTarget = ImageViewTarget(WeakReference(imageView))
         val request = DisplayRequest(context, AssetImages.jpeg.uri)
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
@@ -92,7 +92,7 @@ class CrossfadeTransitionTest {
         val request = DisplayRequest(context, AssetImages.jpeg.uri)
 
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
+        val imageViewTarget = ImageViewTarget(WeakReference(imageView))
 
         Assert.assertNull(imageView.drawable)
         Assert.assertNull(imageViewTarget.drawable)
@@ -193,7 +193,7 @@ class CrossfadeTransitionTest {
         val factory = CrossfadeTransition.Factory()
 
         val imageView = ImageView(context)
-        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
+        val imageViewTarget = ImageViewTarget(WeakReference(imageView))
 
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))

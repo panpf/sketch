@@ -28,10 +28,9 @@ import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.Progress
 
 /**
  * Display a progress indicator, [progressDrawable] is responsible for the specific style
@@ -179,22 +178,21 @@ class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbi
         progressDrawable.callback = null
     }
 
-    override fun onRequestStart(request: DisplayRequest) {
+    override fun onRequestStart(request: ImageRequest) {
         progressDrawable.progress = 0f
     }
 
     override fun onUpdateRequestProgress(
-        request: DisplayRequest, totalLength: Long, completedLength: Long
+        request: ImageRequest, progress: Progress
     ) {
-        val newProgress = if (totalLength > 0) completedLength.toFloat() / totalLength else 0f
-        progressDrawable.progress = newProgress
+        progressDrawable.progress = progress.decimalProgress
     }
 
-    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
+    override fun onRequestSuccess(request: ImageRequest, result: ImageResult.Success) {
         progressDrawable.progress = 1f
     }
 
-    override fun onRequestError(request: DisplayRequest, result: Error) {
+    override fun onRequestError(request: ImageRequest, error: ImageResult.Error) {
         progressDrawable.progress = -1f
     }
 

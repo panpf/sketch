@@ -17,18 +17,13 @@
 package com.github.panpf.zoomimage
 
 import android.content.Context
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.displayResult
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.imageResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.stateimage.internal.SketchStateDrawable
-import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.findLeafChildDrawable
-import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.zoomimage.internal.AbsStateZoomImageView
 import com.github.panpf.zoomimage.sketch.SketchImageSource
 import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
@@ -80,74 +75,31 @@ open class SketchZoomImageView @JvmOverloads constructor(
             if (!ViewCompat.isAttachedToWindow(this)) {
                 return@post
             }
-            val result = displayResult
+            val result = imageResult
             if (result == null) {
                 logger.d { "SketchZoomImageView. Can't use Subsampling, result is null" }
                 return@post
             }
-            if (result !is DisplayResult.Success) {
+            if (result !is ImageResult.Success) {
                 logger.d { "SketchZoomImageView. Can't use Subsampling, result is not Success" }
                 return@post
             }
             _subsamplingEngine?.disabledTileBitmapCacheState?.value =
-                isDisableMemoryCache(result.drawable)
+                result.request.memoryCachePolicy != CachePolicy.ENABLED
             _subsamplingEngine?.disabledTileBitmapReuseState?.value =
-                isDisallowReuseBitmap(result.drawable)
+                result.request.disallowReuseBitmap
             _subsamplingEngine?.ignoreExifOrientationState?.value =
-                isIgnoreExifOrientation(result.drawable)
-            _subsamplingEngine?.setImageSource(newImageSource(result.drawable))
+                result.request.ignoreExifOrientation
+            _subsamplingEngine?.setImageSource(newImageSource(result))
         }
     }
 
-    private fun isDisableMemoryCache(drawable: Drawable?): Boolean {
-        val sketchDrawable = drawable?.findLeafSketchDrawable()
-        val requestKey = sketchDrawable?.requestKey
-        val displayResult = SketchUtils.getResult(this)
-        return displayResult != null
-                && displayResult is DisplayResult.Success
-                && displayResult.requestKey == requestKey
-                && displayResult.request.memoryCachePolicy != CachePolicy.ENABLED
-    }
-
-    private fun isDisallowReuseBitmap(drawable: Drawable?): Boolean {
-        val sketchDrawable = drawable?.findLeafSketchDrawable()
-        val requestKey = sketchDrawable?.requestKey
-        val displayResult = SketchUtils.getResult(this)
-        return displayResult != null
-                && displayResult is DisplayResult.Success
-                && displayResult.requestKey == requestKey
-                && displayResult.request.disallowReuseBitmap
-    }
-
-    private fun isIgnoreExifOrientation(drawable: Drawable?): Boolean {
-        val sketchDrawable = drawable?.findLeafSketchDrawable()
-        val requestKey = sketchDrawable?.requestKey
-        val displayResult = SketchUtils.getResult(this)
-        return displayResult != null
-                && displayResult is DisplayResult.Success
-                && displayResult.requestKey == requestKey
-                && displayResult.request.ignoreExifOrientation
-    }
-
-    private fun newImageSource(drawable: Drawable?): ImageSource? {
+    private fun newImageSource(result: ImageResult): ImageSource? {
         drawable ?: return null
-        if (drawable.findLeafChildDrawable() is SketchStateDrawable) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is SketchStateDrawable" }
-            return null
-        }
-        val sketchDrawable = drawable.findLeafSketchDrawable()
-        if (sketchDrawable == null) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is not SketchDrawable" }
-            return null
-        }
-        if (sketchDrawable is Animatable) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is Animatable" }
-            return null
-        }
         return SketchImageSource(
             context = context,
             sketch = context.sketch,
-            imageUri = sketchDrawable.imageUri,
+            imageUri = result.request.uriString,
         )
     }
 }

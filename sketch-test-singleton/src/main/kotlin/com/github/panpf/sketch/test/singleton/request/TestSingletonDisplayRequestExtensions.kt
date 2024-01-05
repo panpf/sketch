@@ -18,34 +18,34 @@ package com.github.panpf.sketch.test.singleton.request
 import androidx.annotation.AnyThread
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Disposable
-import com.github.panpf.sketch.target.ViewDisplayTarget
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.test.singleton.sketch
 
 
 /**
- * Execute current DisplayRequest asynchronously.
+ * Execute current ImageRequest asynchronously.
  *
  * Note: The request will not start executing until Lifecycle state is STARTED
- * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+ * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
  *
  * @return A [Disposable] which can be used to cancel or check the status of the request.
  */
 @AnyThread
-fun DisplayRequest.enqueue(sketch: Sketch = context.sketch): Disposable<DisplayResult> {
+fun ImageRequest.enqueue(sketch: Sketch = context.sketch): Disposable<ImageResult> {
     return sketch.enqueue(this)
 }
 
 /**
- * Execute current DisplayRequest synchronously in the current coroutine scope.
+ * Execute current ImageRequest synchronously in the current coroutine scope.
  *
  * Note: The request will not start executing until Lifecycle state is STARTED
- * reaches [Lifecycle.State.STARTED] state and [ViewDisplayTarget.view] is attached to window
+ * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
  *
- * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
+ * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
  */
-suspend fun DisplayRequest.execute(sketch: Sketch = context.sketch): DisplayResult {
+suspend fun ImageRequest.execute(sketch: Sketch = context.sketch): ImageResult {
     return sketch.execute(this)
 }

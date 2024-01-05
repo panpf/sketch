@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgBitmapDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
@@ -102,7 +102,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             var imageInfo: ImageInfo? = null
             val sketch = context.sketch
             try {
-                val fetcher = sketch.components.newFetcherOrThrow(LoadRequest(context, uri))
+                val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
                 val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
                 imageInfo = if (uri.endsWith(".svg")) {
                     dataSource.readImageInfoWithSVG()

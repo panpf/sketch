@@ -15,11 +15,12 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
 
 /**
  * Get a Bitmap from memory using the given memory cache key as a state Drawable, if not found, use defaultImage
@@ -29,11 +30,11 @@ class MemoryCacheStateImage(
     private val defaultImage: StateImage? = null
 ) : StateImage {
 
-    override fun getDrawable(
+    override fun getImage(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable? {
+    ): Image? {
         val memoryCache = sketch.memoryCache
         val cachedValue = memoryCacheKey?.let { memoryCache[it] }
         return if (cachedValue != null) {
@@ -47,9 +48,9 @@ class MemoryCacheStateImage(
                 transformedList = cachedValue.transformedList,
                 extras = cachedValue.extras,
                 dataFrom = DataFrom.MEMORY_CACHE
-            )
+            ).asSketchImage()
         } else {
-            defaultImage?.getDrawable(sketch, request, throwable)
+            defaultImage?.getImage(sketch, request, throwable)
         }
     }
 

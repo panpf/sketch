@@ -27,13 +27,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.compose.AsyncImageState.Companion.DefaultTransform
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sketch
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -96,9 +96,9 @@ fun SubcomposeAsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -151,9 +151,9 @@ fun SubcomposeAsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -179,7 +179,7 @@ fun SubcomposeAsyncImage(
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -216,9 +216,9 @@ fun SubcomposeAsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -242,7 +242,7 @@ fun SubcomposeAsyncImage(
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),

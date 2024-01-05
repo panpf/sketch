@@ -17,8 +17,10 @@ package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.target.ViewDisplayTarget
+import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -32,13 +34,13 @@ class CurrentStateImage(
 
     constructor(defaultDrawableRes: Int) : this(DrawableStateImage(defaultDrawableRes))
 
-    override fun getDrawable(
+    override fun getImage(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable? =
-        request.target.asOrNull<ViewDisplayTarget<*>>()?.drawable
-            ?: defaultImage?.getDrawable(sketch, request, throwable)
+    ): Image? =
+        request.target.asOrNull<ViewTarget<*>>()?.drawable?.asSketchImage()
+            ?: defaultImage?.getImage(sketch, request, throwable)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

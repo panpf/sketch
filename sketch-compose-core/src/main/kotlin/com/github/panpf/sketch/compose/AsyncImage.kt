@@ -32,12 +32,12 @@ import com.github.panpf.sketch.compose.AsyncImageState.Companion.DefaultTransfor
 import com.github.panpf.sketch.compose.internal.AsyncImageContent
 import com.github.panpf.sketch.compose.internal.onPainterStateOf
 import com.github.panpf.sketch.compose.internal.transformOf
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -46,7 +46,7 @@ import com.github.panpf.sketch.request.DisplayRequest
  * @param state [AsyncImageState] that will be used to store the state of the request.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is empty.
+ * @param uriEmpty A [Painter] that is displayed when the request's [ImageRequest.uriString] is empty.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -82,7 +82,7 @@ fun AsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = AsyncImage(
-    request = DisplayRequest(LocalContext.current, imageUri),
+    request = ImageRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -98,9 +98,9 @@ fun AsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -138,7 +138,7 @@ fun AsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = AsyncImage(
-    request = DisplayRequest(LocalContext.current, imageUri),
+    request = ImageRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -154,9 +154,9 @@ fun AsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -165,7 +165,7 @@ fun AsyncImage(
  * @param state [AsyncImageState] that will be used to store the state of the request.
  * @param placeholder A [Painter] that is displayed while the image is loading.
  * @param error A [Painter] that is displayed when the image request is unsuccessful.
- * @param uriEmpty A [Painter] that is displayed when the request's [DisplayRequest.uriString] is null.
+ * @param uriEmpty A [Painter] that is displayed when the request's [ImageRequest.uriString] is null.
  * @param onLoading Called when the image request begins loading.
  * @param onSuccess Called when the image request completes successfully.
  * @param onError Called when the image request completes unsuccessfully.
@@ -183,7 +183,7 @@ fun AsyncImage(
 @Composable
 @NonRestartableComposable
 fun AsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -217,9 +217,9 @@ fun AsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -242,7 +242,7 @@ fun AsyncImage(
  */
 @Composable
 fun AsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     sketch: Sketch,
     contentDescription: String?,
     modifier: Modifier = Modifier,

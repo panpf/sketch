@@ -16,7 +16,7 @@
 package com.github.panpf.sketch
 
 import android.widget.ImageView
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.util.SketchUtils
 
 /**
@@ -27,7 +27,7 @@ fun ImageView.disposeDisplay() {
 }
 
 /**
- * Get the [DisplayResult] of the most recently executed image request that's attached to this view.
+ * Get the [ImageResult] of the most recently executed image request that's attached to this view.
  */
-val ImageView.displayResult: DisplayResult?
+val ImageView.imageResult: ImageResult?
     get() = SketchUtils.getResult(this)

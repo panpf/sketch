@@ -21,24 +21,29 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.transition.TransitionDisplayTarget
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.transition.TransitionTarget
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class TransitionDisplayTargetTest {
+class TransitionTargetTest {
 
     @Test
     fun test() {
         val context = getTestContext()
-        TestTransitionViewDisplayTarget(ImageView(context)).apply {
-            onStart(null)
-            onError(null)
-            onSuccess(ColorDrawable(Color.RED))
+        val request = ImageRequest(context, null)
+        val requestContext = RequestContext(request)
+        TestTransitionViewTarget(ImageView(context)).apply {
+            onStart(requestContext, null)
+            onError(requestContext, null)
+            onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
         }
     }
 
-    class TestTransitionViewDisplayTarget(private val view: ImageView) : TransitionDisplayTarget {
+    class TestTransitionViewTarget(private val view: ImageView) : TransitionTarget {
         override val supportDisplayCount: Boolean = false
         override var drawable: Drawable?
             get() = view.drawable

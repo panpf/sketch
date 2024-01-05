@@ -16,12 +16,13 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredMainThread
 
-class RequestContext constructor(firstRequest: ImageRequest, resizeSize: Size) {
+class RequestContext constructor(val sketch: Sketch, val firstRequest: ImageRequest) {
 
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
     private val _requestList = mutableListOf(firstRequest)
@@ -38,7 +39,7 @@ class RequestContext constructor(firstRequest: ImageRequest, resizeSize: Size) {
     @get:Synchronized
     val key: String
         get() = _key
-            ?: request.newKey(resizeSize).apply {
+            ?: request.newKey().apply {
                 _key = this
             }
 
@@ -46,12 +47,11 @@ class RequestContext constructor(firstRequest: ImageRequest, resizeSize: Size) {
     @get:Synchronized
     val cacheKey: String
         get() = _cacheKey
-            ?: request.newCacheKey(resizeSize).apply {
+            ?: request.newCacheKey(resizeSize!!).apply {
                 _cacheKey = this
             }
 
-    var resizeSize: Size = resizeSize
-        private set
+    var resizeSize: Size? = null
 
     internal suspend fun setNewRequest(request: ImageRequest) {
         val lastRequest = this.request

@@ -15,7 +15,22 @@
  */
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.ImageInfo
+
 /**
  * Data of [ImageRequest]
  */
-interface ImageData
+data class ImageData(
+    val image: Image,
+    val imageInfo: ImageInfo,
+    val dataFrom: DataFrom,
+    /**
+     * Store the transformation history of the Bitmap
+     */
+    val transformedList: List<String>?,
+    /**
+     * Store some additional information for consumer use
+     */
+    val extras: Map<String, String>?,
+)

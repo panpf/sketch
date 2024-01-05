@@ -34,8 +34,8 @@ import android.view.View
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.core.R
-import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.util.getCompletedOrNull
 import com.github.panpf.sketch.util.isMainThread
@@ -70,7 +70,7 @@ class ViewTargetRequestManager constructor(private val view: View) :
      * Create and return a new disposable unless this is a restarted request.
      */
     @Synchronized
-    internal fun getDisposable(job: Deferred<DisplayResult>): ViewTargetDisposable {
+    internal fun getDisposable(job: Deferred<ImageResult>): ViewTargetDisposable {
         // If this is a restarted request, update the current disposable and return it.
         val disposable = currentDisposable
         if (disposable != null && isMainThread() && isRestart) {
@@ -102,7 +102,7 @@ class ViewTargetRequestManager constructor(private val view: View) :
 
     /** Return the completed value of the latest job if it has completed. Else, return 'null'. */
     @Synchronized
-    fun getResult(): DisplayResult? {
+    fun getResult(): ImageResult? {
         return currentDisposable?.job?.getCompletedOrNull()
     }
 
@@ -121,7 +121,6 @@ class ViewTargetRequestManager constructor(private val view: View) :
     @MainThread
     override fun onViewDetachedFromWindow(v: View) {
         currentRequestDelegate?.dispose()
-        currentRequestDelegate?.onViewDetachedFromWindow()
     }
 
     fun restart() {

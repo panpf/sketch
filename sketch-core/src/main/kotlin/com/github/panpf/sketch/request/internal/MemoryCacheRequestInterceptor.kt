@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.request.internal
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.CountBitmap
@@ -25,12 +25,12 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.DisplayData
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.target.DisplayTarget
+import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.request.getBitmap
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.asOrNull
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
@@ -46,9 +46,9 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val bitmapPool = chain.sketch.bitmapPool
         val memoryCachePolicy = request.memoryCachePolicy
         val targetSupportDisplayCount =
-            request.target.asOrNull<DisplayTarget>()?.supportDisplayCount == true
+            request.target.asOrNull<Target>()?.supportDisplayCount == true
 
-        if (request is DisplayRequest && memoryCachePolicy.readEnabled && targetSupportDisplayCount) {
+        if (memoryCachePolicy.readEnabled && targetSupportDisplayCount) {
             val countDrawable = readFromMemoryCache(
                 context = request.context,
                 memoryCache = memoryCache,
@@ -57,8 +57,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             )
             if (countDrawable != null) {
                 requestContext.pendingCountDrawable(countDrawable, "loadBefore")
-                val displayData = DisplayData(
-                    drawable = countDrawable,
+                val displayData = ImageData(
+                    image = countDrawable.asSketchImage(),
                     imageInfo = countDrawable.imageInfo,
                     transformedList = countDrawable.transformedList,
                     extras = countDrawable.extras,
@@ -73,19 +73,18 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val result = chain.proceed(request)
 
         val imageData = result.getOrNull()
+        val bitmap = imageData?.image?.getBitmap()
         if (imageData != null
-            && imageData is DisplayData
-            && request is DisplayRequest
             && memoryCachePolicy.writeEnabled
             && targetSupportDisplayCount
-            && imageData.drawable is BitmapDrawable
+            && bitmap != null
         ) {
             val saveSuccess = saveToMemoryCache(
                 memoryCache = memoryCache,
                 requestContext = requestContext,
                 bitmapPool = bitmapPool,
-                displayData = imageData,
-                bitmapDrawable = imageData.drawable
+                imageData = imageData,
+                bitmap = bitmap
             )
             if (saveSuccess && memoryCachePolicy.readEnabled) {
                 val countDrawable = readFromMemoryCache(
@@ -96,8 +95,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 )
                 if (countDrawable != null) {
                     requestContext.pendingCountDrawable(countDrawable, "newDecode")
-                    val displayData = DisplayData(
-                        drawable = countDrawable,
+                    val displayData = ImageData(
+                        image = countDrawable.asSketchImage(),
                         imageInfo = countDrawable.imageInfo,
                         transformedList = countDrawable.transformedList,
                         extras = countDrawable.extras,
@@ -137,12 +136,12 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         memoryCache: MemoryCache,
         requestContext: RequestContext,
         bitmapPool: BitmapPool,
-        displayData: DisplayData,
-        bitmapDrawable: BitmapDrawable,
+        imageData: ImageData,
+        bitmap: Bitmap,
     ): Boolean {
         val countBitmap = CountBitmap(
             cacheKey = requestContext.cacheKey,
-            originBitmap = bitmapDrawable.bitmap,
+            originBitmap = bitmap,
             bitmapPool = bitmapPool,
             disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
         )
@@ -151,9 +150,9 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             imageUri = requestContext.request.uriString,
             requestKey = requestContext.key,
             requestCacheKey = requestContext.cacheKey,
-            imageInfo = displayData.imageInfo,
-            transformedList = displayData.transformedList,
-            extras = displayData.extras,
+            imageInfo = imageData.imageInfo,
+            transformedList = imageData.transformedList,
+            extras = imageData.extras,
         )
         return memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
     }

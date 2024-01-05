@@ -22,7 +22,9 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.internal.IconDrawable
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.RealColorDrawable
 import com.github.panpf.sketch.util.RealDrawable
@@ -99,11 +101,11 @@ class IconStateImage internal constructor(
     constructor(@DrawableRes icon: Int, bg: ColorFetcher)
             : this(ResDrawable(icon), null, bg.toDrawableFetcher())
 
-    override fun getDrawable(
+    override fun getImage(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable? {
+    ): Image? {
         return try {
             val icon = icon.getDrawable(request.context).apply {
                 if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
@@ -127,7 +129,7 @@ class IconStateImage internal constructor(
             sketch.logger.w("IconStateImage", "getDrawable error. ${e.message}")
             e.printStackTrace()
             null
-        }
+        }?.asSketchImage()
     }
 
     override fun equals(other: Any?): Boolean {

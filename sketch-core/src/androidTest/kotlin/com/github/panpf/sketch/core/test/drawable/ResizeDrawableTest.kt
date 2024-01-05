@@ -30,7 +30,6 @@ import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
-import com.github.panpf.sketch.drawable.internal.tryToResizeDrawable
 import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP

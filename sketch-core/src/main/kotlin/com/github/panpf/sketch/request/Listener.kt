@@ -20,33 +20,33 @@ import androidx.annotation.MainThread
 /**
  * A set of callbacks for an [ImageRequest].
  */
-interface Listener<REQUEST : ImageRequest, SUCCESS : ImageResult.Success, ERROR : ImageResult.Error> {
+interface Listener {
 
     /**
      * Called if the request is started.
      */
     @MainThread
-    fun onStart(request: REQUEST) {
+    fun onStart(request: ImageRequest) {
     }
 
     /**
      * Called if the request completes successfully.
      */
     @MainThread
-    fun onSuccess(request: REQUEST, result: SUCCESS) {
+    fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
     }
 
     /**
      * Called if an error occurs while executing the request.
      */
     @MainThread
-    fun onError(request: REQUEST, result: ERROR) {
+    fun onError(request: ImageRequest, error: ImageResult.Error) {
     }
 
     /**
      * Called if the request is cancelled.
      */
     @MainThread
-    fun onCancel(request: REQUEST) {
+    fun onCancel(request: ImageRequest) {
     }
 }

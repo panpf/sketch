@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.request.Depth
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.zoomimage.subsampling.ImageSource
 import kotlinx.coroutines.runBlocking
 import java.io.InputStream
@@ -37,7 +37,7 @@ class SketchImageSource(
 
     @WorkerThread
     override fun openInputStream(): Result<InputStream> = kotlin.runCatching {
-        val request = LoadRequest(context, imageUri) {
+        val request = ImageRequest(context, imageUri) {
             downloadCachePolicy(CachePolicy.ENABLED)
             depth(Depth.LOCAL)   // Do not download image, by default go here The image have been downloaded
         }

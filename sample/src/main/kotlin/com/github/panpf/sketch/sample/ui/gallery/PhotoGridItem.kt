@@ -23,7 +23,7 @@ import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
@@ -92,7 +92,7 @@ fun PhotoGridItem(
 
     val listSettings by appSettingsService.listsCombinedFlow.collectAsState(Unit)
     val request = remember(photo.listThumbnailUrl, listSettings) {
-        DisplayRequest(context, photo.listThumbnailUrl) {
+        ImageRequest(context, photo.listThumbnailUrl) {
             if (animatedPlaceholder) {
                 placeholder(
                     AnimatableIconStateImage(drawable.ic_placeholder_eclipse_animated) {

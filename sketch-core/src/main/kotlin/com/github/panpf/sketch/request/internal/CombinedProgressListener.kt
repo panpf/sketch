@@ -16,26 +16,27 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
-class CombinedProgressListener<REQUEST : ImageRequest>(
-    val fromProviderProgressListener: ProgressListener<REQUEST>?,
-    val fromBuilderProgressListener: ProgressListener<REQUEST>?,
-    val fromBuilderProgressListeners: List<ProgressListener<REQUEST>>? = null,
-) : ProgressListener<REQUEST> {
+class CombinedProgressListener(
+    val fromProviderProgressListener: ProgressListener?,
+    val fromBuilderProgressListener: ProgressListener?,
+    val fromBuilderProgressListeners: List<ProgressListener>? = null,
+) : ProgressListener {
 
-    override fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long) {
-        fromProviderProgressListener?.onUpdateProgress(request, totalLength, completedLength)
-        fromBuilderProgressListener?.onUpdateProgress(request, totalLength, completedLength)
+    override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
+        fromProviderProgressListener?.onUpdateProgress(request, progress)
+        fromBuilderProgressListener?.onUpdateProgress(request, progress)
         fromBuilderProgressListeners?.forEach {
-            it.onUpdateProgress(request, totalLength, completedLength)
+            it.onUpdateProgress(request, progress)
         }
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as CombinedProgressListener<*>
+        other as CombinedProgressListener
         if (fromProviderProgressListener != other.fromProviderProgressListener) return false
         if (fromBuilderProgressListener != other.fromBuilderProgressListener) return false
         if (fromBuilderProgressListeners != other.fromBuilderProgressListeners) return false

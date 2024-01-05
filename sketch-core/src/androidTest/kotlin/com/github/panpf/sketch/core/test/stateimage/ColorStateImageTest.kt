@@ -41,21 +41,21 @@ class ColorStateImageTest {
         ColorStateImage(Color.BLUE).apply {
             Assert.assertEquals(
                 Color.BLUE,
-                getDrawable(sketch, request, null).asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null).asOrNull<ColorDrawable>()!!.color
             )
         }
 
         ColorStateImage(IntColor(Color.RED)).apply {
             Assert.assertEquals(
                 Color.RED,
-                getDrawable(sketch, request, null).asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null).asOrNull<ColorDrawable>()!!.color
             )
         }
 
         ColorStateImage(IntColor(Color.GREEN)).apply {
             Assert.assertEquals(
                 Color.GREEN,
-                getDrawable(sketch, request, null).asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null).asOrNull<ColorDrawable>()!!.color
             )
         }
     }

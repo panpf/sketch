@@ -18,24 +18,21 @@ package com.github.panpf.sketch.test.utils
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
-import com.github.panpf.sketch.request.DisplayListenerProvider
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
 
 class TestListenerImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
-) : ImageView(context, attrs), DisplayListenerProvider {
+) : ImageView(context, attrs), ListenerProvider {
 
-    override fun getDisplayListener(): Listener<DisplayRequest, Success, Error> {
-        return object : Listener<DisplayRequest, Success, Error> {
+    override fun getListener(): Listener {
+        return object : Listener {
 
         }
     }
 
-    override fun getDisplayProgressListener(): ProgressListener<DisplayRequest> {
-        return ProgressListener { _, _, _ -> }
+    override fun getProgressListener(): ProgressListener {
+        return ProgressListener { _, _ -> }
     }
 }

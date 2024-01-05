@@ -17,9 +17,8 @@ package com.github.panpf.sketch.viewability
 
 import android.view.View
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
@@ -55,7 +54,7 @@ class ClickIgnoreSaveCellularTrafficAbility(
 ) : ViewAbility, ClickObserver, RequestListenerObserver {
 
     private var errorFromSaveCellularTraffic = false
-    private var request: DisplayRequest? = null
+    private var request: ImageRequest? = null
 
     override var host: Host? = null
 
@@ -66,21 +65,21 @@ class ClickIgnoreSaveCellularTrafficAbility(
         if (!canIntercept) return false
         host ?: return false
         val request = request ?: return false
-        val newRequest = request.newDisplayRequest {
+        val newRequest = request.newRequest {
             ignoreSaveCellularTraffic(true)
         }
         sketch.enqueue(newRequest)
         return true
     }
 
-    override fun onRequestStart(request: DisplayRequest) {
+    override fun onRequestStart(request: ImageRequest) {
         errorFromSaveCellularTraffic = false
         this.request = null
     }
 
-    override fun onRequestError(request: DisplayRequest, result: Error) {
+    override fun onRequestError(request: ImageRequest, error: ImageResult.Error) {
         errorFromSaveCellularTraffic =
-            isCausedBySaveCellularTraffic(result.request, result.throwable)
+            isCausedBySaveCellularTraffic(error.request, error.throwable)
         if (errorFromSaveCellularTraffic) {
             this.request = request
         } else {
@@ -88,7 +87,7 @@ class ClickIgnoreSaveCellularTrafficAbility(
         }
     }
 
-    override fun onRequestSuccess(request: DisplayRequest, result: Success) {
+    override fun onRequestSuccess(request: ImageRequest, result: ImageResult.Success) {
         errorFromSaveCellularTraffic = false
         this.request = null
     }

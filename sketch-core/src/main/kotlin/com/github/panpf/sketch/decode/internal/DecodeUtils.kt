@@ -275,7 +275,7 @@ fun realDecode(
 ): BitmapDecodeResult {
     requiredWorkThread()
     val request = requestContext.request
-    val resizeSize = requestContext.resizeSize
+    val resizeSize = requestContext.resizeSize!!
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val imageSize = Size(imageInfo.width, imageInfo.height)
     val appliedImageSize = exifOrientationHelper.applyToSize(imageSize)
@@ -399,7 +399,7 @@ fun BitmapDecodeResult.appliedResize(
 ): BitmapDecodeResult {
     requiredWorkThread()
     val request = requestContext.request
-    val resizeSize = requestContext.resizeSize
+    val resizeSize = requestContext.resizeSize!!
     val resize = Resize(
         width = resizeSize.width,
         height = resizeSize.height,

@@ -41,6 +41,7 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
+import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
@@ -51,7 +52,7 @@ import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewDisplayTarget
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
@@ -60,11 +61,23 @@ import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.ifOrNull
 
 /**
+ * Build and set the [ImageRequest]
+ */
+fun ImageRequest(
+    context: Context,
+    uriString: String?,
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): ImageRequest = ImageRequest.Builder(context, uriString).apply {
+    configBlock?.invoke(this)
+}.build()
+
+/**
  * An immutable image request that contains all the required parameters,
- * you need to use its three concrete implementations [DisplayRequest], [LoadRequest], [DownloadRequest]
  */
 @Stable
 interface ImageRequest {
+
+    val key: String
 
     /** App Context */
     val context: Context
@@ -87,10 +100,10 @@ interface ImageRequest {
     val target: Target?
 
     /** [Listener] is used to receive the state and result of the request */
-    val listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+    val listener: Listener?
 
     /** [ProgressListener] is used to receive the download progress of the request */
-    val progressListener: ProgressListener<ImageRequest>?
+    val progressListener: ProgressListener?
 
     /** User-provided ImageOptions */
     val definedOptions: ImageOptions
@@ -129,8 +142,6 @@ interface ImageRequest {
      * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val bitmapConfig: BitmapConfig?
 
@@ -138,8 +149,6 @@ interface ImageRequest {
      * [Bitmap]'s [ColorSpace]
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     @get:RequiresApi(VERSION_CODES.O)
     val colorSpace: ColorSpace?
@@ -155,51 +164,37 @@ interface ImageRequest {
      * IDCT method will be used instead.
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean
 
     /**
      * Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val resizeSizeResolver: SizeResolver
 
     /**
      * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val resizePrecisionDecider: PrecisionDecider
 
     /**
      * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val resizeScaleDecider: ScaleDecider
 
     /**
      * The list of [Transformation]s to be applied to this request
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val transformations: List<Transformation>?
 
     /**
      * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val disallowReuseBitmap: Boolean
 
     /**
      * Ignore Orientation property in file Exif info
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      *
      * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
      */
@@ -208,8 +203,6 @@ interface ImageRequest {
     /**
      * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
      *
-     * Only works on [LoadRequest] and [DisplayRequest]
-     *
      * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
      */
     val resultCachePolicy: CachePolicy
@@ -217,50 +210,36 @@ interface ImageRequest {
 
     /**
      * Placeholder image when loading
-     *
-     * Only works on [DisplayRequest]
      */
     val placeholder: StateImage?
 
     /**
      * Image to display when uri is empty
-     *
-     * Only works on [DisplayRequest]
      */
     val uriEmpty: StateImage?
 
     /**
      * Image to display when loading fails
-     *
-     * Only works on [DisplayRequest]
      */
     val error: ErrorStateImage?
 
     /**
      * How the current image and the new image transition
-     *
-     * Only works on [DisplayRequest]
      */
     val transitionFactory: Transition.Factory?
 
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     *
-     * Only works on [DisplayRequest]
      */
     val disallowAnimatedImage: Boolean
 
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
-     *
-     * Only works on [DisplayRequest]
      */
     val resizeApplyToDrawable: Boolean
 
     /**
      * Bitmap memory caching policy
-     *
-     * Only works on [DisplayRequest]
      *
      * @see com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
      */
@@ -277,7 +256,9 @@ interface ImageRequest {
      */
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
-    ): Builder
+    ): Builder = Builder(this).apply {
+        configBlock?.invoke(this)
+    }
 
     /**
      * Create a new [ImageRequest] based on the current [ImageRequest].
@@ -286,38 +267,38 @@ interface ImageRequest {
      */
     fun newRequest(
         configBlock: (Builder.() -> Unit)? = null
-    ): ImageRequest
+    ): ImageRequest = Builder(this).apply {
+        configBlock?.invoke(this)
+    }.build()
 
-    abstract class Builder {
+    class Builder {
 
         private val context: Context
         private val uriString: String
 
-        private var listeners: MutableSet<Listener<ImageRequest, ImageResult.Success, ImageResult.Error>>? =
-            null
-        private var listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? = null
-        private var providerListener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? =
-            null
-        private var progressListeners: MutableSet<ProgressListener<ImageRequest>>? = null
-        private var progressListener: ProgressListener<ImageRequest>? = null
-        private var providerProgressListener: ProgressListener<ImageRequest>? = null
+        private var listeners: MutableSet<Listener>? = null
+        private var listener: Listener? = null
+        private var providerListener: Listener? = null
+        private var progressListeners: MutableSet<ProgressListener>? = null
+        private var progressListener: ProgressListener? = null
+        private var providerProgressListener: ProgressListener? = null
         private var target: Target? = null
         private var lifecycleResolver: LifecycleResolver? = null
         private var defaultOptions: ImageOptions? = null
         private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
 
-        protected constructor(context: Context, uriString: String?) {
+        constructor(context: Context, uriString: String?) {
             this.context = context
             this.uriString = uriString.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
         }
 
-        protected constructor(request: ImageRequest) {
+        constructor(request: ImageRequest) {
             this.context = request.context
             this.uriString = request.uriString
             val oldListener = request.listener
-            if (oldListener is CombinedListener<ImageRequest, ImageResult.Success, ImageResult.Error>) {
+            if (oldListener is CombinedListener) {
                 this.listener = oldListener.fromBuilderListener
                 this.listeners = oldListener.fromBuilderListeners?.toMutableSet()
                 this.providerListener = oldListener.fromProviderListener
@@ -327,7 +308,7 @@ interface ImageRequest {
                 this.providerListener = null
             }
             val oldProgressListener = request.progressListener
-            if (oldProgressListener is CombinedProgressListener<ImageRequest>) {
+            if (oldProgressListener is CombinedProgressListener) {
                 this.progressListener = oldProgressListener.fromBuilderProgressListener
                 this.progressListeners =
                     oldProgressListener.fromBuilderProgressListeners?.toMutableSet()
@@ -346,30 +327,72 @@ interface ImageRequest {
         /**
          * Set the [Listener]
          */
-        protected fun listener(
-            listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+        fun listener(
+            listener: Listener?
         ): Builder = apply {
             this.listener = listener
         }
 
         /**
+         * Convenience function to create and set the [Listener].
+         */
+        inline fun listener(
+            crossinline onStart: (request: ImageRequest) -> Unit = {},
+            crossinline onCancel: (request: ImageRequest) -> Unit = {},
+            crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: ImageRequest, result: ImageResult.Success) -> Unit = { _, _ -> }
+        ): Builder = listener(object :
+            Listener {
+            override fun onStart(request: ImageRequest) = onStart(request)
+            override fun onCancel(request: ImageRequest) = onCancel(request)
+            override fun onError(
+                request: ImageRequest, error: ImageResult.Error
+            ) = onError(request, error)
+
+            override fun onSuccess(
+                request: ImageRequest, result: ImageResult.Success
+            ) = onSuccess(request, result)
+        })
+
+        /**
          * Add the [Listener] to set
          */
-        protected fun addListener(
-            listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>
+        fun addListener(
+            listener: Listener
         ): Builder = apply {
             val listeners = listeners
-                ?: mutableSetOf<Listener<ImageRequest, ImageResult.Success, ImageResult.Error>>().apply {
+                ?: mutableSetOf<Listener>().apply {
                     this@Builder.listeners = this
                 }
             listeners.add(listener)
         }
 
         /**
+         * Add the [Listener] to set
+         */
+        inline fun addListener(
+            crossinline onStart: (request: ImageRequest) -> Unit = {},
+            crossinline onCancel: (request: ImageRequest) -> Unit = {},
+            crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
+            crossinline onSuccess: (request: ImageRequest, result: ImageResult.Success) -> Unit = { _, _ -> }
+        ): Builder = addListener(object :
+            Listener {
+            override fun onStart(request: ImageRequest) = onStart(request)
+            override fun onCancel(request: ImageRequest) = onCancel(request)
+            override fun onError(
+                request: ImageRequest, error: ImageResult.Error
+            ) = onError(request, error)
+
+            override fun onSuccess(
+                request: ImageRequest, result: ImageResult.Success
+            ) = onSuccess(request, result)
+        })
+
+        /**
          * Remove the [Listener] from set
          */
-        protected fun removeListener(
-            listener: Listener<ImageRequest, ImageResult.Success, ImageResult.Error>
+        fun removeListener(
+            listener: Listener
         ): Builder = apply {
             listeners?.remove(listener)
         }
@@ -377,8 +400,8 @@ interface ImageRequest {
         /**
          * Set the [ProgressListener]
          */
-        protected fun progressListener(
-            progressListener: ProgressListener<ImageRequest>?
+        fun progressListener(
+            progressListener: ProgressListener?
         ): Builder = apply {
             this.progressListener = progressListener
         }
@@ -386,11 +409,11 @@ interface ImageRequest {
         /**
          * Add the [ProgressListener] to set
          */
-        protected fun addProgressListener(
-            progressListener: ProgressListener<ImageRequest>
+        fun addProgressListener(
+            progressListener: ProgressListener
         ): Builder = apply {
             val progressListeners =
-                progressListeners ?: mutableSetOf<ProgressListener<ImageRequest>>().apply {
+                progressListeners ?: mutableSetOf<ProgressListener>().apply {
                     this@Builder.progressListeners = this
                 }
             progressListeners.add(progressListener)
@@ -399,8 +422,8 @@ interface ImageRequest {
         /**
          * Remove the [ProgressListener] from set
          */
-        protected fun removeProgressListener(
-            progressListener: ProgressListener<ImageRequest>
+        fun removeProgressListener(
+            progressListener: ProgressListener
         ): Builder = apply {
             progressListeners?.remove(progressListener)
         }
@@ -414,7 +437,7 @@ interface ImageRequest {
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
          */
-        open fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
+        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
         }
 
@@ -427,16 +450,16 @@ interface ImageRequest {
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
          */
-        open fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
+        fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
             this.lifecycleResolver = lifecycleResolver
         }
 
         /**
          * Set the [Target].
          */
-        protected fun target(target: Target?): Builder = apply {
+        fun target(target: Target?): Builder = apply {
             this.target = target
-            this.viewTargetOptions = target.asOrNull<ViewDisplayTarget<*>>()
+            this.viewTargetOptions = target.asOrNull<ViewTarget<*>>()
                 ?.view.asOrNull<ImageOptionsProvider>()
                 ?.displayImageOptions
         }
@@ -445,21 +468,21 @@ interface ImageRequest {
         /**
          * Set the requested depth
          */
-        open fun depth(depth: Depth?, depthFrom: String? = null): Builder = apply {
+        fun depth(depth: Depth?, depthFrom: String? = null): Builder = apply {
             definedOptionsBuilder.depth(depth, depthFrom)
         }
 
         /**
          * Bulk set parameters for this request
          */
-        open fun parameters(parameters: Parameters?): Builder = apply {
+        fun parameters(parameters: Parameters?): Builder = apply {
             definedOptionsBuilder.parameters(parameters)
         }
 
         /**
          * Set a parameter for this request.
          */
-        open fun setParameter(
+        fun setParameter(
             key: String, value: Any?, cacheKey: String? = value?.toString()
         ): Builder = apply {
             definedOptionsBuilder.setParameter(key, value, cacheKey)
@@ -468,7 +491,7 @@ interface ImageRequest {
         /**
          * Remove a parameter from this request.
          */
-        open fun removeParameter(key: String): Builder = apply {
+        fun removeParameter(key: String): Builder = apply {
             definedOptionsBuilder.removeParameter(key)
         }
 
@@ -476,35 +499,35 @@ interface ImageRequest {
         /**
          * Bulk set headers for any network request for this request
          */
-        open fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
+        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
             definedOptionsBuilder.httpHeaders(httpHeaders)
         }
 
         /**
          * Add a header for any network operations performed by this request.
          */
-        open fun addHttpHeader(name: String, value: String): Builder = apply {
+        fun addHttpHeader(name: String, value: String): Builder = apply {
             definedOptionsBuilder.addHttpHeader(name, value)
         }
 
         /**
          * Set a header for any network operations performed by this request.
          */
-        open fun setHttpHeader(name: String, value: String): Builder = apply {
+        fun setHttpHeader(name: String, value: String): Builder = apply {
             definedOptionsBuilder.setHttpHeader(name, value)
         }
 
         /**
          * Remove all network headers with the key [name].
          */
-        open fun removeHttpHeader(name: String): Builder = apply {
+        fun removeHttpHeader(name: String): Builder = apply {
             definedOptionsBuilder.removeHttpHeader(name)
         }
 
         /**
          * Set http download cache policy
          */
-        open fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+        fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.downloadCachePolicy(cachePolicy)
         }
 
@@ -512,30 +535,24 @@ interface ImageRequest {
         /**
          * Set [Bitmap.Config] to use when creating the bitmap.
          * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
+        fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
         /**
          * Set [Bitmap.Config] to use when creating the bitmap.
          * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder = apply {
+        fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder = apply {
             definedOptionsBuilder.bitmapConfig(bitmapConfig)
         }
 
         /**
          * Set preferred [Bitmap]'s [ColorSpace]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
         @RequiresApi(VERSION_CODES.O)
-        open fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
+        fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
             definedOptionsBuilder.colorSpace(colorSpace)
         }
 
@@ -550,11 +567,9 @@ interface ImageRequest {
          * IDCT method will be used instead.
          *
          * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
         @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        open fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder =
+        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder =
             apply {
                 @Suppress("DEPRECATION")
                 definedOptionsBuilder.preferQualityOverSpeed(inPreferQualityOverSpeed)
@@ -568,7 +583,7 @@ interface ImageRequest {
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
-        open fun resize(
+        fun resize(
             size: SizeResolver?,
             precision: PrecisionDecider? = null,
             scale: ScaleDecider? = null
@@ -584,7 +599,7 @@ interface ImageRequest {
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
-        open fun resize(
+        fun resize(
             size: Size,
             precision: Precision? = null,
             scale: Scale? = null
@@ -601,7 +616,7 @@ interface ImageRequest {
          * @param scale Which part of the original image to keep when [precision] is
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
-        open fun resize(
+        fun resize(
             @Px width: Int,
             @Px height: Int,
             precision: Precision? = null,
@@ -612,198 +627,156 @@ interface ImageRequest {
 
         /**
          * Set the [SizeResolver] to lazy resolve the requested size.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
+        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
             definedOptionsBuilder.resizeSize(sizeResolver)
         }
 
         /**
          * Set the resize size
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeSize(size: Size): Builder = apply {
+        fun resizeSize(size: Size): Builder = apply {
             definedOptionsBuilder.resizeSize(size)
         }
 
         /**
          * Set the resize size
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
+        fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
             definedOptionsBuilder.resizeSize(width, height)
         }
 
         /**
          * Set the resize precision
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
+        fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
             definedOptionsBuilder.resizePrecision(precisionDecider)
         }
 
         /**
          * Set the resize precision
          */
-        open fun resizePrecision(precision: Precision): Builder = apply {
+        fun resizePrecision(precision: Precision): Builder = apply {
             definedOptionsBuilder.resizePrecision(precision)
         }
 
         /**
          * Set the resize scale
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
+        fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
             definedOptionsBuilder.resizeScale(scaleDecider)
         }
 
         /**
          * Set the resize scale
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resizeScale(scale: Scale): Builder = apply {
+        fun resizeScale(scale: Scale): Builder = apply {
             definedOptionsBuilder.resizeScale(scale)
         }
 
         /**
          * Set the list of [Transformation]s to be applied to this request.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun transformations(transformations: List<Transformation>?): Builder = apply {
+        fun transformations(transformations: List<Transformation>?): Builder = apply {
             definedOptionsBuilder.transformations(transformations)
         }
 
         /**
          * Set the list of [Transformation]s to be applied to this request.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun transformations(vararg transformations: Transformation): Builder = apply {
+        fun transformations(vararg transformations: Transformation): Builder = apply {
             definedOptionsBuilder.transformations(transformations.toList())
         }
 
         /**
          * Append the list of [Transformation]s to be applied to this request.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun addTransformations(transformations: List<Transformation>): Builder = apply {
+        fun addTransformations(transformations: List<Transformation>): Builder = apply {
             definedOptionsBuilder.addTransformations(transformations)
         }
 
         /**
          * Append the list of [Transformation]s to be applied to this request.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun addTransformations(vararg transformations: Transformation): Builder = apply {
+        fun addTransformations(vararg transformations: Transformation): Builder = apply {
             definedOptionsBuilder.addTransformations(transformations.toList())
         }
 
         /**
          * Bulk remove from current [Transformation] list
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun removeTransformations(transformations: List<Transformation>): Builder = apply {
+        fun removeTransformations(transformations: List<Transformation>): Builder = apply {
             definedOptionsBuilder.removeTransformations(transformations)
         }
 
         /**
          * Bulk remove from current [Transformation] list
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun removeTransformations(vararg transformations: Transformation): Builder = apply {
+        fun removeTransformations(vararg transformations: Transformation): Builder = apply {
             definedOptionsBuilder.removeTransformations(transformations.toList())
         }
 
         /**
          * Set disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun disallowReuseBitmap(disabled: Boolean? = true): Builder = apply {
+        fun disallowReuseBitmap(disabled: Boolean? = true): Builder = apply {
             definedOptionsBuilder.disallowReuseBitmap(disabled)
         }
 
         /**
          * Set ignore Orientation property in file Exif info
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
+        fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
             definedOptionsBuilder.ignoreExifOrientation(ignore)
         }
 
         /**
          * Set disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
-        open fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+        fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.resultCachePolicy(cachePolicy)
         }
 
 
         /**
          * Set placeholder image when loading
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun placeholder(stateImage: StateImage?): Builder = apply {
+        fun placeholder(stateImage: StateImage?): Builder = apply {
             definedOptionsBuilder.placeholder(stateImage)
         }
 
         /**
          * Set Drawable placeholder image when loading
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun placeholder(drawable: Drawable): Builder = apply {
+        fun placeholder(drawable: Drawable): Builder = apply {
             definedOptionsBuilder.placeholder(drawable)
         }
 
         /**
          * Set Drawable res placeholder image when loading
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun placeholder(@DrawableRes drawableResId: Int): Builder = apply {
+        fun placeholder(@DrawableRes drawableResId: Int): Builder = apply {
             definedOptionsBuilder.placeholder(drawableResId)
         }
 
         /**
          * Set placeholder image when uri is empty
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun uriEmpty(stateImage: StateImage?): Builder = apply {
+        fun uriEmpty(stateImage: StateImage?): Builder = apply {
             definedOptionsBuilder.uriEmpty(stateImage)
         }
 
         /**
          * Set Drawable placeholder image when uri is empty
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun uriEmpty(drawable: Drawable): Builder = apply {
+        fun uriEmpty(drawable: Drawable): Builder = apply {
             definedOptionsBuilder.uriEmpty(drawable)
         }
 
         /**
          * Set Drawable res placeholder image when uri is empty
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun uriEmpty(@DrawableRes drawableResId: Int): Builder = apply {
+        fun uriEmpty(@DrawableRes drawableResId: Int): Builder = apply {
             definedOptionsBuilder.uriEmpty(drawableResId)
         }
 
@@ -811,10 +784,8 @@ interface ImageRequest {
          * Set image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun error(
+        fun error(
             defaultStateImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
@@ -825,10 +796,8 @@ interface ImageRequest {
          * Set Drawable image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun error(
+        fun error(
             defaultDrawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             definedOptionsBuilder.error(defaultDrawable, configBlock)
@@ -838,10 +807,8 @@ interface ImageRequest {
          * Set Drawable res image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun error(
+        fun error(
             defaultDrawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             definedOptionsBuilder.error(defaultDrawableResId, configBlock)
@@ -851,10 +818,8 @@ interface ImageRequest {
          * Set Drawable res image to display when loading fails.
          *
          * You can also set image of different error types via the trailing lambda function
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun error(
+        fun error(
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             definedOptionsBuilder.error(configBlock)
@@ -862,19 +827,15 @@ interface ImageRequest {
 
         /**
          * Set the transition between the current image and the new image
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
+        fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
             definedOptionsBuilder.transitionFactory(transitionFactory)
         }
 
         /**
          * Sets the transition that crossfade
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun crossfade(
+        fun crossfade(
             durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
             fadeStart: Boolean = true,
             preferExactIntrinsicSize: Boolean = false,
@@ -890,47 +851,37 @@ interface ImageRequest {
 
         /**
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
+        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
             definedOptionsBuilder.disallowAnimatedImage(disabled)
         }
 
         /**
          * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
+        fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
             definedOptionsBuilder.resizeApplyToDrawable(resizeApplyToDrawable)
         }
 
         /**
          * Set bitmap memory caching policy
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+        fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.memoryCachePolicy(cachePolicy)
         }
 
 
         /**
          * Merge the specified [ImageOptions] into the current [Builder]. Currently [Builder] takes precedence
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun merge(options: ImageOptions?): Builder = apply {
+        fun merge(options: ImageOptions?): Builder = apply {
             definedOptionsBuilder.merge(options)
         }
 
         /**
          * Set a final [ImageOptions] to complement properties not set
-         *
-         * Only works on [DisplayRequest]
          */
-        open fun default(options: ImageOptions?): Builder = apply {
+        fun default(options: ImageOptions?): Builder = apply {
             this.defaultOptions = options
         }
 
@@ -938,21 +889,21 @@ interface ImageRequest {
         /**
          * Set the [ComponentRegistry]
          */
-        open fun components(components: ComponentRegistry?): Builder = apply {
+        fun components(components: ComponentRegistry?): Builder = apply {
             definedOptionsBuilder.components(components)
         }
 
         /**
          * Build and set the [ComponentRegistry]
          */
-        open fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
             definedOptionsBuilder.components(configBlock)
         }
 
 
         @Suppress("DEPRECATION")
         @SuppressLint("NewApi")
-        open fun build(): ImageRequest {
+        fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
             val lifecycleResolver =
@@ -987,119 +938,43 @@ interface ImageRequest {
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
-            return when (this@Builder) {
-                is DisplayRequest.Builder -> {
-                    DisplayRequest.DisplayRequestImpl(
-                        context = context,
-                        uriString = uriString,
-                        listener = listener,
-                        progressListener = progressListener,
-                        target = target,
-                        lifecycleResolver = lifecycleResolver,
-                        defaultOptions = defaultOptions,
-                        definedOptions = definedOptions,
-                        depth = depth,
-                        parameters = parameters,
-                        httpHeaders = httpHeaders,
-                        downloadCachePolicy = downloadCachePolicy,
-                        resultCachePolicy = resultCachePolicy,
-                        bitmapConfig = bitmapConfig,
-                        colorSpace = colorSpace,
-                        preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSizeResolver = resizeSizeResolver,
-                        resizePrecisionDecider = resizePrecisionDecider,
-                        resizeScaleDecider = resizeScaleDecider,
-                        transformations = transformations,
-                        disallowReuseBitmap = disallowReuseBitmap,
-                        ignoreExifOrientation = ignoreExifOrientation,
-                        placeholder = placeholder,
-                        uriEmpty = uriEmpty,
-                        error = error,
-                        transitionFactory = transitionFactory,
-                        disallowAnimatedImage = disallowAnimatedImage,
-                        resizeApplyToDrawable = resizeApplyToDrawable,
-                        memoryCachePolicy = memoryCachePolicy,
-                        componentRegistry = componentRegistry,
-                    )
-                }
-
-                is LoadRequest.Builder -> {
-                    LoadRequest.LoadRequestImpl(
-                        context = context,
-                        uriString = uriString,
-                        listener = listener,
-                        progressListener = progressListener,
-                        target = target,
-                        lifecycleResolver = lifecycleResolver,
-                        defaultOptions = defaultOptions,
-                        definedOptions = definedOptions,
-                        depth = depth,
-                        parameters = parameters,
-                        httpHeaders = httpHeaders,
-                        downloadCachePolicy = downloadCachePolicy,
-                        resultCachePolicy = resultCachePolicy,
-                        bitmapConfig = bitmapConfig,
-                        colorSpace = colorSpace,
-                        preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSizeResolver = resizeSizeResolver,
-                        resizePrecisionDecider = resizePrecisionDecider,
-                        resizeScaleDecider = resizeScaleDecider,
-                        transformations = transformations,
-                        disallowReuseBitmap = disallowReuseBitmap,
-                        ignoreExifOrientation = ignoreExifOrientation,
-                        placeholder = placeholder,
-                        uriEmpty = uriEmpty,
-                        error = error,
-                        transitionFactory = transitionFactory,
-                        disallowAnimatedImage = disallowAnimatedImage,
-                        resizeApplyToDrawable = resizeApplyToDrawable,
-                        memoryCachePolicy = memoryCachePolicy,
-                        componentRegistry = componentRegistry,
-                    )
-                }
-
-                is DownloadRequest.Builder -> {
-                    DownloadRequest.DownloadRequestImpl(
-                        context = context,
-                        uriString = uriString,
-                        listener = listener,
-                        progressListener = progressListener,
-                        target = target,
-                        lifecycleResolver = lifecycleResolver,
-                        defaultOptions = defaultOptions,
-                        definedOptions = definedOptions,
-                        depth = depth,
-                        parameters = parameters,
-                        httpHeaders = httpHeaders,
-                        downloadCachePolicy = downloadCachePolicy,
-                        resultCachePolicy = resultCachePolicy,
-                        bitmapConfig = bitmapConfig,
-                        colorSpace = colorSpace,
-                        preferQualityOverSpeed = preferQualityOverSpeed,
-                        resizeSizeResolver = resizeSizeResolver,
-                        resizePrecisionDecider = resizePrecisionDecider,
-                        resizeScaleDecider = resizeScaleDecider,
-                        transformations = transformations,
-                        disallowReuseBitmap = disallowReuseBitmap,
-                        ignoreExifOrientation = ignoreExifOrientation,
-                        placeholder = placeholder,
-                        uriEmpty = uriEmpty,
-                        error = error,
-                        transitionFactory = transitionFactory,
-                        disallowAnimatedImage = disallowAnimatedImage,
-                        resizeApplyToDrawable = resizeApplyToDrawable,
-                        memoryCachePolicy = memoryCachePolicy,
-                        componentRegistry = componentRegistry,
-                    )
-                }
-
-                else -> throw UnsupportedOperationException("Unsupported ImageRequest.Builder: ${this@Builder::class.java}")
-            }
+            return ImageRequestImpl(
+                context = context,
+                uriString = uriString,
+                listener = listener,
+                progressListener = progressListener,
+                target = target,
+                lifecycleResolver = lifecycleResolver,
+                defaultOptions = defaultOptions,
+                definedOptions = definedOptions,
+                depth = depth,
+                parameters = parameters,
+                httpHeaders = httpHeaders,
+                downloadCachePolicy = downloadCachePolicy,
+                resultCachePolicy = resultCachePolicy,
+                bitmapConfig = bitmapConfig,
+                colorSpace = colorSpace,
+                preferQualityOverSpeed = preferQualityOverSpeed,
+                resizeSizeResolver = resizeSizeResolver,
+                resizePrecisionDecider = resizePrecisionDecider,
+                resizeScaleDecider = resizeScaleDecider,
+                transformations = transformations,
+                disallowReuseBitmap = disallowReuseBitmap,
+                ignoreExifOrientation = ignoreExifOrientation,
+                placeholder = placeholder,
+                uriEmpty = uriEmpty,
+                error = error,
+                transitionFactory = transitionFactory,
+                disallowAnimatedImage = disallowAnimatedImage,
+                resizeApplyToDrawable = resizeApplyToDrawable,
+                memoryCachePolicy = memoryCachePolicy,
+                componentRegistry = componentRegistry,
+            )
         }
 
         private fun resolveResizeSizeResolver(): SizeResolver {
             val target = target
-            return if (target is ViewDisplayTarget<*>) {
+            return if (target is ViewTarget<*>) {
                 target.view?.let { ViewSizeResolver(it) } ?: DisplaySizeResolver(context)
             } else {
                 DisplaySizeResolver(context)
@@ -1107,7 +982,7 @@ interface ImageRequest {
         }
 
         private fun resolveLifecycleResolver(): LifecycleResolver {
-            val view = target.asOrNull<ViewDisplayTarget<*>>()?.view
+            val view = target.asOrNull<ViewTarget<*>>()?.view
             if (view != null) {
                 return ViewLifecycleResolver(view)
             }
@@ -1119,7 +994,7 @@ interface ImageRequest {
         }
 
         private fun resolveResizeScale(): Scale =
-            target.asOrNull<ViewDisplayTarget<*>>()
+            target.asOrNull<ViewTarget<*>>()
                 ?.view?.asOrNull<ImageView>()
                 ?.scaleType?.let {
                     when (it) {
@@ -1133,15 +1008,14 @@ interface ImageRequest {
                     }
                 } ?: Scale.CENTER_CROP
 
-        @Suppress("UNCHECKED_CAST")
-        private fun combinationListener(): Listener<ImageRequest, ImageResult.Success, ImageResult.Error>? {
+        private fun combinationListener(): Listener? {
             val target = target
             val listener = listener
             val listeners = listeners?.takeIf { it.isNotEmpty() }?.toList()
             val providerListener = providerListener
-                ?: target.asOrNull<ViewDisplayTarget<*>>()
-                    ?.view?.asOrNull<DisplayListenerProvider>()
-                    ?.getDisplayListener() as Listener<ImageRequest, ImageResult.Success, ImageResult.Error>?
+                ?: target.asOrNull<ViewTarget<*>>()
+                    ?.view?.asOrNull<ListenerProvider>()
+                    ?.getListener()
             return if (listeners != null || providerListener != null) {
                 CombinedListener(
                     fromProviderListener = providerListener,
@@ -1153,15 +1027,14 @@ interface ImageRequest {
             }
         }
 
-        @Suppress("UNCHECKED_CAST")
-        private fun combinationProgressListener(): ProgressListener<ImageRequest>? {
+        private fun combinationProgressListener(): ProgressListener? {
             val target = target
             val progressListener = progressListener
             val progressListeners = progressListeners?.takeIf { it.isNotEmpty() }?.toList()
             val providerProgressListener = providerProgressListener
-                ?: target.asOrNull<ViewDisplayTarget<*>>()
-                    ?.view?.asOrNull<DisplayListenerProvider>()
-                    ?.getDisplayProgressListener() as ProgressListener<ImageRequest>?
+                ?: target.asOrNull<ViewTarget<*>>()
+                    ?.view?.asOrNull<ListenerProvider>()
+                    ?.getProgressListener()
             return if (progressListeners != null || providerProgressListener != null) {
                 CombinedProgressListener(
                     fromProviderProgressListener = providerProgressListener,
@@ -1172,5 +1045,43 @@ interface ImageRequest {
                 progressListener
             }
         }
+    }
+
+    data class ImageRequestImpl internal constructor(
+        override val context: Context,
+        override val uriString: String,
+        override val listener: Listener?,
+        override val progressListener: ProgressListener?,
+        override val target: Target?,
+        override val lifecycleResolver: LifecycleResolver,
+        override val definedOptions: ImageOptions,
+        override val defaultOptions: ImageOptions?,
+        override val depth: Depth,
+        override val parameters: Parameters?,
+        override val httpHeaders: HttpHeaders?,
+        override val downloadCachePolicy: CachePolicy,
+        override val bitmapConfig: BitmapConfig?,
+        override val colorSpace: ColorSpace?,
+        @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
+        @Suppress("OverridingDeprecatedMember")
+        override val preferQualityOverSpeed: Boolean,
+        override val resizeSizeResolver: SizeResolver,
+        override val resizePrecisionDecider: PrecisionDecider,
+        override val resizeScaleDecider: ScaleDecider,
+        override val transformations: List<Transformation>?,
+        override val disallowReuseBitmap: Boolean,
+        override val ignoreExifOrientation: Boolean,
+        override val resultCachePolicy: CachePolicy,
+        override val placeholder: StateImage?,
+        override val uriEmpty: StateImage?,
+        override val error: ErrorStateImage?,
+        override val transitionFactory: Transition.Factory?,
+        override val disallowAnimatedImage: Boolean,
+        override val resizeApplyToDrawable: Boolean,
+        override val memoryCachePolicy: CachePolicy,
+        override val componentRegistry: ComponentRegistry?,
+    ) : ImageRequest {
+
+        override val key: String by lazy { newKey() }
     }
 }

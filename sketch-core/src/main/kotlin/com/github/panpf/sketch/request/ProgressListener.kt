@@ -20,11 +20,11 @@ import androidx.annotation.MainThread
 /**
  * Download progress callback for [ImageRequest]
  */
-fun interface ProgressListener<REQUEST : ImageRequest> {
+fun interface ProgressListener {
 
     /**
      * Called when the request download progress changed.
      */
     @MainThread
-    fun onUpdateProgress(request: REQUEST, totalLength: Long, completedLength: Long)
+    fun onUpdateProgress(request: ImageRequest, progress: Progress)
 }

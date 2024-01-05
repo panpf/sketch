@@ -51,13 +51,13 @@ class MemoryCacheStateImageTest {
         Assert.assertFalse(memoryCache.exist(memoryCacheKey))
 
         MemoryCacheStateImage(null, null).apply {
-            Assert.assertNull(getDrawable(sketch, request, null))
+            Assert.assertNull(getImage(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey).apply {
-            Assert.assertNull(getDrawable(sketch, request, null))
+            Assert.assertNull(getImage(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
-            Assert.assertTrue(getDrawable(sketch, request, null) is ColorDrawable)
+            Assert.assertTrue(getImage(sketch, request, null) is ColorDrawable)
         }
 
         memoryCache.put(
@@ -81,13 +81,13 @@ class MemoryCacheStateImageTest {
         Assert.assertTrue(memoryCache.exist(memoryCacheKey))
 
         MemoryCacheStateImage(null, null).apply {
-            Assert.assertNull(getDrawable(sketch, request, null))
+            Assert.assertNull(getImage(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey, null).apply {
-            Assert.assertTrue(getDrawable(sketch, request, null) is SketchCountBitmapDrawable)
+            Assert.assertTrue(getImage(sketch, request, null) is SketchCountBitmapDrawable)
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
-            Assert.assertTrue(getDrawable(sketch, request, null) is SketchCountBitmapDrawable)
+            Assert.assertTrue(getImage(sketch, request, null) is SketchCountBitmapDrawable)
         }
     }
 

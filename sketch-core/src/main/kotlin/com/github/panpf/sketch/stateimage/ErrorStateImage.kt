@@ -35,8 +35,9 @@ fun ErrorStateImage(
 /**
  * Provide Drawable specifically for error status, support custom [CompositeStateImage.Condition] Provide different Drawable according to different error types
  */
-class ErrorStateImage(override val stateList: List<Pair<CompositeStateImage.Condition, StateImage?>>) :
-    CompositeStateImage {
+class ErrorStateImage(
+    override val stateList: List<Pair<CompositeStateImage.Condition, StateImage?>>
+) : CompositeStateImage {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

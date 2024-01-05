@@ -18,28 +18,32 @@ package com.github.panpf.sketch.drawable.internal
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asDrawable
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-fun Drawable.tryToResizeDrawable(
+fun Image.resizeApplyToDrawable(
     request: ImageRequest,
     resizeSize: Size?,
-): Drawable {
+): Image {
     return if (request.resizeApplyToDrawable && resizeSize != null) {
         val scale = request.resizeScaleDecider.get(
-            imageWidth = intrinsicWidth,
-            imageHeight = intrinsicHeight,
+            imageWidth = width,
+            imageHeight = height,
             resizeWidth = resizeSize.width,
             resizeHeight = resizeSize.height
         )
-        if (this is Animatable) {
-            ResizeAnimatableDrawable(this, resizeSize, scale)
+        val drawable = this.asDrawable(request.context.resources)
+        if (drawable is Animatable) {
+            ResizeAnimatableDrawable(drawable, resizeSize, scale)
         } else {
-            ResizeDrawable(this, resizeSize, scale)
-        }
+            ResizeDrawable(drawable, resizeSize, scale)
+        }.asSketchImage()
     } else {
         this
     }

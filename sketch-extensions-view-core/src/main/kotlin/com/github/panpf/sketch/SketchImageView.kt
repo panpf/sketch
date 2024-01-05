@@ -18,14 +18,11 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.internal.parseImageXmlAttributes
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayRequestState
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.RequestState
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
@@ -35,20 +32,20 @@ open class SketchImageView @JvmOverloads constructor(
 ) : AbsAbilityImageView(context, attrs, defStyle), ImageOptionsProvider {
 
     override var displayImageOptions: ImageOptions? = null
-    private var displayListenerList: MutableList<Listener<DisplayRequest, Success, Error>>? = null
-    private var displayProgressListenerList: MutableList<ProgressListener<DisplayRequest>>? = null
+    private var displayListenerList: MutableList<Listener>? = null
+    private var displayProgressListenerList: MutableList<ProgressListener>? = null
 
-    val requestState = DisplayRequestState()
+    val requestState = RequestState()
 
     init {
         @Suppress("LeakingThis")
         displayImageOptions = parseImageXmlAttributes(context, attrs)
-        registerDisplayListener(requestState)
+        registerListener(requestState)
     }
 
-    override fun getDisplayListener(): Listener<DisplayRequest, Success, Error>? {
+    override fun getListener(): Listener? {
         val myListeners = displayListenerList?.takeIf { it.isNotEmpty() }
-        val superListener = super.getDisplayListener()
+        val superListener = super.getListener()
         if (myListeners == null && superListener == null) {
             return null
         }
@@ -59,9 +56,9 @@ open class SketchImageView @JvmOverloads constructor(
         return Listeners(listenerList)
     }
 
-    override fun getDisplayProgressListener(): ProgressListener<DisplayRequest>? {
+    override fun getProgressListener(): ProgressListener? {
         val myProgressListeners = displayProgressListenerList?.takeIf { it.isNotEmpty() }
-        val superProgressListener = super.getDisplayProgressListener()
+        val superProgressListener = super.getProgressListener()
         if (myProgressListeners == null && superProgressListener == null) {
             return null
         }
@@ -72,24 +69,24 @@ open class SketchImageView @JvmOverloads constructor(
         return ProgressListeners(progressListenerList)
     }
 
-    fun registerDisplayListener(listener: Listener<DisplayRequest, Success, Error>) {
+    fun registerListener(listener: Listener) {
         this.displayListenerList = (this.displayListenerList ?: mutableListOf()).apply {
             add(listener)
         }
     }
 
-    fun unregisterDisplayListener(listener: Listener<DisplayRequest, Success, Error>) {
+    fun unregisterListener(listener: Listener) {
         this.displayListenerList?.remove(listener)
     }
 
-    fun registerDisplayProgressListener(listener: ProgressListener<DisplayRequest>) {
+    fun registerProgressListener(listener: ProgressListener) {
         this.displayProgressListenerList =
             (this.displayProgressListenerList ?: mutableListOf()).apply {
                 add(listener)
             }
     }
 
-    fun unregisterDisplayProgressListener(listener: ProgressListener<DisplayRequest>) {
+    fun unregisterProgressListener(listener: ProgressListener) {
         this.displayProgressListenerList?.remove(listener)
     }
 }

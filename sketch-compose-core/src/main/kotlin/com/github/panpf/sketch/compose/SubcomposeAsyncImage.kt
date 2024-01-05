@@ -56,12 +56,12 @@ import com.github.panpf.sketch.compose.PainterState.Success
 import com.github.panpf.sketch.compose.internal.AsyncImageContent
 import com.github.panpf.sketch.compose.internal.onPainterStateOf
 import com.github.panpf.sketch.compose.internal.toIntSizeOrNull
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -106,7 +106,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = SubcomposeAsyncImage(
-    request = DisplayRequest(LocalContext.current, imageUri),
+    request = ImageRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -121,9 +121,9 @@ fun SubcomposeAsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [DisplayRequest.uriString] value.
+ * @param imageUri [ImageRequest.uriString] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -162,7 +162,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
 ) = SubcomposeAsyncImage(
-    request = DisplayRequest(LocalContext.current, imageUri),
+    request = ImageRequest(LocalContext.current, imageUri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -178,9 +178,9 @@ fun SubcomposeAsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -207,7 +207,7 @@ fun SubcomposeAsyncImage(
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -240,9 +240,9 @@ fun SubcomposeAsyncImage(
 )
 
 /**
- * A composable that executes an [DisplayRequest] asynchronously and renders the result.
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param request [DisplayRequest].
+ * @param request [ImageRequest].
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -266,7 +266,7 @@ fun SubcomposeAsyncImage(
  */
 @Composable
 fun SubcomposeAsyncImage(
-    request: DisplayRequest,
+    request: ImageRequest,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,

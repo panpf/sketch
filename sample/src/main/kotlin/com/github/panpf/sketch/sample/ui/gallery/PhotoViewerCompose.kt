@@ -29,7 +29,7 @@ import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
@@ -110,7 +110,7 @@ fun PhotoViewer(
 
     val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
     val request = remember(imageUrl, viewerSettings) {
-        DisplayRequest(context, imageUrl) {
+        ImageRequest(context, imageUrl) {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
             crossfade(fadeStart = false)

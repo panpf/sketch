@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.first
 /**
  * Pause loading new images while the list is scrolling
  *
- * @see DisplayRequest.Builder.pauseLoadWhenScrolling
+ * @see ImageRequest.Builder.pauseLoadWhenScrolling
  */
 class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: Int = 0) :
     DrawableDecodeInterceptor {
@@ -47,7 +47,6 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptor(override val sortWeight: I
     override suspend fun intercept(chain: Chain): Result<DrawableDecodeResult> {
         val request = chain.request
         if (enabled
-            && request is DisplayRequest
             && request.isPauseLoadWhenScrolling
             && !request.isIgnoredPauseLoadWhenScrolling
             && scrollingFlow.value

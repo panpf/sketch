@@ -6,8 +6,7 @@ import androidx.palette.graphics.Palette.Swatch
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.BitmapDecodeResult
-import com.github.panpf.sketch.request.DisplayResult
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor.Companion.simplePaletteFromJSONObject
 import org.json.JSONObject
 
@@ -81,12 +80,7 @@ class PaletteBitmapDecodeInterceptor : BitmapDecodeInterceptor {
     }
 }
 
-val DisplayResult.Success.simplePalette: SimplePalette?
-    get() = extras?.get("simple_palette")?.let {
-        simplePaletteFromJSONObject(JSONObject(it))
-    }
-
-val LoadResult.Success.simplePalette: SimplePalette?
+val ImageResult.Success.simplePalette: SimplePalette?
     get() = extras?.get("simple_palette")?.let {
         simplePaletteFromJSONObject(JSONObject(it))
     }

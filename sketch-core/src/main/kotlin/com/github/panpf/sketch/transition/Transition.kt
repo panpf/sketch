@@ -31,14 +31,15 @@
 package com.github.panpf.sketch.transition
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
 
 /**
  * A class to animate between a [Target]'s current drawable and the result of an image request.
  *
- * NOTE: A [Target] must implement [TransitionDisplayTarget] to support applying [Transition]s.
- * If the [Target] does not implement [TransitionDisplayTarget], any [Transition]s will be ignored.
+ * NOTE: A [Target] must implement [TransitionTarget] to support applying [Transition]s.
+ * If the [Target] does not implement [TransitionTarget], any [Transition]s will be ignored.
  */
 fun interface Transition {
 
@@ -54,8 +55,9 @@ fun interface Transition {
     fun interface Factory {
 
         fun create(
-            target: TransitionDisplayTarget,
-            result: DisplayResult,
+            requestContext: RequestContext,
+            target: TransitionTarget,
+            result: ImageResult,
             fitScale: Boolean
         ): Transition?
     }

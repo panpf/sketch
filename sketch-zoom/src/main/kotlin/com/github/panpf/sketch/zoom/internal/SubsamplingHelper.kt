@@ -23,7 +23,7 @@ import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.zoom.OnMatrixChangeListener
@@ -93,7 +93,7 @@ internal class SubsamplingHelper constructor(
     init {
         scope.launch(Dispatchers.Main) {
             val dataSource = withContext(Dispatchers.IO) {
-                sketch.components.newFetcherOrThrow(LoadRequest(context, imageUri)).fetch()
+                sketch.components.newFetcherOrThrow(ImageRequest(context, imageUri)).fetch()
             }.getOrThrow().dataSource
             val tileDecoder = TileDecoder(
                 sketch = sketch,

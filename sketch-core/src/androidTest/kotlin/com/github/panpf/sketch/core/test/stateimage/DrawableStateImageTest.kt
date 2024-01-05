@@ -41,19 +41,19 @@ class DrawableStateImageTest {
         DrawableStateImage(ColorDrawable(Color.BLUE)).apply {
             Assert.assertEquals(
                 Color.BLUE,
-                getDrawable(sketch, request, null).asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null).asOrNull<ColorDrawable>()!!.color
             )
         }
 
         DrawableStateImage(ColorDrawable(Color.GREEN)).apply {
             Assert.assertEquals(
                 Color.GREEN,
-                getDrawable(sketch, request, null).asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null).asOrNull<ColorDrawable>()!!.color
             )
         }
 
         DrawableStateImage(android.R.drawable.btn_radio).apply {
-            Assert.assertTrue(getDrawable(sketch, request, null) is StateListDrawable)
+            Assert.assertTrue(getImage(sketch, request, null) is StateListDrawable)
         }
     }
 

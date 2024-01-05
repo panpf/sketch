@@ -18,7 +18,9 @@ package com.github.panpf.sketch.stateimage
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.util.ResDrawable
@@ -38,16 +40,16 @@ class DrawableStateImage : StateImage {
         this.drawableFetcher = RealDrawable(drawable)
     }
 
-    override fun getDrawable(
+    override fun getImage(
         sketch: Sketch, request: ImageRequest, throwable: Throwable?
-    ): Drawable? {
+    ): Image? {
         return try {
             drawableFetcher.getDrawable(request.context)
         } catch (e: Throwable) {
             sketch.logger.w("DrawableStateImage", "getDrawable error. ${e.message}")
             e.printStackTrace()
             null
-        }
+        }?.asSketchImage()
     }
 
     override fun equals(other: Any?): Boolean {

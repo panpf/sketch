@@ -23,13 +23,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.widget.RemoteViews
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.target.RemoteViewsDisplayTarget
+import com.github.panpf.sketch.target.RemoteViewsTarget
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4a.dimen.ktx.dp2pxF
@@ -93,11 +93,11 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
                 )
             )
         }
-        DisplayRequest(context, nextImageUri) {
+        ImageRequest(context, nextImageUri) {
             resize(200.dp2px, 200.dp2px, scale = CENTER_CROP)
             transformations(RoundedCornersTransformation(20.dp2pxF))
             target(
-                RemoteViewsDisplayTarget(
+                RemoteViewsTarget(
                     remoteViews = remoteViews,
                     imageViewId = R.id.image1,
                     ignoreNullDrawable = true,

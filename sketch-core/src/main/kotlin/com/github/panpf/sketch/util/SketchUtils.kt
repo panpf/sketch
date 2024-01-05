@@ -27,8 +27,8 @@ import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 
 class SketchUtils private constructor() {
@@ -44,9 +44,9 @@ class SketchUtils private constructor() {
         fun dispose(view: View) = requestManagerOrNull(view)?.dispose()
 
         /**
-         * Get the [DisplayResult] of the most recently executed image request that's attached to this view.
+         * Get the [ImageResult] of the most recently executed image request that's attached to this view.
          */
-        fun getResult(view: View): DisplayResult? = requestManagerOrNull(view)?.getResult()
+        fun getResult(view: View): ImageResult? = requestManagerOrNull(view)?.getResult()
 
         /**
          * Restart ImageRequest
@@ -54,10 +54,10 @@ class SketchUtils private constructor() {
         fun restart(view: View) = requestManagerOrNull(view)?.restart()
 
         /**
-         * Get the [DisplayRequest] of the most recently executed image request that's attached to this view.
+         * Get the [ImageRequest] of the most recently executed image request that's attached to this view.
          */
-        fun getRequest(view: View): DisplayRequest? =
-            requestManagerOrNull(view)?.getRequest()?.let { it as DisplayRequest }
+        fun getRequest(view: View): ImageRequest? =
+            requestManagerOrNull(view)?.getRequest()
 
         /**
          * Get the [Sketch] of the most recently executed image request that's attached to this view.
@@ -103,7 +103,7 @@ fun Drawable.findLastSketchDrawable(): SketchDrawable? {
 /**
  * Traverse all SketchCountBitmapDrawable in specified Drawable
  */
-fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
+fun Drawable.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
     val drawable = this
     when {
         drawable is SketchCountBitmapDrawable -> {
@@ -113,21 +113,27 @@ fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable)
         drawable is LayerDrawable -> {
             val layerCount = drawable.numberOfLayers
             for (index in 0 until layerCount) {
-                drawable.getDrawable(index).iterateSketchCountBitmapDrawable(block)
+                drawable.getDrawable(index).forEachSketchCountBitmapDrawable(block)
             }
         }
 
         drawable is CrossfadeDrawable -> {
-            drawable.start?.iterateSketchCountBitmapDrawable(block)
-            drawable.end?.iterateSketchCountBitmapDrawable(block)
+            drawable.start?.forEachSketchCountBitmapDrawable(block)
+            drawable.end?.forEachSketchCountBitmapDrawable(block)
         }
 
         drawable is DrawableWrapperCompat -> {
-            drawable.drawable?.iterateSketchCountBitmapDrawable(block)
+            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
         }
 
         VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
-            drawable.drawable?.iterateSketchCountBitmapDrawable(block)
+            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
         }
+    }
+}
+
+fun Drawable.updateIsDisplayed(displayed: Boolean, caller: String) {
+    this.forEachSketchCountBitmapDrawable {
+        it.countBitmap.setIsDisplayed(displayed, caller)
     }
 }

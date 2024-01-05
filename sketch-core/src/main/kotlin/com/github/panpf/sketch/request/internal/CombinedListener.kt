@@ -19,13 +19,13 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
-class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Success, ERROR_RESULT : ImageResult.Error>(
-    val fromProviderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>?,
-    val fromBuilderListener: Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>?,
-    val fromBuilderListeners: List<Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT>>? = null,
-) : Listener<REQUEST, SUCCESS_RESULT, ERROR_RESULT> {
+class CombinedListener(
+    val fromProviderListener: Listener?,
+    val fromBuilderListener: Listener?,
+    val fromBuilderListeners: List<Listener>? = null,
+) : Listener {
 
-    override fun onStart(request: REQUEST) {
+    override fun onStart(request: ImageRequest) {
         fromProviderListener?.onStart(request)
         fromBuilderListener?.onStart(request)
         fromBuilderListeners?.forEach {
@@ -33,7 +33,7 @@ class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Succ
         }
     }
 
-    override fun onCancel(request: REQUEST) {
+    override fun onCancel(request: ImageRequest) {
         fromProviderListener?.onCancel(request)
         fromBuilderListener?.onCancel(request)
         fromBuilderListeners?.forEach {
@@ -41,15 +41,15 @@ class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Succ
         }
     }
 
-    override fun onError(request: REQUEST, result: ERROR_RESULT) {
-        fromProviderListener?.onError(request, result)
-        fromBuilderListener?.onError(request, result)
+    override fun onError(request: ImageRequest, error: ImageResult.Error) {
+        fromProviderListener?.onError(request, error)
+        fromBuilderListener?.onError(request, error)
         fromBuilderListeners?.forEach {
-            it.onError(request, result)
+            it.onError(request, error)
         }
     }
 
-    override fun onSuccess(request: REQUEST, result: SUCCESS_RESULT) {
+    override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
         fromProviderListener?.onSuccess(request, result)
         fromBuilderListener?.onSuccess(request, result)
         fromBuilderListeners?.forEach {
@@ -60,7 +60,7 @@ class CombinedListener<REQUEST : ImageRequest, SUCCESS_RESULT : ImageResult.Succ
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as CombinedListener<*, *, *>
+        other as CombinedListener
         if (fromProviderListener != other.fromProviderListener) return false
         if (fromBuilderListener != other.fromBuilderListener) return false
         if (fromBuilderListeners != other.fromBuilderListeners) return false

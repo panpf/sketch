@@ -25,6 +25,8 @@ import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
  */
 interface SketchStateDrawable
 
+// TODO interface StateImage
+
 internal fun Drawable.toSketchStateDrawable(): Drawable {
     return if (this is Animatable) {
         SketchStateAnimatableDrawable(this)

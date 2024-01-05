@@ -19,7 +19,9 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asSketchImage
 
 /**
  * Use color as the state [Drawable]
@@ -28,12 +30,12 @@ class ColorStateImage constructor(private val color: ColorFetcher) : StateImage 
 
     constructor(@ColorInt color: Int) : this(IntColor(color))
 
-    override fun getDrawable(
+    override fun getImage(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Drawable {
-        return ColorDrawable(color.getColor(request.context))
+    ): Image {
+        return ColorDrawable(color.getColor(request.context)).asSketchImage()
     }
 
     override fun equals(other: Any?): Boolean {

@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.name
 
 fun Modifier.dataFromLogo(state: AsyncImageState): Modifier {
@@ -52,7 +52,7 @@ internal data class DataFromLogoElement(
     override fun InspectorInfo.inspectableProperties() {
         name = "DataFromLogo"
         properties["dataFrom"] = state.result
-            ?.let { it as? DisplayResult.Success }
+            ?.let { it as? ImageResult.Success }
             ?.dataFrom?.name
             ?: "null"
         properties["loadState"] = state.loadState?.name ?: "null"
@@ -100,7 +100,7 @@ internal class DataFromLogoNode(
         drawContent()
 
         val result = state.result
-        if (result is DisplayResult.Success) {
+        if (result is ImageResult.Success) {
             val path = getPath(size)
             val dataFrom = result.dataFrom
             val color = Color(dataFrom2Color(dataFrom))

@@ -89,7 +89,7 @@ import com.github.panpf.sketch.test.utils.TestErrorBitmapDecoder
 import com.github.panpf.sketch.test.utils.TestErrorDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.test.utils.TestTransitionDisplayTarget
+import com.github.panpf.sketch.test.utils.TestTransitionTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.ratio
@@ -1351,7 +1351,7 @@ class DisplayRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
         val imageUri = AssetImages.jpeg.uri
-        val testTarget = TestTransitionDisplayTarget()
+        val testTarget = TestTransitionTarget()
         val request = DisplayRequest(context, imageUri) {
             resizeSize(500, 500)
             target(testTarget)

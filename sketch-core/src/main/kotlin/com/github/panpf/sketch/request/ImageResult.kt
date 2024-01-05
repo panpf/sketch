@@ -15,6 +15,9 @@
  */
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.ImageInfo
+
 /**
  * Result of [ImageRequest]
  */
@@ -22,9 +25,28 @@ interface ImageResult {
 
     val request: ImageRequest
 
-    interface Success : ImageResult
+    val image: Image?
 
-    interface Error : ImageResult {
-        val throwable: Throwable
-    }
+    data class Success constructor(
+        override val request: ImageRequest,
+        override val image: Image,
+        val requestKey: String,
+        val requestCacheKey: String,
+        val imageInfo: ImageInfo,
+        val dataFrom: DataFrom,
+        /**
+         * Store the transformation history of the Bitmap
+         */
+        val transformedList: List<String>?,
+        /**
+         * Store some additional information for consumer use
+         */
+        val extras: Map<String, String>?,
+    ): ImageResult
+
+    data class Error constructor(
+        override val request: ImageRequest,
+        override val image: Image?,
+        val throwable: Throwable,
+    ) : ImageResult
 }
