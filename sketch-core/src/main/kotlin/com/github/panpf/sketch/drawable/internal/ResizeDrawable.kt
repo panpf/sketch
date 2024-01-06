@@ -24,8 +24,7 @@ import com.github.panpf.sketch.request.asDrawable
 import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
-import kotlin.math.max
-import kotlin.math.roundToInt
+import com.github.panpf.sketch.util.calculateBounds
 
 fun Image.resizeApplyToDrawable(
     request: ImageRequest,
@@ -78,7 +77,19 @@ open class ResizeDrawable constructor(
 
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
         super.setBounds(left, top, right, bottom)
-        applyResize(drawable, resizeSize, resizeScale)
+        drawable?.apply {
+            this@apply.bounds = calculateBounds(
+                srcSize = Size(
+                    width = this@apply.intrinsicWidth,
+                    height = this@apply.intrinsicHeight
+                ),
+                dstSize = Size(
+                    width = this@ResizeDrawable.bounds.width(),
+                    height = this@ResizeDrawable.bounds.height()
+                ),
+                scale = resizeScale
+            )
+        }
     }
 
     override fun toString(): String {
@@ -115,65 +126,22 @@ open class ResizeAnimatableDrawable(
 
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
         super.setBounds(left, top, right, bottom)
-        applyResize(drawable, resizeSize, resizeScale)
+        drawable?.apply {
+            this@apply.bounds = calculateBounds(
+                srcSize = Size(
+                    width = this@apply.intrinsicWidth,
+                    height = this@apply.intrinsicHeight
+                ),
+                dstSize = Size(
+                    width = this@ResizeAnimatableDrawable.bounds.width(),
+                    height = this@ResizeAnimatableDrawable.bounds.height()
+                ),
+                scale = resizeScale
+            )
+        }
     }
 
     override fun toString(): String {
         return "ResizeAnimatableDrawable(wrapped=$drawable, resizeSize=$resizeSize, resizeScale=$resizeScale)"
     }
-}
-
-private fun applyResize(wrappedDrawable: Drawable?, resizeSize: Size, resizeScale: Scale) {
-    val resizeWidth = resizeSize.width
-    val resizeHeight = resizeSize.height
-    val wrappedWidth = wrappedDrawable?.intrinsicWidth ?: 0
-    val wrappedHeight = wrappedDrawable?.intrinsicHeight ?: 0
-    val wrappedLeft: Int
-    val wrappedTop: Int
-    val wrappedRight: Int
-    val wrappedBottom: Int
-    if (wrappedWidth <= 0 || wrappedHeight <= 0) {
-        wrappedLeft = 0
-        wrappedTop = 0
-        wrappedRight = wrappedWidth.takeIf { it > 0 } ?: resizeWidth
-        wrappedBottom = wrappedHeight.takeIf { it > 0 } ?: resizeHeight
-    } else {
-        val widthRatio = resizeWidth.toFloat() / wrappedWidth
-        val heightRatio = resizeHeight.toFloat() / wrappedHeight
-        val drawableScale = max(widthRatio, heightRatio)
-        val newWrappedWidth = (wrappedWidth * drawableScale).roundToInt()
-        val newWrappedHeight = (wrappedHeight * drawableScale).roundToInt()
-        when (resizeScale) {
-            Scale.START_CROP -> {
-                wrappedLeft = 0
-                wrappedTop = 0
-                @Suppress("KotlinConstantConditions")
-                wrappedRight = newWrappedWidth + wrappedLeft
-                @Suppress("KotlinConstantConditions")
-                wrappedBottom = newWrappedHeight + wrappedTop
-            }
-
-            Scale.CENTER_CROP -> {
-                wrappedLeft = -(newWrappedWidth - resizeWidth) / 2
-                wrappedTop = -(newWrappedHeight - resizeHeight) / 2
-                wrappedRight = newWrappedWidth + wrappedLeft
-                wrappedBottom = newWrappedHeight + wrappedTop
-            }
-
-            Scale.END_CROP -> {
-                wrappedLeft = -(newWrappedWidth - resizeWidth)
-                wrappedTop = -(newWrappedHeight - resizeHeight)
-                wrappedRight = newWrappedWidth + wrappedLeft
-                wrappedBottom = newWrappedHeight + wrappedTop
-            }
-
-            Scale.FILL -> {
-                wrappedLeft = 0
-                wrappedTop = 0
-                wrappedRight = resizeWidth
-                wrappedBottom = resizeHeight
-            }
-        }
-    }
-    wrappedDrawable?.setBounds(wrappedLeft, wrappedTop, wrappedRight, wrappedBottom)
 }

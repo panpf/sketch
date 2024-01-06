@@ -4,6 +4,10 @@
 
 # new
 
+#### sketch:
+
+* fix: 修复 ResizeDrawable 和 ResizeAnimatableDrawable 应该使用 bounds 的尺寸作为 dstSize 的 bug
+
 #### sketch-compose:
 
 * fix: 修复 AsyncImage 在再次加载图片时 resizeSize 变为上次的图片大小的 bug

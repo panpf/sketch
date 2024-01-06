@@ -4,6 +4,10 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
+#### sketch:
+
+* fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as dstSize
+
 #### sketch-compose:
 
 * fix: Fix the bug where AsyncImage resizeSize changes to the last image size when loading the image again
