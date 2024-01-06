@@ -39,7 +39,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
-import com.github.panpf.sketch.compose.AsyncImageState.Companion.DefaultTransform
 import com.github.panpf.sketch.compose.PainterState
 import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Error
@@ -50,54 +49,6 @@ import com.github.panpf.sketch.resize.Scale
 import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlin.math.roundToInt
 import com.github.panpf.sketch.util.Size as SketchSize
-
-@Stable
-fun transformOf(
-    placeholder: Painter?,
-    error: Painter?,
-    uriEmpty: Painter?,
-): (PainterState) -> PainterState {
-    // TODO Remove
-//    if (placeholder != null || error != null || uriEmpty != null) {
-//        return { state ->
-//            when (state) {
-//                is Loading -> {
-//                    if (placeholder != null) state.copy(painter = placeholder) else state
-//                }
-//
-//                is Error -> if (state.result.throwable is UriInvalidException) {
-//                    if (uriEmpty != null) state.copy(painter = uriEmpty) else state
-//                } else {
-//                    if (error != null) state.copy(painter = error) else state
-//                }
-//
-//                else -> state
-//            }
-//        }
-//    } else {
-    return DefaultTransform
-//    }
-}
-
-@Stable
-fun onPainterStateOf(
-    onLoading: ((Loading) -> Unit)?,
-    onSuccess: ((Success) -> Unit)?,
-    onError: ((Error) -> Unit)?,
-): ((PainterState) -> Unit)? {
-    return if (onLoading != null || onSuccess != null || onError != null) {
-        { state ->
-            when (state) {
-                is Loading -> onLoading?.invoke(state)
-                is Success -> onSuccess?.invoke(state)
-                is Error -> onError?.invoke(state)
-                is Empty -> {}
-            }
-        }
-    } else {
-        null
-    }
-}
 
 @Stable
 internal fun ContentScale.toScale(): Scale {
@@ -126,16 +77,6 @@ internal val ContentScale.name: String
         ContentScale.None -> "None"
         else -> "Unknown ContentScale: $this"
     }
-
-internal fun Constraints.constrainWidth(width: Float) =
-    width.coerceIn(minWidth.toFloat(), maxWidth.toFloat())
-
-internal fun Constraints.constrainHeight(height: Float) =
-    height.coerceIn(minHeight.toFloat(), maxHeight.toFloat())
-
-internal inline fun Float.takeOrElse(block: () -> Float) = if (isFinite()) this else block()
-
-internal fun Size.toIntSize() = IntSize(width.roundToInt(), height.roundToInt())
 
 internal fun Size.toIntSizeOrNull() = when {
     isUnspecified -> null

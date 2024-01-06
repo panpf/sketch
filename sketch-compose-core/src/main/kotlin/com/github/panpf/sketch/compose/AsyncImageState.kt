@@ -99,8 +99,6 @@ class AsyncImageState internal constructor(
         private set
     var contentScale: ContentScale? by mutableStateOf(null)
         internal set
-    internal var transform = DefaultTransform
-    internal var onPainterState: ((PainterState) -> Unit)? = null
     internal var filterQuality = DrawScope.DefaultFilterQuality
     private val sizeResolver = AsyncImageSizeResolver(size)
 
@@ -241,79 +239,6 @@ class AsyncImageState internal constructor(
         }
     }
 
-//    private fun updateState(input: PainterState) {
-//        val oldPainterState = _painterState
-//        val newPainterState = transform(input)
-//        _painterState = newPainterState
-//
-//        val oldPainter = _painter
-//        val newPainter = newPainterState.painter
-//        // 'newPainter != null' is important.
-//        // It makes it easier to implement crossfade animation between old and new painters.
-//        // com.github.panpf.sketch.sample.ui.viewer.compose.ImagePagerComposeFragment#PagerBgImage() is an example.
-//        if (newPainter != null || (request?.allowSetNullDrawable == true)) {
-//            val crossfadePainter = maybeNewCrossfadePainter(
-//                oldPainter = oldPainter,
-//                newPainter = newPainter,
-//                newPainterState = newPainterState
-//            )
-//            _painter = crossfadePainter ?: newPainter
-//
-//            // Manually forget and remember the old/new painters if we're already remembered.
-//            if (coroutineScope != null && oldPainterState.painter !== newPainterState.painter) {
-//                (oldPainterState.painter as? RememberObserver)?.onForgotten()
-//                (newPainterState.painter as? RememberObserver)?.onRemembered()
-//                updateDisplayed(oldPainterState.painter, newPainterState.painter)
-//            }
-//        }
-//
-//        // Notify the state listener.
-//        onPainterState?.invoke(newPainterState)
-//    }
-//
-//    /** Create and return a [CrossfadePainter] if requested. */
-//    private fun maybeNewCrossfadePainter(
-//        oldPainter: Painter?,
-//        newPainter: Painter?,
-//        newPainterState: PainterState
-//    ): CrossfadePainter? {
-//        val result = when (newPainterState) {
-//            is PainterState.Success -> newPainterState.result
-//            is PainterState.Error -> newPainterState.result
-//            else -> null
-//        } ?: return null
-//
-//        // Invoke the transition factory and wrap the painter in a `CrossfadePainter` if it returns a `CrossfadeTransformation`.
-//        val transition =
-//            result.request.transitionFactory?.create(fakeTransitionTarget, result, true)
-//        return if (transition is CrossfadeTransition) {
-//            val startPainter = oldPainter?.findLeafChildPainter() ?: oldPainter
-//            CrossfadePainter(
-//                start = startPainter,
-//                end = newPainter,
-//                contentScale = contentScale!!,
-//                durationMillis = transition.durationMillis,
-//                fadeStart = transition.fadeStart,
-//                preferExactIntrinsicSize = transition.preferExactIntrinsicSize
-//            )
-//        } else {
-//            null
-//        }
-//    }
-//
-//    private fun updateDisplayed(oldPainter: Painter?, newPainter: Painter?) {
-//        newPainter?.takeIf { it is DrawablePainter }
-//            ?.let { it as DrawablePainter }
-//            ?.drawable?.forEachSketchCountBitmapDrawable {
-//                it.countBitmap.setIsDisplayed(true, "AsyncImageState")
-//            }
-//        oldPainter?.takeIf { it is DrawablePainter }
-//            ?.let { it as DrawablePainter }
-//            ?.drawable?.forEachSketchCountBitmapDrawable {
-//                it.countBitmap.setIsDisplayed(false, "AsyncImageState")
-//            }
-//    }
-
     fun restart() {
         val request = request ?: return
         val sketch = sketch ?: return
@@ -434,8 +359,3 @@ sealed interface PainterState {
         override val painter: Painter?,
     ) : PainterState
 }
-
-//private val fakeTransitionTarget = object : TransitionTarget {
-//    override val drawable: Drawable? get() = null
-//    override val supportDisplayCount: Boolean = true
-//}

@@ -6,12 +6,17 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 #### sketch:
 
-* fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as dstSize
+* fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as
+  dstSize
 
 #### sketch-compose:
 
-* fix: Fix the bug where AsyncImage resizeSize changes to the last image size when loading the image again
+* fix: Fix the bug where AsyncImage resizeSize changes to the last image size when loading the image
+  again
 * improve: Use PainterElement instead of ContentPainterModifier to improve AsyncImage performance
+* remove: Remove transform, onPainterState, placeholder, error, uriEmpty, onLoading, onSuccess,
+  onError parameters from AsyncImage, AsyncImagePainter, AsyncSubcomposeImage, now please use
+  AsyncState's painterState parameter and PainterStateImage class instead
 
 # v3.3.0 stable
 

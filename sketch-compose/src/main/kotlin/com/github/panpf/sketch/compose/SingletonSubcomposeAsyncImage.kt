@@ -42,9 +42,6 @@ import com.github.panpf.sketch.sketch
  * @param loading An optional callback to overwrite what's drawn while the image request is loading.
  * @param success An optional callback to overwrite what's drawn when the image request succeeds.
  * @param error An optional callback to overwrite what's drawn when the image request fails.
- * @param onLoading Called when the image request begins loading.
- * @param onSuccess Called when the image request completes successfully.
- * @param onError Called when the image request completes unsuccessfully.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -66,9 +63,6 @@ fun SubcomposeAsyncImage(
     loading: @Composable (SubcomposeAsyncImageScope.(PainterState.Loading) -> Unit)? = null,
     success: @Composable (SubcomposeAsyncImageScope.(PainterState.Success) -> Unit)? = null,
     error: @Composable (SubcomposeAsyncImageScope.(PainterState.Error) -> Unit)? = null,
-    onLoading: ((PainterState.Loading) -> Unit)? = null,
-    onSuccess: ((PainterState.Success) -> Unit)? = null,
-    onError: ((PainterState.Error) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -84,9 +78,6 @@ fun SubcomposeAsyncImage(
     loading = loading,
     success = success,
     error = error,
-    onLoading = onLoading,
-    onSuccess = onSuccess,
-    onError = onError,
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
@@ -104,9 +95,6 @@ fun SubcomposeAsyncImage(
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param state [AsyncImageState] that will be used to store the state of the request.
- * @param transform A callback to transform a new [PainterState] before it's applied to the
- *  [AsyncImagePainter]. Typically this is used to modify the state's [Painter].
- * @param onPainterState Called when the painterState changes.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -126,8 +114,6 @@ fun SubcomposeAsyncImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
-    transform: (PainterState) -> PainterState = DefaultTransform,
-    onPainterState: ((PainterState) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -140,8 +126,6 @@ fun SubcomposeAsyncImage(
     sketch = LocalContext.current.sketch,
     modifier = modifier,
     state = state,
-    transform = transform,
-    onPainterState = onPainterState,
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
@@ -162,9 +146,6 @@ fun SubcomposeAsyncImage(
  * @param loading An optional callback to overwrite what's drawn while the image request is loading.
  * @param success An optional callback to overwrite what's drawn when the image request succeeds.
  * @param error An optional callback to overwrite what's drawn when the image request fails.
- * @param onLoading Called when the image request begins loading.
- * @param onSuccess Called when the image request completes successfully.
- * @param onError Called when the image request completes unsuccessfully.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -186,9 +167,6 @@ fun SubcomposeAsyncImage(
     loading: @Composable (SubcomposeAsyncImageScope.(PainterState.Loading) -> Unit)? = null,
     success: @Composable (SubcomposeAsyncImageScope.(PainterState.Success) -> Unit)? = null,
     error: @Composable (SubcomposeAsyncImageScope.(PainterState.Error) -> Unit)? = null,
-    onLoading: ((PainterState.Loading) -> Unit)? = null,
-    onSuccess: ((PainterState.Success) -> Unit)? = null,
-    onError: ((PainterState.Error) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -204,9 +182,6 @@ fun SubcomposeAsyncImage(
     loading = loading,
     success = success,
     error = error,
-    onLoading = onLoading,
-    onSuccess = onSuccess,
-    onError = onError,
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
@@ -224,9 +199,6 @@ fun SubcomposeAsyncImage(
  *  and does not represent a meaningful action that a user can take.
  * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
  * @param state [AsyncImageState] that will be used to store the state of the request.
- * @param transform A callback to transform a new [PainterState] before it's applied to the
- *  [AsyncImagePainter]. Typically this is used to modify the state's [Painter].
- * @param onPainterState Called when the painterState changes.
  * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
  *  bounds defined by the width and height.
  * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
@@ -246,8 +218,6 @@ fun SubcomposeAsyncImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
-    transform: (PainterState) -> PainterState = DefaultTransform,
-    onPainterState: ((PainterState) -> Unit)? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
@@ -260,8 +230,6 @@ fun SubcomposeAsyncImage(
     sketch = LocalContext.current.sketch,
     modifier = modifier,
     state = state,
-    transform = transform,
-    onPainterState = onPainterState,
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
