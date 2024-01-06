@@ -28,6 +28,7 @@ val Context.sketch: Sketch
 object SketchSingleton {
 
     @SuppressLint("StaticFieldLeak")
+    @Volatile
     private var sketch: Sketch? = null
     private var sketchFactory: SketchFactory? = null
 
