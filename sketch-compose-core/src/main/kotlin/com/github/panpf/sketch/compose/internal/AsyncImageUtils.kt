@@ -36,6 +36,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.compose.AsyncImageState.Companion.DefaultTransform
@@ -45,7 +46,6 @@ import com.github.panpf.sketch.compose.PainterState.Error
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.PainterState.Success
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.Scale
 import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlin.math.roundToInt
@@ -75,7 +75,7 @@ fun transformOf(
 //            }
 //        }
 //    } else {
-        return  DefaultTransform
+    return DefaultTransform
 //    }
 }
 
@@ -225,3 +225,6 @@ fun Painter.updateIsDisplayed(displayed: Boolean, caller: String) {
         it.countBitmap.setIsDisplayed(displayed, caller)
     }
 }
+
+internal val ContentScale.fitScale: Boolean
+    get() = this == ContentScale.Fit || this == Companion.Inside

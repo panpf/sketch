@@ -101,7 +101,6 @@ class CrossfadeTransition @JvmOverloads constructor(
             requestContext: RequestContext,
             target: TransitionTarget,
             result: ImageResult,
-            fitScale: Boolean
         ): Transition? {
             if (target !is TransitionViewTarget) {
                 return null
@@ -110,6 +109,7 @@ class CrossfadeTransition @JvmOverloads constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
+            val fitScale = target.fitScale
             return CrossfadeTransition(
                 requestContext = requestContext,
                 target = target,

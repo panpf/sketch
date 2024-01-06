@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import android.view.View
-import android.widget.ImageView
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
@@ -27,12 +25,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
-import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
@@ -132,7 +127,7 @@ class RequestExecutor {
         )
         val target = lastRequest.target
         if (target != null) {
-            setDrawable(requestContext, target, successResult) {
+            setImage(requestContext, target, successResult) {
                 target.onSuccess(requestContext, successResult.image)
             }
         }
@@ -163,7 +158,7 @@ class RequestExecutor {
         val target = lastRequest.target
         val throwable1 = errorResult.throwable
         if (target != null) {
-            setDrawable(requestContext, target, errorResult) {
+            setImage(requestContext, target, errorResult) {
                 target.onError(requestContext, errorResult.image)
             }
         }
@@ -189,27 +184,25 @@ class RequestExecutor {
     }
 
     @MainThread
-    private fun setDrawable(
+    private fun setImage(
         requestContext: RequestContext,
         target: Target?,
         result: ImageResult,
-        setDrawable: () -> Unit
+        setImage: () -> Unit
     ) {
         if (result.image == null) {
             return
         }
 
         if (target !is TransitionTarget) {
-            setDrawable()
+            setImage()
             return
         }
 
-        val fitScale =
-            target.asOrNull<ViewTarget<View>>()?.view.asOrNull<ImageView>()?.fitScale ?: true
         val transition =
-            result.request.transitionFactory?.create(requestContext, target, result, fitScale)
+            result.request.transitionFactory?.create(requestContext, target, result)
         if (transition == null) {
-            setDrawable()
+            setImage()
             return
         }
 

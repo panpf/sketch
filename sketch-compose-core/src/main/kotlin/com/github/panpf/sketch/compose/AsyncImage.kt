@@ -247,8 +247,8 @@ fun AsyncImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
-    transform: (PainterState) -> PainterState = DefaultTransform,
-    onPainterState: ((PainterState) -> Unit)? = null,
+    transform: (PainterState) -> PainterState = DefaultTransform,   // TODO Remove this parameter
+    onPainterState: ((PainterState) -> Unit)? = null,   // TODO Remove this parameter
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,

@@ -35,4 +35,6 @@ import com.github.panpf.sketch.target.Target
 /**
  * A [Target] that supports applying [Transition]s.
  */
-interface TransitionTarget : Target
+interface TransitionTarget : Target {
+    val fitScale: Boolean
+}

@@ -32,6 +32,7 @@ package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import com.github.panpf.sketch.util.fitScale
 import java.lang.ref.WeakReference
 
 /**
@@ -51,6 +52,9 @@ open class ImageViewTarget constructor(
         set(value) {
             view?.setImageDrawable(value)
         }
+
+    override val fitScale: Boolean
+        get() = view?.scaleType?.fitScale ?: true
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

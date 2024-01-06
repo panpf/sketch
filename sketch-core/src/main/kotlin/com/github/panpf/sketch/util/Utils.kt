@@ -283,11 +283,11 @@ internal fun MimeTypeMap.getMimeTypeFromUrl(url: String?): String? {
     return getMimeTypeFromExtension(extension)
 }
 
-internal val ImageView.fitScale: Boolean
-    get() = when (scaleType) {
-        ScaleType.FIT_START, ScaleType.FIT_CENTER, ScaleType.FIT_END, ScaleType.CENTER_INSIDE -> true
-        else -> false
-    }
+internal val ScaleType.fitScale: Boolean
+    get() = this == ScaleType.FIT_START
+            || this == ScaleType.FIT_CENTER
+            || this == ScaleType.FIT_END
+            || this == ScaleType.CENTER_INSIDE
 
 internal fun intMerged(highInt: Int, lowInt: Int): Int {
     require(highInt in 0.rangeTo(Short.MAX_VALUE)) {

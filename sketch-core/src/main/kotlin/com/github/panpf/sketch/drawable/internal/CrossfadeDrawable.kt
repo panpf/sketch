@@ -303,7 +303,13 @@ open class CrossfadeDrawable @JvmOverloads constructor(
 
         val targetWidth = targetBounds.width()
         val targetHeight = targetBounds.height()
-        val multiplier = computeSizeMultiplier(width, height, targetWidth, targetHeight, fitScale)
+        val multiplier = computeSizeMultiplier(
+            srcWidth = width,
+            srcHeight = height,
+            dstWidth = targetWidth,
+            dstHeight = targetHeight,
+            fitScale = fitScale
+        )
         val dx = ((targetWidth - multiplier * width) / 2).roundToInt()
         val dy = ((targetHeight - multiplier * height) / 2).roundToInt()
 
@@ -315,8 +321,6 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     private fun computeIntrinsicDimension(startSize: Int?, endSize: Int?): Int {
-//        if (!preferExactIntrinsicSize && (startSize == -1 || endSize == -1)) return -1
-//        return max(startSize ?: -1, endSize ?: -1)
         if (preferExactIntrinsicSize || (startSize != -1 && endSize != -1)) {
             return max(startSize ?: -1, endSize ?: -1)
         }

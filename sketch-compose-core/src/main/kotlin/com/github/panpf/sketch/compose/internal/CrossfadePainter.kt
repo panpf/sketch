@@ -31,9 +31,11 @@ import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
+import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * A [Painter] that crossfades from [start] to [end].
@@ -45,7 +47,7 @@ import kotlin.math.max
 internal class CrossfadePainter(
     var start: Painter?,
     val end: Painter?,
-    private val contentScale: ContentScale,
+    private val fitScale: Boolean = true,
     private val durationMillis: Int,
     private val fadeStart: Boolean,
     private val preferExactIntrinsicSize: Boolean,
@@ -122,25 +124,31 @@ internal class CrossfadePainter(
         if (painter == null || alpha <= 0) return
 
         with(painter) {
-            val size = size
-            val drawSize = computeDrawSize(intrinsicSize, size)
-
-            if (size.isUnspecified || size.isEmpty()) {
-                draw(drawSize, alpha, colorFilter)
+            val drawSize = this@drawPainter.size
+            val painterScaledSize = computeScaledSize(this@with.intrinsicSize, drawSize)
+            if (drawSize.isUnspecified || drawSize.isEmpty()) {
+                draw(painterScaledSize, alpha, colorFilter)
             } else {
                 inset(
-                    horizontal = (size.width - drawSize.width) / 2,
-                    vertical = (size.height - drawSize.height) / 2
+                    horizontal = (drawSize.width - painterScaledSize.width) / 2,
+                    vertical = (drawSize.height - painterScaledSize.height) / 2
                 ) {
-                    draw(drawSize, alpha, colorFilter)
+                    draw(painterScaledSize, alpha, colorFilter)
                 }
             }
         }
     }
 
-    private fun computeDrawSize(srcSize: Size, dstSize: Size): Size {
+    private fun computeScaledSize(srcSize: Size, dstSize: Size): Size {
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
-        return srcSize * contentScale.computeScaleFactor(srcSize, dstSize)
+        val sizeMultiplier = computeSizeMultiplier(
+            srcWidth = srcSize.width.roundToInt(),
+            srcHeight = srcSize.height.roundToInt(),
+            dstWidth = dstSize.width.roundToInt(),
+            dstHeight = dstSize.height.roundToInt(),
+            fitScale = fitScale
+        )
+        return srcSize * ScaleFactor(sizeMultiplier.toFloat(), sizeMultiplier.toFloat())
     }
 }

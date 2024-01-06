@@ -35,6 +35,7 @@ import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
+import com.github.panpf.sketch.compose.internal.fitScale
 import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.request.asPainter
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
@@ -157,7 +158,7 @@ class AsyncImageState internal constructor(
                     flows = listOf(
                         snapshotFlow { request }.filterNotNull(),
                         snapshotFlow { sketch }.filterNotNull(),
-                        snapshotFlow { contentScale }
+                        snapshotFlow { contentScale }.filterNotNull()
                     ),
                     transform = { it }
                 ).collect {
@@ -204,19 +205,16 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private fun loadImage(sketch: Sketch, request: ImageRequest, contentScale: ContentScale?) {
+    private fun loadImage(sketch: Sketch, request: ImageRequest, contentScale: ContentScale) {
         val coroutineScope = coroutineScope ?: return
         val noSetSize = request.definedOptions.resizeSizeResolver == null
         val noSetScale = request.definedOptions.resizeScaleDecider == null
         val defaultLifecycleResolver = request.lifecycleResolver.isDefault()
-        if (noSetScale && contentScale == null) {
-            return
-        }
         val fullRequest = request.newRequest {
             if (noSetSize) {
                 resizeSize(sizeResolver)
             }
-            if (noSetScale && contentScale != null) {
+            if (noSetScale) {
                 resizeScale(AsyncImageScaleDecider(ScaleDecider(contentScale.toScale())))
             }
             if (defaultLifecycleResolver) {
@@ -232,7 +230,7 @@ class AsyncImageState internal constructor(
                         durationMillis = transitionFactory.durationMillis,
                         fadeStart = transitionFactory.fadeStart,
                         preferExactIntrinsicSize = transitionFactory.preferExactIntrinsicSize,
-                        alwaysUse = transitionFactory.alwaysUse
+                        alwaysUse = transitionFactory.alwaysUse,
                     )
                 )
             }
@@ -376,6 +374,9 @@ class AsyncImageState internal constructor(
                 _painter = newPainter
                 (oldPainter as? RememberObserver)?.onForgotten()
             }
+
+        override val fitScale: Boolean
+            get() = contentScale?.fitScale ?: true
 
         override fun onStart(requestContext: RequestContext, placeholder: Image?) {
             super.onStart(requestContext, placeholder)

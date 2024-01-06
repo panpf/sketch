@@ -1,8 +1,6 @@
 package com.github.panpf.sketch.compose.transition
 
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ContentScale.Companion
 import com.github.panpf.sketch.compose.internal.CrossfadePainter
 import com.github.panpf.sketch.compose.internal.asOrNull
 import com.github.panpf.sketch.compose.internal.toPainter
@@ -41,7 +39,7 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
         val crossfadePainter = CrossfadePainter(
             start = startPainter,
             end = endPainter,
-            contentScale = if (fitScale) ContentScale.Fit else Companion.None,
+            fitScale = fitScale,
             durationMillis = durationMillis,
             fadeStart = fadeStart,
             preferExactIntrinsicSize = preferExactIntrinsicSize
@@ -71,7 +69,6 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
             requestContext: RequestContext,
             target: TransitionTarget,
             result: ImageResult,
-            fitScale: Boolean
         ): Transition? {
             if (target !is TransitionComposeTarget) {
                 return null
@@ -80,6 +77,7 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
+            val fitScale = target.fitScale
             return CrossfadeComposeTransition(
                 requestContext = requestContext,
                 target = target,
