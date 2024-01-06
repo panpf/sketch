@@ -351,16 +351,17 @@ fun SketchZoomAsyncImage(
         state.subsampling.tileBitmapCache = SketchTileBitmapCache(sketch, "SketchZoomAsyncImage")
     }
 
+    LaunchedEffect(imageState.painterState) {
+        onPainterState(context, sketch, state, request, imageState.painterState)
+    }
+
     BaseZoomAsyncImage(
         request = request,
         contentDescription = contentDescription,
         sketch = sketch,
         state = imageState,
         transform = transform,
-        onPainterState = { loadState ->
-            onPainterState(context, sketch, state, request, loadState)
-            onPainterState?.invoke(loadState)
-        },
+        onPainterState = onPainterState,
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
@@ -379,7 +380,9 @@ private fun onPainterState(
     request: DisplayRequest,
     loadState: PainterState,
 ) {
-    state.zoomable.logger.d { "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uriString}'" }
+    state.zoomable.logger.d {
+        "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uriString}'"
+    }
     val zoomableState = state.zoomable
     val subsamplingState = state.subsampling
     val painterSize = loadState.painter
