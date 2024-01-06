@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
@@ -38,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.AsyncImageState.Companion.DefaultTransform
+import com.github.panpf.sketch.compose.internal.isEmpty
 import com.github.panpf.sketch.compose.internal.onPainterStateOf
 import com.github.panpf.sketch.compose.internal.toIntSizeOrNull
 import com.github.panpf.sketch.compose.internal.transformOf
@@ -253,9 +255,17 @@ class AsyncImagePainter internal constructor(
         get() = state.painter?.intrinsicSize ?: Size.Unspecified
 
     override fun DrawScope.onDraw() {
-        // Update the draw scope's current size.
+        // Use draw size as component size
         // It plays a decisive role when using AsyncImagePainter without AsyncImage
-        this@onDraw.size.toIntSizeOrNull()?.let { state.setSize(it) }
+        // When intrinsicSize is empty or Unspecified, drawSize represents the size of the component.
+        val componentSizeEmpty = state.size?.takeIf { !it.isEmpty() } == null
+        val painterSizeEmpty = intrinsicSize.let { it.isUnspecified || it.isEmpty() }
+        if (componentSizeEmpty && painterSizeEmpty) {
+            val drawSize = this@onDraw.size.toIntSizeOrNull()
+            if (drawSize != null) {
+                state.setSize(drawSize)
+            }
+        }
 
         // Draw the current painter.
         state.painter?.apply { draw(size, alpha, colorFilter) }

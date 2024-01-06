@@ -2,6 +2,12 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+#### sketch-compose:
+
+* fix: 修复 AsyncImage 在再次加载图片时 resizeSize 变为上次的图片大小的 bug
+
 # v3.3.0 stable
 
 #### sketch:
