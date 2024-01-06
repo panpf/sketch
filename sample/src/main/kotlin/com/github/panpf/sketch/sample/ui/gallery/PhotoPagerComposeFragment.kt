@@ -255,6 +255,7 @@ private fun PagerBgImage(
             )
             disallowAnimatedImage()
             crossfade(alwaysUse = true, durationMillis = 400)
+            resizeApplyToDrawable()
             components {
                 addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
             }

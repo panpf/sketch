@@ -178,6 +178,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             )
             disallowAnimatedImage()
             crossfade(alwaysUse = true, durationMillis = 400)
+            resizeApplyToDrawable()
             components {
                 addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
             }
