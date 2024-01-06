@@ -35,6 +35,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -59,14 +60,12 @@ fun AsyncImageContent(
     modifier = modifier
         .contentDescription(contentDescription)
         .let { if (clipToBounds) it.clipToBounds() else it }
-        .then(
-            ContentPainterModifier(
-                painter = painter,
-                alignment = alignment,
-                contentScale = contentScale,
-                alpha = alpha,
-                colorFilter = colorFilter
-            )
+        .paint(
+            painter = painter,
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter
         ),
     measurePolicy = { _, constraints ->
         layout(constraints.minWidth, constraints.minHeight) {}
