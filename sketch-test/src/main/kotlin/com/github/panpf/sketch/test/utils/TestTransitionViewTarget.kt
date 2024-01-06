@@ -22,10 +22,10 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.TransitionViewTarget
 
-class TestTransitionTarget : Target, TransitionViewTarget {
+class TestTransitionViewTarget : Target, TransitionViewTarget {
 
     override var drawable: Drawable? = null
-
+    override val fitScale: Boolean get() = true
     override val supportDisplayCount: Boolean = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) {

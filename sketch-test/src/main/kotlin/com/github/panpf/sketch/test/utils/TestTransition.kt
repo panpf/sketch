@@ -32,7 +32,6 @@ class TestTransition : Transition {
             requestContext: RequestContext,
             target: TransitionTarget,
             result: ImageResult,
-            fitScale: Boolean
         ): Transition {
             return TestTransition()
         }
