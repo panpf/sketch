@@ -2,6 +2,12 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# new
+
+#### sketch-compose:
+
+* fix: Fix the bug where AsyncImage resizeSize changes to the last image size when loading the image again
+
 # v3.3.0 stable
 
 #### sketch:
