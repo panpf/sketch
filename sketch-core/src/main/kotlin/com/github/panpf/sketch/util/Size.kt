@@ -22,7 +22,7 @@ open class Size(val width: Int, val height: Int) {
     constructor() : this(0, 0)
 
     val isEmpty: Boolean
-        get() = width == 0 || height == 0
+        get() = width <= 0 || height <= 0
 
     operator fun component1(): Int = width
 

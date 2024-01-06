@@ -20,6 +20,7 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.Context
+import android.graphics.Rect
 import android.os.Build
 import android.os.Looper
 import android.os.Process
@@ -35,6 +36,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Scale
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -46,6 +48,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.coroutines.resume
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 
 internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
@@ -358,4 +362,63 @@ internal fun floorRoundPow2(number: Int): Int {
 internal fun ceilRoundPow2(number: Int): Int {
     val n = -1 ushr (number - 1).countLeadingZeroBits()
     return if (n < 0) 1 else if (n >= 1073741824) 1073741824 else n + 1
+}
+
+// TODO Test
+internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
+    if (srcSize.isEmpty || dstSize.isEmpty) {
+        return Rect(
+            /* left = */ 0,
+            /* top = */ 0,
+            /* right = */ srcSize.width.takeIf { it > 0 } ?: dstSize.width,
+            /* bottom = */ srcSize.height.takeIf { it > 0 } ?: dstSize.height
+        )
+    }
+
+    val srcWidthScaleFactor = dstSize.width.toFloat() / srcSize.width
+    val srcHeightScaleFactor = dstSize.height.toFloat() / srcSize.height
+    val srcScaleFactor = max(srcWidthScaleFactor, srcHeightScaleFactor)
+    val srcScaledWidth = (srcSize.width * srcScaleFactor).roundToInt()
+    val srcScaledHeight = (srcSize.height * srcScaleFactor).roundToInt()
+    return when (scale) {
+        Scale.START_CROP -> {
+            Rect(
+                /* left = */ 0,
+                /* top = */ 0,
+                /* right = */ srcScaledWidth,
+                /* bottom = */ srcScaledHeight
+            )
+        }
+
+        Scale.CENTER_CROP -> {
+            val left: Int = -(srcScaledWidth - dstSize.width) / 2
+            val top: Int = -(srcScaledHeight - dstSize.height) / 2
+            Rect(
+                /* left = */ left,
+                /* top = */ top,
+                /* right = */ left + srcScaledWidth,
+                /* bottom = */ top + srcScaledHeight,
+            )
+        }
+
+        Scale.END_CROP -> {
+            val left = -(srcScaledWidth - dstSize.width)
+            val top = -(srcScaledHeight - dstSize.height)
+            Rect(
+                /* left = */ left,
+                /* top = */ top,
+                /* right = */ left + srcScaledWidth,
+                /* bottom =*/ top + srcScaledHeight,
+            )
+        }
+
+        Scale.FILL -> {
+            Rect(
+                /* left = */0,
+                /* top = */0,
+                /* right = */dstSize.width,
+                /* bottom = */dstSize.height,
+            )
+        }
+    }
 }
