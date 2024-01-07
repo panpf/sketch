@@ -22,6 +22,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.ListenerProvider
+import com.github.panpf.sketch.request.RequestState
 
 /**
  * Provides access services for ViewAbility registration, uninstallation, and event callbacks and properties
@@ -29,6 +30,8 @@ import com.github.panpf.sketch.request.ListenerProvider
 interface ViewAbilityContainer : ListenerProvider {
 
     fun getContext(): Context
+
+    val requestState: RequestState
 
     /**
      * ViewAbility List

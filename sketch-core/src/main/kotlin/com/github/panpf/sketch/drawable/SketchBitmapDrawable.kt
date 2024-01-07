@@ -22,6 +22,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.logString
 
+// TODO Deprecated SketchBitmapDrawable
 class SketchBitmapDrawable constructor(
     resources: Resources,
     bitmap: Bitmap,

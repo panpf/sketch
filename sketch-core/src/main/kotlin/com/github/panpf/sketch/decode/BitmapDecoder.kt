@@ -26,6 +26,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * Decode [Bitmap] from [DataSource].
  */
+// TODO Merge BitmapDecoder and DrawableDecoder into ImageDecoder
 fun interface BitmapDecoder {
 
     /**

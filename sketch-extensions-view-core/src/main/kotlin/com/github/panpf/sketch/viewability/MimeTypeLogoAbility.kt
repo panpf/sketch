@@ -20,7 +20,13 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
-import com.github.panpf.sketch.util.findLeafSketchDrawable
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.request.ImageResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * Display the MimeType logo in the lower right corner of the View
@@ -77,14 +83,22 @@ class MimeTypeLogoAbility(
 
     override var host: Host? = null
     private var logoDrawable: Drawable? = null
+    private var coroutineScope: CoroutineScope? = null
 
     override fun onAttachedToWindow() {
-        reset()
-        host?.view?.invalidate()
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
+        this.coroutineScope = coroutineScope
+        val host = host!!
+        coroutineScope.launch {
+            host.container.requestState.loadState.collectLatest {
+                reset()
+                host.view.invalidate()
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
-
+        coroutineScope?.cancel()
     }
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
@@ -105,14 +119,17 @@ class MimeTypeLogoAbility(
         logoDrawable?.draw(canvas)
     }
 
-    private fun reset() {
+    private fun reset(): Boolean {
         logoDrawable = null
-        val host = host ?: return
+        val host = host ?: return false
+        host.container.getDrawable() ?: return false
         val view = host.view
-        val lastDrawable = host.container.getDrawable()?.findLeafSketchDrawable() ?: return
-        val mimeType = lastDrawable.imageInfo.mimeType
-        val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
-        if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return
+        val result = host.container.requestState.resultState.value
+        if (result !is ImageResult.Success) return false
+        val mimeType = result.imageInfo.mimeType
+        val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return false
+        val isAnimatable = result.image.let { it is DrawableImage && it.drawable is Animatable }
+        if (mimeTypeLogo.hiddenWhenAnimatable && isAnimatable) return false
         val logoDrawable = mimeTypeLogo.getDrawable(host.context)
         logoDrawable.setBounds(
             view.right - view.paddingRight - margin - logoDrawable.intrinsicWidth,
@@ -121,6 +138,7 @@ class MimeTypeLogoAbility(
             view.bottom - view.paddingBottom - margin
         )
         this.logoDrawable = logoDrawable
+        return true
     }
 }
 

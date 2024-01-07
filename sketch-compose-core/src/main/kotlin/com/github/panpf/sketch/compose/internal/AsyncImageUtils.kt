@@ -31,6 +31,7 @@
 package com.github.panpf.sketch.compose.internal
 
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -157,6 +158,19 @@ fun Painter.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) 
         painter is CrossfadePainter -> {
             painter.start?.forEachSketchCountBitmapDrawable(block)
             painter.end?.forEachSketchCountBitmapDrawable(block)
+        }
+    }
+}
+
+fun Painter.forEachRememberObserver(block: (RememberObserver) -> Unit) {
+    when (this) {
+        is RememberObserver -> {
+            block(this)
+        }
+
+        is CrossfadePainter -> {
+            start?.forEachRememberObserver(block)
+            end?.forEachRememberObserver(block)
         }
     }
 }

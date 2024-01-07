@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.asOrNull
@@ -13,25 +12,13 @@ import com.github.panpf.sketch.util.height
 import com.github.panpf.sketch.util.isImmutable
 import com.github.panpf.sketch.util.width
 
-fun Drawable.asSketchImage(): Image {
-    return if (this is BitmapDrawable) {
-        bitmap.asSketchImage()
-    } else {
-        DrawableImage(this, false)
-    }
+fun Bitmap.asSketchImage(shareable: Boolean = isImmutable): Image {
+    return BitmapImage(this, shareable)
 }
 
-fun Drawable.asSketchImage(shareable: Boolean): Image {
-    return if (this is BitmapDrawable) {
-        bitmap.asSketchImage(shareable)
-    } else {
-        DrawableImage(this, shareable)
-    }
+fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): Image {
+    return DrawableImage(this, shareable)
 }
-
-fun Bitmap.asSketchImage(
-    shareable: Boolean = isImmutable,
-): Image = BitmapImage(this, shareable)
 
 fun Image.getBitmap(): Bitmap? = when (this) {
     is BitmapImage -> bitmap

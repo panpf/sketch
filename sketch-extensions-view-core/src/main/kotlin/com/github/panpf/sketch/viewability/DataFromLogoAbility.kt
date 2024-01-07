@@ -21,7 +21,12 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.util.findLeafSketchDrawable
+import com.github.panpf.sketch.request.ImageResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * Set to enable the data source identification function
@@ -64,18 +69,26 @@ class DataFromLogoAbility(
     }
 
     private var path: Path = Path()
+    private var coroutineScope: CoroutineScope? = null
     private val paint = Paint().apply { isAntiAlias = true }
     private val realSize = (sizeDp * Resources.getSystem().displayMetrics.density + 0.5f)
 
     override var host: Host? = null
 
     override fun onAttachedToWindow() {
-        reset()
-        host?.view?.invalidate()
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
+        this.coroutineScope = coroutineScope
+        val host = host!!
+        coroutineScope.launch {
+            host.container.requestState.loadState.collectLatest {
+                reset()
+                host.view.invalidate()
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
-
+        coroutineScope?.cancel()
     }
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
@@ -101,9 +114,11 @@ class DataFromLogoAbility(
         // Execute first, path will remain empty if subsequent conditions are not met, and the onDraw method will not execute
         path.reset()
         val host = host ?: return false
+        host.container.getDrawable() ?: return false
 
-        val lastDrawable = host.container.getDrawable()?.findLeafSketchDrawable() ?: return false
-        when (lastDrawable.dataFrom) {
+        val result = host.container.requestState.resultState.value
+        if (result !is ImageResult.Success) return false
+        when (result.dataFrom) {
             DataFrom.MEMORY_CACHE -> paint.color = FROM_FLAG_COLOR_MEMORY_CACHE
             DataFrom.MEMORY -> paint.color = FROM_FLAG_COLOR_MEMORY
             DataFrom.RESULT_CACHE -> paint.color = FROM_FLAG_COLOR_RESULT_CACHE

@@ -35,11 +35,12 @@ open class SketchImageView @JvmOverloads constructor(
     private var displayListenerList: MutableList<Listener>? = null
     private var displayProgressListenerList: MutableList<ProgressListener>? = null
 
-    val requestState = RequestState()
+    override val requestState = RequestState()
 
     init {
         @Suppress("LeakingThis")
         displayImageOptions = parseImageXmlAttributes(context, attrs)
+        @Suppress("LeakingThis")
         registerListener(requestState)
     }
 

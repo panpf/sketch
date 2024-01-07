@@ -36,6 +36,7 @@ import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
+import com.github.panpf.sketch.compose.internal.forEachRememberObserver
 import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.request.asPainter
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
@@ -295,9 +296,11 @@ class AsyncImageState internal constructor(
             get() = _painter
             set(newPainter) {
                 val oldPainter = _painter
-                (newPainter as? RememberObserver)?.onRemembered()
-                _painter = newPainter
-                (oldPainter as? RememberObserver)?.onForgotten()
+                if (newPainter !== oldPainter) {
+                    oldPainter?.forEachRememberObserver { it.onForgotten() }
+                    _painter = newPainter
+                    newPainter?.forEachRememberObserver { it.onRemembered() }
+                }
             }
 
         override val fitScale: Boolean

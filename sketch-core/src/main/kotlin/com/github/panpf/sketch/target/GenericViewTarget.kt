@@ -36,6 +36,7 @@ import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.allowSetNullDrawable
@@ -53,21 +54,31 @@ import com.github.panpf.sketch.util.updateIsDisplayed
  * to implement [ViewTarget] directly.
  */
 abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionViewTarget,
-    DefaultLifecycleObserver {
+    DefaultLifecycleObserver, OnAttachStateChangeListener {
 
     private var isStarted = false
 
     override val supportDisplayCount: Boolean = true
 
     init {
-        view.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-            }
+        // TODO Ported back to 3.x
+        if (canBindTarget(view)) {
+            view.setTag(R.id.sketch_generic_view_target, this@GenericViewTarget)
+            view.addOnAttachStateChangeListener(this@GenericViewTarget)
+        }
+    }
 
-            override fun onViewDetachedFromWindow(v: View) {
-                updateDrawable(null)    // To trigger setIsDisplayed
+    private fun canBindTarget(view: View): Boolean {
+        val tag = view.getTag(R.id.sketch_generic_view_target)
+        if (tag != null && tag is GenericViewTarget<*>) {
+            val existTarget: GenericViewTarget<*> = tag
+            if (existTarget === this) {
+                return false
+            } else {
+                view.removeOnAttachStateChangeListener(existTarget)
             }
-        })
+        }
+        return true
     }
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
@@ -89,23 +100,35 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         updateAnimation()
     }
 
+    override fun onViewAttachedToWindow(v: View) {
+    }
+
+    override fun onViewDetachedFromWindow(v: View) {
+        updateDrawable(null)    // To trigger setIsDisplayed
+    }
+
     private fun updateImage(requestContext: RequestContext, image: Image?) {
         // 'image != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment.loadBgImage() is an example.
         view ?: return
         if (image != null || requestContext.request.allowSetNullDrawable) {
-            this.drawable.asOrNull<Animatable>()?.stop()
+            val oldDrawable = this.drawable
             val newDrawable = image?.asDrawable(requestContext.request.context.resources)
-            updateDrawable(newDrawable)
-            updateAnimation()
+            if (newDrawable !== oldDrawable) {
+                oldDrawable.asOrNull<Animatable>()?.stop()
+                updateDrawable(newDrawable)
+                updateAnimation()
+            }
         }
     }
 
     private fun updateDrawable(newDrawable: Drawable?) {
         val oldDrawable = drawable
-        newDrawable?.updateIsDisplayed(true, "ImageView")
+        if (newDrawable === oldDrawable) return
+        oldDrawable?.updateIsDisplayed(false, "ImageView")
         this.drawable = newDrawable
+        newDrawable?.updateIsDisplayed(true, "ImageView")
         if (newDrawable is CrossfadeDrawable) {
             val start = newDrawable.start
             if (start != null && start === oldDrawable) {
@@ -114,7 +137,6 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
                 start.callback = newDrawable
             }
         }
-        oldDrawable?.updateIsDisplayed(false, "ImageView")
     }
 
     /** Start/stop the current [Drawable]'s animation based on the current lifecycle state. */

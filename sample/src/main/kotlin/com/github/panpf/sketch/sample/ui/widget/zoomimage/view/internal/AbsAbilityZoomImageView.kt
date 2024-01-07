@@ -43,7 +43,7 @@ import com.github.panpf.zoomimage.ZoomImageView
 /**
  * ImageView base class that supports [ViewAbility]
  */
-open class AbsAbilityZoomImageView @JvmOverloads constructor(
+abstract class AbsAbilityZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0

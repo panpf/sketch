@@ -37,9 +37,10 @@ open class AbsStateZoomImageView @JvmOverloads constructor(
         null
     private var displayProgressListenerList: MutableList<ProgressListener>? = null
 
-    val requestState = RequestState()
+    override val requestState = RequestState()
 
     init {
+        @Suppress("LeakingThis")
         registerListener(requestState)
     }
 
