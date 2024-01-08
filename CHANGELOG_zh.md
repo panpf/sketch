@@ -7,6 +7,7 @@
 #### sketch:
 
 * fix: 修复 ResizeDrawable 和 ResizeAnimatableDrawable 应该使用 bounds 的尺寸作为 dstSize 的 bug
+* change: 移除 RemoteViewsTarget 的 ignoreNullDrawable 参数，使用 ImageRequest.Builder 的 allowSetNullDrawable() 方法替代
 
 #### sketch-compose:
 

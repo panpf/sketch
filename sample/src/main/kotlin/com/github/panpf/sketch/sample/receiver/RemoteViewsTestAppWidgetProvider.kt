@@ -100,7 +100,6 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
                 RemoteViewsTarget(
                     remoteViews = remoteViews,
                     imageViewId = R.id.image1,
-                    ignoreNullDrawable = true,
                     onUpdated = {
                         AppWidgetManager.getInstance(context)!!
                             .updateAppWidget(appWidgetId, remoteViews)

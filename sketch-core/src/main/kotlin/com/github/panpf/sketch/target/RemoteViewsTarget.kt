@@ -18,38 +18,33 @@ package com.github.panpf.sketch.target
 import android.widget.RemoteViews
 import androidx.annotation.IdRes
 import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toBitmap
 
 /**
  * Set Drawable to RemoteViews
  */
-class RemoteViewsTarget(
+class RemoteViewsTarget constructor(
     private val remoteViews: RemoteViews,
     @IdRes private val imageViewId: Int,
-    private val ignoreNullDrawable: Boolean = false,
     private val onUpdated: () -> Unit,
 ) : Target {
 
     override val supportDisplayCount: Boolean = false
 
-    override fun onStart(requestContext: RequestContext,  placeholder: Image?) {
-        if (placeholder != null || !ignoreNullDrawable) {
-            setDrawable(placeholder)
-        }
-    }
+    override fun onStart(requestContext: RequestContext, placeholder: Image?) =
+        setDrawable(requestContext, placeholder)
 
-    override fun onError(requestContext: RequestContext, error: Image?) {
-        if (error != null || !ignoreNullDrawable) {
-            setDrawable(error)
-        }
-    }
+    override fun onError(requestContext: RequestContext, error: Image?) =
+        setDrawable(requestContext, error)
 
-    override fun onSuccess(requestContext: RequestContext, result: Image) = setDrawable(result)
+    override fun onSuccess(requestContext: RequestContext, result: Image) =
+        setDrawable(requestContext, result)
 
-    private fun setDrawable(result: Image?) {
-        if (result != null) {
-            remoteViews.setImageViewBitmap(imageViewId, result.toBitmap())
+    private fun setDrawable(requestContext: RequestContext, result: Image?) {
+        if (result != null || requestContext.request.allowSetNullDrawable) {
+            remoteViews.setImageViewBitmap(imageViewId, result?.toBitmap())
             onUpdated()
         }
     }
@@ -60,7 +55,6 @@ class RemoteViewsTarget(
         other as RemoteViewsTarget
         if (remoteViews != other.remoteViews) return false
         if (imageViewId != other.imageViewId) return false
-        if (ignoreNullDrawable != other.ignoreNullDrawable) return false
         if (onUpdated != other.onUpdated) return false
         return true
     }
@@ -68,12 +62,11 @@ class RemoteViewsTarget(
     override fun hashCode(): Int {
         var result = remoteViews.hashCode()
         result = 31 * result + imageViewId
-        result = 31 * result + ignoreNullDrawable.hashCode()
         result = 31 * result + onUpdated.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "RemoteViewsDisplayTarget(remoteViews=$remoteViews, imageViewId=$imageViewId, ignoreNullDrawable=$ignoreNullDrawable, onUpdated=$onUpdated)"
+        return "RemoteViewsDisplayTarget(remoteViews=$remoteViews, imageViewId=$imageViewId, onUpdated=$onUpdated)"
     }
 }

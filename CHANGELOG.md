@@ -8,6 +8,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as
   dstSize
+* change: Remove the ignoreNullDrawable parameter of RemoteViewsTarget and use the allowSetNullDrawable() method of ImageRequest.Builder instead
 
 #### sketch-compose:
 

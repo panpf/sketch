@@ -136,7 +136,6 @@ class RemoteViewsTestFragment : BaseToolbarBindingFragment<FragmentTestRemoteVie
                     RemoteViewsTarget(
                         remoteViews = remoteViews,
                         imageViewId = R.id.image,
-                        ignoreNullDrawable = true,
                         onUpdated = {
                             val notificationManager =
                                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
