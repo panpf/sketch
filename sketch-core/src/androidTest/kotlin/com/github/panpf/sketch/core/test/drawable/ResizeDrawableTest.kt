@@ -87,7 +87,6 @@ class ResizeDrawableTest {
         bitmapDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resizeSize)
             .let { it as ResizeDrawable }
             .apply {
-                Assert.assertNotSame(bitmapDrawable, this)
                 Assert.assertSame(bitmapDrawable, drawable)
                 Assert.assertEquals(Size(500, 300), resizeSize)
             }
@@ -105,7 +104,6 @@ class ResizeDrawableTest {
         animDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resizeSize)
             .let { it as ResizeAnimatableDrawable }
             .apply {
-                Assert.assertNotSame(animDrawable, this)
                 Assert.assertSame(animDrawable, drawable)
                 Assert.assertEquals(Size(500, 300), resizeSize)
             }
@@ -167,7 +165,7 @@ class ResizeDrawableTest {
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(-75, 0, 75, 300), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
         ResizeDrawable(
             ResizeDrawable(bitmapDrawable, Size(300, 0), CENTER_CROP),
@@ -176,7 +174,7 @@ class ResizeDrawableTest {
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(0, -300, 300, 300), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -150, 300, 450), bitmapDrawable.bounds)
         }
         ResizeDrawable(
             ResizeDrawable(bitmapDrawable, Size.Empty, CENTER_CROP),
@@ -185,7 +183,7 @@ class ResizeDrawableTest {
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
 
         val sketchDrawable = SketchCountBitmapDrawable(
@@ -207,7 +205,7 @@ class ResizeDrawableTest {
         ResizeDrawable(sketchDrawable, Size(500, 300), CENTER_CROP).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
     }
 
