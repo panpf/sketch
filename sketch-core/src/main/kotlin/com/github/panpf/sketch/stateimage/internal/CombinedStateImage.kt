@@ -5,7 +5,7 @@ import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.stateimage.StateImage
 
-interface CompositeStateImage : StateImage {
+interface CombinedStateImage : StateImage {
 
     val stateList: List<Pair<Condition, StateImage?>>
 

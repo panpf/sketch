@@ -18,7 +18,7 @@ package com.github.panpf.sketch.stateimage
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
-import com.github.panpf.sketch.stateimage.internal.CompositeStateImage
+import com.github.panpf.sketch.stateimage.internal.CombinedStateImage
 
 
 /**
@@ -53,7 +53,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageRes
         addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficImageResId))
     }
 
-object SaveCellularTrafficCondition : CompositeStateImage.Condition {
+object SaveCellularTrafficCondition : CombinedStateImage.Condition {
 
     override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
         isCausedBySaveCellularTraffic(request, throwable)

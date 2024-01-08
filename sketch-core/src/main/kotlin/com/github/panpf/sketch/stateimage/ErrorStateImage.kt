@@ -19,7 +19,7 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
-import com.github.panpf.sketch.stateimage.internal.CompositeStateImage
+import com.github.panpf.sketch.stateimage.internal.CombinedStateImage
 import java.util.LinkedList
 
 /**
@@ -33,11 +33,11 @@ fun ErrorStateImage(
 }.build()
 
 /**
- * Provide Drawable specifically for error status, support custom [CompositeStateImage.Condition] Provide different Drawable according to different error types
+ * Provide Drawable specifically for error status, support custom [CombinedStateImage.Condition] Provide different Drawable according to different error types
  */
 class ErrorStateImage(
-    override val stateList: List<Pair<CompositeStateImage.Condition, StateImage?>>
-) : CompositeStateImage {
+    override val stateList: List<Pair<CombinedStateImage.Condition, StateImage?>>
+) : CombinedStateImage {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -58,12 +58,12 @@ class ErrorStateImage(
 
     class Builder constructor(private val defaultImage: StateImage?) {
 
-        private val stateList = LinkedList<Pair<CompositeStateImage.Condition, StateImage?>>()
+        private val stateList = LinkedList<Pair<CombinedStateImage.Condition, StateImage?>>()
 
         /**
          * Add a custom state
          */
-        fun addState(pair: Pair<CompositeStateImage.Condition, StateImage?>): Builder = apply {
+        fun addState(pair: Pair<CombinedStateImage.Condition, StateImage?>): Builder = apply {
             stateList.add(pair)
         }
 
@@ -98,7 +98,7 @@ class ErrorStateImage(
         }
     }
 
-    object DefaultCondition : CompositeStateImage.Condition {
+    object DefaultCondition : CombinedStateImage.Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
 
@@ -107,7 +107,7 @@ class ErrorStateImage(
         }
     }
 
-    object UriEmptyCondition : CompositeStateImage.Condition {
+    object UriEmptyCondition : CombinedStateImage.Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
             throwable is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
