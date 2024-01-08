@@ -112,7 +112,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
 class DisplayRequestTest {
@@ -164,7 +163,7 @@ class DisplayRequestTest {
             Assert.assertEquals("asset://sample.jpeg", uriString)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
-            Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView1)), this.target)
+            Assert.assertEquals(ImageViewDisplayTarget(imageView1), this.target)
             Assert.assertEquals(
                 DefaultLifecycleResolver(ViewLifecycleResolver(imageView1)),
                 this.lifecycleResolver
@@ -313,7 +312,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView)), target)
+            Assert.assertEquals(ImageViewDisplayTarget(imageView), target)
         }
 
         imageView.updateDisplayImageOptions {
@@ -321,7 +320,7 @@ class DisplayRequestTest {
         }
 
         DisplayRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewDisplayTarget(WeakReference(imageView)), target)
+            Assert.assertEquals(ImageViewDisplayTarget(imageView), target)
             Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
         }
 

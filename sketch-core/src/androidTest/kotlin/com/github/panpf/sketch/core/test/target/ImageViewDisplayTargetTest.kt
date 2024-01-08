@@ -35,100 +35,18 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewDisplayTargetTest {
-
-    @Test
-    fun testDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
-
-        val imageView = ImageView(context)
-        Assert.assertNull(imageView.drawable)
-
-        val imageViewTarget = ImageViewDisplayTarget(WeakReference(imageView))
-        Assert.assertNull(imageViewTarget.drawable)
-
-        val countBitmap = CountBitmap(
-            cacheKey = request.toRequestContext().cacheKey,
-            originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
-            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = false,
-        )
-        val sketchCountBitmapDrawable = SketchCountBitmapDrawable(
-            resources = context.resources,
-            countBitmap = countBitmap,
-            imageUri = request.uriString,
-            requestKey = request.toRequestContext().key,
-            requestCacheKey = request.toRequestContext().cacheKey,
-            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL
-        )
-        val countBitmap2 = CountBitmap(
-            cacheKey = request.toRequestContext().cacheKey,
-            originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
-            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = false,
-        )
-        val sketchCountBitmapDrawable2 = SketchCountBitmapDrawable(
-            resources = context.resources,
-            countBitmap = countBitmap2,
-            imageUri = request.uriString,
-            requestKey = request.toRequestContext().key,
-            requestCacheKey = request.toRequestContext().cacheKey,
-            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL
-        )
-
-        runBlocking(Dispatchers.Main) {
-            Assert.assertEquals(0, countBitmap.getDisplayedCount())
-            Assert.assertEquals(0, countBitmap2.getDisplayedCount())
-        }
-
-        runBlocking(Dispatchers.Main) {
-            imageViewTarget.drawable = sketchCountBitmapDrawable
-        }
-
-        Assert.assertSame(sketchCountBitmapDrawable, imageView.drawable)
-        Assert.assertSame(sketchCountBitmapDrawable, imageViewTarget.drawable)
-        runBlocking(Dispatchers.Main) {
-            Assert.assertEquals(1, countBitmap.getDisplayedCount())
-            Assert.assertEquals(0, countBitmap2.getDisplayedCount())
-        }
-
-        runBlocking(Dispatchers.Main) {
-            imageViewTarget.drawable = sketchCountBitmapDrawable2
-        }
-
-        Assert.assertSame(sketchCountBitmapDrawable2, imageView.drawable)
-        Assert.assertSame(sketchCountBitmapDrawable2, imageViewTarget.drawable)
-        runBlocking(Dispatchers.Main) {
-            Assert.assertEquals(0, countBitmap.getDisplayedCount())
-            Assert.assertEquals(1, countBitmap2.getDisplayedCount())
-        }
-
-        runBlocking(Dispatchers.Main) {
-            imageViewTarget.drawable = null
-        }
-        Assert.assertNull(imageView.drawable)
-        Assert.assertNull(imageViewTarget.drawable)
-    }
 
     @Test
     fun testEqualsAndHashCode() {
         val context = getTestContext()
         val imageView1 = ImageView(context)
         val imageView2 = ImageView(context)
-        val element1 = ImageViewDisplayTarget(WeakReference(imageView1))
-        val element11 = ImageViewDisplayTarget(WeakReference(imageView1))
-        val element2 = ImageViewDisplayTarget(WeakReference(imageView2))
+        val element1 = ImageViewDisplayTarget(imageView1)
+        val element11 = ImageViewDisplayTarget(imageView1)
+        val element2 = ImageViewDisplayTarget(imageView2)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

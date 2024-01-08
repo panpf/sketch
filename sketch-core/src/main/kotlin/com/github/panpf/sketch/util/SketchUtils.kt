@@ -131,3 +131,9 @@ fun Drawable.iterateSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable)
         }
     }
 }
+
+fun Drawable.updateIsDisplayed(displayed: Boolean, caller: String) {
+    this.iterateSketchCountBitmapDrawable {
+        it.countBitmap.setIsDisplayed(displayed, caller)
+    }
+}

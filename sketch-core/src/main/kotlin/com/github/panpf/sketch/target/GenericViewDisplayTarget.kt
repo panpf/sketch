@@ -33,13 +33,16 @@ package com.github.panpf.sketch.target
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import android.widget.ImageView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.transition.TransitionDisplayTarget
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.updateIsDisplayed
 
 /**
  * An opinionated [ViewDisplayTarget] that simplifies updating the [Drawable] attached to a [View]
@@ -48,21 +51,38 @@ import com.github.panpf.sketch.util.asOrNull
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ViewDisplayTarget] directly.
  */
-abstract class GenericViewDisplayTarget<T : View> : ViewDisplayTarget<T>, TransitionDisplayTarget,
-    DefaultLifecycleObserver {
+abstract class GenericViewDisplayTarget<T : View>(view: T) : ViewDisplayTarget<T>, TransitionDisplayTarget,
+    DefaultLifecycleObserver, OnAttachStateChangeListener {
 
     private var isStarted = false
 
-    /**
-     * The current [Drawable] attached to [view].
-     */
-    abstract override var drawable: Drawable?
+    override val supportDisplayCount: Boolean = true
 
-    override fun onStart(placeholder: Drawable?) = updateDrawable(placeholder)
+    init {
+        if (canBindTarget(view)) {
+            view.setTag(R.id.sketch_generic_view_target, this@GenericViewDisplayTarget)
+            view.addOnAttachStateChangeListener(this@GenericViewDisplayTarget)
+        }
+    }
 
-    override fun onError(error: Drawable?) = updateDrawable(error)
+    private fun canBindTarget(view: View): Boolean {
+        val tag = view.getTag(R.id.sketch_generic_view_target)
+        if (tag != null && tag is GenericViewDisplayTarget<*>) {
+            val existTarget: GenericViewDisplayTarget<*> = tag
+            if (existTarget === this@GenericViewDisplayTarget) {
+                return false
+            } else {
+                view.removeOnAttachStateChangeListener(existTarget)
+            }
+        }
+        return true
+    }
 
-    override fun onSuccess(result: Drawable) = updateDrawable(result)
+    override fun onStart(placeholder: Drawable?) = updateImage(placeholder)
+
+    override fun onError(error: Drawable?) = updateImage(error)
+
+    override fun onSuccess(result: Drawable) = updateImage(result)
 
     override fun onStart(owner: LifecycleOwner) {
         isStarted = true
@@ -74,20 +94,33 @@ abstract class GenericViewDisplayTarget<T : View> : ViewDisplayTarget<T>, Transi
         updateAnimation()
     }
 
+    override fun onViewAttachedToWindow(v: View) {
+    }
+
+    override fun onViewDetachedFromWindow(v: View) {
+        updateDrawable(null)    // To trigger setIsDisplayed
+    }
+
     /** Replace the [ImageView]'s current drawable with [drawable]. */
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun updateDrawable(drawable: Drawable?) {
+    private fun updateImage(drawable: Drawable?) {
+        val view = (view as View?) ?: return
+        val request = SketchUtils.getRequest(view)
         // 'drawable != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.viewer.view.ImagePagerFragment.loadBgImage() is an example.
-        val view = view as View?
-        if (view != null) {
-            val request = SketchUtils.getRequest(view)
-            if (drawable != null || (request?.allowSetNullDrawable == true)) {
-                this.drawable.asOrNull<Animatable>()?.stop()
-                this.drawable = drawable
-                updateAnimation()
-            }
+        if (drawable != null || (request?.allowSetNullDrawable == true)) {
+            updateDrawable(drawable)
+        }
+    }
+
+    private fun updateDrawable(newDrawable: Drawable?) {
+        val oldDrawable = drawable
+        if (newDrawable !== oldDrawable) {
+            oldDrawable.asOrNull<Animatable>()?.stop()
+            newDrawable?.updateIsDisplayed(true, "ImageView")
+            this.drawable = newDrawable
+            oldDrawable?.updateIsDisplayed(false, "ImageView")
+            updateAnimation()
         }
     }
 

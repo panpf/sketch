@@ -105,11 +105,20 @@ open class CrossfadeDrawable @JvmOverloads constructor(
 
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
+        setChildCallback()
+    }
 
-        @Suppress("LeakingThis")
-        this.start?.callback = this
-        @Suppress("LeakingThis")
-        this.end?.callback = this
+    private fun setChildCallback() {
+        this.start?.apply {
+            if (callback == null || callbacks !== this@CrossfadeDrawable) {
+                callback = this@CrossfadeDrawable
+            }
+        }
+        this.end?.apply {
+            if (callback == null || callbacks !== this@CrossfadeDrawable) {
+                callback = this@CrossfadeDrawable
+            }
+        }
     }
 
     override fun draw(canvas: Canvas) {
@@ -202,6 +211,14 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun onBoundsChange(bounds: Rect) {
+        /*
+         Why set callback here?
+         Because when start and the current Drawable of ImageView are the same instance,
+         the callback of start will become null after setImageDrawable() is executed.
+         Of course, setChildCallback should be called in the setCallback method,
+         but it is final and can only be called in onBoundsChange
+         */
+        setChildCallback()
         start?.let { updateBounds(it, bounds) }
         end?.let { updateBounds(it, bounds) }
     }
