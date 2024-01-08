@@ -17,7 +17,7 @@ package com.github.panpf.sketch.core.test.stateimage
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getDrawableCompat

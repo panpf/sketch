@@ -28,13 +28,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.core.test.ImageViewExtensionsTest
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayAssetImage
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
 import com.github.panpf.sketch.util.SketchUtils
@@ -145,8 +146,7 @@ class SketchUtilsTest {
 
     @Test
     fun testForeachSketchCountDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val countBitmap = CountBitmap(
             cacheKey = "cacheKey",

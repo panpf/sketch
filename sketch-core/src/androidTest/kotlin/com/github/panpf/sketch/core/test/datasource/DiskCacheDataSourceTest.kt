@@ -16,11 +16,11 @@
 package com.github.panpf.sketch.core.test.datasource
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import org.junit.Assert
 import org.junit.Test
@@ -32,7 +32,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,
@@ -56,7 +56,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testNewInputStream() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,
@@ -77,7 +77,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testFile() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,
@@ -102,7 +102,7 @@ class DiskCacheDataSourceTest {
     @Test
     fun testToString() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,

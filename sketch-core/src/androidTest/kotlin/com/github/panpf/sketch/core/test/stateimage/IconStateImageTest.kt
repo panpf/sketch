@@ -23,12 +23,15 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.internal.IconDrawable
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,16 +41,15 @@ class IconStateImageTest {
 
     @Test
     fun testGetDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         val iconDrawable = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
         val greenBgDrawable = ColorDrawable(Color.GREEN)
 
         IconStateImage(iconDrawable) {
             background(greenBgDrawable)
         }.apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertEquals(greenBgDrawable, background)
                 Assert.assertNull(iconSize)
@@ -58,7 +60,7 @@ class IconStateImageTest {
             iconSize(40)
             resBackground(android.R.drawable.bottom_bar)
         }.apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertTrue(background is BitmapDrawable)
                 Assert.assertEquals(Size(40, 40), iconSize)
@@ -68,7 +70,7 @@ class IconStateImageTest {
         IconStateImage(iconDrawable) {
             colorBackground(Color.BLUE)
         }.apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
                 Assert.assertNull(iconSize)
@@ -76,7 +78,7 @@ class IconStateImageTest {
         }
 
         IconStateImage(iconDrawable).apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertEquals(iconDrawable, icon)
                 Assert.assertNull(background)
                 Assert.assertNull(iconSize)
@@ -87,7 +89,7 @@ class IconStateImageTest {
         IconStateImage(android.R.drawable.ic_delete) {
             background(greenBgDrawable)
         }.apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertTrue(icon is BitmapDrawable)
                 Assert.assertEquals(greenBgDrawable, background)
                 Assert.assertNull(iconSize)
@@ -98,7 +100,7 @@ class IconStateImageTest {
             iconSize(30)
             resBackground(android.R.drawable.bottom_bar)
         }.apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertTrue(icon is BitmapDrawable)
                 @Suppress("KotlinConstantConditions")
                 Assert.assertTrue(background is BitmapDrawable)
@@ -109,7 +111,7 @@ class IconStateImageTest {
         IconStateImage(android.R.drawable.ic_delete) {
             colorBackground(Color.BLUE)
         }.apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertTrue(icon is BitmapDrawable)
                 Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
                 Assert.assertNull(iconSize)
@@ -117,7 +119,7 @@ class IconStateImageTest {
         }
 
         IconStateImage(android.R.drawable.ic_delete).apply {
-            getImage(sketch, request, null).asOrNull<IconDrawable>()!!.apply {
+            getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertTrue(icon is BitmapDrawable)
                 Assert.assertNull(background)
                 Assert.assertNull(iconSize)

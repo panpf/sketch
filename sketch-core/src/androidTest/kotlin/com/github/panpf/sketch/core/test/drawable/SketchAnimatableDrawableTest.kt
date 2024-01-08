@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.decode.ImageInfo

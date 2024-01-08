@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.test.http
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.tools4a.network.Networkx
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
@@ -103,7 +103,7 @@ class HurlStackTest {
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
 
         HurlStack.Builder().build()
-            .getResponse(DownloadRequest(context, url), url)
+            .getResponse(ImageRequest(context, url), url)
             .apply {
                 Assert.assertEquals(200, code)
                 Assert.assertEquals("OK", message)
@@ -120,7 +120,7 @@ class HurlStackTest {
             headers("header1" to "value1")
             addHeaders("addHeader1" to "addValue1")
         }.build().let {
-            it.getResponse(DownloadRequest(context, url) {
+            it.getResponse(ImageRequest(context, url) {
                 addHttpHeader("addHttpHeader1", "setHttpValue1")
                 setHttpHeader("setHttpHeader1", "setHttpValue1")
             }, url)
@@ -136,7 +136,7 @@ class HurlStackTest {
         }
 
         assertThrow(IOException::class) {
-            HurlStack.Builder().build().getResponse(DownloadRequest(context, url), "")
+            HurlStack.Builder().build().getResponse(ImageRequest(context, url), "")
         }
     }
 

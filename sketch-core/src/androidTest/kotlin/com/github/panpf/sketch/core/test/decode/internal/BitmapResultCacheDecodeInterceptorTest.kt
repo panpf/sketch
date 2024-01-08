@@ -20,7 +20,6 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeResult
@@ -29,9 +28,9 @@ import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeIntercepto
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -57,7 +56,7 @@ class BitmapResultCacheDecodeInterceptorTest {
                 BitmapDecodeInterceptorChain(
                     sketch = sketch,
                     request = request,
-                    requestContext = request.toRequestContext(),
+                    requestContext = request.toRequestContext(sketch),
                     fetchResult = null,
                     interceptors = interceptors,
                     index = 0
@@ -65,14 +64,14 @@ class BitmapResultCacheDecodeInterceptorTest {
             }.getOrThrow()
         }
 
-        val loadRequest = LoadRequest(context, AssetImages.jpeg.uri) {
+        val loadRequest = ImageRequest(context, AssetImages.jpeg.uri) {
             resizeSize(500, 500)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
         }
 
         resultCache.clear()
-        Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext(sketch).resultCacheDataKey))
         executeRequest(loadRequest).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
@@ -91,7 +90,7 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(loadRequest.toRequestContext(sketch).resultCacheDataKey))
         executeRequest(loadRequest).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
             Assert.assertEquals(484, result.bitmap.height)
@@ -110,8 +109,8 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
-        executeRequest(loadRequest.newLoadRequest {
+        Assert.assertTrue(resultCache.exist(loadRequest.toRequestContext(sketch).resultCacheDataKey))
+        executeRequest(loadRequest.newRequest {
             resultCachePolicy(DISABLED)
         }).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
@@ -131,8 +130,8 @@ class BitmapResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
-        executeRequest(loadRequest.newLoadRequest {
+        Assert.assertTrue(resultCache.exist(loadRequest.toRequestContext(sketch).resultCacheDataKey))
+        executeRequest(loadRequest.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
@@ -153,8 +152,8 @@ class BitmapResultCacheDecodeInterceptorTest {
         }
 
         resultCache.clear()
-        Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
-        executeRequest(loadRequest.newLoadRequest {
+        Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext(sketch).resultCacheDataKey))
+        executeRequest(loadRequest.newRequest {
             resultCachePolicy(READ_ONLY)
         }).also { result ->
             Assert.assertEquals(323, result.bitmap.width)
@@ -173,15 +172,15 @@ class BitmapResultCacheDecodeInterceptorTest {
                 result.extras
             )
         }
-        Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext().resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(loadRequest.toRequestContext(sketch).resultCacheDataKey))
 
-        val loadRequest1 = LoadRequest(context, AssetImages.jpeg.uri) {
+        val loadRequest1 = ImageRequest(context, AssetImages.jpeg.uri) {
             resizeSize(2000, 2000)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
         }
         resultCache.clear()
-        Assert.assertFalse(resultCache.exist(loadRequest1.toRequestContext().resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(loadRequest1.toRequestContext(sketch).resultCacheDataKey))
         executeRequest(loadRequest1).also { result ->
             Assert.assertEquals(1291, result.bitmap.width)
             Assert.assertEquals(1936, result.bitmap.height)
@@ -196,7 +195,7 @@ class BitmapResultCacheDecodeInterceptorTest {
                 result.extras
             )
         }
-        Assert.assertFalse(resultCache.exist(loadRequest1.toRequestContext().resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(loadRequest1.toRequestContext(sketch).resultCacheDataKey))
     }
 
     @Test

@@ -18,9 +18,9 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resources.AssetImages
 import kotlinx.coroutines.Dispatchers
@@ -39,26 +39,26 @@ class RequestExecutorTest {
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(
                 sketch,
-                LoadRequest(context, AssetImages.jpeg.uri),
+                ImageRequest(context, AssetImages.jpeg.uri),
                 false
             ).apply {
-                Assert.assertTrue(this is LoadResult.Success)
+                Assert.assertTrue(this is ImageResult.Success)
             }
 
             RequestExecutor().execute(
                 sketch,
-                LoadRequest(context, ""),
+                ImageRequest(context, ""),
                 false
             ).apply {
-                Assert.assertTrue(this is LoadResult.Error)
+                Assert.assertTrue(this is ImageResult.Error)
             }
 
             RequestExecutor().execute(
                 sketch,
-                LoadRequest(context, "  "),
+                ImageRequest(context, "  "),
                 false
             ).apply {
-                Assert.assertTrue(this is LoadResult.Error)
+                Assert.assertTrue(this is ImageResult.Error)
             }
         }
     }

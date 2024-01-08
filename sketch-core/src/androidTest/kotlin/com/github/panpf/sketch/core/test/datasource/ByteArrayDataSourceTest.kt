@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.test.datasource
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +30,7 @@ class ByteArrayDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, "http://sample.jpeg")
+        val request = ImageRequest(context, "http://sample.jpeg")
         ByteArrayDataSource(
             sketch = sketch,
             request = request,
@@ -48,7 +48,7 @@ class ByteArrayDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ByteArrayDataSource(
             sketch = sketch,
-            request = LoadRequest(context, "http://sample.jpeg"),
+            request = ImageRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
@@ -61,7 +61,7 @@ class ByteArrayDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ByteArrayDataSource(
             sketch = sketch,
-            request = LoadRequest(context, "http://sample.jpeg"),
+            request = ImageRequest(context, "http://sample.jpeg"),
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {

@@ -18,15 +18,13 @@ package com.github.panpf.sketch.core.test.fetch
 import android.content.res.Resources
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -109,26 +107,26 @@ class ResourceUriFetcherTest {
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
-        fetcherFactory.create(sketch, LoadRequest(context, androidResUriByName))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, LoadRequest(context, androidResUriById))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, androidResUriByName))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, androidResUriById))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, androidResUriByName))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, androidResUriByName))!!.apply {
             Assert.assertEquals(androidResUriByName, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, androidResUriById))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, androidResUriById))!!.apply {
             Assert.assertEquals(androidResUriById, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, httpUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, httpUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, contentUri)))
     }
 
     @Test
@@ -153,14 +151,14 @@ class ResourceUriFetcherTest {
         assertNoThrow {
             runBlocking {
                 newResourceUri("drawable", "ic_launcher").let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
         assertNoThrow {
             runBlocking {
                 newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -168,7 +166,7 @@ class ResourceUriFetcherTest {
         assertNoThrow {
             runBlocking {
                 newResourceUri(context.packageName, "drawable", "ic_launcher").let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -178,7 +176,7 @@ class ResourceUriFetcherTest {
                     context.packageName,
                     com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
                 ).let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -186,7 +184,7 @@ class ResourceUriFetcherTest {
         assertNoThrow {
             runBlocking {
                 context.newResourceUri("drawable", "ic_launcher").let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -194,7 +192,7 @@ class ResourceUriFetcherTest {
             runBlocking {
                 context.newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
                     .let {
-                        ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                        ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                     }.fetch()
             }.getOrThrow()
         }
@@ -202,7 +200,7 @@ class ResourceUriFetcherTest {
         assertThrow(Resources.NotFoundException::class) {
             runBlocking {
                 "${ResourceUriFetcher.SCHEME}://".let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -210,7 +208,7 @@ class ResourceUriFetcherTest {
         assertThrow(Resources.NotFoundException::class) {
             runBlocking {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=fakePackageName".let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -218,7 +216,7 @@ class ResourceUriFetcherTest {
         assertThrow(Resources.NotFoundException::class) {
             runBlocking {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resId=errorResId".let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -226,7 +224,7 @@ class ResourceUriFetcherTest {
         assertThrow(Resources.NotFoundException::class) {
             runBlocking {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resType=drawable&resName=34&error".let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -234,7 +232,7 @@ class ResourceUriFetcherTest {
         assertThrow(Resources.NotFoundException::class) {
             runBlocking {
                 "${ResourceUriFetcher.SCHEME}://resource?packageName=${context.packageName}&resType=drawable&resName=0".let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
         }
@@ -242,14 +240,14 @@ class ResourceUriFetcherTest {
         Assert.assertTrue(
             runBlocking {
                 newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow().dataSource is DrawableDataSource
         )
         Assert.assertTrue(
             runBlocking {
                 newResourceUri(com.github.panpf.sketch.test.utils.R.raw.sample).let {
-                    ResourceUriFetcher(sketch, LoadRequest(context, it), Uri.parse(it))
+                    ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow().dataSource is ResourceDataSource
         )

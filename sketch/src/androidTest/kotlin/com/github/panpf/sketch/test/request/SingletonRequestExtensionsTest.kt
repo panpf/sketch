@@ -13,25 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.test.util
+package com.github.panpf.sketch.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.enqueue
+import com.github.panpf.sketch.request.execute
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.NetworkObserver
-import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class NetworkObserverTest {
+class SingletonRequestExtensionsTest {
 
     @Test
-    fun test() {
+    fun testExecuteAndEnqueue() {
         val context = getTestContext()
-        NetworkObserver(context).apply {
-            Assert.assertEquals(context.isCellularNetworkConnected(), isCellularNetworkConnected)
-            shutdown()
+
+        ImageRequest(context, AssetImages.jpeg.uri).let { request ->
+            runBlocking { request.execute() }
+        }.apply {
+            Assert.assertTrue(this is ImageResult.Success)
+        }
+
+        ImageRequest(context, AssetImages.jpeg.uri).let { request ->
+            runBlocking { request.enqueue().job.await() }
+        }.apply {
+            Assert.assertTrue(this is ImageResult.Success)
         }
     }
 }

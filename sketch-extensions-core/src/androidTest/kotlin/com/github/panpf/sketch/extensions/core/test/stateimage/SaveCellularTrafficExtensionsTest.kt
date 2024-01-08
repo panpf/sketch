@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -71,14 +71,14 @@ class SaveCellularTrafficExtensionsTest {
     @Test
     fun testSaveCellularTrafficCondition() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        val request = ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }
 
         SaveCellularTrafficCondition.apply {
             Assert.assertTrue(
                 accept(
-                    request.newDisplayRequest {
+                    request.newRequest {
                         depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
                     },
                     DepthException("")
@@ -86,7 +86,7 @@ class SaveCellularTrafficExtensionsTest {
             )
             Assert.assertFalse(
                 accept(
-                    request.newDisplayRequest {
+                    request.newRequest {
                         depth(MEMORY, SAVE_CELLULAR_TRAFFIC_KEY)
                     },
                     DepthException("")

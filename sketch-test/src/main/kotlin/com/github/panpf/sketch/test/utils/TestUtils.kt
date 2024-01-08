@@ -73,12 +73,6 @@ fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null
     return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }
 
-fun ImageRequest.toRequestContext(sketch: Sketch, resizeSize: Size? = null): RequestContext {
-    return RequestContext(sketch, this).apply {
-        this.resizeSize = resizeSize ?: runBlocking { resizeSizeResolver.size() }
-    }
-}
-
 fun ImageRequest.decode(sketch: Sketch): BitmapDecodeResult {
     val request = this@decode
     val fetchResult = runBlocking {

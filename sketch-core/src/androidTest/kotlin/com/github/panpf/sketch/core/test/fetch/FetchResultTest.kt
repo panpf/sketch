@@ -16,14 +16,14 @@
 package com.github.panpf.sketch.core.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.DefaultFetchResult
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +35,7 @@ class FetchResultTest {
     @Test
     fun testCreateFunction() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, "")
+        val request = ImageRequest(context, "")
 
         FetchResult(
             FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
@@ -48,7 +48,7 @@ class FetchResultTest {
     @Test
     fun testDataFrom() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, "")
+        val request = ImageRequest(context, "")
 
         FetchResult(
             FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
@@ -68,7 +68,7 @@ class FetchResultTest {
     @Test
     fun testToString() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, "")
+        val request = ImageRequest(context, "")
 
         FetchResult(
             FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
@@ -94,7 +94,7 @@ class FetchResultTest {
     @Test
     fun testHeaderBytes() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, "")
+        val request = ImageRequest(context, "")
 
         val bytes = buildList {
             var number = 1

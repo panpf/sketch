@@ -19,7 +19,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
@@ -27,12 +26,10 @@ import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.ResDrawable
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -47,29 +44,28 @@ class DrawableBitmapDecoderTest {
 
     @Test
     fun testFactory() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
         val factory = DrawableBitmapDecoder.Factory()
 
         Assert.assertEquals("DrawableBitmapDecoder", factory.toString())
 
         // normal
-        LoadRequest(
+        ImageRequest(
             context,
             newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)
         ).let {
             val fetcher = sketch.components.newFetcherOrThrow(it)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            factory.create(sketch, it.toRequestContext(), fetchResult)
+            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // data error
-        LoadRequest(context, AssetImages.png.uri).let {
+        ImageRequest(context, AssetImages.png.uri).let {
             val fetcher = sketch.components.newFetcherOrThrow(it)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            factory.create(sketch, it.toRequestContext(), fetchResult)
+            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
@@ -95,18 +91,17 @@ class DrawableBitmapDecoderTest {
 
     @Test
     fun testDecode() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
 
         val factory = DrawableBitmapDecoder.Factory()
         val imageWidth = 50.dp2px
         val imageHeight = 40.dp2px
 
-//        LoadRequest(context, newResourceUri(R.drawable.test)).run {
+//        ImageRequest(context, newResourceUri(R.drawable.test)).run {
 //            val fetcher = sketch.components.newFetcherOrThrow(this)
 //            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
 //            runBlocking {
-//                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+//                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
 //            }.getOrThrow()
 //        }.apply {
 //            Assert.assertEquals(
@@ -121,13 +116,13 @@ class DrawableBitmapDecoderTest {
 //            Assert.assertNull(transformedList)
 //        }
 //
-//        LoadRequest(context, newResourceUri(R.drawable.test)) {
+//        ImageRequest(context, newResourceUri(R.drawable.test)) {
 //            bitmapConfig(Bitmap.Config.RGB_565)
 //        }.run {
 //            val fetcher = sketch.components.newFetcherOrThrow(this)
 //            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
 //            runBlocking {
-//                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+//                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
 //            }.getOrThrow()
 //        }.apply {
 //            Assert.assertEquals(
@@ -142,13 +137,13 @@ class DrawableBitmapDecoderTest {
 //            Assert.assertNull(transformedList)
 //        }
 
-        LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)) {
+        ImageRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)) {
             resize(imageWidth / 2, imageWidth / 2)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.apply {
             val scale = min(
@@ -167,13 +162,13 @@ class DrawableBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
         }
 
-        LoadRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)) {
+        ImageRequest(context, newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.test)) {
             resize(imageWidth * 2, imageWidth * 2)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(), fetchResult)!!.decode()
+                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.apply {
             val scale = min(
@@ -192,12 +187,12 @@ class DrawableBitmapDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
         }
 
-        LoadRequest(context, newResourceUri(8801)).run {
+        ImageRequest(context, newResourceUri(8801)).run {
             assertThrow(Resources.NotFoundException::class) {
                 runBlocking {
                     factory.create(
                         sketch = sketch,
-                        requestContext = this@run.toRequestContext(),
+                        requestContext = this@run.toRequestContext(sketch),
                         fetchResult = FetchResult(
                             dataSource = DrawableDataSource(
                                 sketch = sketch,
@@ -214,8 +209,4 @@ class DrawableBitmapDecoderTest {
     }
 
     private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
-}
-
-fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
-    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
 }

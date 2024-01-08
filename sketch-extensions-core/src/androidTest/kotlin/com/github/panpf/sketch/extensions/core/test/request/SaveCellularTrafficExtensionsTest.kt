@@ -20,7 +20,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
@@ -31,6 +30,7 @@ import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import org.junit.Assert
 import org.junit.Test
@@ -41,29 +41,29 @@ class SaveCellularTrafficExtensionsTest {
 
     @Test
     fun testSaveCellularTraffic() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg").apply {
+        ImageRequest(context, "http://sample.com/sample.jpeg").apply {
             Assert.assertFalse(isSaveCellularTraffic)
         }
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).saveCellularTraffic()
-        }.apply {
-            Assert.assertTrue(isSaveCellularTraffic)
-        }
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).saveCellularTraffic(false)
-        }.apply {
-            Assert.assertFalse(isSaveCellularTraffic)
-        }
-
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic()
         }.apply {
             Assert.assertTrue(isSaveCellularTraffic)
         }
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            saveCellularTraffic(false)
+        }.apply {
+            Assert.assertFalse(isSaveCellularTraffic)
+        }
+
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            saveCellularTraffic()
+        }.apply {
+            Assert.assertTrue(isSaveCellularTraffic)
+        }
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic(false)
         }.apply {
             Assert.assertFalse(isSaveCellularTraffic)
@@ -84,44 +84,44 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
-        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
+        val key1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).key
+        val key2 = ImageRequest(context, AssetImages.svg.uri) {
             saveCellularTraffic()
-        }.toRequestContext().key
+        }.toRequestContext(sketch).key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
+        val cacheKey1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, AssetImages.svg.uri) {
             saveCellularTraffic(true)
-        }.toRequestContext().cacheKey
+        }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
     @Test
     fun testIgnoreSaveCellularTraffic() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg").apply {
+        ImageRequest(context, "http://sample.com/sample.jpeg").apply {
             Assert.assertFalse(isIgnoredSaveCellularTraffic)
         }
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).ignoreSaveCellularTraffic()
-        }.apply {
-            Assert.assertTrue(isIgnoredSaveCellularTraffic)
-        }
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).ignoreSaveCellularTraffic(false)
-        }.apply {
-            Assert.assertFalse(isIgnoredSaveCellularTraffic)
-        }
-
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             ignoreSaveCellularTraffic()
         }.apply {
             Assert.assertTrue(isIgnoredSaveCellularTraffic)
         }
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            ignoreSaveCellularTraffic(false)
+        }.apply {
+            Assert.assertFalse(isIgnoredSaveCellularTraffic)
+        }
+
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            ignoreSaveCellularTraffic()
+        }.apply {
+            Assert.assertTrue(isIgnoredSaveCellularTraffic)
+        }
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             ignoreSaveCellularTraffic(false)
         }.apply {
             Assert.assertFalse(isIgnoredSaveCellularTraffic)
@@ -142,44 +142,44 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isIgnoredSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
-        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
+        val key1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).key
+        val key2 = ImageRequest(context, AssetImages.svg.uri) {
             ignoreSaveCellularTraffic()
-        }.toRequestContext().key
+        }.toRequestContext(sketch).key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
+        val cacheKey1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, AssetImages.svg.uri) {
             ignoreSaveCellularTraffic(true)
-        }.toRequestContext().cacheKey
+        }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
     @Test
     fun testSetDepthFromSaveCellularTraffic() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg").apply {
+        ImageRequest(context, "http://sample.com/sample.jpeg").apply {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.apply {
-            Assert.assertTrue(isDepthFromSaveCellularTraffic)
-        }
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
-            (this as ImageRequest.Builder).depth(NETWORK, "$SAVE_CELLULAR_TRAFFIC_KEY:error")
-        }.apply {
-            Assert.assertFalse(isDepthFromSaveCellularTraffic)
-        }
-
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertTrue(isDepthFromSaveCellularTraffic)
         }
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            depth(NETWORK, "$SAVE_CELLULAR_TRAFFIC_KEY:error")
+        }.apply {
+            Assert.assertFalse(isDepthFromSaveCellularTraffic)
+        }
+
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
+        }.apply {
+            Assert.assertTrue(isDepthFromSaveCellularTraffic)
+        }
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(NETWORK, "$SAVE_CELLULAR_TRAFFIC_KEY:error")
         }.apply {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
@@ -200,16 +200,16 @@ class SaveCellularTrafficExtensionsTest {
             Assert.assertFalse(isDepthFromSaveCellularTraffic)
         }
 
-        val key1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().key
-        val key2 = DisplayRequest(context, AssetImages.svg.uri) {
+        val key1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).key
+        val key2 = ImageRequest(context, AssetImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.toRequestContext().key
+        }.toRequestContext(sketch).key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = DisplayRequest(context, AssetImages.svg.uri).toRequestContext().cacheKey
-        val cacheKey2 = DisplayRequest(context, AssetImages.svg.uri) {
+        val cacheKey1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, AssetImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.toRequestContext().cacheKey
+        }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -217,25 +217,25 @@ class SaveCellularTrafficExtensionsTest {
     fun testIsCausedBySaveCellularTraffic() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertTrue(isCausedBySaveCellularTraffic(this, DepthException("")))
         }
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertFalse(isCausedBySaveCellularTraffic(this, Exception("")))
         }
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.apply {
             Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException("")))
         }
 
-        DisplayRequest(context, "http://sample.com/sample.jpeg") {
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
             depth(LOCAL)
         }.apply {
             Assert.assertFalse(isCausedBySaveCellularTraffic(this, DepthException("")))

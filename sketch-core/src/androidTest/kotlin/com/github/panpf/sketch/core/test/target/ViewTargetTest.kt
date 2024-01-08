@@ -20,11 +20,11 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -33,8 +33,8 @@ class ViewTargetTest {
 
     @Test
     fun test() {
-        val context = getTestContext()
-        val requestContext = RequestContext(ImageRequest(context, null))
+        val (context, sketch) = getTestContextAndSketch()
+        val requestContext = RequestContext(sketch, ImageRequest(context, null))
         TestImageViewTarget(ImageView(context)).apply {
             onStart(requestContext, null)
             onError(requestContext, null)

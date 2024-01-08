@@ -16,13 +16,11 @@
 package com.github.panpf.sketch.core.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.newFileUri
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -69,83 +67,83 @@ class FileUriFetcherTest {
 
         val fetcherFactory = FileUriFetcher.Factory()
 
-        fetcherFactory.create(sketch, LoadRequest(context, filePath))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath))!!.apply {
             Assert.assertEquals(filePath, this.request.uriString)
             Assert.assertEquals(filePath, this.file.path)
         }
-        fetcherFactory.create(sketch, LoadRequest(context, filePathUri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePathUri))!!.apply {
             Assert.assertEquals(filePathUri, this.request.uriString)
             Assert.assertEquals(filePath, this.file.path)
         }
-        fetcherFactory.create(sketch, LoadRequest(context, filePath2))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath2))!!.apply {
             Assert.assertEquals(filePath2, this.request.uriString)
             Assert.assertEquals(filePath2, this.file.path)
         }
-        fetcherFactory.create(sketch, LoadRequest(context, filePath2Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath2Uri))!!.apply {
             Assert.assertEquals(filePath2Uri, this.request.uriString)
             Assert.assertEquals(filePath2, this.file.path)
         }
-        fetcherFactory.create(sketch, LoadRequest(context, filePath3Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath3Uri))!!.apply {
             Assert.assertEquals(filePath3Uri, this.request.uriString)
             Assert.assertEquals(filePath3, this.file.path)
         }
-        fetcherFactory.create(sketch, LoadRequest(context, filePath4Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath4Uri))!!.apply {
             Assert.assertEquals(filePath4Uri, this.request.uriString)
             Assert.assertEquals(filePath4, this.file.path)
         }
 
-        fetcherFactory.create(sketch, DisplayRequest(context, filePath))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath))!!.apply {
             Assert.assertEquals(filePath, this.request.uriString)
             Assert.assertEquals(filePath, this.file.path)
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, filePathUri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePathUri))!!.apply {
             Assert.assertEquals(filePathUri, this.request.uriString)
             Assert.assertEquals(filePath, this.file.path)
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, filePath2))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath2))!!.apply {
             Assert.assertEquals(filePath2, this.request.uriString)
             Assert.assertEquals(filePath2, this.file.path)
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, filePath2Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath2Uri))!!.apply {
             Assert.assertEquals(filePath2Uri, this.request.uriString)
             Assert.assertEquals(filePath2, this.file.path)
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, filePath3Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath3Uri))!!.apply {
             Assert.assertEquals(filePath3Uri, this.request.uriString)
             Assert.assertEquals(filePath3, this.file.path)
         }
-        fetcherFactory.create(sketch, DisplayRequest(context, filePath4Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath4Uri))!!.apply {
             Assert.assertEquals(filePath4Uri, this.request.uriString)
             Assert.assertEquals(filePath4, this.file.path)
         }
 
-        fetcherFactory.create(sketch, DownloadRequest(context, filePath))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath))!!.apply {
             Assert.assertEquals(filePath, this.request.uriString)
             Assert.assertEquals(filePath, this.file.path)
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, filePathUri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePathUri))!!.apply {
             Assert.assertEquals(filePathUri, this.request.uriString)
             Assert.assertEquals(filePath, this.file.path)
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, filePath2))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath2))!!.apply {
             Assert.assertEquals(filePath2, this.request.uriString)
             Assert.assertEquals(filePath2, this.file.path)
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, filePath2Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath2Uri))!!.apply {
             Assert.assertEquals(filePath2Uri, this.request.uriString)
             Assert.assertEquals(filePath2, this.file.path)
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, filePath3Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath3Uri))!!.apply {
             Assert.assertEquals(filePath3Uri, this.request.uriString)
             Assert.assertEquals(filePath3, this.file.path)
         }
-        fetcherFactory.create(sketch, DownloadRequest(context, filePath4Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, filePath4Uri))!!.apply {
             Assert.assertEquals(filePath4Uri, this.request.uriString)
             Assert.assertEquals(filePath4, this.file.path)
         }
 
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, ftpUri)))
-        Assert.assertNull(fetcherFactory.create(sketch, LoadRequest(context, contentUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, ftpUri)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, contentUri)))
     }
 
     @Test
@@ -169,7 +167,7 @@ class FileUriFetcherTest {
         val fetcherFactory = FileUriFetcher.Factory()
         val fileUri = "file:///sdcard/sample.jpg"
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, fileUri))!!
+        val fetcher = fetcherFactory.create(sketch, ImageRequest(context, fileUri))!!
         val source = runBlocking {
             fetcher.fetch()
         }.getOrThrow().dataSource

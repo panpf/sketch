@@ -16,8 +16,9 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.request.DownloadRequest
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
 import org.junit.Assert
@@ -32,18 +33,18 @@ class CombinedProgressListenerTest {
         val listenerCallbackList = mutableListOf<String>()
         Assert.assertEquals(listOf<String>(), listenerCallbackList)
 
-        val listener1 = ProgressListener<DownloadRequest> { _, _, _ ->
+        val listener1 = ProgressListener { _, _ ->
             listenerCallbackList.add("onUpdateProgress1")
         }
-        val listener2 = ProgressListener<DownloadRequest> { _, _, _ ->
+        val listener2 = ProgressListener { _, _ ->
             listenerCallbackList.add("onUpdateProgress2")
         }
-        val listener3 = ProgressListener<DownloadRequest> { _, _, _ ->
+        val listener3 = ProgressListener { _, _ ->
             listenerCallbackList.add("onUpdateProgress3")
         }
 
         val context = getTestContext()
-        val request = DownloadRequest(context, "http://sample.com/sample.jpeg")
+        val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
         val combinedProgressListener = CombinedProgressListener(
             fromProviderProgressListener = listener1,
@@ -57,7 +58,7 @@ class CombinedProgressListenerTest {
             combinedProgressListener.fromBuilderProgressListeners!!.first()
         )
 
-        combinedProgressListener.onUpdateProgress(request, 10000, 2000)
+        combinedProgressListener.onUpdateProgress(request, Progress(10000, 2000))
         Assert.assertEquals(
             listOf("onUpdateProgress1", "onUpdateProgress2", "onUpdateProgress3"),
             listenerCallbackList

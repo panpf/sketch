@@ -22,15 +22,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -44,26 +43,26 @@ class RequestContextTest {
 
     @Test
     fun testRequest() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            val request0 = LoadRequest(context, AssetImages.jpeg.uri)
-            request0.toRequestContext().apply {
+            val request0 = ImageRequest(context, AssetImages.jpeg.uri)
+            request0.toRequestContext(sketch).apply {
                 Assert.assertSame(request0, request)
                 Assert.assertEquals(listOf(request0), requestList)
 
-                val request1 = request0.newLoadRequest()
+                val request1 = request0.newRequest()
                 setNewRequest(request1)
                 Assert.assertSame(request0, request)
                 Assert.assertEquals(listOf(request0), requestList)
 
-                val request2 = request0.newLoadRequest {
+                val request2 = request0.newRequest {
                     depth(LOCAL)
                 }
                 setNewRequest(request2)
                 Assert.assertSame(request2, request)
                 Assert.assertEquals(listOf(request0, request2), requestList)
 
-                val request3 = request2.newLoadRequest {
+                val request3 = request2.newRequest {
                     memoryCachePolicy(DISABLED)
                 }
                 setNewRequest(request3)
@@ -75,9 +74,9 @@ class RequestContextTest {
 
     @Test
     fun testKey() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            DisplayRequest(context, AssetImages.jpeg.uri).toRequestContext().apply {
+            ImageRequest(context, AssetImages.jpeg.uri).toRequestContext(sketch).apply {
                 val key0 = key
 
                 setNewRequest(request.newRequest())
@@ -118,9 +117,9 @@ class RequestContextTest {
 
     @Test
     fun testCacheKey() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            DisplayRequest(context, AssetImages.jpeg.uri).toRequestContext().apply {
+            ImageRequest(context, AssetImages.jpeg.uri).toRequestContext(sketch).apply {
                 val cacheKey0 = cacheKey
 
                 setNewRequest(request.newRequest())
@@ -194,9 +193,9 @@ class RequestContextTest {
             extras = null,
             dataFrom = NETWORK
         )
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
 
-        request.toRequestContext().apply {
+        request.toRequestContext(sketch).apply {
             assertThrow(IllegalStateException::class) {
                 pendingCountDrawable(countDrawable, "test")
             }

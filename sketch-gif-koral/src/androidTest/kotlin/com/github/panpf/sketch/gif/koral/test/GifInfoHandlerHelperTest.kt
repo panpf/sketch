@@ -31,7 +31,6 @@ import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -51,7 +50,7 @@ class GifInfoHandlerHelperTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.animGif.uri),
+            request = ImageRequest(context, AssetImages.animGif.uri),
             assetFileName = AssetImages.animGif.fileName
         ).getFile()
         val snapshot = sketch.resultCache[AssetImages.animGif.uri + "_data_source"]!!
@@ -59,7 +58,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             ByteArrayDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, "http://sample.com/sample.gif"),
+                request = ImageRequest(context, "http://sample.com/sample.gif"),
                 dataFrom = NETWORK,
                 data = snapshot.file.readBytes()
             )
@@ -79,7 +78,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             DiskCacheDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, AssetImages.animGif.uri),
+                request = ImageRequest(context, AssetImages.animGif.uri),
                 dataFrom = LOCAL,
                 snapshot = snapshot
             )
@@ -99,7 +98,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(
+                request = ImageRequest(
                     context,
                     newResourceUri(com.github.panpf.sketch.resources.R.raw.sample_anim)
                 ),
@@ -123,7 +122,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             ContentDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, Uri.fromFile(snapshot.file).toString()),
+                request = ImageRequest(context, Uri.fromFile(snapshot.file).toString()),
                 contentUri = Uri.fromFile(snapshot.file),
             )
         ).apply {
@@ -142,7 +141,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             FileDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, Uri.fromFile(snapshot.file).toString()),
+                request = ImageRequest(context, Uri.fromFile(snapshot.file).toString()),
                 file = snapshot.file,
             )
         ).apply {
@@ -161,7 +160,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, AssetImages.animGif.uri),
+                request = ImageRequest(context, AssetImages.animGif.uri),
                 assetFileName = AssetImages.animGif.fileName
             )
         ).apply {
@@ -183,7 +182,7 @@ class GifInfoHandlerHelperTest {
                     override val sketch: Sketch
                         get() = sketch
                     override val request: ImageRequest
-                        get() = LoadRequest(context, Uri.fromFile(snapshot.file).toString())
+                        get() = ImageRequest(context, Uri.fromFile(snapshot.file).toString())
                     override val dataFrom: DataFrom
                         get() = LOCAL
                 }

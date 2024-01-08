@@ -16,14 +16,12 @@
 package com.github.panpf.sketch.core.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.request.ALLOW_SET_NULL_DRAWABLE_KEY
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import org.junit.Assert
 import org.junit.Test
@@ -34,31 +32,31 @@ class AllowSetNullDrawableExtensionsTest {
 
     @Test
     fun testAllowSetNullDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        (DisplayRequest(context, AssetImages.animGif.uri) as ImageRequest).apply {
+        ImageRequest(context, AssetImages.animGif.uri).apply {
             Assert.assertFalse(allowSetNullDrawable)
         }
-        (DisplayRequest(context, AssetImages.animGif.uri) {
-            (this as ImageRequest.Builder).allowSetNullDrawable()
-        } as ImageRequest).apply {
-            Assert.assertTrue(allowSetNullDrawable)
-        }
-        (DisplayRequest(context, AssetImages.animGif.uri) {
-            (this as ImageRequest.Builder).allowSetNullDrawable(false)
-        } as ImageRequest).apply {
-            Assert.assertFalse(allowSetNullDrawable)
-        }
-
-        DisplayRequest(context, AssetImages.animGif.uri).apply {
-            Assert.assertFalse(allowSetNullDrawable)
-        }
-        DisplayRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, AssetImages.animGif.uri) {
             allowSetNullDrawable()
         }.apply {
             Assert.assertTrue(allowSetNullDrawable)
         }
-        DisplayRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, AssetImages.animGif.uri) {
+            allowSetNullDrawable(false)
+        }.apply {
+            Assert.assertFalse(allowSetNullDrawable)
+        }
+
+        ImageRequest(context, AssetImages.animGif.uri).apply {
+            Assert.assertFalse(allowSetNullDrawable)
+        }
+        ImageRequest(context, AssetImages.animGif.uri) {
+            allowSetNullDrawable()
+        }.apply {
+            Assert.assertTrue(allowSetNullDrawable)
+        }
+        ImageRequest(context, AssetImages.animGif.uri) {
             allowSetNullDrawable(false)
         }.apply {
             Assert.assertFalse(allowSetNullDrawable)
@@ -78,21 +76,21 @@ class AllowSetNullDrawableExtensionsTest {
             Assert.assertFalse(allowSetNullDrawable)
         }
 
-        LoadRequest(context, AssetImages.animGif.uri).toRequestContext().key.apply {
+        ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).key.apply {
             Assert.assertFalse(contains(ALLOW_SET_NULL_DRAWABLE_KEY))
         }
-        LoadRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, AssetImages.animGif.uri) {
             allowSetNullDrawable()
-        }.toRequestContext().key.apply {
+        }.toRequestContext(sketch).key.apply {
             Assert.assertTrue(contains(ALLOW_SET_NULL_DRAWABLE_KEY))
         }
 
-        LoadRequest(context, AssetImages.animGif.uri).toRequestContext().cacheKey.apply {
+        ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).cacheKey.apply {
             Assert.assertFalse(contains(ALLOW_SET_NULL_DRAWABLE_KEY))
         }
-        LoadRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, AssetImages.animGif.uri) {
             allowSetNullDrawable()
-        }.toRequestContext().cacheKey.apply {
+        }.toRequestContext(sketch).cacheKey.apply {
             Assert.assertFalse(contains(ALLOW_SET_NULL_DRAWABLE_KEY))
         }
     }

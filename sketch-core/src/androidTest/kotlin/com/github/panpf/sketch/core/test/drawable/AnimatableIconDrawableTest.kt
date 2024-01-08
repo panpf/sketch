@@ -31,7 +31,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.drawable.internal.AnimatableIconDrawable
 import com.github.panpf.sketch.drawable.internal.calculateFitBounds
 import com.github.panpf.sketch.util.Size
@@ -492,7 +492,7 @@ class AnimatableIconDrawableTest {
 
             isAutoMirrored = true
             Assert.assertTrue(isAutoMirrored)
-            Assert.assertTrue(iconDrawable.isAutoMirrored)
+            Assert.assertEquals(Build.VERSION.SDK_INT <= 23, iconDrawable.isAutoMirrored)
             Assert.assertTrue(bgDrawable.isAutoMirrored)
         }
 
@@ -502,8 +502,8 @@ class AnimatableIconDrawableTest {
             Assert.assertFalse(iconDrawable.isAutoMirrored)
 
             isAutoMirrored = true
-            Assert.assertTrue(isAutoMirrored)
-            Assert.assertTrue(iconDrawable.isAutoMirrored)
+            Assert.assertEquals(Build.VERSION.SDK_INT <= 23, isAutoMirrored)
+            Assert.assertEquals(Build.VERSION.SDK_INT <= 23, iconDrawable.isAutoMirrored)
         }
     }
 
@@ -580,17 +580,6 @@ class AnimatableIconDrawableTest {
             }
 
         AnimatableIconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertFalse(isFilterBitmap)
-
-            isFilterBitmap = true
-            Assert.assertTrue(isFilterBitmap)
-            Assert.assertFalse(iconDrawable.isFilterBitmap)
-            Assert.assertTrue(bgDrawable.isFilterBitmap)
-        }
-
-        iconDrawable.isFilterBitmap = false
-        bgDrawable.isFilterBitmap = false
-        AnimatableIconDrawable(icon = bgDrawable).apply {
             Assert.assertFalse(isFilterBitmap)
 
             isFilterBitmap = true

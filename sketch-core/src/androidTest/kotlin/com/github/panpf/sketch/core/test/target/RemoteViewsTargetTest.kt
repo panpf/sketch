@@ -17,11 +17,12 @@ package com.github.panpf.sketch.core.test.target
 
 import android.widget.RemoteViews
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.RemoteViewsTarget
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
@@ -32,10 +33,10 @@ class RemoteViewsTargetTest {
 
     @Test
     fun test() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         val remoteViews =
             RemoteViews(context.packageName, android.R.layout.activity_list_item)
-        val requestContext = RequestContext(ImageRequest(context, null))
+        val requestContext = RequestContext(sketch, ImageRequest(context, null))
 
         var callbackCount = 0
         RemoteViewsTarget(remoteViews, android.R.id.icon) {
@@ -47,38 +48,39 @@ class RemoteViewsTargetTest {
             Assert.assertEquals(1, callbackCount)
 
             onStart(requestContext, null)
-            Assert.assertEquals(2, callbackCount)
+            Assert.assertEquals(1, callbackCount)
 
             onError(requestContext, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
-            Assert.assertEquals(3, callbackCount)
+            Assert.assertEquals(2, callbackCount)
 
             onError(requestContext, null)
-            Assert.assertEquals(4, callbackCount)
+            Assert.assertEquals(2, callbackCount)
 
             onSuccess(requestContext, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
-            Assert.assertEquals(5, callbackCount)
+            Assert.assertEquals(3, callbackCount)
         }
 
         callbackCount = 0
-        RemoteViewsTarget(remoteViews, android.R.id.icon, ignoreNullDrawable = true) {
+        val requestContext2 = RequestContext(sketch, ImageRequest(context, null){allowSetNullDrawable()})
+        RemoteViewsTarget(remoteViews, android.R.id.icon) {
             callbackCount++
         }.apply {
             Assert.assertEquals(0, callbackCount)
 
-            onStart(requestContext, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
+            onStart(requestContext2, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
             Assert.assertEquals(1, callbackCount)
 
-            onStart(requestContext, null)
-            Assert.assertEquals(1, callbackCount)
-
-            onError(requestContext, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
+            onStart(requestContext2, null)
             Assert.assertEquals(2, callbackCount)
 
-            onError(requestContext, null)
-            Assert.assertEquals(2, callbackCount)
-
-            onSuccess(requestContext, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
+            onError(requestContext2, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
             Assert.assertEquals(3, callbackCount)
+
+            onError(requestContext2, null)
+            Assert.assertEquals(4, callbackCount)
+
+            onSuccess(requestContext2, context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage())
+            Assert.assertEquals(5, callbackCount)
         }
     }
 }

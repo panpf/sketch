@@ -22,7 +22,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
-import com.github.panpf.sketch.gif.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.size

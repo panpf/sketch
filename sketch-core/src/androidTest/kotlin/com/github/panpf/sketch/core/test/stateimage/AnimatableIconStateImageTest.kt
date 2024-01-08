@@ -19,14 +19,15 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.internal.AnimatableIconDrawable
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
@@ -37,9 +38,8 @@ class AnimatableIconStateImageTest {
 
     @Test
     fun testGetDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         val iconDrawable =
             context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val greenBgDrawable = ColorDrawable(Color.GREEN)
@@ -47,40 +47,48 @@ class AnimatableIconStateImageTest {
         AnimatableIconStateImage(iconDrawable) {
             background(greenBgDrawable)
         }.apply {
-            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
-                Assert.assertEquals(greenBgDrawable, background)
-                Assert.assertNull(iconSize)
-            }
+            getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable
+                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertEquals(greenBgDrawable, background)
+                    Assert.assertNull(iconSize)
+                }
         }
 
         AnimatableIconStateImage(iconDrawable) {
             iconSize(40)
             resBackground(android.R.drawable.bottom_bar)
         }.apply {
-            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
-                Assert.assertTrue(background is BitmapDrawable)
-                Assert.assertEquals(Size(40, 40), iconSize)
-            }
+            getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable
+                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertTrue(background is BitmapDrawable)
+                    Assert.assertEquals(Size(40, 40), iconSize)
+                }
         }
 
         AnimatableIconStateImage(iconDrawable) {
             colorBackground(Color.BLUE)
         }.apply {
-            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
-                Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
-                Assert.assertNull(iconSize)
-            }
+            getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable
+                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
+                    Assert.assertNull(iconSize)
+                }
         }
 
         AnimatableIconStateImage(iconDrawable).apply {
-            getImage(sketch, request, null).asOrNull<AnimatableIconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
-                Assert.assertNull(background)
-                Assert.assertNull(iconSize)
-            }
+            getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable
+                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertNull(background)
+                    Assert.assertNull(iconSize)
+                }
         }
 
 

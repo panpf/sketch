@@ -20,20 +20,21 @@ import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.gif.test.getTestContext
-import com.github.panpf.sketch.gif.test.newSketch
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrNull
+import com.github.panpf.sketch.test.utils.newSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DisplayRequestExecuteTest {
+class ImageRequestExecuteTest {
 
     @Test
     fun testDisallowAnimatedImage() {
@@ -47,32 +48,32 @@ class DisplayRequestExecuteTest {
             httpStack(TestHttpStack(context))
         }
         val imageUri = AssetImages.animGif.uri
-        val request = DisplayRequest(context, imageUri)
+        val request = ImageRequest(context, imageUri)
 
         request.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertTrue(drawable is SketchAnimatableDrawable)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertTrue(image.asOrNull<DrawableImage>()!!.drawable is SketchAnimatableDrawable)
             }
 
-        request.newDisplayRequest {
+        request.newRequest {
             disallowAnimatedImage(false)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertTrue(drawable is SketchAnimatableDrawable)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertTrue(image.asOrNull<DrawableImage>()!!.drawable is SketchAnimatableDrawable)
             }
 
-        request.newDisplayRequest {
+        request.newRequest {
             disallowAnimatedImage(null)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertTrue(drawable is SketchAnimatableDrawable)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertTrue(image.asOrNull<DrawableImage>()!!.drawable is SketchAnimatableDrawable)
             }
 
-        request.newDisplayRequest {
+        request.newRequest {
             disallowAnimatedImage(true)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<DisplayResult.Success>()!!.apply {
-                Assert.assertFalse(drawable is SketchAnimatableDrawable)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertFalse(image.asOrNull<DrawableImage>()!!.drawable is SketchAnimatableDrawable)
             }
     }
 }

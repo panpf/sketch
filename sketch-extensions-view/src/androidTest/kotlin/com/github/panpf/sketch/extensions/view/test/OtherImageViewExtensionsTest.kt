@@ -21,7 +21,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.displayAppIconImage
 import com.github.panpf.sketch.fetch.newAppIconUri
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 import com.github.panpf.sketch.test.utils.TestGlobalLifecycle
@@ -45,7 +45,7 @@ class OtherImageViewExtensionsTest {
         Thread.sleep(300)
         val manager = imageView.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager
         val request = manager.getFieldValue<ViewTargetRequestDelegate>("currentRequestDelegate")!!
-            .getFieldValue<DisplayRequest>("initialRequest")!!
+            .getFieldValue<ImageRequest>("initialRequest")!!
         Assert.assertEquals(
             newAppIconUri(context.packageName, versionCode),
             request.uriString

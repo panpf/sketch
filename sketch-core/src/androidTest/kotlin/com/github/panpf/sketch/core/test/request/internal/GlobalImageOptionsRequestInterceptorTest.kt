@@ -20,12 +20,12 @@ package com.github.panpf.sketch.core.test.request.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resources.AssetImages
@@ -47,12 +47,12 @@ class GlobalImageOptionsRequestInterceptorTest {
             })
         }
 
-        val request = LoadRequest(context, AssetImages.jpeg.uri).apply {
+        val request = ImageRequest(context, AssetImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
         }
         runBlocking(Dispatchers.Main) {
-            RequestExecutor().execute(sketch, request, false).let { it as LoadResult }.apply {
+            RequestExecutor().execute(sketch, request, false).let { it as ImageResult }.apply {
                 Assert.assertEquals(MEMORY, this.request.depth)
                 Assert.assertEquals(WRITE_ONLY, this.request.downloadCachePolicy)
             }

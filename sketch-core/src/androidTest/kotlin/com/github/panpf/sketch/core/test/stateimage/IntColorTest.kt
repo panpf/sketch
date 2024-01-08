@@ -17,7 +17,7 @@ package com.github.panpf.sketch.core.test.stateimage
 
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.stateimage.IntColor
 import org.junit.Assert
 import org.junit.Test

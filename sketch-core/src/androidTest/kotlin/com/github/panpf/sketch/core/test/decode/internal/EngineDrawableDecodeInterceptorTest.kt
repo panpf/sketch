@@ -17,11 +17,11 @@ package com.github.panpf.sketch.core.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -37,7 +37,7 @@ class EngineDrawableDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(EngineDrawableDecodeInterceptor())
-        val loadRequest = DisplayRequest(context, AssetImages.jpeg.uri) {
+        val loadRequest = ImageRequest(context, AssetImages.jpeg.uri) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(DISABLED)
@@ -45,7 +45,7 @@ class EngineDrawableDecodeInterceptorTest {
         val chain = DrawableDecodeInterceptorChain(
             sketch = sketch,
             request = loadRequest,
-            requestContext = loadRequest.toRequestContext(),
+            requestContext = loadRequest.toRequestContext(sketch),
             fetchResult = null,
             interceptors = interceptors,
             index = 0

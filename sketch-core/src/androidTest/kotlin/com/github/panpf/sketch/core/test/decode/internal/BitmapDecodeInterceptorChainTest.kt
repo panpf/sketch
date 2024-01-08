@@ -18,14 +18,14 @@ package com.github.panpf.sketch.core.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
@@ -46,9 +46,9 @@ class BitmapDecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor2(this),
                 TestBitmapDecoderInterceptor3(this)
             )
-            val loadRequest = LoadRequest(context, AssetImages.jpeg.uri)
+            val loadRequest = ImageRequest(context, AssetImages.jpeg.uri)
             val chain = BitmapDecodeInterceptorChain(
-                sketch, loadRequest, loadRequest.toRequestContext(), null, interceptors, 0
+                sketch, loadRequest, loadRequest.toRequestContext(sketch), null, interceptors, 0
             )
             runBlocking {
                 chain.proceed()
@@ -69,9 +69,9 @@ class BitmapDecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor1(this),
                 TestBitmapDecoderInterceptor3(this),
             )
-            val loadRequest = LoadRequest(context, AssetImages.jpeg.uri)
+            val loadRequest = ImageRequest(context, AssetImages.jpeg.uri)
             val chain = BitmapDecodeInterceptorChain(
-                sketch, loadRequest, loadRequest.toRequestContext(), null, interceptors, 0
+                sketch, loadRequest, loadRequest.toRequestContext(sketch), null, interceptors, 0
             )
             runBlocking {
                 chain.proceed()

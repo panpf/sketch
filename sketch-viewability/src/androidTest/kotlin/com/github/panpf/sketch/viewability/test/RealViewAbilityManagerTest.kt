@@ -21,6 +21,11 @@ import android.util.AttributeSet
 import android.widget.ImageView.ScaleType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.RequestState
+import com.github.panpf.sketch.request.internal.Listeners
+import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.viewability.AbsAbilityImageView
 import com.github.panpf.sketch.viewability.Host
 import com.github.panpf.sketch.viewability.ImageMatrixObserver
@@ -74,7 +79,18 @@ class RealViewAbilityManagerTest {
 
     class TestAbilityImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null
-    ) : AbsAbilityImageView(context, attrs)
+    ) : AbsAbilityImageView(context, attrs) {
+
+        override val requestState = RequestState()
+
+        override fun getListener(): Listener {
+            return Listeners(listOfNotNull(super.getListener(), requestState))
+        }
+
+        override fun getProgressListener(): ProgressListener {
+            return ProgressListeners(listOfNotNull(super.getProgressListener(), requestState))
+        }
+    }
 
     class TestScaleTypeViewAbility : ViewAbility, ScaleTypeObserver {
         override var host: Host? = null

@@ -38,23 +38,17 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
 import com.github.panpf.sketch.request.Disposable
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.DownloadResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.LoadRequest
-import com.github.panpf.sketch.request.LoadResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.DelayTransformation
-import com.github.panpf.sketch.test.utils.DisplayListenerSupervisor
-import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
-import com.github.panpf.sketch.test.utils.LoadListenerSupervisor
+import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestBitmapDecoder
@@ -63,6 +57,9 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
@@ -273,7 +270,7 @@ class SketchTest {
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
-                    components.getRequestInterceptorList(DisplayRequest(context, ""))
+                    components.getRequestInterceptorList(ImageRequest(context, ""))
                 )
             }
             components {
@@ -287,7 +284,7 @@ class SketchTest {
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
-                    components.getRequestInterceptorList(DisplayRequest(context, ""))
+                    components.getRequestInterceptorList(ImageRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(
@@ -295,7 +292,7 @@ class SketchTest {
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
-                    components.getRequestInterceptorList(DisplayRequest(context, ""))
+                    components.getRequestInterceptorList(ImageRequest(context, ""))
                 )
             }
 
@@ -306,7 +303,7 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         EngineBitmapDecodeInterceptor()
                     ),
-                    components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
+                    components.getBitmapDecodeInterceptorList(ImageRequest(context, ""))
                 )
             }
             components {
@@ -320,7 +317,7 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         EngineBitmapDecodeInterceptor()
                     ),
-                    components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
+                    components.getBitmapDecodeInterceptorList(ImageRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(
@@ -328,14 +325,14 @@ class SketchTest {
                         BitmapTransformationDecodeInterceptor(),
                         EngineBitmapDecodeInterceptor()
                     ),
-                    components.getBitmapDecodeInterceptorList(DisplayRequest(context, ""))
+                    components.getBitmapDecodeInterceptorList(ImageRequest(context, ""))
                 )
             }
 
             build().apply {
                 Assert.assertEquals(
                     listOf(EngineDrawableDecodeInterceptor()),
-                    components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
+                    components.getDrawableDecodeInterceptorList(ImageRequest(context, ""))
                 )
             }
             components {
@@ -344,11 +341,11 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(TestDrawableDecodeInterceptor(), EngineDrawableDecodeInterceptor()),
-                    components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
+                    components.getDrawableDecodeInterceptorList(ImageRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(EngineDrawableDecodeInterceptor()),
-                    components.getDrawableDecodeInterceptorList(DisplayRequest(context, ""))
+                    components.getDrawableDecodeInterceptorList(ImageRequest(context, ""))
                 )
             }
 
@@ -364,35 +361,35 @@ class SketchTest {
     }
 
     @Test
-    fun testDisplayEnqueue() {
+    fun testEnqueue() {
         val (context, sketch) = getTestContextAndNewSketch()
 
         /* success */
-        val listenerSupervisor1 = DisplayListenerSupervisor()
-        val request1 = DisplayRequest(context, AssetImages.jpeg.uri) {
+        val listenerSupervisor1 = ListenerSupervisor()
+        val request1 = ImageRequest(context, AssetImages.jpeg.uri) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
             sketch.enqueue(request1).job.await()
         }
-        Assert.assertTrue(result1 is DisplayResult.Success)
+        Assert.assertTrue(result1 is ImageResult.Success)
         Assert.assertEquals(listOf("onStart", "onSuccess"), listenerSupervisor1.callbackActionList)
 
         /* error */
-        val listenerSupervisor2 = DisplayListenerSupervisor()
-        val request2 = DisplayRequest(context, errorUri) {
+        val listenerSupervisor2 = ListenerSupervisor()
+        val request2 = ImageRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
             sketch.enqueue(request2).job.await()
         }
-        Assert.assertTrue(result2 is DisplayResult.Error)
+        Assert.assertTrue(result2 is ImageResult.Error)
         Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
 
         /* cancel */
-        var disposable3: Disposable<DisplayResult>? = null
-        val listenerSupervisor3 = DisplayListenerSupervisor()
-        val request3 = DisplayRequest(context, AssetImages.jpeg.uri) {
+        var disposable3: Disposable<ImageResult>? = null
+        val listenerSupervisor3 = ListenerSupervisor()
+        val request3 = ImageRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
@@ -409,37 +406,37 @@ class SketchTest {
     }
 
     @Test
-    fun testDisplayExecute() {
+    fun testExecute() {
         val (context, sketch) = getTestContextAndNewSketch()
 
         /* success */
-        val listenerSupervisor1 = DisplayListenerSupervisor()
-        val request1 = DisplayRequest(context, AssetImages.jpeg.uri) {
+        val listenerSupervisor1 = ListenerSupervisor()
+        val request1 = ImageRequest(context, AssetImages.jpeg.uri) {
             listener(listenerSupervisor1)
         }
         val result1 = runBlocking {
             sketch.execute(request1)
         }
-        Assert.assertTrue(result1 is DisplayResult.Success)
+        Assert.assertTrue(result1 is ImageResult.Success)
         Assert.assertEquals(listOf("onStart", "onSuccess"), listenerSupervisor1.callbackActionList)
 
         /* error */
-        val listenerSupervisor2 = DisplayListenerSupervisor()
-        val request2 = DisplayRequest(context, errorUri) {
+        val listenerSupervisor2 = ListenerSupervisor()
+        val request2 = ImageRequest(context, errorUri) {
             listener(listenerSupervisor2)
         }
         val result2 = runBlocking {
             sketch.execute(request2)
         }
-        Assert.assertTrue(result2 is DisplayResult.Error)
+        Assert.assertTrue(result2 is ImageResult.Error)
         Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
 
         /* cancel */
-        var deferred3: Deferred<DisplayResult>? = null
-        val listenerSupervisor3 = DisplayListenerSupervisor {
+        var deferred3: Deferred<ImageResult>? = null
+        val listenerSupervisor3 = ListenerSupervisor {
             deferred3?.cancel()
         }
-        val request3 = DisplayRequest(context, AssetImages.jpeg.uri) {
+        val request3 = ImageRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor3)
@@ -454,8 +451,8 @@ class SketchTest {
 
         /* ViewTarget */
         val imageView = ImageView(context)
-        val listenerSupervisor4 = DisplayListenerSupervisor()
-        val request4 = DisplayRequest(imageView, AssetImages.jpeg.uri) {
+        val listenerSupervisor4 = ListenerSupervisor()
+        val request4 = ImageRequest(imageView, AssetImages.jpeg.uri) {
             listener(listenerSupervisor4)
             lifecycle(GlobalLifecycle)
         }
@@ -463,215 +460,11 @@ class SketchTest {
             try {
                 sketch.execute(request4)
             } catch (e: Exception) {
-                DisplayResult.Error(request4, null, e)
+                ImageResult.Error(request4, null, e)
             }
         }
-        Assert.assertTrue(result4 is DisplayResult.Error)
+        Assert.assertTrue(result4 is ImageResult.Error)
         Assert.assertEquals(listOf<String>(), listenerSupervisor4.callbackActionList)
-    }
-
-    @Test
-    fun testLoadEnqueue() {
-        val (context, sketch) = getTestContextAndNewSketch()
-
-        /* success */
-        val listenerSupervisor1 = LoadListenerSupervisor()
-        val request1 = LoadRequest(context, AssetImages.jpeg.uri) {
-            listener(listenerSupervisor1)
-        }
-        val result1 = runBlocking {
-            sketch.enqueue(request1).job.await()
-        }
-        Assert.assertTrue(result1 is LoadResult.Success)
-        Assert.assertEquals(listOf("onStart", "onSuccess"), listenerSupervisor1.callbackActionList)
-
-        /* error */
-        val listenerSupervisor2 = LoadListenerSupervisor()
-        val request2 = LoadRequest(context, errorUri) {
-            listener(listenerSupervisor2)
-        }
-        val result2 = runBlocking {
-            sketch.enqueue(request2).job.await()
-        }
-        Assert.assertTrue(result2 is LoadResult.Error)
-        Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
-
-        /* cancel */
-        var disposable3: Disposable<LoadResult>? = null
-        val listenerSupervisor3 = LoadListenerSupervisor {
-            disposable3?.job?.cancel()
-        }
-        val request3 = LoadRequest(context, AssetImages.jpeg.uri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            listener(listenerSupervisor3)
-        }
-        runBlocking {
-            disposable3 = sketch.enqueue(request3)
-            disposable3?.job?.join()
-        }
-        Assert.assertEquals(listOf("onStart", "onCancel"), listenerSupervisor3.callbackActionList)
-    }
-
-    @Test
-    fun testLoadExecute() {
-        val (context, sketch) = getTestContextAndNewSketch()
-
-        /* success */
-        val listenerSupervisor1 = LoadListenerSupervisor()
-        val request1 = LoadRequest(context, AssetImages.jpeg.uri) {
-            listener(listenerSupervisor1)
-        }
-        val result1 = runBlocking {
-            sketch.execute(request1)
-        }
-        Assert.assertTrue(result1 is LoadResult.Success)
-        Assert.assertEquals(listOf("onStart", "onSuccess"), listenerSupervisor1.callbackActionList)
-
-        /* error */
-        val listenerSupervisor2 = LoadListenerSupervisor()
-        val request2 = LoadRequest(context, errorUri) {
-            listener(listenerSupervisor2)
-        }
-        val result2 = runBlocking {
-            sketch.execute(request2)
-        }
-        Assert.assertTrue(result2 is LoadResult.Error)
-        Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
-
-        /* cancel */
-        var deferred3: Deferred<LoadResult>? = null
-        val listenerSupervisor3 = LoadListenerSupervisor {
-            deferred3?.cancel()
-        }
-        val request3 = LoadRequest(context, AssetImages.jpeg.uri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            listener(listenerSupervisor3)
-        }
-        runBlocking {
-            deferred3 = async {
-                sketch.execute(request3)
-            }
-            deferred3?.join()
-        }
-        Assert.assertEquals(listOf("onStart", "onCancel"), listenerSupervisor3.callbackActionList)
-    }
-
-    @Test
-    fun testDownloadEnqueue() {
-        val (context, sketch) = getTestContextAndNewSketch {
-            httpStack(TestHttpStack(it))
-        }
-
-        /* success */
-        val listenerSupervisor1 = DownloadListenerSupervisor()
-        val request1 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
-            listener(listenerSupervisor1)
-        }
-        val result1 = runBlocking {
-            sketch.enqueue(request1).job.await()
-        }
-        Assert.assertTrue(result1 is DownloadResult.Success)
-        Assert.assertEquals(
-            listOf("onStart", "onSuccess"),
-            listenerSupervisor1.callbackActionList
-        )
-
-        /* error */
-        val listenerSupervisor2 = DownloadListenerSupervisor()
-        val request2 = DownloadRequest(context, errorUri) {
-            listener(listenerSupervisor2)
-        }
-        val result2 = runBlocking {
-            sketch.enqueue(request2).job.await()
-        }
-        Assert.assertTrue(result2 is DownloadResult.Error)
-        Assert.assertEquals(
-            listOf("onStart", "onError"),
-            listenerSupervisor2.callbackActionList
-        )
-
-        /* cancel */
-        val sketch1 = newSketch {
-            httpStack(TestHttpStack(it, readDelayMillis = 500))
-        }
-        var disposable3: Disposable<DownloadResult>? = null
-        val listenerSupervisor3 = DownloadListenerSupervisor {
-            disposable3?.job?.cancel()
-        }
-        val request3 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            listener(listenerSupervisor3)
-        }
-        runBlocking {
-            disposable3 = sketch1.enqueue(request3)
-            disposable3?.job?.join()
-        }
-        Assert.assertEquals(
-            listOf("onStart", "onCancel"),
-            listenerSupervisor3.callbackActionList
-        )
-    }
-
-    @Test
-    fun testDownloadExecute() {
-        val (context, sketch) = getTestContextAndNewSketch {
-            httpStack(TestHttpStack(it))
-        }
-
-        /* success */
-        val listenerSupervisor1 = DownloadListenerSupervisor()
-        val request1 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
-            listener(listenerSupervisor1)
-        }
-        val result1 = runBlocking {
-            sketch.execute(request1)
-        }
-        Assert.assertTrue(result1 is DownloadResult.Success)
-        Assert.assertEquals(
-            listOf("onStart", "onSuccess"),
-            listenerSupervisor1.callbackActionList
-        )
-
-        /* error */
-        val listenerSupervisor2 = DownloadListenerSupervisor()
-        val request2 = DownloadRequest(context, errorUri) {
-            listener(listenerSupervisor2)
-        }
-        val result2 = runBlocking {
-            sketch.execute(request2)
-        }
-        Assert.assertTrue(result2 is DownloadResult.Error)
-        Assert.assertEquals(
-            listOf("onStart", "onError"),
-            listenerSupervisor2.callbackActionList
-        )
-
-        /* cancel */
-        val sketch1 = newSketch {
-            httpStack(TestHttpStack(it, readDelayMillis = 500))
-        }
-        var deferred3: Deferred<DownloadResult>? = null
-        val listenerSupervisor3 = DownloadListenerSupervisor {
-            deferred3?.cancel()
-        }
-        val request3 = DownloadRequest(context, TestHttpStack.testImages.first().uriString) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            listener(listenerSupervisor3)
-        }
-        runBlocking {
-            deferred3 = async {
-                sketch1.execute(request3)
-            }
-            deferred3?.join()
-        }
-        Assert.assertEquals(
-            listOf("onStart", "onCancel"),
-            listenerSupervisor3.callbackActionList
-        )
     }
 
     @Test

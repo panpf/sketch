@@ -26,7 +26,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.resize.internal.RealViewSizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.util.Size

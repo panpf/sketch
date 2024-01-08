@@ -32,7 +32,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.intrinsicSize

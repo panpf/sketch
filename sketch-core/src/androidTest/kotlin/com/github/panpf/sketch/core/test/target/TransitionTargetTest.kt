@@ -20,11 +20,14 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.transition.TransitionTarget
+import com.github.panpf.sketch.transition.TransitionViewTarget
+import com.github.panpf.sketch.util.fitScale
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -33,9 +36,9 @@ class TransitionTargetTest {
 
     @Test
     fun test() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, null)
-        val requestContext = RequestContext(request)
+        val requestContext = RequestContext(sketch, request)
         TestTransitionViewTarget(ImageView(context)).apply {
             onStart(requestContext, null)
             onError(requestContext, null)
@@ -43,9 +46,11 @@ class TransitionTargetTest {
         }
     }
 
-    class TestTransitionViewTarget(private val view: ImageView) : TransitionTarget {
+    class TestTransitionViewTarget(private val view: ImageView) : TransitionViewTarget {
+        override val fitScale: Boolean
+            get() = view.scaleType.fitScale
         override val supportDisplayCount: Boolean = false
-        override var drawable: Drawable?
+        override var drawable: Drawable
             get() = view.drawable
             set(value) {
                 view.setImageDrawable(value)

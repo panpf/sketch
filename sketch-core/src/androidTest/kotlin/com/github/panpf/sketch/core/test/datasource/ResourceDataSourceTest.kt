@@ -17,11 +17,11 @@ package com.github.panpf.sketch.core.test.datasource
 
 import android.content.res.Resources
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -33,7 +33,7 @@ class ResourceDataSourceTest {
     @Test
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(
+        val request = ImageRequest(
             context,
             newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
         )
@@ -59,7 +59,7 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(
+            request = ImageRequest(
                 context,
                 newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
             ),
@@ -73,7 +73,7 @@ class ResourceDataSourceTest {
         assertThrow(Resources.NotFoundException::class) {
             ResourceDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newResourceUri(42)),
+                request = ImageRequest(context, newResourceUri(42)),
                 packageName = context.packageName,
                 resources = context.resources,
                 resId = 42
@@ -88,7 +88,7 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(
+            request = ImageRequest(
                 context,
                 newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
             ),
@@ -106,7 +106,7 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(
+            request = ImageRequest(
                 context,
                 newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
             ),
@@ -122,7 +122,7 @@ class ResourceDataSourceTest {
 
         ResourceDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newResourceUri(42)),
+            request = ImageRequest(context, newResourceUri(42)),
             packageName = context.packageName,
             resources = context.resources,
             resId = 42

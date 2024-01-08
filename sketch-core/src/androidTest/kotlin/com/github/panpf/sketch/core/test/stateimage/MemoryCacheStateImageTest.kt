@@ -25,13 +25,17 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,11 +45,10 @@ class MemoryCacheStateImageTest {
 
     @Test
     fun testGetDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         val memoryCache = sketch.memoryCache
-        val memoryCacheKey = request.toRequestContext().cacheKey
+        val memoryCacheKey = request.toRequestContext(sketch).cacheKey
 
         memoryCache.clear()
         Assert.assertFalse(memoryCache.exist(memoryCacheKey))
@@ -57,21 +60,21 @@ class MemoryCacheStateImageTest {
             Assert.assertNull(getImage(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
-            Assert.assertTrue(getImage(sketch, request, null) is ColorDrawable)
+            Assert.assertTrue(getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable is ColorDrawable)
         }
 
         memoryCache.put(
             memoryCacheKey,
             MemoryCache.Value(
                 countBitmap = CountBitmap(
-                    cacheKey = request.toRequestContext().cacheKey,
+                    cacheKey = request.toRequestContext(sketch).cacheKey,
                     originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
                     bitmapPool = sketch.bitmapPool,
                     disallowReuseBitmap = false,
                 ),
                 imageUri = request.uriString,
-                requestKey = request.toRequestContext().key,
-                requestCacheKey = request.toRequestContext().cacheKey,
+                requestKey = request.toRequestContext(sketch).key,
+                requestCacheKey = request.toRequestContext(sketch).cacheKey,
                 imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
                 extras = null,
@@ -84,10 +87,22 @@ class MemoryCacheStateImageTest {
             Assert.assertNull(getImage(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey, null).apply {
-            Assert.assertTrue(getImage(sketch, request, null) is SketchCountBitmapDrawable)
+            Assert.assertTrue(
+                getImage(
+                    sketch,
+                    request,
+                    null
+                ).asOrNull<DrawableImage>()!!.drawable is SketchCountBitmapDrawable
+            )
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
-            Assert.assertTrue(getImage(sketch, request, null) is SketchCountBitmapDrawable)
+            Assert.assertTrue(
+                getImage(
+                    sketch,
+                    request,
+                    null
+                ).asOrNull<DrawableImage>()!!.drawable is SketchCountBitmapDrawable
+            )
         }
     }
 
@@ -146,9 +161,9 @@ class MemoryCacheStateImageTest {
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
-        val memoryCacheKey = request.toRequestContext().cacheKey
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val memoryCacheKey = request.toRequestContext(sketch).cacheKey
 
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertEquals(

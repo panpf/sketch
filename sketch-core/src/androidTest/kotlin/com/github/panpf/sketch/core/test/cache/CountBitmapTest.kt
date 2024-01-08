@@ -20,7 +20,7 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.core.test.newSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers

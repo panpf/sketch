@@ -23,7 +23,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.setInBitmap

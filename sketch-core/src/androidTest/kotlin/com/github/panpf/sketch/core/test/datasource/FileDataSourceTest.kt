@@ -16,12 +16,12 @@
 package com.github.panpf.sketch.core.test.datasource
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.newFileUri
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
@@ -38,10 +38,10 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).getFile()
-        val request = LoadRequest(context, newFileUri(file.path))
+        val request = ImageRequest(context, newFileUri(file.path))
         FileDataSource(
             sketch = sketch,
             request = request,
@@ -59,12 +59,12 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         FileDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newFileUri(file.path)),
+            request = ImageRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
             newInputStream().close()
@@ -73,7 +73,7 @@ class FileDataSourceTest {
         assertThrow(FileNotFoundException::class) {
             FileDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
+                request = ImageRequest(context, newFileUri("/sdcard/not_found.jpeg")),
                 file = File("/sdcard/not_found.jpeg")
             ).apply {
                 newInputStream()
@@ -86,12 +86,12 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         FileDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newFileUri(file.path)),
+            request = ImageRequest(context, newFileUri(file.path)),
             file = file,
         ).apply {
             val file1 = getFile()
@@ -104,12 +104,12 @@ class FileDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val file = AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).getFile()
         FileDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newFileUri(file.path)),
+            request = ImageRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
             Assert.assertEquals(
@@ -120,7 +120,7 @@ class FileDataSourceTest {
 
         FileDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newFileUri("/sdcard/not_found.jpeg")),
+            request = ImageRequest(context, newFileUri("/sdcard/not_found.jpeg")),
             file = File("/sdcard/not_found.jpeg")
         ).apply {
             Assert.assertEquals("FileDataSource('/sdcard/not_found.jpeg')", toString())

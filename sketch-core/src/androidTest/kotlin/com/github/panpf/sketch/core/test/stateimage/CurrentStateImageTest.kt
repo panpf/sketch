@@ -23,12 +23,14 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.CurrentStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
-import com.github.panpf.sketch.test.utils.TestDisplayTarget
+import com.github.panpf.sketch.test.utils.TestTarget
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,18 +42,21 @@ class CurrentStateImageTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(imageView, AssetImages.jpeg.uri)
+        val request = ImageRequest(imageView, AssetImages.jpeg.uri)
 
         CurrentStateImage().apply {
-            Assert.assertNull(getImage(sketch, request, null))
+            Assert.assertNull(getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable)
         }
 
         CurrentStateImage(android.R.drawable.btn_default).apply {
-            Assert.assertTrue(getImage(sketch, request, null) is StateListDrawable)
+            Assert.assertTrue(getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable is StateListDrawable)
         }
 
         CurrentStateImage(ColorDrawable(Color.RED)).apply {
-            Assert.assertTrue(getImage(sketch, request, null) is ColorDrawable)
+            Assert.assertTrue(getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable is ColorDrawable)
         }
 
         imageView.setImageDrawable(
@@ -61,14 +66,16 @@ class CurrentStateImageTest {
             )
         )
         CurrentStateImage(ColorDrawable(Color.RED)).apply {
-            Assert.assertTrue(getImage(sketch, request, null) is BitmapDrawable)
+            Assert.assertTrue(getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable is BitmapDrawable)
         }
 
-        val request1 = DisplayRequest(context, AssetImages.jpeg.uri) {
-            target(TestDisplayTarget())
+        val request1 = ImageRequest(context, AssetImages.jpeg.uri) {
+            target(TestTarget())
         }
         CurrentStateImage(ColorDrawable(Color.RED)).apply {
-            Assert.assertTrue(getImage(sketch, request1, null) is ColorDrawable)
+            Assert.assertTrue(getImage(sketch, request1, null)
+                ?.asOrThrow<DrawableImage>()?.drawable is ColorDrawable)
         }
     }
 
@@ -76,7 +83,7 @@ class CurrentStateImageTest {
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageView = ImageView(context)
-        val request = DisplayRequest(imageView, AssetImages.jpeg.uri)
+        val request = ImageRequest(imageView, AssetImages.jpeg.uri)
         val drawable1 = ColorDrawable(Color.BLUE)
         val drawable2 = ColorDrawable(Color.GREEN)
 
@@ -84,15 +91,18 @@ class CurrentStateImageTest {
         CurrentStateImage().apply {
             Assert.assertNull(getImage(sketch, request, null))
             imageView.setImageDrawable(drawable1)
-            Assert.assertSame(drawable1, getImage(sketch, request, null))
+            Assert.assertSame(drawable1, getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable)
         }
 
         imageView.setImageDrawable(null)
         Assert.assertNull(imageView.drawable)
         CurrentStateImage(DrawableStateImage(drawable2)).apply {
-            Assert.assertSame(drawable2, getImage(sketch, request, null))
+            Assert.assertSame(drawable2, getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable)
             imageView.setImageDrawable(drawable1)
-            Assert.assertSame(drawable1, getImage(sketch, request, null))
+            Assert.assertSame(drawable1, getImage(sketch, request, null)
+                ?.asOrThrow<DrawableImage>()?.drawable)
         }
     }
 

@@ -27,7 +27,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.AppIconDrawableFetcher
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newAppIconUri
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -53,7 +53,7 @@ class AppIconBitmapDecoderTest {
         Assert.assertEquals("AppIconBitmapDecoder", factory.toString())
 
         // normal
-        LoadRequest(context, testAppIconUri).let {
+        ImageRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
                 dataSource = DrawableDataSource(
                     sketch = sketch,
@@ -63,13 +63,13 @@ class AppIconBitmapDecoderTest {
                 ),
                 mimeType = AppIconUriFetcher.IMAGE_MIME_TYPE
             )
-            factory.create(sketch, it.toRequestContext(), fetchResult)
+            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // mimeType null
-        LoadRequest(context, testAppIconUri).let {
+        ImageRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
                 DrawableDataSource(
                     sketch = sketch,
@@ -79,11 +79,11 @@ class AppIconBitmapDecoderTest {
                 ),
                 AppIconUriFetcher.IMAGE_MIME_TYPE
             )
-            factory.create(sketch, it.toRequestContext(), fetchResult)
+            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
-        LoadRequest(context, testAppIconUri).let {
+        ImageRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
                 DrawableDataSource(
                     sketch = sketch,
@@ -93,18 +93,18 @@ class AppIconBitmapDecoderTest {
                 ),
                 AppIconUriFetcher.IMAGE_MIME_TYPE
             )
-            factory.create(sketch, it.toRequestContext(), fetchResult)
+            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // dataSource error
-        LoadRequest(context, testAppIconUri).let {
+        ImageRequest(context, testAppIconUri).let {
             val fetchResult = FetchResult(
                 AssetDataSource(sketch, it, AssetImages.jpeg.fileName),
                 "application/vnd.android.app-icon"
             )
-            factory.create(sketch, it.toRequestContext(), fetchResult)
+            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }

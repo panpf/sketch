@@ -15,14 +15,16 @@
  */
 package com.github.panpf.sketch.core.test.request.internal
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
-import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.DownloadResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.Listeners
-import com.github.panpf.sketch.test.utils.DownloadListenerSupervisor
+import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -35,12 +37,12 @@ class ListenersTest {
     @Test
     fun test() {
         val context = getTestContext()
-        val request = DownloadRequest(context, "http://sample.com/sample.jpeg")
+        val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
         val list = listOf(
-            DownloadListenerSupervisor("2"),
-            DownloadListenerSupervisor("3"),
-            DownloadListenerSupervisor("1"),
+            ListenerSupervisor("2"),
+            ListenerSupervisor("3"),
+            ListenerSupervisor("1"),
         )
         Assert.assertEquals(listOf<String>(), list.flatMap { it.callbackActionList })
 
@@ -68,7 +70,7 @@ class ListenersTest {
             ), list.flatMap { it.callbackActionList })
 
         runBlocking(Dispatchers.Main) {
-            listeners.onError(request, DownloadResult.Error(request, Exception("")))
+            listeners.onError(request, ImageResult.Error(request, null, Exception("")))
         }
         Assert.assertEquals(
             listOf(
@@ -87,7 +89,16 @@ class ListenersTest {
         runBlocking(Dispatchers.Main) {
             listeners.onSuccess(
                 request,
-                DownloadResult.Success(request, DownloadData(byteArrayOf(), MEMORY))
+                ImageResult.Success(
+                    request = request,
+                    image = ColorDrawable(Color.BLACK).asSketchImage(),
+                    requestKey = "",
+                    requestCacheKey = "",
+                    imageInfo = com.github.panpf.sketch.decode.ImageInfo(100, 100, "", 0),
+                    dataFrom = MEMORY,
+                    transformedList = null,
+                    extras = null
+                )
             )
         }
         Assert.assertEquals(

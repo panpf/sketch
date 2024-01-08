@@ -19,14 +19,15 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -59,19 +60,19 @@ class DisposableTest {
 
     @Test
     fun testViewTargetDisposable() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         runBlocking {
             val view = ImageView(context)
-            val job = async<DisplayResult> {
+            val job = async<ImageResult> {
                 delay(100)
                 delay(100)
                 delay(100)
-                val requestContext = DisplayRequest(view, AssetImages.jpeg.uri).toRequestContext()
-                DisplayResult.Success(
-                    request = requestContext.request as DisplayRequest,
+                val requestContext = ImageRequest(view, AssetImages.jpeg.uri).toRequestContext(sketch)
+                ImageResult.Success(
+                    request = requestContext.request,
                     requestKey = requestContext.key,
                     requestCacheKey = requestContext.cacheKey,
-                    drawable = ColorDrawable(Color.BLACK),
+                    image = ColorDrawable(Color.BLACK).asSketchImage(),
                     imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                     dataFrom = DOWNLOAD_CACHE,
                     transformedList = null,

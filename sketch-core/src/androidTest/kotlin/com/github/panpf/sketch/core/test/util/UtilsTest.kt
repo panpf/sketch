@@ -25,11 +25,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.util.awaitStarted
@@ -171,14 +171,14 @@ class UtilsTest {
     @Test
     fun testFitScale() {
         val context = getTestContext()
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_START }.fitScale)
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_CENTER }.fitScale)
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_END }.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.FIT_XY }.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER_CROP }.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER }.fitScale)
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.CENTER_INSIDE }.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.MATRIX }.fitScale)
+        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_START }.scaleType.fitScale)
+        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_CENTER }.scaleType.fitScale)
+        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_END }.scaleType.fitScale)
+        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.FIT_XY }.scaleType.fitScale)
+        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER_CROP }.scaleType.fitScale)
+        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER }.scaleType.fitScale)
+        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.CENTER_INSIDE }.scaleType.fitScale)
+        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.MATRIX }.scaleType.fitScale)
     }
 
     @Test
@@ -211,7 +211,7 @@ class UtilsTest {
         val (context, sketch) = getTestContextAndNewSketch()
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).apply {
             val file = getCacheFileFromStreamDataSource(sketch, request, this)
@@ -223,7 +223,7 @@ class UtilsTest {
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
+                request = ImageRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
                 getCacheFileFromStreamDataSource(sketch, request, this)

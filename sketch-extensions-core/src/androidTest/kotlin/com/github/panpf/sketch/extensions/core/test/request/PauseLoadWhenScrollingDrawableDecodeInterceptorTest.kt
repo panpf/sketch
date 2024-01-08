@@ -27,7 +27,6 @@ import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
@@ -54,7 +53,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
         val interceptor = PauseLoadWhenScrollingDrawableDecodeInterceptor()
 
         try {
-            DisplayRequest(context, newResourceUri(android.R.drawable.ic_delete)).let { request ->
+            ImageRequest(context, newResourceUri(android.R.drawable.ic_delete)).let { request ->
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
                 Assert.assertFalse(request.isPauseLoadWhenScrolling)
@@ -68,7 +67,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
                 }
             }
 
-            DisplayRequest(context, newResourceUri(android.R.drawable.ic_delete)).let { request ->
+            ImageRequest(context, newResourceUri(android.R.drawable.ic_delete)).let { request ->
                 PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
                 Assert.assertTrue(interceptor.enabled)
                 Assert.assertTrue(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
@@ -83,7 +82,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
                 }
             }
 
-            DisplayRequest(context, newResourceUri(android.R.drawable.ic_delete)) {
+            ImageRequest(context, newResourceUri(android.R.drawable.ic_delete)) {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
@@ -103,7 +102,7 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
                 }
             }
 
-            DisplayRequest(context, newResourceUri(android.R.drawable.ic_delete)) {
+            ImageRequest(context, newResourceUri(android.R.drawable.ic_delete)) {
                 pauseLoadWhenScrolling()
                 ignorePauseLoadWhenScrolling()
             }.let { request ->
@@ -174,11 +173,11 @@ class PauseLoadWhenScrollingDrawableDecodeInterceptorTest {
         }
     }
 
-    private fun DisplayRequest.toDrawableDecodeInterceptorChain(sketch: Sketch): DrawableDecodeInterceptor.Chain {
+    private fun ImageRequest.toDrawableDecodeInterceptorChain(sketch: Sketch): DrawableDecodeInterceptor.Chain {
         return TestDrawableDecodeInterceptorChain(
             sketch = sketch,
             request = this,
-            requestContext = this.toRequestContext(),
+            requestContext = this.toRequestContext(sketch),
             fetchResult = runBlocking {
                 sketch.components.newFetcherOrThrow(this@toDrawableDecodeInterceptorChain).fetch()
                     .getOrThrow()

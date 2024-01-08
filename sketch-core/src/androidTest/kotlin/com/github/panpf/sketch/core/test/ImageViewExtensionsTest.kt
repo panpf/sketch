@@ -23,7 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.disposeDisplay
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayImage
 import com.github.panpf.sketch.test.utils.DelayTransformation
@@ -75,12 +75,12 @@ class ImageViewExtensionsTest {
         runBlocking {
             imageView.displayImage(AssetImages.jpeg.uri).job.join()
         }
-        Assert.assertTrue(imageView.imageResult is DisplayResult.Success)
+        Assert.assertTrue(imageView.imageResult is ImageResult.Success)
 
         runBlocking {
             imageView.displayImage("asset://fake.jpeg").job.join()
         }
-        Assert.assertTrue(imageView.imageResult is DisplayResult.Error)
+        Assert.assertTrue(imageView.imageResult is ImageResult.Error)
 
         runBlocking {
             imageView.displayImage(AssetImages.png.uri) {

@@ -24,8 +24,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
@@ -62,15 +60,17 @@ import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.decode.internal.sizeString
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -967,19 +967,18 @@ class DecodeUtilsTest {
 
     @Test
     fun testRealDecode() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
 
         val hasExifFile =
             ExifOrientationTestFileHelper(context, context.sketch, AssetImages.jpeg.fileName)
                 .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
 
-        val result1 = LoadRequest(context, hasExifFile.file.path) {
+        val result1 = ImageRequest(context, hasExifFile.file.path) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
         }.let {
             realDecode(
-                it.toRequestContext(),
+                it.toRequestContext(sketch),
                 LOCAL,
                 ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 { config ->
@@ -1008,13 +1007,13 @@ class DecodeUtilsTest {
             Assert.assertNull(transformedList)
         }
 
-        LoadRequest(context, hasExifFile.file.path) {
+        ImageRequest(context, hasExifFile.file.path) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
             ignoreExifOrientation(true)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
@@ -1044,12 +1043,12 @@ class DecodeUtilsTest {
             Assert.assertEquals(result1.bitmap.corners(), bitmap.corners())
         }
 
-        val result3 = LoadRequest(context, hasExifFile.file.path).newLoadRequest {
+        val result3 = ImageRequest(context, hasExifFile.file.path).newRequest {
             resizeSize(100, 200)
             resizePrecision(EXACTLY)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
@@ -1084,12 +1083,12 @@ class DecodeUtilsTest {
             )
         }
 
-        LoadRequest(context, hasExifFile.file.path).newLoadRequest {
+        ImageRequest(context, hasExifFile.file.path).newRequest {
             resizeSize(100, 200)
             resizePrecision(EXACTLY)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
@@ -1118,12 +1117,12 @@ class DecodeUtilsTest {
             Assert.assertNotEquals(result3.bitmap.corners(), bitmap.corners())
         }
 
-        val result5 = LoadRequest(context, hasExifFile.file.path).newLoadRequest {
+        val result5 = ImageRequest(context, hasExifFile.file.path).newRequest {
             resizeSize(100, 200)
             resizePrecision(SAME_ASPECT_RATIO)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
@@ -1158,12 +1157,12 @@ class DecodeUtilsTest {
             )
         }
 
-        LoadRequest(context, hasExifFile.file.path).newLoadRequest {
+        ImageRequest(context, hasExifFile.file.path).newRequest {
             resizeSize(100, 200)
             resizePrecision(SAME_ASPECT_RATIO)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
@@ -1192,12 +1191,12 @@ class DecodeUtilsTest {
             Assert.assertNotEquals(result5.bitmap.corners(), bitmap.corners())
         }
 
-        val result7 = LoadRequest(context, hasExifFile.file.path).newLoadRequest {
+        val result7 = ImageRequest(context, hasExifFile.file.path).newRequest {
             resizeSize(100, 200)
             resizePrecision(LESS_PIXELS)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", hasExifFile.exifOrientation),
                 decodeFull = { config ->
@@ -1226,12 +1225,12 @@ class DecodeUtilsTest {
             Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
         }
 
-        LoadRequest(context, hasExifFile.file.path).newLoadRequest {
+        ImageRequest(context, hasExifFile.file.path).newRequest {
             resizeSize(100, 200)
             resizePrecision(LESS_PIXELS)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(1936, 1291, "image/jpeg", 0),
                 decodeFull = { config ->
@@ -1254,12 +1253,12 @@ class DecodeUtilsTest {
             Assert.assertEquals(result7.bitmap.corners(), bitmap.corners())
         }
 
-        val result9 = LoadRequest(context, AssetImages.bmp.uri) {
+        val result9 = ImageRequest(context, AssetImages.bmp.uri) {
             resizeSize(100, 200)
             resizePrecision(EXACTLY)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(700, 1012, "image/bmp", 0),
                 decodeFull = { config ->
@@ -1277,13 +1276,13 @@ class DecodeUtilsTest {
             Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
         }
 
-        LoadRequest(context, AssetImages.bmp.uri).newLoadRequest {
+        ImageRequest(context, AssetImages.bmp.uri).newRequest {
             resizeSize(100, 200)
             resizePrecision(EXACTLY)
             ignoreExifOrientation(true)
         }.let {
             realDecode(
-                requestContext = it.toRequestContext(),
+                requestContext = it.toRequestContext(sketch),
                 dataFrom = LOCAL,
                 imageInfo = ImageInfo(700, 1012, "image/jpeg", 0),
                 decodeFull = { config ->
@@ -1306,7 +1305,7 @@ class DecodeUtilsTest {
     @Test
     fun testAppliedExifOrientation() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
 
         val hasExifFile =
             ExifOrientationTestFileHelper(context, context.sketch, AssetImages.jpeg.fileName)
@@ -1330,7 +1329,7 @@ class DecodeUtilsTest {
 
         result.appliedExifOrientation(
             sketch,
-            request.toRequestContext()
+            request.toRequestContext(sketch)
         ).apply {
             Assert.assertNotSame(result, this)
             Assert.assertNotSame(result.bitmap, this.bitmap)
@@ -1348,7 +1347,7 @@ class DecodeUtilsTest {
         )
         noExifOrientationResult.appliedExifOrientation(
             sketch,
-            request.toRequestContext()
+            request.toRequestContext(sketch)
         ).apply {
             Assert.assertSame(noExifOrientationResult, this)
         }
@@ -1357,7 +1356,7 @@ class DecodeUtilsTest {
     @Test
     fun testAppliedResize() {
         val (context, sketch) = getTestContextAndNewSketch()
-        var request = LoadRequest(context, AssetImages.jpeg.uri)
+        var request = ImageRequest(context, AssetImages.jpeg.uri)
         val newResult: () -> BitmapDecodeResult = {
             BitmapDecodeResult(
                 bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
@@ -1372,20 +1371,20 @@ class DecodeUtilsTest {
          * LESS_PIXELS
          */
         // small
-        request = request.newLoadRequest {
+        request = request.newRequest {
             resize(40, 20, LESS_PIXELS, CENTER_CROP)
         }
         var result = newResult()
-        result.appliedResize(sketch, request.toRequestContext()).apply {
+        result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("20x13", this.bitmap.sizeString)
         }
         // big
-        request = request.newLoadRequest {
+        request = request.newRequest {
             resize(50, 150, LESS_PIXELS)
         }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext()).apply {
+        result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this === result)
         }
 
@@ -1393,20 +1392,20 @@ class DecodeUtilsTest {
          * SAME_ASPECT_RATIO
          */
         // small
-        request = request.newLoadRequest {
+        request = request.newRequest {
             resize(40, 20, SAME_ASPECT_RATIO)
         }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext()).apply {
+        result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
-        request = request.newLoadRequest {
+        request = request.newRequest {
             resize(50, 150, SAME_ASPECT_RATIO)
         }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext()).apply {
+        result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("17x50", this.bitmap.sizeString)
         }
@@ -1415,20 +1414,20 @@ class DecodeUtilsTest {
          * EXACTLY
          */
         // small
-        request = request.newLoadRequest {
+        request = request.newRequest {
             resize(40, 20, EXACTLY)
         }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext()).apply {
+        result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("40x20", this.bitmap.sizeString)
         }
         // big
-        request = request.newLoadRequest {
+        request = request.newRequest {
             resize(50, 150, EXACTLY)
         }
         result = newResult()
-        result.appliedResize(sketch, request.toRequestContext()).apply {
+        result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
             Assert.assertEquals("50x150", this.bitmap.sizeString)
         }
@@ -1458,7 +1457,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .readImageInfoWithBitmapFactory().apply {
@@ -1470,7 +1469,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.webp.uri),
+            ImageRequest(context, AssetImages.webp.uri),
             AssetImages.webp.fileName
         )
             .readImageInfoWithBitmapFactory().apply {
@@ -1486,7 +1485,7 @@ class DecodeUtilsTest {
 
         ResourceDataSource(
             sketch,
-            LoadRequest(
+            ImageRequest(
                 context,
                 newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
             ),
@@ -1506,11 +1505,11 @@ class DecodeUtilsTest {
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, ImageRequest(context, it.file.path), it.file)
                     .readImageInfoWithBitmapFactory().apply {
                         Assert.assertEquals(it.exifOrientation, exifOrientation)
                     }
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, ImageRequest(context, it.file.path), it.file)
                     .readImageInfoWithBitmapFactory(true).apply {
                         Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
                     }
@@ -1523,7 +1522,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -1534,7 +1533,7 @@ class DecodeUtilsTest {
             }
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.webp.uri),
+            ImageRequest(context, AssetImages.webp.uri),
             AssetImages.webp.fileName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -1551,7 +1550,7 @@ class DecodeUtilsTest {
         assertThrow(ImageInvalidException::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(
+                ImageRequest(
                     context,
                     newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
                 ),
@@ -1567,11 +1566,11 @@ class DecodeUtilsTest {
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, ImageRequest(context, it.file.path), it.file)
                     .readImageInfoWithBitmapFactoryOrThrow().apply {
                         Assert.assertEquals(it.exifOrientation, exifOrientation)
                     }
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, ImageRequest(context, it.file.path), it.file)
                     .readImageInfoWithBitmapFactoryOrThrow(true).apply {
                         Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
                     }
@@ -1584,7 +1583,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
@@ -1596,7 +1595,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.webp.uri),
+            ImageRequest(context, AssetImages.webp.uri),
             AssetImages.webp.fileName
         )
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
@@ -1613,7 +1612,7 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(
+                ImageRequest(
                     context,
                     newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
                 ),
@@ -1629,11 +1628,11 @@ class DecodeUtilsTest {
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, ImageRequest(context, it.file.path), it.file)
                     .readImageInfoWithBitmapFactoryOrNull()!!.apply {
                         Assert.assertEquals(it.exifOrientation, exifOrientation)
                     }
-                FileDataSource(sketch, LoadRequest(context, it.file.path), it.file)
+                FileDataSource(sketch, ImageRequest(context, it.file.path), it.file)
                     .readImageInfoWithBitmapFactoryOrNull(true)!!.apply {
                         Assert.assertEquals(ExifInterface.ORIENTATION_UNDEFINED, exifOrientation)
                     }
@@ -1646,7 +1645,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .decodeBitmap()!!.apply {
@@ -1656,7 +1655,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
@@ -1667,7 +1666,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.webp.uri),
+            ImageRequest(context, AssetImages.webp.uri),
             AssetImages.webp.fileName
         )
             .decodeBitmap()!!.apply {
@@ -1678,7 +1677,7 @@ class DecodeUtilsTest {
         Assert.assertNull(
             ResourceDataSource(
                 sketch,
-                LoadRequest(
+                ImageRequest(
                     context,
                     newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
                 ),
@@ -1695,7 +1694,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .decodeRegionBitmap(Rect(500, 500, 600, 600))!!.apply {
@@ -1705,7 +1704,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.jpeg.uri),
+            ImageRequest(context, AssetImages.jpeg.uri),
             AssetImages.jpeg.fileName
         )
             .decodeRegionBitmap(
@@ -1718,7 +1717,7 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            LoadRequest(context, AssetImages.webp.uri),
+            ImageRequest(context, AssetImages.webp.uri),
             AssetImages.webp.fileName
         )
             .decodeRegionBitmap(Rect(500, 500, 700, 700))!!.apply {
@@ -1729,7 +1728,7 @@ class DecodeUtilsTest {
         assertThrow(IOException::class) {
             ResourceDataSource(
                 sketch,
-                LoadRequest(
+                ImageRequest(
                     context,
                     newResourceUri(com.github.panpf.sketch.test.utils.R.xml.network_security_config)
                 ),

@@ -16,16 +16,10 @@
 package com.github.panpf.sketch.core.test.request.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.core.test.newSketch
-import com.github.panpf.sketch.request.DisplayData
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DownloadData
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.ImageData
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadData
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.resources.AssetImages
@@ -56,23 +50,17 @@ class EngineRequestInterceptorTest {
                     sketch = sketch,
                     initialRequest = request,
                     request = request,
-                    requestContext = request.toRequestContext(),
+                    requestContext = request.toRequestContext(sketch),
                     interceptors = listOf(EngineRequestInterceptor()),
                     index = 0,
                 ).proceed(request)
             }.getOrThrow()
         }
 
-        executeRequest(DisplayRequest(context, AssetImages.jpeg.uri)).asOrThrow<DisplayData>()
+        executeRequest(ImageRequest(context, AssetImages.jpeg.uri)).asOrThrow<ImageData>()
 
-        executeRequest(LoadRequest(context, AssetImages.jpeg.uri)).asOrThrow<LoadData>()
-
-        executeRequest(DownloadRequest(context, TestHttpStack.testImages.first().uriString))
-            .asOrThrow<DownloadData>()
-
-        assertThrow(UnsupportedOperationException::class) {
-            executeRequest(TestRequest(context, AssetImages.jpeg.uri))
-        }
+        executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uriString))
+            .asOrThrow<ImageData>()
 
         val sketch1 = newSketch {
             components {
@@ -85,15 +73,11 @@ class EngineRequestInterceptorTest {
                     sketch = sketch1,
                     initialRequest = request,
                     request = request,
-                    requestContext = request.toRequestContext(),
+                    requestContext = request.toRequestContext(sketch),
                     interceptors = listOf(EngineRequestInterceptor()),
                     index = 0,
                 ).proceed(request)
             }.getOrThrow()
-        }
-
-        assertThrow(UnsupportedOperationException::class) {
-            executeRequest1(DownloadRequest(context, TestHttpStack.testImages.first().uriString))
         }
     }
 

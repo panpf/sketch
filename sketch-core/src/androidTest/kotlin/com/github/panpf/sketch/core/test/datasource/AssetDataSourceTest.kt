@@ -16,11 +16,11 @@
 package com.github.panpf.sketch.core.test.datasource
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
@@ -35,7 +35,7 @@ class AssetDataSourceTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
 
-        val request = LoadRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,
@@ -54,7 +54,7 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).apply {
             newInputStream().close()
@@ -63,7 +63,7 @@ class AssetDataSourceTest {
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
                 sketch = sketch,
-                request = LoadRequest(context, newAssetUri("not_found.jpeg")),
+                request = ImageRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
                 newInputStream()
@@ -77,7 +77,7 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, AssetImages.jpeg.uri),
+            request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).apply {
             Assert.assertEquals(
@@ -88,7 +88,7 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = LoadRequest(context, newAssetUri("not_found.jpeg")),
+            request = ImageRequest(context, newAssetUri("not_found.jpeg")),
             assetFileName = "not_found.jpeg"
         ).apply {
             Assert.assertEquals("AssetDataSource('not_found.jpeg')", toString())

@@ -27,9 +27,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.core.R
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.resources.AssetImages
@@ -71,11 +71,11 @@ class ViewTargetRequestManagerTest {
         val context = getTestContext()
 
         val imageView = ImageView(context)
-        val request = DisplayRequest(imageView, AssetImages.jpeg.uri)
+        val request = ImageRequest(imageView, AssetImages.jpeg.uri)
 
         runBlocking(Dispatchers.Main) {
             val deferred = async {
-                DisplayResult.Error(request, null, Exception(""))
+                ImageResult.Error(request, null, Exception(""))
             }
             val requestManager = imageView.requestManager
             val disposable = requestManager.getDisposable(deferred)

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.test.internal
+package com.github.panpf.sketch.test.utils
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry

@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.core.test.target
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
@@ -22,19 +24,115 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.lifecycle.LifecycleOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.target.GenericViewTarget
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class GenericViewTargetTest {
+
+    // TODO test allowSetNullDrawable
+
+    @Test
+    fun testDrawable() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, AssetImages.jpeg.uri) {
+            allowSetNullDrawable()
+        }
+        val requestContext = request.toRequestContext(sketch)
+
+        val imageView = ImageView(context)
+        Assert.assertNull(imageView.drawable)
+
+        val imageViewTarget = TestViewTarget(imageView)
+        Assert.assertNull(imageViewTarget.drawable)
+
+        val countBitmap = CountBitmap(
+            cacheKey = request.toRequestContext(sketch).cacheKey,
+            originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = false,
+        )
+        val sketchCountBitmapDrawable = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap,
+            imageUri = request.uriString,
+            requestKey = request.toRequestContext(sketch).key,
+            requestCacheKey = request.toRequestContext(sketch).cacheKey,
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = LOCAL
+        )
+        val countBitmap2 = CountBitmap(
+            cacheKey = request.toRequestContext(sketch).cacheKey,
+            originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
+            bitmapPool = sketch.bitmapPool,
+            disallowReuseBitmap = false,
+        )
+        val sketchCountBitmapDrawable2 = SketchCountBitmapDrawable(
+            resources = context.resources,
+            countBitmap = countBitmap2,
+            imageUri = request.uriString,
+            requestKey = request.toRequestContext(sketch).key,
+            requestCacheKey = request.toRequestContext(sketch).cacheKey,
+            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+            transformedList = null,
+            extras = null,
+            dataFrom = LOCAL
+        )
+
+        runBlocking(Dispatchers.Main) {
+            Assert.assertEquals(0, countBitmap.getDisplayedCount())
+            Assert.assertEquals(0, countBitmap2.getDisplayedCount())
+        }
+
+        runBlocking(Dispatchers.Main) {
+            imageViewTarget.onSuccess(requestContext, sketchCountBitmapDrawable.asSketchImage())
+        }
+
+        Assert.assertSame(sketchCountBitmapDrawable, imageView.drawable)
+        Assert.assertSame(sketchCountBitmapDrawable, imageViewTarget.drawable)
+        runBlocking(Dispatchers.Main) {
+            Assert.assertEquals(1, countBitmap.getDisplayedCount())
+            Assert.assertEquals(0, countBitmap2.getDisplayedCount())
+        }
+
+        runBlocking(Dispatchers.Main) {
+            imageViewTarget.onSuccess(requestContext, sketchCountBitmapDrawable2.asSketchImage())
+        }
+
+        Assert.assertSame(sketchCountBitmapDrawable2, imageView.drawable)
+        Assert.assertSame(sketchCountBitmapDrawable2, imageViewTarget.drawable)
+        runBlocking(Dispatchers.Main) {
+            Assert.assertEquals(0, countBitmap.getDisplayedCount())
+            Assert.assertEquals(1, countBitmap2.getDisplayedCount())
+        }
+
+        runBlocking(Dispatchers.Main) {
+            imageViewTarget.onError(requestContext, null)
+        }
+        Assert.assertNull(imageView.drawable)
+        Assert.assertNull(imageViewTarget.drawable)
+    }
 
     @Test
     fun testIsStarted() {
@@ -54,9 +152,9 @@ class GenericViewTargetTest {
 
     @Test
     fun testAnimatableDrawable() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
-        val requestContext = RequestContext(ImageRequest(context, null))
+        val requestContext = RequestContext(sketch, ImageRequest(context, null))
 
         TestViewTarget(imageView).apply {
             val drawable = ColorDrawable(Color.RED)
@@ -96,13 +194,15 @@ class GenericViewTargetTest {
     }
 
     class TestViewTarget(override val view: ImageView) :
-        GenericViewTarget<ImageView>() {
-        override val supportDisplayCount: Boolean = false
+        GenericViewTarget<ImageView>(view) {
+        override val supportDisplayCount: Boolean = true
         override var drawable: Drawable?
             get() = view.drawable
             set(value) {
                 view.setImageDrawable(value)
             }
+        override val fitScale: Boolean
+            get() = view.scaleType.fitScale
     }
 
     class AnimatableDrawable(color: Int) : ColorDrawable(color), Animatable {

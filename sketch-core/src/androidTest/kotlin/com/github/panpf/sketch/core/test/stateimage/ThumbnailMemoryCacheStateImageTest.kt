@@ -18,8 +18,8 @@ package com.github.panpf.sketch.core.test.stateimage
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -50,17 +50,17 @@ class ThumbnailMemoryCacheStateImageTest {
         Assert.assertEquals(0, memoryCache.keys().size)
 
         val requests1 = arrayOf(
-            DisplayRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
@@ -68,17 +68,17 @@ class ThumbnailMemoryCacheStateImageTest {
             },
         )
         val requests2 = arrayOf(
-            DisplayRequest(context, AssetImages.png.uri) {
+            ImageRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, AssetImages.png.uri) {
+            ImageRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
                 target(TestDisplayCountDisplayTarget())
             },
-            DisplayRequest(context, AssetImages.png.uri) {
+            ImageRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestDisplayCountDisplayTarget())
@@ -88,8 +88,8 @@ class ThumbnailMemoryCacheStateImageTest {
 
         Assert.assertEquals(
             6,
-            requests1.map { it.toRequestContext().memoryCacheKey }
-                .plus(requests2.map { it.toRequestContext().memoryCacheKey }).distinct().size
+            requests1.map { it.toRequestContext(sketch).memoryCacheKey }
+                .plus(requests2.map { it.toRequestContext(sketch).memoryCacheKey }).distinct().size
         )
 
         runBlocking(Dispatchers.Main) {
@@ -100,21 +100,21 @@ class ThumbnailMemoryCacheStateImageTest {
             Assert.assertEquals(0, memoryCache.keys().size)
             requests1.plus(requests2).forEach { request ->
                 Assert.assertNull(
-                    request.toRequestContext().memoryCacheKey,
-                    memoryCache[request.toRequestContext().memoryCacheKey]
+                    request.toRequestContext(sketch).memoryCacheKey,
+                    memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                 )
             }
             requests1.plus(requests2).forEach { request ->
                 Assert.assertNull(
-                    request.toRequestContext().memoryCacheKey,
+                    request.toRequestContext(sketch).memoryCacheKey,
                     inexactlyStateImage.getImage(sketch, request, null)
                 )
                 Assert.assertNull(
-                    request.toRequestContext().memoryCacheKey,
+                    request.toRequestContext(sketch).memoryCacheKey,
                     inexactlyStateImage1.getImage(sketch, request, null)
                 )
                 Assert.assertNull(
-                    request.toRequestContext().memoryCacheKey,
+                    request.toRequestContext(sketch).memoryCacheKey,
                     inexactlyStateImage2.getImage(sketch, request, null)
                 )
             }
@@ -127,47 +127,47 @@ class ThumbnailMemoryCacheStateImageTest {
                 requests1.forEachIndexed { index, request ->
                     if (index == loadIndex) {
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
-                            memoryCache[request.toRequestContext().memoryCacheKey]
+                            request.toRequestContext(sketch).memoryCacheKey,
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     } else {
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
-                            memoryCache[request.toRequestContext().memoryCacheKey]
+                            request.toRequestContext(sketch).memoryCacheKey,
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     }
                 }
                 requests2.forEach { request ->
                     Assert.assertNull(
-                        request.toRequestContext().memoryCacheKey,
-                        memoryCache[request.toRequestContext().memoryCacheKey]
+                        request.toRequestContext(sketch).memoryCacheKey,
+                        memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                     )
                 }
                 requests1.forEach { request ->
                     if (loadIndex == 0) {
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage.getImage(sketch, request, null)
                         )
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage1.getImage(sketch, request, null)
                         )
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     } else {
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage.getImage(sketch, request, null)
                         )
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage1.getImage(sketch, request, null)
                         )
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     }
@@ -176,17 +176,17 @@ class ThumbnailMemoryCacheStateImageTest {
                     Assert.assertNull(inexactlyStateImage.getImage(sketch, request, null))
                     if (loadIndex == 0) {
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage1.getImage(sketch, request, null)
                         )
                     } else {
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage1.getImage(sketch, request, null)
                         )
                     }
                     Assert.assertNull(
-                        request.toRequestContext().memoryCacheKey,
+                        request.toRequestContext(sketch).memoryCacheKey,
                         inexactlyStateImage2.getImage(sketch, request, null)
                     )
                 }
@@ -202,37 +202,37 @@ class ThumbnailMemoryCacheStateImageTest {
                 Assert.assertEquals(1, memoryCache.keys().size)
                 requests1.forEach { request ->
                     Assert.assertNull(
-                        request.toRequestContext().memoryCacheKey,
-                        memoryCache[request.toRequestContext().memoryCacheKey]
+                        request.toRequestContext(sketch).memoryCacheKey,
+                        memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                     )
                 }
                 requests2.forEachIndexed { index, request ->
                     if (index == loadIndex) {
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
-                            memoryCache[request.toRequestContext().memoryCacheKey]
+                            request.toRequestContext(sketch).memoryCacheKey,
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     } else {
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
-                            memoryCache[request.toRequestContext().memoryCacheKey]
+                            request.toRequestContext(sketch).memoryCacheKey,
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     }
                 }
                 requests1.forEach { request ->
                     Assert.assertNull(inexactlyStateImage.getImage(sketch, request, null))
                     Assert.assertNull(
-                        request.toRequestContext().memoryCacheKey,
+                        request.toRequestContext(sketch).memoryCacheKey,
                         inexactlyStateImage1.getImage(sketch, request, null)
                     )
                     if (loadIndex == 0) {
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     } else {
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     }
@@ -240,28 +240,28 @@ class ThumbnailMemoryCacheStateImageTest {
                 requests2.forEach { request ->
                     if (loadIndex == 0) {
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage.getImage(sketch, request, null)
                         )
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage1.getImage(sketch, request, null)
                         )
                         Assert.assertNotNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     } else {
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage.getImage(sketch, request, null)
                         )
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage1.getImage(sketch, request, null)
                         )
                         Assert.assertNull(
-                            request.toRequestContext().memoryCacheKey,
+                            request.toRequestContext(sketch).memoryCacheKey,
                             inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     }
@@ -278,16 +278,16 @@ class ThumbnailMemoryCacheStateImageTest {
             Assert.assertEquals(2, memoryCache.keys().size)
             requests1.forEachIndexed { index, request ->
                 if (index == 0) {
-                    Assert.assertNotNull(memoryCache[request.toRequestContext().memoryCacheKey])
+                    Assert.assertNotNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 } else {
-                    Assert.assertNull(memoryCache[request.toRequestContext().memoryCacheKey])
+                    Assert.assertNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 }
             }
             requests2.forEachIndexed { index, request ->
                 if (index == 0) {
-                    Assert.assertNotNull(memoryCache[request.toRequestContext().memoryCacheKey])
+                    Assert.assertNotNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 } else {
-                    Assert.assertNull(memoryCache[request.toRequestContext().memoryCacheKey])
+                    Assert.assertNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 }
             }
             requests1.forEach { request ->
@@ -305,10 +305,10 @@ class ThumbnailMemoryCacheStateImageTest {
             Assert.assertEquals(0, memoryCache.keys().size)
             sketch.enqueue(requests1[1]).job.await()
             sketch.enqueue(requests1[2]).job.await()
-            sketch.enqueue(requests1[2].newDisplayRequest {
+            sketch.enqueue(requests1[2].newRequest {
                 transformations(listOf(RoundedCornersTransformation()))
             }).job.await()
-            sketch.enqueue(requests1[2].newDisplayRequest {
+            sketch.enqueue(requests1[2].newRequest {
                 transformations(listOf(RotateTransformation(90)))
             }).job.await()
             Assert.assertNull(inexactlyStateImage.getImage(sketch, requests1[0], null))
@@ -373,7 +373,7 @@ class ThumbnailMemoryCacheStateImageTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
         val uriString = request.uriString
 
         ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.BLUE))).apply {

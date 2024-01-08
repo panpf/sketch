@@ -19,10 +19,10 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.decode.internal.BitmapDecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -52,14 +52,14 @@ class BitmapTransformationDecodeInterceptorTest {
             listOf(EngineBitmapDecodeInterceptor())
 
         runBlocking {
-            val request = LoadRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
             }
             val chain = BitmapDecodeInterceptorChain(
                 sketch,
                 request,
-                request.toRequestContext(),
+                request.toRequestContext(sketch),
                 null,
                 interceptors,
                 0
@@ -75,7 +75,7 @@ class BitmapTransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = LoadRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
@@ -83,7 +83,7 @@ class BitmapTransformationDecodeInterceptorTest {
             val chain = BitmapDecodeInterceptorChain(
                 sketch,
                 request,
-                request.toRequestContext(),
+                request.toRequestContext(sketch),
                 null,
                 interceptors,
                 0
@@ -99,7 +99,7 @@ class BitmapTransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = LoadRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -116,7 +116,7 @@ class BitmapTransformationDecodeInterceptorTest {
             val chain = BitmapDecodeInterceptorChain(
                 sketch,
                 request,
-                request.toRequestContext(),
+                request.toRequestContext(sketch),
                 null,
                 interceptors,
                 0
@@ -132,7 +132,7 @@ class BitmapTransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = LoadRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -149,7 +149,7 @@ class BitmapTransformationDecodeInterceptorTest {
             val chain = BitmapDecodeInterceptorChain(
                 sketch,
                 request,
-                request.toRequestContext(),
+                request.toRequestContext(sketch),
                 null,
                 interceptors,
                 0
@@ -166,7 +166,7 @@ class BitmapTransformationDecodeInterceptorTest {
 
         assertThrow(IllegalArgumentException::class) {
             runBlocking {
-                val request = LoadRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     transformations(object : Transformation {
                         override val key: String
                             get() = "TestTransformation"
@@ -184,7 +184,7 @@ class BitmapTransformationDecodeInterceptorTest {
                 val chain = BitmapDecodeInterceptorChain(
                     sketch,
                     request,
-                    request.toRequestContext(),
+                    request.toRequestContext(sketch),
                     null,
                     interceptors,
                     0

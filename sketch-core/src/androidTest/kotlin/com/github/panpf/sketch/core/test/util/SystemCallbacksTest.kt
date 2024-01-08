@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.core.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 import org.junit.Assert

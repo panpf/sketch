@@ -17,17 +17,15 @@ package com.github.panpf.sketch.video.test.request
 
 import android.media.MediaMetadataRetriever
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.video.test.decode.toRequestContext
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -38,61 +36,61 @@ class VideoFrameExtensionsTest {
 
     @Test
     fun testVideoFrameMicros() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        (LoadRequest(context, AssetImages.mp4.uri) as ImageRequest).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFrameMicros)
         }
-        (LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFrameMicros(1000000)
-        } as ImageRequest).apply {
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFrameMicros(1000000)
+        }.apply {
             Assert.assertEquals(1000000L, videoFrameMicros)
         }
-        (LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFrameMillis(1000)
-        } as ImageRequest).apply {
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFrameMillis(1000)
+        }.apply {
             Assert.assertEquals(1000000L, videoFrameMicros)
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
-                (this as ImageRequest.Builder).videoFrameMillis(-1)
+            ImageRequest(context, AssetImages.mp4.uri) {
+                this.videoFrameMillis(-1)
             }
         }
 
-        LoadRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFrameMicros)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMicros(1000000)
         }.apply {
             Assert.assertEquals(1000000L, videoFrameMicros)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMillis(1000)
         }.apply {
             Assert.assertEquals(1000000L, videoFrameMicros)
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFrameMillis(-1)
             }
         }
 
-        DisplayRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFrameMicros)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMicros(1000000)
         }.apply {
             Assert.assertEquals(1000000L, videoFrameMicros)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMillis(1000)
         }.apply {
             Assert.assertEquals(1000000L, videoFrameMicros)
         }
         assertThrow(IllegalArgumentException::class) {
-            DisplayRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFrameMillis(-1)
             }
         }
@@ -116,76 +114,76 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = LoadRequest(context, AssetImages.mp4.uri).toRequestContext().key
-        val key2 = LoadRequest(context, AssetImages.mp4.uri) {
+        val key1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).key
+        val key2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMillis(500)
-        }.toRequestContext().key
+        }.toRequestContext(sketch).key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, AssetImages.mp4.uri).toRequestContext().cacheKey
-        val cacheKey2 = LoadRequest(context, AssetImages.mp4.uri) {
+        val cacheKey1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMillis(500)
-        }.toRequestContext().cacheKey
+        }.toRequestContext(sketch).cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
     @Test
     fun testVideoPercentDuration() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        LoadRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFramePercent)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFramePercent(0.45f)
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFramePercent(0.45f)
         }.apply {
             Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
-                (this as ImageRequest.Builder).videoFramePercent(-0.1f)
+            ImageRequest(context, AssetImages.mp4.uri) {
+                this.videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
-                (this as ImageRequest.Builder).videoFramePercent(-1.1f)
+            ImageRequest(context, AssetImages.mp4.uri) {
+                this.videoFramePercent(-1.1f)
             }
         }
 
-        LoadRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFramePercent)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFramePercent(0.45f)
         }.apply {
             Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFramePercent(-1.1f)
             }
         }
 
-        DisplayRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFramePercent)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFramePercent(0.45f)
         }.apply {
             Assert.assertEquals(0.45f, videoFramePercent)
         }
         assertThrow(IllegalArgumentException::class) {
-            DisplayRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFramePercent(-0.1f)
             }
         }
         assertThrow(IllegalArgumentException::class) {
-            DisplayRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFramePercent(-1.1f)
             }
         }
@@ -209,106 +207,106 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = LoadRequest(context, AssetImages.mp4.uri).toRequestContext().key
-        val key2 = LoadRequest(context, AssetImages.mp4.uri) {
+        val key1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).key
+        val key2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFramePercent(0.45f)
-        }.toRequestContext().key
+        }.toRequestContext(sketch).key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, AssetImages.mp4.uri).toRequestContext().cacheKey
-        val cacheKey2 = LoadRequest(context, AssetImages.mp4.uri) {
+        val cacheKey1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFramePercent(0.45f)
-        }.toRequestContext().cacheKey
+        }.toRequestContext(sketch).cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
     @Test
     fun testVideoOption() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val (context, sketch) = getTestContextAndSketch()
 
-        LoadRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_NEXT_SYNC, videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC, videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
-            (this as ImageRequest.Builder).videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+        ImageRequest(context, AssetImages.mp4.uri) {
+            this.videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
-                (this as ImageRequest.Builder).videoFrameOption(-1)
+            ImageRequest(context, AssetImages.mp4.uri) {
+                this.videoFrameOption(-1)
             }
         }
 
-        LoadRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_NEXT_SYNC, videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC, videoFrameOption)
         }
-        LoadRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
         assertThrow(IllegalArgumentException::class) {
-            LoadRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFrameOption(-1)
             }
         }
 
-        DisplayRequest(context, AssetImages.mp4.uri).apply {
+        ImageRequest(context, AssetImages.mp4.uri).apply {
             Assert.assertNull(videoFrameOption)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_NEXT_SYNC, videoFrameOption)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC, videoFrameOption)
         }
-        DisplayRequest(context, AssetImages.mp4.uri) {
+        ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         }.apply {
             Assert.assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
         assertThrow(IllegalArgumentException::class) {
-            DisplayRequest(context, AssetImages.mp4.uri) {
+            ImageRequest(context, AssetImages.mp4.uri) {
                 videoFrameOption(-1)
             }
         }
@@ -342,16 +340,16 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = LoadRequest(context, AssetImages.mp4.uri).toRequestContext().key
-        val key2 = LoadRequest(context, AssetImages.mp4.uri) {
+        val key1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).key
+        val key2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.toRequestContext().key
+        }.toRequestContext(sketch).key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = LoadRequest(context, AssetImages.mp4.uri).toRequestContext().cacheKey
-        val cacheKey2 = LoadRequest(context, AssetImages.mp4.uri) {
+        val cacheKey1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.toRequestContext().cacheKey
+        }.toRequestContext(sketch).cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 }

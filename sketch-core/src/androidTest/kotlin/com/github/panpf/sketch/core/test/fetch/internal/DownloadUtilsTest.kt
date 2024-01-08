@@ -16,11 +16,11 @@
 package com.github.panpf.sketch.core.test.fetch.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.fetch.internal.copyToWithActive
 import com.github.panpf.sketch.fetch.internal.getMimeType
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.test.utils.DownloadProgressListenerSupervisor
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.SlowInputStream
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -37,14 +37,14 @@ class DownloadUtilsTest {
     fun testCopyToWithActive() {
         val context = getTestContext()
         val string = "abcdefghijklmnopqrstuvwxyz"
-        val progressListener = DownloadProgressListenerSupervisor()
+        val progressListener = ProgressListenerSupervisor()
 
         progressListener.callbackActionList.clear()
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream = ByteArrayOutputStream()
         runBlocking {
             copyToWithActive(
-                request = DownloadRequest(context, "http://sample.com/sample.jpeg") {
+                request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
                 inputStream = SlowInputStream(string.byteInputStream(), 100),
@@ -62,7 +62,7 @@ class DownloadUtilsTest {
         val outputStream2 = ByteArrayOutputStream()
         runBlocking {
             copyToWithActive(
-                request = DownloadRequest(context, "http://sample.com/sample.jpeg"),
+                request = ImageRequest(context, "http://sample.com/sample.jpeg"),
                 inputStream = SlowInputStream(string.byteInputStream(), 100),
                 outputStream = outputStream2,
                 bufferSize = ceil(string.length / 3f).toInt(),
@@ -78,7 +78,7 @@ class DownloadUtilsTest {
         val outputStream3 = ByteArrayOutputStream()
         runBlocking {
             copyToWithActive(
-                request = DownloadRequest(context, "http://sample.com/sample.jpeg") {
+                request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
                 inputStream = SlowInputStream(string.byteInputStream(), 100),
@@ -96,7 +96,7 @@ class DownloadUtilsTest {
         val outputStream4 = ByteArrayOutputStream()
         runBlocking {
             copyToWithActive(
-                request = DownloadRequest(context, "http://sample.com/sample.jpeg") {
+                request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
                 inputStream = SlowInputStream(string.byteInputStream(), 400),

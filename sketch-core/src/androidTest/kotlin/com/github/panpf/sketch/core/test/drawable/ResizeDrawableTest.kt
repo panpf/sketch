@@ -22,21 +22,25 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.core.test.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.asDrawable
+import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.intrinsicSize
@@ -52,38 +56,42 @@ class ResizeDrawableTest {
 
     @Test
     fun testTryToResizeDrawable() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         val resources = context.resources
 
         val imageUri = AssetImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
-        val request = DisplayRequest(context, imageUri)
+        val request = ImageRequest(context, imageUri)
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(request, null)
+            bitmapDrawable.asSketchImage().resizeApplyToDrawable(request, null).asDrawable(resources)
         )
-        val request1 = DisplayRequest(context, imageUri) {
+        val request1 = ImageRequest(context, imageUri) {
             resizeApplyToDrawable(true)
         }
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(request1, null)
+            bitmapDrawable.asSketchImage().resizeApplyToDrawable(request1, null).asDrawable(resources)
         )
-        val request2 = DisplayRequest(context, imageUri) {
+        val request2 = ImageRequest(context, imageUri) {
             resizeSize(500, 300)
             resizePrecision(EXACTLY)
         }
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.tryToResizeDrawable(request2, request2.toRequestContext().resizeSize)
+            bitmapDrawable.asSketchImage()
+                .resizeApplyToDrawable(request2, request2.toRequestContext(sketch).resizeSize)
+                .asDrawable(resources)
         )
-        val request3 = DisplayRequest(context, imageUri) {
+        val request3 = ImageRequest(context, imageUri) {
             resizeApplyToDrawable(true)
             resizeSize(500, 300)
             resizePrecision(EXACTLY)
         }
-        bitmapDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resizeSize)
+        bitmapDrawable.asSketchImage()
+            .resizeApplyToDrawable(request3, request3.toRequestContext(sketch).resizeSize)
+            .asDrawable(resources)
             .let { it as ResizeDrawable }
             .apply {
                 Assert.assertNotSame(bitmapDrawable, this)
@@ -101,7 +109,9 @@ class ResizeDrawableTest {
             transformedList = null,
             extras = null,
         )
-        animDrawable.tryToResizeDrawable(request3, request3.toRequestContext().resizeSize)
+        animDrawable.asSketchImage()
+            .resizeApplyToDrawable(request3, request3.toRequestContext(sketch).resizeSize)
+            .asDrawable(resources)
             .let { it as ResizeAnimatableDrawable }
             .apply {
                 Assert.assertNotSame(animDrawable, this)
@@ -166,7 +176,7 @@ class ResizeDrawableTest {
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(-75, 0, 75, 300), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
         ResizeDrawable(
             ResizeDrawable(bitmapDrawable, Size(300, 0), CENTER_CROP),
@@ -175,7 +185,7 @@ class ResizeDrawableTest {
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(0, -300, 300, 300), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -150, 300, 450), bitmapDrawable.bounds)
         }
         ResizeDrawable(
             ResizeDrawable(bitmapDrawable, Size.Empty, CENTER_CROP),
@@ -184,7 +194,7 @@ class ResizeDrawableTest {
         ).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
 
         val sketchDrawable = SketchCountBitmapDrawable(
@@ -206,7 +216,7 @@ class ResizeDrawableTest {
         ResizeDrawable(sketchDrawable, Size(500, 300), CENTER_CROP).apply {
             setBounds(0, 0, 500, 300)
             Assert.assertEquals(Rect(0, 0, 500, 300), bounds)
-            Assert.assertEquals(Rect(0, 0, 0, 0), bitmapDrawable.bounds)
+            Assert.assertEquals(Rect(0, -350, 500, 650), bitmapDrawable.bounds)
         }
     }
 

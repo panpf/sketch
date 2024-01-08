@@ -25,9 +25,9 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DisplayResult.Error
-import com.github.panpf.sketch.request.DisplayResult.Success
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult.Error
+import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
@@ -132,7 +132,7 @@ class SketchImageViewTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketchImageView = SketchImageView(context)
 
-        sketchImageView.getDisplayListener().apply {
+        sketchImageView.getListener().apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState),
@@ -140,11 +140,11 @@ class SketchImageViewTest {
             )
         }
 
-        val listener1 = object : Listener<DisplayRequest, Success, Error> {}
-        val listener2 = object : Listener<DisplayRequest, Success, Error> {}
+        val listener1 = object : Listener {}
+        val listener2 = object : Listener {}
 
-        sketchImageView.registerDisplayListener(listener1)
-        sketchImageView.getDisplayListener()!!.apply {
+        sketchImageView.registerListener(listener1)
+        sketchImageView.getListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1),
@@ -152,8 +152,8 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterDisplayListener(listener2)
-        sketchImageView.getDisplayListener()!!.apply {
+        sketchImageView.unregisterListener(listener2)
+        sketchImageView.getListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1),
@@ -161,8 +161,8 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.registerDisplayListener(listener2)
-        sketchImageView.getDisplayListener()!!.apply {
+        sketchImageView.registerListener(listener2)
+        sketchImageView.getListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
@@ -171,42 +171,42 @@ class SketchImageViewTest {
         }
 
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(context.sketch, true)
-        val viewAbilityDisplayListener = sketchImageView
+        val viewAbilityListener = sketchImageView
             .getFieldValue<Any>("viewAbilityManager")!!
-            .callMethod<Any>("getDisplayRequestListener")
-        sketchImageView.getDisplayListener()!!.apply {
+            .callMethod<Any>("getRequestListener")
+        sketchImageView.getListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(
                     sketchImageView.requestState,
                     listener1,
                     listener2,
-                    viewAbilityDisplayListener
+                    viewAbilityListener
                 ),
                 (this as Listeners).listenerList
             )
         }
 
-        sketchImageView.unregisterDisplayListener(listener1)
-        sketchImageView.getDisplayListener()!!.apply {
+        sketchImageView.unregisterListener(listener1)
+        sketchImageView.getListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
-                listOf(sketchImageView.requestState, listener2, viewAbilityDisplayListener),
+                listOf(sketchImageView.requestState, listener2, viewAbilityListener),
                 (this as Listeners).listenerList
             )
         }
 
-        sketchImageView.unregisterDisplayListener(listener2)
-        sketchImageView.getDisplayListener()!!.apply {
+        sketchImageView.unregisterListener(listener2)
+        sketchImageView.getListener()!!.apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
-                listOf(sketchImageView.requestState, viewAbilityDisplayListener),
+                listOf(sketchImageView.requestState, viewAbilityListener),
                 (this as Listeners).listenerList
             )
         }
 
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(context.sketch, false)
-        sketchImageView.getDisplayListener().apply {
+        sketchImageView.getListener().apply {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState),
@@ -220,25 +220,25 @@ class SketchImageViewTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketchImageView = SketchImageView(context)
 
-        Assert.assertNull(sketchImageView.getDisplayProgressListener())
+        Assert.assertNull(sketchImageView.getProgressListener())
 
-        val listener1 = ProgressListener<DisplayRequest> { _, _, _ -> }
-        val listener2 = ProgressListener<DisplayRequest> { _, _, _ -> }
+        val listener1 = ProgressListener { _, _ -> }
+        val listener2 = ProgressListener { _, _ -> }
 
-        sketchImageView.registerDisplayProgressListener(listener1)
-        sketchImageView.getDisplayProgressListener()!!.apply {
+        sketchImageView.registerProgressListener(listener1)
+        sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(listOf(listener1), (this as ProgressListeners).progressListenerList)
         }
 
-        sketchImageView.unregisterDisplayProgressListener(listener2)
-        sketchImageView.getDisplayProgressListener()!!.apply {
+        sketchImageView.unregisterProgressListener(listener2)
+        sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(listOf(listener1), (this as ProgressListeners).progressListenerList)
         }
 
-        sketchImageView.registerDisplayProgressListener(listener2)
-        sketchImageView.getDisplayProgressListener()!!.apply {
+        sketchImageView.registerProgressListener(listener2)
+        sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
                 listOf(listener1, listener2),
@@ -247,36 +247,36 @@ class SketchImageViewTest {
         }
 
         sketchImageView.showMaskProgressIndicator()
-        val viewAbilityDisplayProgressListener = sketchImageView
+        val viewAbilityProgressListener = sketchImageView
             .getFieldValue<Any>("viewAbilityManager")!!
-            .callMethod<Any>("getDisplayRequestListener")
-        sketchImageView.getDisplayProgressListener()!!.apply {
+            .callMethod<Any>("getRequestListener")
+        sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
-                listOf(listener1, listener2, viewAbilityDisplayProgressListener),
+                listOf(listener1, listener2, viewAbilityProgressListener),
                 (this as ProgressListeners).progressListenerList
             )
         }
 
-        sketchImageView.unregisterDisplayProgressListener(listener1)
-        sketchImageView.getDisplayProgressListener()!!.apply {
+        sketchImageView.unregisterProgressListener(listener1)
+        sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
-                listOf(listener2, viewAbilityDisplayProgressListener),
+                listOf(listener2, viewAbilityProgressListener),
                 (this as ProgressListeners).progressListenerList
             )
         }
 
-        sketchImageView.unregisterDisplayProgressListener(listener2)
-        sketchImageView.getDisplayProgressListener()!!.apply {
+        sketchImageView.unregisterProgressListener(listener2)
+        sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
-                listOf(viewAbilityDisplayProgressListener),
+                listOf(viewAbilityProgressListener),
                 (this as ProgressListeners).progressListenerList
             )
         }
 
         sketchImageView.removeProgressIndicator()
-        Assert.assertNull(sketchImageView.getDisplayProgressListener())
+        Assert.assertNull(sketchImageView.getProgressListener())
     }
 }

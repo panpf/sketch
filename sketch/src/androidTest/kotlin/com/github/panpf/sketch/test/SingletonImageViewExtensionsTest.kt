@@ -27,6 +27,7 @@ import com.github.panpf.sketch.displayResourceImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers

@@ -17,16 +17,14 @@ package com.github.panpf.sketch.extensions.core.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.core.test.internal.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.supportAppIcon
-import com.github.panpf.sketch.request.DisplayRequest
-import com.github.panpf.sketch.request.DownloadRequest
-import com.github.panpf.sketch.request.LoadRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -104,17 +102,17 @@ class AppIconUriFetcherTest {
 
         Assert.assertEquals("AppIconUriFetcher", fetcherFactory.toString())
 
-        fetcherFactory.create(sketch, LoadRequest(context, "app.icon://packageName1/12412"))!!
+        fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
             .apply {
                 Assert.assertEquals("packageName1", packageName)
                 Assert.assertEquals(12412, versionCode)
             }
-        fetcherFactory.create(sketch, DisplayRequest(context, "app.icon://packageName1/12412"))!!
+        fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
             .apply {
                 Assert.assertEquals("packageName1", packageName)
                 Assert.assertEquals(12412, versionCode)
             }
-        fetcherFactory.create(sketch, DownloadRequest(context, "app.icon://packageName1/12412"))!!
+        fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
             .apply {
                 Assert.assertEquals("packageName1", packageName)
                 Assert.assertEquals(12412, versionCode)
@@ -123,26 +121,26 @@ class AppIconUriFetcherTest {
         Assert.assertNull(
             fetcherFactory.create(
                 sketch,
-                LoadRequest(context, "content://sample_app/sample")
+                ImageRequest(context, "content://sample_app/sample")
             )
         )
 
         assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, DownloadRequest(context, "app.icon:///12412"))
+            fetcherFactory.create(sketch, ImageRequest(context, "app.icon:///12412"))
         }
         assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, DownloadRequest(context, "app.icon:// /12412"))
+            fetcherFactory.create(sketch, ImageRequest(context, "app.icon:// /12412"))
         }
         assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, DownloadRequest(context, "app.icon://packageName1/"))
+            fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/"))
         }
         assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, DownloadRequest(context, "app.icon://packageName1/ "))
+            fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/ "))
         }
         assertThrow(UriInvalidException::class) {
             fetcherFactory.create(
                 sketch,
-                DownloadRequest(context, "app.icon://packageName1/errorCode")
+                ImageRequest(context, "app.icon://packageName1/errorCode")
             )
         }
     }
@@ -175,7 +173,7 @@ class AppIconUriFetcherTest {
         val versionCode = context.packageManager.getPackageInfo(packageName, 0).versionCode
         val appIconUri = newAppIconUri(packageName, versionCode)
 
-        val fetcher = fetcherFactory.create(sketch, LoadRequest(context, appIconUri))!!
+        val fetcher = fetcherFactory.create(sketch, ImageRequest(context, appIconUri))!!
         (runBlocking { fetcher.fetch() }.getOrThrow().dataSource as DrawableDataSource).apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
 

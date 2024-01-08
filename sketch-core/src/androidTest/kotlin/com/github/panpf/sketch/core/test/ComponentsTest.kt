@@ -29,7 +29,7 @@ import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
@@ -44,6 +44,9 @@ import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestDrawableDecoder2
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
@@ -60,8 +63,8 @@ class ComponentsTest {
     @Test
     fun testRequestInterceptors() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val emptyRequest = DisplayRequest(context, "")
-        val notEmptyRequest = DisplayRequest(context, "") {
+        val emptyRequest = ImageRequest(context, "")
+        val notEmptyRequest = ImageRequest(context, "") {
             components {
                 addRequestInterceptor(TestRequestInterceptor(95))
                 addRequestInterceptor(Test2RequestInterceptor())
@@ -102,8 +105,8 @@ class ComponentsTest {
     @Test
     fun testBitmapDecodeInterceptors() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val emptyRequest = DisplayRequest(context, "")
-        val notEmptyRequest = DisplayRequest(context, "") {
+        val emptyRequest = ImageRequest(context, "")
+        val notEmptyRequest = ImageRequest(context, "") {
             components {
                 addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor(95))
                 addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
@@ -150,8 +153,8 @@ class ComponentsTest {
     @Test
     fun testDrawableDecodeInterceptors() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val emptyRequest = DisplayRequest(context, "")
-        val notEmptyRequest = DisplayRequest(context, "") {
+        val emptyRequest = ImageRequest(context, "")
+        val notEmptyRequest = ImageRequest(context, "") {
             components {
                 addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(95))
                 addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
@@ -199,17 +202,17 @@ class ComponentsTest {
 
         Components(sketch, ComponentRegistry.Builder().build()).apply {
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(DisplayRequest(context, AssetImages.jpeg.uri))
+                newFetcherOrThrow(ImageRequest(context, AssetImages.jpeg.uri))
             }
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(DisplayRequest(context, AssetImages.jpeg.uri) {
+                newFetcherOrThrow(ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addFetcher(HttpUriFetcher.Factory())
                     }
                 })
             }
             assertNoThrow {
-                newFetcherOrThrow(DisplayRequest(context, AssetImages.jpeg.uri) {
+                newFetcherOrThrow(ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addFetcher(AssetUriFetcher.Factory())
                     }
@@ -217,17 +220,17 @@ class ComponentsTest {
             }
 
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(DisplayRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrThrow(ImageRequest(context, "http://sample.com/sample.jpeg"))
             }
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                newFetcherOrThrow(ImageRequest(context, "http://sample.com/sample.jpeg") {
                     components {
                         addFetcher(AssetUriFetcher.Factory())
                     }
                 })
             }
             assertNoThrow {
-                newFetcherOrThrow(DisplayRequest(context, "http://sample.com/sample.jpeg") {
+                newFetcherOrThrow(ImageRequest(context, "http://sample.com/sample.jpeg") {
                     components {
                         addFetcher(HttpUriFetcher.Factory())
                     }
@@ -241,7 +244,7 @@ class ComponentsTest {
         }.build()).apply {
             Assert.assertTrue(
                 newFetcherOrThrow(
-                    DisplayRequest(
+                    ImageRequest(
                         context,
                         AssetImages.jpeg.uri
                     )
@@ -249,16 +252,16 @@ class ComponentsTest {
             )
             Assert.assertTrue(
                 newFetcherOrThrow(
-                    DisplayRequest(context, "http://sample.com/sample.jpeg")
+                    ImageRequest(context, "http://sample.com/sample.jpeg")
                 ) is HttpUriFetcher
             )
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(DisplayRequest(context, "file:///sdcard/sample.jpeg"))
+                newFetcherOrThrow(ImageRequest(context, "file:///sdcard/sample.jpeg"))
             }
 
             Assert.assertTrue(
                 newFetcherOrThrow(
-                    DisplayRequest(
+                    ImageRequest(
                         context,
                         AssetImages.jpeg.uri
                     ) {
@@ -269,7 +272,7 @@ class ComponentsTest {
             )
             Assert.assertTrue(
                 newFetcherOrThrow(
-                    DisplayRequest(
+                    ImageRequest(
                         context,
                         "http://sample.com/sample.jpeg"
                     ) {
@@ -280,7 +283,7 @@ class ComponentsTest {
             )
             Assert.assertTrue(
                 newFetcherOrThrow(
-                    DisplayRequest(
+                    ImageRequest(
                         context,
                         "file:///sdcard/sample.jpeg"
                     ) {
@@ -301,8 +304,8 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
             assertThrow(IllegalStateException::class) {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext()
+                val request = ImageRequest(context, AssetImages.jpeg.uri)
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 runBlocking(Dispatchers.Main) {
                     newBitmapDecoderOrThrow(requestContext, fetchResult)
@@ -314,28 +317,28 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
             assertThrow(IllegalArgumentException::class) {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext()
+                val request = ImageRequest(context, AssetImages.jpeg.uri)
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newBitmapDecoderOrThrow(requestContext, fetchResult)
             }
             assertThrow(IllegalArgumentException::class) {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addBitmapDecoder(DrawableBitmapDecoder.Factory())
                     }
                 }
-                val requestContext = request.toRequestContext()
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newBitmapDecoderOrThrow(requestContext, fetchResult)
             }
             assertNoThrow {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                     }
                 }
-                val requestContext = request.toRequestContext()
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newBitmapDecoderOrThrow(requestContext, fetchResult)
             }
@@ -346,8 +349,8 @@ class ComponentsTest {
             addBitmapDecoder(DefaultBitmapDecoder.Factory())
         }.build()).apply {
             assertNoThrow {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext()
+                val request = ImageRequest(context, AssetImages.jpeg.uri)
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 Assert.assertTrue(
                     newBitmapDecoderOrThrow(requestContext, fetchResult) is DefaultBitmapDecoder
@@ -355,12 +358,12 @@ class ComponentsTest {
             }
 
             assertNoThrow {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addBitmapDecoder(TestBitmapDecoder.Factory())
                     }
                 }
-                val requestContext = request.toRequestContext()
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 Assert.assertTrue(
                     newBitmapDecoderOrThrow(requestContext, fetchResult) is TestBitmapDecoder
@@ -378,8 +381,8 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
             assertThrow(IllegalStateException::class) {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext()
+                val request = ImageRequest(context, AssetImages.jpeg.uri)
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 runBlocking(Dispatchers.Main) {
                     newDrawableDecoderOrThrow(requestContext, fetchResult)
@@ -391,28 +394,28 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
             assertThrow(IllegalArgumentException::class) {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext()
+                val request = ImageRequest(context, AssetImages.jpeg.uri)
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDrawableDecoderOrThrow(requestContext, fetchResult)
             }
             assertThrow(IllegalArgumentException::class) {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addDrawableDecoder(TestDrawableDecoder2.Factory("image/xml"))
                     }
                 }
-                val requestContext = request.toRequestContext()
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDrawableDecoderOrThrow(requestContext, fetchResult)
             }
             assertNoThrow {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
                     }
                 }
-                val requestContext = request.toRequestContext()
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDrawableDecoderOrThrow(requestContext, fetchResult)
             }
@@ -423,8 +426,8 @@ class ComponentsTest {
             addDrawableDecoder(DefaultDrawableDecoder.Factory())
         }.build()).apply {
             assertNoThrow {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext()
+                val request = ImageRequest(context, AssetImages.jpeg.uri)
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 Assert.assertTrue(
                     newDrawableDecoderOrThrow(
@@ -434,12 +437,12 @@ class ComponentsTest {
                 )
             }
             assertNoThrow {
-                val request = DisplayRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
                         addDrawableDecoder(TestDrawableDecoder.Factory())
                     }
                 }
-                val requestContext = request.toRequestContext()
+                val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 Assert.assertTrue(
                     newDrawableDecoderOrThrow(requestContext, fetchResult) is TestDrawableDecoder

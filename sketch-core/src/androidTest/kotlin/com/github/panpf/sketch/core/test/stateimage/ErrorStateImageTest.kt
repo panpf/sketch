@@ -18,15 +18,16 @@ package com.github.panpf.sketch.core.test.stateimage
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.core.test.getTestContext
-import com.github.panpf.sketch.request.DisplayRequest
+import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,18 +37,21 @@ class ErrorStateImageTest {
 
     @Test
     fun testGetDrawable() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val request = DisplayRequest(context, "")
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "")
         val colorDrawable = ColorDrawable(Color.BLUE)
         val colorDrawable2 = ColorDrawable(Color.RED)
 
         ErrorStateImage(DrawableStateImage(colorDrawable)).apply {
             Assert.assertFalse(stateList.isEmpty())
-            Assert.assertEquals(colorDrawable, getImage(sketch, request, null))
+            Assert.assertEquals(
+                colorDrawable,
+                getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable
+            )
             Assert.assertEquals(
                 colorDrawable,
                 getImage(sketch, request, UriInvalidException(""))
+                    ?.asOrThrow<DrawableImage>()?.drawable
             )
         }
 
@@ -55,10 +59,14 @@ class ErrorStateImageTest {
             uriEmptyError(colorDrawable2)
         }.apply {
             Assert.assertFalse(stateList.isEmpty())
-            Assert.assertEquals(colorDrawable, getImage(sketch, request, null))
+            Assert.assertEquals(
+                colorDrawable,
+                getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable
+            )
             Assert.assertEquals(
                 colorDrawable2,
                 getImage(sketch, request, UriInvalidException(""))
+                    ?.asOrThrow<DrawableImage>()?.drawable
             )
         }
 
@@ -124,9 +132,9 @@ class ErrorStateImageTest {
     @Test
     fun testUriEmptyCondition() {
         val context = getTestContext()
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
-        val request1 = DisplayRequest(context, "")
-        val request2 = DisplayRequest(context, " ")
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request1 = ImageRequest(context, "")
+        val request2 = ImageRequest(context, " ")
 
         ErrorStateImage.UriEmptyCondition.apply {
             Assert.assertTrue(accept(request1, UriInvalidException("")))
@@ -141,7 +149,7 @@ class ErrorStateImageTest {
     @Test
     fun testDefaultCondition() {
         val context = getTestContext()
-        val request = DisplayRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
 
         ErrorStateImage.DefaultCondition.apply {
             Assert.assertTrue(accept(request, null))

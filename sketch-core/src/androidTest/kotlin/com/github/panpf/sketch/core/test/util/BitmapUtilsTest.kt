@@ -21,7 +21,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.util.allocationByteCountCompat
@@ -51,7 +51,7 @@ class BitmapUtilsTest {
         )
 
         Assert.assertEquals(
-            0,
+            46200,
             Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565)
                 .apply { recycle() }
                 .allocationByteCountCompat

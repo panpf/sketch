@@ -25,7 +25,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert

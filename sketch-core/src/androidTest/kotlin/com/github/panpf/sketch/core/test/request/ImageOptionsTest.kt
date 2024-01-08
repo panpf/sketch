@@ -32,7 +32,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.core.test.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
 import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder

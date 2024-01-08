@@ -15,9 +15,7 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.request.Image
-import com.github.panpf.sketch.request.asDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
 
@@ -25,22 +23,22 @@ class TestTarget : Target {
 
     override val supportDisplayCount: Boolean = true
 
-    var startDrawable: Drawable? = null
-    var successDrawable: Drawable? = null
-    var errorDrawable: Drawable? = null
+    var startImage: Image? = null
+    var successImage: Image? = null
+    var errorImage: Image? = null
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) {
         super.onStart(requestContext, placeholder)
-        startDrawable = placeholder?.asDrawable(requestContext.request.context.resources)
+        startImage = placeholder
     }
 
     override fun onSuccess(requestContext: RequestContext, result: Image) {
         super.onSuccess(requestContext, result)
-        successDrawable = result.asDrawable(requestContext.request.context.resources)
+        successImage = result
     }
 
     override fun onError(requestContext: RequestContext, error: Image?) {
         super.onError(requestContext, error)
-        errorDrawable = error?.asDrawable(requestContext.request.context.resources)
+        errorImage = error
     }
 }
