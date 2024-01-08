@@ -14,6 +14,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ComposeTarget] directly.
  */
+// TODO test
 abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
 
     override val supportDisplayCount: Boolean = true

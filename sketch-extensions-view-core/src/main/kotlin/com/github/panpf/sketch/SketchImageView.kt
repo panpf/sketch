@@ -54,6 +54,7 @@ open class SketchImageView @JvmOverloads constructor(
         val listenerList = (myListeners?.toMutableList() ?: mutableListOf()).apply {
             if (superListener != null) add(superListener)
         }.toList()
+        // TODO Change to Listeners(myListeners, superListener) to avoid frequent assembly of lists
         return Listeners(listenerList)
     }
 
