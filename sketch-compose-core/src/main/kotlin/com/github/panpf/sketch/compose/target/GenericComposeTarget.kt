@@ -33,18 +33,23 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerComposeFragment#PagerBgImage() is an example.
         if (image != null || requestContext.request.allowSetNullDrawable) {
-            // AsyncImageState's AsyncImageTarget will call Painter's onRemembered and onForgotten methods to trigger the start and stop of Animatable in DrawablePainter
-//            this.drawable.asOrNull<Animatable>()?.stop()
             val newPainter = image?.asPainter()
             updatePainter(newPainter)
-//            updateAnimation()
         }
     }
 
-    fun updatePainter(newPainter: Painter?) {
-        val oldDrawable = painter
-        newPainter?.updateIsDisplayed(true, "AsyncImage")
-        painter = newPainter
-        oldDrawable?.updateIsDisplayed(false, "AsyncImage")
+    private fun updatePainter(newPainter: Painter?) {
+        val oldPainter = painter
+        if (newPainter !== oldPainter) {
+            newPainter?.updateIsDisplayed(true, "AsyncImage")
+            painter = newPainter
+            oldPainter?.updateIsDisplayed(false, "AsyncImage")
+            // AsyncImageState's AsyncImageTarget will call Painter's onRemembered and onForgotten
+            // methods to trigger the start and stop of Animatable in DrawablePainter
+        }
+    }
+
+    fun onForgotten() {
+        updatePainter(null)  // To trigger setIsDisplayed and onForgotten
     }
 }

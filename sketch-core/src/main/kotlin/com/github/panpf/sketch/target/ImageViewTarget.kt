@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference
  * A [Target] that handles setting images on an [ImageView].
  */
 open class ImageViewTarget constructor(
-    view: ImageView,
+    view: ImageView
 ) : GenericViewTarget<ImageView>(view) {
 
     private val viewReference: WeakReference<ImageView> = WeakReference(view)

@@ -37,7 +37,6 @@ import android.view.View.OnAttachStateChangeListener
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.core.R
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.asDrawable
@@ -61,7 +60,6 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     override val supportDisplayCount: Boolean = true
 
     init {
-        // TODO Ported back to 3.x
         if (canBindTarget(view)) {
             view.setTag(R.id.sketch_generic_view_target, this@GenericViewTarget)
             view.addOnAttachStateChangeListener(this@GenericViewTarget)
@@ -72,7 +70,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         val tag = view.getTag(R.id.sketch_generic_view_target)
         if (tag != null && tag is GenericViewTarget<*>) {
             val existTarget: GenericViewTarget<*> = tag
-            if (existTarget === this) {
+            if (existTarget === this@GenericViewTarget) {
                 return false
             } else {
                 view.removeOnAttachStateChangeListener(existTarget)
@@ -108,34 +106,24 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     }
 
     private fun updateImage(requestContext: RequestContext, image: Image?) {
+        view ?: return
         // 'image != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment.loadBgImage() is an example.
-        view ?: return
         if (image != null || requestContext.request.allowSetNullDrawable) {
-            val oldDrawable = this.drawable
             val newDrawable = image?.asDrawable(requestContext.request.context.resources)
-            if (newDrawable !== oldDrawable) {
-                oldDrawable.asOrNull<Animatable>()?.stop()
-                updateDrawable(newDrawable)
-                updateAnimation()
-            }
+            updateDrawable(newDrawable)
         }
     }
 
     private fun updateDrawable(newDrawable: Drawable?) {
         val oldDrawable = drawable
-        if (newDrawable === oldDrawable) return
-        oldDrawable?.updateIsDisplayed(false, "ImageView")
-        this.drawable = newDrawable
-        newDrawable?.updateIsDisplayed(true, "ImageView")
-        if (newDrawable is CrossfadeDrawable) {
-            val start = newDrawable.start
-            if (start != null && start === oldDrawable) {
-                require(start.callback == null) { "start.callback is not null. set after" }
-                // TODO It may have something to do with the animation. I’ll see if I want to delete it after testing.
-                start.callback = newDrawable
-            }
+        if (newDrawable !== oldDrawable) {
+            oldDrawable.asOrNull<Animatable>()?.stop()
+            newDrawable?.updateIsDisplayed(true, "ImageView")
+            this.drawable = newDrawable
+            oldDrawable?.updateIsDisplayed(false, "ImageView")
+            updateAnimation()
         }
     }
 

@@ -184,7 +184,7 @@ class AsyncImageState internal constructor(
         this.coroutineScope = null
         (_painterState.painter as? RememberObserver)?.onForgotten()
         painterState = Empty
-        target.updatePainter(null)  // To trigger setIsDisplayed and onForgotten
+        target.onForgotten()
     }
 
     private fun validateRequest(request: ImageRequest) {
@@ -291,7 +291,6 @@ class AsyncImageState internal constructor(
 
     private inner class AsyncImageTarget : GenericComposeTarget() {
 
-        // TODO Compose GIF cannot be played
         override var painter: Painter?
             get() = _painter
             set(newPainter) {

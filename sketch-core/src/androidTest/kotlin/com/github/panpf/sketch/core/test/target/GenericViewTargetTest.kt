@@ -52,7 +52,7 @@ class GenericViewTargetTest {
     // TODO test allowSetNullDrawable
 
     @Test
-    fun testDrawable() {
+    fun testUpdateDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, AssetImages.jpeg.uri) {
             allowSetNullDrawable()
@@ -195,7 +195,6 @@ class GenericViewTargetTest {
 
     class TestViewTarget(override val view: ImageView) :
         GenericViewTarget<ImageView>(view) {
-        override val supportDisplayCount: Boolean = true
         override var drawable: Drawable?
             get() = view.drawable
             set(value) {
