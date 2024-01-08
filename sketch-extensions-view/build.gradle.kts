@@ -41,4 +41,6 @@ dependencies {
     api(project(":sketch-extensions-view-core"))
 
     androidTestImplementation(project(":sketch-test"))
+    androidTestImplementation(project(":sketch-test-singleton"))
+    androidTestImplementation(project(":sketch-resources"))
 }
