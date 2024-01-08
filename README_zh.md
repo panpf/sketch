@@ -9,13 +9,12 @@
 翻译：[English](README.md)
 
 Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 Jetpack
-Compose、GIF、SVG、视频缩略图、手势缩放、超大图采样、ExifInterface 等功能。
+Compose、GIF、SVG、视频缩略图、超大图采样、ExifInterface 等功能。
 
 ## 特点
 
 * 支持 http、asset、content、android.resource 等多种 URI
 * 支持播放 gif、webp、heif 等动图
-* 支持手势缩放及超大图采样
 * 支持下载、转换结果、内存三级缓存
 * 支持通过 Exif 纠正图片方向
 * 支持 Base64、视频帧、SVG 图片
@@ -72,9 +71,6 @@ dependencies {
 
     // 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现读取视频帧
     implementation("io.github.panpf.sketch3:sketch-video-ffmpeg:${LAST_VERSION}")
-
-    // 支持手势缩放以及超大图采样
-    implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}")
 }
 ```
 
@@ -175,7 +171,6 @@ AsyncImage(
 特色功能：
 
 * [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
-* [SketchZoomImageView：手势缩放及超大图采样][zoom]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
 * [显示下载进度][download_progress_indicator]
 * [显示图片类型角标][mime_type_logo]
@@ -202,7 +197,6 @@ AsyncImage(
     * sketch 支持 bitmap 复用，而 [coil] 不支持
     * sketch 支持更加精细化的调整图片大小
     * sketch 明确区分显示、加载、下载请求
-    * sketch 提供了图片缩放显示组件并且支持超大图采样
 
 ## 特别感谢
 
@@ -301,8 +295,6 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [download_progress_indicator]: docs/wiki/download_progress_indicator_zh.md
 
 [sketch_image_view]: docs/wiki/sketch_image_view_zh.md
-
-[zoom]: docs/wiki/zoom_zh.md
 
 [save_cellular_traffic]: docs/wiki/save_cellular_traffic_zh.md
 

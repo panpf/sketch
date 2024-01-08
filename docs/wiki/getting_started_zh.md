@@ -341,7 +341,6 @@ when (displayResult) {
 特色功能：
 
 * [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
-* [SketchZoomImageView：手势缩放及超大图采样][zoom]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]
@@ -425,8 +424,6 @@ when (displayResult) {
 [show_download_progress]: download_progress_indicator_zh.md
 
 [sketch_image_view]: sketch_image_view_zh.md
-
-[zoom]: zoom_zh.md
 
 [save_cellular_traffic]: save_cellular_traffic_zh.md
 

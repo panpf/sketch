@@ -362,7 +362,6 @@ Basic functions:
 Featured functions:
 
 * [SketchImageView: Configure the request through XML attributes][sketch_image_view]
-* [SketchZoomImageView: Gesture zoom and large image sampling][zoom]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
 * [Displays the download progress][show_download_progress]
 * [Displays the image type corner][show_image_type]
@@ -446,8 +445,6 @@ Featured functions:
 [show_download_progress]: download_progress_indicator.md
 
 [sketch_image_view]: sketch_image_view.md
-
-[zoom]: zoom.md
 
 [save_cellular_traffic]: save_cellular_traffic.md
 

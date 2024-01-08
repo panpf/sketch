@@ -6,9 +6,7 @@
 
 目前可以在三个地方使用 [ImageOptions]：
 
-* View
-    * [SketchImageView].displayImageOptions
-    * [SketchZoomImageView].displayImageOptions
+* [SketchImageView].displayImageOptions
 * [ImageRequest].Builder.merge()/default()
 * [Sketch].globalImageOptions
 
@@ -68,5 +66,3 @@ DisplayRequest(context, "http://sample.com/sample.jpeg") {
 [ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
-
-[SketchZoomImageView]: ../../sketch-zoom/src/main/kotlin/com/github/panpf/sketch/zoom/SketchZoomImageView.kt

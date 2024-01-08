@@ -9,14 +9,13 @@
 Translations: [简体中文](README_zh.md)
 
 Sketch is a powerful and comprehensive image load library on Android, in addition to the basic
-functions, it also supports Jetpack Compose, GIF, SVG, video thumbnails, gesture zoom, huge images
+functions, it also supports Jetpack Compose, GIF, SVG, video thumbnails, huge images
 sampling, ExifInterface and other functions.
 
 ## Features
 
 * Support http, asset, content, android.resource and other URIs
 * Support playing GIFs, WebP, HEIF and other animated image
-* Support gesture zoom and large image sampling
 * Supports download, conversion results, and memory L3 cache
 * Support for correcting image orientation via Exif
 * Supports Base64, video frames, SVG images
@@ -80,9 +79,6 @@ dependencies {
 
     // Video frames are read through wseemann's FFmpegMediaMetadataRetriever library
     implementation("io.github.panpf.sketch3:sketch-video-ffmpeg:${LAST_VERSION}")
-
-    // Supports gesture zoom and jumbo sampling
-    implementation("io.github.panpf.sketch3:sketch-zoom:${LAST_VERSION}")
 }
 ```
 
@@ -184,7 +180,6 @@ Basic functions：
 Featured functions：
 
 * [SketchImageView：Configure the request through XML attributes][sketch_image_view]
-* [SketchZoomImageView：Gesture zoom and large image sampling][zoom]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
 * [Displays the download progress][download_progress_indicator]
 * [Displays the image type corner][mime_type_logo]
@@ -217,7 +212,6 @@ Please review the [CHANGELOG.md] file
     * Sketch supports bitmap reuse, while [coil] does not
     * Sketch supports more granular resizing of images
     * sketch clearly distinguishes between display, load, and download requests
-    * sketch provides image scaling and display components and supports large image sampling
 
 ## Special thanks
 
@@ -321,8 +315,6 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [download_progress_indicator]: docs/wiki/download_progress_indicator.md
 
 [sketch_image_view]: docs/wiki/sketch_image_view.md
-
-[zoom]: docs/wiki/zoom.md
 
 [save_cellular_traffic]: docs/wiki/save_cellular_traffic.md
 

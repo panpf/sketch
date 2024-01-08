@@ -48,4 +48,3 @@ include(":sketch-test-singleton") // Private
 include(":sketch-video")
 include(":sketch-video-ffmpeg")
 include(":sketch-viewability")
-include(":sketch-zoom")

@@ -6,7 +6,6 @@ Sketch relies on Lifecycle to monitor the life cycle of the page for the followi
 
 1. [ViewTargetRequestDelegate] automatically stops the request when onDestroy
 2. [GenericViewDisplayTarget] automatically controls animation playback during onStart and onStop
-3. [SketchZoomImageView] automatically releases or restores fragments during onStop and onStart
 
 ### Default Value
 
@@ -47,5 +46,3 @@ imageView.displayImage("https://www.example.com/image.gif") {
 [ViewTargetRequestDelegate]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/internal/RequestDelegate.kt
 
 [GenericViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
-
-[SketchZoomImageView]: ../../sketch-zoom/src/main/kotlin/com/github/panpf/sketch/zoom/SketchZoomImageView.kt
