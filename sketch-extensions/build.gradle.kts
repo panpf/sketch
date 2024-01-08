@@ -38,4 +38,7 @@ android {
 
 dependencies {
     api(project(":sketch-extensions-view"))
+    androidTestImplementation(project(":sketch-test"))
+    androidTestImplementation(project(":sketch-test-singleton"))
+    androidTestImplementation(project(":sketch-resources"))
 }
