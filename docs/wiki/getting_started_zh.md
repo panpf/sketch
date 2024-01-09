@@ -59,7 +59,7 @@ class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
-            logger(Logger(DEBUG))
+            logger(Logger(Logger.DEBUG))
             httpStack(OkHttpStack.Builder().build())
         }.build()
     }
@@ -70,7 +70,7 @@ class MyApplication : Application(), SketchFactory {
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
-    logger(Logger(DEBUG))
+    logger(Logger(Logger.DEBUG))
     httpStack(OkHttpStack.Builder().build())
 }.build()
 
@@ -80,7 +80,7 @@ SketchSingleton.setSketch(sketch)
 
 SketchSingleton.setSketch(SketchFactory {
     Sketch.Builder(context).apply {
-        logger(Logger(DEBUG))
+        logger(Logger(Logger.DEBUG))
         httpStack(OkHttpStack.Builder().build())
     }.build()
 })
@@ -93,7 +93,7 @@ SketchSingleton.setSketch(SketchFactory {
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
-    logger(Logger(DEBUG))
+    logger(Logger(Logger.DEBUG))
     httpStack(OkHttpStack.Builder().build())
 }.build()
 ```
@@ -104,20 +104,12 @@ val sketch = Sketch.Builder(context).apply {
 
 [ImageRequest] 接口定义了显示图片所需的全部参数，例如 uri、Target、转换配置、调整尺寸等。
 
-[ImageRequest] 分为以下三种：
-
-* [DisplayRequest]：请求结果是 Drawable，用于显示图片到 ImageView、RemoteViews 或 Compose Painter
-* [LoadRequest]：请求结果是 Bitmap，用于需要直接操作 Bitmap 的场景，不支持内存缓存，所有动图将会被解码成静态图
-* [DownloadRequest]：请求结果是 [DiskCache].Snapshot 或 ByteArray，用于提前下载图片或直接访问图片文件
-
 ### 创建 ImageRequest
-
-`以 DisplayRequest 为例，另外两种大同小异`
 
 Builder 方式：
 
 ```kotlin
-val request = DisplayRequest.Builder(context, "https://www.example.com/image.jpg")
+val request = ImageRequest.Builder(context, "https://www.example.com/image.jpg")
     .placeholder(R.drawable.image)
     .transformations(CircleCropTransformation())
     .target(imageView)
@@ -127,7 +119,7 @@ val request = DisplayRequest.Builder(context, "https://www.example.com/image.jpg
 同名函数方式：
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
+val request = ImageRequest(context, "https://www.example.com/image.jpg") {
     placeholder(R.drawable.image)
     transformations(CircleCropTransformation())
     target(imageView)
@@ -135,14 +127,14 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 // 或者
 
-val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
+val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg") {
     placeholder(R.drawable.image)
     transformations(CircleCropTransformation())
 }
 ```
 
-可以通过 DisplayRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda
-配置请求，更多配置参数请参考 [DisplayRequest].Builder 类
+可以通过 ImageRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda
+配置请求，更多配置参数请参考 [ImageRequest].Builder 类
 
 ### 执行 ImageRequest
 
@@ -154,16 +146,16 @@ val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
 /*
  * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
  */
-val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg")
 request1.enqueue()
 
 /*
  * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
  */
-val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request2 = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = request2.execute()
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = request2.execute()
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
@@ -177,41 +169,41 @@ val sketch = Sketch.Builder(context).build()
 /*
  * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
  */
-val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg")
 sketch.enqueue(request1)
 
 /*
  * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
  */
-val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request2 = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = sketch.execute(request2)
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = sketch.execute(request2)
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
 ### 获取结果
 
-[Sketch] 会将结果交给 [DisplayRequest] 的 target 去显示 Drawable，如果没有设置 target 就需要主动获取结果来处理它了
+[Sketch] 会将结果交给 [ImageRequest] 的 target 去显示 [Image]，如果没有设置 target 就需要主动获取结果来处理它了
 
 使用 enqueue() 方法执行请求时通过返回的 [Disposable].job 即可获取结果，如下:
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request = ImageRequest(context, "https://www.example.com/image.jpg")
 val disposable = request.enqueue()
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = disposable.job.await()
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = disposable.job.await()
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
 使用 execute() 方法执行请求时可直接获取结果，如下：
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = request.execute()
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = request.execute()
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
@@ -222,14 +214,14 @@ coroutineScope.launch(Dispatchers.Main) {
 [ImageRequest] 会在下列情况下自动取消:
 
 * request.lifecycle 变为 DESTROYED 状态
-* request.target 是一个 [ViewDisplayTarget] 并且 view 的 onViewDetachedFromWindow() 方法被执行
+* request.target 是一个 [ViewTarget] 并且 view 的 onViewDetachedFromWindow() 方法被执行
 
 #### 主动取消
 
 使用 enqueue() 方法执行请求时会返回一个 [Disposable], 可以用来它取消请求，如下:
 
 ```kotlin
-val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
+val disposable = ImageRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 
 // 在需要的时候取消请求
 disposable.dispose()
@@ -239,9 +231,9 @@ disposable.dispose()
 
 ```kotlin
 val job = coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
+    val result: ImageResult = ImageRequest(context, "https://www.example.com/image.jpg")
         .execute()
-    imageView.setImageDrawable(result.drawable)
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 
 // 在需要的时候取消请求
@@ -265,7 +257,7 @@ imageView.displayImage("https://www.example.com/image.jpg")
 上述调用等价于：
 
 ```kotlin
-DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
+ImageRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 ```
 
 还可以通过 displayImage 函数尾随的 lambda 配置参数：
@@ -287,23 +279,39 @@ imageView.disposeDisplay()
 ### 获取结果
 
 ```kotlin
-val displayResult = imageView.displayResult
-when (displayResult) {
-    is DisplayResult.Success -> {
-        val request: DisplayRequest = displayResult.request
-        val requestKey: String = displayResult.requestKey
-        val requestCacheKey: String = displayResult.requestCacheKey
-        val drawable: Drawable = displayResult.drawable
-        val imageInfo: ImageInfo = displayResult.imageInfo
-        val dataFrom: DataFrom = displayResult.dataFrom
-        val transformedList: List<String>? = displayResult.transformedList
-        val extras: Map<String, String>? = displayResult.extras
+val imageResult = imageView.imageResult
+when (imageResult) {
+    is ImageResult.Success -> {
+        val request: ImageRequest = imageResult.request
+        val requestKey: String = imageResult.requestKey
+        val requestCacheKey: String = imageResult.requestCacheKey
+        val image: Image = imageResult.image
+        when (image) {
+            is BitmapImage -> {
+                val bitmap: Bitmap = image.bitmap
+            }
+            is DrawableImage -> {
+                val drawable: Drawable = image.drawable
+            }
+        }
+        val imageInfo: ImageInfo = imageResult.imageInfo
+        val dataFrom: DataFrom = imageResult.dataFrom
+        val transformedList: List<String>? = imageResult.transformedList
+        val extras: Map<String, String>? = imageResult.extras
         // ...
     }
-    is DisplayResult.Error -> {
-        val request: DisplayRequest = displayResult.request
-        val drawable: Drawable = displayResult.drawable
-        val throwable: Throwable = displayResult.throwable
+    is ImageResult.Error -> {
+        val request: ImageRequest = imageResult.request
+        val image: Image? = imageResult.image
+        when (image) {
+            is BitmapImage -> {
+                val bitmap: Bitmap = image.bitmap
+            }
+            is DrawableImage -> {
+                val drawable: Drawable = image.drawable
+            }
+        }
+        val throwable: Throwable = imageResult.throwable
         // ...
     }
 }
@@ -358,15 +366,11 @@ when (displayResult) {
 
 [ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
+[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Image.kt
+
 [Disposable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Disposable.kt
 
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
-
-[DownloadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadRequest.kt
-
-[ViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewDisplayTarget.kt
+[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
 [DiskCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 

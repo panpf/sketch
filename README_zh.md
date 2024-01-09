@@ -125,7 +125,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = DisplayRequest(LocalContext.current, "https://www.sample.com/image.jpg") {
+    rqeuest = ImageRequest(LocalContext.current, "https://www.sample.com/image.jpg") {
         placeholder(R.drawable.placeholder)
         error(R.drawable.error)
         transformations(BlurTransformation())

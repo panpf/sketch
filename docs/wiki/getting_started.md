@@ -64,7 +64,7 @@ class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
-            logger(Logger(DEBUG))
+            logger(Logger(Logger.DEBUG))
             httpStack(OkHttpStack.Builder().build())
         }.build()
     }
@@ -76,7 +76,7 @@ SketchSingleton.setSketch()' method, as follows:
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
-    logger(Logger(DEBUG))
+    logger(Logger(Logger.DEBUG))
     httpStack(OkHttpStack.Builder().build())
 }.build()
 
@@ -86,7 +86,7 @@ SketchSingleton.setSketch(sketch)
 
 SketchSingleton.setSketch(SketchFactory {
     Sketch.Builder(context).apply {
-        logger(Logger(DEBUG))
+        logger(Logger(Logger.DEBUG))
         httpStack(OkHttpStack.Builder().build())
     }.build()
 })
@@ -99,7 +99,7 @@ use the [Sketch]. Builder creates an instance of [Sketch] as follows:
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
-    logger(Logger(DEBUG))
+    logger(Logger(Logger.DEBUG))
     httpStack(OkHttpStack.Builder().build())
 }.build()
 ```
@@ -111,24 +111,12 @@ val sketch = Sketch.Builder(context).apply {
 The [ImageRequest] interface defines all the parameters required to display the image, such as uri,
 target, conversion configuration, resizing, and so on.
 
-There are three types of [ImageRequest]:
-
-* [DisplayRequest]: The result of the request is Drawable, which is used to display the picture to
-  ImageView, RemoteView, or Compose Painter
-* [LoadRequest]: The result of the request is Bitmap, which is used in scenarios where Bitmap needs
-  to be manipulated directly, memory caching is not supported, and all GIFs will be decoded into
-  static images
-* [DownloadRequest]: The result of the request is [DiskCache].Snapshot or ByteArray for downloading
-  images in advance or for direct access to image files
-
 ### Build ImageRequest
-
-`In the case of DisplayRequest, the other two are much the same`
 
 Build with Builder:
 
 ```kotlin
-val request = DisplayRequest.Builder(context, "https://www.example.com/image.jpg")
+val request = ImageRequest.Builder(context, "https://www.example.com/image.jpg")
     .placeholder(R.drawable.image)
     .transformations(CircleCropTransformation())
     .target(imageView)
@@ -138,7 +126,7 @@ val request = DisplayRequest.Builder(context, "https://www.example.com/image.jpg
 Build with a function of the same name:
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
+val request = ImageRequest(context, "https://www.example.com/image.jpg") {
     placeholder(R.drawable.image)
     transformations(CircleCropTransformation())
     target(imageView)
@@ -146,15 +134,15 @@ val request = DisplayRequest(context, "https://www.example.com/image.jpg") {
 
 // or
 
-val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg") {
+val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg") {
     placeholder(R.drawable.image)
     transformations(CircleCropTransformation())
 }
 ```
 
-This can be done through the chained method provided by DisplayRequest.Builder or the trailing
+This can be done through the chained method provided by ImageRequest.Builder or the trailing
 lambda provided by the function of the same name For configuration requests, please refer
-to [DisplayRequest] for more configuration parameters. Builder class
+to [ImageRequest] for more configuration parameters. Builder class
 
 ### Execute ImageRequest
 
@@ -167,17 +155,17 @@ extension function enqueue() or execute():
 /*
  * Put an ImageRequest into a task queue, execute asynchronously on a background thread, and return a Disposable
  */
-val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg")
 request1.enqueue()
 
 /*
  * Place an ImageRequest in a task queue, execute asynchronously on a background thread, 
  * and wait for the return result in the current coroutine
  */
-val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request2 = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = request2.execute()
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = request2.execute()
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
@@ -192,44 +180,44 @@ val sketch = Sketch.Builder(context).build()
 /*
  * Put an ImageRequest into a task queue, execute asynchronously on a background thread, and return a Disposable
  */
-val request1 = DisplayRequest(imageView, "https://www.example.com/image.jpg")
+val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg")
 sketch.enqueue(request1)
 
 /*
  * Place an ImageRequest in a task queue, execute asynchronously on a background thread, 
  * and wait for the return result in the current coroutine
  */
-val request2 = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request2 = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = sketch.execute(request2)
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = sketch.execute(request2)
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
 ### Get The Results
 
-[Sketch] will hand the result to the [DisplayRequest] target to display the Drawable, and if the
+[Sketch] will hand the result to the [ImageRequest] target to display the [Image], and if the
 target is not set, you will need to actively obtain the result to process it
 
 When a request is executed using the enqueue() method, the result can be obtained by
 returning [Disposable].job, as follows:
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request = ImageRequest(context, "https://www.example.com/image.jpg")
 val disposable = request.enqueue()
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = disposable.job.await()
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = disposable.job.await()
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
 When you use the execute() method to execute a request, you can get the result directly, as follows:
 
 ```kotlin
-val request = DisplayRequest(context, "https://www.example.com/image.jpg")
+val request = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = request.execute()
-    imageView.setImageDrawable(result.drawable)
+    val result: ImageResult = request.execute()
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 ```
 
@@ -240,7 +228,7 @@ coroutineScope.launch(Dispatchers.Main) {
 [ImageRequest] is automatically canceled in the following cases:
 
 * request.lifecycle changes to DESTROYED state
-* request.target is a [ViewDisplayTarget] and view's onViewDetachedFromWindow() method is executed
+* request.target is a [ViewTarget] and view's onViewDetachedFromWindow() method is executed
 
 #### Proactive cancellation
 
@@ -248,7 +236,7 @@ Executing a request using the enqueue() method returns a [Disposable] that can b
 request, as follows:
 
 ```kotlin
-val disposable = DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
+val disposable = ImageRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 
 // Cancel the request when you need to
 disposable.dispose()
@@ -259,9 +247,9 @@ coroutine, as follows:
 
 ```kotlin
 val job = coroutineScope.launch(Dispatchers.Main) {
-    val result: DisplayResult = DisplayRequest(context, "https://www.example.com/image.jpg")
+    val result: ImageResult = ImageRequest(context, "https://www.example.com/image.jpg")
         .execute()
-    imageView.setImageDrawable(result.drawable)
+    imageView.setImageDrawable(result.image.asDrawable())
 }
 
 // Cancel the request when you need to
@@ -285,7 +273,7 @@ imageView.displayImage("https://www.example.com/image.jpg")
 The above call is equivalent to:
 
 ```kotlin
-DisplayRequest(imageView, "https://www.example.com/image.jpg").enqueue()
+ImageRequest(imageView, "https://www.example.com/image.jpg").enqueue()
 ```
 
 You can also configure parameters via the lambda trailing with the displayImage function:
@@ -307,23 +295,39 @@ imageView.disposeDisplay()
 ### Get The Results
 
 ```kotlin
-val displayResult = imageView.displayResult
-when (displayResult) {
-    is DisplayResult.Success -> {
-        val request: DisplayRequest = displayResult.request
-        val requestKey: String = displayResult.requestKey
-        val requestCacheKey: String = displayResult.requestCacheKey
-        val drawable: Drawable = displayResult.drawable
-        val imageInfo: ImageInfo = displayResult.imageInfo
-        val dataFrom: DataFrom = displayResult.dataFrom
-        val transformedList: List<String>? = displayResult.transformedList
-        val extras: Map<String, String>? = displayResult.extras
+val imageResult = imageView.imageResult
+when (imageResult) {
+    is ImageResult.Success -> {
+        val request: ImageRequest = imageResult.request
+        val requestKey: String = imageResult.requestKey
+        val requestCacheKey: String = imageResult.requestCacheKey
+        val image: Image = imageResult.image
+        when (image) {
+            is BitmapImage -> {
+                val bitmap: Bitmap = image.bitmap
+            }
+            is DrawableImage -> {
+                val drawable: Drawable = image.drawable
+            }
+        }
+        val imageInfo: ImageInfo = imageResult.imageInfo
+        val dataFrom: DataFrom = imageResult.dataFrom
+        val transformedList: List<String>? = imageResult.transformedList
+        val extras: Map<String, String>? = imageResult.extras
         // ...
     }
-    is DisplayResult.Error -> {
-        val request: DisplayRequest = displayResult.request
-        val drawable: Drawable = displayResult.drawable
-        val throwable: Throwable = displayResult.throwable
+    is ImageResult.Error -> {
+        val request: ImageRequest = imageResult.request
+        val image: Image = imageResult.image
+        when (image) {
+            is BitmapImage -> {
+                val bitmap: Bitmap = image.bitmap
+            }
+            is DrawableImage -> {
+                val drawable: Drawable = image.drawable
+            }
+        }
+        val throwable: Throwable = imageResult.throwable
         // ...
     }
 }
@@ -379,15 +383,11 @@ Featured functions:
 
 [ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
+[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Image.kt
+
 [Disposable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Disposable.kt
 
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
-
-[DownloadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadRequest.kt
-
-[ViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewDisplayTarget.kt
+[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
 [DiskCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
