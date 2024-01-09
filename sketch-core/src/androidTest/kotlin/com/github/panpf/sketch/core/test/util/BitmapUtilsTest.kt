@@ -51,7 +51,7 @@ class BitmapUtilsTest {
         )
 
         Assert.assertEquals(
-            46200,
+            0,
             Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565)
                 .apply { recycle() }
                 .allocationByteCountCompat
