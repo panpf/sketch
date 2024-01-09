@@ -7,7 +7,13 @@
 #### sketch:
 
 * fix: 修复 ResizeDrawable 和 ResizeAnimatableDrawable 应该使用 bounds 的尺寸作为 dstSize 的 bug
-* change: 移除 RemoteViewsTarget 的 ignoreNullDrawable 参数，使用 ImageRequest.Builder 的 allowSetNullDrawable() 方法替代
+* change: 移除 RemoteViewsTarget 的 ignoreNullDrawable 参数，使用 ImageRequest.Builder 的
+  allowSetNullDrawable() 方法替代
+* change: 移除 DisplayRequest、LoadRequest 和 DownloadRequest，现在请使用 ImageRequest
+* change: 移除 DisplayResult、LoadResult 和 DownloadResult，现在请使用 ImageResult
+* change: 移除 Listener 和 ProgressListener 的泛型
+* change: 新增 Image 接口，它有 BitmapImage 和 DrawableImage 等实现，它用于 ImageResult、StateImage、以及
+  Target
 
 #### sketch-compose:
 

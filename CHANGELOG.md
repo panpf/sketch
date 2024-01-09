@@ -8,7 +8,13 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as
   dstSize
-* change: Remove the ignoreNullDrawable parameter of RemoteViewsTarget and use the allowSetNullDrawable() method of ImageRequest.Builder instead
+* change: Remove the ignoreNullDrawable parameter of RemoteViewsTarget and use the
+  allowSetNullDrawable() method of ImageRequest.Builder instead
+* change: Removed DisplayRequest, LoadRequest and DownloadRequest, now use ImageRequest
+* change: Removed DisplayResult, LoadResult and DownloadResult, now use ImageResult
+* change: Removed generics for Listener and ProgressListener
+* change: New Image interface, which has implementations such as BitmapImage and DrawableImage, is
+  used for ImageResult, StateImage, and Target
 
 #### sketch-compose:
 
