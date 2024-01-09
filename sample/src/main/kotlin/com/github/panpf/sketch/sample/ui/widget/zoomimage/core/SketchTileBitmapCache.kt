@@ -20,7 +20,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.zoomimage.sketch.SketchTileBitmap
 import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
 import com.github.panpf.zoomimage.subsampling.CacheTileBitmap
 import com.github.panpf.zoomimage.subsampling.TileBitmap
@@ -54,7 +53,7 @@ class SketchTileBitmapCache constructor(
             countBitmap = newCountBitmap,
             imageUri = imageUrl,
             requestKey = imageUrl,
-            requestCacheKey = key,
+            cacheKey = key,
             imageInfo = ImageInfo(
                 imageInfo.width,
                 imageInfo.height,

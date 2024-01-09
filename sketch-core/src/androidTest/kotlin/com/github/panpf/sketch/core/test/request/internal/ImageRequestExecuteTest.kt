@@ -42,14 +42,10 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.resultCacheDataKey
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -59,12 +55,13 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.DrawableImage
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.get
+import com.github.panpf.sketch.request.getBitmapOrThrow
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -78,21 +75,24 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
-import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
 import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
-import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestErrorBitmapDecoder
 import com.github.panpf.sketch.test.utils.TestErrorDrawableDecoder
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransitionViewTarget
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.size
@@ -439,7 +439,7 @@ class ImageRequestExecuteTest {
             bitmapConfig(BitmapConfig.LowQuality)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 Assert.assertEquals(RGB_565, bitmap.config)
             }
@@ -449,7 +449,7 @@ class ImageRequestExecuteTest {
             bitmapConfig(BitmapConfig.LowQuality)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     Assert.assertEquals(ARGB_8888, bitmap.config)
@@ -465,7 +465,7 @@ class ImageRequestExecuteTest {
             bitmapConfig(BitmapConfig.HighQuality)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     Assert.assertEquals(RGBA_F16, bitmap.config)
@@ -479,7 +479,7 @@ class ImageRequestExecuteTest {
             bitmapConfig(BitmapConfig.HighQuality)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     Assert.assertEquals(RGBA_F16, bitmap.config)
@@ -501,7 +501,7 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 Assert.assertEquals(
                     ColorSpace.get(ColorSpace.Named.SRGB).name,
@@ -515,7 +515,7 @@ class ImageRequestExecuteTest {
             colorSpace(ColorSpace.get(ColorSpace.Named.ADOBE_RGB))
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 Assert.assertEquals(
                     ColorSpace.get(ColorSpace.Named.ADOBE_RGB).name,
@@ -529,7 +529,7 @@ class ImageRequestExecuteTest {
             colorSpace(ColorSpace.get(ColorSpace.Named.DISPLAY_P3))
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
+            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
             .apply {
                 Assert.assertEquals(
                     ColorSpace.get(ColorSpace.Named.DISPLAY_P3).name,
@@ -588,7 +588,10 @@ class ImageRequestExecuteTest {
                     samplingByTarget(imageSize, displaySize),
                     image.asOrThrow<DrawableImage>().drawable.intrinsicSize
                 )
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
 
         // size: small, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
@@ -599,8 +602,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 484), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(323, 484),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(smallSize1)
@@ -608,8 +617,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(322, 268), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(smallSize1.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(322, 268),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    smallSize1.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(smallSize1)
@@ -617,7 +632,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(smallSize1, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    smallSize1,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         val smallSize2 = Size(500, 600)
@@ -627,8 +645,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(323, 484), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(323, 484),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(smallSize2)
@@ -636,8 +660,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(322, 387), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(smallSize2.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(322, 387),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    smallSize2.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(smallSize2)
@@ -645,7 +675,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(smallSize2, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    smallSize2,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         // size: same, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
@@ -656,7 +689,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(sameSize, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    sameSize,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(sameSize)
@@ -664,7 +700,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(sameSize, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    sameSize,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(sameSize)
@@ -672,7 +711,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(sameSize, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    sameSize,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         // size: big, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
@@ -683,8 +725,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(imageSize, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    imageSize,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize1)
@@ -692,8 +740,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(1291, 1084), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(bigSize1.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(1291, 1084),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    bigSize1.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize1)
@@ -701,7 +755,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(bigSize1, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    bigSize1,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         val bigSize2 = Size(2100, 2500)
@@ -711,8 +768,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(imageSize, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    imageSize,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize2)
@@ -720,8 +783,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(1291, 1537), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(bigSize2.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(1291, 1537),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    bigSize2.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize2)
@@ -729,7 +798,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(bigSize2, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    bigSize2,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         val bigSize3 = Size(800, 2500)
@@ -739,8 +811,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(646, 968), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(646, 968),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize3)
@@ -748,8 +826,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(620, 1936), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(bigSize3.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(620, 1936),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    bigSize3.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize3)
@@ -757,7 +841,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(bigSize3, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    bigSize3,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         val bigSize4 = Size(2500, 800)
@@ -767,8 +854,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(646, 968), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(imageInfo.size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(646, 968),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    imageInfo.size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize4)
@@ -776,8 +869,14 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(1291, 413), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(bigSize4.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(1291, 413),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    bigSize4.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(bigSize4)
@@ -785,7 +884,10 @@ class ImageRequestExecuteTest {
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(bigSize4, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(
+                    bigSize4,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
             }
 
         /* scale */
@@ -800,10 +902,17 @@ class ImageRequestExecuteTest {
             resizeScale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarStartCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarStartCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(322, 268), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(322, 268),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(size)
@@ -811,10 +920,17 @@ class ImageRequestExecuteTest {
             resizeScale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarCenterCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarCenterCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(322, 268), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(322, 268),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(size)
@@ -822,10 +938,17 @@ class ImageRequestExecuteTest {
             resizeScale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarEndCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarEndCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(Size(322, 268), image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
-                Assert.assertEquals(size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    Size(322, 268),
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                )
+                Assert.assertEquals(
+                    size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         ImageRequest(context, imageUri) {
             resizeSize(size)
@@ -833,14 +956,18 @@ class ImageRequestExecuteTest {
             resizeScale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarFillCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarFillCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     if (VERSION.SDK_INT >= 24)
                         Size(323, 269) else Size(322, 268),
                     image.asOrThrow<DrawableImage>().drawable.intrinsicSize
                 )
-                Assert.assertEquals(size.ratio, image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio)
+                Assert.assertEquals(
+                    size.ratio,
+                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                )
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarEndCropBitmap!!.corners())
@@ -859,7 +986,8 @@ class ImageRequestExecuteTest {
             resizeScale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyStartCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyStartCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
             }
@@ -869,7 +997,8 @@ class ImageRequestExecuteTest {
             resizeScale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyCenterCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyCenterCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
             }
@@ -879,7 +1008,8 @@ class ImageRequestExecuteTest {
             resizeScale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyEndCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyEndCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
             }
@@ -889,7 +1019,8 @@ class ImageRequestExecuteTest {
             resizeScale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyFillCropBitmap = image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyFillCropBitmap =
+                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
             }
@@ -924,35 +1055,32 @@ class ImageRequestExecuteTest {
         }
 
         request.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
-                Assert.assertTrue(this.asOrNull<SketchDrawable>()!!.transformedList?.all {
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertTrue(transformedList?.all {
                     it.startsWith("ResizeTransformed") || it.startsWith("InSampledTransformed")
                 } != false)
             }
 
         request.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertNotEquals(
                     listOf(0, 0, 0, 0),
-                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                    image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRoundedCornersTransformed()
+                    transformedList?.getRoundedCornersTransformed()
                 )
             }
         request.newRequest {
             addTransformations(RoundedCornersTransformation(30f))
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(
                     listOf(0, 0, 0, 0),
-                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                    image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNotNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRoundedCornersTransformed()
+                    transformedList?.getRoundedCornersTransformed()
                 )
             }
 
@@ -960,11 +1088,10 @@ class ImageRequestExecuteTest {
             resizeSize(500, 500)
             resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
-                Assert.assertEquals(Size(323, 484), intrinsicSize)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(Size(323, 484), Size(image.width, image.height))
                 Assert.assertNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRotateTransformed()
+                    transformedList?.getRotateTransformed()
                 )
             }
         request.newRequest {
@@ -972,11 +1099,10 @@ class ImageRequestExecuteTest {
             resizePrecision(LESS_PIXELS)
             addTransformations(RotateTransformation(90))
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
-                Assert.assertEquals(Size(484, 323), intrinsicSize)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(Size(484, 323), Size(image.width, image.height))
                 Assert.assertNotNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getRotateTransformed()
+                    transformedList?.getRotateTransformed()
                 )
             }
 
@@ -984,15 +1110,14 @@ class ImageRequestExecuteTest {
             resizeSize(500, 500)
             resizePrecision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
-                Assert.assertEquals(Size(323, 484), intrinsicSize)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(Size(323, 484), Size(image.width, image.height))
                 Assert.assertNotEquals(
                     listOf(0, 0, 0, 0),
-                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                    image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getCircleCropTransformed()
+                    transformedList?.getCircleCropTransformed()
                 )
             }
         request.newRequest {
@@ -1000,15 +1125,14 @@ class ImageRequestExecuteTest {
             resizePrecision(LESS_PIXELS)
             addTransformations(CircleCropTransformation())
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.apply {
-                Assert.assertEquals(Size(323, 323), intrinsicSize)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(Size(323, 323), Size(image.width, image.height))
                 Assert.assertEquals(
                     listOf(0, 0, 0, 0),
-                    this.asOrNull<BitmapDrawable>()!!.bitmap.corners()
+                    image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNotNull(
-                    this.asOrNull<SketchDrawable>()!!.transformedList?.getCircleCropTransformed()
+                    transformedList?.getCircleCropTransformed()
                 )
             }
     }
@@ -1094,7 +1218,6 @@ class ImageRequestExecuteTest {
                 ImageRequest(context, it.file.path)
                     .let { runBlocking { sketch.execute(it) } }
                     .asOrNull<ImageResult.Success>()!!
-                    .image.asOrThrow<DrawableImage>().drawable.asOrNull<SketchDrawable>()!!
                     .apply {
                         Assert.assertEquals(it.exifOrientation, imageInfo.exifOrientation)
                         Assert.assertEquals(Size(1500, 750), imageInfo.size)
@@ -1104,7 +1227,6 @@ class ImageRequestExecuteTest {
                     ignoreExifOrientation(true)
                 }.let { runBlocking { sketch.execute(it) } }
                     .asOrNull<ImageResult.Success>()!!
-                    .image.asOrThrow<DrawableImage>().drawable.asOrNull<SketchDrawable>()!!
                     .apply {
                         Assert.assertEquals(
                             ExifInterface.ORIENTATION_UNDEFINED,
@@ -1133,7 +1255,6 @@ class ImageRequestExecuteTest {
         ImageRequest(context, AssetImages.jpeg.uri)
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<SketchDrawable>()!!
             .apply {
                 Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageInfo.exifOrientation)
                 Assert.assertEquals(Size(1291, 1936), imageInfo.size)
@@ -1302,7 +1423,7 @@ class ImageRequestExecuteTest {
         val request = ImageRequest(context, imageUri) {
             resizeSize(500, 500)
             target(
-                onError = {_, image ->
+                onError = { _, image ->
                     onErrorImage = image
                 }
             )
@@ -1310,7 +1431,7 @@ class ImageRequestExecuteTest {
         val errorRequest = ImageRequest(context, newAssetUri("error.jpeg")) {
             resizeSize(500, 500)
             target(
-                onError = {_, image ->
+                onError = { _, image ->
                     onErrorImage = image
                 }
             )

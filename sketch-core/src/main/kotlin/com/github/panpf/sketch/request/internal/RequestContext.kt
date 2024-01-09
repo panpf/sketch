@@ -27,7 +27,6 @@ class RequestContext constructor(val sketch: Sketch, val firstRequest: ImageRequ
     private var pendingCountDrawable: SketchCountBitmapDrawable? = null
     private val _requestList = mutableListOf(firstRequest)
     private var _request: ImageRequest = firstRequest
-    private var _key: String? = null
     private var _cacheKey: String? = null
 
     val requestList: List<ImageRequest>
@@ -38,10 +37,7 @@ class RequestContext constructor(val sketch: Sketch, val firstRequest: ImageRequ
 
     @get:Synchronized
     val key: String
-        get() = _key
-            ?: request.newKey().apply {
-                _key = this
-            }
+        get() = request.key
 
     /** Used to cache bitmaps in memory and on disk */
     @get:Synchronized
@@ -61,7 +57,6 @@ class RequestContext constructor(val sketch: Sketch, val firstRequest: ImageRequ
             if (lastRequest.resizeSizeResolver != request.resizeSizeResolver) {
                 resizeSize = request.resizeSizeResolver.size()
             }
-            _key = null
             _cacheKey = null
         }
     }

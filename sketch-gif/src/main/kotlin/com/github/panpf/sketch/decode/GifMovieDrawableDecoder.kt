@@ -86,16 +86,7 @@ class GifMovieDrawableDecoder(
         val imageInfo =
             ImageInfo(width, height, ImageFormat.GIF.mimeType, ExifInterface.ORIENTATION_UNDEFINED)
 
-        val animatableDrawable = SketchAnimatableDrawable(
-            animatableDrawable = movieDrawable,
-            imageUri = request.uriString,
-            requestKey = requestContext.key,
-            requestCacheKey = requestContext.cacheKey,
-            imageInfo = imageInfo,
-            dataFrom = dataSource.dataFrom,
-            transformedList = null,
-            extras = null,
-        ).apply {
+        val animatableDrawable = SketchAnimatableDrawable(movieDrawable).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
@@ -108,10 +99,10 @@ class GifMovieDrawableDecoder(
 
         DrawableDecodeResult(
             drawable = animatableDrawable,
-            imageInfo = animatableDrawable.imageInfo,
-            dataFrom = animatableDrawable.dataFrom,
-            transformedList = animatableDrawable.transformedList,
-            extras = animatableDrawable.extras,
+            imageInfo = imageInfo,
+            dataFrom = dataSource.dataFrom,
+            transformedList = null,
+            extras = null,
         )
     }
 

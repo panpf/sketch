@@ -272,7 +272,7 @@ class LruMemoryCacheTest {
             countBitmap = countBitmap,
             imageUri = imageUri,
             requestKey = imageUri,
-            requestCacheKey = imageUri,
+            cacheKey = imageUri,
             imageInfo = ImageInfo(width, height, "image/jpeg", 0),
             transformedList = null,
             extras = null,

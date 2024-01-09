@@ -25,8 +25,6 @@ import android.widget.ImageView
 import androidx.lifecycle.LifecycleOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
@@ -74,13 +72,6 @@ class GenericViewTargetTest {
         val sketchCountBitmapDrawable = SketchCountBitmapDrawable(
             resources = context.resources,
             countBitmap = countBitmap,
-            imageUri = request.uriString,
-            requestKey = request.toRequestContext(sketch).key,
-            requestCacheKey = request.toRequestContext(sketch).cacheKey,
-            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL
         )
         val countBitmap2 = CountBitmap(
             cacheKey = request.toRequestContext(sketch).cacheKey,
@@ -91,13 +82,6 @@ class GenericViewTargetTest {
         val sketchCountBitmapDrawable2 = SketchCountBitmapDrawable(
             resources = context.resources,
             countBitmap = countBitmap2,
-            imageUri = request.uriString,
-            requestKey = request.toRequestContext(sketch).key,
-            requestCacheKey = request.toRequestContext(sketch).cacheKey,
-            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL
         )
 
         runBlocking(Dispatchers.Main) {

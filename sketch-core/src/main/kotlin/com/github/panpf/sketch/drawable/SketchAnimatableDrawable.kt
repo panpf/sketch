@@ -16,8 +16,6 @@
 package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
 import com.github.panpf.sketch.util.Size
 
@@ -26,28 +24,12 @@ import com.github.panpf.sketch.util.Size
  */
 class SketchAnimatableDrawable constructor(
     private val animatableDrawable: Drawable,
-    override val imageUri: String,
-    override val requestKey: String,
-    override val requestCacheKey: String,
-    override val imageInfo: ImageInfo,
-    override val dataFrom: DataFrom,
-    override val transformedList: List<String>?,
-    override val extras: Map<String, String>?,
-) : AnimatableDrawableWrapper(animatableDrawable), SketchDrawable {
+) : AnimatableDrawableWrapper(animatableDrawable) {
 
     override fun mutate(): SketchAnimatableDrawable {
         val mutateDrawable = drawable?.mutate()
         return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            SketchAnimatableDrawable(
-                animatableDrawable = mutateDrawable,
-                imageUri = imageUri,
-                requestKey = requestKey,
-                requestCacheKey = requestCacheKey,
-                imageInfo = imageInfo,
-                dataFrom = dataFrom,
-                transformedList = transformedList,
-                extras = extras,
-            )
+            SketchAnimatableDrawable(mutateDrawable)
         } else {
             this
         }
@@ -58,28 +40,13 @@ class SketchAnimatableDrawable constructor(
         if (javaClass != other?.javaClass) return false
         other as SketchAnimatableDrawable
         if (animatableDrawable != other.animatableDrawable) return false
-        if (imageUri != other.imageUri) return false
-        if (requestKey != other.requestKey) return false
-        if (requestCacheKey != other.requestCacheKey) return false
-        if (imageInfo != other.imageInfo) return false
-        if (dataFrom != other.dataFrom) return false
-        if (transformedList != other.transformedList) return false
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = animatableDrawable.hashCode()
-        result = 31 * result + imageUri.hashCode()
-        result = 31 * result + requestKey.hashCode()
-        result = 31 * result + requestCacheKey.hashCode()
-        result = 31 * result + imageInfo.hashCode()
-        result = 31 * result + dataFrom.hashCode()
-        result = 31 * result + (transformedList?.hashCode() ?: 0)
-        return result
-    }
+    override fun hashCode(): Int = animatableDrawable.hashCode()
 
     override fun toString(): String {
         val size = Size(intrinsicWidth, intrinsicHeight)
-        return "SketchAnimatableDrawable($animatableDrawable,${size},${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,'$requestKey')"
+        return "SketchAnimatableDrawable($animatableDrawable)"
     }
 }

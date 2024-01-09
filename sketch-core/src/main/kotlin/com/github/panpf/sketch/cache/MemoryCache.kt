@@ -79,7 +79,7 @@ interface MemoryCache {
         val countBitmap: CountBitmap,
         val imageUri: String,
         val requestKey: String,
-        val requestCacheKey: String,
+        val cacheKey: String,    // TODO remove
         val imageInfo: ImageInfo,
         /**
          * Store the transformation history of the Bitmap

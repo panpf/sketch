@@ -25,7 +25,6 @@ import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -64,40 +63,6 @@ class SketchUtils private constructor() {
          */
         fun getSketch(view: View): Sketch? = requestManagerOrNull(view)?.getSketch()
     }
-}
-
-/**
- * Find the last [SketchDrawable] from the specified Drawable
- */
-fun Drawable.findLeafSketchDrawable(): SketchDrawable? {
-    val drawable = this
-    return when {
-        drawable is SketchDrawable -> drawable
-        drawable is CrossfadeDrawable || drawable is LayerDrawable -> {
-            drawable.findLeafChildDrawable()?.findLeafSketchDrawable()
-        }
-
-        drawable is DrawableWrapperCompat -> {
-            drawable.drawable?.findLeafSketchDrawable()
-        }
-
-        VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
-            drawable.drawable?.findLeafSketchDrawable()
-        }
-
-        else -> null
-    }
-}
-
-/**
- * Find the last [SketchDrawable] from the specified Drawable
- */
-@Deprecated(
-    message = "Please use findLeafSketchDrawable()",
-    replaceWith = ReplaceWith(expression = "findLeafSketchDrawable()")
-)
-fun Drawable.findLastSketchDrawable(): SketchDrawable? {
-    return findLeafSketchDrawable()
 }
 
 /**

@@ -18,8 +18,6 @@ package com.github.panpf.sketch.drawable
 import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.ImageInfo
 
 /**
  * BitmapDrawable with reference counting support
@@ -27,42 +25,17 @@ import com.github.panpf.sketch.decode.ImageInfo
 class SketchCountBitmapDrawable constructor(
     resources: Resources,
     val countBitmap: CountBitmap,
-    override val imageUri: String,
-    override val requestKey: String,
-    override val requestCacheKey: String,
-    override val imageInfo: ImageInfo,
-    override val transformedList: List<String>?,
-    override val extras: Map<String, String>?,
-    override val dataFrom: DataFrom,
-) : BitmapDrawable(resources, countBitmap.bitmap!!), SketchDrawable {
+) : BitmapDrawable(resources, countBitmap.bitmap!!) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as SketchCountBitmapDrawable
         if (countBitmap != other.countBitmap) return false
-        if (imageUri != other.imageUri) return false
-        if (requestKey != other.requestKey) return false
-        if (requestCacheKey != other.requestCacheKey) return false
-        if (imageInfo != other.imageInfo) return false
-        if (transformedList != other.transformedList) return false
-        if (extras != other.extras) return false
-        if (dataFrom != other.dataFrom) return false
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = bitmap.hashCode()
-        result = 31 * result + imageUri.hashCode()
-        result = 31 * result + requestKey.hashCode()
-        result = 31 * result + requestCacheKey.hashCode()
-        result = 31 * result + imageInfo.hashCode()
-        result = 31 * result + transformedList.hashCode()
-        result = 31 * result + extras.hashCode()
-        result = 31 * result + dataFrom.hashCode()
-        return result
-    }
+    override fun hashCode(): Int = countBitmap.hashCode()
 
-    override fun toString(): String =
-        "SketchCountBitmapDrawable($countBitmap,${imageInfo.toShortString()},$dataFrom,$transformedList,$extras,'$requestKey')"
+    override fun toString(): String = "SketchCountBitmapDrawable($countBitmap)"
 }

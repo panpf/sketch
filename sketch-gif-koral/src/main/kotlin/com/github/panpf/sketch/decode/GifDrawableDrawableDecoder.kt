@@ -127,32 +127,24 @@ class GifDrawableDrawableDecoder(
             ImageFormat.GIF.mimeType,
             ExifInterface.ORIENTATION_UNDEFINED
         )
-        val animatableDrawable = SketchAnimatableDrawable(
-            animatableDrawable = GifDrawableWrapperDrawable(gifDrawable),
-            imageUri = request.uriString,
-            requestKey = requestContext.key,
-            requestCacheKey = requestContext.cacheKey,
+        val animatableDrawable =
+            SketchAnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {
+                // Set the start and end animation callbacks if any one is supplied through the request.
+                val onStart = request.animationStartCallback
+                val onEnd = request.animationEndCallback
+                if (onStart != null || onEnd != null) {
+                    withContext(Dispatchers.Main) {
+                        registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                    }
+                }
+            }
+
+        DrawableDecodeResult(
+            drawable = animatableDrawable,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
             extras = null,
-        ).apply {
-            // Set the start and end animation callbacks if any one is supplied through the request.
-            val onStart = request.animationStartCallback
-            val onEnd = request.animationEndCallback
-            if (onStart != null || onEnd != null) {
-                withContext(Dispatchers.Main) {
-                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
-                }
-            }
-        }
-
-        DrawableDecodeResult(
-            drawable = animatableDrawable,
-            imageInfo = animatableDrawable.imageInfo,
-            dataFrom = animatableDrawable.dataFrom,
-            transformedList = animatableDrawable.transformedList,
-            extras = animatableDrawable.extras,
         )
     }
 

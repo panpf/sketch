@@ -21,8 +21,11 @@ import com.github.panpf.sketch.decode.ImageInfo
 /**
  * Data of [ImageRequest]
  */
-data class ImageData(
+data class ImageData constructor(
     val image: Image,
+    val imageUri: String,
+    val requestKey: String,
+    val cacheKey: String,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
     /**

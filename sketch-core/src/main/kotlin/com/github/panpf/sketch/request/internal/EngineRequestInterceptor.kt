@@ -58,6 +58,9 @@ class EngineRequestInterceptor : RequestInterceptor {
         return Result.success(
             ImageData(
                 image = decodeResult.drawable.asSketchImage(),
+                imageUri = request.uriString,
+                requestKey = request.key,
+                cacheKey = requestContext.cacheKey,
                 imageInfo = decodeResult.imageInfo,
                 dataFrom = decodeResult.dataFrom,
                 transformedList = decodeResult.transformedList,

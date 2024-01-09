@@ -33,6 +33,7 @@ import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
 import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
@@ -333,6 +334,9 @@ class SaveCellularTrafficDisplayInterceptorTest {
             return Result.success(
                 ImageData(
                     image = ColorDrawable(Color.BLUE).asSketchImage(),
+                    imageUri = request.uriString,
+                    requestKey = request.key,
+                    cacheKey = requestContext.memoryCacheKey,
                     imageInfo = ImageInfo(100, 100, "image/xml", 0),
                     dataFrom = LOCAL,
                     transformedList = null,

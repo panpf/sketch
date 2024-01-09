@@ -141,28 +141,20 @@ abstract class BaseAnimatedImageDrawableDecoder(
         drawable.repeatCount = request.repeatCount
             ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
             ?: AnimatedImageDrawable.REPEAT_INFINITE
-        val wrappedDrawable = SketchAnimatableDrawable(
-            // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
-            // Use ScaledAnimatedImageDrawable package solution to this it
-            animatableDrawable = ScaledAnimatedImageDrawable(drawable),
-            imageUri = request.uriString,
-            requestKey = requestContext.key,
-            requestCacheKey = requestContext.cacheKey,
-            imageInfo = imageInfo!!,
-            dataFrom = dataSource.dataFrom,
-            transformedList = transformedList,
-            extras = null,
-        ).apply {
-            val onStart = request.animationStartCallback
-            val onEnd = request.animationEndCallback
-            if (onStart != null || onEnd != null) {
-                withContext(Dispatchers.Main) {
-                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+        // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
+        // Use ScaledAnimatedImageDrawable package solution to this it
+        val animatableDrawable =
+            SketchAnimatableDrawable(ScaledAnimatedImageDrawable(drawable)).apply {
+                val onStart = request.animationStartCallback
+                val onEnd = request.animationEndCallback
+                if (onStart != null || onEnd != null) {
+                    withContext(Dispatchers.Main) {
+                        registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                    }
                 }
             }
-        }
         DrawableDecodeResult(
-            drawable = wrappedDrawable,
+            drawable = animatableDrawable,
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,

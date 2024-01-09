@@ -20,7 +20,6 @@ import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
@@ -32,7 +31,6 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
@@ -74,7 +72,7 @@ class MemoryCacheStateImageTest {
                 ),
                 imageUri = request.uriString,
                 requestKey = request.toRequestContext(sketch).key,
-                requestCacheKey = request.toRequestContext(sketch).cacheKey,
+                cacheKey = request.toRequestContext(sketch).cacheKey,
                 imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                 transformedList = null,
                 extras = null,

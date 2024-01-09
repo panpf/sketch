@@ -20,11 +20,25 @@ fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): Image {
     return DrawableImage(this, shareable)
 }
 
-fun Image.getBitmap(): Bitmap? = when (this) {
+
+fun Image.getBitmapOrNull(): Bitmap? = when (this) {
     is BitmapImage -> bitmap
     is DrawableImage -> drawable.asOrNull<BitmapDrawable>()?.bitmap
-    else -> throw IllegalArgumentException("Not supported get bitmap from Image '$this'")
+    else -> null
 }
+
+fun Image.getBitmapOrThrow(): Bitmap = getBitmapOrNull()
+    ?: throw IllegalArgumentException("Unable to get Bitmap from Image '$this'")
+
+
+fun Image.getDrawableOrNull(): Drawable? = when (this) {
+    is BitmapImage -> null
+    is DrawableImage -> drawable
+    else -> null
+}
+
+fun Image.getDrawableOrThrow(): Drawable = getDrawableOrNull()
+    ?: throw IllegalArgumentException("Unable to get Drawable from Image '$this'")
 
 fun Image.asDrawable(): Drawable = when (this) {
     is BitmapImage -> BitmapDrawable(resources, bitmap)

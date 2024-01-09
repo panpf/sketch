@@ -31,7 +31,7 @@ interface ImageResult {
         override val request: ImageRequest,
         override val image: Image,
         val requestKey: String,
-        val requestCacheKey: String,
+        val requestCacheKey: String,        // Rename to cacheKey
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom,
         /**

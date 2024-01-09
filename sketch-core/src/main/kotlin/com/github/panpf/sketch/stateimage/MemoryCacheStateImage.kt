@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.stateimage
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
@@ -40,14 +39,7 @@ class MemoryCacheStateImage(
         return if (cachedValue != null) {
             SketchCountBitmapDrawable(
                 resources = request.context.resources,
-                countBitmap = cachedValue.countBitmap,
-                imageUri = cachedValue.imageUri,
-                requestKey = cachedValue.requestKey,
-                requestCacheKey = cachedValue.requestCacheKey,
-                imageInfo = cachedValue.imageInfo,
-                transformedList = cachedValue.transformedList,
-                extras = cachedValue.extras,
-                dataFrom = DataFrom.MEMORY_CACHE
+                countBitmap = cachedValue.countBitmap
             ).asSketchImage()
         } else {
             defaultImage?.getImage(sketch, request, throwable)

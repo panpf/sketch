@@ -98,16 +98,7 @@ class ResizeDrawableTest {
                 Assert.assertEquals(Size(500, 300), resizeSize)
             }
 
-        val animDrawable = SketchAnimatableDrawable(
-            animatableDrawable = TestAnimatableDrawable1(bitmapDrawable),
-            imageUri = imageUri,
-            requestKey = imageUri,
-            requestCacheKey = imageUri,
-            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
-            dataFrom = LOCAL,
-            transformedList = null,
-            extras = null,
-        )
+        val animDrawable = SketchAnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
         animDrawable.asSketchImage()
             .resizeApplyToDrawable(request3, request3.toRequestContext(sketch).resizeSize)
             .asDrawable()
@@ -203,13 +194,6 @@ class ResizeDrawableTest {
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
             ),
-            imageUri = imageUri,
-            requestKey = imageUri,
-            requestCacheKey = imageUri,
-            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL,
         )
         ResizeDrawable(sketchDrawable, Size(500, 300), CENTER_CROP).apply {
             setBounds(0, 0, 500, 300)

@@ -28,18 +28,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.core.test.ImageViewExtensionsTest
-import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayAssetImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.InternalDrawableWrapperImpl
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.findLeafSketchDrawable
 import com.github.panpf.sketch.util.forEachSketchCountBitmapDrawable
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -63,88 +58,6 @@ class SketchUtilsTest {
     }
 
     @Test
-    fun testFindLeafSketchDrawable() {
-        val sketch = getTestContext().sketch
-        val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
-        val resources = InstrumentationRegistry.getInstrumentation().context.resources
-        val sketchDrawable = SketchCountBitmapDrawable(
-            resources = resources,
-            countBitmap = CountBitmap(
-                cacheKey = "cacheKey",
-                originBitmap = bitmap,
-                bitmapPool = sketch.bitmapPool,
-                disallowReuseBitmap = false,
-            ),
-            imageUri = "uri",
-            requestKey = "key",
-            requestCacheKey = "cacheKey",
-            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL,
-        )
-        val colorDrawable = ColorDrawable(Color.BLUE)
-        val colorDrawable2 = ColorDrawable(Color.GREEN)
-
-        Assert.assertSame(
-            sketchDrawable,
-            sketchDrawable.findLeafSketchDrawable()
-        )
-        Assert.assertSame(
-            sketchDrawable,
-            CrossfadeDrawable(
-                colorDrawable,
-                CrossfadeDrawable(colorDrawable2, sketchDrawable)
-            ).findLeafSketchDrawable()
-        )
-        Assert.assertSame(
-            sketchDrawable,
-            TransitionDrawable(
-                arrayOf(
-                    colorDrawable,
-                    TransitionDrawable(arrayOf(colorDrawable2, sketchDrawable))
-                )
-            ).findLeafSketchDrawable()
-        )
-        Assert.assertSame(
-            sketchDrawable,
-            DrawableWrapperCompat(sketchDrawable).findLeafSketchDrawable()
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Assert.assertSame(
-                sketchDrawable,
-                InternalDrawableWrapperImpl(sketchDrawable).findLeafSketchDrawable()
-            )
-        }
-
-        Assert.assertNull(
-            colorDrawable.findLeafSketchDrawable()
-        )
-        Assert.assertNull(
-            CrossfadeDrawable(
-                colorDrawable,
-                CrossfadeDrawable(sketchDrawable, colorDrawable2)
-            ).findLeafSketchDrawable()
-        )
-        Assert.assertNull(
-            TransitionDrawable(
-                arrayOf(
-                    colorDrawable,
-                    TransitionDrawable(arrayOf(sketchDrawable, colorDrawable2))
-                )
-            ).findLeafSketchDrawable()
-        )
-        Assert.assertNull(
-            DrawableWrapperCompat(colorDrawable).findLeafSketchDrawable()
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Assert.assertNull(
-                InternalDrawableWrapperImpl(colorDrawable).findLeafSketchDrawable()
-            )
-        }
-    }
-
-    @Test
     fun testForeachSketchCountDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
@@ -158,13 +71,6 @@ class SketchUtilsTest {
         val countDrawable = SketchCountBitmapDrawable(
             resources = resources,
             countBitmap = countBitmap,
-            imageUri = "uri",
-            requestKey = "key",
-            requestCacheKey = "cacheKey",
-            imageInfo = ImageInfo(bitmap.width, bitmap.height, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = LOCAL,
         )
         val colorDrawable = ColorDrawable(Color.BLUE)
         val colorDrawable2 = ColorDrawable(Color.GREEN)

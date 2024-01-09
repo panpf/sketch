@@ -15,6 +15,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: Removed generics for Listener and ProgressListener
 * change: New Image interface, which has implementations such as BitmapImage and DrawableImage, is
   used for ImageResult, StateImage, and Target
+* remove: Remove SketchDrawable interface
 
 #### sketch-compose:
 

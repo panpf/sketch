@@ -22,8 +22,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.datasource.DataFrom.NETWORK
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
@@ -169,13 +167,6 @@ class RequestContextTest {
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
             ),
-            imageUri = "imageUri",
-            requestKey = "requestKey",
-            requestCacheKey = "requestCacheKey",
-            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = NETWORK
         )
         val countDrawable1 = SketchCountBitmapDrawable(
             resources = context.resources,
@@ -185,13 +176,6 @@ class RequestContextTest {
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
             ),
-            imageUri = "imageUri1",
-            requestKey = "requestKey1",
-            requestCacheKey = "requestCacheKey1",
-            imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-            transformedList = null,
-            extras = null,
-            dataFrom = NETWORK
         )
         val request = ImageRequest(context, AssetImages.jpeg.uri)
 

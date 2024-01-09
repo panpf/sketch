@@ -15,11 +15,11 @@
  */
 package com.github.panpf.sketch.decode.internal
 
+import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.DrawableDecodeResult
 import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.drawable.SketchBitmapDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 
@@ -40,16 +40,9 @@ class DefaultDrawableDecoder(
             index = 0,
         ).proceed()
             .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
-        val sketchBitmapDrawable = SketchBitmapDrawable(
-            resources = requestContext.request.context.resources,
-            bitmap = bitmapDecodeResult.bitmap,
-            imageUri = requestContext.request.uriString,
-            requestKey = requestContext.key,
-            requestCacheKey = requestContext.cacheKey,
-            imageInfo = bitmapDecodeResult.imageInfo,
-            transformedList = bitmapDecodeResult.transformedList,
-            extras = bitmapDecodeResult.extras,
-            dataFrom = bitmapDecodeResult.dataFrom
+        val sketchBitmapDrawable = BitmapDrawable(
+            /* res = */ requestContext.request.context.resources,
+            /* bitmap = */ bitmapDecodeResult.bitmap,
         )
         val drawableDecodeResult = DrawableDecodeResult(
             drawable = sketchBitmapDrawable,

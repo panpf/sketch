@@ -72,13 +72,6 @@ class ThumbnailMemoryCacheStateImage(
             SketchCountBitmapDrawable(
                 resources = request.context.resources,
                 countBitmap = targetCachedValue.countBitmap,
-                imageUri = targetCachedValue.imageUri,
-                requestKey = targetCachedValue.requestKey,
-                requestCacheKey = targetCachedValue.requestCacheKey,
-                imageInfo = targetCachedValue.imageInfo,
-                transformedList = targetCachedValue.transformedList,
-                extras = targetCachedValue.extras,
-                dataFrom = DataFrom.MEMORY_CACHE
             ).asSketchImage()
         } else {
             defaultImage?.getImage(sketch, request, throwable)
