@@ -29,14 +29,14 @@ class TestTransitionViewTarget : Target, TransitionViewTarget {
     override val supportDisplayCount: Boolean = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) {
-        this.drawable = placeholder?.asDrawable(requestContext.request.context.resources)
+        this.drawable = placeholder?.asDrawable()
     }
 
     override fun onSuccess(requestContext: RequestContext, result: Image) {
-        this.drawable = result.asDrawable(requestContext.request.context.resources)
+        this.drawable = result.asDrawable()
     }
 
     override fun onError(requestContext: RequestContext, error: Image?) {
-        this.drawable = error?.asDrawable(requestContext.request.context.resources)
+        this.drawable = error?.asDrawable()
     }
 }

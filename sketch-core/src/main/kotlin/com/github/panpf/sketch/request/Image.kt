@@ -12,8 +12,8 @@ import com.github.panpf.sketch.util.height
 import com.github.panpf.sketch.util.isImmutable
 import com.github.panpf.sketch.util.width
 
-fun Bitmap.asSketchImage(shareable: Boolean = isImmutable): Image {
-    return BitmapImage(this, shareable)
+fun Bitmap.asSketchImage(shareable: Boolean = isImmutable, resources: Resources? = null): Image {
+    return BitmapImage(this, shareable, resources)
 }
 
 fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): Image {
@@ -26,7 +26,7 @@ fun Image.getBitmap(): Bitmap? = when (this) {
     else -> throw IllegalArgumentException("Not supported get bitmap from Image '$this'")
 }
 
-fun Image.asDrawable(resources: Resources): Drawable = when (this) {
+fun Image.asDrawable(): Drawable = when (this) {
     is BitmapImage -> BitmapDrawable(resources, bitmap)
     is DrawableImage -> drawable
     else -> throw IllegalArgumentException("Not supported conversion to Drawable from Image '$this'")
@@ -85,7 +85,8 @@ open class ImageWrapper(val image: Image) : Image by image {
 
 data class BitmapImage internal constructor(
     val bitmap: Bitmap,
-    override val shareable: Boolean = !bitmap.isMutable
+    override val shareable: Boolean = !bitmap.isMutable,
+    val resources: Resources? = null
 ) : Image {
 
     override val width: Int = bitmap.width

@@ -65,14 +65,14 @@ class ResizeDrawableTest {
         val request = ImageRequest(context, imageUri)
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.asSketchImage().resizeApplyToDrawable(request, null).asDrawable(resources)
+            bitmapDrawable.asSketchImage().resizeApplyToDrawable(request, null).asDrawable()
         )
         val request1 = ImageRequest(context, imageUri) {
             resizeApplyToDrawable(true)
         }
         Assert.assertSame(
             bitmapDrawable,
-            bitmapDrawable.asSketchImage().resizeApplyToDrawable(request1, null).asDrawable(resources)
+            bitmapDrawable.asSketchImage().resizeApplyToDrawable(request1, null).asDrawable()
         )
         val request2 = ImageRequest(context, imageUri) {
             resizeSize(500, 300)
@@ -82,7 +82,7 @@ class ResizeDrawableTest {
             bitmapDrawable,
             bitmapDrawable.asSketchImage()
                 .resizeApplyToDrawable(request2, request2.toRequestContext(sketch).resizeSize)
-                .asDrawable(resources)
+                .asDrawable()
         )
         val request3 = ImageRequest(context, imageUri) {
             resizeApplyToDrawable(true)
@@ -91,7 +91,7 @@ class ResizeDrawableTest {
         }
         bitmapDrawable.asSketchImage()
             .resizeApplyToDrawable(request3, request3.toRequestContext(sketch).resizeSize)
-            .asDrawable(resources)
+            .asDrawable()
             .let { it as ResizeDrawable }
             .apply {
                 Assert.assertSame(bitmapDrawable, drawable)
@@ -110,7 +110,7 @@ class ResizeDrawableTest {
         )
         animDrawable.asSketchImage()
             .resizeApplyToDrawable(request3, request3.toRequestContext(sketch).resizeSize)
-            .asDrawable(resources)
+            .asDrawable()
             .let { it as ResizeAnimatableDrawable }
             .apply {
                 Assert.assertSame(animDrawable, drawable)

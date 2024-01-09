@@ -37,7 +37,7 @@ fun Image.resizeApplyToDrawable(
             resizeWidth = resizeSize.width,
             resizeHeight = resizeSize.height
         )
-        val drawable = this.asDrawable(request.context.resources)
+        val drawable = this.asDrawable()
         if (drawable is Animatable) {
             ResizeAnimatableDrawable(drawable, resizeSize, scale)
         } else {

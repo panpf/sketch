@@ -31,7 +31,7 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
         val startPainter: Painter? =
             target.painter?.asOrNull<CrossfadePainter>()?.end ?: target.painter
         val endPainter: Painter? =
-            result.image?.asDrawable(requestContext.request.context.resources)?.toPainter()
+            result.image?.asDrawable()?.toPainter()
         if (startPainter === endPainter) {
             return
         }
