@@ -5,6 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.cache.CountBitmap
+import com.github.panpf.sketch.cache.CountBitmapValue
+import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.asOrNull
@@ -68,6 +72,11 @@ interface Image {
      * its animation is running.
      */
     val shareable: Boolean
+
+    fun cacheValue(
+        requestContext: RequestContext,
+        extras: Map<String, Any?>
+    ): MemoryCache.Value?
 }
 
 fun Image.findLeafImage(): Image {
@@ -110,6 +119,19 @@ data class BitmapImage internal constructor(
     override val byteCount: Int = bitmap.byteCount
 
     override val allocationByteCount: Int = bitmap.allocationByteCountCompat
+
+    override fun cacheValue(
+        requestContext: RequestContext,
+        extras: Map<String, Any?>
+    ): MemoryCache.Value {
+        val countBitmap = CountBitmap(
+            cacheKey = requestContext.cacheKey,
+            originBitmap = bitmap,
+            bitmapPool = requestContext.sketch.bitmapPool,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+        )
+        return CountBitmapValue(countBitmap, extras)
+    }
 }
 
 data class DrawableImage internal constructor(
@@ -131,6 +153,21 @@ data class DrawableImage internal constructor(
         is ByteCountProvider -> drawable.allocationByteCount
         is BitmapDrawable -> drawable.bitmap.allocationByteCountCompat
         else -> 4 * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
+    }
+
+    override fun cacheValue(
+        requestContext: RequestContext,
+        extras: Map<String, Any?>
+    ): MemoryCache.Value? {
+        if (drawable !is BitmapDrawable) return null
+        val bitmap = drawable.bitmap
+        val countBitmap = CountBitmap(
+            cacheKey = requestContext.cacheKey,
+            originBitmap = bitmap,
+            bitmapPool = requestContext.sketch.bitmapPool,
+            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+        )
+        return CountBitmapValue(countBitmap, extras)
     }
 }
 

@@ -20,7 +20,6 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
-import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -39,20 +38,17 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
     private val cache: LruCache<String, Value> =
         object : LruCache<String, Value>(maxSize.toInt()) {
             override fun sizeOf(key: String, value: Value): Int {
-                val bitmapSize = value.countBitmap.byteCount
-                return if (bitmapSize == 0) 1 else bitmapSize
+                val valueSize = value.size
+                return if (valueSize == 0) 1 else valueSize
             }
 
             override fun entryRemoved(
-                evicted: Boolean,
-                key: String,
-                oldValue: Value,
-                newValue: Value?
+                evicted: Boolean, key: String, oldValue: Value, newValue: Value?
             ) {
                 logger?.d(MODULE) {
-                    "removed. ${oldValue.countBitmap}. ${size.formatFileSize()}"
+                    "removed. ${oldValue}. ${size.formatFileSize()}"
                 }
-                oldValue.countBitmap.setIsCached(false, MODULE)
+                oldValue.setIsCached(false)
             }
         }
     private val getCount = AtomicInteger()
@@ -63,30 +59,24 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         get() = cache.size().toLong()
 
     override fun put(key: String, value: Value): Boolean {
-        val countBitmap = value.countBitmap
-        val bitmap = countBitmap.bitmap ?: return false
-//        cache.snapshot().values.forEach {
-//            if (it.bitmap === bitmap) {
-//                throw IllegalArgumentException("Same Bitmap, different CountBitmap. ${countBitmap.info}")
-//            }
-//        }
+        require(value.checkValid()) { "cache value invalid. $value" }
         if (cache[key] != null) {
-            logger?.w(MODULE, "put. exist. $countBitmap")
+            logger?.w(MODULE, "put. exist. $value")
             return false
         }
-        if (bitmap.allocationByteCountCompat >= maxSize * 0.7f) {
+        if (value.size >= maxSize * 0.7f) {
             logger?.d(MODULE) {
-                val bitmapSize = bitmap.allocationByteCountCompat.formatFileSize()
+                val bitmapSize = value.size.formatFileSize()
                 val maxSize = maxSize.formatFileSize()
-                "put. reject. Bitmap too big: ${bitmapSize}, maxSize is $maxSize, $countBitmap"
+                "put. reject. Bitmap too big: ${bitmapSize}, maxSize is $maxSize, $value"
             }
             return false
         }
 
-        countBitmap.setIsCached(true, MODULE)
+        value.setIsCached(true)
         cache.put(key, value)
         logger?.d(MODULE) {
-            "put. successful. ${size.formatFileSize()}. $countBitmap"
+            "put. successful. ${size.formatFileSize()}. $value"
         }
         return true
     }
@@ -94,12 +84,8 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
     override fun remove(key: String): Value? = cache.remove(key)
 
     override fun get(key: String): Value? {
-        val value = cache[key]?.takeIf {
-            val recycled = it.countBitmap.isRecycled
-            if (recycled) {
-                cache.remove(key)
-            }
-            !recycled
+        val value = cache[key]?.apply {
+            require(this.checkValid()) { "cache value invalid. $this" }
         }
         val getCount1 = getCount.addAndGet(1)
         val hitCount1 = if (value != null) {
@@ -114,7 +100,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         logger?.d(MODULE) {
             val hitRatio = ((hitCount1.toFloat() / getCount1).format(2) * 100).roundToInt()
             if (value != null) {
-                "get. hit($hitRatio%). ${value.countBitmap}}"
+                "get. hit($hitRatio%). ${value}}"
             } else {
                 "get. miss($hitRatio%). $key"
             }
@@ -122,18 +108,12 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         return value
     }
 
-
     override fun exist(key: String): Boolean {
-        val value = cache[key]?.takeIf {
-            val recycled = it.countBitmap.isRecycled
-            if (recycled) {
-                cache.remove(key)
-            }
-            !recycled
+        val value = cache[key]?.apply {
+            require(this.checkValid()) { "cache value invalid. $this" }
         }
         return value != null
     }
-
 
     override fun trim(level: Int) {
         val oldSize = size

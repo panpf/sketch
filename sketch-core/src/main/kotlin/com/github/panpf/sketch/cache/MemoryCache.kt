@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Logger
 
 /**
@@ -74,20 +73,14 @@ interface MemoryCache {
      */
     fun clear()
 
-    // TODO In 4.0, a Map<String, Any> will be created to store these metadata.
-    class Value constructor(
-        val countBitmap: CountBitmap,
-        val imageUri: String,
-        val requestKey: String,
-        val cacheKey: String,    // TODO remove
-        val imageInfo: ImageInfo,
-        /**
-         * Store the transformation history of the Bitmap
-         */
-        val transformedList: List<String>?,
-        /**
-         * Store some additional information for consumer use
-         */
-        val extras: Map<String, String>?,
-    )
+    interface Value {
+
+        val size: Int
+
+        val extras: Map<String, Any?>
+
+        fun setIsCached(cached: Boolean)
+
+        fun checkValid(): Boolean
+    }
 }

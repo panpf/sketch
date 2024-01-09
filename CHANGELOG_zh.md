@@ -15,6 +15,7 @@
 * change: 新增 Image 接口，它有 BitmapImage 和 DrawableImage 等实现，它用于 ImageResult、StateImage、以及
   Target
 * remove: 移除 SketchDrawable 接口
+* change: MemoryCache.Value 改为接口，它的实现类有 BitmapValue 和 CountBitmapValue
 
 #### sketch-compose:
 

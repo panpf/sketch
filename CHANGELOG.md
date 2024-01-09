@@ -16,6 +16,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: New Image interface, which has implementations such as BitmapImage and DrawableImage, is
   used for ImageResult, StateImage, and Target
 * remove: Remove SketchDrawable interface
+* change: MemoryCache.Value is changed to an interface, and its implementation classes include BitmapValue and CountBitmapValue
 
 #### sketch-compose:
 

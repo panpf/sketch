@@ -23,7 +23,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -38,6 +38,7 @@ import com.github.panpf.sketch.request.asSketchImage
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.request.internal.memoryCacheKey
+import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -123,14 +124,13 @@ class MemoryCacheRequestInterceptorTest {
 
         memoryCache.put(
             request.toRequestContext(sketch).cacheKey,
-            MemoryCache.Value(
+            CountBitmapValue(
                 countBitmapDrawable.countBitmap,
-                imageUri = imageData.imageUri,
-                requestKey = imageData.requestKey,
-                cacheKey = imageData.cacheKey,
-                imageInfo = imageData.imageInfo,
-                transformedList = imageData.transformedList,
-                extras = imageData.extras,
+                newCacheValueExtras(
+                    imageInfo = imageData.imageInfo,
+                    transformedList = imageData.transformedList,
+                    extras = imageData.extras,
+                )
             )
         )
         Assert.assertEquals(40000, memoryCache.size)
@@ -154,14 +154,13 @@ class MemoryCacheRequestInterceptorTest {
 
         memoryCache.put(
             request.toRequestContext(sketch).cacheKey,
-            MemoryCache.Value(
+            CountBitmapValue(
                 countBitmapDrawable.countBitmap,
-                imageUri = imageData.imageUri,
-                requestKey = imageData.requestKey,
-                cacheKey = imageData.cacheKey,
-                imageInfo = imageData.imageInfo,
-                transformedList = imageData.transformedList,
-                extras = imageData.extras,
+                newCacheValueExtras(
+                    imageInfo = imageData.imageInfo,
+                    transformedList = imageData.transformedList,
+                    extras = imageData.extras,
+                )
             )
         )
         Assert.assertEquals(40000, memoryCache.size)
@@ -251,7 +250,8 @@ class MemoryCacheRequestInterceptorTest {
             val imageInfo = ImageInfo(100, 100, "image/png", 0)
             val drawable = BitmapDrawable(chain.sketch.context.resources, bitmap)
             val request = chain.request
-            ImageData(drawable.asSketchImage(),
+            ImageData(
+                drawable.asSketchImage(),
                 imageUri = request.uriString,
                 requestKey = request.key,
                 cacheKey = chain.requestContext.memoryCacheKey,

@@ -16,10 +16,9 @@
 package com.github.panpf.sketch.stateimage
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.cache.asSketchImage
 import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.asSketchImage
 
 /**
  * Get a Bitmap from memory using the given memory cache key as a state Drawable, if not found, use defaultImage
@@ -36,14 +35,8 @@ class MemoryCacheStateImage(
     ): Image? {
         val memoryCache = sketch.memoryCache
         val cachedValue = memoryCacheKey?.let { memoryCache[it] }
-        return if (cachedValue != null) {
-            SketchCountBitmapDrawable(
-                resources = request.context.resources,
-                countBitmap = cachedValue.countBitmap
-            ).asSketchImage()
-        } else {
-            defaultImage?.getImage(sketch, request, throwable)
-        }
+        return cachedValue?.asSketchImage(request.context.resources)
+            ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
     override fun equals(other: Any?): Boolean {

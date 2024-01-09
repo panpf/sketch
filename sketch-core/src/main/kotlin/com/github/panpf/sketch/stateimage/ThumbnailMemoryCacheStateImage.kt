@@ -1,14 +1,16 @@
 package com.github.panpf.sketch.stateimage
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.BitmapValue
+import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.cache.asSketchImage
 import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.request.internal.getImageInfo
+import com.github.panpf.sketch.request.internal.getTransformedList
 import com.github.panpf.sketch.util.format
 import kotlin.math.abs
 
@@ -43,14 +45,19 @@ class ThumbnailMemoryCacheStateImage(
             }
             if (uri == uriFromKey) {
                 val cachedValue = sketch.memoryCache[key]?.takeIf {
-                    val bitmap = it.countBitmap.bitmap ?: return@takeIf false
+                    val bitmap = when (it) {
+                        is BitmapValue -> it.bitmap
+                        is CountBitmapValue -> it.countBitmap.bitmap
+                        else -> null
+                    } ?: return@takeIf false
 
                     val bitmapAspectRatio = (bitmap.width.toFloat() / bitmap.height).format(1)
+                    val imageInfo = it.getImageInfo()!!
                     val imageAspectRatio =
-                        (it.imageInfo.width.toFloat() / it.imageInfo.height).format(1)
+                        (imageInfo.width.toFloat() / imageInfo.height).format(1)
                     val sizeSame = abs(bitmapAspectRatio - imageAspectRatio) <= 0.1f
 
-                    val transformedList = it.transformedList
+                    val transformedList = it.getTransformedList()
                     val noOtherTransformed =
                         transformedList == null || transformedList.all { transformed ->
                             isInSampledTransformed(transformed) || isExifOrientationTransformed(
@@ -68,14 +75,8 @@ class ThumbnailMemoryCacheStateImage(
                 }
             }
         }
-        return if (targetCachedValue != null) {
-            SketchCountBitmapDrawable(
-                resources = request.context.resources,
-                countBitmap = targetCachedValue.countBitmap,
-            ).asSketchImage()
-        } else {
-            defaultImage?.getImage(sketch, request, throwable)
-        }
+        return targetCachedValue?.asSketchImage(request.context.resources)
+            ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
     override fun equals(other: Any?): Boolean {

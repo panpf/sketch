@@ -16,10 +16,12 @@
 
 package com.github.panpf.zoomimage.sketch
 
+import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
 import com.github.panpf.zoomimage.subsampling.CacheTileBitmap
 import com.github.panpf.zoomimage.subsampling.TileBitmap
@@ -49,19 +51,18 @@ class SketchTileBitmapCache constructor(
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = disallowReuseBitmap,
         )
-        val newCacheValue = MemoryCache.Value(
+        val newCacheValue = CountBitmapValue(
             countBitmap = newCountBitmap,
-            imageUri = imageUrl,
-            requestKey = imageUrl,
-            cacheKey = key,
-            imageInfo = ImageInfo(
-                imageInfo.width,
-                imageInfo.height,
-                imageInfo.mimeType,
-                0
-            ),
-            transformedList = null,
-            extras = null,
+            extras = newCacheValueExtras(
+                imageInfo = ImageInfo(
+                    imageInfo.width,
+                    imageInfo.height,
+                    imageInfo.mimeType,
+                    ExifInterface.ORIENTATION_UNDEFINED
+                ),
+                transformedList = null,
+                extras = null,
+            )
         )
         if (!sketch.memoryCache.put(key, newCacheValue)) {
             return null

@@ -17,6 +17,8 @@
 package com.github.panpf.zoomimage.sketch
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.cache.BitmapValue
+import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.zoomimage.sketch.internal.toHexString
 import com.github.panpf.zoomimage.subsampling.AndroidCacheTileBitmap
@@ -28,7 +30,11 @@ class SketchTileBitmap constructor(
 ) : AndroidCacheTileBitmap {
 
     override val bitmap: Bitmap?
-        get() = cacheValue.countBitmap.bitmap
+        get() = when (cacheValue) {
+            is BitmapValue -> cacheValue.bitmap
+            is CountBitmapValue -> cacheValue.countBitmap.bitmap
+            else -> null
+        }
 
     override val width: Int = bitmap!!.width
 
@@ -47,7 +53,9 @@ class SketchTileBitmap constructor(
     }
 
     override fun setIsDisplayed(displayed: Boolean) {
-        cacheValue.countBitmap.setIsDisplayed(displayed, caller)
+        if (cacheValue is CountBitmapValue) {
+            cacheValue.countBitmap.setIsDisplayed(displayed, caller)
+        }
     }
 
     override fun toString(): String {

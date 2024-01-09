@@ -15,20 +15,18 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import android.graphics.Bitmap
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
+import com.github.panpf.sketch.request.DrawableImage
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.request.asSketchImage
-import com.github.panpf.sketch.request.getBitmapOrNull
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.asOrNull
 
@@ -41,71 +39,39 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request
         val requestContext = chain.requestContext
-        val memoryCache = chain.sketch.memoryCache
-        val bitmapPool = chain.sketch.bitmapPool
         val memoryCachePolicy = request.memoryCachePolicy
         val targetSupportDisplayCount =
             request.target.asOrNull<Target>()?.supportDisplayCount == true
 
         if (memoryCachePolicy.readEnabled && targetSupportDisplayCount) {
-            val cachedValue = memoryCache[requestContext.memoryCacheKey]
-            if (cachedValue != null) {
-                val countDrawable = SketchCountBitmapDrawable(
-                    resources = request.context.resources,
-                    countBitmap = cachedValue.countBitmap,
-                )
-                requestContext.pendingCountDrawable(countDrawable, "loadBefore")
-                val displayData = ImageData(
-                    image = countDrawable.asSketchImage(),
-                    imageUri = request.uriString,
-                    requestKey = request.key,
-                    cacheKey = requestContext.memoryCacheKey,
-                    imageInfo = cachedValue.imageInfo,
-                    transformedList = cachedValue.transformedList,
-                    extras = cachedValue.extras,
-                    dataFrom = DataFrom.MEMORY_CACHE,
-                )
-                return Result.success(displayData)
+            val imageDataFromCache = readFromMemoryCache(requestContext)
+            if (imageDataFromCache != null) {
+                val image = imageDataFromCache.image
+                if (image is DrawableImage && image.drawable is SketchCountBitmapDrawable) {
+                    requestContext.pendingCountDrawable(image.drawable, "loadBefore")
+                }
+                return Result.success(imageDataFromCache)
             } else if (request.depth >= Depth.MEMORY) {
-                return Result.failure(DepthException("Request depth limited to ${request.depth}. ${request.uriString}"))
+                return Result.failure(DepthException("Request depth limited to ${request.depth}. ${request.key}"))
             }
         }
 
         val result = chain.proceed(request)
 
         val imageData = result.getOrNull()
-        val bitmap = imageData?.image?.getBitmapOrNull()
         if (imageData != null
             && memoryCachePolicy.writeEnabled
             && targetSupportDisplayCount
-            && bitmap != null
         ) {
-            val saveSuccess = saveToMemoryCache(
-                memoryCache = memoryCache,
-                requestContext = requestContext,
-                bitmapPool = bitmapPool,
-                imageData = imageData,
-                bitmap = bitmap
-            )
+            val saveSuccess = saveToMemoryCache(requestContext, imageData)
             if (saveSuccess && memoryCachePolicy.readEnabled) {
-                val cachedValue = memoryCache[requestContext.memoryCacheKey]
-                if (cachedValue != null) {
-                    val countDrawable = SketchCountBitmapDrawable(
-                        resources = request.context.resources,
-                        countBitmap = cachedValue.countBitmap
-                    )
-                    requestContext.pendingCountDrawable(countDrawable, "newDecode")
-                    val displayData = ImageData(
-                        image = countDrawable.asSketchImage(),
-                        imageUri = request.uriString,
-                        requestKey = request.key,
-                        cacheKey = requestContext.memoryCacheKey,
-                        imageInfo = cachedValue.imageInfo,
-                        transformedList = cachedValue.transformedList,
-                        extras = cachedValue.extras,
-                        dataFrom = imageData.dataFrom,
-                    )
-                    return Result.success(displayData)
+                val imageDataFromCache = readFromMemoryCache(requestContext)
+                if (imageDataFromCache != null) {
+                    val image = imageDataFromCache.image
+                    if (image is DrawableImage && image.drawable is SketchCountBitmapDrawable) {
+                        requestContext.pendingCountDrawable(image.drawable, "newDecode")
+                    }
+                    return Result.success(imageDataFromCache.copy(dataFrom = imageData.dataFrom))
                 }
             }
         }
@@ -114,29 +80,46 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     }
 
     @MainThread
+    private fun readFromMemoryCache(
+        requestContext: RequestContext
+    ): ImageData? {
+        val request = requestContext.request
+        val memoryCache = requestContext.sketch.memoryCache
+        val cachedValue = memoryCache[requestContext.memoryCacheKey] ?: return null
+        val cacheImage = cachedValue.asSketchImage(request.context.resources)
+        return ImageData(
+            image = cacheImage,
+            imageUri = request.uriString,
+            requestKey = request.key,
+            cacheKey = requestContext.memoryCacheKey,
+            imageInfo = cachedValue.getImageInfo()!!,
+            transformedList = cachedValue.getTransformedList(),
+            extras = cachedValue.getExtras(),
+            dataFrom = DataFrom.MEMORY_CACHE,
+        )
+    }
+
+    @MainThread
     private fun saveToMemoryCache(
-        memoryCache: MemoryCache,
         requestContext: RequestContext,
-        bitmapPool: BitmapPool,
         imageData: ImageData,
-        bitmap: Bitmap,
     ): Boolean {
-        val countBitmap = CountBitmap(
-            cacheKey = requestContext.cacheKey,
-            originBitmap = bitmap,
-            bitmapPool = bitmapPool,
-            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-        )
-        val newCacheValue = MemoryCache.Value(
-            countBitmap = countBitmap,
-            imageUri = requestContext.request.uriString,
-            requestKey = requestContext.key,
-            cacheKey = requestContext.cacheKey,
-            imageInfo = imageData.imageInfo,
-            transformedList = imageData.transformedList,
-            extras = imageData.extras,
-        )
-        return memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
+        val newCacheValue = imageData.image.cacheValue(
+            requestContext, newCacheValueExtras(
+                imageInfo = imageData.imageInfo,
+                transformedList = imageData.transformedList,
+                extras = imageData.extras,
+            )
+        ) ?: return false
+        val saveSuccess =
+            requestContext.sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
+        if (!saveSuccess) {
+            requestContext.sketch.logger.w(
+                "MemoryCacheRequestInterceptor",
+                "Memory cache save failed. ${imageData.image}. . ${requestContext.request.key}"
+            )
+        }
+        return saveSuccess
     }
 
     override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"
@@ -150,7 +133,34 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
+
 }
 
 val RequestContext.memoryCacheKey: String
     get() = cacheKey
+
+fun MemoryCache.Value.getImageInfo(): ImageInfo? {
+    return extras["imageInfo"] as ImageInfo?
+}
+
+fun newCacheValueExtras(
+    imageInfo: ImageInfo,
+    transformedList: List<String>?,
+    extras: Map<String, String>?,
+): Map<String, Any?> {
+    return mapOf(
+        "imageInfo" to imageInfo,
+        "transformedList" to transformedList,
+        "extras" to extras,
+    )
+}
+
+fun MemoryCache.Value.getTransformedList(): List<String>? {
+    @Suppress("UNCHECKED_CAST")
+    return extras["transformedList"] as List<String>?
+}
+
+fun MemoryCache.Value.getExtras(): Map<String, String>? {
+    @Suppress("UNCHECKED_CAST")
+    return extras["extras"] as Map<String, String>?
+}

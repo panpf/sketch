@@ -21,11 +21,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
@@ -58,24 +59,26 @@ class MemoryCacheStateImageTest {
             Assert.assertNull(getImage(sketch, request, null))
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
-            Assert.assertTrue(getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable is ColorDrawable)
+            Assert.assertTrue(
+                getImage(sketch, request, null)
+                    ?.asOrThrow<DrawableImage>()?.drawable is ColorDrawable
+            )
         }
 
         memoryCache.put(
             memoryCacheKey,
-            MemoryCache.Value(
+            CountBitmapValue(
                 countBitmap = CountBitmap(
                     cacheKey = request.toRequestContext(sketch).cacheKey,
                     originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
                     bitmapPool = sketch.bitmapPool,
                     disallowReuseBitmap = false,
                 ),
-                imageUri = request.uriString,
-                requestKey = request.toRequestContext(sketch).key,
-                cacheKey = request.toRequestContext(sketch).cacheKey,
-                imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-                transformedList = null,
-                extras = null,
+                newCacheValueExtras(
+                    imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
+                    transformedList = null,
+                    extras = null,
+                )
             )
         )
 
@@ -86,20 +89,14 @@ class MemoryCacheStateImageTest {
         }
         MemoryCacheStateImage(memoryCacheKey, null).apply {
             Assert.assertTrue(
-                getImage(
-                    sketch,
-                    request,
-                    null
-                ).asOrNull<DrawableImage>()!!.drawable is SketchCountBitmapDrawable
+                getImage(sketch, request, null)
+                    ?.asOrNull<DrawableImage>()!!.drawable is SketchCountBitmapDrawable
             )
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertTrue(
-                getImage(
-                    sketch,
-                    request,
-                    null
-                ).asOrNull<DrawableImage>()!!.drawable is SketchCountBitmapDrawable
+                getImage(sketch, request, null)
+                    ?.asOrNull<DrawableImage>()!!.drawable is SketchCountBitmapDrawable
             )
         }
     }
