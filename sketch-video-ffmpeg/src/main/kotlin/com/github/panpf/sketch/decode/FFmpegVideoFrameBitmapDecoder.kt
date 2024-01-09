@@ -49,7 +49,7 @@ fun ComponentRegistry.Builder.supportFFmpegVideoFrame(): ComponentRegistry.Build
  *
  * Notes: It is not support MediaMetadataRetriever.BitmapParams
  *
- * Notes：LoadRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect
+ * Notes：ImageRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect
  */
 class FFmpegVideoFrameBitmapDecoder(
     private val sketch: Sketch,

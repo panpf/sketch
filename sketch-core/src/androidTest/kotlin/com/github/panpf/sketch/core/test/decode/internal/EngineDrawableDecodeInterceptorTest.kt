@@ -37,15 +37,15 @@ class EngineDrawableDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(EngineDrawableDecodeInterceptor())
-        val loadRequest = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request = ImageRequest(context, AssetImages.jpeg.uri) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(DISABLED)
         }
         val chain = DrawableDecodeInterceptorChain(
             sketch = sketch,
-            request = loadRequest,
-            requestContext = loadRequest.toRequestContext(sketch),
+            request = request,
+            requestContext = request.toRequestContext(sketch),
             fetchResult = null,
             interceptors = interceptors,
             index = 0

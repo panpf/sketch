@@ -105,8 +105,6 @@ interface ImageOptions {
      * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val bitmapConfig: BitmapConfig?
 
@@ -114,8 +112,6 @@ interface ImageOptions {
      * [Bitmap]'s [ColorSpace]
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     @get:RequiresApi(VERSION_CODES.O)
     val colorSpace: ColorSpace?
@@ -131,16 +127,12 @@ interface ImageOptions {
      * IDCT method will be used instead.
      *
      * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
     val preferQualityOverSpeed: Boolean?
 
     /**
      * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to resizeSize
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val resizeSizeResolver: SizeResolver?
 
@@ -151,29 +143,21 @@ interface ImageOptions {
 
     /**
      * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val resizeScaleDecider: ScaleDecider?
 
     /**
      * The list of [Transformation]s to be applied to this request
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val transformations: List<Transformation>?
 
     /**
      * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      */
     val disallowReuseBitmap: Boolean?
 
     /**
      * Ignore Orientation property in file Exif info
-     *
-     * Only works on [LoadRequest] and [DisplayRequest]
      *
      * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
      */
@@ -182,8 +166,6 @@ interface ImageOptions {
     /**
      * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
      *
-     * Only works on [LoadRequest] and [DisplayRequest]
-     *
      * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
      */
     val resultCachePolicy: CachePolicy?
@@ -191,50 +173,36 @@ interface ImageOptions {
 
     /**
      * Placeholder image when loading
-     *
-     * Only works on [DisplayRequest]
      */
     val placeholder: StateImage?
 
     /**
      * Image to display when uri is empty
-     *
-     * Only works on [DisplayRequest]
      */
     val uriEmpty: StateImage?
 
     /**
      * Image to display when loading fails
-     *
-     * Only works on [DisplayRequest]
      */
     val error: ErrorStateImage?
 
     /**
      * How the current image and the new image transition
-     *
-     * Only works on [DisplayRequest]
      */
     val transitionFactory: Transition.Factory?
 
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     *
-     * Only works on [DisplayRequest]
      */
     val disallowAnimatedImage: Boolean?
 
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
-     *
-     * Only works on [DisplayRequest]
      */
     val resizeApplyToDrawable: Boolean?
 
     /**
      * Bitmap memory caching policy
-     *
-     * Only works on [DisplayRequest]
      *
      * @see com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
      */
@@ -243,8 +211,6 @@ interface ImageOptions {
 
     /**
      * Components that are only valid for the current request
-     *
-     * Only works on [DisplayRequest]
      */
     val componentRegistry: ComponentRegistry?
 
@@ -549,8 +515,6 @@ interface ImageOptions {
 
         /**
          * Set the [SizeResolver] to lazy resolve the requested size.
-         *
-         * Only works on [LoadRequest] and [DisplayRequest]
          */
         fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
             this.resizeSizeResolver = sizeResolver

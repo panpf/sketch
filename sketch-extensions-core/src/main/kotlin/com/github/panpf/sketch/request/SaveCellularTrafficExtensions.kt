@@ -31,18 +31,6 @@ fun ImageRequest.Builder.saveCellularTraffic(enabled: Boolean = true): ImageRequ
         }
     }
 
-///**
-// * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
-// */
-//fun DisplayRequest.Builder.saveCellularTraffic(enabled: Boolean = true): DisplayRequest.Builder =
-//    apply {
-//        if (enabled) {
-//            setParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY, true, null)
-//        } else {
-//            removeParameter(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY)
-//        }
-//    }
-
 /**
  * Returns true if cellular data saving has been enabled
  */
@@ -79,18 +67,6 @@ fun ImageRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): Imag
             removeParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)
         }
     }
-
-///**
-// * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
-// */
-//fun DisplayRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): DisplayRequest.Builder =
-//    apply {
-//        if (ignore) {
-//            setParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY, true, null)
-//        } else {
-//            removeParameter(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)
-//        }
-//    }
 
 /**
  * Returns true if ignore cellular data saving has been enabled

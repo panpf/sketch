@@ -28,17 +28,6 @@ fun ImageRequest.Builder.allowSetNullDrawable(allow: Boolean = true): ImageReque
     }
 }
 
-///**
-// * Configure whether to allow setting null Drawable to ImageView
-// */
-//fun DisplayRequest.Builder.allowSetNullDrawable(allow: Boolean = true): DisplayRequest.Builder {
-//    return if (allow) {
-//        setParameter(key = ALLOW_SET_NULL_DRAWABLE_KEY, value = true, cacheKey = null)
-//    } else {
-//        removeParameter(key = ALLOW_SET_NULL_DRAWABLE_KEY)
-//    }
-//}
-
 /**
  * Configure whether to allow setting null Drawable to ImageView
  */
@@ -55,12 +44,6 @@ fun ImageOptions.Builder.allowSetNullDrawable(allow: Boolean = true): ImageOptio
  */
 val ImageRequest.allowSetNullDrawable: Boolean
     get() = parameters?.value(ALLOW_SET_NULL_DRAWABLE_KEY) ?: false
-
-///**
-// * Whether to allow setting null Drawable to ImageView
-// */
-//val DisplayRequest.allowSetNullDrawable: Boolean
-//    get() = parameters?.value(ALLOW_SET_NULL_DRAWABLE_KEY) ?: false
 
 /**
  * Whether to allow setting null Drawable to ImageView

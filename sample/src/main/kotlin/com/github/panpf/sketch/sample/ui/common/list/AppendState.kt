@@ -50,7 +50,6 @@ fun AppendState(loadState: LoadState, onClick: () -> Unit) {
             text = message,
             modifier = Modifier.align(Alignment.Center),
             fontSize = 12.sp,
-//            color = colorResource(R.color.text_normal),
             textAlign = TextAlign.Center
         )
     }

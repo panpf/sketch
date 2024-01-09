@@ -36,14 +36,14 @@ class EngineBitmapDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(EngineBitmapDecodeInterceptor())
-        val loadRequest = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request = ImageRequest(context, AssetImages.jpeg.uri) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
         }
         val chain = BitmapDecodeInterceptorChain(
             sketch = sketch,
-            request = loadRequest,
-            requestContext = loadRequest.toRequestContext(sketch),
+            request = request,
+            requestContext = request.toRequestContext(sketch),
             fetchResult = null,
             interceptors = interceptors,
             index = 0

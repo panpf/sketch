@@ -40,57 +40,6 @@ object WithDataActivityResultContracts {
     abstract class WithDataActivityResultContract<I, O> : ActivityResultContract<I, O>(),
         ActivityResultCallback<O>
 
-//    class RequestPermission<T> :
-//        WithDataActivityResultContract<Input<T>, RequestPermission.Result<T>>() {
-//
-//        private var input: Input<T>? = null
-//
-//        override fun createIntent(context: Context, input: Input<T>): Intent {
-//            this.input = input
-//            return Intent(ACTION_REQUEST_PERMISSIONS).apply {
-//                putExtra(RequestMultiplePermissions.EXTRA_PERMISSIONS, arrayOf(input))
-//            }
-//        }
-//
-//        override fun onActivityResult(result: Result<T>) {
-//            val input = input!!
-//            input.onCallback(result.grant)
-//        }
-//
-//        @Suppress("AutoBoxing")
-//        override fun parseResult(resultCode: Int, intent: Intent?): Result<T> {
-//            val input = input!!
-//            if (intent == null || resultCode != Activity.RESULT_OK) {
-//                return Result(grant = false, data = input.data)
-//            }
-//            val grantResults =
-//                intent.getIntArrayExtra(RequestMultiplePermissions.EXTRA_PERMISSION_GRANT_RESULTS)
-//            val grant =
-//                grantResults?.any { result -> result == PackageManager.PERMISSION_GRANTED } == true
-//            return Result(grant = grant, data = input.data)
-//        }
-//
-//        override fun getSynchronousResult(
-//            context: Context,
-//            input: Input<T>
-//        ): SynchronousResult<Result<T>>? {
-//            this.input = input
-//            val granted = ContextCompat.checkSelfPermission(
-//                context,
-//                input.permission
-//            ) == PackageManager.PERMISSION_GRANTED
-//            return if (granted) {
-//                SynchronousResult(Result(grant = true, data = input.data))
-//            } else {
-//                // proceed with permission request
-//                null
-//            }
-//        }
-//
-//        data class Input<T>(val permission: String, val data: T, val onCallback: (Boolean) -> Unit)
-//        data class Result<T>(val grant: Boolean, val data: T)
-//    }
-
     class RequestPermission :
         WithDataActivityResultContract<Input, Boolean>() {
 

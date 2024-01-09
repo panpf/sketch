@@ -20,17 +20,17 @@ package com.github.panpf.sketch.request
  */
 enum class Depth {
     /**
-     * Allows loading images from memory, local, and network. Works with [DisplayRequest], [LoadRequest], [DownloadRequest]
+     * Allows loading images from memory, local, and network
      */
     NETWORK,
 
     /**
-     * Load images only from memory or local. Only used for [DisplayRequest] and [LoadRequest]
+     * Load images only from memory or local
      */
     LOCAL,
 
     /**
-     * Load images only from memory. Only used for [DisplayRequest]
+     * Load images only from memory
      */
     MEMORY;
 }

@@ -46,46 +46,6 @@ fun ImageRequest.Builder.videoFrameMillis(frameMillis: Long): ImageRequest.Build
     videoFrameMicros(1000 * frameMillis)
 }
 
-///**
-// * Set the time **in microseconds** of the frame to extract from a video.
-// *
-// * Default: 0
-// */
-//fun LoadRequest.Builder.videoFrameMicros(frameMicros: Long): LoadRequest.Builder = apply {
-//    require(frameMicros >= 0) { "frameMicros must be >= 0." }
-//    removeParameter(VIDEO_FRAME_PERCENT_KEY)
-//    setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
-//}
-//
-///**
-// * Set the time **in milliseconds** of the frame to extract from a video.
-// *
-// * Default: 0
-// */
-//fun LoadRequest.Builder.videoFrameMillis(frameMillis: Long): LoadRequest.Builder = apply {
-//    videoFrameMicros(1000 * frameMillis)
-//}
-//
-///**
-// * Set the time **in microseconds** of the frame to extract from a video.
-// *
-// * Default: 0
-// */
-//fun DisplayRequest.Builder.videoFrameMicros(frameMicros: Long): DisplayRequest.Builder = apply {
-//    require(frameMicros >= 0) { "frameMicros must be >= 0." }
-//    removeParameter(VIDEO_FRAME_PERCENT_KEY)
-//    setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
-//}
-//
-///**
-// * Set the time **in milliseconds** of the frame to extract from a video.
-// *
-// * Default: 0
-// */
-//fun DisplayRequest.Builder.videoFrameMillis(frameMillis: Long): DisplayRequest.Builder = apply {
-//    videoFrameMicros(1000 * frameMillis)
-//}
-
 /**
  * Get the time **in microseconds** of the frame to extract from a video.
  */
@@ -132,32 +92,6 @@ fun ImageRequest.Builder.videoFramePercent(
     setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
 }
 
-///**
-// * Set the time of the frame to extract from a video (by framePercent duration).
-// *
-// * Default: 0.0
-// */
-//fun LoadRequest.Builder.videoFramePercent(
-//    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
-//): LoadRequest.Builder = apply {
-//    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
-//    removeParameter(VIDEO_FRAME_MICROS_KEY)
-//    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
-//}
-//
-///**
-// * Set the time of the frame to extract from a video (by framePercent duration).
-// *
-// * Default: 0.0
-// */
-//fun DisplayRequest.Builder.videoFramePercent(
-//    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
-//): DisplayRequest.Builder = apply {
-//    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
-//    removeParameter(VIDEO_FRAME_MICROS_KEY)
-//    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
-//}
-
 /**
  * Get the time of the frame to extract from a video (by framePercent duration).
  */
@@ -202,44 +136,6 @@ fun ImageRequest.Builder.videoFrameOption(option: Int): ImageRequest.Builder = a
     ) { "Invalid video frame option: $option." }
     setParameter(VIDEO_FRAME_OPTION_KEY, option)
 }
-
-///**
-// * Set the option for how to decode the video frame.
-// *
-// * Must be one of [OPTION_PREVIOUS_SYNC], [OPTION_NEXT_SYNC], [OPTION_CLOSEST_SYNC], [OPTION_CLOSEST].
-// *
-// * Default: [OPTION_CLOSEST_SYNC]
-// *
-// * @see MediaMetadataRetriever
-// */
-//fun LoadRequest.Builder.videoFrameOption(option: Int): LoadRequest.Builder = apply {
-//    require(
-//        option == OPTION_PREVIOUS_SYNC ||
-//                option == OPTION_NEXT_SYNC ||
-//                option == OPTION_CLOSEST_SYNC ||
-//                option == OPTION_CLOSEST
-//    ) { "Invalid video frame option: $option." }
-//    setParameter(VIDEO_FRAME_OPTION_KEY, option)
-//}
-//
-///**
-// * Set the option for how to decode the video frame.
-// *
-// * Must be one of [OPTION_PREVIOUS_SYNC], [OPTION_NEXT_SYNC], [OPTION_CLOSEST_SYNC], [OPTION_CLOSEST].
-// *
-// * Default: [OPTION_CLOSEST_SYNC]
-// *
-// * @see MediaMetadataRetriever
-// */
-//fun DisplayRequest.Builder.videoFrameOption(option: Int): DisplayRequest.Builder = apply {
-//    require(
-//        option == OPTION_PREVIOUS_SYNC ||
-//                option == OPTION_NEXT_SYNC ||
-//                option == OPTION_CLOSEST_SYNC ||
-//                option == OPTION_CLOSEST
-//    ) { "Invalid video frame option: $option." }
-//    setParameter(VIDEO_FRAME_OPTION_KEY, option)
-//}
 
 /**
  * Get the option for how to decode the video frame.

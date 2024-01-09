@@ -52,7 +52,7 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  * Notes: Android O(26/8.0) and before versions do not support scale to read frames,
  * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
  *
- * Notes：LoadRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
+ * Notes：ImageRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
  * The bitmapConfig attribute takes effect only on Android 30 or later
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)

@@ -46,9 +46,9 @@ class DrawableDecodeInterceptorChainTest {
                 TestDrawableDecoderInterceptor2(this),
                 TestDrawableDecoderInterceptor3(this)
             )
-            val loadRequest = ImageRequest(context, AssetImages.jpeg.uri)
+            val request = ImageRequest(context, AssetImages.jpeg.uri)
             val chain = DrawableDecodeInterceptorChain(
-                sketch, loadRequest, loadRequest.toRequestContext(sketch), null, interceptors, 0
+                sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )
             runBlocking {
                 chain.proceed()
@@ -69,9 +69,9 @@ class DrawableDecodeInterceptorChainTest {
                 TestDrawableDecoderInterceptor1(this),
                 TestDrawableDecoderInterceptor3(this),
             )
-            val loadRequest = ImageRequest(context, AssetImages.jpeg.uri)
+            val request = ImageRequest(context, AssetImages.jpeg.uri)
             val chain = DrawableDecodeInterceptorChain(
-                sketch, loadRequest, loadRequest.toRequestContext(sketch), null, interceptors, 0
+                sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )
             runBlocking {
                 chain.proceed()

@@ -86,13 +86,13 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         /* ImageRequest - ENABLED */
-        val displayRequest = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request = ImageRequest(context, AssetImages.jpeg.uri) {
             target(TestDisplayCountDisplayTarget())
         }
         val countBitmapDrawable: SketchCountBitmapDrawable
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -100,7 +100,7 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(40000, memoryCache.size)
 
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
@@ -110,7 +110,7 @@ class MemoryCacheRequestInterceptorTest {
         /* ImageRequest - DISABLED */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -119,7 +119,7 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         memoryCache.put(
-            displayRequest.toRequestContext(sketch).cacheKey,
+            request.toRequestContext(sketch).cacheKey,
             MemoryCache.Value(
                 countBitmapDrawable.countBitmap,
                 imageUri = countBitmapDrawable.imageUri,
@@ -131,7 +131,7 @@ class MemoryCacheRequestInterceptorTest {
             )
         )
         Assert.assertEquals(40000, memoryCache.size)
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -141,7 +141,7 @@ class MemoryCacheRequestInterceptorTest {
         /* ImageRequest - READ_ONLY */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -150,7 +150,7 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         memoryCache.put(
-            displayRequest.toRequestContext(sketch).cacheKey,
+            request.toRequestContext(sketch).cacheKey,
             MemoryCache.Value(
                 countBitmapDrawable.countBitmap,
                 imageUri = countBitmapDrawable.imageUri,
@@ -162,7 +162,7 @@ class MemoryCacheRequestInterceptorTest {
             )
         )
         Assert.assertEquals(40000, memoryCache.size)
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
@@ -173,7 +173,7 @@ class MemoryCacheRequestInterceptorTest {
         /* ImageRequest - WRITE_ONLY */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -181,7 +181,7 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(40000, memoryCache.size)
 
-        executeRequest(displayRequest.newRequest {
+        executeRequest(request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -193,7 +193,7 @@ class MemoryCacheRequestInterceptorTest {
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
         assertThrow(DepthException::class) {
-            executeRequest(displayRequest.newRequest {
+            executeRequest(request.newRequest {
                 memoryCachePolicy(ENABLED)
                 depth(MEMORY)
             })
