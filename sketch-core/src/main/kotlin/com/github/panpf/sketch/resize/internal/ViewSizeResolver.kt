@@ -38,6 +38,7 @@ import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
 
@@ -76,7 +77,8 @@ internal data class RealViewSizeResolver<T : View>(
     }
 
     override fun toString(): String {
-        return "ViewSizeResolver(view=$view, subtractPadding=$subtractPadding)"
+        val viewString = view?.let { "${it.javaClass.simpleName}@${it.toHexString()}" }
+        return "ViewSizeResolver(view=$viewString, subtractPadding=$subtractPadding)"
     }
 }
 
