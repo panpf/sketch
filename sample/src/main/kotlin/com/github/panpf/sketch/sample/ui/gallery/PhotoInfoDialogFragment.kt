@@ -72,10 +72,11 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
                 }
 
-                optionsInfo = imageResult.requestKey
+                optionsInfo = imageResult.requestCacheKey
                     .replace(imageResult.request.uriString, "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")
+                    .filter { it.trim().isNotEmpty() }
                     .joinToString(separator = "\n")
 
                 bitmapInfo = imageResult.image.toString()
