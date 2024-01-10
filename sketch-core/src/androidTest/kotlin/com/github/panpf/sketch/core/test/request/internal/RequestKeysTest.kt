@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("LocalVariableName")
+
 package com.github.panpf.sketch.core.test.request.internal
 
 import android.R.color
@@ -30,7 +32,6 @@ import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.request.internal.newResizeKey
 import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -50,11 +51,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class RequestUtilsTest {
+class RequestKeysTest {
 
     @Test
-    @Suppress("LocalVariableName")
-    fun newCacheKeyWithRequest() {
+    fun newCacheKey() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uriString = "http://sample.com/sample.jpeg?from=sketch"
 
@@ -68,8 +68,8 @@ class RequestUtilsTest {
         }
 
         var resizeSize = runBlocking { request.resizeSizeResolver.size() }
-        var resizeKey = request.newResizeKey(resizeSize)
-        var _resize = "&_resize=${resizeKey}"
+        var _resize =
+            "&_size=${resizeSize}&_precision=${request.resizePrecisionDecider.key}&_scale=${request.resizeScaleDecider.key}"
         verifyCacheKey(uriString + _resize)
 
         request = request.newRequest {
@@ -167,8 +167,8 @@ class RequestUtilsTest {
             resize(300, 200, EXACTLY, END_CROP)
         }
         resizeSize = runBlocking { request.resizeSizeResolver.size() }
-        resizeKey = request.newResizeKey(resizeSize)
-        _resize = "&_resize=${resizeKey}"
+        _resize =
+            "&_size=${resizeSize}&_precision=${request.resizePrecisionDecider.key}&_scale=${request.resizeScaleDecider.key}"
         verifyCacheKey(
             uriString + _parameters +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -273,18 +273,18 @@ class RequestUtilsTest {
                 addDecoder(TestDecoder.Factory())
             }
         }
+        val _decoders = "&_decoders=[TestDecoder]"
         val _decodeInterceptors = "&_decodeInterceptors=[TestDecodeInterceptor]"
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
         verifyCacheKey(
             uriString + _parameters +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
-                    _decodeInterceptors + _disallowAnimatedImage + _requestInterceptors
+                    _disallowAnimatedImage + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 
     @Test
-    @Suppress("LocalVariableName")
-    fun newKeyWithRequest() {
+    fun newKey() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uriString = "http://sample.com/sample.jpeg?from=sketch"
 
@@ -296,7 +296,8 @@ class RequestUtilsTest {
             Assert.assertEquals(expectKey, key)
         }
 
-        var _resize = "&_size=${request.resizeSizeResolver}&_precision=${request.resizePrecisionDecider}&_scale=${request.resizeScaleDecider}"
+        var _resize =
+            "&_size=${request.resizeSizeResolver.key}&_precision=${request.resizePrecisionDecider.key}&_scale=${request.resizeScaleDecider.key}"
         verifyKey(uriString + _resize)
 
         request = request.newRequest {
@@ -312,7 +313,8 @@ class RequestUtilsTest {
         request = request.newRequest {
             target(imageView)
         }
-        _resize = "&_size=${request.resizeSizeResolver}&_precision=${request.resizePrecisionDecider}&_scale=${request.resizeScaleDecider}"
+        _resize =
+            "&_size=${request.resizeSizeResolver.key}&_precision=${request.resizePrecisionDecider.key}&_scale=${request.resizeScaleDecider.key}"
         verifyKey(uriString + _resize)
 
         request = request.newRequest {
@@ -387,7 +389,8 @@ class RequestUtilsTest {
         request = request.newRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        _resize = "&_size=${request.resizeSizeResolver}&_precision=${request.resizePrecisionDecider}&_scale=${request.resizeScaleDecider}"
+        _resize =
+            "&_size=${request.resizeSizeResolver.key}&_precision=${request.resizePrecisionDecider.key}&_scale=${request.resizeScaleDecider.key}"
         verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
@@ -482,11 +485,12 @@ class RequestUtilsTest {
         request = request.newRequest {
             resizeApplyToDrawable(true)
         }
+        val _resizeApplyToDrawable = "&_resizeApplyToDrawable=true"
         verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
-                    _resultCachePolicy + _disallowAnimatedImage
+                    _resultCachePolicy + _disallowAnimatedImage + _resizeApplyToDrawable
         )
 
         request = request.newRequest {
@@ -497,7 +501,8 @@ class RequestUtilsTest {
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
-                    _resultCachePolicy + _disallowAnimatedImage + _memoryCachePolicy
+                    _resultCachePolicy + _disallowAnimatedImage + _resizeApplyToDrawable +
+                    _memoryCachePolicy
         )
 
         request = request.newRequest {
@@ -508,14 +513,15 @@ class RequestUtilsTest {
                 addDecoder(TestDecoder.Factory())
             }
         }
+        val _decoders = "&_decoders=[TestDecoder]"
         val _decodeInterceptors = "&_decodeInterceptors=[TestDecodeInterceptor]"
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
         verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
-                    _resultCachePolicy + _decodeInterceptors + _disallowAnimatedImage +
-                    _memoryCachePolicy + _requestInterceptors
+                    _resultCachePolicy + _disallowAnimatedImage + _resizeApplyToDrawable +
+                    _memoryCachePolicy + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 }
