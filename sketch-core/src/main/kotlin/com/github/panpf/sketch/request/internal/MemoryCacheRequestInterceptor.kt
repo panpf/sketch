@@ -24,6 +24,7 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
@@ -32,7 +33,8 @@ import com.github.panpf.sketch.util.asOrNull
 
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    override val key: String = Key.INVALID_KEY
+
     override val sortWeight: Int = 90
 
     @MainThread

@@ -58,6 +58,8 @@ class WebpAnimatedDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "WebpAnimatedDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

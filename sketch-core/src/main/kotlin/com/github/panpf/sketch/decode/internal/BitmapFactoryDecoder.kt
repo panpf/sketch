@@ -193,6 +193,8 @@ open class BitmapFactoryDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "BitmapFactoryDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

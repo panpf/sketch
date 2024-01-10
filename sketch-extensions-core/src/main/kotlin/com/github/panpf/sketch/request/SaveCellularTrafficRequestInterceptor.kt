@@ -17,6 +17,7 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
@@ -42,7 +43,7 @@ class SaveCellularTrafficRequestInterceptor constructor(
     isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
 ) : RequestInterceptor {
 
-    override val key: String? = null
+    override val key: String = Key.INVALID_KEY
 
     companion object {
         private const val SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY =

@@ -58,6 +58,8 @@ class GifAnimatedDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "GifAnimatedDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

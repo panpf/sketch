@@ -169,6 +169,8 @@ class SvgDecoder constructor(
 
     class Factory(val useViewBoundsAsIntrinsicSize: Boolean = true) : Decoder.Factory {
 
+        override val key: String = "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,
@@ -193,7 +195,7 @@ class SvgDecoder constructor(
             }
         }
 
-        override fun toString(): String = "SvgDecoder"
+        override fun toString(): String = "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

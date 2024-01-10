@@ -110,6 +110,8 @@ class GifMovieDecoder(
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     class Factory : Decoder.Factory {
 
+        override val key: String = "GifMovieDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

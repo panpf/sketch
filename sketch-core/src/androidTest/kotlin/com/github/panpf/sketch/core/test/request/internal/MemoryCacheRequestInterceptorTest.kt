@@ -30,6 +30,7 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
@@ -37,7 +38,6 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
-import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestCountTarget
@@ -242,7 +242,8 @@ class MemoryCacheRequestInterceptorTest {
 
     class FakeRequestInterceptor : RequestInterceptor {
 
-        override val key: String? = null
+        override val key: String = Key.INVALID_KEY
+
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {

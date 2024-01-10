@@ -17,6 +17,7 @@
 * remove: 移除 SketchDrawable 接口
 * change: MemoryCache.Value 改为接口，它的实现类有 BitmapValue 和 CountBitmapValue
 * change: BitmapDecoder 和 DrawableDecoder 现在合并成 Decoder
+* change: SizeResolver 现在继承自 Key 接口
 
 #### sketch-compose:
 

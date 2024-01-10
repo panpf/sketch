@@ -29,6 +29,8 @@ class TestErrorDecoder : Decoder {
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "TestErrorDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,
@@ -47,8 +49,6 @@ class TestErrorDecoder : Decoder {
             return javaClass.hashCode()
         }
 
-        override fun toString(): String {
-            return "TestErrorDecoder"
-        }
+        override fun toString(): String = "TestErrorDecoder"
     }
 }

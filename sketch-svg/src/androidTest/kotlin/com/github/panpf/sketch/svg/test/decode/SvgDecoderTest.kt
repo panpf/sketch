@@ -25,8 +25,8 @@ import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -86,11 +86,18 @@ class SvgDecoderTest {
     @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = SvgDecoder.Factory(false)
 
-        Assert.assertEquals("SvgDecoder", factory.toString())
+        Assert.assertEquals(
+            "SvgDecoder(useViewBoundsAsIntrinsicSize=false)",
+            SvgDecoder.Factory(false).toString()
+        )
+        Assert.assertEquals(
+            "SvgDecoder(useViewBoundsAsIntrinsicSize=true)",
+            SvgDecoder.Factory(true).toString()
+        )
 
         // normal
+        val factory = SvgDecoder.Factory(false)
         ImageRequest(context, AssetImages.svg.uri).let {
             val fetchResult =
                 FetchResult(AssetDataSource(sketch, it, AssetImages.svg.fileName), null)

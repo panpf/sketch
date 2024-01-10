@@ -76,6 +76,9 @@ fun ImageRequest(
 @Stable
 interface ImageRequest {
 
+    /**
+     * The unique identifier for this request.
+     */
     val key: String
 
     /** App Context */
@@ -109,6 +112,7 @@ interface ImageRequest {
 
     /** Default ImageOptions */
     val defaultOptions: ImageOptions?
+
 
     /** The processing depth of the request. */
     val depth: Depth

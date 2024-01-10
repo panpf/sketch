@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.resize
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.util.Size
 
 fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
@@ -25,7 +26,7 @@ fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
  *
  * @see com.github.panpf.sketch.request.ImageRequest.Builder.resizeSize
  */
-fun interface SizeResolver {
+interface SizeResolver : Key {
 
     /** Return the [Size] that the image should be loaded at. */
     @MainThread
@@ -38,6 +39,8 @@ fun interface SizeResolver {
 data class FixedSizeResolver constructor(private val size: Size) : SizeResolver {
 
     constructor(width: Int, height: Int) : this(Size(width, height))
+
+    override val key: String by lazy { "Fixed($size)" }
 
     override suspend fun size(): Size = size
 

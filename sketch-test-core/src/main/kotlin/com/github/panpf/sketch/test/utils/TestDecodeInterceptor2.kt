@@ -15,12 +15,14 @@
  */
 package com.github.panpf.sketch.test.utils
 
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 
 class TestDecodeInterceptor2 : DecodeInterceptor {
 
-    override val key: String? = null
+    override val key: String = Key.INVALID_KEY
+
     override val sortWeight: Int = 0
 
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {

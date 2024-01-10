@@ -151,6 +151,8 @@ class GifDrawableDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "GifDrawableDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

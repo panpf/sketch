@@ -24,6 +24,8 @@ import com.github.panpf.sketch.util.Size
  */
 data class DisplaySizeResolver constructor(private val context: Context) : SizeResolver {
 
+    override val key: String = "DisplaySize"
+
     override suspend fun size(): Size {
         return context.resources.displayMetrics.let {
             Size(it.widthPixels, it.heightPixels)

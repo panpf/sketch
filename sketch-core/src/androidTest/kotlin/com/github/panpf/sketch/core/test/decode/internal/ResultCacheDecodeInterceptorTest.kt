@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.core.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
@@ -239,7 +240,8 @@ class ResultCacheDecodeInterceptorTest {
 
     class ExtrasTestDecodeInterceptor : DecodeInterceptor {
 
-        override val key: String? = null
+        override val key: String = Key.INVALID_KEY
+
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {

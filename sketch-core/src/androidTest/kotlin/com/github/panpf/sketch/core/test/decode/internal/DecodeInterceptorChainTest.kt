@@ -18,6 +18,7 @@ package com.github.panpf.sketch.core.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
@@ -91,7 +92,8 @@ class DecodeInterceptorChainTest {
     private class TestBitmapDecoderInterceptor1(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
-        override val key: String? = null
+        override val key: String = Key.INVALID_KEY
+
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {
@@ -107,7 +109,8 @@ class DecodeInterceptorChainTest {
     private class TestBitmapDecoderInterceptor2(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
-        override val key: String? = null
+        override val key: String = Key.INVALID_KEY
+
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {
@@ -123,7 +126,8 @@ class DecodeInterceptorChainTest {
     private class TestBitmapDecoderInterceptor3(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
-        override val key: String? = null
+        override val key: String = Key.INVALID_KEY
+
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {

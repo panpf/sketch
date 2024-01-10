@@ -121,6 +121,8 @@ open class DrawableDecoder constructor(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "DrawableDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

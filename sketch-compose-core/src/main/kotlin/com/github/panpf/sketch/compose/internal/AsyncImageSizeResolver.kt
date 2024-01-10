@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.mapNotNull
 
 class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
 
+    override val key: String = "ComposeComponentSize"
+
     // MutableStateFlow must be used here
     // Previously, due to the use of snapshotFlow { size }, the response to changes in size was slow.
     // When using the combination of Image plus AsyncImagePainter, the placeholder is not ready when the component is displayed.

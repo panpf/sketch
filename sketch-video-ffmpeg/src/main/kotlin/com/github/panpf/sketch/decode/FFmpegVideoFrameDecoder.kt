@@ -185,6 +185,8 @@ class FFmpegVideoFrameDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "FFmpegVideoFrameDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

@@ -27,6 +27,7 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
@@ -41,7 +42,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         const val MODULE = "ResultCacheDecodeInterceptor"
     }
 
-    override val key: String? = null
+    override val key: String = Key.INVALID_KEY
+
     override val sortWeight: Int = 80
 
     @WorkerThread

@@ -64,6 +64,8 @@ class ApkIconDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "ApkIconDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

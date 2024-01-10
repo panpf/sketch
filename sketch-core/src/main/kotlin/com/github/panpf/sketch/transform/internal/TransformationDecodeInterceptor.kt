@@ -21,12 +21,14 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.asSketchImage
 import java.util.LinkedList
 
 class TransformationDecodeInterceptor : DecodeInterceptor {
 
-    override val key: String? = null
+    override val key: String = Key.INVALID_KEY
+
     override val sortWeight: Int = 90
 
     @WorkerThread

@@ -17,6 +17,7 @@ package com.github.panpf.sketch.decode
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
@@ -37,7 +38,7 @@ fun interface Decoder {
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]
      * to create [Decoder] when it needs decode Image
      */
-    fun interface Factory {
+    interface Factory : Key {
 
         /**
          * If the current [Factory]'s [Decoder] can decode Image from the current [fetchResult],

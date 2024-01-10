@@ -16,12 +16,14 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 
 class EngineDecodeInterceptor : DecodeInterceptor {
 
-    override val key: String? = null
+    override val key: String = Key.INVALID_KEY
+
     override val sortWeight: Int = 100
 
     @WorkerThread

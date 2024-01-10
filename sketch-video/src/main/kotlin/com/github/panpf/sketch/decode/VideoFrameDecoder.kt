@@ -224,6 +224,8 @@ class VideoFrameDecoder(
     @TargetApi(Build.VERSION_CODES.O_MR1)
     class Factory : Decoder.Factory {
 
+        override val key: String = "VideoFrameDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

@@ -51,12 +51,16 @@ import java.lang.ref.WeakReference
 @JvmOverloads
 @JvmName("create")
 fun <T : View> ViewSizeResolver(view: T, subtractPadding: Boolean = true): ViewSizeResolver<T> =
-    RealViewSizeResolver(WeakReference(view), subtractPadding)
+    RealViewSizeResolver(view, subtractPadding)
 
-internal data class RealViewSizeResolver<T : View>(
-    private val viewReference: WeakReference<T>,
+internal class RealViewSizeResolver<T : View>(
+    view1: T,
     override val subtractPadding: Boolean
 ) : ViewSizeResolver<T> {
+
+    private val viewReference: WeakReference<T> = WeakReference(view1)
+
+    override val key: String = "ViewSize@${view1.toHexString()}"
 
     override val view: T?
         get() = viewReference.get()

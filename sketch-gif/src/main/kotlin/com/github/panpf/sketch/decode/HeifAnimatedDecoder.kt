@@ -58,6 +58,8 @@ class HeifAnimatedDecoder(
 
     class Factory : Decoder.Factory {
 
+        override val key: String = "HeifAnimatedDecoder"
+
         override fun create(
             sketch: Sketch,
             requestContext: RequestContext,

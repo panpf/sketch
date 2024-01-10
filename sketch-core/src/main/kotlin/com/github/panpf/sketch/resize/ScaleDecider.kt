@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.resize
 
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 
@@ -25,9 +26,7 @@ fun ScaleDecider(scale: Scale): ScaleDecider {
 /**
  * Determines which scale to use dynamically based on image size and resizing
  */
-interface ScaleDecider {
-
-    val key: String
+interface ScaleDecider: Key {
 
     fun get(imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int): Scale
 }
