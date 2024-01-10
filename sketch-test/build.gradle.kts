@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.panpf.sketch.test.utils"
+    namespace = "com.github.panpf.sketch.test.singleton"
     compileSdk = property("compileSdk").toString().toInt()
 
     defaultConfig {
@@ -38,19 +38,5 @@ android {
 
 dependencies {
     api(project(":sketch-core"))
-    api(project(":sketch-resources"))
-    api(libs.androidx.fragment)
-    api(libs.androidx.test.runner)
-    api(libs.androidx.test.rules)
-    api(libs.androidx.test.ext.junit)
-    api(libs.junit)
-    api(libs.panpf.tools4a.device)
-    api(libs.panpf.tools4a.dimen)
-    api(libs.panpf.tools4a.display)
-    api(libs.panpf.tools4a.network)
-    api(libs.panpf.tools4a.run)
-    api(libs.panpf.tools4a.test)
-    api(libs.panpf.tools4j.reflect)
-    api(libs.panpf.tools4j.security)
-    api(libs.panpf.tools4j.test)
+    api(project(":sketch-test-core"))
 }

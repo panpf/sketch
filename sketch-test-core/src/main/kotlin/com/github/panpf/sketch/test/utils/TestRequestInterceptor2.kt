@@ -15,19 +15,17 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import androidx.core.net.toUri
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageData
+import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class TestHttpFetcherFactory : Fetcher.Factory {
+class TestRequestInterceptor2 : RequestInterceptor {
 
-    override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
-        if (request.uriString.toUri().scheme == "test") {
-            return HttpUriFetcher(sketch, request, request.uriString.replace("test://", "http://"))
-        }
-        return null
+    override val key: String? = null
+    override val sortWeight: Int = 0
+
+    override suspend fun intercept(chain: Chain): Result<ImageData> {
+        return chain.proceed(chain.request)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -41,6 +39,6 @@ class TestHttpFetcherFactory : Fetcher.Factory {
     }
 
     override fun toString(): String {
-        return "TestHttpFetcherFactory"
+        return "Test2RequestInterceptor(sortWeight=$sortWeight)"
     }
 }

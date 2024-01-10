@@ -41,8 +41,5 @@ dependencies {
     api(project(":sketch-video"))
     api(libs.ffmpegMediaMetadataRetriever.core)
     api(libs.ffmpegMediaMetadataRetriever.native)
-
     androidTestImplementation(project(":sketch-test"))
-    androidTestImplementation(project(":sketch-test-singleton"))
-    androidTestImplementation(project(":sketch-resources"))
 }

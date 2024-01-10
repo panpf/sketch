@@ -32,8 +32,8 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.AllFetcher
-import com.github.panpf.sketch.test.utils.Test2DecodeInterceptor
-import com.github.panpf.sketch.test.utils.Test2RequestInterceptor
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
@@ -60,7 +60,7 @@ class ComponentsTest {
         val notEmptyRequest = ImageRequest(context, "") {
             components {
                 addRequestInterceptor(TestRequestInterceptor(95))
-                addRequestInterceptor(Test2RequestInterceptor())
+                addRequestInterceptor(TestRequestInterceptor2())
             }
         }
 
@@ -70,7 +70,7 @@ class ComponentsTest {
                 getRequestInterceptorList(emptyRequest)
             )
             Assert.assertEquals(
-                listOf(Test2RequestInterceptor(), TestRequestInterceptor(95)),
+                listOf(TestRequestInterceptor2(), TestRequestInterceptor(95)),
                 getRequestInterceptorList(notEmptyRequest)
             )
         }
@@ -85,7 +85,7 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    Test2RequestInterceptor(),
+                    TestRequestInterceptor2(),
                     MemoryCacheRequestInterceptor(),
                     TestRequestInterceptor(95),
                     EngineRequestInterceptor()
@@ -102,7 +102,7 @@ class ComponentsTest {
         val notEmptyRequest = ImageRequest(context, "") {
             components {
                 addDecodeInterceptor(TestDecodeInterceptor(95))
-                addDecodeInterceptor(Test2DecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor2())
             }
         }
 
@@ -113,7 +113,7 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    Test2DecodeInterceptor(),
+                    TestDecodeInterceptor2(),
                     TestDecodeInterceptor(95),
                 ),
                 getDecodeInterceptorList(notEmptyRequest)
@@ -133,7 +133,7 @@ class ComponentsTest {
             )
             Assert.assertEquals(
                 listOf(
-                    Test2DecodeInterceptor(),
+                    TestDecodeInterceptor2(),
                     TransformationDecodeInterceptor(),
                     TestDecodeInterceptor(95),
                     EngineDecodeInterceptor()

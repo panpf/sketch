@@ -25,7 +25,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
+import com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString

@@ -24,7 +24,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
+import com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Bytes
@@ -39,7 +39,7 @@ class BitmapFactoryTest {
     @Test
     fun testInBitmapAndInSampleSize() {
         listOf(
-            ImageDecodeCompatibility(
+            com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility(
                 assetName = AssetImages.animGif.fileName,
                 size = Size(480, 480),
                 minAPI = 16,
@@ -47,7 +47,7 @@ class BitmapFactoryTest {
                 inBitmapMinAPI = 19,
                 inSampleSizeOnInBitmapMinAPI = 21,
             ),
-            ImageDecodeCompatibility(
+            com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility(
                 assetName = AssetImages.animWebp.fileName,
                 size = Size(480, 270),
                 minAPI = 26,
@@ -55,7 +55,7 @@ class BitmapFactoryTest {
                 inBitmapMinAPI = 26,
                 inSampleSizeOnInBitmapMinAPI = 26,
             ),
-            ImageDecodeCompatibility(
+            com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility(
                 assetName = AssetImages.animHeif.fileName,
                 size = Size(256, 144),
                 minAPI = 28,
@@ -72,7 +72,7 @@ class BitmapFactoryTest {
     }
 
     private fun testDecodeImage(
-        image: ImageDecodeCompatibility,
+        image: com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility,
         enabledInBitmap: Boolean,
         sampleSize: Int
     ) {

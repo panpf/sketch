@@ -24,7 +24,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegi
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
+import com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toShortInfoString
@@ -42,7 +42,7 @@ class BitmapRegionDecoderTest {
     @Test
     fun testInBitmapAndInSampleSize() {
         listOf(
-            ImageDecodeCompatibility(
+            com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility(
                 assetName = AssetImages.animGif.fileName,
                 size = Size(480, 480),
                 minAPI = -1,
@@ -50,7 +50,7 @@ class BitmapRegionDecoderTest {
                 inBitmapMinAPI = -1,
                 inSampleSizeOnInBitmapMinAPI = -1,
             ),
-            ImageDecodeCompatibility(
+            com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility(
                 assetName = AssetImages.animWebp.fileName,
                 size = Size(480, 270),
                 minAPI = 26,
@@ -58,7 +58,7 @@ class BitmapRegionDecoderTest {
                 inBitmapMinAPI = 26,
                 inSampleSizeOnInBitmapMinAPI = 26,
             ),
-            ImageDecodeCompatibility(
+            com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility(
                 assetName = AssetImages.animHeif.fileName,
                 size = Size(256, 144),
                 minAPI = 28,
@@ -127,7 +127,7 @@ class BitmapRegionDecoderTest {
     }
 
     private fun testRegionDecodeImage(
-        image: ImageDecodeCompatibility,
+        image: com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility,
         regionRect: Rect,
         enabledInBitmap: Boolean,
         sampleSize: Int

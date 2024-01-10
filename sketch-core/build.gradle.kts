@@ -52,8 +52,5 @@ dependencies {
     api(libs.androidx.exifinterface)
     api(libs.androidx.lifecycle.runtime)
     compileOnly(libs.composeStableMarker)
-
     androidTestImplementation(project(":sketch-test"))
-    androidTestImplementation(project(":sketch-test-singleton"))
-    androidTestImplementation(project(":sketch-resources"))
 }

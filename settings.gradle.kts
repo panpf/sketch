@@ -27,7 +27,9 @@ dependencyResolutionManagement {
     }
 }
 
-include(":sample") // Private
+/*
+ * Release
+ */
 include(":sketch")
 include(":sketch-compose")
 include(":sketch-compose-core")
@@ -41,10 +43,15 @@ include(":sketch-gif")
 include(":sketch-gif-movie")
 include(":sketch-gif-koral")
 include(":sketch-okhttp")
-include(":sketch-resources") // Private
 include(":sketch-svg")
-include(":sketch-test") // Private
-include(":sketch-test-singleton") // Private
 include(":sketch-video")
 include(":sketch-video-ffmpeg")
 include(":sketch-viewability")
+
+/*
+ * Private
+ */
+include(":sample")
+include(":sketch-resources")
+include(":sketch-test-core")
+include(":sketch-test")

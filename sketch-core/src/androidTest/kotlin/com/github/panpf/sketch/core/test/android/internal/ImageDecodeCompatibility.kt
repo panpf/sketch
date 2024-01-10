@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.test.utils
+package com.github.panpf.sketch.core.test.android.internal
 
 import com.github.panpf.sketch.util.Size
 

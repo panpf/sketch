@@ -63,7 +63,7 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
-import com.github.panpf.sketch.test.utils.Test2DecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
@@ -692,7 +692,7 @@ class ImageOptionsTest {
                 addFetcher(HttpUriFetcher.Factory())
                 addDecoder(BitmapFactoryDecoder.Factory())
                 addRequestInterceptor(EngineRequestInterceptor())
-                addDecodeInterceptor(Test2DecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor2())
             }
         }).apply {
             Assert.assertEquals(
@@ -704,7 +704,7 @@ class ImageOptionsTest {
                     addFetcher(HttpUriFetcher.Factory())
                     addDecoder(BitmapFactoryDecoder.Factory())
                     addRequestInterceptor(EngineRequestInterceptor())
-                    addDecodeInterceptor(Test2DecodeInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor2())
                 }.build(),
                 componentRegistry
             )
