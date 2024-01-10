@@ -64,7 +64,6 @@ class GenericViewTargetTest {
         Assert.assertNull(imageViewTarget.drawable)
 
         val countBitmap = CountBitmap(
-            cacheKey = request.toRequestContext(sketch).cacheKey,
             originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
@@ -74,7 +73,6 @@ class GenericViewTargetTest {
             countBitmap = countBitmap,
         )
         val countBitmap2 = CountBitmap(
-            cacheKey = request.toRequestContext(sketch).cacheKey,
             originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,

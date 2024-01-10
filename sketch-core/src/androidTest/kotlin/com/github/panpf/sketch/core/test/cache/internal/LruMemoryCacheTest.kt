@@ -264,7 +264,6 @@ class LruMemoryCacheTest {
         val height = pixelCount / width
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
         val countBitmap = CountBitmap(
-            cacheKey = imageUri,
             originBitmap = bitmap,
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,

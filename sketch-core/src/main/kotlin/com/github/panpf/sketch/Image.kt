@@ -143,7 +143,6 @@ data class BitmapImage internal constructor(
         extras: Map<String, Any?>
     ): Value {
         val countBitmap = CountBitmap(
-            cacheKey = requestContext.cacheKey,
             originBitmap = bitmap,
             bitmapPool = requestContext.sketch.bitmapPool,
             disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
@@ -184,7 +183,6 @@ data class DrawableImage internal constructor(
         if (drawable !is BitmapDrawable) return null
         val bitmap = drawable.bitmap
         val countBitmap = CountBitmap(
-            cacheKey = requestContext.cacheKey,
             originBitmap = bitmap,
             bitmapPool = requestContext.sketch.bitmapPool,
             disallowReuseBitmap = requestContext.request.disallowReuseBitmap,

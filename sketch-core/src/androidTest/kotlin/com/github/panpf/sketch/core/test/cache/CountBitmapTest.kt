@@ -33,33 +33,20 @@ import org.junit.runner.RunWith
 class CountBitmapTest {
 
     @Test
-    fun testCacheKey() {
-        val sketch = newSketch()
-
-        createCountBitmap(sketch, "image1", 100, 100).apply {
-            Assert.assertEquals("image1", cacheKey)
-        }
-
-        createCountBitmap(sketch, "image2", 100, 100).apply {
-            Assert.assertEquals("image2", cacheKey)
-        }
-    }
-
-    @Test
     fun testBitmap() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             Assert.assertEquals(100, bitmap!!.width)
             Assert.assertEquals(100, bitmap!!.height)
         }
 
-        createCountBitmap(sketch, "image1", 120, 300).apply {
+        createCountBitmap(sketch, 120, 300).apply {
             Assert.assertEquals(120, bitmap!!.width)
             Assert.assertEquals(300, bitmap!!.height)
         }
 
-        createCountBitmap(sketch, "image1", 120, 300).apply {
+        createCountBitmap(sketch, 120, 300).apply {
             Assert.assertNotNull(bitmap)
             runBlocking(Dispatchers.Main) {
                 setIsPending(true)
@@ -73,7 +60,7 @@ class CountBitmapTest {
     fun testIsRecycled() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             runBlocking(Dispatchers.Main) {
                 Assert.assertFalse(isRecycled)
 
@@ -90,7 +77,7 @@ class CountBitmapTest {
     fun testByteCount() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             runBlocking(Dispatchers.Main) {
                 Assert.assertEquals(100 * 100 * 4, byteCount)
 
@@ -107,22 +94,22 @@ class CountBitmapTest {
     fun testToString() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
             Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,'image1')", toString())
         }
 
-        createCountBitmap(sketch, "image1", 200, 100).apply {
+        createCountBitmap(sketch, 200, 100).apply {
             val bitmapLogString = "Bitmap(200x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
             Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,'image1')", toString())
         }
 
-        createCountBitmap(sketch, "image2", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
             Assert.assertEquals("CountBitmap($bitmapLogString,0/0/0,'image2')", toString())
         }
 
-        createCountBitmap(sketch, "image2", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             runBlocking(Dispatchers.Main) {
                 setIsPending(true)
             }
@@ -130,13 +117,13 @@ class CountBitmapTest {
             Assert.assertEquals("CountBitmap($bitmapLogString,1/0/0,'image2')", toString())
         }
 
-        createCountBitmap(sketch, "image2", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             setIsCached(true)
             val bitmapLogString = "Bitmap(100x100,ARGB_8888,@${this.bitmap!!.toHexString()})"
             Assert.assertEquals("CountBitmap($bitmapLogString,0/1/0,'image2')", toString())
         }
 
-        createCountBitmap(sketch, "image2", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             runBlocking(Dispatchers.Main) {
                 setIsDisplayed(true)
             }
@@ -144,7 +131,7 @@ class CountBitmapTest {
             Assert.assertEquals("CountBitmap($bitmapLogString,0/0/1,'image2')", toString())
         }
 
-        createCountBitmap(sketch, "image2", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             runBlocking(Dispatchers.Main) {
                 setIsPending(true)
             }
@@ -153,7 +140,7 @@ class CountBitmapTest {
             Assert.assertEquals("CountBitmap($bitmapLogString,1/1/0,'image2')", toString())
         }
 
-        createCountBitmap(sketch, "image2", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             runBlocking(Dispatchers.Main) {
                 setIsPending(true)
             }
@@ -170,7 +157,7 @@ class CountBitmapTest {
     fun testSetIsDisplayed() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             assertThrow(IllegalStateException::class) {
                 setIsDisplayed(true)
             }
@@ -209,7 +196,7 @@ class CountBitmapTest {
     fun testSetIsCached() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             Assert.assertFalse(isRecycled)
             Assert.assertEquals(0, getCachedCount())
 
@@ -239,7 +226,7 @@ class CountBitmapTest {
     fun testSetIsPending() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             assertThrow(IllegalStateException::class) {
                 setIsPending(true)
             }
@@ -278,7 +265,7 @@ class CountBitmapTest {
     fun testRecycled() {
         val sketch = newSketch()
 
-        createCountBitmap(sketch, "image1", 100, 100).apply {
+        createCountBitmap(sketch, 100, 100).apply {
             Assert.assertFalse(isRecycled)
             bitmap!!.recycle()
             assertThrow(IllegalStateException::class) {
@@ -289,11 +276,9 @@ class CountBitmapTest {
 
     private fun createCountBitmap(
         sketch: Sketch,
-        cacheKey: String,
         width: Int,
         height: Int,
     ): CountBitmap = CountBitmap(
-        cacheKey = cacheKey,
         originBitmap = Bitmap.createBitmap(width, height, ARGB_8888),
         bitmapPool = sketch.bitmapPool,
         disallowReuseBitmap = false,

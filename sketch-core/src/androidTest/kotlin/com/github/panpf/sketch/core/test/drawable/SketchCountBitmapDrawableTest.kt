@@ -36,14 +36,12 @@ class SketchCountBitmapDrawableTest {
         SketchCountBitmapDrawable(
             resources = context.resources,
             countBitmap = CountBitmap(
-                cacheKey = "requestCacheKey1",
                 originBitmap = bitmap,
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
             ),
         ).apply {
             Assert.assertEquals(bitmap, countBitmap.bitmap)
-            Assert.assertEquals("requestCacheKey1", countBitmap.cacheKey)
         }
     }
 
@@ -51,13 +49,11 @@ class SketchCountBitmapDrawableTest {
     fun testEqualsAndHashCode() {
         val (context, sketch) = getTestContextAndNewSketch()
         val countBitmap = CountBitmap(
-            cacheKey = "requestCacheKey1",
             originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
         )
         val countBitmap2 = CountBitmap(
-            cacheKey = "requestCacheKey2",
             originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
@@ -97,7 +93,6 @@ class SketchCountBitmapDrawableTest {
         val (context, sketch) = getTestContextAndNewSketch()
 
         val countBitmap = CountBitmap(
-            cacheKey = "requestCacheKey1",
             originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,

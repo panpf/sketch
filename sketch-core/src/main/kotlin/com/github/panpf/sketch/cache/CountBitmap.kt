@@ -18,15 +18,15 @@ package com.github.panpf.sketch.cache
 import android.graphics.Bitmap
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.decode.internal.freeBitmap
-import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.util.allocationByteCountCompat
+import com.github.panpf.sketch.util.configOrNull
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.util.toHexString
 
 /**
  * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
  */
 class CountBitmap constructor(
-    val cacheKey: String,
     private val originBitmap: Bitmap,
     private val bitmapPool: BitmapPool,
     private val disallowReuseBitmap: Boolean,
@@ -128,18 +128,17 @@ class CountBitmap constructor(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as CountBitmap
-        if (cacheKey != other.cacheKey) return false
         if (originBitmap != other.originBitmap) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = cacheKey.hashCode()
-        result = 31 * result + originBitmap.hashCode()
-        return result
+        return originBitmap.hashCode()
     }
 
     override fun toString(): String {
-        return "CountBitmap(${originBitmap.logString},$pendingCount/$cachedCount/$displayedCount,'$cacheKey')"
+        val bitmapInfo = originBitmap.run { "${width}x${height},$configOrNull,@${toHexString()}" }
+        val countInfo = "$pendingCount/$cachedCount/$displayedCount"
+        return "CountBitmap($bitmapInfo,$countInfo)"
     }
 }

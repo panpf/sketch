@@ -62,7 +62,6 @@ class SketchUtilsTest {
         val (context, sketch) = getTestContextAndSketch()
         val bitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val countBitmap = CountBitmap(
-            cacheKey = "cacheKey",
             originBitmap = bitmap,
             bitmapPool = sketch.bitmapPool,
             disallowReuseBitmap = false,
