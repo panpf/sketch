@@ -18,9 +18,10 @@ package com.github.panpf.sketch.gif.test.request.internal
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
+import com.github.panpf.sketch.decode.GifAnimatedDecoder
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -43,7 +44,7 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch {
             components {
-                addDrawableDecoder(GifAnimatedDrawableDecoder.Factory())
+                addDecoder(GifAnimatedDecoder.Factory())
             }
             httpStack(TestHttpStack(context))
         }
@@ -73,7 +74,7 @@ class ImageRequestExecuteTest {
             disallowAnimatedImage(true)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertFalse(image.asOrNull<DrawableImage>()!!.drawable is SketchAnimatableDrawable)
+                Assert.assertTrue(image.asOrNull<BitmapImage>() != null)
             }
     }
 }

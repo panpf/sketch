@@ -24,12 +24,10 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
-import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
-import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.decode.internal.DrawableDecoder
+import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
@@ -50,17 +48,15 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
-import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.github.panpf.tools4a.test.ktx.getActivitySync
@@ -189,47 +185,41 @@ class SketchTest {
                         addFetcher(ResourceUriFetcher.Factory())
                         addFetcher(AssetUriFetcher.Factory())
                         addFetcher(Base64UriFetcher.Factory())
-                        addBitmapDecoder(DrawableBitmapDecoder.Factory())
-                        addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                        addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                        addDecoder(DrawableDecoder.Factory())
+                        addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
-                        addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
-                        addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                        addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-                        addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+                        addDecodeInterceptor(ResultCacheDecodeInterceptor())
+                        addDecodeInterceptor(TransformationDecodeInterceptor())
+                        addDecodeInterceptor(EngineDecodeInterceptor())
                     }.build(),
                     components.registry
                 )
             }
             components {
                 addFetcher(TestFetcher.Factory())
-                addBitmapDecoder(TestBitmapDecoder.Factory())
-                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addDecoder(TestDecoder.Factory())
             }
             build().apply {
                 Assert.assertEquals(
                     ComponentRegistry.Builder().apply {
                         addFetcher(TestFetcher.Factory())
-                        addBitmapDecoder(TestBitmapDecoder.Factory())
-                        addDrawableDecoder(TestDrawableDecoder.Factory())
+                        addDecoder(TestDecoder.Factory())
                         addFetcher(HttpUriFetcher.Factory())
                         addFetcher(FileUriFetcher.Factory())
                         addFetcher(ContentUriFetcher.Factory())
                         addFetcher(ResourceUriFetcher.Factory())
                         addFetcher(AssetUriFetcher.Factory())
                         addFetcher(Base64UriFetcher.Factory())
-                        addBitmapDecoder(DrawableBitmapDecoder.Factory())
-                        addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                        addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                        addDecoder(DrawableDecoder.Factory())
+                        addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
-                        addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
-                        addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                        addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-                        addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+                        addDecodeInterceptor(ResultCacheDecodeInterceptor())
+                        addDecodeInterceptor(TransformationDecodeInterceptor())
+                        addDecodeInterceptor(EngineDecodeInterceptor())
                     }.build(),
                     components.registry
                 )
@@ -241,14 +231,12 @@ class SketchTest {
                         addFetcher(ResourceUriFetcher.Factory())
                         addFetcher(AssetUriFetcher.Factory())
                         addFetcher(Base64UriFetcher.Factory())
-                        addBitmapDecoder(DrawableBitmapDecoder.Factory())
-                        addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                        addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                        addDecoder(DrawableDecoder.Factory())
+                        addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(EngineRequestInterceptor())
-                        addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
-                        addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                        addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-                        addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+                        addDecodeInterceptor(ResultCacheDecodeInterceptor())
+                        addDecodeInterceptor(TransformationDecodeInterceptor())
+                        addDecodeInterceptor(EngineDecodeInterceptor())
                     }.build(),
                     components.registry
                 )
@@ -299,53 +287,33 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(
-                        BitmapResultCacheDecodeInterceptor(),
-                        BitmapTransformationDecodeInterceptor(),
-                        EngineBitmapDecodeInterceptor()
+                        ResultCacheDecodeInterceptor(),
+                        TransformationDecodeInterceptor(),
+                        EngineDecodeInterceptor()
                     ),
-                    components.getBitmapDecodeInterceptorList(ImageRequest(context, ""))
+                    components.getDecodeInterceptorList(ImageRequest(context, ""))
                 )
             }
             components {
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
             }
             build().apply {
                 Assert.assertEquals(
                     listOf(
-                        TestBitmapDecodeInterceptor(),
-                        BitmapResultCacheDecodeInterceptor(),
-                        BitmapTransformationDecodeInterceptor(),
-                        EngineBitmapDecodeInterceptor()
+                        TestDecodeInterceptor(),
+                        ResultCacheDecodeInterceptor(),
+                        TransformationDecodeInterceptor(),
+                        EngineDecodeInterceptor()
                     ),
-                    components.getBitmapDecodeInterceptorList(ImageRequest(context, ""))
+                    components.getDecodeInterceptorList(ImageRequest(context, ""))
                 )
                 Assert.assertNotEquals(
                     listOf(
-                        BitmapResultCacheDecodeInterceptor(),
-                        BitmapTransformationDecodeInterceptor(),
-                        EngineBitmapDecodeInterceptor()
+                        ResultCacheDecodeInterceptor(),
+                        TransformationDecodeInterceptor(),
+                        EngineDecodeInterceptor()
                     ),
-                    components.getBitmapDecodeInterceptorList(ImageRequest(context, ""))
-                )
-            }
-
-            build().apply {
-                Assert.assertEquals(
-                    listOf(EngineDrawableDecodeInterceptor()),
-                    components.getDrawableDecodeInterceptorList(ImageRequest(context, ""))
-                )
-            }
-            components {
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
-            }
-            build().apply {
-                Assert.assertEquals(
-                    listOf(TestDrawableDecodeInterceptor(), EngineDrawableDecodeInterceptor()),
-                    components.getDrawableDecodeInterceptorList(ImageRequest(context, ""))
-                )
-                Assert.assertNotEquals(
-                    listOf(EngineDrawableDecodeInterceptor()),
-                    components.getDrawableDecodeInterceptorList(ImageRequest(context, ""))
+                    components.getDecodeInterceptorList(ImageRequest(context, ""))
                 )
             }
 

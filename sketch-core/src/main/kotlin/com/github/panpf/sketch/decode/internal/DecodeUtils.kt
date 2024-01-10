@@ -29,11 +29,13 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.decode.BitmapDecodeResult
 import com.github.panpf.sketch.decode.DecodeConfig
+import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -272,7 +274,7 @@ fun realDecode(
     imageInfo: ImageInfo,
     decodeFull: (decodeConfig: DecodeConfig) -> Bitmap,
     decodeRegion: ((srcRect: Rect, decodeConfig: DecodeConfig) -> Bitmap)?
-): BitmapDecodeResult {
+): DecodeResult {
     requiredWorkThread()
     val request = requestContext.request
     val resizeSize = requestContext.resizeSize!!
@@ -340,8 +342,8 @@ fun realDecode(
         decodeConfig.inSampleSize = sampleSize
         decodeFull(decodeConfig)
     }
-    return BitmapDecodeResult(
-        bitmap = bitmap,
+    return DecodeResult(
+        image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
         imageInfo = imageInfo,
         dataFrom = dataFrom,
         transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList(),
@@ -350,10 +352,10 @@ fun realDecode(
 }
 
 @WorkerThread
-fun BitmapDecodeResult.appliedExifOrientation(
+fun DecodeResult.appliedExifOrientation(
     sketch: Sketch,
     requestContext: RequestContext
-): BitmapDecodeResult {
+): DecodeResult {
     requiredWorkThread()
     if (transformedList?.getExifOrientationTransformed() != null
         || imageInfo.exifOrientation == ExifInterface.ORIENTATION_UNDEFINED
@@ -361,9 +363,10 @@ fun BitmapDecodeResult.appliedExifOrientation(
     ) {
         return this
     }
+    if (image !is BitmapImage) return this
     val request = requestContext.request
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-    val inputBitmap = bitmap
+    val inputBitmap = image.bitmap
     val newBitmap = exifOrientationHelper.applyToBitmap(
         inBitmap = inputBitmap,
         bitmapPool = sketch.bitmapPool,
@@ -385,7 +388,7 @@ fun BitmapDecodeResult.appliedExifOrientation(
         "appliedExifOrientation. successful. ${newBitmap.logString}. ${imageInfo}. '${requestContext.key}'"
     }
     return newResult(
-        bitmap = newBitmap,
+        image = newBitmap.asSketchImage(resources = image.resources),
         imageInfo = imageInfo.newImageInfo(width = newSize.width, height = newSize.height)
     ) {
         addTransformed(createExifOrientationTransformed(imageInfo.exifOrientation))
@@ -393,11 +396,12 @@ fun BitmapDecodeResult.appliedExifOrientation(
 }
 
 @WorkerThread
-fun BitmapDecodeResult.appliedResize(
+fun DecodeResult.appliedResize(
     sketch: Sketch,
     requestContext: RequestContext,
-): BitmapDecodeResult {
+): DecodeResult {
     requiredWorkThread()
+    if (image !is BitmapImage) return this
     val request = requestContext.request
     val resizeSize = requestContext.resizeSize!!
     val resize = Resize(
@@ -416,7 +420,7 @@ fun BitmapDecodeResult.appliedResize(
             resizeHeight = resizeSize.height
         )
     )
-    val inputBitmap = bitmap
+    val inputBitmap = image.bitmap
     val newBitmap = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             imageSize = Size(inputBitmap.width, inputBitmap.height),
@@ -466,7 +470,7 @@ fun BitmapDecodeResult.appliedResize(
         sketch.logger.d("appliedResize") {
             "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
         }
-        newResult(bitmap = newBitmap) {
+        newResult(image = newBitmap.asSketchImage(resources = image.resources)) {
             addTransformed(createResizeTransformed(resize))
         }
     } else {

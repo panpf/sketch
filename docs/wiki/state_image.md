@@ -60,7 +60,7 @@ You can refer to the existing implementation of [StateImage]
 
 [ErrorStateImage] supports returning different status images according to different error types
 
-By default, Sketch only provides uriEmptyError type, you can implement [CompositeStateImage]
+By default, Sketch only provides uriEmptyError type, you can implement [CombinedStateImage]
 .Condition interface to extend the new type, and then pass [ErrorStateImage].Builder.addState() uses
 a custom type, as follows:
 
@@ -68,7 +68,7 @@ a custom type, as follows:
 
 import java.io.IOException
 
-object MyCondition : CompositeStateImage.Condition {
+object MyCondition : CombinedStateImage.Condition {
 
     override fun accept(
         request: ImageRequest,
@@ -134,7 +134,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ErrorStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
 
-[CompositeStateImage.]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/internal/CompositeStateImage.kt
+[CombinedStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/internal/CombinedStateImage.kt
 
 [IconStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/IconStateImage.kt
 

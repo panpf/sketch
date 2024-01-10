@@ -17,23 +17,19 @@ package com.github.panpf.sketch.core.test
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
-import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.decode.internal.DrawableDecoder
+import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -67,43 +63,23 @@ class ComponentRegistryBuilderTest {
     }
 
     @Test
-    fun testAddBitmapDecoder() {
+    fun testAddDecoder() {
         ComponentRegistry.Builder().build().apply {
-            Assert.assertTrue(bitmapDecoderFactoryList.isEmpty())
+            Assert.assertTrue(decoderFactoryList.isEmpty())
         }
 
         ComponentRegistry.Builder().apply {
-            addBitmapDecoder(DrawableBitmapDecoder.Factory())
-            addBitmapDecoder(DefaultBitmapDecoder.Factory())
-            addBitmapDecoder(TestBitmapDecoder.Factory())
+            addDecoder(DrawableDecoder.Factory())
+            addDecoder(BitmapFactoryDecoder.Factory())
+            addDecoder(TestDecoder.Factory())
         }.build().apply {
             Assert.assertEquals(
                 listOf(
-                    DrawableBitmapDecoder.Factory(),
-                    DefaultBitmapDecoder.Factory(),
-                    TestBitmapDecoder.Factory(),
+                    DrawableDecoder.Factory(),
+                    BitmapFactoryDecoder.Factory(),
+                    TestDecoder.Factory(),
                 ),
-                bitmapDecoderFactoryList
-            )
-        }
-    }
-
-    @Test
-    fun testAddDrawableDecoder() {
-        ComponentRegistry.Builder().build().apply {
-            Assert.assertTrue(drawableDecoderFactoryList.isEmpty())
-        }
-
-        ComponentRegistry.Builder().apply {
-            addDrawableDecoder(DefaultDrawableDecoder.Factory())
-            addDrawableDecoder(TestDrawableDecoder.Factory())
-        }.build().apply {
-            Assert.assertEquals(
-                listOf(
-                    DefaultDrawableDecoder.Factory(),
-                    TestDrawableDecoder.Factory()
-                ),
-                drawableDecoderFactoryList
+                decoderFactoryList
             )
         }
     }
@@ -138,57 +114,29 @@ class ComponentRegistryBuilderTest {
     }
 
     @Test
-    fun testAddBitmapDecodeInterceptor() {
+    fun testAddDecodeInterceptor() {
         ComponentRegistry.Builder().build().apply {
-            Assert.assertTrue(bitmapDecodeInterceptorList.isEmpty())
+            Assert.assertTrue(decodeInterceptorList.isEmpty())
         }
 
         ComponentRegistry.Builder().apply {
-            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-            addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-            addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor(95))
+            addDecodeInterceptor(EngineDecodeInterceptor())
+            addDecodeInterceptor(TransformationDecodeInterceptor())
+            addDecodeInterceptor(TestDecodeInterceptor(95))
             assertThrow(java.lang.IllegalArgumentException::class) {
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor(-1))
+                addDecodeInterceptor(TestDecodeInterceptor(-1))
             }
             assertThrow(java.lang.IllegalArgumentException::class) {
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor(100))
+                addDecodeInterceptor(TestDecodeInterceptor(100))
             }
         }.build().apply {
             Assert.assertEquals(
                 listOf(
-                    BitmapTransformationDecodeInterceptor(),
-                    TestBitmapDecodeInterceptor(95),
-                    EngineBitmapDecodeInterceptor(),
+                    TransformationDecodeInterceptor(),
+                    TestDecodeInterceptor(95),
+                    EngineDecodeInterceptor(),
                 ),
-                bitmapDecodeInterceptorList
-            )
-        }
-    }
-
-    @Test
-    fun testAddDrawableDecodeInterceptor() {
-        ComponentRegistry.Builder().build().apply {
-            Assert.assertTrue(drawableDecodeInterceptorList.isEmpty())
-        }
-
-        ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
-            addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(90))
-            addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(95))
-            assertThrow(java.lang.IllegalArgumentException::class) {
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(-1))
-            }
-            assertThrow(java.lang.IllegalArgumentException::class) {
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(100))
-            }
-        }.build().apply {
-            Assert.assertEquals(
-                listOf(
-                    TestDrawableDecodeInterceptor(90),
-                    TestDrawableDecodeInterceptor(95),
-                    EngineDrawableDecodeInterceptor(),
-                ),
-                drawableDecodeInterceptorList
+                decodeInterceptorList
             )
         }
     }

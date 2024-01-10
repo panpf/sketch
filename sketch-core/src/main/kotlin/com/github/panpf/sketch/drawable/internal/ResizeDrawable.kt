@@ -18,10 +18,10 @@ package com.github.panpf.sketch.drawable.internal
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.asDrawable
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds

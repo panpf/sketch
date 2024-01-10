@@ -27,7 +27,7 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
-import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
+import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -53,17 +53,17 @@ class ThumbnailMemoryCacheStateImageTest {
             ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
             },
             ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
             },
             ImageRequest(context, AssetImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
                 transformations(CircleCropTransformation())
             },
         )
@@ -71,17 +71,17 @@ class ThumbnailMemoryCacheStateImageTest {
             ImageRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
             },
             ImageRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
             },
             ImageRequest(context, AssetImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
                 transformations(CircleCropTransformation())
             },
         )

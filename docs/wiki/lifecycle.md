@@ -5,7 +5,7 @@ Translations: [简体中文](lifecycle_zh.md)
 Sketch relies on Lifecycle to monitor the life cycle of the page for the following functions:
 
 1. [ViewTargetRequestDelegate] automatically stops the request when onDestroy
-2. [GenericViewDisplayTarget] automatically controls animation playback during onStart and onStop
+2. [GenericViewTarget] automatically controls animation playback during onStart and onStop
 
 ### Default Value
 
@@ -45,4 +45,4 @@ imageView.displayImage("https://www.example.com/image.gif") {
 
 [ViewTargetRequestDelegate]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/internal/RequestDelegate.kt
 
-[GenericViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
+[GenericViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt

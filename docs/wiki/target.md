@@ -2,52 +2,59 @@
 
 Translations: [简体中文](target_zh.md)
 
-[Target] is used to receive the result [ImageResult] of [ImageRequest] and apply the result to the
-target
+[Target] is used to display [Image] to View, Compose and any other components
 
-From the previous [Getting Started][getting_started] document, we can know that [ImageRequest] is
-divided into [DisplayRequest], [LoadRequest], [DownloadRequest] Three, they all have
-different [ImageResult] implementations, so [Target] also has three corresponding implementations:
+### View
 
-* [DisplayTarget]: Receives results of Drawable type, dedicated to [DisplayRequest]
-* [LoadTarget]: Receives Bitmap type results, dedicated to [LoadRequest]
-* [DownloadTarget]: Receives results of type [DownloadData], dedicated to [DownloadRequest]
-
-The following demonstrates creating a custom [DisplayTarget]:
+When displayed in View, you need to actively set the target, as follows:
 
 ```kotlin
-DisplayRequest(context, "https://www.example.com/image.jpg") {
+val imageView = ImageView(context)
+
+ImageRequest(context, "https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    crossfade(true)
+    target(imageView)
+}.enqueue(request)
+
+// or
+ImageRequest(context, "https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    crossfade(true)
     target(
-        onStart = { placeholder: Drawable? ->
-            // Handle the placeholder drawable. 
+        onStart = { requestContext, placeholder: Image? ->
+            imageView.setImageDrawable(placeholder?.asDrawable())
         },
-        onSuccess = { result: Drawable ->
-            // Handle the successful result Drawable. 
+        onSuccess = { requestContext, result: Image ->
+            imageView.setImageDrawable(result.asDrawable())
         },
-        onError = { error: Drawable? ->
-            // Handle the error drawable. 
+        onError = { requestContext, error: Image? ->
+            imageView.setImageDrawable(error?.asDrawable())
         }
     )
 }.enqueue(request)
 ```
 
-> LoadTarget and DownloadTarget are used in much the same way as DisplayTarget.
+### Compose
 
-[DisplayTarget] is usually used to apply Drawable to View, so Sketch provides [ViewDisplayTarget]
-and [ImageViewDisplayTarget] to simplify use
-
-[DisplayRequest] also provides the target(ImageView) method to simplify binding to ImageView, as
-follows:
+When displaying to Compose, you do not need to set the target. AsyncImage will set it. You only need
+to configure other parameters, as follows:
 
 ```kotlin
-DisplayRequest(context, "https://www.example.com/image.jpg") {
-    target(imageView)
-}.enqueue()
+AsyncIage(
+    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
+        placeholder(R.drawable.placeholder)
+        crossfade(true)
+    },
+    contentDescription = stringResource(R.string.description),
+    contentScale = ContentScale.Crop,
+    modifier = Modifier.clip(CircleShape)
+)
 ```
 
 ### RemoteViews
 
-Sketch provides [RemoteViewsDisplayTarget] to display images to [RemoteViews], as follows:
+Sketch provides [RemoteViewsTarget] to display images to [RemoteViews], as follows:
 
 ```kotlin
 val remoteViews =
@@ -58,10 +65,10 @@ val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).
     setContent(remoteViews)
 }.build()
 
-DisplayRequest(context, "https://www.example.com/image.jpg") {
+ImageRequest(context, "https://www.example.com/image.jpg") {
     resize(100.dp2px, 100.dp2px, scale = START_CROP)
     target(
-        RemoteViewsDisplayTarget(
+        RemoteViewsTarget(
             remoteViews = remoteViews,
             imageViewId = R.id.remoteViewsNotificationImage,
             ignoreNullDrawable = true,
@@ -75,37 +82,23 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue()
 ```
 
-1. As shown above [RemoteViewsDisplayTarget] only converts the Drawable to Bitmap and calls the
+1. As shown above [RemoteViewsTarget] only converts the Drawable to Bitmap and calls the
    setImageViewBitmap method of [RemoteViews] to set the Bitmap
 2. So you still need to refresh the notification or AppWidget in the onUpdated function to display
-   the Bitmap on the screen
+   the Bitmap on the screen.
 
-[getting_started]: getting_started.md
+[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
 
 [Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[DisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/DisplayTarget.kt
+[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[ViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewDisplayTarget.kt
-
-[ImageViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewDisplayTarget.kt
-
-[LoadTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/LoadTarget.kt
-
-[DownloadTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/DownloadTarget.kt
+[ImageViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
-
-[DownloadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadRequest.kt
-
-[DownloadData]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadData.kt
-
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
-[RemoteViewsDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsDisplayTarget.kt
+[RemoteViewsTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt

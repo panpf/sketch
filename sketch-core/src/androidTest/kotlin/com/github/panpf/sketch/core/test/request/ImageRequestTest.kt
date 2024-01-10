@@ -40,8 +40,7 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
@@ -87,10 +86,8 @@ import com.github.panpf.sketch.stateimage.ResColor
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestListenerImageView
 import com.github.panpf.sketch.test.utils.TestOptionsImageView
@@ -1758,26 +1755,20 @@ class ImageRequestTest {
             components {
                 addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
-                addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                addBitmapDecoder(TestBitmapDecoder.Factory())
-                addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                addDrawableDecoder(TestDrawableDecoder.Factory())
+                addDecoder(BitmapFactoryDecoder.Factory())
+                addDecoder(TestDecoder.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
             }
         }.apply {
             Assert.assertEquals(
                 ComponentRegistry.Builder().apply {
                     addFetcher(HttpUriFetcher.Factory())
                     addFetcher(TestFetcher.Factory())
-                    addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                    addBitmapDecoder(TestBitmapDecoder.Factory())
-                    addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addDecoder(BitmapFactoryDecoder.Factory())
+                    addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
-                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
                 }.build(),
                 componentRegistry
             )
@@ -1969,10 +1960,8 @@ class ImageRequestTest {
             components {
                 addFetcher(TestFetcher.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
-                addDrawableDecoder(TestDrawableDecoder.Factory())
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                addBitmapDecoder(TestBitmapDecoder.Factory())
+                addDecodeInterceptor(TestDecodeInterceptor())
+                addDecoder(TestDecoder.Factory())
             }
         }.apply {
             Assert.assertEquals(this, this.newRequest())

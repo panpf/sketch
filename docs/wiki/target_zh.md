@@ -2,51 +2,58 @@
 
 翻译：[English](target.md)
 
-[Target] 用来接收 [ImageRequest] 的结果 [ImageResult]，并将结果应用到目标上
+[Target] 用来将 [Image] 显示到 View、Compose 以及其它任意组件上
 
-从前面的 [入门][getting_started] 文档可以知道 [ImageRequest]
-分为 [DisplayRequest]、[LoadRequest]、[DownloadRequest]
-三种，他们又都有不同的 [ImageResult] 实现，因此 [Target] 也有对应的三种实现：
+### View
 
-* [DisplayTarget]：接收 Drawable 类型的结果，[DisplayRequest] 专用
-* [LoadTarget]：接收 Bitmap 类型的结果，[LoadRequest] 专用
-* [DownloadTarget]：接收 [DownloadData] 类型的结果，[DownloadRequest] 专用
-
-下面演示创建自定义 [DisplayTarget]:
+显示到 View 时需要你主动设置 target，如下：
 
 ```kotlin
-DisplayRequest(context, "https://www.example.com/image.jpg") {
+val imageView = ImageView(context)
+
+ImageRequest(context, "https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    crossfade(true)
+    target(imageView)
+}.enqueue(request)
+
+// 或
+ImageRequest(context, "https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    crossfade(true)
     target(
-        onStart = { placeholder: Drawable? ->
-            // Handle the placeholder drawable. 
+        onStart = { requestContext, placeholder: Image? ->
+            imageView.setImageDrawable(placeholder?.asDrawable())
         },
-        onSuccess = { result: Drawable ->
-            // Handle the successful result Drawable. 
+        onSuccess = { requestContext, result: Image ->
+            imageView.setImageDrawable(result.asDrawable())
         },
-        onError = { error: Drawable? ->
-            // Handle the error drawable. 
+        onError = { requestContext, error: Image? ->
+            imageView.setImageDrawable(error?.asDrawable())
         }
     )
 }.enqueue(request)
 ```
 
-> LoadTarget 和 DownloadTarget 同 DisplayTarget 使用方式大同小异
+### Compose
 
-[DisplayTarget] 通常用来将 Drawable 应用到 View，因此 Sketch 提供了 [ViewDisplayTarget]
-和 [ImageViewDisplayTarget]
-来简化使用
-
-[DisplayRequest] 还提供了 target(ImageView) 方法来简化绑定到 ImageView，如下：
+显示到 Compose 时不需要你设置 target，AsyncImage 会设置，只需配置其它参数即可，如下：
 
 ```kotlin
-DisplayRequest(context, "https://www.example.com/image.jpg") {
-    target(imageView)
-}.enqueue()
+AsyncIage(
+    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
+        placeholder(R.drawable.placeholder)
+        crossfade(true)
+    },
+    contentDescription = stringResource(R.string.description),
+    contentScale = ContentScale.Crop,
+    modifier = Modifier.clip(CircleShape)
+)
 ```
 
 ### RemoteViews
 
-Sketch 提供了 [RemoteViewsDisplayTarget] 用来将图片显示到 [RemoteViews]，如下：
+Sketch 提供了 [RemoteViewsTarget] 用来将图片显示到 [RemoteViews]，如下：
 
 ```kotlin
 val remoteViews =
@@ -57,10 +64,10 @@ val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).
     setContent(remoteViews)
 }.build()
 
-DisplayRequest(context, "https://www.example.com/image.jpg") {
+ImageRequest(context, "https://www.example.com/image.jpg") {
     resize(100.dp2px, 100.dp2px, scale = START_CROP)
     target(
-        RemoteViewsDisplayTarget(
+        RemoteViewsTarget(
             remoteViews = remoteViews,
             imageViewId = R.id.remoteViewsNotificationImage,
             ignoreNullDrawable = true,
@@ -74,37 +81,22 @@ DisplayRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue()
 ```
 
-1. 如上所示 [RemoteViewsDisplayTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的
-   setImageViewBitmap
-   方法设置 Bitmap
+1. 如上所示 [RemoteViewsTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的
+   setImageViewBitmap 方法设置 Bitmap
 2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
 
-[getting_started]: getting_started.md
+[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
 
 [Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[DisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/DisplayTarget.kt
+[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[ViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewDisplayTarget.kt
-
-[ImageViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewDisplayTarget.kt
-
-[LoadTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/LoadTarget.kt
-
-[DownloadTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/DownloadTarget.kt
+[ImageViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
-
-[DownloadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadRequest.kt
-
-[DownloadData]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadData.kt
-
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
-[RemoteViewsDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsDisplayTarget.kt
+[RemoteViewsTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt

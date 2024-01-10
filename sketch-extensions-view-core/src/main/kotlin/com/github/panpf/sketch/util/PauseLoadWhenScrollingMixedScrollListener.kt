@@ -17,7 +17,7 @@ package com.github.panpf.sketch.util
 
 import android.widget.AbsListView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 
 class PauseLoadWhenScrollingMixedScrollListener(
     var absListScrollListenerWrapper: AbsListView.OnScrollListener? = null
@@ -27,12 +27,12 @@ class PauseLoadWhenScrollingMixedScrollListener(
         super.onScrollStateChanged(recyclerView, newState)
         if (recyclerView.adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                if (!PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
                 }
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
+                if (PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = false
                 }
             }
         }
@@ -41,12 +41,12 @@ class PauseLoadWhenScrollingMixedScrollListener(
     override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
         if (view.adapter != null) {
             if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                if (!PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
                 }
             } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling = false
+                if (PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
+                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = false
                 }
             }
         }

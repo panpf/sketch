@@ -17,7 +17,7 @@ package com.github.panpf.sketch.target
 
 import android.widget.RemoteViews
 import androidx.annotation.IdRes
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toBitmap

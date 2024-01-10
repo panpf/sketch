@@ -17,7 +17,7 @@ package com.github.panpf.sketch.stateimage
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.asSketchImage
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 
 /**

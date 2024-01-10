@@ -20,8 +20,8 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.Image
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.asSketchImage
 
 fun MemoryCache.Value.asSketchImage(resources: Resources): Image = when (this) {
     is BitmapValue -> BitmapDrawable(resources, bitmap)

@@ -49,7 +49,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ErrorStateImage] 支持根据不同的错误类型返回不同的状态图片
 
-默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [CompositeStateImage].Condition
+默认 Sketch 仅提供了 uriEmptyError 一种类型，你可以实现 [CombinedStateImage].Condition
 接口来扩展新的类型，然后通过
 [ErrorStateImage].Builder.addState() 使用自定义的类型，如下：
 
@@ -57,7 +57,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 import java.io.IOException
 
-object MyCondition : CompositeStateImage.Condition {
+object MyCondition : CombinedStateImage.Condition {
 
   override fun accept(
     request: ImageRequest,
@@ -118,7 +118,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 [ErrorStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
 
-[CompositeStateImage.]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/internal/CompositeStateImage.kt
+[CombinedStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/internal/CombinedStateImage.kt
 
 [IconStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/IconStateImage.kt
 

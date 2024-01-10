@@ -2,18 +2,18 @@
 
 翻译：[English](animated_image.md)
 
-Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [DrawableDecoder] 提供支持，如下：
+Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [Decoder] 提供支持，如下：
 
-| Type          | Decoder                       | APi Limit    | Additional Module |
-|:--------------|:------------------------------|:-------------|:------------------|
-| GIF           | [GifAnimatedDrawableDecoder]  | Android 9+   | sketch-gif        |
-| GIF           | [GifMovieDrawableDecoder]     | Android 4.4+ | sketch-gif        |
-| GIF           | [GifDrawableDrawableDecoder]  | Android 4.1+ | sketch-gif-koral  |
-| WEBP Animated | [WebPAnimatedDrawableDecoder] | Android 9+   | sketch-gif        |
-| HEIF Animated | [HeifAnimatedDrawableDecoder] | Android 11+  | sketch-gif        |
+| Type          | Decoder               | APi Limit    | Additional Module |
+|:--------------|:----------------------|:-------------|:------------------|
+| GIF           | [GifAnimatedDecoder]  | Android 9+   | sketch-gif        |
+| GIF           | [GifMovieDecoder]     | Android 4.4+ | sketch-gif        |
+| GIF           | [GifDrawableDecoder]  | Android 4.1+ | sketch-gif-koral  |
+| WEBP Animated | [WebPAnimatedDecoder] | Android 9+   | sketch-gif        |
+| HEIF Animated | [HeifAnimatedDecoder] | Android 11+  | sketch-gif        |
 
 > 注意：
-> 1. GIF 提供了三种 [DrawableDecoder] 可以根据 app 支持的最低版本选择合适的
+> 1. GIF 提供了三种 [Decoder] 可以根据 app 支持的最低版本选择合适的
 > 2. `sketch-gif` 模块使用 Android 自带的 [ImageDecoder] 和 [Movie] 类实现播放
      GIF、WEBP、HEIF，不会额外增加包体积
 > 3. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放
@@ -21,7 +21,7 @@ Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [D
 
 ## 注册动图解码器
 
-Sketch 默认并没有注册任何动图的 [DrawableDecoder]，需要你主动将 [DrawableDecoder] 注册到 Sketch
+Sketch 默认并没有注册任何动图的 [Decoder]，需要你主动将 [Decoder] 注册到 Sketch
 才能播放动图，如下：
 
 ```kotlin
@@ -31,18 +31,18 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addDrawableDecoder(
+                addDecoder(
                     when {
-                        VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                        else -> GifDrawableDrawableDecoder.Factory()
+                        VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDecoder.Factory()
+                        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDecoder.Factory()
+                        else -> GifDrawableDecoder.Factory()
                     }
                 )
                 if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+                    addDecoder(WebpAnimatedDecoder.Factory())
                 }
                 if (VERSION.SDK_INT >= VERSION_CODES.R) {
-                    addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+                    addDecoder(HeifAnimatedDecoder.Factory())
                 }
             }
         }.build()
@@ -52,18 +52,18 @@ class MyApplication : Application(), SketchFactory {
 /* 为单个 ImageRequest 注册 */
 imageView.displayImage("https://www.example.com/image.gif") {
     components {
-        addDrawableDecoder(
+        addDecoder(
             when {
-                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDrawableDecoder.Factory()
-                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDrawableDecoder.Factory()
-                else -> GifDrawableDrawableDecoder.Factory()
+                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDecoder.Factory()
+                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDecoder.Factory()
+                else -> GifDrawableDecoder.Factory()
             }
         )
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            addDrawableDecoder(WebpAnimatedDrawableDecoder.Factory())
+            addDecoder(WebpAnimatedDecoder.Factory())
         }
         if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            addDrawableDecoder(HeifAnimatedDrawableDecoder.Factory())
+            addDecoder(HeifAnimatedDecoder.Factory())
         }
     }
 }
@@ -98,19 +98,19 @@ imageView.displayImage("https://www.example.com/image.gif") {
 
 ## 控制播放
 
-动图相关的 [DrawableDecoder] 统一返回 [SketchAnimatableDrawable]，[SketchAnimatableDrawable] 实现了
+动图相关的 [Decoder] 统一返回 [SketchAnimatableDrawable]，[SketchAnimatableDrawable] 实现了
 Animatable2Compat 接口
 
 你可以通过 Animatable2Compat 接口的 start() 和 stop() 方法手动控制开始播放和停止播放
 
 #### 初始状态
 
-[GenericViewDisplayTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查
+[GenericViewTarget] 在将 [SketchAnimatableDrawable] 显示到 ImageView 上之后会检查
 ImageRequest.lifecycle 的状态，如果 lifecycle 的状态大于 start 就开始播放
 
 #### 自动控制
 
-[GenericViewDisplayTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
+[GenericViewTarget] 会监听 ImageRequest.lifecycle 的 start 和 stop 状态自动控制播放
 
 
 [koral--]: https://github.com/koral--
@@ -119,17 +119,17 @@ ImageRequest.lifecycle 的状态，如果 lifecycle 的状态大于 start 就开
 
 [GifDrawable]: https://github.com/koral--/android-gif-drawable/blob/dev/android-gif-drawable/src/main/kotlin/pl/droidsonroids/gif/GifDrawable.java
 
-[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecoder.kt
+[Decoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
-[GifAnimatedDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDrawableDecoder.kt
+[GifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
-[HeifAnimatedDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDrawableDecoder.kt
+[HeifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
 
-[WebpAnimatedDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDrawableDecoder.kt
+[WebpAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
 
-[GifDrawableDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDrawableDecoder.kt
+[GifDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
 
-[GifMovieDrawableDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDrawableDecoder.kt
+[GifMovieDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -145,4 +145,4 @@ ImageRequest.lifecycle 的状态，如果 lifecycle 的状态大于 start 就开
 
 [ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[GenericViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
+[GenericViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt

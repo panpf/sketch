@@ -16,12 +16,9 @@
 package com.github.panpf.sketch
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
+import com.github.panpf.sketch.decode.DecodeInterceptor
+import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
@@ -32,7 +29,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
 
 /**
  * Register components that are required to perform [ImageRequest] and can be extended,
- * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor]
+ * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor]
  */
 open class ComponentRegistry private constructor(
     /**
@@ -40,34 +37,24 @@ open class ComponentRegistry private constructor(
      */
     val fetcherFactoryList: List<Fetcher.Factory>,
     /**
-     * Registered [BitmapDecoder.Factory]
+     * Registered [Decoder.Factory]
      */
-    val bitmapDecoderFactoryList: List<BitmapDecoder.Factory>,
-    /**
-     * Registered [DrawableDecoder.Factory]
-     */
-    val drawableDecoderFactoryList: List<DrawableDecoder.Factory>,
+    val decoderFactoryList: List<Decoder.Factory>,
     /**
      * All [RequestInterceptor]
      */
     val requestInterceptorList: List<RequestInterceptor>,
     /**
-     * All [BitmapDecodeInterceptor]
+     * All [DecodeInterceptor]
      */
-    val bitmapDecodeInterceptorList: List<BitmapDecodeInterceptor>,
-    /**
-     * All [DrawableDecodeInterceptor]
-     */
-    val drawableDecodeInterceptorList: List<DrawableDecodeInterceptor>,
+    val decodeInterceptorList: List<DecodeInterceptor>,
 ) {
 
     fun isEmpty(): Boolean {
         return fetcherFactoryList.isEmpty()
-                && bitmapDecoderFactoryList.isEmpty()
-                && drawableDecoderFactoryList.isEmpty()
+                && decoderFactoryList.isEmpty()
                 && requestInterceptorList.isEmpty()
-                && bitmapDecodeInterceptorList.isEmpty()
-                && drawableDecodeInterceptorList.isEmpty()
+                && decodeInterceptorList.isEmpty()
     }
 
     /**
@@ -113,109 +100,34 @@ open class ComponentRegistry private constructor(
     }
 
     /**
-     * Create a [Fetcher] with the registered [Fetcher.Factory]
+     * Create a [Decoder] with the registered [Decoder.Factory]
      */
     @WorkerThread
-    @Deprecated(
-        "Use newFetcherOrThrow instead",
-        replaceWith = ReplaceWith("newFetcherOrThrow(sketch, request)")
-    )
-    internal fun newFetcher(sketch: Sketch, request: ImageRequest): Fetcher {
-        return newFetcherOrThrow(sketch, request)
-    }
-
-    /**
-     * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
-     */
-    @WorkerThread
-    internal fun newBitmapDecoderOrNull(
+    internal fun newDecoderOrNull(
         sketch: Sketch,
         requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): BitmapDecoder? {
+    ): Decoder? {
         requiredWorkThread()
-        return bitmapDecoderFactoryList.firstNotNullOfOrNull {
+        return decoderFactoryList.firstNotNullOfOrNull {
             it.create(sketch, requestContext, fetchResult)
         }
     }
 
     /**
-     * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
+     * Create a [Decoder] with the registered [Decoder.Factory]
      */
     @WorkerThread
-    internal fun newBitmapDecoderOrThrow(
+    internal fun newDecoderOrThrow(
         sketch: Sketch,
         requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): BitmapDecoder {
-        return newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
+    ): Decoder {
+        return newDecoderOrNull(sketch, requestContext, fetchResult)
             ?: throw IllegalArgumentException(
-                "No BitmapDecoder can handle this uri '${requestContext.request.uriString}', " +
-                        "please pass ComponentRegistry.Builder.addBitmapDecoder() function to add a new BitmapDecoder to support it"
+                "No Decoder can handle this uri '${requestContext.request.uriString}', " +
+                        "please pass ComponentRegistry.Builder.addDecoder() function to add a new Decoder to support it"
             )
-    }
-
-    /**
-     * Create a [BitmapDecoder] with the registered [BitmapDecoder.Factory]
-     */
-    @WorkerThread
-    @Deprecated(
-        "Use newBitmapDecoderOrThrow instead",
-        replaceWith = ReplaceWith("newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)")
-    )
-    internal fun newBitmapDecoder(
-        sketch: Sketch,
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): BitmapDecoder {
-        return newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
-    }
-
-    /**
-     * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
-     */
-    @WorkerThread
-    internal fun newDrawableDecoderOrNull(
-        sketch: Sketch,
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): DrawableDecoder? {
-        requiredWorkThread()
-        return drawableDecoderFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, requestContext, fetchResult)
-        }
-    }
-
-    /**
-     * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
-     */
-    @WorkerThread
-    internal fun newDrawableDecoderOrThrow(
-        sketch: Sketch,
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): DrawableDecoder {
-        return newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
-            ?: throw IllegalArgumentException(
-                "No DrawableDecoder can handle this uri '${requestContext.request.uriString}', " +
-                        "please pass ComponentRegistry.Builder.addDrawableDecoder() function to add a new DrawableDecoder to support it"
-            )
-    }
-
-    /**
-     * Create a [DrawableDecoder] with the registered [DrawableDecoder.Factory]
-     */
-    @WorkerThread
-    @Deprecated(
-        "Use newDrawableDecoderOrThrow instead",
-        replaceWith = ReplaceWith("newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)")
-    )
-    internal fun newDrawableDecoder(
-        sketch: Sketch,
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): DrawableDecoder {
-        return newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -223,76 +135,58 @@ open class ComponentRegistry private constructor(
         if (javaClass != other?.javaClass) return false
         other as ComponentRegistry
         if (fetcherFactoryList != other.fetcherFactoryList) return false
-        if (bitmapDecoderFactoryList != other.bitmapDecoderFactoryList) return false
-        if (drawableDecoderFactoryList != other.drawableDecoderFactoryList) return false
+        if (decoderFactoryList != other.decoderFactoryList) return false
         if (requestInterceptorList != other.requestInterceptorList) return false
-        if (bitmapDecodeInterceptorList != other.bitmapDecodeInterceptorList) return false
-        if (drawableDecodeInterceptorList != other.drawableDecodeInterceptorList) return false
+        if (decodeInterceptorList != other.decodeInterceptorList) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = fetcherFactoryList.hashCode()
-        result = 31 * result + bitmapDecoderFactoryList.hashCode()
-        result = 31 * result + drawableDecoderFactoryList.hashCode()
+        result = 31 * result + decoderFactoryList.hashCode()
         result = 31 * result + requestInterceptorList.hashCode()
-        result = 31 * result + bitmapDecodeInterceptorList.hashCode()
-        result = 31 * result + drawableDecodeInterceptorList.hashCode()
+        result = 31 * result + decodeInterceptorList.hashCode()
         return result
     }
 
     override fun toString(): String {
         val fetchersString = fetcherFactoryList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val bitmapDecodersString = bitmapDecoderFactoryList
-            .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val drawableDecodersString = drawableDecoderFactoryList
+        val decodersString = decoderFactoryList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         val requestInterceptorsString = requestInterceptorList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val bitmapDecodeInterceptorsString = bitmapDecodeInterceptorList
-            .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val drawableDecodeInterceptorsString = drawableDecodeInterceptorList
+        val decodeInterceptorsString = decodeInterceptorList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         return "ComponentRegistry(" +
                 "fetcherFactoryList=${fetchersString}," +
-                "bitmapDecoderFactoryList=${bitmapDecodersString}," +
-                "drawableDecoderFactoryList=${drawableDecodersString}," +
+                "decoderFactoryList=${decodersString}," +
                 "requestInterceptorList=${requestInterceptorsString}," +
-                "bitmapDecodeInterceptorList=${bitmapDecodeInterceptorsString}," +
-                "drawableDecodeInterceptorList=${drawableDecodeInterceptorsString}" +
+                "decodeInterceptorList=${decodeInterceptorsString}" +
                 ")"
     }
 
     class Builder {
 
         private val fetcherFactoryList: MutableList<Fetcher.Factory>
-        private val bitmapDecoderFactoryList: MutableList<BitmapDecoder.Factory>
-        private val drawableDecoderFactoryList: MutableList<DrawableDecoder.Factory>
+        private val decoderFactoryList: MutableList<Decoder.Factory>
         private val requestInterceptorList: MutableList<RequestInterceptor>
-        private val bitmapDecodeInterceptorList: MutableList<BitmapDecodeInterceptor>
-        private val drawableDecodeInterceptorList: MutableList<DrawableDecodeInterceptor>
+        private val decodeInterceptorList: MutableList<DecodeInterceptor>
 
         constructor() {
             this.fetcherFactoryList = mutableListOf()
-            this.bitmapDecoderFactoryList = mutableListOf()
-            this.drawableDecoderFactoryList = mutableListOf()
+            this.decoderFactoryList = mutableListOf()
             this.requestInterceptorList = mutableListOf()
-            this.bitmapDecodeInterceptorList = mutableListOf()
-            this.drawableDecodeInterceptorList = mutableListOf()
+            this.decodeInterceptorList = mutableListOf()
         }
 
         constructor(componentRegistry: ComponentRegistry) {
             this.fetcherFactoryList = componentRegistry.fetcherFactoryList.toMutableList()
-            this.bitmapDecoderFactoryList =
-                componentRegistry.bitmapDecoderFactoryList.toMutableList()
-            this.drawableDecoderFactoryList =
-                componentRegistry.drawableDecoderFactoryList.toMutableList()
+            this.decoderFactoryList =
+                componentRegistry.decoderFactoryList.toMutableList()
             this.requestInterceptorList = componentRegistry.requestInterceptorList.toMutableList()
-            this.bitmapDecodeInterceptorList =
-                componentRegistry.bitmapDecodeInterceptorList.toMutableList()
-            this.drawableDecodeInterceptorList =
-                componentRegistry.drawableDecodeInterceptorList.toMutableList()
+            this.decodeInterceptorList =
+                componentRegistry.decodeInterceptorList.toMutableList()
         }
 
         /**
@@ -303,17 +197,10 @@ open class ComponentRegistry private constructor(
         }
 
         /**
-         * Register an [BitmapDecoder.Factory]
+         * Register an [Decoder.Factory]
          */
-        fun addBitmapDecoder(bitmapDecoderFactory: BitmapDecoder.Factory): Builder = apply {
-            bitmapDecoderFactoryList.add(bitmapDecoderFactory)
-        }
-
-        /**
-         * Register an [DrawableDecoder.Factory]
-         */
-        fun addDrawableDecoder(drawableDecoderFactory: DrawableDecoder.Factory): Builder = apply {
-            drawableDecoderFactoryList.add(drawableDecoderFactory)
+        fun addDecoder(decoderFactory: Decoder.Factory): Builder = apply {
+            decoderFactoryList.add(decoderFactory)
         }
 
         /**
@@ -327,34 +214,21 @@ open class ComponentRegistry private constructor(
         }
 
         /**
-         * Append an [BitmapDecodeInterceptor]
+         * Append an [DecodeInterceptor]
          */
-        fun addBitmapDecodeInterceptor(bitmapDecodeInterceptor: BitmapDecodeInterceptor): Builder =
+        fun addDecodeInterceptor(decodeInterceptor: DecodeInterceptor): Builder =
             apply {
-                require(if (bitmapDecodeInterceptor is EngineBitmapDecodeInterceptor) bitmapDecodeInterceptor.sortWeight == 100 else bitmapDecodeInterceptor.sortWeight in 0..99) {
+                require(if (decodeInterceptor is EngineDecodeInterceptor) decodeInterceptor.sortWeight == 100 else decodeInterceptor.sortWeight in 0..99) {
                     "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
                 }
-                this.bitmapDecodeInterceptorList.add(bitmapDecodeInterceptor)
-            }
-
-        /**
-         * Append an [DrawableDecodeInterceptor]
-         */
-        fun addDrawableDecodeInterceptor(drawableDecodeInterceptor: DrawableDecodeInterceptor): Builder =
-            apply {
-                require(if (drawableDecodeInterceptor is EngineDrawableDecodeInterceptor) drawableDecodeInterceptor.sortWeight == 100 else drawableDecodeInterceptor.sortWeight in 0..99) {
-                    "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
-                }
-                this.drawableDecodeInterceptorList.add(drawableDecodeInterceptor)
+                this.decodeInterceptorList.add(decodeInterceptor)
             }
 
         fun build(): ComponentRegistry = ComponentRegistry(
             fetcherFactoryList = fetcherFactoryList.toList(),
-            bitmapDecoderFactoryList = bitmapDecoderFactoryList.toList(),
-            drawableDecoderFactoryList = drawableDecoderFactoryList.toList(),
+            decoderFactoryList = decoderFactoryList.toList(),
             requestInterceptorList = requestInterceptorList.sortedBy { it.sortWeight },
-            bitmapDecodeInterceptorList = bitmapDecodeInterceptorList.sortedBy { it.sortWeight },
-            drawableDecodeInterceptorList = drawableDecodeInterceptorList.sortedBy { it.sortWeight },
+            decodeInterceptorList = decodeInterceptorList.sortedBy { it.sortWeight },
         )
     }
 }
@@ -369,20 +243,14 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
         other.fetcherFactoryList.forEach {
             addFetcher(it)
         }
-        other.bitmapDecoderFactoryList.forEach {
-            addBitmapDecoder(it)
-        }
-        other.drawableDecoderFactoryList.forEach {
-            addDrawableDecoder(it)
+        other.decoderFactoryList.forEach {
+            addDecoder(it)
         }
         other.requestInterceptorList.forEach {
             addRequestInterceptor(it)
         }
-        other.bitmapDecodeInterceptorList.forEach {
-            addBitmapDecodeInterceptor(it)
-        }
-        other.drawableDecodeInterceptorList.forEach {
-            addDrawableDecodeInterceptor(it)
+        other.decodeInterceptorList.forEach {
+            addDecodeInterceptor(it)
         }
     }.build()
 }
@@ -403,23 +271,13 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
     }
 
     /**
-     * Get the [ImageRequest] plus the global [BitmapDecodeInterceptor] list
+     * Get the [ImageRequest] plus the global [DecodeInterceptor] list
      */
-    fun getBitmapDecodeInterceptorList(request: ImageRequest): List<BitmapDecodeInterceptor> {
-        val localBitmapDecodeInterceptorList =
-            request.componentRegistry?.bitmapDecodeInterceptorList?.takeIf { it.isNotEmpty() }
-        return (localBitmapDecodeInterceptorList?.plus(registry.bitmapDecodeInterceptorList))?.sortedBy { it.sortWeight }
-            ?: registry.bitmapDecodeInterceptorList
-    }
-
-    /**
-     * Get the [ImageRequest] plus the global [DrawableDecodeInterceptor] list
-     */
-    fun getDrawableDecodeInterceptorList(request: ImageRequest): List<DrawableDecodeInterceptor> {
-        val localDrawableDecodeInterceptorList =
-            request.componentRegistry?.drawableDecodeInterceptorList?.takeIf { it.isNotEmpty() }
-        return (localDrawableDecodeInterceptorList?.plus(registry.drawableDecodeInterceptorList))?.sortedBy { it.sortWeight }
-            ?: registry.drawableDecodeInterceptorList
+    fun getDecodeInterceptorList(request: ImageRequest): List<DecodeInterceptor> {
+        val localDecodeInterceptorList =
+            request.componentRegistry?.decodeInterceptorList?.takeIf { it.isNotEmpty() }
+        return (localDecodeInterceptorList?.plus(registry.decodeInterceptorList))?.sortedBy { it.sortWeight }
+            ?: registry.decodeInterceptorList
     }
 
     /**
@@ -430,63 +288,16 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
             ?: registry.newFetcherOrThrow(sketch, request)
 
     /**
-     * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]
-     */
-    @Deprecated(
-        "Use newFetcherOrThrow instead",
-        replaceWith = ReplaceWith("newFetcherOrThrow(request)")
-    )
-    fun newFetcher(request: ImageRequest): Fetcher = newFetcherOrThrow(request)
-
-    /**
-     * Create a [BitmapDecoder] with [ImageRequest]'s (preferred) and global [BitmapDecoder.Factory]
+     * Create a [Decoder] with [ImageRequest]'s (preferred) and global [Decoder.Factory]
      */
     @WorkerThread
-    fun newBitmapDecoderOrThrow(
+    fun newDecoderOrThrow(
         requestContext: RequestContext,
         fetchResult: FetchResult,
-    ): BitmapDecoder =
+    ): Decoder =
         requestContext.request.componentRegistry
-            ?.newBitmapDecoderOrNull(sketch, requestContext, fetchResult)
-            ?: registry.newBitmapDecoderOrThrow(sketch, requestContext, fetchResult)
-
-    /**
-     * Create a [BitmapDecoder] with [ImageRequest]'s (preferred) and global [BitmapDecoder.Factory]
-     */
-    @WorkerThread
-    @Deprecated(
-        "Use newBitmapDecoderOrThrow instead",
-        replaceWith = ReplaceWith("newBitmapDecoderOrThrow(requestContext, fetchResult)")
-    )
-    fun newBitmapDecoder(
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): BitmapDecoder = newBitmapDecoderOrThrow(requestContext, fetchResult)
-
-    /**
-     * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
-     */
-    @WorkerThread
-    fun newDrawableDecoderOrThrow(
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): DrawableDecoder =
-        requestContext.request.componentRegistry
-            ?.newDrawableDecoderOrNull(sketch, requestContext, fetchResult)
-            ?: registry.newDrawableDecoderOrThrow(sketch, requestContext, fetchResult)
-
-    /**
-     * Create a [DrawableDecoder] with [ImageRequest]'s (preferred) and global [DrawableDecoder.Factory]
-     */
-    @WorkerThread
-    @Deprecated(
-        "Use newDrawableDecoderOrThrow instead",
-        replaceWith = ReplaceWith("newDrawableDecoderOrThrow(requestContext, fetchResult)")
-    )
-    fun newDrawableDecoder(
-        requestContext: RequestContext,
-        fetchResult: FetchResult,
-    ): DrawableDecoder = newDrawableDecoderOrThrow(requestContext, fetchResult)
+            ?.newDecoderOrNull(sketch, requestContext, fetchResult)
+            ?: registry.newDecoderOrThrow(sketch, requestContext, fetchResult)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

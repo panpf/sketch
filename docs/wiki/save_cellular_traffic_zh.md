@@ -10,7 +10,7 @@
 
 ### 配置
 
-首先注册 [SaveCellularTrafficDisplayInterceptor] 请求拦截器，如下：
+首先注册 [SaveCellularTrafficRequestInterceptor] 请求拦截器，如下：
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */
@@ -19,7 +19,7 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+                addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
             }
         }.build()
     }
@@ -28,12 +28,10 @@ class MyApplication : Application(), SketchFactory {
 /* 为单个 ImageRequest 注册 */
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
-        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+        addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
     }
 }
 ```
-
-> 注意：[SaveCellularTrafficDisplayInterceptor] 仅对 [DisplayRequest] 有效
 
 然后针对单个请求开启节省蜂窝流量功能，如下：
 
@@ -67,9 +65,7 @@ sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
-
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
+[SaveCellularTrafficRequestInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficRequestInterceptor.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

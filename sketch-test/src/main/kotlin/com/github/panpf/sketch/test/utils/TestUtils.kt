@@ -24,13 +24,12 @@ import android.os.Build.VERSION_CODES
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -73,12 +72,12 @@ fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null
     return calculateSampledBitmapSize(imageSize, sampleSize, mimeType)
 }
 
-fun ImageRequest.decode(sketch: Sketch): BitmapDecodeResult {
+fun ImageRequest.decode(sketch: Sketch): DecodeResult {
     val request = this@decode
     val fetchResult = runBlocking {
         sketch.components.newFetcherOrThrow(request).fetch()
     }.getOrThrow()
-    return DefaultBitmapDecoder(
+    return BitmapFactoryDecoder(
         sketch = sketch,
         requestContext = request.toRequestContext(sketch),
         dataSource = fetchResult.dataSource.asOrThrow()

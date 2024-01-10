@@ -383,7 +383,7 @@ Featured functions:
 
 [ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Image.kt
+[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
 
 [Disposable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Disposable.kt
 

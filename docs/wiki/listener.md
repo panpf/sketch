@@ -6,39 +6,39 @@ Translations: [简体中文](listener_zh.md)
 through [Listener] and [ProgressListener], as follows:
 
 ```kotlin
-DisplayRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://www.sample.com/image.jpg") {
     listener(object : Listener {
-        override fun onStart(request: DisplayRequest) {
+        override fun onStart(request: ImageRequest) {
             // ...
         }
 
-        override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) {
+        override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
             // ...
         }
 
-        override fun onError(request: DisplayRequest, result: DisplayResult.Error) {
+        override fun onError(request: ImageRequest, error: ImageResult.Error) {
             // ...
         }
 
-        override fun onCancel(request: DisplayRequest) {
+        override fun onCancel(request: ImageRequest) {
             // ...
         }
     }) 
     // or
     addListener(object : Listener {
-        override fun onStart(request: DisplayRequest) {
+        override fun onStart(request: ImageRequest) {
             // ...
         }
 
-        override fun onSuccess(request: DisplayRequest, result: DisplayResult.Success) {
+        override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
             // ...
         }
 
-        override fun onError(request: DisplayRequest, result: DisplayResult.Error) {
+        override fun onError(request: ImageRequest, error: ImageResult.Error) {
             // ...
         }
 
-        override fun onCancel(request: DisplayRequest) {
+        override fun onCancel(request: ImageRequest) {
             // ...
         }
     })
@@ -48,33 +48,33 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 It also supports kotlin function monitoring status:
 
 ```kotlin
-DisplayRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://www.sample.com/image.jpg") {
     listener(
-        onStart = { request: DisplayRequest ->
+        onStart = { request: ImageRequest ->
             // ...
         },
-        onSuccess = { request: DisplayRequest, result: DisplayResult.Success ->
+        onSuccess = { request: ImageRequest, result: ImageResult.Success ->
             // ...
         },
-        onError = { request: DisplayRequest, result: DisplayResult.Error ->
+        onError = { request: ImageRequest, error: ImageResult.Error ->
             // ...
         },
-        onCancel = { request: DisplayRequest ->
+        onCancel = { request: ImageRequest ->
             // ...
         },
     ) 
     // or
     addListener(
-        onStart = { request: DisplayRequest ->
+        onStart = { request: ImageRequest ->
             // ...
         },
-        onSuccess = { request: DisplayRequest, result: DisplayResult.Success ->
+        onSuccess = { request: ImageRequest, result: ImageResult.Success ->
             // ...
         },
-        onError = { request: DisplayRequest, result: DisplayResult.Error ->
+        onError = { request: ImageRequest, error: ImageResult.Error ->
             // ...
         },
-        onCancel = { request: DisplayRequest ->
+        onCancel = { request: ImageRequest ->
             // ...
         },
     )
@@ -84,12 +84,12 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 Monitor download progress:
 
 ```kotlin
-DisplayRequest(context, "https://www.sample.com/image.jpg") {
-    progressListener { request: DisplayRequest, totalLength: Long, completedLength: Long ->
+ImageRequest(context, "https://www.sample.com/image.jpg") {
+    progressListener { request: ImageRequest, progress: Progress ->
         // ...
     }
     // 或 
-    addProgressListener { request: DisplayRequest, totalLength: Long, completedLength: Long ->
+    addProgressListener { request: ImageRequest, progress: Progress ->
         // ...
     }
 }
@@ -97,18 +97,9 @@ DisplayRequest(context, "https://www.sample.com/image.jpg") {
 
 > Notice:
 > 1. All methods will be execute on the main thread
-> 2. [LoadRequest] and [DownloadRequest] are used exactly the same as [DisplayRequest], except that
-     the types of Request and Result in the callback method are different. This is because they
-     require different results.
 
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
-
-[DownloadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DownloadRequest.kt
-
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
 
 [Listener]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Listener.kt
 

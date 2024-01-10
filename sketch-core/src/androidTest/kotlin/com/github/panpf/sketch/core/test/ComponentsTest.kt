@@ -18,13 +18,10 @@ package com.github.panpf.sketch.core.test
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Components
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
-import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
+import com.github.panpf.sketch.decode.DecodeInterceptor
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.decode.internal.DrawableDecoder
+import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -35,20 +32,16 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.AllFetcher
-import com.github.panpf.sketch.test.utils.Test2BitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.Test2DrawableDecodeInterceptor
+import com.github.panpf.sketch.test.utils.Test2DecodeInterceptor
 import com.github.panpf.sketch.test.utils.Test2RequestInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder2
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
@@ -103,94 +96,49 @@ class ComponentsTest {
     }
 
     @Test
-    fun testBitmapDecodeInterceptors() {
+    fun testDecodeInterceptors() {
         val (context, sketch) = getTestContextAndNewSketch()
         val emptyRequest = ImageRequest(context, "")
         val notEmptyRequest = ImageRequest(context, "") {
             components {
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor(95))
-                addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor(95))
+                addDecodeInterceptor(Test2DecodeInterceptor())
             }
         }
 
         Components(sketch, ComponentRegistry.Builder().build()).apply {
             Assert.assertEquals(
-                listOf<BitmapDecodeInterceptor>(),
-                getBitmapDecodeInterceptorList(emptyRequest)
+                listOf<DecodeInterceptor>(),
+                getDecodeInterceptorList(emptyRequest)
             )
             Assert.assertEquals(
                 listOf(
-                    Test2BitmapDecodeInterceptor(),
-                    TestBitmapDecodeInterceptor(95),
+                    Test2DecodeInterceptor(),
+                    TestDecodeInterceptor(95),
                 ),
-                getBitmapDecodeInterceptorList(notEmptyRequest)
+                getDecodeInterceptorList(notEmptyRequest)
             )
         }
 
         Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
+            addDecodeInterceptor(TransformationDecodeInterceptor())
+            addDecodeInterceptor(EngineDecodeInterceptor())
         }.build()).apply {
             Assert.assertEquals(
                 listOf(
-                    BitmapTransformationDecodeInterceptor(),
-                    EngineBitmapDecodeInterceptor()
+                    TransformationDecodeInterceptor(),
+                    EngineDecodeInterceptor()
                 ),
-                getBitmapDecodeInterceptorList(emptyRequest)
+                getDecodeInterceptorList(emptyRequest)
             )
             Assert.assertEquals(
                 listOf(
-                    Test2BitmapDecodeInterceptor(),
-                    BitmapTransformationDecodeInterceptor(),
-                    TestBitmapDecodeInterceptor(95),
-                    EngineBitmapDecodeInterceptor()
+                    Test2DecodeInterceptor(),
+                    TransformationDecodeInterceptor(),
+                    TestDecodeInterceptor(95),
+                    EngineDecodeInterceptor()
                 ),
-                getBitmapDecodeInterceptorList(notEmptyRequest)
-            )
-        }
-    }
-
-    @Test
-    fun testDrawableDecodeInterceptors() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val emptyRequest = ImageRequest(context, "")
-        val notEmptyRequest = ImageRequest(context, "") {
-            components {
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(95))
-                addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
-            }
-        }
-
-        Components(sketch, ComponentRegistry.Builder().build()).apply {
-            Assert.assertEquals(
-                listOf<DrawableDecodeInterceptor>(),
-                getDrawableDecodeInterceptorList(emptyRequest)
-            )
-            Assert.assertEquals(
-                listOf(
-                    Test2DrawableDecodeInterceptor(),
-                    TestDrawableDecodeInterceptor(95),
-                ),
-                getDrawableDecodeInterceptorList(notEmptyRequest)
-            )
-        }
-
-        Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor(90))
-            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
-        }.build()).apply {
-            Assert.assertEquals(
-                listOf(TestDrawableDecodeInterceptor(90), EngineDrawableDecodeInterceptor()),
-                getDrawableDecodeInterceptorList(emptyRequest)
-            )
-            Assert.assertEquals(
-                listOf(
-                    Test2DrawableDecodeInterceptor(),
-                    TestDrawableDecodeInterceptor(90),
-                    TestDrawableDecodeInterceptor(95),
-                    EngineDrawableDecodeInterceptor()
-                ),
-                getDrawableDecodeInterceptorList(notEmptyRequest)
+                getDecodeInterceptorList(notEmptyRequest)
             )
         }
     }
@@ -296,7 +244,7 @@ class ComponentsTest {
     }
 
     @Test
-    fun testNewBitmapDecoder() {
+    fun testNewDecoder() {
         val context = getTestContext()
         val sketch = newSketch()
 
@@ -308,7 +256,7 @@ class ComponentsTest {
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 runBlocking(Dispatchers.Main) {
-                    newBitmapDecoderOrThrow(requestContext, fetchResult)
+                    newDecoderOrThrow(requestContext, fetchResult)
                 }
             }
         }
@@ -320,132 +268,53 @@ class ComponentsTest {
                 val request = ImageRequest(context, AssetImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newBitmapDecoderOrThrow(requestContext, fetchResult)
+                newDecoderOrThrow(requestContext, fetchResult)
             }
             assertThrow(IllegalArgumentException::class) {
                 val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
-                        addBitmapDecoder(DrawableBitmapDecoder.Factory())
+                        addDecoder(DrawableDecoder.Factory())
                     }
                 }
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newBitmapDecoderOrThrow(requestContext, fetchResult)
+                newDecoderOrThrow(requestContext, fetchResult)
             }
             assertNoThrow {
                 val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
-                        addBitmapDecoder(DefaultBitmapDecoder.Factory())
+                        addDecoder(BitmapFactoryDecoder.Factory())
                     }
                 }
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newBitmapDecoderOrThrow(requestContext, fetchResult)
+                newDecoderOrThrow(requestContext, fetchResult)
             }
         }
 
         Components(sketch, ComponentRegistry.Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
-            addBitmapDecoder(DefaultBitmapDecoder.Factory())
+            addDecoder(BitmapFactoryDecoder.Factory())
         }.build()).apply {
             assertNoThrow {
                 val request = ImageRequest(context, AssetImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 Assert.assertTrue(
-                    newBitmapDecoderOrThrow(requestContext, fetchResult) is DefaultBitmapDecoder
+                    newDecoderOrThrow(requestContext, fetchResult) is BitmapFactoryDecoder
                 )
             }
 
             assertNoThrow {
                 val request = ImageRequest(context, AssetImages.jpeg.uri) {
                     components {
-                        addBitmapDecoder(TestBitmapDecoder.Factory())
+                        addDecoder(TestDecoder.Factory())
                     }
                 }
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 Assert.assertTrue(
-                    newBitmapDecoderOrThrow(requestContext, fetchResult) is TestBitmapDecoder
-                )
-            }
-        }
-    }
-
-    @Test
-    fun testNewDrawableDecoder() {
-        val context = getTestContext()
-        val sketch = newSketch()
-
-        Components(sketch, ComponentRegistry.Builder().apply {
-            addFetcher(AssetUriFetcher.Factory())
-        }.build()).apply {
-            assertThrow(IllegalStateException::class) {
-                val request = ImageRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                runBlocking(Dispatchers.Main) {
-                    newDrawableDecoderOrThrow(requestContext, fetchResult)
-                }
-            }
-        }
-
-        Components(sketch, ComponentRegistry.Builder().apply {
-            addFetcher(AssetUriFetcher.Factory())
-        }.build()).apply {
-            assertThrow(IllegalArgumentException::class) {
-                val request = ImageRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newDrawableDecoderOrThrow(requestContext, fetchResult)
-            }
-            assertThrow(IllegalArgumentException::class) {
-                val request = ImageRequest(context, AssetImages.jpeg.uri) {
-                    components {
-                        addDrawableDecoder(TestDrawableDecoder2.Factory("image/xml"))
-                    }
-                }
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newDrawableDecoderOrThrow(requestContext, fetchResult)
-            }
-            assertNoThrow {
-                val request = ImageRequest(context, AssetImages.jpeg.uri) {
-                    components {
-                        addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                    }
-                }
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newDrawableDecoderOrThrow(requestContext, fetchResult)
-            }
-        }
-
-        Components(sketch, ComponentRegistry.Builder().apply {
-            addFetcher(AssetUriFetcher.Factory())
-            addDrawableDecoder(DefaultDrawableDecoder.Factory())
-        }.build()).apply {
-            assertNoThrow {
-                val request = ImageRequest(context, AssetImages.jpeg.uri)
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                Assert.assertTrue(
-                    newDrawableDecoderOrThrow(
-                        requestContext,
-                        fetchResult
-                    ) is DefaultDrawableDecoder
-                )
-            }
-            assertNoThrow {
-                val request = ImageRequest(context, AssetImages.jpeg.uri) {
-                    components {
-                        addDrawableDecoder(TestDrawableDecoder.Factory())
-                    }
-                }
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                Assert.assertTrue(
-                    newDrawableDecoderOrThrow(requestContext, fetchResult) is TestDrawableDecoder
+                    newDecoderOrThrow(requestContext, fetchResult) is TestDecoder
                 )
             }
         }
@@ -458,11 +327,9 @@ class ComponentsTest {
             Assert.assertEquals(
                 "Components(ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
-                        "bitmapDecoderFactoryList=[]," +
-                        "drawableDecoderFactoryList=[]," +
+                        "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
-                        "bitmapDecodeInterceptorList=[]," +
-                        "drawableDecodeInterceptorList=[]" +
+                        "decodeInterceptorList=[]" +
                         "))",
                 toString()
             )
@@ -471,22 +338,18 @@ class ComponentsTest {
             addFetcher(HttpUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
             addFetcher(ResourceUriFetcher.Factory())
-            addBitmapDecoder(DrawableBitmapDecoder.Factory())
-            addBitmapDecoder(DefaultBitmapDecoder.Factory())
-            addDrawableDecoder(DefaultDrawableDecoder.Factory())
+            addDecoder(DrawableDecoder.Factory())
+            addDecoder(BitmapFactoryDecoder.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
-            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-            addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+            addDecodeInterceptor(EngineDecodeInterceptor())
+            addDecodeInterceptor(TransformationDecodeInterceptor())
         }.build()).apply {
             Assert.assertEquals(
                 "Components(ComponentRegistry(" +
                         "fetcherFactoryList=[HttpUriFetcher,Base64UriFetcher,ResourceUriFetcher]," +
-                        "bitmapDecoderFactoryList=[DrawableBitmapDecoder,DefaultBitmapDecoder]," +
-                        "drawableDecoderFactoryList=[DefaultDrawableDecoder]," +
+                        "decoderFactoryList=[DrawableDecoder,BitmapFactoryDecoder]," +
                         "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
-                        "bitmapDecodeInterceptorList=[BitmapTransformationDecodeInterceptor(sortWeight=90),EngineBitmapDecodeInterceptor(sortWeight=100)]," +
-                        "drawableDecodeInterceptorList=[EngineDrawableDecodeInterceptor(sortWeight=100)]" +
+                        "decodeInterceptorList=[TransformationDecodeInterceptor(sortWeight=90),EngineDecodeInterceptor(sortWeight=100)]" +
                         "))",
                 toString()
             )
@@ -504,19 +367,13 @@ class ComponentsTest {
             addFetcher(HttpUriFetcher.Factory())
         }.build())
         val components2 = Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecoder(DrawableBitmapDecoder.Factory())
-        }.build())
-        val components3 = Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecoder(DefaultDrawableDecoder.Factory())
+            addDecoder(DrawableDecoder.Factory())
         }.build())
         val components4 = Components(sketch, ComponentRegistry.Builder().apply {
             addRequestInterceptor(EngineRequestInterceptor())
         }.build())
         val components5 = Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-        }.build())
-        val components6 = Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+            addDecodeInterceptor(EngineDecodeInterceptor())
         }.build())
 
         Assert.assertEquals(components0, components0)
@@ -525,25 +382,14 @@ class ComponentsTest {
         Assert.assertNotEquals(components1, null)
         Assert.assertNotEquals(components0, components1)
         Assert.assertNotEquals(components0, components2)
-        Assert.assertNotEquals(components0, components3)
         Assert.assertNotEquals(components0, components4)
         Assert.assertNotEquals(components0, components5)
-        Assert.assertNotEquals(components0, components6)
         Assert.assertNotEquals(components1, components2)
-        Assert.assertNotEquals(components1, components3)
         Assert.assertNotEquals(components1, components4)
         Assert.assertNotEquals(components1, components5)
-        Assert.assertNotEquals(components1, components6)
-        Assert.assertNotEquals(components2, components3)
         Assert.assertNotEquals(components2, components4)
         Assert.assertNotEquals(components2, components5)
-        Assert.assertNotEquals(components2, components6)
-        Assert.assertNotEquals(components3, components4)
-        Assert.assertNotEquals(components3, components5)
-        Assert.assertNotEquals(components3, components6)
         Assert.assertNotEquals(components4, components5)
-        Assert.assertNotEquals(components4, components6)
-        Assert.assertNotEquals(components5, components6)
     }
 
     @Test
@@ -554,41 +400,24 @@ class ComponentsTest {
             addFetcher(HttpUriFetcher.Factory())
         }.build())
         val components2 = Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecoder(DrawableBitmapDecoder.Factory())
-        }.build())
-        val components3 = Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecoder(DefaultDrawableDecoder.Factory())
+            addDecoder(DrawableDecoder.Factory())
         }.build())
         val components4 = Components(sketch, ComponentRegistry.Builder().apply {
             addRequestInterceptor(EngineRequestInterceptor())
         }.build())
         val components5 = Components(sketch, ComponentRegistry.Builder().apply {
-            addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-        }.build())
-        val components6 = Components(sketch, ComponentRegistry.Builder().apply {
-            addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+            addDecodeInterceptor(EngineDecodeInterceptor())
         }.build())
 
         Assert.assertNotEquals(components0.hashCode(), components1.hashCode())
         Assert.assertNotEquals(components0.hashCode(), components2.hashCode())
-        Assert.assertNotEquals(components0.hashCode(), components3.hashCode())
         Assert.assertNotEquals(components0.hashCode(), components4.hashCode())
         Assert.assertNotEquals(components0.hashCode(), components5.hashCode())
-        Assert.assertNotEquals(components0.hashCode(), components6.hashCode())
         Assert.assertNotEquals(components1.hashCode(), components2.hashCode())
-        Assert.assertNotEquals(components1.hashCode(), components3.hashCode())
         Assert.assertNotEquals(components1.hashCode(), components4.hashCode())
         Assert.assertNotEquals(components1.hashCode(), components5.hashCode())
-        Assert.assertNotEquals(components1.hashCode(), components6.hashCode())
-        Assert.assertNotEquals(components2.hashCode(), components3.hashCode())
         Assert.assertNotEquals(components2.hashCode(), components4.hashCode())
         Assert.assertNotEquals(components2.hashCode(), components5.hashCode())
-        Assert.assertNotEquals(components2.hashCode(), components6.hashCode())
-        Assert.assertNotEquals(components3.hashCode(), components4.hashCode())
-        Assert.assertNotEquals(components3.hashCode(), components5.hashCode())
-        Assert.assertNotEquals(components3.hashCode(), components6.hashCode())
         Assert.assertNotEquals(components4.hashCode(), components5.hashCode())
-        Assert.assertNotEquals(components4.hashCode(), components6.hashCode())
-        Assert.assertNotEquals(components5.hashCode(), components6.hashCode())
     }
 }

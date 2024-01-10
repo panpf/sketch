@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target

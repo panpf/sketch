@@ -7,7 +7,7 @@ Translations: [简体中文](apk_app_icon_zh.md)
 
 ### Displays an icon for the APK file
 
-First, register [ApkIconBitmapDecoder] as follows:
+First, register [ApkIconDecoder] as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
@@ -38,7 +38,7 @@ imageView.displayImage("/sdcard/sample.apk")
 
 ### Displays an icon for the installed app
 
-First, register [AppIconUriFetcher] and [AppIconBitmapDecoder] as follows:
+First, register [AppIconUriFetcher] as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
@@ -74,9 +74,7 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCo
 
 [Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[AppIconBitmapDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/AppIconBitmapDecoder.kt
-
-[ApkIconBitmapDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
+[ApkIconDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconDecoder.kt
 
 [AppIconUriFetcher]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
 

@@ -26,7 +26,6 @@ import android.graphics.Bitmap.Config.RGBA_F16
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorSpace
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Build.VERSION
@@ -49,21 +48,23 @@ import com.github.panpf.sketch.decode.internal.resultCacheDataKey
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.GlobalLifecycle
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.request.getBitmapOrThrow
+import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.memoryCacheKey
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -79,11 +80,9 @@ import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDisplayCountDisplayTarget
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestErrorBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestErrorDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.TestErrorDecoder
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTarget
@@ -91,7 +90,6 @@ import com.github.panpf.sketch.test.utils.TestTransitionViewTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
@@ -134,7 +132,7 @@ class ImageRequestExecuteTest {
         sketch.memoryCache.clear()
         ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<ImageResult.Success>()!!.apply {
@@ -147,7 +145,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(NETWORK)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<ImageResult.Success>()!!.apply {
@@ -160,7 +158,7 @@ class ImageRequestExecuteTest {
         runBlocking {
             sketch.execute(ImageRequest(context, imageUri) {
                 resultCachePolicy(DISABLED)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
             })
         }
         sketch.memoryCache.clear()
@@ -168,7 +166,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<ImageResult.Success>()!!.apply {
@@ -180,7 +178,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(LOCAL)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<ImageResult.Error>()!!.apply {
@@ -192,13 +190,13 @@ class ImageRequestExecuteTest {
         runBlocking {
             sketch.execute(ImageRequest(context, imageUri) {
                 resultCachePolicy(DISABLED)
-                target(TestDisplayCountDisplayTarget())
+                target(TestCountTarget())
             })
         }
         ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(MEMORY)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<ImageResult.Success>()!!.apply {
@@ -209,7 +207,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             depth(MEMORY)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }.let {
             runBlocking { sketch.execute(it) }
         }.asOrNull<ImageResult.Error>()!!.apply {
@@ -351,10 +349,8 @@ class ImageRequestExecuteTest {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
-                Assert.assertEquals(ARGB_8888, bitmap.config)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
 
         ImageRequest(context, AssetImages.jpeg.uri) {
@@ -362,10 +358,8 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             bitmapConfig(ARGB_8888)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
-                Assert.assertEquals(ARGB_8888, bitmap.config)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
 
         ImageRequest(context, AssetImages.jpeg.uri) {
@@ -374,14 +368,12 @@ class ImageRequestExecuteTest {
             @Suppress("DEPRECATION")
             bitmapConfig(ARGB_4444)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 if (VERSION.SDK_INT > VERSION_CODES.M) {
-                    Assert.assertEquals(ARGB_8888, bitmap.config)
+                    Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
                 } else {
                     @Suppress("DEPRECATION")
-                    Assert.assertEquals(ARGB_4444, bitmap.config)
+                    Assert.assertEquals(ARGB_4444, image.getBitmapOrThrow().config)
                 }
             }
 
@@ -390,10 +382,8 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             bitmapConfig(ALPHA_8)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
-                Assert.assertEquals(ARGB_8888, bitmap.config)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
 
         ImageRequest(context, AssetImages.jpeg.uri) {
@@ -401,10 +391,8 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             bitmapConfig(RGB_565)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
-                Assert.assertEquals(RGB_565, bitmap.config)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(RGB_565, image.getBitmapOrThrow().config)
             }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -413,10 +401,8 @@ class ImageRequestExecuteTest {
                 memoryCachePolicy(DISABLED)
                 bitmapConfig(RGBA_F16)
             }.let { runBlocking { sketch.execute(it) } }
-                .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-                .apply {
-                    Assert.assertEquals(RGBA_F16, bitmap.config)
+                .asOrNull<ImageResult.Success>()!!.apply {
+                    Assert.assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
                 }
         }
 
@@ -426,10 +412,8 @@ class ImageRequestExecuteTest {
                 memoryCachePolicy(DISABLED)
                 bitmapConfig(HARDWARE)
             }.let { runBlocking { sketch.execute(it) } }
-                .asOrNull<ImageResult.Success>()!!
-                .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-                .apply {
-                    Assert.assertEquals(HARDWARE, bitmap.config)
+                .asOrNull<ImageResult.Success>()!!.apply {
+                    Assert.assertEquals(HARDWARE, image.getBitmapOrThrow().config)
                 }
         }
 
@@ -438,24 +422,20 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.LowQuality)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
-                Assert.assertEquals(RGB_565, bitmap.config)
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(RGB_565, image.getBitmapOrThrow().config)
             }
         ImageRequest(context, AssetImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.LowQuality)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(ARGB_8888, bitmap.config)
+                    Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
                 } else {
                     @Suppress("DEPRECATION")
-                    Assert.assertEquals(ARGB_4444, bitmap.config)
+                    Assert.assertEquals(ARGB_4444, image.getBitmapOrThrow().config)
                 }
             }
 
@@ -464,13 +444,11 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.HighQuality)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    Assert.assertEquals(RGBA_F16, bitmap.config)
+                    Assert.assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
                 } else {
-                    Assert.assertEquals(ARGB_8888, bitmap.config)
+                    Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
                 }
             }
         ImageRequest(context, AssetImages.png.uri) {
@@ -478,13 +456,11 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.HighQuality)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    Assert.assertEquals(RGBA_F16, bitmap.config)
+                    Assert.assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
                 } else {
-                    Assert.assertEquals(ARGB_8888, bitmap.config)
+                    Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
                 }
             }
     }
@@ -500,12 +476,10 @@ class ImageRequestExecuteTest {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(
                     ColorSpace.get(ColorSpace.Named.SRGB).name,
-                    bitmap.colorSpace!!.name
+                    image.getBitmapOrThrow().colorSpace!!.name
                 )
             }
 
@@ -514,12 +488,10 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.get(ColorSpace.Named.ADOBE_RGB))
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(
                     ColorSpace.get(ColorSpace.Named.ADOBE_RGB).name,
-                    bitmap.colorSpace!!.name
+                    image.getBitmapOrThrow().colorSpace!!.name
                 )
             }
 
@@ -528,12 +500,10 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.get(ColorSpace.Named.DISPLAY_P3))
         }.let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!
-            .apply {
+            .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(
                     ColorSpace.get(ColorSpace.Named.DISPLAY_P3).name,
-                    bitmap.colorSpace!!.name
+                    image.getBitmapOrThrow().colorSpace!!.name
                 )
             }
     }
@@ -586,11 +556,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     samplingByTarget(imageSize, displaySize),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
 
@@ -604,11 +574,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(323, 484),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -619,11 +589,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     smallSize1.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -634,7 +604,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     smallSize1,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -647,11 +617,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(323, 484),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -662,11 +632,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 387),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     smallSize2.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -677,7 +647,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     smallSize2,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -691,7 +661,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     sameSize,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
         ImageRequest(context, imageUri) {
@@ -702,7 +672,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     sameSize,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
         ImageRequest(context, imageUri) {
@@ -713,7 +683,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     sameSize,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -727,11 +697,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     imageSize,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -742,11 +712,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(1291, 1084),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     bigSize1.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -757,7 +727,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     bigSize1,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -770,11 +740,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     imageSize,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -785,11 +755,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(1291, 1537),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     bigSize2.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -800,7 +770,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     bigSize2,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -813,11 +783,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(646, 968),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -828,11 +798,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(620, 1936),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     bigSize3.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -843,7 +813,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     bigSize3,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -856,11 +826,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(646, 968),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     imageInfo.size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -871,11 +841,11 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(1291, 413),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     bigSize4.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -886,7 +856,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     bigSize4,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
             }
 
@@ -902,16 +872,15 @@ class ImageRequestExecuteTest {
             resizeScale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarStartCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarStartCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -920,16 +889,15 @@ class ImageRequestExecuteTest {
             resizeScale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarCenterCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarCenterCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -938,16 +906,15 @@ class ImageRequestExecuteTest {
             resizeScale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarEndCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarEndCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         ImageRequest(context, imageUri) {
@@ -956,17 +923,16 @@ class ImageRequestExecuteTest {
             resizeScale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                sarFillCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                sarFillCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
                     if (VERSION.SDK_INT >= 24)
                         Size(323, 269) else Size(322, 268),
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize
+                    image.size
                 )
                 Assert.assertEquals(
                     size.ratio,
-                    image.asOrThrow<DrawableImage>().drawable.intrinsicSize.ratio
+                    image.size.ratio
                 )
             }
         Assert.assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
@@ -986,10 +952,9 @@ class ImageRequestExecuteTest {
             resizeScale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyStartCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyStartCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(size, image.size)
             }
         ImageRequest(context, imageUri) {
             resizeSize(size)
@@ -997,10 +962,9 @@ class ImageRequestExecuteTest {
             resizeScale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyCenterCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyCenterCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(size, image.size)
             }
         ImageRequest(context, imageUri) {
             resizeSize(size)
@@ -1008,10 +972,9 @@ class ImageRequestExecuteTest {
             resizeScale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyEndCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyEndCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(size, image.size)
             }
         ImageRequest(context, imageUri) {
             resizeSize(size)
@@ -1019,10 +982,9 @@ class ImageRequestExecuteTest {
             resizeScale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                exactlyFillCropBitmap =
-                    image.asOrThrow<DrawableImage>().drawable.asOrNull<BitmapDrawable>()!!.bitmap
+                exactlyFillCropBitmap = image.getBitmapOrThrow()
                 Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(size, image.asOrThrow<DrawableImage>().drawable.intrinsicSize)
+                Assert.assertEquals(size, image.size)
             }
         Assert.assertNotEquals(
             exactlyStartCropBitmap!!.corners(),
@@ -1513,21 +1475,21 @@ class ImageRequestExecuteTest {
 
         request.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertFalse(image.asOrThrow<DrawableImage>().drawable is ResizeDrawable)
+                Assert.assertTrue(this.image is BitmapImage)
             }
 
         request.newRequest {
             resizeApplyToDrawable(false)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertFalse(image.asOrThrow<DrawableImage>().drawable is ResizeDrawable)
+                Assert.assertTrue(this.image is BitmapImage)
             }
 
         request.newRequest {
             resizeApplyToDrawable(null)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertFalse(image.asOrThrow<DrawableImage>().drawable is ResizeDrawable)
+                Assert.assertTrue(this.image is BitmapImage)
             }
 
         request.newRequest {
@@ -1547,7 +1509,7 @@ class ImageRequestExecuteTest {
         val request = ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             resizeSize(500, 500)
-            target(TestDisplayCountDisplayTarget())
+            target(TestCountTarget())
         }
         val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
 
@@ -1751,32 +1713,16 @@ class ImageRequestExecuteTest {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertFalse(transformedList?.contains("TestBitmapDecodeInterceptor") == true)
+            Assert.assertFalse(transformedList?.contains("TestDecodeInterceptor") == true)
         }
         ImageRequest(context, AssetImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             components {
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
             }
         }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertTrue(transformedList?.contains("TestBitmapDecodeInterceptor") == true)
-        }
-
-        ImageRequest(context, AssetImages.jpeg.uri) {
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-        }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertFalse(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
-        }
-        ImageRequest(context, AssetImages.jpeg.uri) {
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-            components {
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
-            }
-        }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertTrue(transformedList?.contains("TestDrawableDecodeInterceptor") == true)
+            Assert.assertTrue(transformedList?.contains("TestDecodeInterceptor") == true)
         }
 
         ImageRequest(context, AssetImages.jpeg.uri.replace("asset", "test")) {
@@ -1805,23 +1751,7 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
-                addBitmapDecoder(TestErrorBitmapDecoder.Factory())
-            }
-        }.let { runBlocking { it.execute() } }.apply {
-            Assert.assertTrue(this is ImageResult.Error)
-        }
-
-        ImageRequest(context, AssetImages.jpeg.uri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-        }.let { runBlocking { it.execute() } }.apply {
-            Assert.assertTrue(this is ImageResult.Success)
-        }
-        ImageRequest(context, AssetImages.jpeg.uri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            components {
-                addDrawableDecoder(TestErrorDrawableDecoder.Factory())
+                addDecoder(TestErrorDecoder.Factory())
             }
         }.let { runBlocking { it.execute() } }.apply {
             Assert.assertTrue(this is ImageResult.Error)

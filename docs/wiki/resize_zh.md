@@ -81,7 +81,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 ### 默认值
 
 * width、height：
-    1. 如果 target 是 [ViewDisplayTarget]
+    1. 如果 target 是 [ViewTarget]
         1. 优先取 view 的 LayoutParams 宽高
         2. 其次延迟到绘制阶段取 View 的宽高，如果到绘制阶段宽高还是 0，那么请求不会继续执行
     2. 如果是在 compose 中使用
@@ -94,7 +94,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ### resizeApplyToDrawable
 
-[ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [DisplayTarget]
+[ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [Target]
 的
 placeholder, error, result Drawable 上
 
@@ -124,7 +124,7 @@ Sketch 会用 [ResizeDrawable] 或 [ResizeAnimatableDrawable] 将 placeholder, e
 
 [Precision]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Precision.kt
 
-[ViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewDisplayTarget.kt
+[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -132,7 +132,7 @@ Sketch 会用 [ResizeDrawable] 或 [ResizeAnimatableDrawable] 将 placeholder, e
 
 [CrossfadeTransition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
 
-[DisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/DisplayTarget.kt
+[Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
 
 [ResizeDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
 

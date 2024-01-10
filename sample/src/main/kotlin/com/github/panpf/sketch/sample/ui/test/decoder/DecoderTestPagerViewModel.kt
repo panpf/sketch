@@ -22,15 +22,16 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build.VERSION_CODES
 import androidx.lifecycle.viewModelScope
-import com.github.panpf.sketch.decode.ApkIconBitmapDecoder
-import com.github.panpf.sketch.decode.FFmpegVideoFrameBitmapDecoder
-import com.github.panpf.sketch.decode.GifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.GifDrawableDrawableDecoder
-import com.github.panpf.sketch.decode.GifMovieDrawableDecoder
-import com.github.panpf.sketch.decode.HeifAnimatedDrawableDecoder
-import com.github.panpf.sketch.decode.SvgBitmapDecoder
-import com.github.panpf.sketch.decode.VideoFrameBitmapDecoder
-import com.github.panpf.sketch.decode.WebpAnimatedDrawableDecoder
+import com.github.panpf.sketch.decode.ApkIconDecoder
+import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
+import com.github.panpf.sketch.decode.GifAnimatedDecoder
+import com.github.panpf.sketch.decode.GifDrawableDecoder
+import com.github.panpf.sketch.decode.GifMovieDecoder
+import com.github.panpf.sketch.decode.HeifAnimatedDecoder
+import com.github.panpf.sketch.decode.SvgDecoder
+import com.github.panpf.sketch.decode.VideoFrameDecoder
+import com.github.panpf.sketch.decode.WebpAnimatedDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R.drawable
@@ -63,7 +64,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "SVG",
                         imageUri = AssetImages.svg.uri,
                         minAPI = null,
-                        imageDecoder = SvgBitmapDecoder.Factory()
+                        imageDecoder = SvgDecoder.Factory()
                     )
                 )
                 add(
@@ -78,7 +79,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "GIF_KORAL",
                         imageUri = AssetImages.animGif.uri,
                         minAPI = null,
-                        imageDecoder = GifDrawableDrawableDecoder.Factory()
+                        imageDecoder = GifDrawableDecoder.Factory()
                     )
                 )
                 add(
@@ -86,7 +87,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "GIF_MOVIE",
                         imageUri = AssetImages.animGif.uri,
                         minAPI = VERSION_CODES.KITKAT,
-                        imageDecoder = GifMovieDrawableDecoder.Factory()
+                        imageDecoder = GifMovieDecoder.Factory()
                     )
                 )
                 add(
@@ -94,7 +95,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "GIF_ANIMATED",
                         imageUri = AssetImages.animGif.uri,
                         minAPI = VERSION_CODES.P,
-                        imageDecoder = GifAnimatedDrawableDecoder.Factory()
+                        imageDecoder = GifAnimatedDecoder.Factory()
                     )
                 )
                 add(
@@ -102,7 +103,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "WEBP_ANIMATED",
                         imageUri = AssetImages.animWebp.uri,
                         minAPI = VERSION_CODES.P,
-                        imageDecoder = WebpAnimatedDrawableDecoder.Factory()
+                        imageDecoder = WebpAnimatedDecoder.Factory()
                     )
                 )
                 add(
@@ -110,7 +111,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "HEIF_ANIMATED",
                         imageUri = AssetImages.animHeif.uri,
                         minAPI = VERSION_CODES.P,
-                        imageDecoder = HeifAnimatedDrawableDecoder.Factory()
+                        imageDecoder = HeifAnimatedDecoder.Factory()
                     )
                 )
                 add(
@@ -118,7 +119,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "MP4_FFMPEG",
                         imageUri = AssetImages.mp4.uri,
                         minAPI = null,
-                        imageDecoder = FFmpegVideoFrameBitmapDecoder.Factory()
+                        imageDecoder = FFmpegVideoFrameDecoder.Factory()
                     )
                 )
                 add(
@@ -126,7 +127,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "MP4_BUILTIN",
                         imageUri = AssetImages.mp4.uri,
                         minAPI = VERSION_CODES.O_MR1,
-                        imageDecoder = VideoFrameBitmapDecoder.Factory()
+                        imageDecoder = VideoFrameDecoder.Factory()
                     )
                 )
                 add(
@@ -151,7 +152,7 @@ class DecoderTestViewModel(application1: Application) : LifecycleAndroidViewMode
                         name = "APK_ICON",
                         imageUri = headerUserPackageInfo.applicationInfo.publicSourceDir,
                         minAPI = null,
-                        imageDecoder = ApkIconBitmapDecoder.Factory()
+                        imageDecoder = ApkIconDecoder.Factory()
                     )
                 )
             }
@@ -179,5 +180,5 @@ class DecoderTestItem(
     val name: String,
     val imageUri: String,
     val minAPI: Int?,
-    val imageDecoder: Any? = null
+    val imageDecoder: Decoder.Factory? = null
 )

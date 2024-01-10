@@ -18,13 +18,12 @@ package com.github.panpf.sketch.fetch
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DrawableDecoder
+import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
  * [Fetcher] get the data stream from the uri of [ImageRequest] and wrap it as a [FetchResult] return
- * for use by [BitmapDecoder] or [DrawableDecoder]
+ * for use by [Decoder]
  */
 fun interface Fetcher {
 

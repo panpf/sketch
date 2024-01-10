@@ -34,8 +34,7 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -64,12 +63,9 @@ import com.github.panpf.sketch.stateimage.ColorStateImage
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.IntColor
-import com.github.panpf.sketch.test.utils.Test2BitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.Test2DrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.Test2DecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
@@ -676,49 +672,39 @@ class ImageOptionsTest {
             ImageOptions {
                 components {
                     addFetcher(TestFetcher.Factory())
-                    addBitmapDecoder(TestBitmapDecoder.Factory())
-                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
-                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
                 }
             }
         ).apply {
             Assert.assertEquals(
                 ComponentRegistry.Builder().apply {
                     addFetcher(TestFetcher.Factory())
-                    addBitmapDecoder(TestBitmapDecoder.Factory())
-                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
-                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
                 }.build(),
                 componentRegistry
             )
         }.merged(ImageOptions {
             components {
                 addFetcher(HttpUriFetcher.Factory())
-                addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                addDecoder(BitmapFactoryDecoder.Factory())
                 addRequestInterceptor(EngineRequestInterceptor())
-                addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
-                addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
+                addDecodeInterceptor(Test2DecodeInterceptor())
             }
         }).apply {
             Assert.assertEquals(
                 ComponentRegistry.Builder().apply {
                     addFetcher(TestFetcher.Factory())
-                    addBitmapDecoder(TestBitmapDecoder.Factory())
-                    addDrawableDecoder(TestDrawableDecoder.Factory())
+                    addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
-                    addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                    addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
                     addFetcher(HttpUriFetcher.Factory())
-                    addBitmapDecoder(DefaultBitmapDecoder.Factory())
-                    addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                    addDecoder(BitmapFactoryDecoder.Factory())
                     addRequestInterceptor(EngineRequestInterceptor())
-                    addBitmapDecodeInterceptor(Test2BitmapDecodeInterceptor())
-                    addDrawableDecodeInterceptor(Test2DrawableDecodeInterceptor())
+                    addDecodeInterceptor(Test2DecodeInterceptor())
                 }.build(),
                 componentRegistry
             )
@@ -1655,11 +1641,11 @@ class ImageOptionsTest {
             }
 
             components {
-                addBitmapDecoder(TestBitmapDecoder.Factory())
+                addDecoder(TestDecoder.Factory())
             }
             val options2 = build().apply {
                 Assert.assertEquals(ComponentRegistry.Builder().apply {
-                    addBitmapDecoder(TestBitmapDecoder.Factory())
+                    addDecoder(TestDecoder.Factory())
                 }.build(), componentRegistry)
             }
 

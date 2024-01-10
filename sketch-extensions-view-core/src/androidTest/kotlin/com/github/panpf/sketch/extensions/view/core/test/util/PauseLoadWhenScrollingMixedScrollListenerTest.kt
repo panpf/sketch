@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
 import org.junit.Assert
 import org.junit.Test
@@ -51,19 +51,19 @@ class PauseLoadWhenScrollingMixedScrollListenerTest {
         }
         val listener = PauseLoadWhenScrollingMixedScrollListener()
 
-        Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(recyclerView, RecyclerView.SCROLL_STATE_DRAGGING)
-        Assert.assertTrue(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(recyclerView, RecyclerView.SCROLL_STATE_DRAGGING)
-        Assert.assertTrue(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(recyclerView, RecyclerView.SCROLL_STATE_IDLE)
-        Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(recyclerView, RecyclerView.SCROLL_STATE_IDLE)
-        Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
     }
 
     @Test
@@ -84,24 +84,24 @@ class PauseLoadWhenScrollingMixedScrollListenerTest {
         }
         val listener = PauseLoadWhenScrollingMixedScrollListener()
 
-        Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(
             recyclerView,
             AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
         )
-        Assert.assertTrue(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(
             recyclerView,
             AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
         )
-        Assert.assertTrue(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(recyclerView, AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
-        Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
 
         listener.onScrollStateChanged(recyclerView, AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
-        Assert.assertFalse(PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling)
+        Assert.assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
     }
 }

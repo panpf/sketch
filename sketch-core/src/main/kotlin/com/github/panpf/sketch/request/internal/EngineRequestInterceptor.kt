@@ -16,11 +16,10 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.decode.internal.DrawableDecodeInterceptorChain
+import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.asSketchImage
 import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
@@ -44,12 +43,12 @@ class EngineRequestInterceptor : RequestInterceptor {
             it.onStart(requestContext, placeholderDrawable)
         }
         val decodeResult = withContext(sketch.decodeTaskDispatcher) {
-            DrawableDecodeInterceptorChain(
+            DecodeInterceptorChain(
                 sketch = sketch,
                 request = request,
                 requestContext = requestContext,
                 fetchResult = null,
-                interceptors = sketch.components.getDrawableDecodeInterceptorList(request),
+                interceptors = sketch.components.getDecodeInterceptorList(request),
                 index = 0,
             ).proceed()
         }.let {
@@ -57,7 +56,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         }
         return Result.success(
             ImageData(
-                image = decodeResult.drawable.asSketchImage(),
+                image = decodeResult.image,
                 imageUri = request.uriString,
                 requestKey = request.key,
                 cacheKey = requestContext.cacheKey,

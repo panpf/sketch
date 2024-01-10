@@ -31,8 +31,8 @@ import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.http.OkHttpStack
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
-import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
+import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
+import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import com.github.panpf.sketch.util.Logger
 
 class MyApplication : MultiDexApplication(), SketchFactory {
@@ -50,9 +50,9 @@ class MyApplication : MultiDexApplication(), SketchFactory {
 //            }
 //        }.build())
         components {
-            addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+            supportSaveCellularTraffic()
 
-            addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
+            supportPauseLoadWhenScrolling()
 
             // app icon
             supportAppIcon()

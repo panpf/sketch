@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.target
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.internal.RequestContext
 
 /**

@@ -2,96 +2,48 @@
 
 Translations: [简体中文](decoder_zh.md)
 
-Decoder is used to decode an image file to get a Bitmap or Drawable, so Sketch has two kinds of
-decoder:
+[Decoder] is used to decode image files. It has the following implementation:
 
-* [BitmapDecoder]: Used to decode image files and convert them into Bitmap
-    * [ApkIconBitmapDecoder][ApkIconBitmapDecoder]: Decode the Apk file
-      icon, [Learn More](apk_app_icon.md#displays-an-icon-for-the-apk-file)
-    * [AppIconBitmapDecoder][AppIconBitmapDecoder]: Decode installed apps
-      icon, [Learn More](apk_app_icon.md#displays-an-icon-for-the-installed-app)
-    * [DefaultBitmapDecoder][DefaultBitmapDecoder]: The last Bitmap decoder with Android's
-      built-in [BitmapFactory] Decode the image
-    * [FFmpegVideoFrameBitmapDecoder][FFmpegVideoFrameBitmapDecoder]:
-      Using [wseemann] /[FFmpegMediaMetadataRetriever-project] library
-      for [FFmpegMediaMetadataRetriever] Class decode the frames of a video
-      file, [Learn More](video_frame.md)
-    * [SvgBitmapDecoder][SvgBitmapDecoder]: Decode static svg using the [BigBadaboom]/[androidsvg]
-      library file, [Learn More](svg.md)
-    * [VideoFrameBitmapDecoder][VideoFrameBitmapDecoder]: Use Android's
-      built-in [MediaMetadataRetriever] Class decode the frames of a video
-      file, [Learn More](video_frame.md)
-    * [DrawableBitmapDecoder][DrawableBitmapDecoder]: Decode vector, shape, and other
-      Android-supported xml drawable image
-* [DrawableDecoder]:  Used to decode image files and convert them to Drawable
-    * [DefaultDrawableDecoder][DefaultDrawableDecoder]: The final Drawable decoder calls
-      BitmapDecoder to get the Bitmap It is then encapsulated as BitmapDrawable
-    * [GifAnimatedDrawableDecoder][GifAnimatedDrawableDecoder]: Use Android's
-      built-in [ImageDecoder] class to decode
-      gifs , [Learn More](animated_image.md)
-    * [GifDrawableDrawableDecoder][GifDrawableDrawableDecoder]: Use [koral--]/[android-gif-drawable]
-      Library's [GifDrawable] class to decode
-      gifs, [Learn More](animated_image.md)
-    * [GifMovieDrawableDecoder][GifMovieDrawableDecoder]: Use Android's built-in [Movie] class to
-      decode gifs Picture, [Learn More](animated_image.md)
-    * [HeifAnimatedDrawableDecoder][HeifAnimatedDrawableDecoder]: Decode using Android's
-      built-in [ImageDecoder] class HEIF GIF, [Learn More](animated_image.md)
-    * [WebpAnimatedDrawableDecoder][WebpAnimatedDrawableDecoder]: Decode using Android's
-      built-in [ImageDecoder] class webp GIFs, [Learn More](animated_image.md)
+* [BitmapFactoryDecoder][BitmapFactoryDecoder]：Decode images using Android's
+  built-in [BitmapFactory], which is the last resort decoder
+* [DrawableDecoder][DrawableDecoder]：Decode vector, shape and other xml drawable images supported by
+  Android
+* [SvgDecoder][SvgDecoder]：Decode static svg files using the [BigBadaboom]/[androidsvg]
+  library ([Learn More](svg.md))
+* [ApkIconDecoder][ApkIconDecoder]：Decode the icon of the Apk
+  file ([Learn more](apk_app_icon.md#displays-an-icon-for-the-apk-file))
+* [GifAnimatedDecoder][GifAnimatedDecoder]：Decode gifs using Android's
+  built-in [ImageDecoder] ([Learn more](animated_image.md))
+* [GifDrawableDecoder][GifDrawableDecoder]：Decoding gif images using [GifDrawable] from
+  the [koral--]/[android-gif-drawable] library ([Learn more](animated_image.md))
+* [GifMovieDecoder][GifMovieDecoder]：Decode gif images using Android's
+  built-in [Movie] ([Learn more](animated_image.md))
+* [HeifAnimatedDecoder][HeifAnimatedDecoder]：Use Android's built-in [ImageDecoder] to decode heif
+  animations ([Learn More](animated_image.md))
+* [WebpAnimatedDecoder][WebpAnimatedDecoder]：Use Android's built-in [ImageDecoder] to decode webp
+  animations ([Learn more](animated_image.md))
+* [VideoFrameDecoder][VideoFrameDecoder]：Decoding frames of video files using Android's
+  built-in [MediaMetadataRetriever] class ([Learn more](video_frame.md))
+* [FFmpegVideoFrameDecoder][FFmpegVideoFrameDecoder]：Decode frames of a video file using
+  the [FFmpegMediaMetadataRetriever] class of the [wseemann]/[FFmpegMediaMetadataRetriever-project]
+  library ([Learn more](video_frame.md))
 
-[BitmapDecoder] and [DrawableDecoder] each have a list of decoders, and when they need to be
-decoded, Sketch will iterate through them according to the type of [ImageRequest].
-Decoder list until you find a Decoder that can decode the image of the current type, and then call
-its decode method to get the decoding result
+When decoding is required, Sketch will traverse the [Decoder] list to find a [Decoder] that can
+decode the current image, and then execute its decode method to obtain the decoding result.
 
-### Extend Decoder
+### Register Decoder
 
-1.The first thing you need to do is implement the [BitmapDecoder] or [DrawableDecoder] interface to
-define your Decoder and its
-Factory, let's take [BitmapDecoder] as an example, as follows:
+By default, Sketch only registers [DrawableDecoder] and [BitmapFactoryDecoder]. Other [Decoder] need
+to be registered manually according to your needs, as follows:
 
 ```kotlin
-class MyBitmapDecoder : BitmapDecoder {
-
-    override suspend fun decode(): Result<BitmapDecodeResult> {
-        // Decode the image here
-    }
-
-    companion object {
-        const val MY_MIME_TYPE = "image/mypng"
-    }
-
-    class Factory : BitmapDecoder.Factory {
-
-        override fun create(
-            sketch: Sketch,
-            requestContext: RequestContext,
-            fetchResult: FetchResult
-        ): BitmapDecoder? {
-            val mimeType = fetchResult.mimeType
-            val dataSource = fetchResult.dataSource
-            // Here, use mimeType or dataSource to determine whether the current image is the 
-            // target type of MyBitmapDecoder, and if so, return a new MyBitmapDecoder
-            return if (fetchResult.mimeType == MY_MIME_TYPE) {
-                MyBitmapDecoder()
-            } else {
-                null
-            }
-        }
-    }
-}
-```
-
-2.Then register via addBitmapDecoder as follows:
-
-```kotlin
-/* Register for all ImageRequests */
+/* Register for all ImageRequest */
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addBitmapDecoder(MyBitmapDecoder.Factory())
+                addDecoder(MyDecoder.Factory())
             }
         }.build()
     }
@@ -100,54 +52,89 @@ class MyApplication : Application(), SketchFactory {
 /* Register for a single ImageRequest */
 imageView.displayImage("asset://sample.mypng") {
     components {
-        addBitmapDecoder(MyBitmapDecoder.Factory())
+        addDecoder(MyDecoder.Factory())
     }
 }
 ```
 
-> Note: Customizing a Decoder requires the application of many properties related to image quality
-> and size in the ImageRequest, such as bitmapConfig, resize, colorSpace, etc., which can be
-> implemented by referring to other Decoder implementations
+### Extend New Decoder
 
-3.The custom [DrawableDecoder] flow is the same as the [BitmapDecoder] flow, with the only
-difference being that it is called when it is registered to Sketch
-addDrawableDecoder() method
-> Note: If your custom [DrawableDecoder] is a decoded animated image, be sure to check
-> the [ImageRequest]
-> .disallowAnimatedImage parameter
+1.First, you need to implement the [Decoder] interface to implement your [Decoder] and its Factory,
+as follows:
+
+```kotlin
+class MyDecoder : Decoder {
+
+    override suspend fun decode(): Result<BitmapDecodeResult> {
+        // Decode image here
+    }
+
+    companion object {
+        const val MY_MIME_TYPE = "image/mypng"
+    }
+
+    class Factory : Decoder.Factory {
+
+        override fun create(
+            sketch: Sketch,
+            requestContext: RequestContext,
+            fetchResult: FetchResult
+        ): Decoder? {
+            val mimeType = fetchResult.mimeType
+            val dataSource = fetchResult.dataSource
+            // 在这通过 mimeType 或 dataSource 判断当前图像是否是
+            // The target type of MyDecoder, if yes, returns a new MyDecoder
+            return if (fetchResult.mimeType == MY_MIME_TYPE) {
+                MyDecoder()
+            } else {
+                null
+            }
+        }
+    }
+}
+```
+
+2.Then refer to [Register Decoder](#Register-Decoder) to register it
+
+> Caution:
+> 1. Customizing [Decoder] requires applying many properties related to image quality and size in
+     ImageRequest, such as bitmapConfig, resize, colorSpace, etc. You can refer to other [Decoder]
+     implementations
+> 2. If your [Decoder] is decoding animated images, you must determine the [ImageRequest]
+     .disallowAnimatedImage parameter.
 
 
 [comment]: <> (class)
 
-[BitmapDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/BitmapDecoder.kt
+[Decoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
-[DefaultBitmapDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DefaultBitmapDecoder.kt
+[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
 
-[DrawableBitmapDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DrawableBitmapDecoder.kt
+[FetchResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/FetchResult.kt
 
-[FFmpegVideoFrameBitmapDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameBitmapDecoder.kt
+[BitmapFactoryDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/BitmapFactoryDecoder.kt
 
-[ApkIconBitmapDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
+[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
 
-[AppIconBitmapDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/AppIconBitmapDecoder.kt
+[FFmpegVideoFrameDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameDecoder.kt
 
-[VideoFrameBitmapDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameBitmapDecoder.kt
+[ApkIconDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconDecoder.kt
 
-[SvgBitmapDecoder]: ../../sketch-svg/src/main/kotlin/com/github/panpf/sketch/decode/SvgBitmapDecoder.kt
+[VideoFrameDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameDecoder.kt
 
-[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecoder.kt
+[SvgDecoder]: ../../sketch-svg/src/main/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 
-[DefaultDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DefaultDrawableDecoder.kt
+[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
 
-[GifAnimatedDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDrawableDecoder.kt
+[GifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
-[HeifAnimatedDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDrawableDecoder.kt
+[HeifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
 
-[WebpAnimatedDrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDrawableDecoder.kt
+[WebpAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
 
-[GifDrawableDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDrawableDecoder.kt
+[GifDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
 
-[GifMovieDrawableDecoder]: ../../sketch-gif-movie/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDrawableDecoder.kt
+[GifMovieDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

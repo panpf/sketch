@@ -39,7 +39,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.image.DelayBitmapDecodeInterceptor
+import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +66,7 @@ class AnimatablePlaceholderTestComposeFragment : BaseToolbarComposeFragment() {
                     }
                 )
                 components {
-                    addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+                    addDecodeInterceptor(DelayDecodeInterceptor(3000))
                 }
             }
             Spacer(modifier = Modifier.size(20.dp))

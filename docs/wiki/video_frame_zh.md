@@ -4,11 +4,11 @@
 
 Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
-* [VideoFrameBitmapDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
+* [VideoFrameDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
     * 需要先导入 `sketch-video` 模块
     * 建议 Android 8.1 及以上版本使用，因为 8.0 及以下版本不支持读取帧的缩略图，在解码 4k
       等较大的视频时将消耗大量的内存
-* [FFmpegVideoFrameBitmapDecoder]：使用 [wseemann]
+* [FFmpegVideoFrameDecoder]：使用 [wseemann]
   /[FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever] 类解码视频文件的帧
     * 需要先导入 `sketch-video-ffmpeg` 模块
     * 库体积大概 23MB
@@ -21,26 +21,26 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 /* 为所有 ImageRequest 注册 */
 class MyApplication : Application(), SketchFactory {
 
-  override fun createSketch(): Sketch {
-    return Sketch.Builder(this).apply {
-      components {
-        addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
-      }
-    }.build()
-  }
+    override fun createSketch(): Sketch {
+        return Sketch.Builder(this).apply {
+            components {
+                addDecoder(FFmpegVideoFrameDecoder.Factory())
+            }
+        }.build()
+    }
 }
 
 /* 为单个 ImageRequest 注册 */
 imageView.displayImage("file:///sdcard/sample.mp4") {
-  components {
-    addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
-  }
+    components {
+        addDecoder(FFmpegVideoFrameDecoder.Factory())
+    }
 }
 ```
 
 ### 配置
 
-[DisplayRequest] 和 [LoadRequest] 支持一些视频帧相关的配置，如下：
+[ImageRequest] 和 [ImageOptions] 支持一些视频帧相关的配置，如下：
 
 ```kotlin
 imageView.displayImage("file:///sdcard/sample.mp4") {
@@ -64,12 +64,10 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever/blob/master/core/src/main/kotlin/wseemann/media/FFmpegMediaMetadataRetriever.java
 
-[VideoFrameBitmapDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameBitmapDecoder.kt
+[VideoFrameDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameDecoder.kt
 
-[FFmpegVideoFrameBitmapDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameBitmapDecoder.kt
-
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
+[FFmpegVideoFrameDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt

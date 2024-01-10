@@ -28,16 +28,12 @@ import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
-import com.github.panpf.sketch.decode.DrawableDecoder
-import com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.DefaultBitmapDecoder
-import com.github.panpf.sketch.decode.internal.DefaultDrawableDecoder
-import com.github.panpf.sketch.decode.internal.DrawableBitmapDecoder
-import com.github.panpf.sketch.decode.internal.EngineBitmapDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDrawableDecodeInterceptor
+import com.github.panpf.sketch.decode.DecodeInterceptor
+import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.decode.internal.DrawableDecoder
+import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
+import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
@@ -59,7 +55,7 @@ import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.transform.internal.BitmapTransformationDecodeInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.SystemCallbacks
 import kotlinx.coroutines.CoroutineDispatcher
@@ -133,7 +129,7 @@ class Sketch private constructor(
     val globalImageOptions: ImageOptions? = _globalImageOptions
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
-     * such as [Fetcher], [BitmapDecoder], [DrawableDecoder], [RequestInterceptor], [BitmapDecodeInterceptor], [DrawableDecodeInterceptor] */
+     * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
     val components: Components
 
     /** Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status */
@@ -167,20 +163,16 @@ class Sketch private constructor(
                 addFetcher(AssetUriFetcher.Factory())
                 addFetcher(Base64UriFetcher.Factory())
 
-                addBitmapDecoder(DrawableBitmapDecoder.Factory())
-                addBitmapDecoder(DefaultBitmapDecoder.Factory())
-
-                addDrawableDecoder(DefaultDrawableDecoder.Factory())
+                addDecoder(DrawableDecoder.Factory())
+                addDecoder(BitmapFactoryDecoder.Factory())
 
                 addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                 addRequestInterceptor(MemoryCacheRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
 
-                addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
-                addBitmapDecodeInterceptor(BitmapTransformationDecodeInterceptor())
-                addBitmapDecodeInterceptor(EngineBitmapDecodeInterceptor())
-
-                addDrawableDecodeInterceptor(EngineDrawableDecodeInterceptor())
+                addDecodeInterceptor(ResultCacheDecodeInterceptor())
+                addDecodeInterceptor(TransformationDecodeInterceptor())
+                addDecodeInterceptor(EngineDecodeInterceptor())
             }.build()
         components = Components(this, componentRegistry)
 
@@ -193,11 +185,9 @@ class Sketch private constructor(
                 append("\n").append("downloadCache: $downloadCache")
                 append("\n").append("resultCache: $resultCache")
                 append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList}")
-                append("\n").append("bitmapDecoders: ${componentRegistry.bitmapDecoderFactoryList}")
-                append("\n").append("drawableDecoders: ${componentRegistry.drawableDecoderFactoryList}")
+                append("\n").append("decoders: ${componentRegistry.decoderFactoryList}")
                 append("\n").append("requestInterceptors: ${componentRegistry.requestInterceptorList}")
-                append("\n").append("bitmapDecodeInterceptors: ${componentRegistry.bitmapDecodeInterceptorList}")
-                append("\n").append("drawableDecodeInterceptors: ${componentRegistry.drawableDecodeInterceptorList}")
+                append("\n").append("decodeInterceptors: ${componentRegistry.decodeInterceptorList}")
             }
         }
     }
@@ -230,7 +220,7 @@ class Sketch private constructor(
      * Note: The request will not start executing until Lifecycle state is STARTED
      * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
      *
-     * @return A [DisplayResult.Success] if the request completes successfully. Else, returns an [DisplayResult.Error].
+     * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
      */
     suspend fun execute(request: ImageRequest): ImageResult =
         coroutineScope {
@@ -245,7 +235,7 @@ class Sketch private constructor(
             job.await()
         }
 
-    
+
     /**
      * Cancel any new and in progress requests, clear the [MemoryCache] and [BitmapPool], and close any open
      * system resources.

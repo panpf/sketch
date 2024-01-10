@@ -22,7 +22,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import kotlinx.coroutines.Dispatchers

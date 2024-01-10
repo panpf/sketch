@@ -19,7 +19,7 @@ import android.view.View
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.SaveCellularTrafficDisplayInterceptor
+import com.github.panpf.sketch.request.SaveCellularTrafficRequestInterceptor
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 
@@ -47,7 +47,7 @@ val ViewAbilityContainer.isClickIgnoreSaveCellularTrafficEnabled: Boolean
     get() = viewAbilityList.find { it is ClickIgnoreSaveCellularTrafficAbility } != null
 
 /**
- * Click View to force ignoring the data saving function, generally used with [SaveCellularTrafficDisplayInterceptor]
+ * Click View to force ignoring the data saving function, generally used with [SaveCellularTrafficRequestInterceptor]
  */
 class ClickIgnoreSaveCellularTrafficAbility(
     val sketch: Sketch

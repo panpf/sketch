@@ -28,8 +28,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DrawableDecoder
+import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.Fetcher
@@ -80,7 +79,7 @@ interface ImageOptions {
         get() = parameters?.value(DEPTH_FROM_KEY)
 
     /**
-     * A map of generic values that can be used to pass custom data to [Fetcher] and [BitmapDecoder] and [DrawableDecoder].
+     * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
      */
     val parameters: Parameters?
 
@@ -166,7 +165,7 @@ interface ImageOptions {
     /**
      * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
      *
-     * @see com.github.panpf.sketch.decode.internal.BitmapResultCacheDecodeInterceptor
+     * @see com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
      */
     val resultCachePolicy: CachePolicy?
 

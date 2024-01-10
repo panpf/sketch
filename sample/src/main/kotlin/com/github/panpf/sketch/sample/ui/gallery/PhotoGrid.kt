@@ -44,7 +44,7 @@ import androidx.paging.LoadState.Loading
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDrawableDecodeInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.LayoutMode
@@ -100,7 +100,7 @@ private fun PhotoNormalGrid(
 ) {
     val gridState = rememberLazyGridState()
     LaunchedEffect(gridState.isScrollInProgress) {
-        PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
+        PauseLoadWhenScrollingDecodeInterceptor.scrolling =
             gridState.isScrollInProgress
     }
 
@@ -151,7 +151,7 @@ private fun PhotoStaggeredGrid(
 ) {
     val gridState = rememberLazyStaggeredGridState()
     LaunchedEffect(gridState.isScrollInProgress) {
-        PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
+        PauseLoadWhenScrollingDecodeInterceptor.scrolling =
             gridState.isScrollInProgress
     }
 

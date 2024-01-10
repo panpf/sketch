@@ -8,7 +8,7 @@ import com.github.panpf.sketch.compose.request.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.asDrawable
+import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget

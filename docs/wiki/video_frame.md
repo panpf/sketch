@@ -4,13 +4,13 @@ Translations: [简体中文](video_frame_zh.md)
 
 Sketch supports decoding video frames, powered by the following Decoder:
 
-* [VideoFrameBitmapDecoder]: Use Android's built-in MediaMetadataRetriever class to decode video
+* [VideoFrameDecoder]: Use Android's built-in MediaMetadataRetriever class to decode video
   frames
     * You need to import the `sketch-video` module first
     * It is recommended to use Android 8.1 and above, because versions 8.0 and below do not support
       reading frame thumbnails, which will consume a lot of memory when decoding larger videos such
       as 4k.
-* [FFmpegVideoFrameBitmapDecoder]：Use [wseemann]
+* [FFmpegVideoFrameDecoder]：Use [wseemann]
   /[FFmpegMediaMetadataRetriever-project] Library's [FFmpegMediaMetadataRetriever] class decodes
   frames of video files
     * You need to import the `sketch-video-ffmpeg` module first
@@ -27,7 +27,7 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
+                addDecoder(FFmpegVideoFrameDecoder.Factory())
             }
         }.build()
     }
@@ -36,14 +36,14 @@ class MyApplication : Application(), SketchFactory {
 /* Register for a single ImageRequest */
 imageView.displayImage("file:///sdcard/sample.mp4") {
     components {
-        addBitmapDecoder(FFmpegVideoFrameBitmapDecoder.Factory())
+        addDecoder(FFmpegVideoFrameDecoder.Factory())
     }
 }
 ```
 
 ### Configure
 
-[DisplayRequest] and [LoadRequest] support some video frame-related configurations, as follows:
+[ImageRequest] and [ImageOptions] support some video frame-related configurations, as follows:
 
 ```kotlin
 imageView.displayImage("file:///sdcard/sample.mp4") {
@@ -67,12 +67,10 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever/blob/master/core/src/main/kotlin/wseemann/media/FFmpegMediaMetadataRetriever.java
 
-[VideoFrameBitmapDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameBitmapDecoder.kt
+[VideoFrameDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameDecoder.kt
 
-[FFmpegVideoFrameBitmapDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameBitmapDecoder.kt
-
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
-
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
+[FFmpegVideoFrameDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt

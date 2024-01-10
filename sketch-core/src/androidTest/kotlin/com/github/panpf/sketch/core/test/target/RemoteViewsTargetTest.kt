@@ -19,7 +19,7 @@ import android.widget.RemoteViews
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.allowSetNullDrawable
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.RemoteViewsTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch

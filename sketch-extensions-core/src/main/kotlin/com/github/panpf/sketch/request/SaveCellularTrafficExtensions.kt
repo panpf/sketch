@@ -20,7 +20,7 @@ private const val SAVE_CELLULAR_TRAFFIC_ENABLED_KEY = "sketch#save_cellular_traf
 private const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traffic_ignored"
 
 /**
- * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
+ * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
  */
 fun ImageRequest.Builder.saveCellularTraffic(enabled: Boolean = true): ImageRequest.Builder =
     apply {
@@ -38,7 +38,7 @@ val ImageRequest.isSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY) == true
 
 /**
- * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
+ * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
  */
 fun ImageOptions.Builder.saveCellularTraffic(enabled: Boolean = true): ImageOptions.Builder =
     apply {
@@ -57,7 +57,7 @@ val ImageOptions.isSaveCellularTraffic: Boolean
 
 
 /**
- * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
+ * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
  */
 fun ImageRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): ImageRequest.Builder =
     apply {
@@ -75,7 +75,7 @@ val ImageRequest.isIgnoredSaveCellularTraffic: Boolean
     get() = parameters?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY) == true
 
 /**
- * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficDisplayInterceptor]
+ * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
  */
 fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean = true): ImageOptions.Builder =
     apply {

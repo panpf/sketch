@@ -66,7 +66,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.image.PaletteBitmapDecodeInterceptor
+import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
@@ -257,7 +257,7 @@ private fun PagerBgImage(
             crossfade(alwaysUse = true, durationMillis = 400)
             resizeApplyToDrawable()
             components {
-                addBitmapDecodeInterceptor(PaletteBitmapDecodeInterceptor())
+                addDecodeInterceptor(PaletteDecodeInterceptor())
             }
         },
         state = imageState,

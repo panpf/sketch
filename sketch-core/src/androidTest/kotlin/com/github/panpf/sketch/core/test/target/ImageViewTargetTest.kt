@@ -15,24 +15,10 @@
  */
 package com.github.panpf.sketch.core.test.target
 
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.RGB_565
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.allowSetNullDrawable
-import com.github.panpf.sketch.request.asSketchImage
-import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.target.ImageViewTarget
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.toRequestContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

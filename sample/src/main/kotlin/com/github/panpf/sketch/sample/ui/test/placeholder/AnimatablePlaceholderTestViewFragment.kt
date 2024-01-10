@@ -21,7 +21,7 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
-import com.github.panpf.sketch.sample.image.DelayBitmapDecodeInterceptor
+import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 
@@ -57,7 +57,7 @@ class AnimatablePlaceholderTestViewFragment :
                 }
             )
             components {
-                addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+                addDecodeInterceptor(DelayDecodeInterceptor(3000))
             }
         }
         binding.myImage2.displayImage(urlString) {
@@ -69,7 +69,7 @@ class AnimatablePlaceholderTestViewFragment :
                 }
             )
             components {
-                addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+                addDecodeInterceptor(DelayDecodeInterceptor(3000))
             }
         }
         binding.myImage3.displayImage(urlString) {
@@ -81,7 +81,7 @@ class AnimatablePlaceholderTestViewFragment :
                 }
             )
             components {
-                addBitmapDecodeInterceptor(DelayBitmapDecodeInterceptor(3000))
+                addDecodeInterceptor(DelayDecodeInterceptor(3000))
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.stateimage.internal
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.stateimage.StateImage
 

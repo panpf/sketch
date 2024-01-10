@@ -41,7 +41,7 @@ import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.request.asPainter
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
 import com.github.panpf.sketch.compose.transition.CrossfadeComposeTransition
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error

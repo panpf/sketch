@@ -7,7 +7,7 @@
 
 ### 显示 APK 文件的图标
 
-首先，注册 [ApkIconBitmapDecoder]，如下：
+首先，注册 [ApkIconDecoder]，如下：
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */
@@ -38,7 +38,7 @@ imageView.displayImage("/sdcard/sample.apk")
 
 ### 显示已安装 APP 的图标
 
-首先，注册 [AppIconUriFetcher] 和 [AppIconBitmapDecoder]，如下：
+首先，注册 [AppIconUriFetcher]，如下：
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */
@@ -73,9 +73,7 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCo
 
 [Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[AppIconBitmapDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/AppIconBitmapDecoder.kt
-
-[ApkIconBitmapDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconBitmapDecoder.kt
+[ApkIconDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconDecoder.kt
 
 [AppIconUriFetcher]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
 

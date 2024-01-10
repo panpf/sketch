@@ -22,8 +22,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DrawableDecoder
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
@@ -53,13 +51,9 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)
                             downloadCachePolicy(DISABLED)
-                            when (val decoder = item.imageDecoder) {
-                                is BitmapDecoder.Factory -> components {
-                                    addBitmapDecoder(decoder)
-                                }
-
-                                is DrawableDecoder.Factory -> components {
-                                    addDrawableDecoder(decoder)
+                            if (item.imageDecoder != null) {
+                                components {
+                                    addDecoder(item.imageDecoder)
                                 }
                             }
                         }

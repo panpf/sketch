@@ -19,9 +19,9 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.asSketchImage
 
 /**
  * Use color as the state [Drawable]

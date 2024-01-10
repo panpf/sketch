@@ -5,10 +5,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.request.BitmapImage
-import com.github.panpf.sketch.request.ByteCountProvider
-import com.github.panpf.sketch.request.DrawableImage
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.ByteCountProvider
+import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlin.math.roundToInt

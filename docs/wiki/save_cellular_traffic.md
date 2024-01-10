@@ -11,7 +11,7 @@ from the network.
 
 ### Configure
 
-First register the [SaveCellularTrafficDisplayInterceptor] request interceptor, as follows:
+First register the [SaveCellularTrafficRequestInterceptor] request interceptor, as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
@@ -20,7 +20,7 @@ class MyApplication : Application(), SketchFactory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
             components {
-                addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+                addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
             }
         }.build()
     }
@@ -29,12 +29,10 @@ class MyApplication : Application(), SketchFactory {
 /* Register for a single ImageRequest */
 imageView.displayImage("https://www.sample.com/image.jpg") {
     components {
-        addRequestInterceptor(SaveCellularTrafficDisplayInterceptor())
+        addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
     }
 }
 ```
-
-> Note: [SaveCellularTrafficDisplayInterceptor] is only valid for [DisplayRequest]
 
 Then enable the cellular data saving function for a single request, as follows:
 
@@ -69,9 +67,7 @@ sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[SaveCellularTrafficDisplayInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficDisplayInterceptor.kt
-
-[DisplayRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
+[SaveCellularTrafficRequestInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficRequestInterceptor.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

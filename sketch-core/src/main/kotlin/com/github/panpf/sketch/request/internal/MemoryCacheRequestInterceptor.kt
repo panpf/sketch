@@ -23,7 +23,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
@@ -80,9 +80,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     }
 
     @MainThread
-    private fun readFromMemoryCache(
-        requestContext: RequestContext
-    ): ImageData? {
+    private fun readFromMemoryCache(requestContext: RequestContext): ImageData? {
         val request = requestContext.request
         val memoryCache = requestContext.sketch.memoryCache
         val cachedValue = memoryCache[requestContext.memoryCacheKey] ?: return null
@@ -100,10 +98,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     }
 
     @MainThread
-    private fun saveToMemoryCache(
-        requestContext: RequestContext,
-        imageData: ImageData,
-    ): Boolean {
+    private fun saveToMemoryCache(requestContext: RequestContext, imageData: ImageData): Boolean {
         val newCacheValue = imageData.image.cacheValue(
             requestContext, newCacheValueExtras(
                 imageInfo = imageData.imageInfo,

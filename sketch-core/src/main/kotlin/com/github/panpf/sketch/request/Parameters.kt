@@ -30,13 +30,12 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.decode.BitmapDecoder
-import com.github.panpf.sketch.decode.DrawableDecoder
+import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.Parameters.Entry
 
 /**
- * A map of generic values that can be used to pass custom data to [Fetcher] and [BitmapDecoder] and [DrawableDecoder].
+ * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
  */
 class Parameters private constructor(
     private val entries: Map<String, Entry>

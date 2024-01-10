@@ -17,6 +17,7 @@ package com.github.panpf.sketch.util
 
 import android.util.Log
 
+// TODO Reference ZoomImage refactoring
 class Logger constructor(
     level: Level = Level.INFO,
     private val proxy: Proxy = LogProxy()

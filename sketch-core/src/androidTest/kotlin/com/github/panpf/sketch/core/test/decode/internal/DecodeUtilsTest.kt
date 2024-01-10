@@ -30,7 +30,7 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
-import com.github.panpf.sketch.decode.BitmapDecodeResult
+import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat
@@ -61,6 +61,8 @@ import com.github.panpf.sketch.decode.internal.sizeString
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -994,7 +996,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(imageInfo.size, bitmap.size)
+            Assert.assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 ImageInfo(
                     1936,
@@ -1029,7 +1031,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(imageInfo.size, bitmap.size)
+            Assert.assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 ImageInfo(
                     1936,
@@ -1040,7 +1042,10 @@ class DecodeUtilsTest {
             )
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNull(transformedList)
-            Assert.assertEquals(result1.bitmap.corners(), bitmap.corners())
+            Assert.assertEquals(
+                result1.image.getBitmapOrThrow().corners(),
+                image.getBitmapOrThrow().corners()
+            )
         }
 
         val result3 = ImageRequest(context, hasExifFile.file.path).newRequest {
@@ -1064,7 +1069,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(Size(121, 60), bitmap.size)
+            Assert.assertEquals(Size(121, 60), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 ImageInfo(
                     1936,
@@ -1104,7 +1109,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(Size(80, 161), bitmap.size)
+            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
@@ -1114,7 +1119,10 @@ class DecodeUtilsTest {
                 ),
                 transformedList
             )
-            Assert.assertNotEquals(result3.bitmap.corners(), bitmap.corners())
+            Assert.assertNotEquals(
+                result3.image.getBitmapOrThrow().corners(),
+                image.getBitmapOrThrow().corners()
+            )
         }
 
         val result5 = ImageRequest(context, hasExifFile.file.path).newRequest {
@@ -1138,7 +1146,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(Size(121, 60), bitmap.size)
+            Assert.assertEquals(Size(121, 60), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 ImageInfo(
                     1936,
@@ -1178,7 +1186,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(Size(80, 161), bitmap.size)
+            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
@@ -1188,7 +1196,10 @@ class DecodeUtilsTest {
                 ),
                 transformedList
             )
-            Assert.assertNotEquals(result5.bitmap.corners(), bitmap.corners())
+            Assert.assertNotEquals(
+                result5.image.getBitmapOrThrow().corners(),
+                image.getBitmapOrThrow().corners()
+            )
         }
 
         val result7 = ImageRequest(context, hasExifFile.file.path).newRequest {
@@ -1212,7 +1223,7 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(Size(121, 81), bitmap.size)
+            Assert.assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 ImageInfo(
                     1936,
@@ -1246,11 +1257,14 @@ class DecodeUtilsTest {
                     .decodeRegionBitmap(rect, config.toBitmapOptions())!!
             }
         }.apply {
-            Assert.assertEquals(Size(121, 81), bitmap.size)
+            Assert.assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
-            Assert.assertEquals(result7.bitmap.corners(), bitmap.corners())
+            Assert.assertEquals(
+                result7.image.getBitmapOrThrow().corners(),
+                image.getBitmapOrThrow().corners()
+            )
         }
 
         val result9 = ImageRequest(context, AssetImages.bmp.uri) {
@@ -1270,7 +1284,7 @@ class DecodeUtilsTest {
                 decodeRegion = null
             )
         }.apply {
-            Assert.assertEquals(Size(87, 126), bitmap.size)
+            Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(700, 1012, "image/bmp", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
@@ -1294,11 +1308,14 @@ class DecodeUtilsTest {
                 decodeRegion = null
             )
         }.apply {
-            Assert.assertEquals(Size(87, 126), bitmap.size)
+            Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(700, 1012, "image/jpeg", 0), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
-            Assert.assertEquals(result9.bitmap.corners(), bitmap.corners())
+            Assert.assertEquals(
+                result9.image.getBitmapOrThrow().corners(),
+                image.getBitmapOrThrow().corners()
+            )
         }
     }
 
@@ -1312,8 +1329,8 @@ class DecodeUtilsTest {
                 .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
         val bitmap = BitmapFactory.decodeFile(hasExifFile.file.path)
 
-        val result = BitmapDecodeResult(
-            bitmap = bitmap,
+        val result = DecodeResult(
+            image = bitmap.asSketchImage(),
             imageInfo = ImageInfo(
                 width = bitmap.width,
                 height = bitmap.height,
@@ -1324,7 +1341,7 @@ class DecodeUtilsTest {
             transformedList = null,
             extras = null,
         )
-        val resultCorners = result.bitmap.corners()
+        val resultCorners = result.image.getBitmapOrThrow().corners()
         Assert.assertNull(result.transformedList?.getExifOrientationTransformed())
 
         result.appliedExifOrientation(
@@ -1332,13 +1349,18 @@ class DecodeUtilsTest {
             request.toRequestContext(sketch)
         ).apply {
             Assert.assertNotSame(result, this)
-            Assert.assertNotSame(result.bitmap, this.bitmap)
-            Assert.assertEquals(Size(result.bitmap.height, result.bitmap.width), this.bitmap.size)
+            Assert.assertNotSame(result.image.getBitmapOrThrow(), this.image.getBitmapOrThrow())
+            Assert.assertEquals(
+                Size(
+                    result.image.getBitmapOrThrow().height,
+                    result.image.getBitmapOrThrow().width
+                ), this.image.getBitmapOrThrow().size
+            )
             Assert.assertEquals(
                 Size(result.imageInfo.height, result.imageInfo.width),
                 this.imageInfo.size
             )
-            Assert.assertNotEquals(resultCorners, this.bitmap.corners())
+            Assert.assertNotEquals(resultCorners, this.image.getBitmapOrThrow().corners())
             Assert.assertNotNull(this.transformedList?.getExifOrientationTransformed())
         }
 
@@ -1357,9 +1379,9 @@ class DecodeUtilsTest {
     fun testAppliedResize() {
         val (context, sketch) = getTestContextAndNewSketch()
         var request = ImageRequest(context, AssetImages.jpeg.uri)
-        val newResult: () -> BitmapDecodeResult = {
-            BitmapDecodeResult(
-                bitmap = Bitmap.createBitmap(80, 50, ARGB_8888),
+        val newResult: () -> DecodeResult = {
+            DecodeResult(
+                image = Bitmap.createBitmap(80, 50, ARGB_8888).asSketchImage(),
                 imageInfo = ImageInfo(80, 50, "image/png", 0),
                 dataFrom = MEMORY,
                 transformedList = null,
@@ -1377,7 +1399,7 @@ class DecodeUtilsTest {
         var result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("20x13", this.bitmap.sizeString)
+            Assert.assertEquals("20x13", this.image.getBitmapOrThrow().sizeString)
         }
         // big
         request = request.newRequest {
@@ -1398,7 +1420,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("40x20", this.bitmap.sizeString)
+            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().sizeString)
         }
         // big
         request = request.newRequest {
@@ -1407,7 +1429,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("17x50", this.bitmap.sizeString)
+            Assert.assertEquals("17x50", this.image.getBitmapOrThrow().sizeString)
         }
 
         /*
@@ -1420,7 +1442,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("40x20", this.bitmap.sizeString)
+            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().sizeString)
         }
         // big
         request = request.newRequest {
@@ -1429,7 +1451,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("50x150", this.bitmap.sizeString)
+            Assert.assertEquals("50x150", this.image.getBitmapOrThrow().sizeString)
         }
     }
 

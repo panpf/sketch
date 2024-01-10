@@ -37,9 +37,9 @@ import android.view.View.OnAttachStateChangeListener
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.core.R
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.allowSetNullDrawable
-import com.github.panpf.sketch.request.asDrawable
+import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.TransitionViewTarget
 import com.github.panpf.sketch.util.asOrNull

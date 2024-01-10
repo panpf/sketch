@@ -2,8 +2,7 @@
 
 Translations: [简体中文](fetcher_zh.md)
 
-[Fetcher] is used to get data from uri, return [FetchResult], and hand it over to [BitmapDecoder]
-or [DrawableDecoder] for use.
+[Fetcher] is used to get data from uri, return [FetchResult], and hand it over to [Decoder] for use.
 
 Sketch has a corresponding [Fetcher] implementation for each uri supported, and there are the
 following types:
@@ -73,9 +72,7 @@ imageView.displayImage(context, "myUri://sample.jpeg") {
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[BitmapDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/BitmapDecoder.kt
-
-[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DrawableDecoder.kt
+[Decoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
 [Fetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/Fetcher.kt
 

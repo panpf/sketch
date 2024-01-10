@@ -90,7 +90,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 ### Default Value
 
 * width、height:
-    1. If target is [ViewDisplayTarget]
+    1. If target is [ViewTarget]
         1. Prioritize the width and height of view's LayoutParams
         2. Secondly, it is delayed to the drawing stage to obtain the width and height of the View.
            If the width and height are still 0 in the drawing stage, the request will not continue
@@ -107,7 +107,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 ### resizeApplyToDrawable
 
 The resizeApplyToDrawable attribute of [ImageRequest] and [ImageOptions] is used to apply [Resize]
-to the placeholder, error, result Drawable of [DisplayTarget]
+to the placeholder, error, result Drawable of [Target]
 
 Sketch will use [ResizeDrawable] or [ResizeAnimatableDrawable] to convert placeholder, error, result
 Drawable Wrapping one layer, externally using [Resize] as intrinsicWidth and intrinsicHeight,
@@ -136,7 +136,7 @@ transition, [View introduction to perfect transition][transition]
 
 [Precision]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Precision.kt
 
-[ViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewDisplayTarget.kt
+[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -144,7 +144,7 @@ transition, [View introduction to perfect transition][transition]
 
 [CrossfadeTransition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
 
-[DisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/DisplayTarget.kt
+[Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
 
 [ResizeDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
 

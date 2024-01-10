@@ -24,7 +24,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
-import com.github.panpf.sketch.request.asSketchImage
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch

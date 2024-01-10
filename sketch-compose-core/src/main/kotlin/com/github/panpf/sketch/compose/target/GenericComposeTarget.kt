@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.internal.updateIsDisplayed
 import com.github.panpf.sketch.compose.request.asPainter
 import com.github.panpf.sketch.compose.transition.TransitionComposeTarget
-import com.github.panpf.sketch.request.Image
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 

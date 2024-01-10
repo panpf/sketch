@@ -5,7 +5,7 @@
 Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：
 
 1. [ViewTargetRequestDelegate] 在 onDestroy 时自动停止请求
-2. [GenericViewDisplayTarget] 在 在 onStart 和 onStop 时自动控制动图播放
+2. [GenericViewTarget] 在 在 onStart 和 onStop 时自动控制动图播放
 
 ### 默认值
 
@@ -40,4 +40,4 @@ imageView.displayImage("https://www.example.com/image.gif") {
 
 [ViewTargetRequestDelegate]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/internal/RequestDelegate.kt
 
-[GenericViewDisplayTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewDisplayTarget.kt
+[GenericViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt

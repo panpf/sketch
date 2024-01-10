@@ -24,7 +24,7 @@ import androidx.paging.PagingState
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.SvgBitmapDecoder
+import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.ImageRequest
@@ -152,7 +152,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
         return ImageInfo(
             width,
             height,
-            SvgBitmapDecoder.MIME_TYPE,
+            SvgDecoder.MIME_TYPE,
             ExifInterface.ORIENTATION_UNDEFINED
         )
     }

@@ -36,10 +36,8 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.test.utils.TestBitmapDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestBitmapDecoder
-import com.github.panpf.sketch.test.utils.TestDrawableDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDrawableDecoder
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestListenerImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
@@ -271,20 +269,16 @@ class RequestUtilsTest {
             components {
                 addFetcher(TestFetcher.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
-                addDrawableDecoder(TestDrawableDecoder.Factory())
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                addBitmapDecoder(TestBitmapDecoder.Factory())
+                addDecodeInterceptor(TestDecodeInterceptor())
+                addDecoder(TestDecoder.Factory())
             }
         }
-        val _bitmapDecodeInterceptors = "&_bitmapDecodeInterceptors=[TestBitmapDecodeInterceptor]"
-        val _drawableDecodeInterceptors =
-            "&_drawableDecodeInterceptors=[TestDrawableDecodeInterceptor]"
+        val _decodeInterceptors = "&_decodeInterceptors=[TestDecodeInterceptor]"
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
         verifyCacheKey(
             uriString + _parameters +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations + _ignoreExifOrientation +
-                    _bitmapDecodeInterceptors + _disallowAnimatedImage + _drawableDecodeInterceptors + _requestInterceptors
+                    _decodeInterceptors + _disallowAnimatedImage + _requestInterceptors
         )
     }
 
@@ -297,66 +291,66 @@ class RequestUtilsTest {
         val imageView = TestListenerImageView(context)
         var request = ImageRequest(context, uriString)
 
-        val verifyCacheKey: (String) -> Unit = { expectKey ->
+        val verifyKey: (String) -> Unit = { expectKey ->
             val key = request.newKey()
             Assert.assertEquals(expectKey, key)
         }
 
         var _resize = "&_size=${request.resizeSizeResolver}&_precision=${request.resizePrecisionDecider}&_scale=${request.resizeScaleDecider}"
-        verifyCacheKey(uriString + _resize)
+        verifyKey(uriString + _resize)
 
         request = request.newRequest {
             listener(onStart = {})
         }
-        verifyCacheKey(uriString + _resize)
+        verifyKey(uriString + _resize)
 
         request = request.newRequest {
             progressListener { _, _ -> }
         }
-        verifyCacheKey(uriString + _resize)
+        verifyKey(uriString + _resize)
 
         request = request.newRequest {
             target(imageView)
         }
         _resize = "&_size=${request.resizeSizeResolver}&_precision=${request.resizePrecisionDecider}&_scale=${request.resizeScaleDecider}"
-        verifyCacheKey(uriString + _resize)
+        verifyKey(uriString + _resize)
 
         request = request.newRequest {
             depth(LOCAL, "test")
         }
         val _depth = "&_depth=LOCAL"
         var _parameters = "&_parameters=${request.parameters!!.key}"
-        verifyCacheKey(uriString + _depth + _parameters + _resize)
+        verifyKey(uriString + _depth + _parameters + _resize)
 
         request = request.newRequest {
             setParameter(key = "type", value = "list")
         }
         _parameters = "&_parameters=${request.parameters!!.key}"
-        verifyCacheKey(uriString + _depth + _parameters + _resize)
+        verifyKey(uriString + _depth + _parameters + _resize)
 
         request = request.newRequest {
             setParameter(key = "big", value = "true", cacheKey = null)
         }
         _parameters = "&_parameters=${request.parameters!!.key}"
-        verifyCacheKey(uriString + _depth + _parameters + _resize)
+        verifyKey(uriString + _depth + _parameters + _resize)
 
         request = request.newRequest {
             setHttpHeader("from", "china")
         }
         val _httpHeaders = "&_httpHeaders=${request.httpHeaders!!}"
-        verifyCacheKey(uriString + _depth + _parameters + _httpHeaders + _resize)
+        verifyKey(uriString + _depth + _parameters + _httpHeaders + _resize)
 
         request = request.newRequest {
             downloadCachePolicy(READ_ONLY)
         }
         val _downloadCachePolicy = "&_downloadCachePolicy=READ_ONLY"
-        verifyCacheKey(uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _resize)
+        verifyKey(uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _resize)
 
         request = request.newRequest {
             bitmapConfig(RGB_565)
         }
         val _bitmapConfig = "&_bitmapConfig=BitmapConfig(RGB_565)"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _resize
         )
@@ -367,7 +361,7 @@ class RequestUtilsTest {
                 colorSpace(ColorSpace.get(ADOBE_RGB))
             }
             _colorSpace = "&_colorSpace=Adobe_RGB_(1998)"
-            verifyCacheKey(
+            verifyKey(
                 uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                         _bitmapConfig + _colorSpace + _resize
             )
@@ -382,7 +376,7 @@ class RequestUtilsTest {
                 preferQualityOverSpeed(true)
             }
             _preferQualityOverSpeed = "&_preferQualityOverSpeed=true"
-            verifyCacheKey(
+            verifyKey(
                 uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                         _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
             )
@@ -394,7 +388,7 @@ class RequestUtilsTest {
             resize(300, 200, EXACTLY, END_CROP)
         }
         _resize = "&_size=${request.resizeSizeResolver}&_precision=${request.resizePrecisionDecider}&_scale=${request.resizeScaleDecider}"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize
         )
@@ -406,7 +400,7 @@ class RequestUtilsTest {
             request.transformations!!.joinToString(prefix = "[", postfix = "]", separator = ",") {
                 it.key.replace("Transformation", "")
             }.let { "&_transformations=$it" }
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize + _transformations
         )
@@ -415,7 +409,7 @@ class RequestUtilsTest {
             disallowReuseBitmap(true)
         }
         val _disallowReuseBitmap = "&_disallowReuseBitmap=true"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap
@@ -425,7 +419,7 @@ class RequestUtilsTest {
             ignoreExifOrientation(true)
         }
         val _ignoreExifOrientation = "&_ignoreExifOrientation=true"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation
@@ -435,7 +429,7 @@ class RequestUtilsTest {
             resultCachePolicy(WRITE_ONLY)
         }
         val _resultCachePolicy = "&_resultCachePolicy=WRITE_ONLY"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -447,7 +441,7 @@ class RequestUtilsTest {
                 resColorBackground(color.background_dark)
             })
         }
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -457,7 +451,7 @@ class RequestUtilsTest {
         request = request.newRequest {
             error(DrawableStateImage(drawable.ic_delete))
         }
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -467,7 +461,7 @@ class RequestUtilsTest {
         request = request.newRequest {
             transitionFactory(CrossfadeTransition.Factory())
         }
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -478,7 +472,7 @@ class RequestUtilsTest {
             disallowAnimatedImage(true)
         }
         val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -488,7 +482,7 @@ class RequestUtilsTest {
         request = request.newRequest {
             resizeApplyToDrawable(true)
         }
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -499,7 +493,7 @@ class RequestUtilsTest {
             memoryCachePolicy(WRITE_ONLY)
         }
         val _memoryCachePolicy = "&_memoryCachePolicy=WRITE_ONLY"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
@@ -510,22 +504,18 @@ class RequestUtilsTest {
             components {
                 addFetcher(TestFetcher.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
-                addDrawableDecodeInterceptor(TestDrawableDecodeInterceptor())
-                addDrawableDecoder(TestDrawableDecoder.Factory())
-                addBitmapDecodeInterceptor(TestBitmapDecodeInterceptor())
-                addBitmapDecoder(TestBitmapDecoder.Factory())
+                addDecodeInterceptor(TestDecodeInterceptor())
+                addDecoder(TestDecoder.Factory())
             }
         }
-        val _bitmapDecodeInterceptors = "&_bitmapDecodeInterceptors=[TestBitmapDecodeInterceptor]"
-        val _drawableDecodeInterceptors =
-            "&_drawableDecodeInterceptors=[TestDrawableDecodeInterceptor]"
+        val _decodeInterceptors = "&_decodeInterceptors=[TestDecodeInterceptor]"
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
-        verifyCacheKey(
+        verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _bitmapConfig + _colorSpace + _preferQualityOverSpeed + _resize +
                     _transformations + _disallowReuseBitmap + _ignoreExifOrientation +
-                    _resultCachePolicy + _bitmapDecodeInterceptors + _disallowAnimatedImage +
-                    _memoryCachePolicy + _drawableDecodeInterceptors + _requestInterceptors
+                    _resultCachePolicy + _decodeInterceptors + _disallowAnimatedImage +
+                    _memoryCachePolicy + _requestInterceptors
         )
     }
 }

@@ -52,25 +52,18 @@ internal fun ImageRequest.newCacheKey(size: Size): String = uriString.toUri().bu
     if (ignoreExifOrientation) {
         appendQueryParameter("_ignoreExifOrientation", true.toString())
     }
-    componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+    componentRegistry?.decodeInterceptorList.orEmpty().mapNotNull { it.key }
         .takeIf { it.isNotEmpty() }
         ?.let { list ->
             appendQueryParameter(
-                "_bitmapDecodeInterceptors",
+                "_decodeInterceptors",
                 list.joinToString(prefix = "[", postfix = "]", separator = ",")
             )
         }
     if (disallowAnimatedImage) {
         appendQueryParameter("_disallowAnimatedImage", true.toString())
     }
-    componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key }
-        .takeIf { it.isNotEmpty() }
-        ?.let { list ->
-            appendQueryParameter(
-                "_drawableDecodeInterceptors",
-                list.joinToString(prefix = "[", postfix = "]", separator = ",")
-            )
-        }
+    // TODO append decoder
     componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
         .takeIf { it.isNotEmpty() }
         ?.let { list ->
@@ -130,11 +123,12 @@ fun ImageRequest.newKey(): String = uriString.toUri().buildUpon().apply {
     resultCachePolicy.takeIf { it != ENABLED }?.let {
         appendQueryParameter("_resultCachePolicy", it.name)
     }
-    componentRegistry?.bitmapDecodeInterceptorList.orEmpty().mapNotNull { it.key }
+    // TODO append decoder
+    componentRegistry?.decodeInterceptorList.orEmpty().mapNotNull { it.key }
         .takeIf { it.isNotEmpty() }
         ?.let { list ->
             appendQueryParameter(
-                "_bitmapDecodeInterceptors",
+                "_decodeInterceptors",
                 list.joinToString(prefix = "[", postfix = "]", separator = ",")
             )
         }
@@ -145,14 +139,6 @@ fun ImageRequest.newKey(): String = uriString.toUri().buildUpon().apply {
     memoryCachePolicy.takeIf { it != ENABLED }?.let {
         appendQueryParameter("_memoryCachePolicy", it.name)
     }
-    componentRegistry?.drawableDecodeInterceptorList.orEmpty().mapNotNull { it.key }
-        .takeIf { it.isNotEmpty() }
-        ?.let { list ->
-            appendQueryParameter(
-                "_drawableDecodeInterceptors",
-                list.joinToString(prefix = "[", postfix = "]", separator = ",")
-            )
-        }
 
     componentRegistry?.requestInterceptorList.orEmpty().mapNotNull { it.key }
         .takeIf { it.isNotEmpty() }

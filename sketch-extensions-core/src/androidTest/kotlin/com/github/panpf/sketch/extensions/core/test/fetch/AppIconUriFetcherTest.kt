@@ -41,11 +41,9 @@ class AppIconUriFetcherTest {
                 Assert.assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
-                            "bitmapDecoderFactoryList=[]," +
-                            "drawableDecoderFactoryList=[]," +
+                            "decoderFactoryList=[]," +
                             "requestInterceptorList=[]," +
-                            "bitmapDecodeInterceptorList=[]," +
-                            "drawableDecodeInterceptorList=[]" +
+                            "decodeInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -56,11 +54,9 @@ class AppIconUriFetcherTest {
                 Assert.assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[AppIconUriFetcher]," +
-                            "bitmapDecoderFactoryList=[]," +
-                            "drawableDecoderFactoryList=[]," +
+                            "decoderFactoryList=[]," +
                             "requestInterceptorList=[]," +
-                            "bitmapDecodeInterceptorList=[]," +
-                            "drawableDecodeInterceptorList=[]" +
+                            "decodeInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -71,11 +67,9 @@ class AppIconUriFetcherTest {
                 Assert.assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[AppIconUriFetcher,AppIconUriFetcher]," +
-                            "bitmapDecoderFactoryList=[]," +
-                            "drawableDecoderFactoryList=[]," +
+                            "decoderFactoryList=[]," +
                             "requestInterceptorList=[]," +
-                            "bitmapDecodeInterceptorList=[]," +
-                            "drawableDecodeInterceptorList=[]" +
+                            "decodeInterceptorList=[]" +
                             ")",
                     toString()
                 )

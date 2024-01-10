@@ -16,8 +16,8 @@
 package com.github.panpf.sketch.test.utils
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.request.Image
-import com.github.panpf.sketch.request.asDrawable
+import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.TransitionViewTarget

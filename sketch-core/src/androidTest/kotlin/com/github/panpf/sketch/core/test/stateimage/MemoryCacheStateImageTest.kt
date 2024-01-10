@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.DrawableImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.resources.AssetImages
