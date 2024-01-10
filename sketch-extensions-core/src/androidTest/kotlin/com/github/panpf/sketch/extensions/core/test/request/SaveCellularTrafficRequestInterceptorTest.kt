@@ -334,9 +334,6 @@ class SaveCellularTrafficRequestInterceptorTest {
             return Result.success(
                 ImageData(
                     image = ColorDrawable(Color.BLUE).asSketchImage(),
-                    imageUri = request.uriString,
-                    requestKey = request.key,
-                    cacheKey = requestContext.memoryCacheKey,
                     imageInfo = ImageInfo(100, 100, "image/xml", 0),
                     dataFrom = LOCAL,
                     transformedList = null,

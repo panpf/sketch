@@ -20,13 +20,10 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 
 /**
- * Data of [ImageRequest]
+ * Data of [RequestInterceptor]
  */
 data class ImageData constructor(
     val image: Image,
-    val imageUri: String,   // TODO Remove
-    val requestKey: String,   // TODO Remove
-    val cacheKey: String,   // TODO Remove
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
     /**

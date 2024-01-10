@@ -249,12 +249,8 @@ class MemoryCacheRequestInterceptorTest {
             val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
             val imageInfo = ImageInfo(100, 100, "image/png", 0)
             val drawable = BitmapDrawable(chain.sketch.context.resources, bitmap)
-            val request = chain.request
             ImageData(
                 drawable.asSketchImage(),
-                imageUri = request.uriString,
-                requestKey = request.key,
-                cacheKey = chain.requestContext.memoryCacheKey,
                 imageInfo = imageInfo,
                 dataFrom = DataFrom.LOCAL,
                 transformedList = null,

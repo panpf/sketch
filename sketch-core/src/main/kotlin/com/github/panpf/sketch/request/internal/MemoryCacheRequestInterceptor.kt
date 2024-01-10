@@ -87,9 +87,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val cacheImage = cachedValue.asSketchImage(request.context.resources)
         return ImageData(
             image = cacheImage,
-            imageUri = request.uriString,
-            requestKey = request.key,
-            cacheKey = requestContext.memoryCacheKey,
             imageInfo = cachedValue.getImageInfo()!!,
             transformedList = cachedValue.getTransformedList(),
             extras = cachedValue.getExtras(),
