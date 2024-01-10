@@ -121,7 +121,6 @@ class ViewTargetRequestManager constructor(private val view: View) :
     @MainThread
     override fun onViewDetachedFromWindow(v: View) {
         currentRequestDelegate?.dispose()
-        currentRequestDelegate?.onViewDetachedFromWindow()
     }
 
     fun restart() {

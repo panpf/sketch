@@ -153,9 +153,4 @@ class ViewTargetRequestDelegate(
     fun restart() {
         sketch.enqueue(initialRequest)
     }
-
-    fun onViewDetachedFromWindow() {
-        // To trigger setIsDisplayed in the ImageViewTarget
-        target.drawable = null
-    }
 }

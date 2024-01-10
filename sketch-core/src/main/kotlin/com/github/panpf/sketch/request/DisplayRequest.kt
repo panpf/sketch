@@ -243,7 +243,7 @@ interface DisplayRequest : ImageRequest {
          * Set the target to the ImageView
          */
         fun target(imageView: ImageView): Builder = apply {
-            super.target(ImageViewDisplayTarget(WeakReference(imageView)))
+            super.target(ImageViewDisplayTarget(imageView))
         }
 
         override fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
