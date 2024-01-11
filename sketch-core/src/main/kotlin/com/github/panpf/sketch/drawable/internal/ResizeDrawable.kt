@@ -49,27 +49,27 @@ fun Image.resizeApplyToDrawable(
 }
 
 /**
- * Using [resizeSize] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [resizeSize].
+ * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].
  * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
  */
 open class ResizeDrawable constructor(
     drawable: Drawable,
-    val resizeSize: Size,
-    val resizeScale: Scale
+    val size: Size,
+    val scale: Scale
 ) : DrawableWrapperCompat(drawable) {
 
     override fun getIntrinsicWidth(): Int {
-        return resizeSize.width
+        return size.width
     }
 
     override fun getIntrinsicHeight(): Int {
-        return resizeSize.height
+        return size.height
     }
 
     override fun mutate(): ResizeDrawable {
         val mutateDrawable = drawable?.mutate()
         return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            ResizeDrawable(mutateDrawable, resizeSize, resizeScale)
+            ResizeDrawable(mutateDrawable, size, scale)
         } else {
             this
         }
@@ -87,38 +87,38 @@ open class ResizeDrawable constructor(
                     width = this@ResizeDrawable.bounds.width(),
                     height = this@ResizeDrawable.bounds.height()
                 ),
-                scale = resizeScale
+                scale = scale
             )
         }
     }
 
     override fun toString(): String {
-        return "ResizeDrawable(wrapped=$drawable, resizeSize=$resizeSize, resizeScale=$resizeScale)"
+        return "ResizeDrawable(wrapped=$drawable, size=$size, scale=$scale)"
     }
 }
 
 /**
- * Using [resizeSize] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [resizeSize].
+ * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].
  * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
  */
 open class ResizeAnimatableDrawable(
     drawable: Drawable,
-    val resizeSize: Size,
-    val resizeScale: Scale
+    val size: Size,
+    val scale: Scale
 ) : AnimatableDrawableWrapper(drawable) {
 
     override fun getIntrinsicWidth(): Int {
-        return resizeSize.width
+        return size.width
     }
 
     override fun getIntrinsicHeight(): Int {
-        return resizeSize.height
+        return size.height
     }
 
     override fun mutate(): ResizeAnimatableDrawable {
         val mutateDrawable = drawable?.mutate()
         return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            ResizeAnimatableDrawable(mutateDrawable, resizeSize, resizeScale)
+            ResizeAnimatableDrawable(mutateDrawable, size, scale)
         } else {
             this
         }
@@ -136,12 +136,12 @@ open class ResizeAnimatableDrawable(
                     width = this@ResizeAnimatableDrawable.bounds.width(),
                     height = this@ResizeAnimatableDrawable.bounds.height()
                 ),
-                scale = resizeScale
+                scale = scale
             )
         }
     }
 
     override fun toString(): String {
-        return "ResizeAnimatableDrawable(wrapped=$drawable, resizeSize=$resizeSize, resizeScale=$resizeScale)"
+        return "ResizeAnimatableDrawable(wrapped=$drawable, size=$size, scale=$scale)"
     }
 }

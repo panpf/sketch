@@ -93,7 +93,7 @@ class ResizeDrawableTest {
             .let { it as ResizeDrawable }
             .apply {
                 Assert.assertSame(bitmapDrawable, drawable)
-                Assert.assertEquals(Size(500, 300), resizeSize)
+                Assert.assertEquals(Size(500, 300), size)
             }
 
         val animDrawable = SketchAnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
@@ -103,7 +103,7 @@ class ResizeDrawableTest {
             .let { it as ResizeAnimatableDrawable }
             .apply {
                 Assert.assertSame(animDrawable, drawable)
-                Assert.assertEquals(Size(500, 300), resizeSize)
+                Assert.assertEquals(Size(500, 300), size)
             }
     }
 
@@ -119,7 +119,7 @@ class ResizeDrawableTest {
 
         ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
             Assert.assertEquals(Size(500, 300), intrinsicSize)
-            Assert.assertEquals(Size(500, 300), resizeSize)
+            Assert.assertEquals(Size(500, 300), size)
             Assert.assertSame(bitmapDrawable, drawable)
         }
     }

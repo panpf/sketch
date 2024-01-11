@@ -60,7 +60,7 @@ class LongImageScaleDecider constructor(
     val longImageDecider: LongImageDecider = LongImageDecider(),
 ) : ScaleDecider {
 
-    override val key: String by lazy { "LongImage($longImage,$otherImage),${longImageDecider.key})" }
+    override val key: String by lazy { "LongImage($longImage,$otherImage,${longImageDecider.key})" }
 
     override fun get(
         imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int

@@ -128,13 +128,13 @@ class ScaleDeciderTest {
     fun testLongImageScaleDeciderKey() {
         LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
-                "LongImage(START_CROP,CENTER_CROP),Default(2.5,5.0))",
+                "LongImage(START_CROP,CENTER_CROP,Default(2.5,5.0))",
                 key
             )
         }
         LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
-                "LongImage(END_CROP,CENTER_CROP),Default(2.5,5.0))",
+                "LongImage(END_CROP,CENTER_CROP,Default(2.5,5.0))",
                 key
             )
         }
