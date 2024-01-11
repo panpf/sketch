@@ -206,7 +206,7 @@ class VideoFrameDecoder(
             }
         }
         sketch.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
+            "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
         }
         return bitmap
     }

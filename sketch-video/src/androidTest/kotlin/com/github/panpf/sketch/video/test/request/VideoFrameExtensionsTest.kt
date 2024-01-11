@@ -114,10 +114,10 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.mp4.uri).key
         val key2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameMillis(500)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).cacheKey
@@ -207,10 +207,10 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.mp4.uri).key
         val key2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFramePercent(0.45f)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).cacheKey
@@ -340,10 +340,10 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.mp4.uri).key
         val key2 = ImageRequest(context, AssetImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, AssetImages.mp4.uri).toRequestContext(sketch).cacheKey

@@ -76,12 +76,12 @@ class AllowSetNullDrawableExtensionsTest {
             Assert.assertFalse(allowSetNullDrawable)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).key.apply {
+        ImageRequest(context, AssetImages.animGif.uri).key.apply {
             Assert.assertFalse(contains(ALLOW_SET_NULL_DRAWABLE_KEY))
         }
         ImageRequest(context, AssetImages.animGif.uri) {
             allowSetNullDrawable()
-        }.toRequestContext(sketch).key.apply {
+        }.key.apply {
             Assert.assertTrue(contains(ALLOW_SET_NULL_DRAWABLE_KEY))
         }
 

@@ -89,10 +89,10 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(5, repeatCount)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
         val key2 = ImageRequest(context, AssetImages.animGif.uri) {
             repeatCount(5)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
@@ -135,10 +135,10 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimationStartCallback, animationStartCallback)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
         val key2 = ImageRequest(context, AssetImages.animGif.uri) {
             onAnimationStart(myAnimationStartCallback)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
@@ -181,10 +181,10 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimationEndCallback, animationEndCallback)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
         val key2 = ImageRequest(context, AssetImages.animGif.uri) {
             onAnimationEnd(myAnimationEndCallback)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
@@ -227,10 +227,10 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimatedTransformation, animatedTransformation)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
         val key2 = ImageRequest(context, AssetImages.animGif.uri) {
             animatedTransformation(myAnimatedTransformation)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =

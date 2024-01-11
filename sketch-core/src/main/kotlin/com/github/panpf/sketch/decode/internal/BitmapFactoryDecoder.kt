@@ -77,7 +77,7 @@ open class BitmapFactoryDecoder(
             caller = "DefaultBitmapDecoder:realDecodeFull"
         )
         sketch.logger.d(MODULE) {
-            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.key}'"
+            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
         }
 
         val bitmap: Bitmap = try {
@@ -85,7 +85,7 @@ open class BitmapFactoryDecoder(
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
-                val message = "Bitmap decode error. Because inBitmap. '${requestContext.key}'"
+                val message = "Bitmap decode error. Because inBitmap. '${requestContext.logKey}'"
                 sketch.logger.e(MODULE, throwable, message)
 
                 sketch.bitmapPool.freeBitmap(
@@ -94,7 +94,7 @@ open class BitmapFactoryDecoder(
                     caller = "decode:error"
                 )
                 sketch.logger.d(MODULE) {
-                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.key}'"
+                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
                 }
 
                 decodeOptions.inBitmap = null
@@ -109,13 +109,13 @@ open class BitmapFactoryDecoder(
         } ?: throw ImageInvalidException("Invalid image. decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             sketch.logger.e(MODULE) {
-                "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
+                "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
             sketch.logger.d(MODULE) {
-                "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
+                "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
             }
         }
         return bitmap
@@ -135,7 +135,7 @@ open class BitmapFactoryDecoder(
             caller = "DefaultBitmapDecoder:realDecodeRegion"
         )
         sketch.logger.d(MODULE) {
-            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.key}'"
+            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
         }
 
         val bitmap = try {
@@ -145,7 +145,7 @@ open class BitmapFactoryDecoder(
             when {
                 inBitmap != null && isInBitmapError(throwable) -> {
                     val message =
-                        "Bitmap decode region error. Because inBitmap. '${requestContext.key}'"
+                        "Bitmap decode region error. Because inBitmap. '${requestContext.logKey}'"
                     sketch.logger.e(MODULE, throwable, message)
 
                     sketch.bitmapPool.freeBitmap(
@@ -154,7 +154,7 @@ open class BitmapFactoryDecoder(
                         caller = "decodeRegion:error"
                     )
                     sketch.logger.d(MODULE) {
-                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.key}'"
+                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
                     }
 
                     decodeOptions.inBitmap = null
@@ -179,13 +179,13 @@ open class BitmapFactoryDecoder(
         } ?: throw ImageInvalidException("Invalid image. region decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             sketch.logger.e(MODULE) {
-                "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.key}'"
+                "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
             sketch.logger.d(MODULE) {
-                "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.key}'"
+                "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
         }
         return bitmap

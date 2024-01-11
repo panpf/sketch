@@ -148,7 +148,7 @@ class SvgDecoder constructor(
         val renderOptions = css?.let { RenderOptions().css(it) }
         svg.renderToCanvas(canvas, renderOptions)
         sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
+            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
         }
 
         DecodeResult(

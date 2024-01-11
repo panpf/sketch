@@ -72,7 +72,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                     "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
                 }
 
-                optionsInfo = imageResult.requestCacheKey
+                optionsInfo = imageResult.cacheKey
                     .replace(imageResult.request.uriString, "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")

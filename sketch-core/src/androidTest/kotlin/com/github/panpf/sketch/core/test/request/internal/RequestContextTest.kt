@@ -70,48 +70,7 @@ class RequestContextTest {
         }
     }
 
-    @Test
-    fun testKey() {
-        val (context, sketch) = getTestContextAndSketch()
-        runBlocking {
-            ImageRequest(context, AssetImages.jpeg.uri).toRequestContext(sketch).apply {
-                val key0 = key
-
-                setNewRequest(request.newRequest())
-                val key1 = key
-                Assert.assertSame(key0, key1)
-
-                setNewRequest(request.newRequest {
-                    resizeSize(100, 300)
-                })
-                val key2 = key
-                Assert.assertNotEquals(key1, key2)
-
-                setNewRequest(request.newRequest {
-                    bitmapConfig(RGB_565)
-                })
-                val key3 = key
-                Assert.assertNotEquals(key2, key3)
-
-                setNewRequest(request.newRequest())
-                val key4 = key
-                Assert.assertSame(key3, key4)
-
-                setNewRequest(request.newRequest {
-                    memoryCachePolicy(ENABLED)
-                })
-                val key5 = key
-                Assert.assertNotSame(key4, key5)
-                Assert.assertEquals(key4, key5)
-
-                setNewRequest(request.newRequest {
-                    memoryCachePolicy(DISABLED)
-                })
-                val key6 = key
-                Assert.assertNotEquals(key5, key6)
-            }
-        }
-    }
+    // TODO test logKey
 
     @Test
     fun testCacheKey() {

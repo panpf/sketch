@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -103,7 +103,7 @@ class RequestExecutor {
         val request = requestContext.request
         request.listener?.onStart(request)
         requestContext.sketch.logger.d(MODULE) {
-            "Request started. '${requestContext.firstRequest.key}'"
+            "Request started. '${requestContext.initialRequest.key}'"
         }
     }
 
@@ -118,8 +118,7 @@ class RequestExecutor {
         val successResult = ImageResult.Success(
             request = lastRequest,
             image = successImage,
-            requestKey = requestContext.key,
-            requestCacheKey = requestContext.cacheKey,
+            cacheKey = requestContext.cacheKey,
             imageInfo = imageData.imageInfo,
             dataFrom = imageData.dataFrom,
             transformedList = imageData.transformedList,
@@ -133,8 +132,7 @@ class RequestExecutor {
         }
         lastRequest.listener?.onSuccess(lastRequest, successResult)
         requestContext.sketch.logger.d(MODULE) {
-            val logKey = newLogKey(requestContext, requestContext.firstRequest.key, lastRequest)
-            "Request Successful. ${successResult.image}. $logKey"
+            "Request Successful. ${successResult.image}. '${requestContext.logKey}'"
         }
         return successResult
     }
@@ -163,8 +161,7 @@ class RequestExecutor {
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
-        val logKey = newLogKey(requestContext, requestContext.firstRequest.key, lastRequest)
-        val logMessage = "Request failed. ${throwable1.message}. $logKey"
+        val logMessage = "Request failed. ${throwable1.message}. '${requestContext.logKey}'"
         when (throwable1) {
             is DepthException -> sketch.logger.d(MODULE) { logMessage }
             is SketchException -> sketch.logger.e(MODULE, logMessage)
@@ -177,8 +174,7 @@ class RequestExecutor {
     private fun doCancel(requestContext: RequestContext) {
         val lastRequest = requestContext.request
         requestContext.sketch.logger.d(MODULE) {
-            val logKey = newLogKey(requestContext, requestContext.firstRequest.key, lastRequest)
-            "Request canceled. $logKey"
+            "Request canceled. '${requestContext.logKey}'"
         }
         lastRequest.listener?.onCancel(lastRequest)
     }
@@ -222,19 +218,5 @@ class RequestExecutor {
             }
         return (stateImage?.getImage(sketch, request, throwable)
             ?: request.placeholder?.getImage(sketch, request, throwable))
-    }
-
-    private fun newLogKey(
-        requestContext: RequestContext?,
-        firstRequestKey: String?,
-        lastRequest: ImageRequest
-    ): String {
-        val firstRequestKey1 = firstRequestKey ?: lastRequest.uriString
-        val lastRequestKey = requestContext?.key ?: lastRequest.uriString
-        return if (firstRequestKey1 != lastRequestKey) {
-            "'${firstRequestKey1}' --> '$lastRequestKey'"
-        } else {
-            "'${firstRequestKey1}'"
-        }
     }
 }

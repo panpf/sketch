@@ -55,7 +55,7 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
                             caller = "transform:${next}"
                         )
                         sketch.logger.d("BitmapTransformationDecodeInterceptor") {
-                            "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.key}'"
+                            "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.logKey}'"
                         }
                     }
                     transformedList.add(transformResult.transformed)

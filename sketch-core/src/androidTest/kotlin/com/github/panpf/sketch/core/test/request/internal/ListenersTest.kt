@@ -92,8 +92,7 @@ class ListenersTest {
                 ImageResult.Success(
                     request = request,
                     image = ColorDrawable(Color.BLACK).asSketchImage(),
-                    requestKey = "",
-                    requestCacheKey = "",
+                    cacheKey = "",
                     imageInfo = com.github.panpf.sketch.decode.ImageInfo(100, 100, "", 0),
                     dataFrom = MEMORY,
                     transformedList = null,

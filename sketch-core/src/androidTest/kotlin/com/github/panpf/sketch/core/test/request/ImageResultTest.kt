@@ -44,8 +44,7 @@ class ImageResultTest {
 
         ImageResult.Success(
             request = request1,
-            requestKey = request1.toRequestContext(sketch).key,
-            requestCacheKey = request1.toRequestContext(sketch).cacheKey,
+            cacheKey = request1.toRequestContext(sketch).cacheKey,
             image = ColorDrawable(Color.BLACK).asSketchImage(),
             imageInfo = ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
             dataFrom = LOCAL,

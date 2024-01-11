@@ -71,10 +71,10 @@ class SvgExtensionsTest {
             Assert.assertEquals(Color.BLUE, svgBackgroundColor)
         }
 
-        val key1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.svg.uri).key
         val key2 = ImageRequest(context, AssetImages.svg.uri) {
             svgBackgroundColor(Color.BLUE)
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).cacheKey
@@ -124,10 +124,10 @@ class SvgExtensionsTest {
             Assert.assertEquals("css1", svgCss)
         }
 
-        val key1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).key
+        val key1 = ImageRequest(context, AssetImages.svg.uri).key
         val key2 = ImageRequest(context, AssetImages.svg.uri) {
             svgCss("css1")
-        }.toRequestContext(sketch).key
+        }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, AssetImages.svg.uri).toRequestContext(sketch).cacheKey

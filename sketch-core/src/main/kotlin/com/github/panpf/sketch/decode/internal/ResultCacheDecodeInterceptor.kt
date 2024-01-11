@@ -136,14 +136,14 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                 caller = "BitmapResultCacheDecodeInterceptor:readCache"
             )
             sketch.logger.d(MODULE) {
-                "read. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.key}'"
+                "read. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
             }
             try {
                 dataSource.decodeBitmap(decodeOptions)
             } catch (throwable: IllegalArgumentException) {
                 val inBitmap = decodeOptions.inBitmap
                 if (inBitmap != null && isInBitmapError(throwable)) {
-                    val message = "Bitmap decode error. Because inBitmap. '${requestContext.key}'"
+                    val message = "Bitmap decode error. Because inBitmap. '${requestContext.logKey}'"
                     sketch.logger.e(MODULE, throwable, message)
 
                     sketch.bitmapPool.freeBitmap(
@@ -152,7 +152,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                         caller = "decode:error"
                     )
                     sketch.logger.d(MODULE) {
-                        "read. freeBitmap. inBitmap error. bitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.key}'"
+                        "read. freeBitmap. inBitmap error. bitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
                     }
 
                     decodeOptions.inBitmap = null
@@ -166,7 +166,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                 }
             }?.let { bitmap ->
                 sketch.logger.d(MODULE) {
-                    "read. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.key}'"
+                    "read. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
                 }
                 DecodeResult(
                     image = bitmap.asSketchImage(requestContext.request.context.resources),

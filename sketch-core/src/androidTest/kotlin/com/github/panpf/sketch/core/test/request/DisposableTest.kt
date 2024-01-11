@@ -70,8 +70,7 @@ class DisposableTest {
                 val requestContext = ImageRequest(view, AssetImages.jpeg.uri).toRequestContext(sketch)
                 ImageResult.Success(
                     request = requestContext.request,
-                    requestKey = requestContext.key,
-                    requestCacheKey = requestContext.cacheKey,
+                    cacheKey = requestContext.cacheKey,
                     image = ColorDrawable(Color.BLACK).asSketchImage(),
                     imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
                     dataFrom = DOWNLOAD_CACHE,

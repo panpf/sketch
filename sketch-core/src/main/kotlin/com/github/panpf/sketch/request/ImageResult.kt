@@ -31,8 +31,7 @@ interface ImageResult {
     data class Success constructor(
         override val request: ImageRequest,
         override val image: Image,
-        val requestKey: String,
-        val requestCacheKey: String,        // Rename to cacheKey
+        val cacheKey: String,
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom,
         /**
