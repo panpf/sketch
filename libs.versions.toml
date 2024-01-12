@@ -5,15 +5,17 @@ kotlin = "1.9.0"
 kotlinx-coroutines = "1.7.3"
 kotlinx-serialization-json = "1.5.1"
 
+jetbrains-compose = "1.5.0"
+androidx-compose = "1.5.0"
+androidx-compose-compiler = "1.5.0"
+androidx-compose-material = "1.5.0"
+androidx-compose-material3 = "1.1.2"
+
 # android
 android-plugin = "8.2.1"
 androidx-activity = "1.6.1"
-androidx-annotation = "1.5.0"
 androidx-appcompat = "1.6.0"
-androidx-compose = "1.5.0"
-androidx-compose-material = "1.5.0"
-androidx-compose-material3 = "1.1.2"
-androidx-compose-compiler = "1.5.0"
+androidx-annotation = "1.5.0"
 androidx-constraintlayout = "2.1.4"
 androidx-constraintlayout-compose = "1.0.1"
 androidx-core = "1.9.0"
@@ -62,6 +64,8 @@ composeStableMarker = "1.0.3"
 
 # kotlin
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 
@@ -144,6 +148,9 @@ composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", ve
 com-android-application = { id = "com.android.application", version.ref = "android-plugin" }
 com-android-library = { id = "com.android.library", version.ref = "android-plugin" }
 androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+org-jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+org-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 mavenpublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenpublish" }
 org-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

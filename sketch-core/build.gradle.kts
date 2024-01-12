@@ -1,6 +1,71 @@
 plugins {
     alias(libs.plugins.com.android.library)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
+}
+
+kotlin {
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    jvm("desktop") {
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        named("androidMain") {
+            dependencies {
+                api(libs.kotlinx.coroutines.android)
+                api(libs.androidx.exifinterface)
+                api(libs.androidx.annotation)
+                api(libs.androidx.appcompat.resources)
+                api(libs.androidx.core)
+                api(libs.androidx.exifinterface)
+                api(libs.androidx.lifecycle.runtime)
+            }
+        }
+        named("androidInstrumentedTest") {
+            dependencies {
+//                implementation(project(":sketch-test"))
+            }
+        }
+
+        named("commonMain") {
+            dependencies {
+//                api(libs.kotlin.stdlib.jdk8)
+                api(libs.androidx.annotation)
+                api(libs.kotlinx.coroutines.core)
+                compileOnly(libs.composeStableMarker)
+            }
+        }
+        named("commonTest") {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.junit)
+                implementation(libs.panpf.tools4j.test)
+            }
+        }
+
+        named("desktopMain") {
+            dependencies {
+                api(libs.kotlinx.coroutines.swing)
+            }
+        }
+
+        named("desktopTest") {
+            dependencies {
+            }
+        }
+    }
 }
 
 android {
@@ -37,20 +102,4 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
-dependencies {
-    api(libs.kotlin.stdlib.jdk8)
-    api(libs.kotlinx.coroutines.android)
-    api(libs.androidx.annotation)
-    api(libs.androidx.appcompat.resources)
-    api(libs.androidx.core)
-    api(libs.androidx.exifinterface)
-    api(libs.androidx.lifecycle.runtime)
-    compileOnly(libs.composeStableMarker)
-    androidTestImplementation(project(":sketch-test"))
 }

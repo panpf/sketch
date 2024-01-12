@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
     alias(libs.plugins.org.jetbrains.kotlin.serialization) apply false
     alias(libs.plugins.org.jetbrains.kotlin.parcelize) apply false
+    alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.org.jetbrains.kotlin.multiplatform) apply false
+    alias(libs.plugins.org.jetbrains.compose) apply false
     alias(libs.plugins.mavenpublish) apply false
 }
 
