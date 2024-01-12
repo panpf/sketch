@@ -16,13 +16,11 @@
 package com.github.panpf.sketch.transform.internal
 
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.internal.freeBitmap
 import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.Key
-import com.github.panpf.sketch.asSketchImage
 import java.util.LinkedList
 
 class TransformationDecodeInterceptor : DecodeInterceptor {
@@ -39,37 +37,34 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
         val result = chain.proceed()
         val transformations = request.transformations ?: return result
         val decodeResult = result.let { it.getOrNull() ?: return it }
-        val image = decodeResult.image
-        if (image !is BitmapImage) return result
 
-        val oldBitmap = image.bitmap
+        val oldImage = decodeResult.image
         val transformedList = LinkedList<String>()
-        val newBitmap = try {
-            transformations.fold(oldBitmap) { inputBitmap, next ->
-                val transformResult = next.transform(sketch, requestContext, inputBitmap)
+        val newImage = try {
+            transformations.fold(oldImage) { inputImage, next ->
+                val transformResult = next.transform(sketch, requestContext, inputImage)
                 if (transformResult != null) {
-                    if (transformResult.bitmap !== inputBitmap) {
+                    if (transformResult.image !== inputImage) {
                         sketch.bitmapPool.freeBitmap(
-                            bitmap = inputBitmap,
+                            bitmap = inputImage,
                             disallowReuseBitmap = request.disallowReuseBitmap,
                             caller = "transform:${next}"
                         )
                         sketch.logger.d("BitmapTransformationDecodeInterceptor") {
-                            "transform. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.logKey}'"
+                            "transform. freeBitmap. bitmap=${inputImage.logString}. '${requestContext.logKey}'"
                         }
                     }
                     transformedList.add(transformResult.transformed)
-                    transformResult.bitmap
+                    transformResult.image
                 } else {
-                    inputBitmap
+                    inputImage
                 }
             }
         } catch (e: Throwable) {
             return Result.failure(e)
         }
         return if (transformedList.isNotEmpty()) {
-            require(!newBitmap.isRecycled)
-            val newImage = newBitmap.asSketchImage(resources = image.resources)
+            require(!newImage.checkValid())
             val newDecodeResult = decodeResult.newResult(image = newImage) {
                 transformedList.forEach {
                     addTransformed(it)

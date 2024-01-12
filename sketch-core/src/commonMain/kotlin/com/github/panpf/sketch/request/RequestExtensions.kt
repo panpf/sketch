@@ -18,6 +18,7 @@ package com.github.panpf.sketch.request
 import android.widget.ImageView
 import com.github.panpf.sketch.target.ImageViewTarget
 import java.lang.ref.WeakReference
+import javax.swing.text.html.ImageView
 
 
 /**

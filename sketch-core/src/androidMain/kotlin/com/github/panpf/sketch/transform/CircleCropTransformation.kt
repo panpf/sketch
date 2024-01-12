@@ -21,13 +21,16 @@ import android.graphics.Paint
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.getOrCreate
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.safeConfig
+import com.github.panpf.sketch.util.toAndroidRect
 import java.lang.Integer.min
 
 /**
@@ -46,26 +49,33 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,
-        input: Bitmap
-    ): TransformResult {
-        val newSize = min(input.width, input.height)
+        input: Image
+    ): TransformResult? {
+        val inputBitmap = input.getBitmapOrNull() ?: return null
+        val newSize = min(inputBitmap.width, inputBitmap.height)
         val scale = scale
             ?: requestContext.request.resizeScaleDecider.get(
-                imageWidth = input.width,
-                imageHeight = input.height,
+                imageWidth = inputBitmap.width,
+                imageHeight = inputBitmap.height,
                 resizeWidth = newSize,
                 resizeHeight = newSize
             )
         val resizeMapping = calculateResizeMapping(
-            input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
+            inputBitmap.width, inputBitmap.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
-        val config = input.safeConfig
-        val outBitmap = sketch.bitmapPool.getOrCreate(
-            width = resizeMapping.newWidth,
-            height = resizeMapping.newHeight,
-            config = config,
-            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-            caller = "CircleCropTransformation"
+        val config = inputBitmap.safeConfig
+        // TODO BitmapPool
+//        val outBitmap = sketch.bitmapPool.getOrCreate(
+//            width = resizeMapping.newWidth,
+//            height = resizeMapping.newHeight,
+//            config = config,
+//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+//            caller = "CircleCropTransformation"
+//        )
+        val outBitmap = Bitmap.createBitmap(
+            /* width = */ resizeMapping.newWidth,
+            /* height = */ resizeMapping.newHeight,
+            /* config = */ config,
         )
         val paint = Paint().apply {
             isAntiAlias = true
@@ -81,8 +91,13 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
             paint
         )
         paint.xfermode = PorterDuffXfermode(SRC_IN)
-        canvas.drawBitmap(input, resizeMapping.srcRect, resizeMapping.destRect, paint)
-        return TransformResult(outBitmap, createCircleCropTransformed(scale))
+        canvas.drawBitmap(
+            /* bitmap = */ inputBitmap,
+            /* src = */ resizeMapping.srcRect.toAndroidRect(),
+            /* dst = */ resizeMapping.destRect.toAndroidRect(),
+            /* paint = */ paint
+        )
+        return TransformResult(outBitmap.asSketchImage(), createCircleCropTransformed(scale))
     }
 
     override fun toString(): String = key

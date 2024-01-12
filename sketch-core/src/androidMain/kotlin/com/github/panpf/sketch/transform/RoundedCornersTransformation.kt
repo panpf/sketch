@@ -25,8 +25,10 @@ import android.graphics.Rect
 import android.graphics.RectF
 import androidx.annotation.Px
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.getOrCreate
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.safeConfig
 
@@ -89,16 +91,22 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,
-        input: Bitmap
-    ): TransformResult {
-        val config = input.safeConfig
-        val bitmapPool = sketch.bitmapPool
-        val newBitmap = bitmapPool.getOrCreate(
-            width = input.width,
-            height = input.height,
-            config = config,
-            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-            caller = "RoundedCornersTransformation"
+        input: Image
+    ): TransformResult? {
+        val inputBitmap = input.getBitmapOrNull() ?: return null
+        val config = inputBitmap.safeConfig
+        // TODO BitmapPool
+//        val newBitmap = sketch.bitmapPool.getOrCreate(
+//            width = inputBitmap.width,
+//            height = inputBitmap.height,
+//            config = config,
+//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+//            caller = "RoundedCornersTransformation"
+//        )
+        val newBitmap = Bitmap.createBitmap(
+            /* width = */ inputBitmap.width,
+            /* height = */ inputBitmap.height,
+            /* config = */ config,
         )
         val paint = Paint().apply {
             isAntiAlias = true
@@ -108,15 +116,18 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
             drawARGB(0, 0, 0, 0)
         }
         val path = Path().apply {
-            val rect = RectF(0f, 0f, input.width.toFloat(), input.height.toFloat())
+            val rect = RectF(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat())
             addRoundRect(rect, radiusArray, Path.Direction.CW)
         }
         canvas.drawPath(path, paint)
 
         paint.xfermode = PorterDuffXfermode(SRC_IN)
-        val rect = Rect(0, 0, input.width, input.height)
-        canvas.drawBitmap(input, rect, rect, paint)
-        return TransformResult(newBitmap, createRoundedCornersTransformed(radiusArray))
+        val rect = Rect(0, 0, inputBitmap.width, inputBitmap.height)
+        canvas.drawBitmap(inputBitmap, rect, rect, paint)
+        return TransformResult(
+            newBitmap.asSketchImage(),
+            createRoundedCornersTransformed(radiusArray)
+        )
     }
 
     override fun toString(): String = key

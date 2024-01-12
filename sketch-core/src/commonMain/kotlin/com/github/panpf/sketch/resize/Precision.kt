@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.resize
 
-import android.graphics.Bitmap
+import com.github.panpf.sketch.Image
 
 enum class Precision {
 
@@ -35,7 +35,7 @@ enum class Precision {
     SAME_ASPECT_RATIO,
 
     /**
-     * The size of the [Bitmap] returned is exactly the same as [Resize]
+     * The size of the [Image] returned is exactly the same as [Resize]
      */
     EXACTLY,
 }

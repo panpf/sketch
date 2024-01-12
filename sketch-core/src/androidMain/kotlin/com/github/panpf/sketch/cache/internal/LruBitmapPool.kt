@@ -198,7 +198,7 @@ class LruBitmapPool constructor(
         val strategy = if (Build.VERSION.SDK_INT >= 19 && strategy is SizeConfigStrategy)
             "SizeConfigStrategy" else "AttributeStrategy"
         val configs = allowedConfigs.joinToString(prefix = "[", postfix = "]", separator = ",")
-        return "${MODULE}(maxSize=${maxSize.formatFileSize()},strategy=${strategy},allowedConfigs=${configs})"
+        return "$MODULE(maxSize=${maxSize.formatFileSize()},strategy=${strategy},allowedConfigs=${configs})"
     }
 
     override fun equals(other: Any?): Boolean {

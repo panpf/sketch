@@ -24,9 +24,10 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.internal.getOrCreate
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.safeConfig
 
@@ -47,21 +48,27 @@ class MaskTransformation(
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,
-        input: Bitmap
-    ): TransformResult {
-        val bitmapPool: BitmapPool = sketch.bitmapPool
+        input: Image
+    ): TransformResult? {
+        val inputBitmap = input.getBitmapOrNull() ?: return null
 
         val maskBitmap: Bitmap
         var isNewBitmap = false
-        if (input.isMutable) {
-            maskBitmap = input
+        if (inputBitmap.isMutable) {
+            maskBitmap = inputBitmap
         } else {
-            maskBitmap = bitmapPool.getOrCreate(
-                width = input.width,
-                height = input.height,
-                config = input.safeConfig,
-                disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-                caller = "MaskTransformation"
+            // TODO BitmapPool
+//            maskBitmap = sketch.bitmapPool.getOrCreate(
+//                width = inputBitmap.width,
+//                height = inputBitmap.height,
+//                config = inputBitmap.safeConfig,
+//                disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+//                caller = "MaskTransformation"
+//            )
+            maskBitmap = Bitmap.createBitmap(
+                /* width = */ inputBitmap.width,
+                /* height = */ inputBitmap.height,
+                /* config = */ inputBitmap.safeConfig,
             )
             isNewBitmap = true
         }
@@ -69,7 +76,7 @@ class MaskTransformation(
         val canvas = Canvas(maskBitmap)
 
         if (isNewBitmap) {
-            canvas.drawBitmap(input, 0f, 0f, null)
+            canvas.drawBitmap(inputBitmap, 0f, 0f, null)
         }
 
         val paint = Paint()
@@ -78,23 +85,28 @@ class MaskTransformation(
 
         val saveCount = if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             canvas.saveLayer(
-                0f, 0f, input.width.toFloat(), input.height.toFloat(), paint
+                0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat(), paint
             )
         } else {
             @Suppress("DEPRECATION")
             canvas.saveLayer(
-                0f, 0f, input.width.toFloat(), input.height.toFloat(), paint, Canvas.ALL_SAVE_FLAG
+                0f,
+                0f,
+                inputBitmap.width.toFloat(),
+                inputBitmap.height.toFloat(),
+                paint,
+                Canvas.ALL_SAVE_FLAG
             )
         }
 
-        canvas.drawBitmap(input, 0f, 0f, null)
+        canvas.drawBitmap(inputBitmap, 0f, 0f, null)
 
         paint.xfermode = PorterDuffXfermode(SRC_IN)
-        canvas.drawRect(0f, 0f, input.width.toFloat(), input.height.toFloat(), paint)
+        canvas.drawRect(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat(), paint)
 
         canvas.restoreToCount(saveCount)
 
-        return TransformResult(maskBitmap, createMaskTransformed(maskColor))
+        return TransformResult(maskBitmap.asSketchImage(), createMaskTransformed(maskColor))
     }
 
     override fun equals(other: Any?): Boolean {

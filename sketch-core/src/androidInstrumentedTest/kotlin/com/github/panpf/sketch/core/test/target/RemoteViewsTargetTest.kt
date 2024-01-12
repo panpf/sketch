@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.target
 
+import android.R.id
 import android.widget.RemoteViews
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.ImageRequest
@@ -39,7 +40,7 @@ class RemoteViewsTargetTest {
         val requestContext = RequestContext(sketch, ImageRequest(context, null))
 
         var callbackCount = 0
-        RemoteViewsTarget(remoteViews, android.R.id.icon) {
+        RemoteViewsTarget(remoteViews, id.icon) {
             callbackCount++
         }.apply {
             Assert.assertEquals(0, callbackCount)
@@ -62,7 +63,7 @@ class RemoteViewsTargetTest {
 
         callbackCount = 0
         val requestContext2 = RequestContext(sketch, ImageRequest(context, null){allowSetNullDrawable()})
-        RemoteViewsTarget(remoteViews, android.R.id.icon) {
+        RemoteViewsTarget(remoteViews, id.icon) {
             callbackCount++
         }.apply {
             Assert.assertEquals(0, callbackCount)

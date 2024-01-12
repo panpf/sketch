@@ -21,8 +21,10 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.getOrCreate
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.safeConfig
 
@@ -37,34 +39,42 @@ class RotateTransformation(val degrees: Int) : Transformation {
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,
-        input: Bitmap
-    ): TransformResult {
+        input: Image
+    ): TransformResult? {
+        val inputBitmap = input.getBitmapOrNull() ?: return null
         val matrix = Matrix().apply {
             setRotate(degrees.toFloat())
         }
-        val newRect = RectF(0f, 0f, input.width.toFloat(), input.height.toFloat()).apply {
-            matrix.mapRect(this)
-        }
+        val newRect =
+            RectF(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat()).apply {
+                matrix.mapRect(this)
+            }
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
 
         // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-        var config = input.safeConfig
+        var config = inputBitmap.safeConfig
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }
-        val result = sketch.bitmapPool.getOrCreate(
-            width = newWidth,
-            height = newHeight,
-            config = config,
-            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-            caller = "RotateTransformation"
+        // TODO BitmapPool
+//        val result = sketch.bitmapPool.getOrCreate(
+//            width = newWidth,
+//            height = newHeight,
+//            config = config,
+//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+//            caller = "RotateTransformation"
+//        )
+        val result = Bitmap.createBitmap(
+            /* width = */ newWidth,
+            /* height = */ newHeight,
+            /* config = */ config,
         )
         matrix.postTranslate(-newRect.left, -newRect.top)
         val canvas = Canvas(result)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
-        canvas.drawBitmap(input, matrix, paint)
-        return TransformResult(result, createRotateTransformed(degrees))
+        canvas.drawBitmap(inputBitmap, matrix, paint)
+        return TransformResult(result.asSketchImage(), createRotateTransformed(degrees))
     }
 
     override fun toString(): String = key

@@ -21,6 +21,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import com.sun.jndi.toolkit.url.Uri
 import java.io.File
 import java.io.IOException
 import java.io.InputStream

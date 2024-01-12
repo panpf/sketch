@@ -47,7 +47,6 @@ fun interface Transition {
      * Start the transition animation.
      *
      * Implementations are responsible for calling the correct [Target] lifecycle callback.
-     * See [CrossfadeTransition] for an example.
      */
     @MainThread
     fun transition()

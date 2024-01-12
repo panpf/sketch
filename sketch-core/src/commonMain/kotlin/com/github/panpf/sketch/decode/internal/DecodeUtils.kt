@@ -47,6 +47,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
+import org.w3c.dom.css.Rect
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor

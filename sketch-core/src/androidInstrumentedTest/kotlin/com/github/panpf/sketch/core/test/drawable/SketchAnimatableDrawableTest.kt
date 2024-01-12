@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.drawable
 
+import android.R.drawable
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.drawable.BitmapDrawable
@@ -243,7 +244,7 @@ class SketchAnimatableDrawableTest {
 
         SketchAnimatableDrawable(
             TestAnimatableDrawable3(
-                context.getDrawableCompat(android.R.drawable.bottom_bar)
+                context.getDrawableCompat(drawable.bottom_bar)
             ),
         ).apply {
             mutate()
@@ -258,7 +259,7 @@ class SketchAnimatableDrawableTest {
 
         SketchAnimatableDrawable(
             TestAnimatableDrawable3(
-                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar))
             ),
         ).apply {
             mutate()

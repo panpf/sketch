@@ -15,13 +15,12 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
- * Provide [Drawable] for placeholder and error states
+ * Provide [Image] for placeholder and error states
  */
 interface StateImage {
 

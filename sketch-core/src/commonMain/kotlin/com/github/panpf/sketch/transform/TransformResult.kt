@@ -15,13 +15,16 @@
  */
 package com.github.panpf.sketch.transform
 
-import android.graphics.Bitmap
+import com.github.panpf.sketch.Image
 
 /**
  * Bitmap transformation result
  */
 class TransformResult constructor(
-    val bitmap: Bitmap,
+    /**
+     * Transformed [Image]
+     */
+    val image: Image,
 
     /**
      * Store the information of this transformation to record the transformation history of Bitmap

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.drawable
 
+import android.R.drawable
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -66,7 +67,7 @@ class ResizeAnimatableDrawableTest {
 
         ResizeAnimatableDrawable(
             SketchAnimatableDrawable(
-                TestAnimatableDrawable1(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                TestAnimatableDrawable1(context.getDrawableCompat(drawable.bottom_bar))
             ),
             Size(500, 300),
             CENTER_CROP
@@ -84,7 +85,7 @@ class ResizeAnimatableDrawableTest {
         ResizeAnimatableDrawable(
             SketchAnimatableDrawable(
                 TestAnimatableDrawable1(
-                    TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                    TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar))
                 )
             ),
             Size(500, 300),

@@ -91,7 +91,7 @@ class CrossfadeTransition @JvmOverloads constructor(
         val fadeStart: Boolean = true,
         val preferExactIntrinsicSize: Boolean = false,
         val alwaysUse: Boolean = false,
-    ) : Transition.Factory {
+    ) : com.github.panpf.sketch.transition.Transition.Factory {
 
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }

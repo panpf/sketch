@@ -58,8 +58,7 @@ interface MemoryCache {
     /**
      * Trim memory based on the [level]
      *
-     * @param level see [android.content.ComponentCallbacks2].TRIM_MEMORY_*
-     * @see android.content.ComponentCallbacks2
+     * @param level see [SystemCallbacks]
      */
     fun trim(level: Int)
 

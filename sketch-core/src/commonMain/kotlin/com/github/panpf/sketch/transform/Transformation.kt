@@ -30,8 +30,8 @@
  */
 package com.github.panpf.sketch.transform
 
-import android.graphics.Bitmap
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -50,17 +50,17 @@ interface Transformation : Key {
     override val key: String
 
     /**
-     * Apply the transformation to [input] and return the transformed [Bitmap].
+     * Apply the transformation to [input] and return the transformed [Image].
      *
      * @param requestContext [RequestContext].
-     * @param input The input [Bitmap] to transform. Don't recycle or put input into BitmapPool, it will cause unpredictable errors
-     * @return The transformed [Bitmap].
+     * @param input The input [Image] to transform. Don't recycle or put input into BitmapPool, it will cause unpredictable errors
+     * @return The transformed [Image].
      */
     @WorkerThread
     suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,
-        input: Bitmap
+        input: Image
     ): TransformResult?
 }
 

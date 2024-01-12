@@ -15,12 +15,8 @@
  */
 package com.github.panpf.sketch
 
-import android.content.ComponentCallbacks2
-import android.content.Context
-import android.net.ConnectivityManager.NetworkCallback
 import androidx.annotation.AnyThread
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
@@ -47,27 +43,24 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
-import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.SystemCallbacks
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
-import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToLong
 
@@ -84,7 +77,7 @@ import kotlin.math.roundToLong
  */
 @Stable
 class Sketch private constructor(
-    _context: Context,
+    _context: PlatformContext,
     _logger: Logger?,
     _memoryCache: MemoryCache?,
     _downloadCache: DiskCache?,
@@ -103,7 +96,7 @@ class Sketch private constructor(
     private val isShutdown = AtomicBoolean(false)
 
     /** Application Context */
-    val context: Context = _context.applicationContext
+    val context: PlatformContext = _context
 
     /** Output log */
     val logger: Logger = _logger ?: Logger()
@@ -132,8 +125,8 @@ class Sketch private constructor(
      * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
     val components: Components
 
-    /** Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status */
-    val systemCallbacks = SystemCallbacks(context, WeakReference(this))
+    /** Monitor network connection and system status */
+    val systemCallbacks = SystemCallbacks()
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -176,6 +169,8 @@ class Sketch private constructor(
             }.build()
         components = Components(this, componentRegistry)
 
+        systemCallbacks.register(this)
+
         logger.d("Configuration") {
             buildString {
                 append("\n").append("logger: $logger")
@@ -202,16 +197,12 @@ class Sketch private constructor(
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
     @AnyThread
-    fun enqueue(request: ImageRequest): Disposable<ImageResult> {
+    fun enqueue(request: ImageRequest): Disposable {
         val job = scope.async {
             requestExecutor.execute(this@Sketch, request, enqueue = true)
         }
-        val target = request.target
-        return if (target is ViewTarget<*>) {
-            target.view?.requestManager?.getDisposable(job) ?: OneShotDisposable(job)
-        } else {
-            OneShotDisposable(job)
-        }
+        // Update the current request attached to the view and return a new disposable.
+        return getDisposable(request, job)
     }
 
     /**
@@ -222,18 +213,13 @@ class Sketch private constructor(
      *
      * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
      */
-    suspend fun execute(request: ImageRequest): ImageResult =
-        coroutineScope {
-            val job = async(Dispatchers.Main.immediate) {
-                requestExecutor.execute(this@Sketch, request, enqueue = false)
-            }
-            // Update the current request attached to the view and await the result.
-            val target = request.target
-            if (target is ViewTarget<*>) {
-                target.view?.requestManager?.getDisposable(job)
-            }
-            job.await()
+    suspend fun execute(request: ImageRequest): ImageResult = coroutineScope {
+        val job = async(Dispatchers.Main.immediate) {
+            requestExecutor.execute(this@Sketch, request, enqueue = false)
         }
+        // Update the current request attached to the view and await the result.
+        return@coroutineScope getDisposable(request, job).job.await()
+    }
 
 
     /**
@@ -252,9 +238,8 @@ class Sketch private constructor(
         bitmapPool.clear()
     }
 
-    class Builder constructor(context: Context) {
+    class Builder constructor(private val context: PlatformContext) {
 
-        private val appContext: Context = context.applicationContext
         private var logger: Logger? = null
         private var memoryCache: MemoryCache? = null
         private var downloadCache: DiskCache? = null
@@ -327,7 +312,7 @@ class Sketch private constructor(
         }
 
         fun build(): Sketch = Sketch(
-            _context = appContext,
+            _context = context,
             _logger = logger,
             _memoryCache = memoryCache,
             _downloadCache = downloadCache,
@@ -339,3 +324,9 @@ class Sketch private constructor(
         )
     }
 }
+
+
+internal expect fun getDisposable(
+    request: ImageRequest,
+    job: Deferred<ImageResult>,
+): Disposable

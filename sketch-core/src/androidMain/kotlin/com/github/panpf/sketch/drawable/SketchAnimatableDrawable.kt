@@ -46,7 +46,6 @@ class SketchAnimatableDrawable constructor(
     override fun hashCode(): Int = animatableDrawable.hashCode()
 
     override fun toString(): String {
-        val size = Size(intrinsicWidth, intrinsicHeight)
         return "SketchAnimatableDrawable($animatableDrawable)"
     }
 }

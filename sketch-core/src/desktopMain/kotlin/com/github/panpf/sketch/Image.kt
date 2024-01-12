@@ -19,19 +19,19 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
 
-expect interface Image {
+actual interface Image {
 
     /** The width of the image in pixels. */
-    val width: Int
+    actual val width: Int
 
     /** The height of the image in pixels. */
-    val height: Int
+    actual val height: Int
 
     /** Returns the minimum number of bytes that can be used to store this bitmap's pixels. */
-    val byteCount: Int
+    actual val byteCount: Int
 
     /** Returns the size of the allocated memory used to store this bitmap's pixels.. */
-    val allocationByteCount: Int
+    actual val allocationByteCount: Int
 
     /**
      * True if the image can be shared between multiple [Target]s at the same time.
@@ -40,48 +40,12 @@ expect interface Image {
      * Conversely, an animated image cannot be shared as its internal state is being mutated while
      * its animation is running.
      */
-    val shareable: Boolean
+    actual val shareable: Boolean
 
-    fun cacheValue(
+    actual fun cacheValue(
         requestContext: RequestContext,
         extras: Map<String, Any?>
     ): Value?
 
-    fun checkValid(): Boolean
-}
-
-
-//fun Image.findLeafImage(): Image {
-//    return if (this is ImageWrapper) {
-//        image.findLeafImage()
-//    } else {
-//        this
-//    }
-//}
-
-val Image.size: Size
-    get() = Size(width, height)
-
-//open class ImageWrapper(val image: Image) : Image by image {
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (javaClass != other?.javaClass) return false
-//
-//        other as ImageWrapper
-//
-//        return image == other.image
-//    }
-//
-//    override fun hashCode(): Int {
-//        return image.hashCode()
-//    }
-//
-//    override fun toString(): String {
-//        return "ImageWrapper(image=$image)"
-//    }
-//}
-
-interface ByteCountProvider {
-    val byteCount: Int
-    val allocationByteCount: Int
+    actual fun checkValid(): Boolean
 }

@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.util
 
-import android.util.Log
 import com.github.panpf.sketch.util.DiskLruCache.Editor
 import java.io.BufferedWriter
 import java.io.ByteArrayOutputStream
@@ -773,7 +772,7 @@ class DiskLruCache private constructor(
                     deleteContents(file)
                 }
                 if (!file.delete()) {
-                    Log.e("DiskLruCache", "failed to delete file: " + file.path)
+                    println("DiskLruCache. failed to delete file: " + file.path)
                 }
             }
         }

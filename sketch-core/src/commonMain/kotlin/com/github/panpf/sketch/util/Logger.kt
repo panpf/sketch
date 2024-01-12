@@ -15,12 +15,12 @@
  */
 package com.github.panpf.sketch.util
 
-import android.util.Log
+expect fun logProxy(): Logger.Proxy
 
 // TODO Reference ZoomImage refactoring
 class Logger constructor(
     level: Level = Level.INFO,
-    private val proxy: Proxy = LogProxy()
+    private val proxy: Proxy = logProxy()
 ) {
 
     companion object {
@@ -35,7 +35,7 @@ class Logger constructor(
                 val oldLevel = field
                 field = value
                 val newLevel = value.name
-                Log.w(TAG, "Logger. setLevel. $oldLevel -> $newLevel")
+                proxy.w(TAG, "Logger. setLevel. $oldLevel -> $newLevel", null)
             }
         }
 
@@ -43,7 +43,7 @@ class Logger constructor(
         set(value) {
             if (value != field) {
                 field = value
-                Log.w(TAG, "Logger. showThreadName. $value")
+                proxy.w(TAG, "Logger. showThreadName. $value", null)
             }
         }
 
@@ -216,43 +216,5 @@ class Logger constructor(
         fun w(tag: String, msg: String, tr: Throwable?)
         fun e(tag: String, msg: String, tr: Throwable?)
         fun flush()
-    }
-
-    class LogProxy : Proxy {
-        override fun v(tag: String, msg: String, tr: Throwable?) {
-            Log.v(tag, msg, tr)
-        }
-
-        override fun d(tag: String, msg: String, tr: Throwable?) {
-            Log.d(tag, msg, tr)
-        }
-
-        override fun i(tag: String, msg: String, tr: Throwable?) {
-            Log.i(tag, msg, tr)
-        }
-
-        override fun w(tag: String, msg: String, tr: Throwable?) {
-            Log.w(tag, msg, tr)
-        }
-
-        override fun e(tag: String, msg: String, tr: Throwable?) {
-            Log.e(tag, msg, tr)
-        }
-
-        override fun flush() {
-
-        }
-
-        override fun toString(): String = "LogProxy"
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return javaClass.hashCode()
-        }
     }
 }
