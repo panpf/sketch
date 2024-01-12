@@ -363,7 +363,6 @@ internal fun ceilRoundPow2(number: Int): Int {
     return if (n < 0) 1 else if (n >= 1073741824) 1073741824 else n + 1
 }
 
-// TODO Test
 internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
     if (srcSize.isEmpty || dstSize.isEmpty) {
         return Rect(
