@@ -104,15 +104,14 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testToString() {
         val animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN))
+        val sketchAnimatableDrawable = SketchAnimatableDrawable(animatableDrawable)
         ResizeAnimatableDrawable(
-            SketchAnimatableDrawable(animatableDrawable),
+            sketchAnimatableDrawable,
             Size(100, 500),
             CENTER_CROP
         ).apply {
             Assert.assertEquals(
-                "ResizeAnimatableDrawable(wrapped=${
-                    SketchAnimatableDrawable(animatableDrawable)
-                }, resizeSize=100x500, resizeScale=CENTER_CROP)",
+                "ResizeAnimatableDrawable(wrapped=$sketchAnimatableDrawable, size=100x500, scale=CENTER_CROP)",
                 toString()
             )
         }

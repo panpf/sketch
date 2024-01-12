@@ -246,7 +246,7 @@ class ResizeDrawableTest {
 
         ResizeDrawable(bitmapDrawable, Size(500, 300), CENTER_CROP).apply {
             Assert.assertEquals(
-                "ResizeDrawable(wrapped=$bitmapDrawable, resizeSize=500x300, resizeScale=CENTER_CROP)",
+                "ResizeDrawable(wrapped=$bitmapDrawable, size=500x300, scale=CENTER_CROP)",
                 toString()
             )
         }
