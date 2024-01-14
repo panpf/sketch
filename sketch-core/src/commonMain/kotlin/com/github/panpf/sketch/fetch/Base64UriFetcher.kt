@@ -15,9 +15,7 @@
  */
 package com.github.panpf.sketch.fetch
 
-import android.util.Base64
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY
@@ -26,6 +24,8 @@ import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.util.ifOrNull
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
@@ -48,31 +48,37 @@ class Base64UriFetcher(
         const val BASE64_IDENTIFIER = "base64,"
     }
 
+    @OptIn(ExperimentalEncodingApi::class)
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> {
-        val bytes = Base64.decode(imageDataBase64StringLazy.value, Base64.DEFAULT)
+        val bytes = Base64.Default.decode(imageDataBase64StringLazy.value)
         return Result.success(
             FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
         )
     }
 
+    /**
+     * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
+     */
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? =
-            ifOrNull(SCHEME.equals(request.uriString.toUri().scheme, ignoreCase = true)) {
-                val base64ImageString = request.uriString
-                val mimeTypeEndSymbolIndex = base64ImageString.indexOf(";")
-                val base64IdentifierIndex = base64ImageString.indexOf(BASE64_IDENTIFIER)
+        override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? {
+            val uriString = request.uriString
+            val index = uriString.indexOf(":").takeIf { it != -1 } ?: return null
+            return ifOrNull(SCHEME.equals(uriString.substring(0, index), ignoreCase = true)) {
+                val mimeTypeEndSymbolIndex = uriString.indexOf(";")
+                val base64IdentifierIndex = uriString.indexOf(BASE64_IDENTIFIER)
                 if (mimeTypeEndSymbolIndex != -1 && base64IdentifierIndex != -1) {
                     val mimeType =
-                        base64ImageString.substring(SCHEME.length + 1, mimeTypeEndSymbolIndex)
+                        uriString.substring(SCHEME.length + 1, mimeTypeEndSymbolIndex)
                     Base64UriFetcher(sketch, request, mimeType, lazy {
-                        base64ImageString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
+                        uriString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
                     })
                 } else {
-                    throw UriInvalidException("Invalid base64 image: ${request.uriString}")
+                    throw UriInvalidException("Invalid base64 image: $uriString")
                 }
             }
+        }
 
         override fun toString(): String = "Base64UriFetcher"
 

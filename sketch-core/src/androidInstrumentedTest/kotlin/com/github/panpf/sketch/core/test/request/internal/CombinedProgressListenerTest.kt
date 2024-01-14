@@ -47,11 +47,11 @@ class CombinedProgressListenerTest {
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
         val combinedProgressListener = CombinedProgressListener(
-            fromProviderProgressListener = listener1,
+            fromTargetProgressListener = listener1,
             fromBuilderProgressListener = listener2,
             fromBuilderProgressListeners = listOf(listener3)
         )
-        Assert.assertSame(listener1, combinedProgressListener.fromProviderProgressListener)
+        Assert.assertSame(listener1, combinedProgressListener.fromTargetProgressListener)
         Assert.assertSame(listener2, combinedProgressListener.fromBuilderProgressListener)
         Assert.assertSame(
             listener3,

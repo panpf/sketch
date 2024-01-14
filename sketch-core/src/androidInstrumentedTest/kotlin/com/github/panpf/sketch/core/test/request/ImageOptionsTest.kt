@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.request
 
+import android.R.drawable
 import android.graphics.Bitmap.Config.ALPHA_8
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
@@ -122,7 +123,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertNull(this.disallowAnimatedImage)
-            Assert.assertNull(this.resizeApplyToDrawable)
+            Assert.assertNull(this.sizeApplyToDraw)
             Assert.assertNull(this.memoryCachePolicy)
             Assert.assertNull(this.componentRegistry)
         }
@@ -284,11 +285,11 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            resizeApplyToDrawable(true)
+            sizeApplyToDraw(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
-            Assert.assertNotNull(this.resizeApplyToDrawable)
+            Assert.assertNotNull(this.sizeApplyToDraw)
         }
 
         ImageOptions {
@@ -618,14 +619,14 @@ class ImageOptionsTest {
             error(android.R.drawable.bottom_bar)
         }).apply {
             Assert.assertEquals(
-                ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
                 this.error
             )
         }.merged(ImageOptions {
             error(android.R.drawable.arrow_up_float)
         }).apply {
             Assert.assertEquals(
-                ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
                 this.error
             )
         }
@@ -643,15 +644,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.resizeApplyToDrawable)
+            Assert.assertEquals(null, this.sizeApplyToDraw)
         }.merged(ImageOptions {
-            resizeApplyToDrawable(true)
+            sizeApplyToDraw(true)
         }).apply {
-            Assert.assertEquals(true, this.resizeApplyToDrawable)
+            Assert.assertEquals(true, this.sizeApplyToDraw)
         }.merged(ImageOptions {
-            resizeApplyToDrawable(false)
+            sizeApplyToDraw(false)
         }).apply {
-            Assert.assertEquals(true, this.resizeApplyToDrawable)
+            Assert.assertEquals(true, this.sizeApplyToDraw)
         }
 
         ImageOptions().apply {
@@ -759,7 +760,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     transitionFactory(CrossfadeTransition.Factory())
                 }.apply { add(this) }.newOptions {
-                    resizeApplyToDrawable(true)
+                    sizeApplyToDraw(true)
                 }.apply { add(this) }.newOptions {
                     memoryCachePolicy(ENABLED)
                 }.apply { add(this) }.newOptions {
@@ -1526,7 +1527,7 @@ class ImageOptionsTest {
             error(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
                     error
                 )
             }
@@ -1536,8 +1537,8 @@ class ImageOptionsTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        uriEmptyError(android.R.drawable.alert_dark_frame)
+                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)) {
+                        uriEmptyError(drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -1580,22 +1581,22 @@ class ImageOptionsTest {
     fun testResizeApplyToDrawable() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(resizeApplyToDrawable)
+                Assert.assertNull(sizeApplyToDraw)
             }
 
-            resizeApplyToDrawable()
+            sizeApplyToDraw()
             build().apply {
-                Assert.assertEquals(true, resizeApplyToDrawable)
+                Assert.assertEquals(true, sizeApplyToDraw)
             }
 
-            resizeApplyToDrawable(false)
+            sizeApplyToDraw(false)
             build().apply {
-                Assert.assertEquals(false, resizeApplyToDrawable)
+                Assert.assertEquals(false, sizeApplyToDraw)
             }
 
-            resizeApplyToDrawable(null)
+            sizeApplyToDraw(null)
             build().apply {
-                Assert.assertNull(resizeApplyToDrawable)
+                Assert.assertNull(sizeApplyToDraw)
             }
         }
     }

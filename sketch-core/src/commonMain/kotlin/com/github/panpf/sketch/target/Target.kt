@@ -17,7 +17,17 @@ package com.github.panpf.sketch.target
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.RequestDelegate
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.SizeResolver
+import kotlinx.coroutines.Job
 
 /**
  * A listener that accepts the result of an image request.
@@ -50,4 +60,22 @@ interface Target {
     @MainThread
     fun onError(requestContext: RequestContext, error: Image?) {
     }
+
+    fun getImageOptions(): ImageOptions?
+
+    fun getSizeResolver(): SizeResolver? = null
+
+    fun getScale(): Scale?
+
+    fun getLifecycleResolver(): LifecycleResolver?
+
+    fun getRequestDelegate(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        job: Job
+    ): RequestDelegate?
+
+    fun getListener(): Listener?
+
+    fun getProgressListener(): ProgressListener?
 }

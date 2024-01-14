@@ -20,13 +20,13 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
 class CombinedListener(
-    val fromProviderListener: Listener?,
+    val fromTargetListener: Listener?,
     val fromBuilderListener: Listener?,
     val fromBuilderListeners: List<Listener>? = null,
 ) : Listener {
 
     override fun onStart(request: ImageRequest) {
-        fromProviderListener?.onStart(request)
+        fromTargetListener?.onStart(request)
         fromBuilderListener?.onStart(request)
         fromBuilderListeners?.forEach {
             it.onStart(request)
@@ -34,7 +34,7 @@ class CombinedListener(
     }
 
     override fun onCancel(request: ImageRequest) {
-        fromProviderListener?.onCancel(request)
+        fromTargetListener?.onCancel(request)
         fromBuilderListener?.onCancel(request)
         fromBuilderListeners?.forEach {
             it.onCancel(request)
@@ -42,7 +42,7 @@ class CombinedListener(
     }
 
     override fun onError(request: ImageRequest, error: ImageResult.Error) {
-        fromProviderListener?.onError(request, error)
+        fromTargetListener?.onError(request, error)
         fromBuilderListener?.onError(request, error)
         fromBuilderListeners?.forEach {
             it.onError(request, error)
@@ -50,7 +50,7 @@ class CombinedListener(
     }
 
     override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
-        fromProviderListener?.onSuccess(request, result)
+        fromTargetListener?.onSuccess(request, result)
         fromBuilderListener?.onSuccess(request, result)
         fromBuilderListeners?.forEach {
             it.onSuccess(request, result)
@@ -61,14 +61,14 @@ class CombinedListener(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as CombinedListener
-        if (fromProviderListener != other.fromProviderListener) return false
+        if (fromTargetListener != other.fromTargetListener) return false
         if (fromBuilderListener != other.fromBuilderListener) return false
         if (fromBuilderListeners != other.fromBuilderListeners) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = fromProviderListener.hashCode()
+        var result = fromTargetListener.hashCode()
         result = 31 * result + (fromBuilderListener?.hashCode() ?: 0)
         result = 31 * result + (fromBuilderListeners?.hashCode() ?: 0)
         return result
@@ -76,7 +76,7 @@ class CombinedListener(
 
     override fun toString(): String {
         return "CombinedListener(" +
-                "fromProvider=$fromProviderListener, " +
+                "fromProvider=$fromTargetListener, " +
                 "fromBuilder=$fromBuilderListener, " +
                 "fromBuilderListeners=$fromBuilderListeners" +
                 ")"

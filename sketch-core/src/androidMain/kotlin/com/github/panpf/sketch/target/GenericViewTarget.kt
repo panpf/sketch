@@ -34,13 +34,11 @@ import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.request.allowSetNullDrawable
-import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.target.TargetLifecycle.Event
 import com.github.panpf.sketch.transition.TransitionViewTarget
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.updateIsDisplayed
@@ -53,7 +51,7 @@ import com.github.panpf.sketch.util.updateIsDisplayed
  * to implement [ViewTarget] directly.
  */
 abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionViewTarget,
-    DefaultLifecycleObserver, OnAttachStateChangeListener {
+    TargetLifecycle.EventObserver, OnAttachStateChangeListener {
 
     private var isStarted = false
 
@@ -88,14 +86,22 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     override fun onSuccess(requestContext: RequestContext, result: Image) =
         updateImage(requestContext, result)
 
-    override fun onStart(owner: LifecycleOwner) {
-        isStarted = true
-        updateAnimation()
-    }
+    override fun onStateChanged(source: TargetLifecycle, event: Event) {
+        when (event) {
+            Event.ON_START -> {
+                isStarted = true
+                updateAnimation()
+            }
 
-    override fun onStop(owner: LifecycleOwner) {
-        isStarted = false
-        updateAnimation()
+            Event.ON_STOP -> {
+                isStarted = false
+                updateAnimation()
+            }
+
+            else -> {
+
+            }
+        }
     }
 
     override fun onViewAttachedToWindow(v: View) {

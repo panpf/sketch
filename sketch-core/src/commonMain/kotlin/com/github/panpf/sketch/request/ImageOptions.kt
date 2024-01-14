@@ -15,22 +15,10 @@
  */
 package com.github.panpf.sketch.request
 
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ColorSpace
-import android.graphics.drawable.Drawable
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
-import androidx.annotation.DrawableRes
 import androidx.annotation.Px
-import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.isNotEmpty
@@ -42,11 +30,9 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.transform.Transformation
-import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import java.util.LinkedList
@@ -100,49 +86,21 @@ interface ImageOptions {
 
 
     /**
-     * Specify [Bitmap.Config] to use when creating the bitmap.
-     * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
-     */
-    val bitmapConfig: BitmapConfig?
-
-    /**
-     * [Bitmap]'s [ColorSpace]
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
-     */
-    @get:RequiresApi(VERSION_CODES.O)
-    val colorSpace: ColorSpace?
-
-    /**
-     * From Android N (API 24), this is ignored.  The output will always be high quality.
-     *
-     * In [android.os.Build.VERSION_CODES.M] and below, if
-     * inPreferQualityOverSpeed is set to true, the decoder will try to
-     * decode the reconstructed image to a higher quality even at the
-     * expense of the decoding speed. Currently the field only affects JPEG
-     * decode, in the case of which a more accurate, but slightly slower,
-     * IDCT method will be used instead.
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
-     */
-    @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-    val preferQualityOverSpeed: Boolean?
-
-    /**
      * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to resizeSize
      */
+    // TODO rename
     val resizeSizeResolver: SizeResolver?
 
     /**
      * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
      */
+    // TODO rename
     val resizePrecisionDecider: PrecisionDecider?
 
     /**
      * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
+    // TODO rename
     val resizeScaleDecider: ScaleDecider?
 
     /**
@@ -198,7 +156,7 @@ interface ImageOptions {
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
      */
-    val resizeApplyToDrawable: Boolean?
+    val sizeApplyToDraw: Boolean?
 
     /**
      * Bitmap memory caching policy
@@ -251,15 +209,11 @@ interface ImageOptions {
     /**
      * Returns true if all properties are empty
      */
-    @Suppress("DEPRECATION")
     fun isEmpty(): Boolean =
         depth == null
                 && parameters?.isEmpty() != false
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
-                && bitmapConfig == null
-                && (VERSION.SDK_INT < VERSION_CODES.O || colorSpace == null)
-                && preferQualityOverSpeed == null
                 && resizeSizeResolver == null
                 && resizePrecisionDecider == null
                 && resizeScaleDecider == null
@@ -272,7 +226,7 @@ interface ImageOptions {
                 && error == null
                 && transitionFactory == null
                 && disallowAnimatedImage == null
-                && resizeApplyToDrawable == null
+                && sizeApplyToDraw == null
                 && memoryCachePolicy == null
                 && componentRegistry == null
 
@@ -284,9 +238,6 @@ interface ImageOptions {
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
 
-        private var bitmapConfig: BitmapConfig? = null
-        private var colorSpace: ColorSpace? = null
-        private var preferQualityOverSpeed: Boolean? = null
         private var resizeSizeResolver: SizeResolver? = null
         private var resizePrecisionDecider: PrecisionDecider? = null
         private var resizeScaleDecider: ScaleDecider? = null
@@ -300,7 +251,7 @@ interface ImageOptions {
         private var error: ErrorStateImage? = null
         private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
-        private var resizeApplyToDrawable: Boolean? = null
+        private var sizeApplyToDraw: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
 
         private var componentRegistry: ComponentRegistry? = null
@@ -314,12 +265,6 @@ interface ImageOptions {
             this.httpHeadersBuilder = request.httpHeaders?.newBuilder()
             this.downloadCachePolicy = request.downloadCachePolicy
 
-            this.bitmapConfig = request.bitmapConfig
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                this.colorSpace = request.colorSpace
-            }
-            @Suppress("DEPRECATION")
-            this.preferQualityOverSpeed = request.preferQualityOverSpeed
             this.resizeSizeResolver = request.resizeSizeResolver
             this.resizePrecisionDecider = request.resizePrecisionDecider
             this.resizeScaleDecider = request.resizeScaleDecider
@@ -333,7 +278,7 @@ interface ImageOptions {
             this.error = request.error
             this.transitionFactory = request.transitionFactory
             this.disallowAnimatedImage = request.disallowAnimatedImage
-            this.resizeApplyToDrawable = request.resizeApplyToDrawable
+            this.sizeApplyToDraw = request.sizeApplyToDraw
             this.memoryCachePolicy = request.memoryCachePolicy
 
             this.componentRegistry = request.componentRegistry
@@ -416,44 +361,6 @@ interface ImageOptions {
          */
         fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             this.downloadCachePolicy = cachePolicy
-        }
-
-        /**
-         * Set [Bitmap.Config] to use when creating the bitmap.
-         * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-         */
-        fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
-            this.bitmapConfig = bitmapConfig
-        }
-
-        /**
-         * Set [Bitmap.Config] to use when creating the bitmap.
-         * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-         */
-        fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder =
-            bitmapConfig(BitmapConfig(bitmapConfig))
-
-        /**
-         * Set preferred [Bitmap]'s [ColorSpace]
-         */
-        @RequiresApi(VERSION_CODES.O)
-        fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
-            this.colorSpace = colorSpace
-        }
-
-        /**
-         * From Android N (API 24), this is ignored. The output will always be high quality.
-         *
-         * In [android.os.Build.VERSION_CODES.M] and below, if
-         * inPreferQualityOverSpeed is set to true, the decoder will try to
-         * decode the reconstructed image to a higher quality even at the
-         * expense of the decoding speed. Currently the field only affects JPEG
-         * decode, in the case of which a more accurate, but slightly slower,
-         * IDCT method will be used instead.
-         */
-        @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder = apply {
-            this.preferQualityOverSpeed = inPreferQualityOverSpeed
         }
 
         /**
@@ -634,35 +541,11 @@ interface ImageOptions {
         }
 
         /**
-         * Set Drawable placeholder image when loading
-         */
-        fun placeholder(drawable: Drawable): Builder =
-            placeholder(DrawableStateImage(drawable))
-
-        /**
-         * Set Drawable res placeholder image when loading
-         */
-        fun placeholder(@DrawableRes drawableResId: Int): Builder =
-            placeholder(DrawableStateImage(drawableResId))
-
-        /**
          * Set placeholder image when uri is empty
          */
         fun uriEmpty(stateImage: StateImage?): Builder = apply {
             this.uriEmpty = stateImage
         }
-
-        /**
-         * Set Drawable placeholder image when uri is empty
-         */
-        fun uriEmpty(drawable: Drawable): Builder =
-            uriEmpty(DrawableStateImage(drawable))
-
-        /**
-         * Set Drawable res placeholder image when uri is empty
-         */
-        fun uriEmpty(@DrawableRes drawableResId: Int): Builder =
-            uriEmpty(DrawableStateImage(drawableResId))
 
         /**
          * Set image to display when loading fails.
@@ -676,26 +559,6 @@ interface ImageOptions {
             this.error = ErrorStateImage(defaultStateImage, configBlock)
                 .takeIf { it.stateList.isNotEmpty() }
         }
-
-        /**
-         * Set Drawable image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
-         */
-        fun error(
-            defaultDrawable: Drawable,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(DrawableStateImage(defaultDrawable), configBlock)
-
-        /**
-         * Set Drawable res image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
-         */
-        fun error(
-            defaultDrawableResId: Int,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(DrawableStateImage(defaultDrawableResId), configBlock)
 
         /**
          * Set image to display when loading fails.
@@ -714,25 +577,6 @@ interface ImageOptions {
         }
 
         /**
-         * Sets the transition that crossfade
-         */
-        fun crossfade(
-            durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
-            fadeStart: Boolean = true,
-            preferExactIntrinsicSize: Boolean = false,
-            alwaysUse: Boolean = false,
-        ): Builder = apply {
-            transitionFactory(
-                CrossfadeTransition.Factory(
-                    durationMillis = durationMillis,
-                    fadeStart = fadeStart,
-                    preferExactIntrinsicSize = preferExactIntrinsicSize,
-                    alwaysUse = alwaysUse
-                )
-            )
-        }
-
-        /**
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
          */
         fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
@@ -740,10 +584,11 @@ interface ImageOptions {
         }
 
         /**
+         * TODO
          * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
          */
-        fun resizeApplyToDrawable(apply: Boolean? = true): Builder = apply {
-            this.resizeApplyToDrawable = apply
+        fun sizeApplyToDraw(apply: Boolean? = true): Builder = apply {
+            this.sizeApplyToDraw = apply
         }
 
         /**
@@ -787,16 +632,6 @@ interface ImageOptions {
                 this.downloadCachePolicy = options.downloadCachePolicy
             }
 
-            if (this.bitmapConfig == null) {
-                this.bitmapConfig = options.bitmapConfig
-            }
-            if (VERSION.SDK_INT >= VERSION_CODES.O && this.colorSpace == null) {
-                this.colorSpace = options.colorSpace
-            }
-            if (this.preferQualityOverSpeed == null) {
-                @Suppress("DEPRECATION")
-                this.preferQualityOverSpeed = options.preferQualityOverSpeed
-            }
             if (this.resizeSizeResolver == null) {
                 this.resizeSizeResolver = options.resizeSizeResolver
             }
@@ -834,8 +669,8 @@ interface ImageOptions {
             if (this.disallowAnimatedImage == null) {
                 this.disallowAnimatedImage = options.disallowAnimatedImage
             }
-            if (this.resizeApplyToDrawable == null) {
-                this.resizeApplyToDrawable = options.resizeApplyToDrawable
+            if (this.sizeApplyToDraw == null) {
+                this.sizeApplyToDraw = options.sizeApplyToDraw
             }
             if (this.memoryCachePolicy == null) {
                 this.memoryCachePolicy = options.memoryCachePolicy
@@ -845,16 +680,12 @@ interface ImageOptions {
         }
 
 
-        @SuppressLint("NewApi")
         fun build(): ImageOptions = ImageOptionsImpl(
             depth = depth,
             parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() },
             httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() },
             downloadCachePolicy = downloadCachePolicy,
             resultCachePolicy = resultCachePolicy,
-            bitmapConfig = bitmapConfig,
-            colorSpace = if (VERSION.SDK_INT >= VERSION_CODES.O) colorSpace else null,
-            preferQualityOverSpeed = preferQualityOverSpeed,
             resizeSizeResolver = resizeSizeResolver,
             resizePrecisionDecider = resizePrecisionDecider,
             resizeScaleDecider = resizeScaleDecider,
@@ -866,7 +697,7 @@ interface ImageOptions {
             error = error,
             transitionFactory = transitionFactory,
             disallowAnimatedImage = disallowAnimatedImage,
-            resizeApplyToDrawable = resizeApplyToDrawable,
+            sizeApplyToDraw = sizeApplyToDraw,
             memoryCachePolicy = memoryCachePolicy,
             componentRegistry = componentRegistry,
         )
@@ -879,11 +710,6 @@ interface ImageOptions {
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy?,
 
-        override val bitmapConfig: BitmapConfig?,
-        @get:RequiresApi(VERSION_CODES.O)
-        override val colorSpace: ColorSpace?,
-        @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-        override val preferQualityOverSpeed: Boolean?,
         override val resizeSizeResolver: SizeResolver?,
         override val resizePrecisionDecider: PrecisionDecider?,
         override val resizeScaleDecider: ScaleDecider?,
@@ -896,7 +722,7 @@ interface ImageOptions {
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
-        override val resizeApplyToDrawable: Boolean?,
+        override val sizeApplyToDraw: Boolean?,
         override val memoryCachePolicy: CachePolicy?,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageOptions {
@@ -909,9 +735,6 @@ interface ImageOptions {
             if (parameters != other.parameters) return false
             if (httpHeaders != other.httpHeaders) return false
             if (downloadCachePolicy != other.downloadCachePolicy) return false
-            if (bitmapConfig != other.bitmapConfig) return false
-            if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != other.colorSpace) return false
-            @Suppress("DEPRECATION") if (preferQualityOverSpeed != other.preferQualityOverSpeed) return false
             if (resizeSizeResolver != other.resizeSizeResolver) return false
             if (resizePrecisionDecider != other.resizePrecisionDecider) return false
             if (resizeScaleDecider != other.resizeScaleDecider) return false
@@ -924,7 +747,7 @@ interface ImageOptions {
             if (error != other.error) return false
             if (transitionFactory != other.transitionFactory) return false
             if (disallowAnimatedImage != other.disallowAnimatedImage) return false
-            if (resizeApplyToDrawable != other.resizeApplyToDrawable) return false
+            if (sizeApplyToDraw != other.sizeApplyToDraw) return false
             if (memoryCachePolicy != other.memoryCachePolicy) return false
             if (componentRegistry != other.componentRegistry) return false
             return true
@@ -935,12 +758,6 @@ interface ImageOptions {
             result = 31 * result + (parameters?.hashCode() ?: 0)
             result = 31 * result + (httpHeaders?.hashCode() ?: 0)
             result = 31 * result + (downloadCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (bitmapConfig?.hashCode() ?: 0)
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                result = 31 * result + (colorSpace?.hashCode() ?: 0)
-            }
-            @Suppress("DEPRECATION")
-            result = 31 * result + (preferQualityOverSpeed?.hashCode() ?: 0)
             result = 31 * result + (resizeSizeResolver?.hashCode() ?: 0)
             result = 31 * result + (resizePrecisionDecider?.hashCode() ?: 0)
             result = 31 * result + (resizeScaleDecider?.hashCode() ?: 0)
@@ -953,7 +770,7 @@ interface ImageOptions {
             result = 31 * result + (error?.hashCode() ?: 0)
             result = 31 * result + (transitionFactory?.hashCode() ?: 0)
             result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
-            result = 31 * result + (resizeApplyToDrawable?.hashCode() ?: 0)
+            result = 31 * result + (sizeApplyToDraw?.hashCode() ?: 0)
             result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (componentRegistry?.hashCode() ?: 0)
             return result
@@ -966,12 +783,6 @@ interface ImageOptions {
                 append("parameters=$parameters, ")
                 append("httpHeaders=$httpHeaders, ")
                 append("downloadCachePolicy=$downloadCachePolicy, ")
-                append("bitmapConfig=$bitmapConfig, ")
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    append("colorSpace=$colorSpace, ")
-                }
-                @Suppress("DEPRECATION")
-                append("preferQualityOverSpeed=$preferQualityOverSpeed, ")
                 append("resizeSizeResolver=$resizeSizeResolver, ")
                 append("resizePrecisionDecider=$resizePrecisionDecider, ")
                 append("resizeScaleDecider=$resizeScaleDecider, ")
@@ -984,7 +795,7 @@ interface ImageOptions {
                 append("error=$error, ")
                 append("transition=$transitionFactory, ")
                 append("disallowAnimatedImage=$disallowAnimatedImage, ")
-                append("resizeApplyToDrawable=$resizeApplyToDrawable")
+                append("sizeApplyToDraw=$sizeApplyToDraw")
                 append("memoryCachePolicy=$memoryCachePolicy, ")
                 append("componentRegistry=$componentRegistry, ")
                 append(")")

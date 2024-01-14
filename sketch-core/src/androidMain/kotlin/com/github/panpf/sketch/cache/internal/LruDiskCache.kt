@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * A disk cache that manages the cache according to a least-used rule
  */
-class LruDiskCache private constructor(
+class LruDiskCache constructor(
     context: Context,
     override val maxSize: Long,
     directory: File,
@@ -301,111 +301,111 @@ class LruDiskCache private constructor(
         }
     }
 
-    class ForDownloadBuilder(private val context: Context) {
+//    class ForDownloadBuilder(private val context: Context) {
+//
+//        companion object {
+//            /**
+//             * Range from 1 to Short.MAX_VALUE
+//             *
+//             * 1: initial
+//             */
+//            const val INTERNAL_VERSION = 1
+//        }
+//
+//        private var maxSize: Long? = null
+//        private var directory: File? = null
+//        private var appVersion: Int? = null
+//
+//        fun maxSize(maxSize: Long?): ForDownloadBuilder = apply {
+//            this.maxSize = maxSize
+//        }
+//
+//        fun directory(directory: File): ForDownloadBuilder = apply {
+//            this.directory = directory
+//        }
+//
+//        fun appVersion(appVersion: Int?): ForDownloadBuilder = apply {
+//            this.appVersion = appVersion
+//        }
+//
+//        fun build(): LruDiskCache {
+//            val directory = directory ?: File(
+//                context.externalCacheDir ?: context.cacheDir,
+//                DiskCache.DEFAULT_DIR_NAME + File.separator + "download"
+//            )
+//
+//            val maxSize = maxSize
+//            require(maxSize == null || maxSize > 0) { "maxSize must be greater than 0" }
+//            val finalMaxSize = maxSize ?: (300 * 1024 * 1024)
+//
+//            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
+//                "The value range for 'version' is 1 to ${Short.MAX_VALUE}"
+//            }
+//            val appVersion = appVersion ?: 1
+//
+//            return LruDiskCache(
+//                context = context,
+//                maxSize = finalMaxSize,
+//                directory = directory,
+//                appVersion = appVersion,
+//                internalVersion = INTERNAL_VERSION
+//            )
+//        }
+//    }
 
-        companion object {
-            /**
-             * Range from 1 to Short.MAX_VALUE
-             *
-             * 1: initial
-             */
-            const val INTERNAL_VERSION = 1
-        }
-
-        private var maxSize: Long? = null
-        private var directory: File? = null
-        private var appVersion: Int? = null
-
-        fun maxSize(maxSize: Long?): ForDownloadBuilder = apply {
-            this.maxSize = maxSize
-        }
-
-        fun directory(directory: File): ForDownloadBuilder = apply {
-            this.directory = directory
-        }
-
-        fun appVersion(appVersion: Int?): ForDownloadBuilder = apply {
-            this.appVersion = appVersion
-        }
-
-        fun build(): LruDiskCache {
-            val directory = directory ?: File(
-                context.externalCacheDir ?: context.cacheDir,
-                DiskCache.DEFAULT_DIR_NAME + File.separator + "download"
-            )
-
-            val maxSize = maxSize
-            require(maxSize == null || maxSize > 0) { "maxSize must be greater than 0" }
-            val finalMaxSize = maxSize ?: (300 * 1024 * 1024)
-
-            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
-                "The value range for 'version' is 1 to ${Short.MAX_VALUE}"
-            }
-            val appVersion = appVersion ?: 1
-
-            return LruDiskCache(
-                context = context,
-                maxSize = finalMaxSize,
-                directory = directory,
-                appVersion = appVersion,
-                internalVersion = INTERNAL_VERSION
-            )
-        }
-    }
-
-    class ForResultBuilder(private val context: Context) {
-
-        companion object {
-            /**
-             * Range from 1 to Short.MAX_VALUE
-             *
-             * 1: initial
-             * 2: change. BitmapDecodeResult.transformedList change to List<String>
-             * 3: added. BitmapDecodeResult.extras
-             * 4: change. DecodeUtils.realDecode(): transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect, decodeConfig.inSampleSize))
-             * 5. change. DecodeUtils.calculateSampleSize()
-             */
-            const val INTERNAL_VERSION = 5
-        }
-
-        private var maxSize: Long? = null
-        private var directory: File? = null
-        private var appVersion: Int? = null
-
-        fun maxSize(maxSize: Long?): ForResultBuilder = apply {
-            this.maxSize = maxSize
-        }
-
-        fun directory(directory: File): ForResultBuilder = apply {
-            this.directory = directory
-        }
-
-        fun appVersion(appVersion: Int?): ForResultBuilder = apply {
-            this.appVersion = appVersion
-        }
-
-        fun build(): LruDiskCache {
-            val directory = directory ?: File(
-                context.externalCacheDir ?: context.cacheDir,
-                DiskCache.DEFAULT_DIR_NAME + File.separator + "result"
-            )
-
-            val maxSize = maxSize
-            require(maxSize == null || maxSize > 0) { "maxSize must be greater than 0" }
-            val finalMaxSize = maxSize ?: (200 * 1024 * 1024)
-
-            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
-                "The value range for 'version' is 1 to ${Short.MAX_VALUE}"
-            }
-            val appVersion = appVersion ?: 1
-
-            return LruDiskCache(
-                context = context,
-                maxSize = finalMaxSize,
-                directory = directory,
-                appVersion = appVersion,
-                internalVersion = INTERNAL_VERSION
-            )
-        }
-    }
+//    class ForResultBuilder(private val context: Context) {
+//
+//        companion object {
+//            /**
+//             * Range from 1 to Short.MAX_VALUE
+//             *
+//             * 1: initial
+//             * 2: change. BitmapDecodeResult.transformedList change to List<String>
+//             * 3: added. BitmapDecodeResult.extras
+//             * 4: change. DecodeUtils.realDecode(): transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect, decodeConfig.inSampleSize))
+//             * 5. change. DecodeUtils.calculateSampleSize()
+//             */
+//            const val INTERNAL_VERSION = 5
+//        }
+//
+//        private var maxSize: Long? = null
+//        private var directory: File? = null
+//        private var appVersion: Int? = null
+//
+//        fun maxSize(maxSize: Long?): ForResultBuilder = apply {
+//            this.maxSize = maxSize
+//        }
+//
+//        fun directory(directory: File): ForResultBuilder = apply {
+//            this.directory = directory
+//        }
+//
+//        fun appVersion(appVersion: Int?): ForResultBuilder = apply {
+//            this.appVersion = appVersion
+//        }
+//
+//        fun build(): LruDiskCache {
+//            val directory = directory ?: File(
+//                context.externalCacheDir ?: context.cacheDir,
+//                DiskCache.DEFAULT_DIR_NAME + File.separator + "result"
+//            )
+//
+//            val maxSize = maxSize
+//            require(maxSize == null || maxSize > 0) { "maxSize must be greater than 0" }
+//            val finalMaxSize = maxSize ?: (200 * 1024 * 1024)
+//
+//            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
+//                "The value range for 'version' is 1 to ${Short.MAX_VALUE}"
+//            }
+//            val appVersion = appVersion ?: 1
+//
+//            return LruDiskCache(
+//                context = context,
+//                maxSize = finalMaxSize,
+//                directory = directory,
+//                appVersion = appVersion,
+//                internalVersion = INTERNAL_VERSION
+//            )
+//        }
+//    }
 }

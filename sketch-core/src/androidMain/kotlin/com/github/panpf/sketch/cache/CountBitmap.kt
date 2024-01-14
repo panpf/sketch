@@ -13,132 +13,132 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache
-
-import android.graphics.Bitmap
-import androidx.annotation.MainThread
-import com.github.panpf.sketch.decode.internal.freeBitmap
-import com.github.panpf.sketch.util.allocationByteCountCompat
-import com.github.panpf.sketch.util.configOrNull
-import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.util.toHexString
-
-/**
- * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
- */
-class CountBitmap constructor(
-    private val originBitmap: Bitmap,
-    private val bitmapPool: BitmapPool,
-    private val disallowReuseBitmap: Boolean,
-) {
-
-    companion object {
-        private const val MODULE = "CountBitmap"
-    }
-
-    private var _bitmap: Bitmap? = originBitmap
-    private var cachedCount = 0
-    private var displayedCount = 0
-    private var pendingCount = 0
-
-    val bitmap: Bitmap?
-        get() = _bitmap
-
-    val isRecycled: Boolean
-        get() = _bitmap?.isRecycled ?: true
-
-    val byteCount: Int
-        get() = bitmap?.allocationByteCountCompat ?: 0
-
-    @MainThread
-    fun setIsPending(pending: Boolean, caller: String? = null) {
-        // Pending is to prevent the Drawable from being recycled before it is not used by the target, so it does not need to trigger tryFree
-        requiredMainThread()
-        if (pending) {
-            pendingCount++
-            tryFree(caller = "$caller:pending:true", pending = true)
-        } else {
-            if (pendingCount > 0) {
-                pendingCount--
-            }
-            tryFree(caller = "$caller:pending:false", pending = true)
-        }
-    }
-
-    @Synchronized
-    fun setIsCached(cached: Boolean, caller: String? = null) {
-        if (cached) {
-            cachedCount++
-            tryFree(caller = "$caller:cached:true", pending = false)
-        } else {
-            if (cachedCount > 0) {
-                cachedCount--
-            }
-            tryFree(caller = "$caller:cached:false", pending = false)
-        }
-    }
-
-    @MainThread
-    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
-        requiredMainThread()
-        if (displayed) {
-            displayedCount++
-            tryFree(caller = "$caller:displayed:true", pending = false)
-        } else {
-            if (displayedCount > 0) {
-                displayedCount--
-            }
-            tryFree(caller = "$caller:displayed:false", pending = false)
-        }
-    }
-
-    @MainThread
-    fun getPendingCount(): Int {
-        requiredMainThread()
-        return pendingCount
-    }
-
-    @Synchronized
-    fun getCachedCount(): Int {
-        return cachedCount
-    }
-
-    @MainThread
-    fun getDisplayedCount(): Int {
-        requiredMainThread()
-        return displayedCount
-    }
-
-    private fun tryFree(caller: String, pending: Boolean) {
-        val bitmap = this._bitmap
-        if (bitmap == null) {
-            bitmapPool.logger?.w(MODULE, "Bitmap freed. $caller. ${toString()}")
-        } else if (isRecycled) {
-            throw IllegalStateException("Bitmap recycled. $caller. ${toString()}")
-        } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
-            this._bitmap = null
-            bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, caller)
-            bitmapPool.logger?.d(MODULE) { "freeBitmap. $caller. ${toString()}" }
-        } else {
-            bitmapPool.logger?.d(MODULE) { "keep. $caller. ${toString()}" }
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as CountBitmap
-        if (originBitmap != other.originBitmap) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return originBitmap.hashCode()
-    }
-
-    override fun toString(): String {
-        val bitmapInfo = originBitmap.run { "${width}x${height},$configOrNull,@${toHexString()}" }
-        val countInfo = "$pendingCount/$cachedCount/$displayedCount"
-        return "CountBitmap($bitmapInfo,$countInfo)"
-    }
-}
+//package com.github.panpf.sketch.cache
+//
+//import android.graphics.Bitmap
+//import androidx.annotation.MainThread
+//import com.github.panpf.sketch.decode.internal.freeBitmap
+//import com.github.panpf.sketch.util.allocationByteCountCompat
+//import com.github.panpf.sketch.util.configOrNull
+//import com.github.panpf.sketch.util.requiredMainThread
+//import com.github.panpf.sketch.util.toHexString
+//
+///**
+// * Reference counts [Bitmap] and, when the count is 0, puts it into the BitmapPool
+// */
+//class CountBitmap constructor(
+//    private val originBitmap: Bitmap,
+//    private val bitmapPool: BitmapPool,
+//    private val disallowReuseBitmap: Boolean,
+//) {
+//
+//    companion object {
+//        private const val MODULE = "CountBitmap"
+//    }
+//
+//    private var _bitmap: Bitmap? = originBitmap
+//    private var cachedCount = 0
+//    private var displayedCount = 0
+//    private var pendingCount = 0
+//
+//    val bitmap: Bitmap?
+//        get() = _bitmap
+//
+//    val isRecycled: Boolean
+//        get() = _bitmap?.isRecycled ?: true
+//
+//    val byteCount: Int
+//        get() = bitmap?.allocationByteCountCompat ?: 0
+//
+//    @MainThread
+//    fun setIsPending(pending: Boolean, caller: String? = null) {
+//        // Pending is to prevent the Drawable from being recycled before it is not used by the target, so it does not need to trigger tryFree
+//        requiredMainThread()
+//        if (pending) {
+//            pendingCount++
+//            tryFree(caller = "$caller:pending:true", pending = true)
+//        } else {
+//            if (pendingCount > 0) {
+//                pendingCount--
+//            }
+//            tryFree(caller = "$caller:pending:false", pending = true)
+//        }
+//    }
+//
+//    @Synchronized
+//    fun setIsCached(cached: Boolean, caller: String? = null) {
+//        if (cached) {
+//            cachedCount++
+//            tryFree(caller = "$caller:cached:true", pending = false)
+//        } else {
+//            if (cachedCount > 0) {
+//                cachedCount--
+//            }
+//            tryFree(caller = "$caller:cached:false", pending = false)
+//        }
+//    }
+//
+//    @MainThread
+//    fun setIsDisplayed(displayed: Boolean, caller: String? = null) {
+//        requiredMainThread()
+//        if (displayed) {
+//            displayedCount++
+//            tryFree(caller = "$caller:displayed:true", pending = false)
+//        } else {
+//            if (displayedCount > 0) {
+//                displayedCount--
+//            }
+//            tryFree(caller = "$caller:displayed:false", pending = false)
+//        }
+//    }
+//
+//    @MainThread
+//    fun getPendingCount(): Int {
+//        requiredMainThread()
+//        return pendingCount
+//    }
+//
+//    @Synchronized
+//    fun getCachedCount(): Int {
+//        return cachedCount
+//    }
+//
+//    @MainThread
+//    fun getDisplayedCount(): Int {
+//        requiredMainThread()
+//        return displayedCount
+//    }
+//
+//    private fun tryFree(caller: String, pending: Boolean) {
+//        val bitmap = this._bitmap
+//        if (bitmap == null) {
+//            bitmapPool.logger?.w(MODULE, "Bitmap freed. $caller. ${toString()}")
+//        } else if (isRecycled) {
+//            throw IllegalStateException("Bitmap recycled. $caller. ${toString()}")
+//        } else if (!pending && cachedCount == 0 && displayedCount == 0 && pendingCount == 0) {
+//            this._bitmap = null
+//            bitmapPool.freeBitmap(bitmap, disallowReuseBitmap, caller)
+//            bitmapPool.logger?.d(MODULE) { "freeBitmap. $caller. ${toString()}" }
+//        } else {
+//            bitmapPool.logger?.d(MODULE) { "keep. $caller. ${toString()}" }
+//        }
+//    }
+//
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (javaClass != other?.javaClass) return false
+//        other as CountBitmap
+//        if (originBitmap != other.originBitmap) return false
+//        return true
+//    }
+//
+//    override fun hashCode(): Int {
+//        return originBitmap.hashCode()
+//    }
+//
+//    override fun toString(): String {
+//        val bitmapInfo = originBitmap.run { "${width}x${height},$configOrNull,@${toHexString()}" }
+//        val countInfo = "$pendingCount/$cachedCount/$displayedCount"
+//        return "CountBitmap($bitmapInfo,$countInfo)"
+//    }
+//}

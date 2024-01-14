@@ -32,7 +32,6 @@ import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.stateimage.DrawableStateImage

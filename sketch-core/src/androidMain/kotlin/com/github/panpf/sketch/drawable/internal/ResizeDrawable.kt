@@ -15,38 +15,11 @@
  */
 package com.github.panpf.sketch.drawable.internal
 
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
-import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.asDrawable
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
-
-fun Image.resizeApplyToDrawable(
-    request: ImageRequest,
-    resizeSize: Size?,
-): Image {
-    return if (request.resizeApplyToDrawable && resizeSize != null) {
-        val scale = request.resizeScaleDecider.get(
-            imageWidth = width,
-            imageHeight = height,
-            resizeWidth = resizeSize.width,
-            resizeHeight = resizeSize.height
-        )
-        val drawable = this.asDrawable()
-        if (drawable is Animatable) {
-            ResizeAnimatableDrawable(drawable, resizeSize, scale)
-        } else {
-            ResizeDrawable(drawable, resizeSize, scale)
-        }.asSketchImage()
-    } else {
-        this
-    }
-}
 
 /**
  * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].

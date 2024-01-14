@@ -47,6 +47,22 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
+internal val View.requestManager: ViewTargetRequestManager
+    get() {
+        val manager = getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?
+        if (manager != null) {
+            return manager
+        }
+        return synchronized(this) {
+            // Check again in case coil_request_manager was just set.
+            (getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?)
+                ?: ViewTargetRequestManager(this).apply {
+                    addOnAttachStateChangeListener(this)
+                    setTag(R.id.sketch_request_manager, this)
+                }
+        }
+    }
+
 class ViewTargetRequestManager constructor(private val view: View) :
     View.OnAttachStateChangeListener {
 
@@ -140,19 +156,3 @@ class ViewTargetRequestManager constructor(private val view: View) :
         return currentRequestDelegate?.sketch
     }
 }
-
-internal val View.requestManager: ViewTargetRequestManager
-    get() {
-        val manager = getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?
-        if (manager != null) {
-            return manager
-        }
-        return synchronized(this) {
-            // Check again in case coil_request_manager was just set.
-            (getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?)
-                ?: ViewTargetRequestManager(this).apply {
-                    addOnAttachStateChangeListener(this)
-                    setTag(R.id.sketch_request_manager, this)
-                }
-        }
-    }

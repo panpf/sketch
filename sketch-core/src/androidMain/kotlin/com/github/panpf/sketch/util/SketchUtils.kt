@@ -16,16 +16,9 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.DrawableWrapper
-import android.graphics.drawable.LayerDrawable
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.view.View
-import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.core.R
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
@@ -68,37 +61,37 @@ class SketchUtils private constructor() {
 /**
  * Traverse all SketchCountBitmapDrawable in specified Drawable
  */
-fun Drawable.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
-    val drawable = this
-    when {
-        drawable is SketchCountBitmapDrawable -> {
-            block(drawable)
-        }
-
-        drawable is LayerDrawable -> {
-            val layerCount = drawable.numberOfLayers
-            for (index in 0 until layerCount) {
-                drawable.getDrawable(index).forEachSketchCountBitmapDrawable(block)
-            }
-        }
-
-        drawable is CrossfadeDrawable -> {
-            drawable.start?.forEachSketchCountBitmapDrawable(block)
-            drawable.end?.forEachSketchCountBitmapDrawable(block)
-        }
-
-        drawable is DrawableWrapperCompat -> {
-            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
-        }
-
-        VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
-            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
-        }
-    }
-}
+//fun Drawable.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
+//    val drawable = this
+//    when {
+//        drawable is SketchCountBitmapDrawable -> {
+//            block(drawable)
+//        }
+//
+//        drawable is LayerDrawable -> {
+//            val layerCount = drawable.numberOfLayers
+//            for (index in 0 until layerCount) {
+//                drawable.getDrawable(index).forEachSketchCountBitmapDrawable(block)
+//            }
+//        }
+//
+//        drawable is CrossfadeDrawable -> {
+//            drawable.start?.forEachSketchCountBitmapDrawable(block)
+//            drawable.end?.forEachSketchCountBitmapDrawable(block)
+//        }
+//
+//        drawable is DrawableWrapperCompat -> {
+//            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
+//        }
+//
+//        VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
+//            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
+//        }
+//    }
+//}
 
 fun Drawable.updateIsDisplayed(displayed: Boolean, caller: String) {
-    this.forEachSketchCountBitmapDrawable {
-        it.countBitmap.setIsDisplayed(displayed, caller)
-    }
+//    this.forEachSketchCountBitmapDrawable {
+//        it.countingBitmapImage.setIsDisplayed(displayed, caller)
+//    }
 }

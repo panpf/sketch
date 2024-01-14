@@ -33,7 +33,6 @@ package com.github.panpf.sketch.transition
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.asOrNull
@@ -91,7 +90,7 @@ class CrossfadeTransition @JvmOverloads constructor(
         val fadeStart: Boolean = true,
         val preferExactIntrinsicSize: Boolean = false,
         val alwaysUse: Boolean = false,
-    ) : com.github.panpf.sketch.transition.Transition.Factory {
+    ) : Transition.Factory {
 
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }

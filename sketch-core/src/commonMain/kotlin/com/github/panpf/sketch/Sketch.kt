@@ -17,26 +17,16 @@ package com.github.panpf.sketch
 
 import androidx.annotation.AnyThread
 import androidx.compose.runtime.Stable
-import com.github.panpf.sketch.cache.BitmapPool
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.internal.LruBitmapPool
-import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.cache.internal.LruMemoryCache
-import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
+import com.github.panpf.sketch.cache.MemoryCache.DefaultFactory
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
-import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
-import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
-import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.Disposable
@@ -48,6 +38,7 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
+import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.SystemCallbacks
@@ -62,7 +53,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.math.roundToLong
 
 /**
  * A service class that performs an [ImageRequest] to load an image.
@@ -76,17 +66,7 @@ import kotlin.math.roundToLong
  * application via the built-in extension function `Context.sketch`
  */
 @Stable
-class Sketch private constructor(
-    _context: PlatformContext,
-    _logger: Logger?,
-    _memoryCache: MemoryCache?,
-    _downloadCache: DiskCache?,
-    _resultCache: DiskCache?,
-    _bitmapPool: BitmapPool?,
-    _componentRegistry: ComponentRegistry?,
-    _httpStack: HttpStack?,
-    _globalImageOptions: ImageOptions?,
-) {
+class Sketch private constructor(options: Options) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
             logger.e("scope", throwable, "exception")
@@ -96,30 +76,28 @@ class Sketch private constructor(
     private val isShutdown = AtomicBoolean(false)
 
     /** Application Context */
-    val context: PlatformContext = _context
+    val context: PlatformContext = options.context
 
     /** Output log */
-    val logger: Logger = _logger ?: Logger()
+    val logger: Logger = options.logger
 
     /** Memory cache of previously loaded images */
-    val memoryCache: MemoryCache
+    val memoryCache: MemoryCache by lazy { options.memoryCacheFactory.create(options.context) }
 
-    /** Reuse Bitmap */
-    val bitmapPool: BitmapPool  // TODO 4.0 no longer supports inBitmap
+//    /** Reuse Bitmap */
+//    val bitmapPool: BitmapPool  // TODO 4.0 no longer supports inBitmap
 
     /** Disk caching of http downloads images */
-    val downloadCache: DiskCache =
-        _downloadCache ?: LruDiskCache.ForDownloadBuilder(context).build()
+    val downloadCache: DiskCache by lazy { options.downloadCacheFactory.create(options.context) }
 
     /** Disk caching of transformed images */
-    val resultCache: DiskCache =
-        _resultCache ?: LruDiskCache.ForResultBuilder(context).build()
+    val resultCache: DiskCache by lazy { options.resultCacheFactory.create(options.context) }
 
     /** Execute HTTP request */
-    val httpStack: HttpStack = _httpStack ?: HurlStack.Builder().build()
+    val httpStack: HttpStack = options.httpStack
 
     /** Fill unset [ImageRequest] value */
-    val globalImageOptions: ImageOptions? = _globalImageOptions
+    val globalImageOptions: ImageOptions? = options.globalImageOptions
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
      * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
@@ -137,36 +115,15 @@ class Sketch private constructor(
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
     init {
-        val defaultMemoryCacheBytes = context.defaultMemoryCacheBytes()
-        memoryCache = _memoryCache
-            ?: LruMemoryCache((defaultMemoryCacheBytes * 0.66f).roundToLong())
-        bitmapPool = _bitmapPool
-            ?: LruBitmapPool((defaultMemoryCacheBytes * 0.33f).roundToLong())
         memoryCache.logger = logger
-        bitmapPool.logger = logger
+//        bitmapPool.logger = logger
         downloadCache.logger = logger
         resultCache.logger = logger
 
-        val componentRegistry =
-            (_componentRegistry?.newBuilder() ?: ComponentRegistry.Builder()).apply {
-                addFetcher(HttpUriFetcher.Factory())
-                addFetcher(FileUriFetcher.Factory())
-                addFetcher(ContentUriFetcher.Factory())
-                addFetcher(ResourceUriFetcher.Factory())
-                addFetcher(AssetUriFetcher.Factory())
-                addFetcher(Base64UriFetcher.Factory())
-
-                addDecoder(DrawableDecoder.Factory())
-                addDecoder(BitmapFactoryDecoder.Factory())
-
-                addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
-                addRequestInterceptor(MemoryCacheRequestInterceptor())
-                addRequestInterceptor(EngineRequestInterceptor())
-
-                addDecodeInterceptor(ResultCacheDecodeInterceptor())
-                addDecodeInterceptor(TransformationDecodeInterceptor())
-                addDecodeInterceptor(EngineDecodeInterceptor())
-            }.build()
+        val componentRegistry = options.componentRegistry
+            .merged(platformComponents())
+            .merged(defaultComponents())
+            ?: ComponentRegistry.Builder().build()
         components = Components(this, componentRegistry)
 
         systemCallbacks.register(this)
@@ -176,7 +133,7 @@ class Sketch private constructor(
                 append("\n").append("logger: $logger")
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
-                append("\n").append("bitmapPool: $bitmapPool")
+//                append("\n").append("bitmapPool: $bitmapPool")
                 append("\n").append("downloadCache: $downloadCache")
                 append("\n").append("resultCache: $resultCache")
                 append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList}")
@@ -191,8 +148,8 @@ class Sketch private constructor(
     /**
      * Execute the ImageRequest asynchronously.
      *
-     * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * Note: The request will not start executing until TargetLifecycle state is STARTED
+     * reaches [TargetLifecycle.State.STARTED] state and View is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
@@ -208,8 +165,8 @@ class Sketch private constructor(
     /**
      * Execute the ImageRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until Lifecycle state is STARTED
-     * reaches [Lifecycle.State.STARTED] state and [ViewTarget.view] is attached to window
+     * Note: The request will not start executing until TargetLifecycle state is STARTED
+     * reaches [TargetLifecycle.State.STARTED] state and View is attached to window
      *
      * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
      */
@@ -235,16 +192,28 @@ class Sketch private constructor(
         memoryCache.clear()
         downloadCache.close()
         resultCache.close()
-        bitmapPool.clear()
+//        bitmapPool.clear()
     }
+
+    data class Options(
+        val context: PlatformContext,
+        val logger: Logger,
+        val memoryCacheFactory: MemoryCache.Factory,
+        val downloadCacheFactory: DiskCache.Factory,
+        val resultCacheFactory: DiskCache.Factory,
+        val httpStack: HttpStack,
+        val componentRegistry: ComponentRegistry?,
+        val globalImageOptions: ImageOptions?,
+    )
 
     class Builder constructor(private val context: PlatformContext) {
 
         private var logger: Logger? = null
-        private var memoryCache: MemoryCache? = null
-        private var downloadCache: DiskCache? = null
-        private var resultCache: DiskCache? = null
-        private var bitmapPool: BitmapPool? = null
+        private var memoryCacheFactory: MemoryCache.Factory? = null
+        private var downloadCacheFactory: DiskCache.Factory? = null
+        private var resultCacheFactory: DiskCache.Factory? = null
+
+        //        private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
@@ -259,30 +228,116 @@ class Sketch private constructor(
         /**
          * Set the [MemoryCache]
          */
-        fun memoryCache(memoryCache: MemoryCache?): Builder = apply {
-            this.memoryCache = memoryCache
+        fun memoryCache(memoryCache: MemoryCache.Factory?): Builder = apply {
+            this.memoryCacheFactory = memoryCache
+        }
+
+        /**
+         * Set the [MemoryCache]
+         */
+        fun memoryCache(memoryCache: MemoryCache): Builder = apply {
+            this.memoryCacheFactory = MemoryCache.FixedFactory(memoryCache)
+        }
+
+        /**
+         * Set the [MemoryCache]
+         */
+        fun memoryCache(options: MemoryCache.Options): Builder = apply {
+            this.memoryCacheFactory = MemoryCache.OptionsFactory(options)
+        }
+
+        /**
+         * Set the [MemoryCache]
+         */
+        fun memoryCache(initializer: (PlatformContext) -> MemoryCache): Builder = apply {
+            this.memoryCacheFactory = MemoryCache.LazyFactory(initializer)
+        }
+
+        /**
+         * Set the [MemoryCache]
+         */
+        fun memoryCache(initializer: MemoryCache.LazyOptions): Builder = apply {
+            this.memoryCacheFactory = MemoryCache.LazyOptionsFactory(initializer)
         }
 
         /**
          * Set the [DiskCache] for download cache
          */
-        fun downloadCache(diskCache: DiskCache?): Builder = apply {
-            this.downloadCache = diskCache
+        fun downloadCache(diskCache: DiskCache.Factory?): Builder = apply {
+            this.downloadCacheFactory = diskCache
+        }
+
+        /**
+         * Set the [DiskCache] for download cache
+         */
+        fun downloadCache(diskCache: DiskCache): Builder = apply {
+            this.downloadCacheFactory = DiskCache.FixedFactory(diskCache)
+        }
+
+        /**
+         * Set the [DiskCache] for download cache
+         */
+        fun downloadCache(options: DiskCache.Options): Builder = apply {
+            this.downloadCacheFactory = DiskCache.OptionsFactory(DiskCache.Type.DOWNLOAD, options)
+        }
+
+        /**
+         * Set the [DiskCache] for download cache
+         */
+        fun downloadCache(initializer: (PlatformContext) -> DiskCache): Builder = apply {
+            this.downloadCacheFactory = DiskCache.LazyFactory(initializer)
+        }
+
+        /**
+         * Set the [DiskCache] for download cache
+         */
+        fun downloadCache(initializer: DiskCache.LazyOptions): Builder = apply {
+            this.downloadCacheFactory =
+                DiskCache.LazyOptionsFactory(DiskCache.Type.DOWNLOAD, initializer)
         }
 
         /**
          * Set the [DiskCache] for result cache
          */
-        fun resultCache(diskCache: DiskCache?): Builder = apply {
-            this.resultCache = diskCache
+        fun resultCache(diskCache: DiskCache.Factory?): Builder = apply {
+            this.resultCacheFactory = diskCache
         }
 
         /**
-         * Set the [BitmapPool]
+         * Set the [DiskCache] for result cache
          */
-        fun bitmapPool(bitmapPool: BitmapPool?): Builder = apply {
-            this.bitmapPool = bitmapPool
+        fun resultCache(diskCache: DiskCache): Builder = apply {
+            this.resultCacheFactory = DiskCache.FixedFactory(diskCache)
         }
+
+        /**
+         * Set the [DiskCache] for result cache
+         */
+        fun resultCache(options: DiskCache.Options): Builder = apply {
+            this.resultCacheFactory = DiskCache.OptionsFactory(DiskCache.Type.RESULT, options)
+        }
+
+        /**
+         * Set the [DiskCache] for result cache
+         */
+        fun resultCache(initializer: (PlatformContext) -> DiskCache): Builder = apply {
+            this.resultCacheFactory = DiskCache.LazyFactory(initializer)
+        }
+
+        /**
+         * Set the [DiskCache] for result cache
+         */
+        fun resultCache(initializer: DiskCache.LazyOptions): Builder = apply {
+            this.resultCacheFactory =
+                DiskCache.LazyOptionsFactory(DiskCache.Type.RESULT, initializer)
+        }
+
+//        /**
+//         * Set the [BitmapPool]
+//         */
+//        fun bitmapPool(bitmapPool: BitmapPool?): Builder = apply {
+//            this.bitmapPool = bitmapPool
+//        }
 
         /**
          * Set the [ComponentRegistry]
@@ -311,20 +366,41 @@ class Sketch private constructor(
             this.globalImageOptions = globalImageOptions
         }
 
-        fun build(): Sketch = Sketch(
-            _context = context,
-            _logger = logger,
-            _memoryCache = memoryCache,
-            _downloadCache = downloadCache,
-            _resultCache = resultCache,
-            _bitmapPool = bitmapPool,
-            _componentRegistry = componentRegistry,
-            _httpStack = httpStack,
-            _globalImageOptions = globalImageOptions,
-        )
+        fun build(): Sketch {
+            val options = Options(
+                context = context,
+                logger = this.logger ?: Logger(),
+                memoryCacheFactory = memoryCacheFactory ?: DefaultFactory(),
+                downloadCacheFactory = downloadCacheFactory
+                    ?: DiskCache.DefaultFactory(DiskCache.Type.DOWNLOAD),
+                resultCacheFactory = resultCacheFactory
+                    ?: DiskCache.DefaultFactory(DiskCache.Type.RESULT),
+//            bitmapPool = bitmapPool,
+                httpStack = httpStack ?: HurlStack.Builder().build(),
+                componentRegistry = componentRegistry,
+                globalImageOptions = globalImageOptions,
+            )
+            return Sketch(options)
+        }
     }
 }
 
+internal expect fun platformComponents(): ComponentRegistry
+
+internal fun defaultComponents(): ComponentRegistry {
+    return ComponentRegistry.Builder().apply {
+        addFetcher(HttpUriFetcher.Factory())
+        addFetcher(FileUriFetcher.Factory())
+        addFetcher(Base64UriFetcher.Factory())
+
+        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
+        addRequestInterceptor(MemoryCacheRequestInterceptor())
+        addRequestInterceptor(EngineRequestInterceptor())
+
+        addDecodeInterceptor(TransformationDecodeInterceptor())
+        addDecodeInterceptor(EngineDecodeInterceptor())
+    }.build()
+}
 
 internal expect fun getDisposable(
     request: ImageRequest,

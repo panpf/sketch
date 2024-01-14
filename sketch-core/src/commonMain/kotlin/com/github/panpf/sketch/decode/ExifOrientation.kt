@@ -16,6 +16,15 @@
 package com.github.panpf.sketch.decode
 
 import androidx.annotation.IntDef
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_FLIP_HORIZONTAL
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_FLIP_VERTICAL
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_NORMAL
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_ROTATE_180
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_ROTATE_270
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_ROTATE_90
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_TRANSPOSE
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_TRANSVERSE
+import com.github.panpf.sketch.decode.ExifOrientation.Companion.ORIENTATION_UNDEFINED
 import kotlin.annotation.AnnotationRetention.SOURCE
 import kotlin.annotation.AnnotationTarget.FIELD
 import kotlin.annotation.AnnotationTarget.LOCAL_VARIABLE
@@ -23,17 +32,48 @@ import kotlin.annotation.AnnotationTarget.PROPERTY
 
 @IntDef(
     value = [
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_UNDEFINED,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE,
-        androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE
+        ORIENTATION_UNDEFINED,
+        ORIENTATION_NORMAL,
+        ORIENTATION_FLIP_HORIZONTAL,
+        ORIENTATION_FLIP_VERTICAL,
+        ORIENTATION_ROTATE_90,
+        ORIENTATION_ROTATE_180,
+        ORIENTATION_ROTATE_270,
+        ORIENTATION_TRANSPOSE,
+        ORIENTATION_TRANSVERSE
     ]
 )
 @Retention(SOURCE)
 @Target(FIELD, PROPERTY, LOCAL_VARIABLE)
-annotation class ExifOrientation
+annotation class ExifOrientation {
+    companion object {
+        const val ORIENTATION_UNDEFINED = 0
+        const val ORIENTATION_NORMAL = 1
+        const val ORIENTATION_FLIP_HORIZONTAL = 2 // left right reversed mirror
+
+        const val ORIENTATION_ROTATE_180 = 3
+        const val ORIENTATION_FLIP_VERTICAL = 4 // upside down mirror
+
+        // flipped about top-left <--> bottom-right axis
+        const val ORIENTATION_TRANSPOSE = 5
+        const val ORIENTATION_ROTATE_90 = 6 // rotate 90 cw to right it
+
+        // flipped about top-right <--> bottom-left axis
+        const val ORIENTATION_TRANSVERSE = 7
+        const val ORIENTATION_ROTATE_270 = 8 // rotate 270 to right it
+        
+        fun name(exifOrientation: Int): String =
+            when (exifOrientation) {
+                ORIENTATION_ROTATE_90 -> "ROTATE_90"
+                ORIENTATION_TRANSPOSE -> "TRANSPOSE"
+                ORIENTATION_ROTATE_180 -> "ROTATE_180"
+                ORIENTATION_FLIP_VERTICAL -> "FLIP_VERTICAL"
+                ORIENTATION_ROTATE_270 -> "ROTATE_270"
+                ORIENTATION_TRANSVERSE -> "TRANSVERSE"
+                ORIENTATION_FLIP_HORIZONTAL -> "FLIP_HORIZONTAL"
+                ORIENTATION_UNDEFINED -> "UNDEFINED"
+                ORIENTATION_NORMAL -> "NORMAL"
+                else -> exifOrientation.toString()
+            }
+    }
+}

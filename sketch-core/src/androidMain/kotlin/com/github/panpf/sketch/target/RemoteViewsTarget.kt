@@ -18,9 +18,18 @@ package com.github.panpf.sketch.target
 import android.widget.RemoteViews
 import androidx.annotation.IdRes
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.RequestDelegate
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.toBitmap
+import kotlinx.coroutines.Job
 
 /**
  * Set Drawable to RemoteViews
@@ -48,6 +57,22 @@ class RemoteViewsTarget constructor(
             onUpdated()
         }
     }
+
+    override fun getImageOptions(): ImageOptions? = null
+
+    override fun getLifecycleResolver(): LifecycleResolver? = null
+
+    override fun getRequestDelegate(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        job: Job
+    ): RequestDelegate? = null
+
+    override fun getScale(): Scale? = null
+
+    override fun getListener(): Listener? = null
+
+    override fun getProgressListener(): ProgressListener? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

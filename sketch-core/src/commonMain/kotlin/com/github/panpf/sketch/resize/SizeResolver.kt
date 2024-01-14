@@ -17,9 +17,12 @@ package com.github.panpf.sketch.resize
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Key
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.util.Size
 
 fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
+
+expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
 
 /**
  * An interface for measuring the target size for an image request.
@@ -45,4 +48,14 @@ data class FixedSizeResolver constructor(private val size: Size) : SizeResolver 
     override suspend fun size(): Size = size
 
     override fun toString(): String = "FixedSizeResolver($size)"
+}
+
+// TODO Decoder support origin
+data object OriginSizeResolver : SizeResolver {
+
+    override val key: String by lazy { "Origin" }
+
+    override suspend fun size(): Size = Size(-1, -1)
+
+    override fun toString(): String = "OriginSizeResolver"
 }

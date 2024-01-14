@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.cache
 
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.DiskCache.Options
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
 import java.io.Closeable
@@ -131,9 +133,7 @@ interface DiskCache : Closeable {
          * Commits this edit so it is visible to readers.  This releases the
          * edit lock so another edit may be started on the same key.
          */
-        @Throws(
-            IOException::class,
-        )
+        @Throws(IOException::class)
         fun commit()
 
         /**
@@ -142,4 +142,74 @@ interface DiskCache : Closeable {
          */
         fun abort()
     }
+
+    data class Options(
+        val directory: File? = null,
+        val maxSize: Long? = null,
+        val appVersion: Int? = null,
+    ) {
+        init {
+            require(maxSize == null || maxSize > 0) {
+                "maxSize must be greater than 0"
+            }
+            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
+                "The value range for 'version' is 1 to ${Short.MAX_VALUE}"
+            }
+        }
+    }
+
+    interface Factory {
+        fun create(context: PlatformContext): DiskCache
+    }
+
+    class FixedFactory(val diskCache: DiskCache) : Factory {
+        override fun create(context: PlatformContext): DiskCache {
+            return diskCache
+        }
+    }
+
+    class OptionsFactory(val type: Type, val options: Options) : Factory {
+        override fun create(context: PlatformContext): DiskCache {
+            return createDiskCache(context, type, options)
+        }
+    }
+
+    class LazyFactory(
+        val initializer: (PlatformContext) -> DiskCache
+    ) : Factory {
+        override fun create(context: PlatformContext): DiskCache {
+            return initializer(context)
+        }
+    }
+
+    class LazyOptionsFactory(
+        val type: Type,
+        val initializer: LazyOptions
+    ) : Factory {
+        override fun create(context: PlatformContext): DiskCache {
+            val options = initializer.get(context)
+            return createDiskCache(context, type, options)
+        }
+    }
+
+    fun interface LazyOptions{
+        fun get(context: PlatformContext): Options
+    }
+
+    class DefaultFactory(val type: Type) : Factory {
+        override fun create(context: PlatformContext): DiskCache {
+            return createDiskCache(context, type, null)
+        }
+    }
+
+    enum class Type(val dirName: String, val internalVersion: Int) {
+        DOWNLOAD("download", 1),
+        RESULT("result", 1),
+    }
 }
+
+expect fun createDiskCache(
+    context: PlatformContext,
+    type: DiskCache.Type,
+    options: Options?
+): DiskCache

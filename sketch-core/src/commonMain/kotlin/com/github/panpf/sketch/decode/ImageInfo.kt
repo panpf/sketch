@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.decode.internal.exifOrientationName
-
 data class ImageInfo constructor(
     val width: Int,
     val height: Int,
@@ -32,10 +30,10 @@ data class ImageInfo constructor(
     ): ImageInfo = ImageInfo(width, height, mimeType, exifOrientation)
 
     override fun toString(): String {
-        val exifOrientationName = exifOrientationName(exifOrientation)
+        val exifOrientationName = ExifOrientation.name(exifOrientation)
         return "ImageInfo(width=$width, height=$height, mimeType='$mimeType', exifOrientation=$exifOrientationName)"
     }
 
     fun toShortString(): String =
-        "ImageInfo(${width}x$height,'$mimeType',${exifOrientationName(exifOrientation)})"
+        "ImageInfo(${width}x$height,'$mimeType',${ExifOrientation.name(exifOrientation)})"
 }

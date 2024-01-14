@@ -26,7 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.GlobalTargetLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.asSketchImage
@@ -70,7 +70,7 @@ class GenericViewTargetTest {
         )
         val sketchCountBitmapDrawable = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = countBitmap,
+            countingBitmapImage = countBitmap,
         )
         val countBitmap2 = CountBitmap(
             originBitmap = Bitmap.createBitmap(100, 100, RGB_565),
@@ -79,7 +79,7 @@ class GenericViewTargetTest {
         )
         val sketchCountBitmapDrawable2 = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = countBitmap2,
+            countingBitmapImage = countBitmap2,
         )
 
         runBlocking(Dispatchers.Main) {
@@ -124,10 +124,10 @@ class GenericViewTargetTest {
         TestViewTarget(imageView).apply {
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
 
-            onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
+            onStart(GlobalTargetLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
             Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
 
-            onStop(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
+            onStop(GlobalTargetLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
         }
     }
@@ -144,7 +144,7 @@ class GenericViewTargetTest {
             onError(requestContext, drawable.asSketchImage())
             onSuccess(requestContext, drawable.asSketchImage())
 
-            onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
+            onStart(GlobalTargetLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
 
             onStart(requestContext, drawable.asSketchImage())
             onError(requestContext, drawable.asSketchImage())
@@ -158,13 +158,13 @@ class GenericViewTargetTest {
             onSuccess(requestContext, animatableDrawable.asSketchImage())
             Assert.assertFalse(animatableDrawable.running)
 
-            onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
+            onStart(GlobalTargetLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
             Assert.assertTrue(animatableDrawable.running)
 
-            onStop(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
+            onStop(GlobalTargetLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
             Assert.assertFalse(animatableDrawable.running)
 
-            onStart(GlobalLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
+            onStart(GlobalTargetLifecycle.getFieldValue<LifecycleOwner>("owner")!!)
             Assert.assertTrue(animatableDrawable.running)
 
             onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())

@@ -30,7 +30,6 @@ import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -186,7 +185,7 @@ class ResizeDrawableTest {
 
         val sketchDrawable = SketchCountBitmapDrawable(
             resources = resources,
-            countBitmap = CountBitmap(
+            countingBitmapImage = CountBitmap(
                 originBitmap = Bitmap.createBitmap(100, 200, RGB_565),
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,

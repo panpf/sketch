@@ -19,8 +19,6 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.decode.internal.freeBitmap
-import com.github.panpf.sketch.decode.internal.logString
 import java.util.LinkedList
 
 class TransformationDecodeInterceptor : DecodeInterceptor {
@@ -45,13 +43,14 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
                 val transformResult = next.transform(sketch, requestContext, inputImage)
                 if (transformResult != null) {
                     if (transformResult.image !== inputImage) {
-                        sketch.bitmapPool.freeBitmap(
-                            bitmap = inputImage,
-                            disallowReuseBitmap = request.disallowReuseBitmap,
-                            caller = "transform:${next}"
-                        )
+                        // TODO bitmapPool
+//                        sketch.bitmapPool.freeBitmap(
+//                            bitmap = inputImage,
+//                            disallowReuseBitmap = request.disallowReuseBitmap,
+//                            caller = "transform:${next}"
+//                        )
                         sketch.logger.d("BitmapTransformationDecodeInterceptor") {
-                            "transform. freeBitmap. bitmap=${inputImage.logString}. '${requestContext.logKey}'"
+                            "transform. freeBitmap. inputImage=${inputImage}. '${requestContext.logKey}'"
                         }
                     }
                     transformedList.add(transformResult.transformed)

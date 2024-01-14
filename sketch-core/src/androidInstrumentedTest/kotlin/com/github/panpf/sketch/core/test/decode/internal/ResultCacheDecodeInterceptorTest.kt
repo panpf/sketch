@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.resultCacheDataKey
+import com.github.panpf.sketch.cache.internal.resultCacheDataKey
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS

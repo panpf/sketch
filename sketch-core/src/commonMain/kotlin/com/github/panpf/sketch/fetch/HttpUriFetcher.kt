@@ -18,7 +18,6 @@
 package com.github.panpf.sketch.fetch
 
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -32,6 +31,7 @@ import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.requiredWorkThread
+import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive

@@ -15,9 +15,8 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.asSketchImage
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -35,8 +34,7 @@ class MemoryCacheStateImage(
     ): Image? {
         val memoryCache = sketch.memoryCache
         val cachedValue = memoryCacheKey?.let { memoryCache[it] }
-        return cachedValue?.asSketchImage(request.context.resources)
-            ?: defaultImage?.getImage(sketch, request, throwable)
+        return cachedValue?.image ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
     override fun equals(other: Any?): Boolean {

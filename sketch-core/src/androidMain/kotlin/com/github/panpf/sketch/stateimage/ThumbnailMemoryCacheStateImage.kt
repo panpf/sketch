@@ -1,13 +1,10 @@
 package com.github.panpf.sketch.stateimage
 
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.BitmapValue
-import com.github.panpf.sketch.cache.CountBitmapValue
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.asSketchImage
 import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.getImageInfo
 import com.github.panpf.sketch.request.internal.getTransformedList
@@ -45,13 +42,8 @@ class ThumbnailMemoryCacheStateImage(
             }
             if (uri == uriFromKey) {
                 val cachedValue = sketch.memoryCache[key]?.takeIf {
-                    val bitmap = when (it) {
-                        is BitmapValue -> it.bitmap
-                        is CountBitmapValue -> it.countBitmap.bitmap
-                        else -> null
-                    } ?: return@takeIf false
-
-                    val bitmapAspectRatio = (bitmap.width.toFloat() / bitmap.height).format(1)
+                    val image = it.image
+                    val bitmapAspectRatio = (image.width.toFloat() / image.height).format(1)
                     val imageInfo = it.getImageInfo()!!
                     val imageAspectRatio =
                         (imageInfo.width.toFloat() / imageInfo.height).format(1)
@@ -75,8 +67,7 @@ class ThumbnailMemoryCacheStateImage(
                 }
             }
         }
-        return targetCachedValue?.asSketchImage(request.context.resources)
-            ?: defaultImage?.getImage(sketch, request, throwable)
+        return targetCachedValue?.image ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
     override fun equals(other: Any?): Boolean {

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.cache.CountBitmapValue
+import com.github.panpf.sketch.cache.CountingBitmapImageValue
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
@@ -124,8 +124,8 @@ class MemoryCacheRequestInterceptorTest {
 
         memoryCache.put(
             request.toRequestContext(sketch).cacheKey,
-            CountBitmapValue(
-                countBitmapDrawable.countBitmap,
+            CountingBitmapImageValue(
+                countBitmapDrawable.countingBitmapImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
                     transformedList = imageData.transformedList,
@@ -154,8 +154,8 @@ class MemoryCacheRequestInterceptorTest {
 
         memoryCache.put(
             request.toRequestContext(sketch).cacheKey,
-            CountBitmapValue(
-                countBitmapDrawable.countBitmap,
+            CountingBitmapImageValue(
+                countBitmapDrawable.countingBitmapImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
                     transformedList = imageData.transformedList,

@@ -41,13 +41,19 @@ class AndroidSystemCallbacks : SystemCallbacks {
         override fun onLowMemory() {
             val sketch = sketchReference?.get() ?: return
             sketch.memoryCache.clear()
-            sketch.bitmapPool.clear()
+            // TODO bitmapPool
+//            sketch.bitmapPool.clear()
         }
 
         override fun onTrimMemory(level: Int) {
             val sketch = sketchReference?.get() ?: return
-            sketch.memoryCache.trim(level)
-            sketch.bitmapPool.trim(level)
+            if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
+                sketch.memoryCache.trim(0L)
+            } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
+                sketch.memoryCache.trim(sketch.memoryCache.size / 2)
+            }
+            // TODO bitmapPool
+//            sketch.bitmapPool.trim(level)
         }
     }
 

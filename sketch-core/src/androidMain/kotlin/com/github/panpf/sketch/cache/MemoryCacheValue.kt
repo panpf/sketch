@@ -15,84 +15,73 @@
  */
 package com.github.panpf.sketch.cache
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import com.github.panpf.sketch.decode.internal.logString
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.BitmapImage
 
-fun MemoryCache.Value.asSketchImage(resources: Resources): Image = when (this) {
-    is BitmapValue -> BitmapDrawable(resources, bitmap)
-    is CountBitmapValue -> SketchCountBitmapDrawable(resources, countBitmap)
-    else -> throw IllegalStateException("Unknown MemoryCache.Value: $this")
-}.asSketchImage()
 
-class BitmapValue(
-    val bitmap: Bitmap,
+class BitmapImageValue(
+    override val image: BitmapImage,
     override val extras: Map<String, Any?> = emptyMap(),
 ) : MemoryCache.Value {
 
-    override val size: Int = bitmap.byteCount
+    override val size: Int = image.byteCount
 
     override fun setIsCached(cached: Boolean) {
 
     }
 
     override fun checkValid(): Boolean {
-        return !bitmap.isRecycled
+        return !image.checkValid()
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as BitmapValue
-        if (bitmap != other.bitmap) return false
+        other as BitmapImageValue
+        if (image != other.image) return false
         return extras == other.extras
     }
 
     override fun hashCode(): Int {
-        var result = bitmap.hashCode()
+        var result = image.hashCode()
         result = 31 * result + extras.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "BitmapValue(bitmap=${bitmap.logString}, extras=$extras)"
+        return "BitmapImageValue(image=${image}, extras=$extras)"
     }
 }
 
-class CountBitmapValue(
-    val countBitmap: CountBitmap,
-    override val extras: Map<String, Any?> = emptyMap(),
-) : MemoryCache.Value {
-
-    override val size: Int = countBitmap.byteCount
-
-    override fun setIsCached(cached: Boolean) {
-        countBitmap.setIsCached(cached, "BitmapValue")
-    }
-
-    override fun checkValid(): Boolean {
-        return countBitmap.bitmap?.isRecycled == false
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as CountBitmapValue
-        if (countBitmap != other.countBitmap) return false
-        return extras == other.extras
-    }
-
-    override fun hashCode(): Int {
-        var result = countBitmap.hashCode()
-        result = 31 * result + extras.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "BitmapValue(countBitmap=$countBitmap, extras=$extras)"
-    }
-}
+//class CountingBitmapImageValue(
+//    override val image: CountingBitmapImage,
+//    override val extras: Map<String, Any?> = emptyMap(),
+//) : MemoryCache.Value {
+//
+//    override val size: Int = image.byteCount
+//
+//    override fun setIsCached(cached: Boolean) {
+//        image.setIsCached(cached, "CountingBitmapImageValue")
+//    }
+//
+//    override fun checkValid(): Boolean {
+//        return image.checkValid()
+//    }
+//
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (javaClass != other?.javaClass) return false
+//        other as CountingBitmapImageValue
+//        if (image != other.image) return false
+//        return extras == other.extras
+//    }
+//
+//    override fun hashCode(): Int {
+//        var result = image.hashCode()
+//        result = 31 * result + extras.hashCode()
+//        return result
+//    }
+//
+//    override fun toString(): String {
+//        return "CountingBitmapImageValue(image=$image, extras=$extras)"
+//    }
+//}

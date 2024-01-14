@@ -105,11 +105,11 @@ class CombinedListenerTest {
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
         val combinedListener = CombinedListener(
-            fromProviderListener = listener1,
+            fromTargetListener = listener1,
             fromBuilderListener = listener2,
             fromBuilderListeners = listOf(listener3)
         )
-        Assert.assertSame(listener1, combinedListener.fromProviderListener)
+        Assert.assertSame(listener1, combinedListener.fromTargetListener)
         Assert.assertSame(listener2, combinedListener.fromBuilderListener)
         Assert.assertSame(listener3, combinedListener.fromBuilderListeners!!.first())
 

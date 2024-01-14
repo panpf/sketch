@@ -23,7 +23,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
-import com.github.panpf.sketch.cache.internal.defaultMemoryCacheBytes
+import com.github.panpf.sketch.util.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
@@ -37,7 +37,7 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.Disposable
-import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.GlobalTargetLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -422,7 +422,7 @@ class SketchTest {
         val listenerSupervisor4 = ListenerSupervisor()
         val request4 = ImageRequest(imageView, AssetImages.jpeg.uri) {
             listener(listenerSupervisor4)
-            lifecycle(GlobalLifecycle)
+            lifecycle(GlobalTargetLifecycle)
         }
         val result4 = runBlocking {
             try {

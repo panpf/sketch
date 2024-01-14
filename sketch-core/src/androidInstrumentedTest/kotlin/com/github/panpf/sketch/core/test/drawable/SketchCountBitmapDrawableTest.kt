@@ -35,13 +35,13 @@ class SketchCountBitmapDrawableTest {
         val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
         SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = CountBitmap(
+            countingBitmapImage = CountBitmap(
                 originBitmap = bitmap,
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
             ),
         ).apply {
-            Assert.assertEquals(bitmap, countBitmap.bitmap)
+            Assert.assertEquals(bitmap, countingBitmapImage.bitmap)
         }
     }
 
@@ -60,15 +60,15 @@ class SketchCountBitmapDrawableTest {
         )
         val element1 = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = countBitmap,
+            countingBitmapImage = countBitmap,
         )
         val element11 = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = countBitmap,
+            countingBitmapImage = countBitmap,
         )
         val element2 = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = countBitmap2,
+            countingBitmapImage = countBitmap2,
         )
 
         Assert.assertNotSame(element1, element11)
@@ -99,7 +99,7 @@ class SketchCountBitmapDrawableTest {
         )
         SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = countBitmap,
+            countingBitmapImage = countBitmap,
         ).apply {
             Assert.assertEquals(
                 "SketchCountBitmapDrawable(${countBitmap})",

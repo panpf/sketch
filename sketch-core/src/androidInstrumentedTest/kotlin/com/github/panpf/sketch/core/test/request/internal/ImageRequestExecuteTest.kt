@@ -44,7 +44,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.decode.internal.resultCacheDataKey
+import com.github.panpf.sketch.cache.internal.resultCacheDataKey
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
@@ -55,7 +55,7 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.GlobalTargetLifecycle
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -94,7 +94,6 @@ import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -1857,7 +1856,7 @@ class ImageRequestExecuteTest {
 
         ImageRequest(context, AssetImages.jpeg.uri).let { request ->
             Assert.assertEquals(
-                DefaultLifecycleResolver(LifecycleResolver(GlobalLifecycle)),
+                DefaultLifecycleResolver(LifecycleResolver(GlobalTargetLifecycle)),
                 request.lifecycleResolver
             )
             runBlocking {

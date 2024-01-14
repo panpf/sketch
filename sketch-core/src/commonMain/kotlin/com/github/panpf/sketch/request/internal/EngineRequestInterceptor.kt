@@ -18,9 +18,9 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
-import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.resize.sizeApplyToDraw
 import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
@@ -41,7 +41,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         request.target?.let {
             val placeholderDrawable = request.placeholder
                 ?.getImage(sketch, request, null)
-                ?.resizeApplyToDrawable(request, requestContext.resizeSize)
+                ?.sizeApplyToDraw(request, requestContext.resizeSize)
             it.onStart(requestContext, placeholderDrawable)
         }
         val decodeResult = withContext(sketch.decodeTaskDispatcher) {

@@ -15,16 +15,13 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.requiredMainThread
 
 class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {
 
-    private var pendingCountDrawable: SketchCountBitmapDrawable? = null
+    private val completedListenerList = mutableSetOf<CompletedListener>()
     private val _requestList = mutableListOf(initialRequest)
     private var _request: ImageRequest = initialRequest
     private var _cacheKey: String? = null
@@ -59,20 +56,19 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
         }
     }
 
-    @MainThread
-    fun pendingCountDrawable(drawable: SketchCountBitmapDrawable, caller: String) {
-        requiredMainThread()
-        completeCountDrawable(caller)
-        pendingCountDrawable = drawable.apply {
-            countBitmap.setIsPending(true, caller)
-        }
+    fun completed() {
+        completedListenerList.forEach { it.onCompleted() }
     }
 
-    @MainThread
-    fun completeCountDrawable(caller: String) {
-        requiredMainThread()
-        pendingCountDrawable?.apply {
-            countBitmap.setIsPending(false, caller)
-        }
+    fun registerCompletedListener(completedListener: CompletedListener) {
+        completedListenerList.add(completedListener)
+    }
+
+    fun unregisterCompletedListener(completedListener: CompletedListener) {
+        completedListenerList.remove(completedListener)
+    }
+
+    fun interface CompletedListener {
+        fun onCompleted()
     }
 }

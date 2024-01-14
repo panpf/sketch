@@ -26,8 +26,6 @@ import androidx.core.graphics.component1
 import androidx.core.graphics.component2
 import androidx.core.graphics.component3
 import androidx.core.graphics.component4
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 
 /**
@@ -68,7 +66,7 @@ fun Drawable.getLastChildDrawable(): Drawable? {
  */
 @WorkerThread
 internal fun Drawable.toNewBitmap(
-    bitmapPool: BitmapPool,
+//    bitmapPool: BitmapPool,
     disallowReuseBitmap: Boolean,
     preferredConfig: Bitmap.Config? = null,
     targetSize: Size? = null
@@ -79,12 +77,17 @@ internal fun Drawable.toNewBitmap(
     setBounds(0, 0, targetWidth, targetHeight)
 
     val config = preferredConfig ?: ARGB_8888
-    val bitmap: Bitmap = bitmapPool.getOrCreate(
-        width = targetWidth,
-        height = targetHeight,
-        config = config,
-        disallowReuseBitmap = disallowReuseBitmap,
-        caller = "toNewBitmap"
+//    val bitmap: Bitmap = bitmapPool.getOrCreate(
+//        width = targetWidth,
+//        height = targetHeight,
+//        config = config,
+//        disallowReuseBitmap = disallowReuseBitmap,
+//        caller = "toNewBitmap"
+//    )
+    val bitmap: Bitmap = Bitmap.createBitmap(
+        /* width = */ targetWidth,
+        /* height = */ targetHeight,
+        /* config = */ config,
     )
     val canvas = Canvas(bitmap)
     draw(canvas)

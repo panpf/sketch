@@ -20,8 +20,6 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.cache.BitmapPool
-import com.github.panpf.sketch.decode.internal.getOrCreate
 import kotlin.math.ceil
 
 internal val Bitmap.isImmutable: Boolean
@@ -74,18 +72,23 @@ internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
 
 internal fun Bitmap.scaled(
     scale: Double,
-    bitmapPool: BitmapPool,
+//    bitmapPool: BitmapPool,
     disallowReuseBitmap: Boolean
 ): Bitmap {
     val config = this.safeConfig
     val scaledWidth = ceil(width * scale).toInt()
     val scaledHeight = ceil(height * scale).toInt()
-    val newBitmap = bitmapPool.getOrCreate(
-        width = scaledWidth,
-        height = scaledHeight,
-        config = config,
-        disallowReuseBitmap = disallowReuseBitmap,
-        caller = "scaled"
+//    val newBitmap = bitmapPool.getOrCreate(
+//        width = scaledWidth,
+//        height = scaledHeight,
+//        config = config,
+//        disallowReuseBitmap = disallowReuseBitmap,
+//        caller = "scaled"
+//    )
+    val newBitmap = Bitmap.createBitmap(
+        /* width = */ scaledWidth,
+        /* height = */ scaledHeight,
+        /* config = */ config,
     )
     val canvas = Canvas(newBitmap)
     val matrix = Matrix().apply {

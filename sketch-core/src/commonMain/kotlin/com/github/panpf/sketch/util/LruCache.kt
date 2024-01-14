@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.util
 
-import java.util.Locale
-
 /**
  * Static library version of `android.util.LruCache`. Used to write apps
  * that run on API levels prior to 12. When running on API level 12 or above,
@@ -28,14 +26,14 @@ import java.util.Locale
  * the maximum number of entries in the cache. For all other caches,
  * this is the maximum sum of the sizes of the entries in this cache.
  */
-open class LruCache<K, V>(maxSize: Int) {
+open class LruCache<K, V>(maxSize: Long) {
     private val map: LinkedHashMap<K, V>
 
     /**
      * Size of this cache in units. Not necessarily the number of elements.
      */
-    private var size = 0
-    private var maxSize: Int
+    private var size = 0L
+    private var maxSize: Long
     private var putCount = 0
     private var createCount = 0
     private var evictionCount = 0
@@ -53,7 +51,7 @@ open class LruCache<K, V>(maxSize: Int) {
      *
      * @param maxSize The new maximum size.
      */
-    fun resize(maxSize: Int) {
+    fun resize(maxSize: Long) {
         require(maxSize > 0) { "maxSize <= 0" }
         synchronized(this) { this.maxSize = maxSize }
         trimToSize(maxSize)
@@ -138,12 +136,12 @@ open class LruCache<K, V>(maxSize: Int) {
      * @param maxSize the maximum size of the cache before returning. May be -1
      * to evict even 0-sized elements.
      */
-    fun trimToSize(maxSize: Int) {
+    fun trimToSize(maxSize: Long) {
         while (true) {
             var key: K
             var value: V
             synchronized(this) {
-                check(!(size < 0 || map.isEmpty() && size != 0)) {
+                check(!(size < 0 || map.isEmpty() && size != 0L)) {
                     (javaClass.name
                             + ".sizeOf() is reporting inconsistent results!")
                 }
@@ -257,7 +255,7 @@ open class LruCache<K, V>(maxSize: Int) {
      * the sizes of the entries in this cache.
      */
     @Synchronized
-    fun size(): Int {
+    fun size(): Long {
         return size
     }
 
@@ -267,7 +265,7 @@ open class LruCache<K, V>(maxSize: Int) {
      * maximum sum of the sizes of the entries in this cache.
      */
     @Synchronized
-    fun maxSize(): Int {
+    fun maxSize(): Long {
         return maxSize
     }
 
@@ -335,9 +333,6 @@ open class LruCache<K, V>(maxSize: Int) {
     override fun toString(): String {
         val accesses = hitCount + missCount
         val hitPercent = if (accesses != 0) 100 * hitCount / accesses else 0
-        return String.format(
-            Locale.US, "LruCache[maxSize=%d,hits=%d,misses=%d,hitRate=%d%%]",
-            maxSize, hitCount, missCount, hitPercent
-        )
+        return "LruCache[maxSize=${maxSize},hits=${hitCount},misses=${missCount},hitRate=${hitPercent}%]"
     }
 }

@@ -48,38 +48,48 @@ expect interface Image {
     ): Value?
 
     fun checkValid(): Boolean
+
+    fun toCountingImage(requestContext: RequestContext): CountingImage?
 }
-
-
-//fun Image.findLeafImage(): Image {
-//    return if (this is ImageWrapper) {
-//        image.findLeafImage()
-//    } else {
-//        this
-//    }
-//}
 
 val Image.size: Size
     get() = Size(width, height)
 
-//open class ImageWrapper(val image: Image) : Image by image {
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (javaClass != other?.javaClass) return false
-//
-//        other as ImageWrapper
-//
-//        return image == other.image
-//    }
-//
-//    override fun hashCode(): Int {
-//        return image.hashCode()
-//    }
-//
-//    override fun toString(): String {
-//        return "ImageWrapper(image=$image)"
-//    }
-//}
+interface CountingImage : Image {
+    fun setIsPending(pending: Boolean, caller: String? = null)
+    fun setIsCached(cached: Boolean, caller: String? = null)
+    fun setIsDisplayed(displayed: Boolean, caller: String? = null)
+    fun getPendingCount(): Int
+    fun getCachedCount(): Int
+    fun getDisplayedCount(): Int
+}
+
+fun Image.findLeafImage(): Image {
+    return if (this is ImageWrapper) {
+        image.findLeafImage()
+    } else {
+        this
+    }
+}
+
+open class ImageWrapper(val image: Image) : Image by image {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ImageWrapper
+
+        return image == other.image
+    }
+
+    override fun hashCode(): Int {
+        return image.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ImageWrapper(image=$image)"
+    }
+}
 
 interface ByteCountProvider {
     val byteCount: Int

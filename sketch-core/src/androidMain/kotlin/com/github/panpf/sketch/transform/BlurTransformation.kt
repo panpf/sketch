@@ -24,8 +24,6 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.decode.internal.freeBitmap
-import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -101,11 +99,11 @@ class BlurTransformation constructor(
                 "transform. newBitmap. ${outBitmap.logString}. '${requestContext.logKey}'"
             }
             if (compatAlphaBitmap !== inputBitmap) {
-                sketch.bitmapPool.freeBitmap(
-                    bitmap = compatAlphaBitmap,
-                    disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-                    caller = "BlurTransformation"
-                )
+//                sketch.bitmapPool.freeBitmap(
+//                    bitmap = compatAlphaBitmap,
+//                    disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+//                    caller = "BlurTransformation"
+//                )
                 sketch.logger.d(MODULE) {
                     "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. '${requestContext.logKey}'"
                 }

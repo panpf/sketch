@@ -15,14 +15,15 @@
  */
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.getMimeTypeFromExtension
 import java.io.File
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Sample: 'file:///sdcard/sample.jpg'
@@ -54,7 +55,8 @@ class FileUriFetcher(
                 val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
                     ?: uriString.indexOf("#").takeIf { it != -1 }
                     ?: uriString.length
-                Uri.decode(uriString.substring(subStartIndex, subEndIndex))
+                val filePath = uriString.substring(subStartIndex, subEndIndex)
+                URLDecoder.decode(filePath, StandardCharsets.UTF_8.name())
             } else if (uriString.startsWith("/")) {
                 uriString
             } else {
@@ -65,7 +67,7 @@ class FileUriFetcher(
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
+        val mimeType = getMimeTypeFromExtension(file.extension)
         FetchResult(FileDataSource(sketch, request, file), mimeType)
     }
 

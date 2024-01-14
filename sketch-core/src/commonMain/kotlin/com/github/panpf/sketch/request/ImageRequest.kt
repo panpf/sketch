@@ -15,27 +15,12 @@
  */
 package com.github.panpf.sketch.request
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ColorSpace
-import android.graphics.drawable.Drawable
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
-import android.widget.ImageView
-import android.widget.ImageView.ScaleType
-import androidx.annotation.DrawableRes
 import androidx.annotation.Px
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeDrawable
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.CombinedListener
@@ -46,24 +31,20 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
-import com.github.panpf.sketch.resize.internal.ViewSizeResolver
+import com.github.panpf.sketch.resize.defaultSizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.ViewTarget
+import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.findLifecycle
-import com.github.panpf.sketch.util.ifOrNull
 
 /**
  * Build and set the [ImageRequest]
  */
 fun ImageRequest(
-    context: Context,
+    context: PlatformContext,
     uriString: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): ImageRequest = ImageRequest.Builder(context, uriString).apply {
@@ -82,19 +63,19 @@ interface ImageRequest {
     val key: String
 
     /** App Context */
-    val context: Context
+    val context: PlatformContext
 
     /** The uri of the image to be loaded. */
     val uriString: String
 
     /**
-     * The [Lifecycle] resolver for this request.
-     * The request will be started when Lifecycle is in [Lifecycle.State.STARTED]
-     * and canceled when Lifecycle is in [Lifecycle.State.DESTROYED].
+     * The [TargetLifecycle] resolver for this request.
+     * The request will be started when TargetLifecycle is in [TargetLifecycle.State.STARTED]
+     * and canceled when TargetLifecycle is in [TargetLifecycle.State.DESTROYED].
      *
-     * When [Lifecycle] is not actively set,
-     * Sketch first obtains the Lifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
-     * Secondly, get the [Lifecycle] of Activity through context, and finally use [GlobalLifecycle]
+     * When [TargetLifecycle] is not actively set,
+     * Sketch first obtains the TargetLifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
+     * Secondly, get the [TargetLifecycle] of Activity through context, and finally use [GlobalTargetLifecycle]
      */
     val lifecycleResolver: LifecycleResolver
 
@@ -139,37 +120,6 @@ interface ImageRequest {
      */
     val downloadCachePolicy: CachePolicy
 
-
-    /**
-     * Specify [Bitmap.Config] to use when creating the bitmap.
-     * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
-     */
-    val bitmapConfig: BitmapConfig?
-
-    /**
-     * [Bitmap]'s [ColorSpace]
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
-     */
-    @get:RequiresApi(VERSION_CODES.O)
-    val colorSpace: ColorSpace?
-
-    /**
-     * From Android N (API 24), this is ignored.  The output will always be high quality.
-     *
-     * In [android.os.Build.VERSION_CODES.M] and below, if
-     * inPreferQualityOverSpeed is set to true, the decoder will try to
-     * decode the reconstructed image to a higher quality even at the
-     * expense of the decoding speed. Currently the field only affects JPEG
-     * decode, in the case of which a more accurate, but slightly slower,
-     * IDCT method will be used instead.
-     *
-     * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
-     */
-    @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-    val preferQualityOverSpeed: Boolean
 
     /**
      * Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize
@@ -239,7 +189,7 @@ interface ImageRequest {
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
      */
-    val resizeApplyToDrawable: Boolean
+    val sizeApplyToDraw: Boolean
 
     /**
      * Bitmap memory caching policy
@@ -276,22 +226,21 @@ interface ImageRequest {
 
     class Builder {
 
-        private val context: Context
+        private val context: PlatformContext
         private val uriString: String
 
         private var listeners: MutableSet<Listener>? = null
         private var listener: Listener? = null
-        private var providerListener: Listener? = null
+        private var targetListener: Listener? = null
         private var progressListeners: MutableSet<ProgressListener>? = null
         private var progressListener: ProgressListener? = null
-        private var providerProgressListener: ProgressListener? = null
+        private var targetProgressListener: ProgressListener? = null
         private var target: Target? = null
         private var lifecycleResolver: LifecycleResolver? = null
         private var defaultOptions: ImageOptions? = null
-        private var viewTargetOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
 
-        constructor(context: Context, uriString: String?) {
+        constructor(context: PlatformContext, uriString: String?) {
             this.context = context
             this.uriString = uriString.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
@@ -304,22 +253,22 @@ interface ImageRequest {
             if (oldListener is CombinedListener) {
                 this.listener = oldListener.fromBuilderListener
                 this.listeners = oldListener.fromBuilderListeners?.toMutableSet()
-                this.providerListener = oldListener.fromProviderListener
+                this.targetListener = oldListener.fromTargetListener
             } else {
                 this.listener = oldListener
                 this.listeners = null
-                this.providerListener = null
+                this.targetListener = null
             }
             val oldProgressListener = request.progressListener
             if (oldProgressListener is CombinedProgressListener) {
                 this.progressListener = oldProgressListener.fromBuilderProgressListener
                 this.progressListeners =
                     oldProgressListener.fromBuilderProgressListeners?.toMutableSet()
-                this.providerProgressListener = oldProgressListener.fromProviderProgressListener
+                this.targetProgressListener = oldProgressListener.fromTargetProgressListener
             } else {
                 this.progressListener = oldProgressListener
                 this.progressListeners = null
-                this.providerProgressListener = null
+                this.targetProgressListener = null
             }
             this.target = request.target
             this.lifecycleResolver = request.lifecycleResolver
@@ -432,23 +381,23 @@ interface ImageRequest {
         }
 
         /**
-         * Set the [Lifecycle] for this request.
+         * Set the [TargetLifecycle] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [TargetLifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [TargetLifecycle.State.DESTROYED].
          *
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
          */
-        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
+        fun lifecycle(lifecycle: TargetLifecycle?): Builder = apply {
             this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
         }
 
         /**
          * Set the [LifecycleResolver] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [TargetLifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [TargetLifecycle.State.DESTROYED].
          *
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
@@ -462,9 +411,6 @@ interface ImageRequest {
          */
         fun target(target: Target?): Builder = apply {
             this.target = target
-            this.viewTargetOptions = target.asOrNull<ViewTarget<*>>()
-                ?.view.asOrNull<ImageOptionsProvider>()
-                ?.displayImageOptions
         }
 
 
@@ -533,50 +479,6 @@ interface ImageRequest {
         fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.downloadCachePolicy(cachePolicy)
         }
-
-
-        /**
-         * Set [Bitmap.Config] to use when creating the bitmap.
-         * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-         */
-        fun bitmapConfig(bitmapConfig: BitmapConfig?): Builder = apply {
-            definedOptionsBuilder.bitmapConfig(bitmapConfig)
-        }
-
-        /**
-         * Set [Bitmap.Config] to use when creating the bitmap.
-         * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
-         */
-        fun bitmapConfig(bitmapConfig: Bitmap.Config): Builder = apply {
-            definedOptionsBuilder.bitmapConfig(bitmapConfig)
-        }
-
-        /**
-         * Set preferred [Bitmap]'s [ColorSpace]
-         */
-        @RequiresApi(VERSION_CODES.O)
-        fun colorSpace(colorSpace: ColorSpace?): Builder = apply {
-            definedOptionsBuilder.colorSpace(colorSpace)
-        }
-
-        /**
-         * From Android N (API 24), this is ignored.  The output will always be high quality.
-         *
-         * In [android.os.Build.VERSION_CODES.M] and below, if
-         * inPreferQualityOverSpeed is set to true, the decoder will try to
-         * decode the reconstructed image to a higher quality even at the
-         * expense of the decoding speed. Currently the field only affects JPEG
-         * decode, in the case of which a more accurate, but slightly slower,
-         * IDCT method will be used instead.
-         *
-         * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
-         */
-        @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-        fun preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): Builder =
-            apply {
-                @Suppress("DEPRECATION")
-                definedOptionsBuilder.preferQualityOverSpeed(inPreferQualityOverSpeed)
-            }
 
         /**
          * Set how to resize image
@@ -749,38 +651,10 @@ interface ImageRequest {
         }
 
         /**
-         * Set Drawable placeholder image when loading
-         */
-        fun placeholder(drawable: Drawable): Builder = apply {
-            definedOptionsBuilder.placeholder(drawable)
-        }
-
-        /**
-         * Set Drawable res placeholder image when loading
-         */
-        fun placeholder(@DrawableRes drawableResId: Int): Builder = apply {
-            definedOptionsBuilder.placeholder(drawableResId)
-        }
-
-        /**
          * Set placeholder image when uri is empty
          */
         fun uriEmpty(stateImage: StateImage?): Builder = apply {
             definedOptionsBuilder.uriEmpty(stateImage)
-        }
-
-        /**
-         * Set Drawable placeholder image when uri is empty
-         */
-        fun uriEmpty(drawable: Drawable): Builder = apply {
-            definedOptionsBuilder.uriEmpty(drawable)
-        }
-
-        /**
-         * Set Drawable res placeholder image when uri is empty
-         */
-        fun uriEmpty(@DrawableRes drawableResId: Int): Builder = apply {
-            definedOptionsBuilder.uriEmpty(drawableResId)
         }
 
         /**
@@ -793,28 +667,6 @@ interface ImageRequest {
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
             definedOptionsBuilder.error(defaultStateImage, configBlock)
-        }
-
-        /**
-         * Set Drawable image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
-         */
-        fun error(
-            defaultDrawable: Drawable, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = apply {
-            definedOptionsBuilder.error(defaultDrawable, configBlock)
-        }
-
-        /**
-         * Set Drawable res image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
-         */
-        fun error(
-            defaultDrawableResId: Int, configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = apply {
-            definedOptionsBuilder.error(defaultDrawableResId, configBlock)
         }
 
         /**
@@ -836,23 +688,7 @@ interface ImageRequest {
         }
 
         /**
-         * Sets the transition that crossfade
-         */
-        fun crossfade(
-            durationMillis: Int = CrossfadeDrawable.DEFAULT_DURATION,
-            fadeStart: Boolean = true,
-            preferExactIntrinsicSize: Boolean = false,
-            alwaysUse: Boolean = false,
-        ): Builder = apply {
-            definedOptionsBuilder.crossfade(
-                durationMillis,
-                fadeStart,
-                preferExactIntrinsicSize,
-                alwaysUse
-            )
-        }
-
-        /**
+         * TODO
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
          */
         fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
@@ -860,10 +696,10 @@ interface ImageRequest {
         }
 
         /**
-         * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+         * Set wrap the final [Drawable] or [Painter] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
          */
-        fun resizeApplyToDrawable(resizeApplyToDrawable: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.resizeApplyToDrawable(resizeApplyToDrawable)
+        fun sizeApplyToDraw(sizeApplyToDraw: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.sizeApplyToDraw(sizeApplyToDraw)
         }
 
         /**
@@ -904,25 +740,19 @@ interface ImageRequest {
         }
 
 
-        @Suppress("DEPRECATION")
-        @SuppressLint("NewApi")
         fun build(): ImageRequest {
             val listener = combinationListener()
             val progressListener = combinationProgressListener()
             val lifecycleResolver =
                 lifecycleResolver ?: DefaultLifecycleResolver(resolveLifecycleResolver())
-            val definedOptions = definedOptionsBuilder.merge(viewTargetOptions).build()
+            val targetOptions = target?.getImageOptions()
+            val definedOptions = definedOptionsBuilder.merge(targetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
             val depth = finalOptions.depth ?: Depth.NETWORK
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
-            val bitmapConfig = finalOptions.bitmapConfig
-            val colorSpace = ifOrNull(VERSION.SDK_INT >= VERSION_CODES.O) {
-                finalOptions.colorSpace
-            }
-            val preferQualityOverSpeed = finalOptions.preferQualityOverSpeed ?: false
             val resizeSizeResolver = finalOptions.resizeSizeResolver
                 ?: resolveResizeSizeResolver()
             val resizePrecisionDecider = finalOptions.resizePrecisionDecider
@@ -937,7 +767,7 @@ interface ImageRequest {
             val error = finalOptions.error
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
-            val resizeApplyToDrawable = finalOptions.resizeApplyToDrawable ?: false
+            val sizeApplyToDraw = finalOptions.sizeApplyToDraw ?: false
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
@@ -955,9 +785,6 @@ interface ImageRequest {
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
-                bitmapConfig = bitmapConfig,
-                colorSpace = colorSpace,
-                preferQualityOverSpeed = preferQualityOverSpeed,
                 resizeSizeResolver = resizeSizeResolver,
                 resizePrecisionDecider = resizePrecisionDecider,
                 resizeScaleDecider = resizeScaleDecider,
@@ -969,59 +796,28 @@ interface ImageRequest {
                 error = error,
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,
-                resizeApplyToDrawable = resizeApplyToDrawable,
+                sizeApplyToDraw = sizeApplyToDraw,
                 memoryCachePolicy = memoryCachePolicy,
                 componentRegistry = componentRegistry,
             )
         }
 
-        private fun resolveResizeSizeResolver(): SizeResolver {
-            val target = target
-            return if (target is ViewTarget<*>) {
-                target.view?.let { ViewSizeResolver(it) } ?: DisplaySizeResolver(context)
-            } else {
-                DisplaySizeResolver(context)
-            }
-        }
+        private fun resolveResizeSizeResolver(): SizeResolver =
+            target?.getSizeResolver() ?: defaultSizeResolver(context)
 
-        private fun resolveLifecycleResolver(): LifecycleResolver {
-            val view = target.asOrNull<ViewTarget<*>>()?.view
-            if (view != null) {
-                return ViewLifecycleResolver(view)
-            }
-            val lifecycleFromContext = context.findLifecycle()
-            if (lifecycleFromContext != null) {
-                return FixedLifecycleResolver(lifecycleFromContext)
-            }
-            return FixedLifecycleResolver(GlobalLifecycle)
-        }
+        private fun resolveLifecycleResolver(): LifecycleResolver =
+            target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalTargetLifecycle)
 
         private fun resolveResizeScale(): Scale =
-            target.asOrNull<ViewTarget<*>>()
-                ?.view?.asOrNull<ImageView>()
-                ?.scaleType?.let {
-                    when (it) {
-                        ScaleType.FIT_START -> Scale.START_CROP
-                        ScaleType.FIT_CENTER -> Scale.CENTER_CROP
-                        ScaleType.FIT_END -> Scale.END_CROP
-                        ScaleType.CENTER_INSIDE -> Scale.CENTER_CROP
-                        ScaleType.CENTER -> Scale.CENTER_CROP
-                        ScaleType.CENTER_CROP -> Scale.CENTER_CROP
-                        else -> Scale.FILL
-                    }
-                } ?: Scale.CENTER_CROP
+            target?.getScale() ?: Scale.CENTER_CROP
 
         private fun combinationListener(): Listener? {
-            val target = target
             val listener = listener
             val listeners = listeners?.takeIf { it.isNotEmpty() }?.toList()
-            val providerListener = providerListener
-                ?: target.asOrNull<ViewTarget<*>>()
-                    ?.view?.asOrNull<ListenerProvider>()
-                    ?.getListener()
-            return if (listeners != null || providerListener != null) {
+            val targetListener = targetListener ?: target?.getListener()
+            return if (listeners != null || targetListener != null) {
                 CombinedListener(
-                    fromProviderListener = providerListener,
+                    fromTargetListener = targetListener,
                     fromBuilderListener = listener,
                     fromBuilderListeners = listeners
                 )
@@ -1034,13 +830,10 @@ interface ImageRequest {
             val target = target
             val progressListener = progressListener
             val progressListeners = progressListeners?.takeIf { it.isNotEmpty() }?.toList()
-            val providerProgressListener = providerProgressListener
-                ?: target.asOrNull<ViewTarget<*>>()
-                    ?.view?.asOrNull<ListenerProvider>()
-                    ?.getProgressListener()
-            return if (progressListeners != null || providerProgressListener != null) {
+            val targetProgressListener = targetProgressListener ?: target?.getProgressListener()
+            return if (progressListeners != null || targetProgressListener != null) {
                 CombinedProgressListener(
-                    fromProviderProgressListener = providerProgressListener,
+                    fromTargetProgressListener = targetProgressListener,
                     fromBuilderProgressListener = progressListener,
                     fromBuilderProgressListeners = progressListeners
                 )
@@ -1051,7 +844,7 @@ interface ImageRequest {
     }
 
     data class ImageRequestImpl internal constructor(
-        override val context: Context,
+        override val context: PlatformContext,
         override val uriString: String,
         override val listener: Listener?,
         override val progressListener: ProgressListener?,
@@ -1063,11 +856,6 @@ interface ImageRequest {
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy,
-        override val bitmapConfig: BitmapConfig?,
-        override val colorSpace: ColorSpace?,
-        @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
-        @Suppress("OverridingDeprecatedMember")
-        override val preferQualityOverSpeed: Boolean,
         override val resizeSizeResolver: SizeResolver,
         override val resizePrecisionDecider: PrecisionDecider,
         override val resizeScaleDecider: ScaleDecider,
@@ -1080,7 +868,7 @@ interface ImageRequest {
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean,
-        override val resizeApplyToDrawable: Boolean,
+        override val sizeApplyToDraw: Boolean,
         override val memoryCachePolicy: CachePolicy,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageRequest {

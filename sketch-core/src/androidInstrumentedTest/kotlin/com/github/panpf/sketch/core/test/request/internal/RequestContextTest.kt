@@ -20,7 +20,6 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -120,7 +119,7 @@ class RequestContextTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val countDrawable = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = CountBitmap(
+            countingBitmapImage = CountBitmap(
                 originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
@@ -128,7 +127,7 @@ class RequestContextTest {
         )
         val countDrawable1 = SketchCountBitmapDrawable(
             resources = context.resources,
-            countBitmap = CountBitmap(
+            countingBitmapImage = CountBitmap(
                 originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
                 bitmapPool = sketch.bitmapPool,
                 disallowReuseBitmap = false,
@@ -147,24 +146,24 @@ class RequestContextTest {
             runBlocking(Dispatchers.Main) {
                 completeCountDrawable("test")
 
-                Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable.countingBitmapImage.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
 
                 pendingCountDrawable(countDrawable, "test")
-                Assert.assertEquals(1, countDrawable.countBitmap.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
+                Assert.assertEquals(1, countDrawable.countingBitmapImage.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
 
                 pendingCountDrawable(countDrawable1, "test")
-                Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
-                Assert.assertEquals(1, countDrawable1.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable.countingBitmapImage.getPendingCount())
+                Assert.assertEquals(1, countDrawable1.countingBitmapImage.getPendingCount())
 
                 pendingCountDrawable(countDrawable, "test")
-                Assert.assertEquals(1, countDrawable.countBitmap.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
+                Assert.assertEquals(1, countDrawable.countingBitmapImage.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
 
                 completeCountDrawable("test")
-                Assert.assertEquals(0, countDrawable.countBitmap.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countBitmap.getPendingCount())
+                Assert.assertEquals(0, countDrawable.countingBitmapImage.getPendingCount())
+                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
             }
         }
     }

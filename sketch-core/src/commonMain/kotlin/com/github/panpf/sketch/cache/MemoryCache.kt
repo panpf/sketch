@@ -15,7 +15,13 @@
  */
 package com.github.panpf.sketch.cache
 
+import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.defaultMemoryCacheSizePercent
+import com.github.panpf.sketch.util.totalAvailableMemoryBytes
+import kotlin.math.roundToLong
 
 /**
  * Memory cache for bitmap
@@ -56,11 +62,9 @@ interface MemoryCache {
     fun exist(key: String): Boolean
 
     /**
-     * Trim memory based on the [level]
-     *
-     * @param level see [SystemCallbacks]
+     * Trim memory based [targetSize]
      */
-    fun trim(level: Int)
+    fun trim(targetSize: Long)
 
     /**
      * Get all cached keys
@@ -74,6 +78,8 @@ interface MemoryCache {
 
     interface Value {
 
+        val image: Image
+
         val size: Int
 
         val extras: Map<String, Any?>
@@ -81,5 +87,53 @@ interface MemoryCache {
         fun setIsCached(cached: Boolean)
 
         fun checkValid(): Boolean
+    }
+
+    data class Options(val maxSize: Long)
+
+    interface Factory {
+        fun create(context: PlatformContext): MemoryCache
+    }
+
+    class FixedFactory(val memoryCache: MemoryCache) : Factory {
+        override fun create(context: PlatformContext): MemoryCache {
+            return memoryCache
+        }
+    }
+
+    class OptionsFactory(val options: Options) : Factory {
+        override fun create(context: PlatformContext): MemoryCache {
+            return LruMemoryCache(maxSize = options.maxSize)
+        }
+    }
+
+    class LazyFactory(
+        val initializer: (PlatformContext) -> MemoryCache
+    ) : Factory {
+        override fun create(context: PlatformContext): MemoryCache {
+            return initializer(context)
+        }
+    }
+
+    class LazyOptionsFactory(
+        val initializer: LazyOptions
+    ) : Factory {
+        override fun create(context: PlatformContext): MemoryCache {
+            val options = initializer.get(context)
+            return LruMemoryCache(maxSize = options.maxSize)
+        }
+    }
+
+    fun interface LazyOptions{
+        fun get(context: PlatformContext): Options
+    }
+
+    class DefaultFactory : Factory {
+        override fun create(context: PlatformContext): MemoryCache {
+            val defaultMemoryCacheBytes =
+                context.totalAvailableMemoryBytes() * context.defaultMemoryCacheSizePercent()
+//            return LruMemoryCache((defaultMemoryCacheBytes * 0.66f).roundToLong())
+            return LruMemoryCache((defaultMemoryCacheBytes * 1f).roundToLong())
+        }
     }
 }

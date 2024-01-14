@@ -7,6 +7,13 @@ import com.github.panpf.sketch.request.OneShotDisposable
 import kotlinx.coroutines.Deferred
 
 
+internal actual fun platformComponents(): ComponentRegistry {
+    return ComponentRegistry.Builder().apply {
+        // TODO add desktop components
+        // TODO ResultCache
+    }.build()
+}
+
 internal actual fun getDisposable(
     request: ImageRequest,
     job: Deferred<ImageResult>,

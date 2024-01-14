@@ -69,7 +69,7 @@ class SketchUtilsTest {
         val resources = context.resources
         val countDrawable = SketchCountBitmapDrawable(
             resources = resources,
-            countBitmap = countBitmap,
+            countingBitmapImage = countBitmap,
         )
         val colorDrawable = ColorDrawable(Color.BLUE)
         val colorDrawable2 = ColorDrawable(Color.GREEN)

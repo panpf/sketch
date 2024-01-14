@@ -18,16 +18,16 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.resize.sizeApplyToDraw
 import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.target.awaitStarted
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
-import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
@@ -93,8 +93,8 @@ class RequestExecutor {
                 return doError(requestContext, throwable)
             }
         } finally {
-            requestContext.completeCountDrawable("RequestCompleted")
             requestDelegate.finish()
+            requestContext.completed()
         }
     }
 
@@ -114,7 +114,7 @@ class RequestExecutor {
     ): ImageResult.Success {
         val lastRequest = requestContext.request
         val successImage =
-            imageData.image.resizeApplyToDrawable(lastRequest, requestContext.resizeSize)
+            imageData.image.sizeApplyToDraw(lastRequest, requestContext.resizeSize)
         val successResult = ImageResult.Success(
             request = lastRequest,
             image = successImage,
@@ -147,7 +147,7 @@ class RequestExecutor {
             sketch = sketch,
             request = lastRequest,
             throwable = throwable
-        )?.resizeApplyToDrawable(lastRequest, requestContext.resizeSize)
+        )?.sizeApplyToDraw(lastRequest, requestContext.resizeSize)
         val errorResult: ImageResult.Error = ImageResult.Error(
             request = lastRequest,
             image = errorImage,

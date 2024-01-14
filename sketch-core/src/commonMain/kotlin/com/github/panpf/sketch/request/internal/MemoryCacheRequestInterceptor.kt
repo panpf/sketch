@@ -16,15 +16,13 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
+import com.github.panpf.sketch.CountingImage
+import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
@@ -45,12 +43,15 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val targetSupportDisplayCount =
             request.target.asOrNull<Target>()?.supportDisplayCount == true
 
-        if (memoryCachePolicy.readEnabled && targetSupportDisplayCount) {
+        if (memoryCachePolicy.readEnabled && targetSupportDisplayCount) {    // TODO check targetSupportDisplayCount
             val imageDataFromCache = readFromMemoryCache(requestContext)
             if (imageDataFromCache != null) {
                 val image = imageDataFromCache.image
-                if (image is DrawableImage && image.drawable is SketchCountBitmapDrawable) {
-                    requestContext.pendingCountDrawable(image.drawable, "loadBefore")
+                if (image is CountingImage) {
+                    image.setIsPending(true, "loadBefore")
+                    requestContext.registerCompletedListener {
+                        image.setIsPending(false, "RequestCompleted")
+                    }
                 }
                 return Result.success(imageDataFromCache)
             } else if (request.depth >= Depth.MEMORY) {
@@ -58,20 +59,22 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             }
         }
 
-        val result = chain.proceed(request)
-
+        val result = chain.proceed(request).convertToCountingImage(requestContext)
         val imageData = result.getOrNull()
         if (imageData != null
             && memoryCachePolicy.writeEnabled
-            && targetSupportDisplayCount
+            && targetSupportDisplayCount    // TODO check targetSupportDisplayCount
         ) {
             val saveSuccess = saveToMemoryCache(requestContext, imageData)
             if (saveSuccess && memoryCachePolicy.readEnabled) {
                 val imageDataFromCache = readFromMemoryCache(requestContext)
                 if (imageDataFromCache != null) {
                     val image = imageDataFromCache.image
-                    if (image is DrawableImage && image.drawable is SketchCountBitmapDrawable) {
-                        requestContext.pendingCountDrawable(image.drawable, "newDecode")
+                    if (image is CountingImage) {
+                        image.setIsPending(true, "newDecode")
+                        requestContext.registerCompletedListener {
+                            image.setIsPending(false, "RequestCompleted")
+                        }
                     }
                     return Result.success(imageDataFromCache.copy(dataFrom = imageData.dataFrom))
                 }
@@ -81,14 +84,20 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         return result
     }
 
+    private fun Result<ImageData>.convertToCountingImage(
+        requestContext: RequestContext
+    ): Result<ImageData> {
+        val imageData = getOrNull() ?: return this
+        val image = imageData.image.toCountingImage(requestContext) ?: return this
+        return Result.success(imageData.copy(image = image))
+    }
+
     @MainThread
     private fun readFromMemoryCache(requestContext: RequestContext): ImageData? {
-        val request = requestContext.request
         val memoryCache = requestContext.sketch.memoryCache
         val cachedValue = memoryCache[requestContext.memoryCacheKey] ?: return null
-        val cacheImage = cachedValue.asSketchImage(request.context.resources)
         return ImageData(
-            image = cacheImage,
+            image = cachedValue.image,
             imageInfo = cachedValue.getImageInfo()!!,
             transformedList = cachedValue.getTransformedList(),
             extras = cachedValue.getExtras(),
@@ -99,7 +108,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     @MainThread
     private fun saveToMemoryCache(requestContext: RequestContext, imageData: ImageData): Boolean {
         val newCacheValue = imageData.image.cacheValue(
-            requestContext, newCacheValueExtras(
+            requestContext = requestContext,
+            extras = newCacheValueExtras(
                 imageInfo = imageData.imageInfo,
                 transformedList = imageData.transformedList,
                 extras = imageData.extras,
@@ -110,7 +120,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         if (!saveSuccess) {
             requestContext.sketch.logger.w(
                 "MemoryCacheRequestInterceptor",
-                "Memory cache save failed. ${imageData.image}. . ${requestContext.request.key}"
+                "Memory cache save failed. ${imageData.image}. ${requestContext.request.key}"
             )
         }
         return saveSuccess

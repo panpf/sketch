@@ -15,10 +15,6 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import android.net.Uri
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -30,9 +26,9 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendParameters()
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
-    .appendBitmapConfig()
-    .appendColorSpace()
-    .appendPreferQualityOverSpeed()
+//    .appendBitmapConfig()
+//    .appendColorSpace()
+//    .appendPreferQualityOverSpeed()
     .appendSize()
     .appendPrecision()
     .appendScale()
@@ -50,9 +46,9 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
 
 internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
     .appendCacheParameters()
-    .appendBitmapConfig()
-    .appendColorSpace()
-    .appendPreferQualityOverSpeed()
+//    .appendBitmapConfig()
+//    .appendColorSpace()
+//    .appendPreferQualityOverSpeed()
     .appendSize(size)
     .appendPrecision()
     .appendScale()
@@ -66,73 +62,86 @@ internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuild
 
 private class ImageRequestKeyBuilder(private val request: ImageRequest) {
 
-    private val uri = request.uriString.toUri().buildUpon()
+    private val keyBuilder = StringBuilder(request.uriString)
+
+    private fun appendQueryParameter(name: String, value: String) {
+        val askIndex = request.uriString.indexOf("?")
+        if (askIndex != -1) {
+            if (askIndex != keyBuilder.length - 1) {
+                keyBuilder.append("&")
+            }
+            keyBuilder.append("$name=$value")
+        } else {
+            keyBuilder.append("?")
+            keyBuilder.append("$name=$value")
+        }
+    }
 
     fun appendDepth(): ImageRequestKeyBuilder = apply {
         request.depth.takeIf { it != NETWORK }?.also { depth ->
-            uri.appendQueryParameter("_depth", depth.name)
+            appendQueryParameter("_depth", depth.name)
         }
     }
 
     fun appendParameters(): ImageRequestKeyBuilder = apply {
         request.parameters?.key?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
-            uri.appendQueryParameter("_parameters", parameterKey)
+            appendQueryParameter("_parameters", parameterKey)
         }
     }
 
     fun appendCacheParameters(): ImageRequestKeyBuilder = apply {
         request.parameters?.cacheKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
-            uri.appendQueryParameter("_parameters", parameterKey)
+            appendQueryParameter("_parameters", parameterKey)
         }
     }
 
     fun appendHttpHeaders(): ImageRequestKeyBuilder = apply {
         request.httpHeaders?.takeIf { !it.isEmpty() }?.also {
-            uri.appendQueryParameter("_httpHeaders", it.toString())
+            appendQueryParameter("_httpHeaders", it.toString())
         }
     }
 
     fun appendDownloadCachePolicy(): ImageRequestKeyBuilder = apply {
         request.downloadCachePolicy.takeIf { it != ENABLED }?.also { cachePolicy ->
-            uri.appendQueryParameter("_downloadCachePolicy", cachePolicy.name)
+            appendQueryParameter("_downloadCachePolicy", cachePolicy.name)
         }
     }
 
-    fun appendBitmapConfig(): ImageRequestKeyBuilder = apply {
-        request.bitmapConfig?.also { bitmapConfig ->
-            uri.appendQueryParameter("_bitmapConfig", bitmapConfig.key)
-        }
-    }
-
-    fun appendColorSpace(): ImageRequestKeyBuilder = apply {
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            request.colorSpace?.also { colorSpace ->
-                uri.appendQueryParameter("_colorSpace", colorSpace.name.replace(" ", "_"))
-            }
-        }
-    }
-
-    fun appendPreferQualityOverSpeed(): ImageRequestKeyBuilder = apply {
-        @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && request.preferQualityOverSpeed) {
-            uri.appendQueryParameter("_preferQualityOverSpeed", true.toString())
-        }
-    }
+//    fun appendBitmapConfig(): ImageRequestKeyBuilder = apply {
+//        request.bitmapConfig?.also { bitmapConfig ->
+//            appendQueryParameter("_bitmapConfig", bitmapConfig.key)
+//        }
+//    }
+//
+//    fun appendColorSpace(): ImageRequestKeyBuilder = apply {
+//        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+//            request.colorSpace?.also { colorSpace ->
+//                appendQueryParameter("_colorSpace", colorSpace.name.replace(" ", "_"))
+//            }
+//        }
+//    }
+//
+//    fun appendPreferQualityOverSpeed(): ImageRequestKeyBuilder = apply {
+//        @Suppress("DEPRECATION")
+//        if (VERSION.SDK_INT <= VERSION_CODES.M && request.preferQualityOverSpeed) {
+//            appendQueryParameter("_preferQualityOverSpeed", true.toString())
+//        }
+//    }
 
     fun appendSize(size: Size? = null): ImageRequestKeyBuilder = apply {
         if (size != null) {
-            uri.appendQueryParameter("_size", size.toString())
+            appendQueryParameter("_size", size.toString())
         } else {
-            uri.appendQueryParameter("_size", request.resizeSizeResolver.key)
+            appendQueryParameter("_size", request.resizeSizeResolver.key)
         }
     }
 
     fun appendPrecision(): ImageRequestKeyBuilder = apply {
-        uri.appendQueryParameter("_precision", request.resizePrecisionDecider.key)
+        appendQueryParameter("_precision", request.resizePrecisionDecider.key)
     }
 
     fun appendScale(): ImageRequestKeyBuilder = apply {
-        uri.appendQueryParameter("_scale", request.resizeScaleDecider.key)
+        appendQueryParameter("_scale", request.resizeScaleDecider.key)
     }
 
     fun appendTransformations(): ImageRequestKeyBuilder = apply {
@@ -141,25 +150,25 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
                 .joinToString(prefix = "[", postfix = "]", separator = ",") {
                     it.key.replace("Transformation", "")
                 }
-            uri.appendQueryParameter("_transformations", transformationKeys)
+            appendQueryParameter("_transformations", transformationKeys)
         }
     }
 
     fun appendDisallowReuseBitmap(): ImageRequestKeyBuilder = apply {
         if (request.disallowReuseBitmap) {
-            uri.appendQueryParameter("_disallowReuseBitmap", true.toString())
+            appendQueryParameter("_disallowReuseBitmap", true.toString())
         }
     }
 
     fun appendIgnoreExifOrientation(): ImageRequestKeyBuilder = apply {
         if (request.ignoreExifOrientation) {
-            uri.appendQueryParameter("_ignoreExifOrientation", true.toString())
+            appendQueryParameter("_ignoreExifOrientation", true.toString())
         }
     }
 
     fun appendResultCachePolicy(): ImageRequestKeyBuilder = apply {
         request.resultCachePolicy.takeIf { it != ENABLED }?.also { cachePolicy ->
-            uri.appendQueryParameter("_resultCachePolicy", cachePolicy.name)
+            appendQueryParameter("_resultCachePolicy", cachePolicy.name)
         }
     }
 
@@ -169,7 +178,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
             .takeIf { it.isNotEmpty() }
             ?.also { list ->
                 val decoderKeys = list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                uri.appendQueryParameter("_decoders", decoderKeys)
+                appendQueryParameter("_decoders", decoderKeys)
             }
     }
 
@@ -180,25 +189,25 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
             ?.also { list ->
                 val decodeInterceptorKeys =
                     list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                uri.appendQueryParameter("_decodeInterceptors", decodeInterceptorKeys)
+                appendQueryParameter("_decodeInterceptors", decodeInterceptorKeys)
             }
     }
 
     fun appendDisallowAnimatedImage(): ImageRequestKeyBuilder = apply {
         if (request.disallowAnimatedImage) {
-            uri.appendQueryParameter("_disallowAnimatedImage", true.toString())
+            appendQueryParameter("_disallowAnimatedImage", true.toString())
         }
     }
 
     fun appendResizeApplyToDrawable(): ImageRequestKeyBuilder = apply {
-        if (request.resizeApplyToDrawable) {
-            uri.appendQueryParameter("_resizeApplyToDrawable", true.toString())
+        if (request.sizeApplyToDraw) {
+            appendQueryParameter("_resizeApplyToDrawable", true.toString())
         }
     }
 
     fun appendMemoryCachePolicy(): ImageRequestKeyBuilder = apply {
         request.memoryCachePolicy.takeIf { it != ENABLED }?.also { cachePolicy ->
-            uri.appendQueryParameter("_memoryCachePolicy", cachePolicy.name)
+            appendQueryParameter("_memoryCachePolicy", cachePolicy.name)
         }
     }
 
@@ -209,9 +218,9 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
             ?.also { list ->
                 val requestInterceptorKeys =
                     list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                uri.appendQueryParameter("_requestInterceptors", requestInterceptorKeys)
+                appendQueryParameter("_requestInterceptors", requestInterceptorKeys)
             }
     }
 
-    fun build(): String = uri.build().toString().let { Uri.decode(it) }
+    fun build(): String = keyBuilder.toString()
 }

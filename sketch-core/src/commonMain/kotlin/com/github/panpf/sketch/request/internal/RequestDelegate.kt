@@ -16,15 +16,9 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import androidx.core.view.ViewCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.util.removeAndAddObserver
+import com.github.panpf.sketch.target.TargetLifecycle
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 
@@ -37,19 +31,12 @@ internal fun requestDelegate(
     initialRequest: ImageRequest,
     job: Job
 ): RequestDelegate {
-    return when (val target = initialRequest.target) {
-        is ViewTarget<*> -> ViewTargetRequestDelegate(
-            sketch = sketch,
-            initialRequest = initialRequest,
-            target = target,
-            job = job
-        )
-
-        else -> BaseRequestDelegate(job)
-    }
+    val targetRequestDelegate =
+        initialRequest.target?.getRequestDelegate(sketch, initialRequest, job)
+    return targetRequestDelegate ?: BaseRequestDelegate(job)
 }
 
-sealed interface RequestDelegate : LifecycleEventObserver {
+interface RequestDelegate {
 
     /** Throw a [CancellationException] if this request should be cancelled before starting. */
     @MainThread
@@ -57,7 +44,7 @@ sealed interface RequestDelegate : LifecycleEventObserver {
 
     /** Register all lifecycle observers. */
     @MainThread
-    fun start(lifecycle: Lifecycle)
+    fun start(lifecycle: TargetLifecycle)
 
     /** Called when this request's job is cancelled or completes successfully/unsuccessfully. */
     @MainThread
@@ -69,17 +56,17 @@ sealed interface RequestDelegate : LifecycleEventObserver {
 }
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
-internal class BaseRequestDelegate(
+class BaseRequestDelegate(
     private val job: Job
-) : RequestDelegate {
+) : RequestDelegate, TargetLifecycle.EventObserver {
 
-    private var lifecycle: Lifecycle? = null
+    private var lifecycle: TargetLifecycle? = null
 
     override fun assertActive() {
         // Do nothing
     }
 
-    override fun start(lifecycle: Lifecycle) {
+    override fun start(lifecycle: TargetLifecycle) {
         this.lifecycle = lifecycle
         lifecycle.addObserver(this)
     }
@@ -92,64 +79,9 @@ internal class BaseRequestDelegate(
         job.cancel()
     }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_DESTROY) {
+    override fun onStateChanged(source: TargetLifecycle, event: TargetLifecycle.Event) {
+        if (event == TargetLifecycle.Event.ON_DESTROY) {
             dispose()
         }
-    }
-}
-
-/** A request delegate for restartable requests with a [ViewTarget]. */
-class ViewTargetRequestDelegate(
-    internal val sketch: Sketch,
-    internal val initialRequest: ImageRequest,
-    private val target: ViewTarget<*>,
-    private val job: Job
-) : RequestDelegate {
-
-    private var lifecycle: Lifecycle? = null
-
-    override fun assertActive() {
-        val view = target.view
-            ?: throw CancellationException("'ViewTarget.view' is cleared.")
-        if (!ViewCompat.isAttachedToWindow(view)) {
-            view.requestManager.setRequest(this)
-            throw CancellationException("'ViewTarget.view' must be attached to a window.")
-        }
-    }
-
-    override fun start(lifecycle: Lifecycle) {
-        val view = target.view ?: return
-        view.requestManager.setRequest(this)
-
-        this.lifecycle = lifecycle
-        lifecycle.addObserver(this)
-        if (target is LifecycleObserver) {
-            lifecycle.removeAndAddObserver(target)
-        }
-    }
-
-    override fun finish() {
-        // Do nothing
-    }
-
-    override fun dispose() {
-        job.cancel()
-        if (target is LifecycleObserver) {
-            lifecycle?.removeObserver(target)
-        }
-        lifecycle?.removeObserver(this)
-    }
-
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_DESTROY) {
-            target.view?.requestManager?.dispose()
-        }
-    }
-
-    /** Repeat this request with the same [ImageRequest]. */
-    @MainThread
-    fun restart() {
-        sketch.enqueue(initialRequest)
     }
 }
