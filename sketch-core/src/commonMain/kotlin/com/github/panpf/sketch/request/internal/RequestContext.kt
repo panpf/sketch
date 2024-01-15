@@ -38,19 +38,19 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
     @get:Synchronized
     val cacheKey: String
         get() = _cacheKey
-            ?: request.newCacheKey(resizeSize!!).apply {
+            ?: request.newCacheKey(size!!).apply {
                 _cacheKey = this
             }
 
-    var resizeSize: Size? = null
+    var size: Size? = null
 
     internal suspend fun setNewRequest(request: ImageRequest) {
         val lastRequest = this.request
         if (lastRequest != request) {
             _requestList.add(request)
             _request = request
-            if (lastRequest.resizeSizeResolver != request.resizeSizeResolver) {
-                resizeSize = request.resizeSizeResolver.size()
+            if (lastRequest.sizeResolver != request.sizeResolver) {
+                size = request.sizeResolver.size()
             }
             _cacheKey = null
         }

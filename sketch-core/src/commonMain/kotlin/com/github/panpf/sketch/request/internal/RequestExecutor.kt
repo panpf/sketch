@@ -60,8 +60,8 @@ class RequestExecutor {
             }
 
             // resolve resize size
-            val resizeSize = request.resizeSizeResolver.size()
-            requestContext.resizeSize = resizeSize
+            val size = request.sizeResolver.size()
+            requestContext.size = size
 
             onStart(requestContext)
 
@@ -114,7 +114,7 @@ class RequestExecutor {
     ): ImageResult.Success {
         val lastRequest = requestContext.request
         val successImage =
-            imageData.image.sizeApplyToDraw(lastRequest, requestContext.resizeSize)
+            imageData.image.sizeApplyToDraw(lastRequest, requestContext.size)
         val successResult = ImageResult.Success(
             request = lastRequest,
             image = successImage,
@@ -147,7 +147,7 @@ class RequestExecutor {
             sketch = sketch,
             request = lastRequest,
             throwable = throwable
-        )?.sizeApplyToDraw(lastRequest, requestContext.resizeSize)
+        )?.sizeApplyToDraw(lastRequest, requestContext.size)
         val errorResult: ImageResult.Error = ImageResult.Error(
             request = lastRequest,
             image = errorImage,

@@ -47,7 +47,6 @@ class TransitionTargetTest {
     class TestTransitionViewTarget(private val view: ImageView) : TransitionViewTarget {
         override val fitScale: Boolean
             get() = view.scaleType.fitScale
-        override val supportDisplayCount: Boolean = false
         override var drawable: Drawable
             get() = view.drawable
             set(value) {

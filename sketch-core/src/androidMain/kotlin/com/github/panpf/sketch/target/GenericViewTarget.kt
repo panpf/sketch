@@ -35,6 +35,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -55,7 +56,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
 
     private var isStarted = false
 
-    override val supportDisplayCount: Boolean = true
+    override fun supportDisplayCount(): Boolean = true
 
     init {
         if (canBindTarget(view)) {

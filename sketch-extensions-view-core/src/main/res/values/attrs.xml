@@ -98,8 +98,8 @@
         <attr name="sketch_ignoreExifOrientation" />
         <attr name="sketch_resizeWidth" />
         <attr name="sketch_resizeHeight" />
-        <attr name="sketch_resizePrecision" />
-        <attr name="sketch_resizeScale" />
+        <attr name="sketch_precision" />
+        <attr name="sketch_scale" />
         <attr name="sketch_resizeApplyToDrawable" />
         <attr name="sketch_transformation" />
         <attr name="sketch_transformation_rotate_degrees" />

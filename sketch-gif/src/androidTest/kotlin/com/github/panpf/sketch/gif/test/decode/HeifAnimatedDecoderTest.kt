@@ -189,7 +189,7 @@ class HeifAnimatedDecoderTest {
 
         val request1 = ImageRequest(context, AssetImages.animHeif.uri) {
             repeatCount(3)
-            resizeSize(100, 100)
+            size(100, 100)
         }
         val fetchResult1 = sketch.components.newFetcherOrThrow(request1)
             .let { runBlocking { it.fetch() }.getOrThrow() }

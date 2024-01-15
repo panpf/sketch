@@ -72,13 +72,11 @@ interface ViewTarget<T : View> : Target {
         return view?.asOrNull<ImageOptionsProvider>()?.displayImageOptions
     }
 
-    // TODO Migrate to ComposeTarget
     override fun getSizeResolver(): SizeResolver? {
         val view: View = view ?: return null
         return ViewSizeResolver(view)
     }
 
-    // TODO Migrate to ComposeTarget
     override fun getLifecycleResolver(): LifecycleResolver? {
         val view: View = view ?: return null
         return ViewLifecycleResolver(view)

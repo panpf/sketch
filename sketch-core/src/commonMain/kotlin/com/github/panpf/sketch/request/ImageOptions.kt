@@ -86,22 +86,19 @@ interface ImageOptions {
 
 
     /**
-     * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to resizeSize
+     * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to size
      */
-    // TODO rename
-    val resizeSizeResolver: SizeResolver?
+    val sizeResolver: SizeResolver?
 
     /**
-     * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
+     * Decide what Precision to use with [sizeResolver] to calculate the size of the final Bitmap
      */
-    // TODO rename
-    val resizePrecisionDecider: PrecisionDecider?
+    val precisionDecider: PrecisionDecider?
 
     /**
-     * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
+     * Which part of the original image to keep when [precisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
-    // TODO rename
-    val resizeScaleDecider: ScaleDecider?
+    val scaleDecider: ScaleDecider?
 
     /**
      * The list of [Transformation]s to be applied to this request
@@ -121,7 +118,7 @@ interface ImageOptions {
     val ignoreExifOrientation: Boolean?
 
     /**
-     * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
+     * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
      */
@@ -154,7 +151,7 @@ interface ImageOptions {
     val disallowAnimatedImage: Boolean?
 
     /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
+     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
      */
     val sizeApplyToDraw: Boolean?
 
@@ -214,9 +211,9 @@ interface ImageOptions {
                 && parameters?.isEmpty() != false
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
-                && resizeSizeResolver == null
-                && resizePrecisionDecider == null
-                && resizeScaleDecider == null
+                && sizeResolver == null
+                && precisionDecider == null
+                && scaleDecider == null
                 && transformations == null
                 && disallowReuseBitmap == null
                 && ignoreExifOrientation == null
@@ -238,9 +235,9 @@ interface ImageOptions {
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
 
-        private var resizeSizeResolver: SizeResolver? = null
-        private var resizePrecisionDecider: PrecisionDecider? = null
-        private var resizeScaleDecider: ScaleDecider? = null
+        private var sizeResolver: SizeResolver? = null
+        private var precisionDecider: PrecisionDecider? = null
+        private var scaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
         private var disallowReuseBitmap: Boolean? = null
         private var ignoreExifOrientation: Boolean? = null
@@ -265,9 +262,9 @@ interface ImageOptions {
             this.httpHeadersBuilder = request.httpHeaders?.newBuilder()
             this.downloadCachePolicy = request.downloadCachePolicy
 
-            this.resizeSizeResolver = request.resizeSizeResolver
-            this.resizePrecisionDecider = request.resizePrecisionDecider
-            this.resizeScaleDecider = request.resizeScaleDecider
+            this.sizeResolver = request.sizeResolver
+            this.precisionDecider = request.precisionDecider
+            this.scaleDecider = request.scaleDecider
             this.transformations = request.transformations?.toMutableList()
             this.disallowReuseBitmap = request.disallowReuseBitmap
             this.ignoreExifOrientation = request.ignoreExifOrientation
@@ -376,9 +373,9 @@ interface ImageOptions {
             precision: PrecisionDecider? = null,
             scale: ScaleDecider? = null
         ): Builder = apply {
-            this.resizeSizeResolver = size
-            this.resizePrecisionDecider = precision
-            this.resizeScaleDecider = scale
+            this.sizeResolver = size
+            this.precisionDecider = precision
+            this.scaleDecider = scale
         }
 
         /**
@@ -422,46 +419,45 @@ interface ImageOptions {
         /**
          * Set the [SizeResolver] to lazy resolve the requested size.
          */
-        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            this.resizeSizeResolver = sizeResolver
+        fun size(sizeResolver: SizeResolver?): Builder = apply {
+            this.sizeResolver = sizeResolver
         }
 
         /**
          * Set the resize size
          */
-        fun resizeSize(resizeSize: Size): Builder =
-            resizeSize(SizeResolver(resizeSize))
+        fun size(size: Size): Builder = size(SizeResolver(size))
 
         /**
          * Set the resize size
          */
-        fun resizeSize(@Px width: Int, @Px height: Int): Builder =
-            resizeSize(FixedSizeResolver(width, height))
+        fun size(@Px width: Int, @Px height: Int): Builder =
+            size(FixedSizeResolver(width, height))
 
         /**
          * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
-        fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
-            this.resizePrecisionDecider = precisionDecider
+        fun precision(precisionDecider: PrecisionDecider?): Builder = apply {
+            this.precisionDecider = precisionDecider
         }
 
         /**
          * Set the resize precision, default is [Precision.LESS_PIXELS]
          */
-        fun resizePrecision(precision: Precision): Builder =
-            resizePrecision(PrecisionDecider(precision))
+        fun precision(precision: Precision): Builder =
+            precision(PrecisionDecider(precision))
 
         /**
          * Set the resize scale, default is [Scale.CENTER_CROP]
          */
-        fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
-            this.resizeScaleDecider = scaleDecider
+        fun scale(scaleDecider: ScaleDecider?): Builder = apply {
+            this.scaleDecider = scaleDecider
         }
 
         /**
          * Set the resize scale, default is [Scale.CENTER_CROP]
          */
-        fun resizeScale(scale: Scale): Builder = resizeScale(ScaleDecider(scale))
+        fun scale(scale: Scale): Builder = scale(ScaleDecider(scale))
 
         /**
          * Set the list of [Transformation]s to be applied to this request.
@@ -525,7 +521,7 @@ interface ImageOptions {
         }
 
         /**
-         * Set disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
+         * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder =
             apply {
@@ -585,7 +581,7 @@ interface ImageOptions {
 
         /**
          * TODO
-         * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+         * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
          */
         fun sizeApplyToDraw(apply: Boolean? = true): Builder = apply {
             this.sizeApplyToDraw = apply
@@ -632,14 +628,14 @@ interface ImageOptions {
                 this.downloadCachePolicy = options.downloadCachePolicy
             }
 
-            if (this.resizeSizeResolver == null) {
-                this.resizeSizeResolver = options.resizeSizeResolver
+            if (this.sizeResolver == null) {
+                this.sizeResolver = options.sizeResolver
             }
-            if (this.resizePrecisionDecider == null) {
-                this.resizePrecisionDecider = options.resizePrecisionDecider
+            if (this.precisionDecider == null) {
+                this.precisionDecider = options.precisionDecider
             }
-            if (this.resizeScaleDecider == null) {
-                this.resizeScaleDecider = options.resizeScaleDecider
+            if (this.scaleDecider == null) {
+                this.scaleDecider = options.scaleDecider
             }
             options.transformations?.takeIf { it.isNotEmpty() }?.let {
                 addTransformations(it)
@@ -686,9 +682,9 @@ interface ImageOptions {
             httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() },
             downloadCachePolicy = downloadCachePolicy,
             resultCachePolicy = resultCachePolicy,
-            resizeSizeResolver = resizeSizeResolver,
-            resizePrecisionDecider = resizePrecisionDecider,
-            resizeScaleDecider = resizeScaleDecider,
+            sizeResolver = sizeResolver,
+            precisionDecider = precisionDecider,
+            scaleDecider = scaleDecider,
             transformations = transformations?.takeIf { it.isNotEmpty() },
             disallowReuseBitmap = disallowReuseBitmap,
             ignoreExifOrientation = ignoreExifOrientation,
@@ -710,9 +706,9 @@ interface ImageOptions {
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy?,
 
-        override val resizeSizeResolver: SizeResolver?,
-        override val resizePrecisionDecider: PrecisionDecider?,
-        override val resizeScaleDecider: ScaleDecider?,
+        override val sizeResolver: SizeResolver?,
+        override val precisionDecider: PrecisionDecider?,
+        override val scaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
         override val disallowReuseBitmap: Boolean?,
         override val ignoreExifOrientation: Boolean?,
@@ -735,9 +731,9 @@ interface ImageOptions {
             if (parameters != other.parameters) return false
             if (httpHeaders != other.httpHeaders) return false
             if (downloadCachePolicy != other.downloadCachePolicy) return false
-            if (resizeSizeResolver != other.resizeSizeResolver) return false
-            if (resizePrecisionDecider != other.resizePrecisionDecider) return false
-            if (resizeScaleDecider != other.resizeScaleDecider) return false
+            if (sizeResolver != other.sizeResolver) return false
+            if (precisionDecider != other.precisionDecider) return false
+            if (scaleDecider != other.scaleDecider) return false
             if (transformations != other.transformations) return false
             if (disallowReuseBitmap != other.disallowReuseBitmap) return false
             if (ignoreExifOrientation != other.ignoreExifOrientation) return false
@@ -758,9 +754,9 @@ interface ImageOptions {
             result = 31 * result + (parameters?.hashCode() ?: 0)
             result = 31 * result + (httpHeaders?.hashCode() ?: 0)
             result = 31 * result + (downloadCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (resizeSizeResolver?.hashCode() ?: 0)
-            result = 31 * result + (resizePrecisionDecider?.hashCode() ?: 0)
-            result = 31 * result + (resizeScaleDecider?.hashCode() ?: 0)
+            result = 31 * result + (sizeResolver?.hashCode() ?: 0)
+            result = 31 * result + (precisionDecider?.hashCode() ?: 0)
+            result = 31 * result + (scaleDecider?.hashCode() ?: 0)
             result = 31 * result + (transformations?.hashCode() ?: 0)
             result = 31 * result + (disallowReuseBitmap?.hashCode() ?: 0)
             result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
@@ -783,9 +779,9 @@ interface ImageOptions {
                 append("parameters=$parameters, ")
                 append("httpHeaders=$httpHeaders, ")
                 append("downloadCachePolicy=$downloadCachePolicy, ")
-                append("resizeSizeResolver=$resizeSizeResolver, ")
-                append("resizePrecisionDecider=$resizePrecisionDecider, ")
-                append("resizeScaleDecider=$resizeScaleDecider, ")
+                append("sizeResolver=$sizeResolver, ")
+                append("precisionDecider=$precisionDecider, ")
+                append("scaleDecider=$scaleDecider, ")
                 append("transformations=$transformations, ")
                 append("disallowReuseBitmap=$disallowReuseBitmap, ")
                 append("ignoreExifOrientation=$ignoreExifOrientation, ")

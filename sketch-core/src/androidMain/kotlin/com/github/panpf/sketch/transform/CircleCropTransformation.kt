@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.toAndroidRect
 import java.lang.Integer.min
@@ -39,7 +40,7 @@ import java.lang.Integer.min
  * If you're using Jetpack Compose, use `Modifier.clip(CircleShape)` instead of this transformation
  * as it's more efficient.
  *
- * @param scale Specify which part of the original image to keep. If null, use ImageRequest.resizeScaleDecider
+ * @param scale Specify which part of the original image to keep. If null, use ImageRequest.scaleDecider
  */
 class CircleCropTransformation constructor(val scale: Scale? = null) : Transformation {
 
@@ -54,11 +55,9 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
         val inputBitmap = input.getBitmapOrNull() ?: return null
         val newSize = min(inputBitmap.width, inputBitmap.height)
         val scale = scale
-            ?: requestContext.request.resizeScaleDecider.get(
-                imageWidth = inputBitmap.width,
-                imageHeight = inputBitmap.height,
-                resizeWidth = newSize,
-                resizeHeight = newSize
+            ?: requestContext.request.scaleDecider.get(
+                imageSize = Size(inputBitmap.width, inputBitmap.height),
+                targetSize = Size(newSize, newSize)
             )
         val resizeMapping = calculateResizeMapping(
             inputBitmap.width, inputBitmap.height, newSize, newSize, SAME_ASPECT_RATIO, scale

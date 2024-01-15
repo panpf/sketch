@@ -40,10 +40,12 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val request = chain.request
         val requestContext = chain.requestContext
         val memoryCachePolicy = request.memoryCachePolicy
-        val targetSupportDisplayCount =
-            request.target.asOrNull<Target>()?.supportDisplayCount == true
+//        val targetSupportDisplayCount =
+//            request.target.asOrNull<Target>()?.supportDisplayCount == true
 
-        if (memoryCachePolicy.readEnabled && targetSupportDisplayCount) {    // TODO check targetSupportDisplayCount
+        if (memoryCachePolicy.readEnabled
+//            && targetSupportDisplayCount    // TODO check targetSupportDisplayCount
+        ) {
             val imageDataFromCache = readFromMemoryCache(requestContext)
             if (imageDataFromCache != null) {
                 val image = imageDataFromCache.image
@@ -63,7 +65,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val imageData = result.getOrNull()
         if (imageData != null
             && memoryCachePolicy.writeEnabled
-            && targetSupportDisplayCount    // TODO check targetSupportDisplayCount
+//            && targetSupportDisplayCount    // TODO check targetSupportDisplayCount
         ) {
             val saveSuccess = saveToMemoryCache(requestContext, imageData)
             if (saveSuccess && memoryCachePolicy.readEnabled) {

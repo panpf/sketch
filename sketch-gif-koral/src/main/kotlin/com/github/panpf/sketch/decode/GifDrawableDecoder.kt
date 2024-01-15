@@ -20,7 +20,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
@@ -86,17 +85,15 @@ class GifDrawableDecoder(
         val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
         val imageWidth = gifInfoHandleHelper.width
         val imageHeight = gifInfoHandleHelper.height
-        val resizeSize = requestContext.resizeSize!!
+        val size = requestContext.size!!
         val imageSize = Size(imageWidth, imageHeight)
-        val precision = request.resizePrecisionDecider.get(
-            imageWidth = imageSize.width,
-            imageHeight = imageSize.height,
-            resizeWidth = resizeSize.width,
-            resizeHeight = resizeSize.height
+        val precision = request.precisionDecider.get(
+            imageSize = imageSize,
+            targetSize = size,
         )
         val inSampleSize = calculateSampleSize(
             imageSize = imageSize,
-            targetSize = resizeSize,
+            targetSize = size,
             smallerSizeMode = precision.isSmallerSizeMode(),
         )
         gifInfoHandleHelper.setOptions(GifOptions().apply {
@@ -126,7 +123,7 @@ class GifDrawableDecoder(
             imageWidth,
             imageHeight,
             ImageFormat.GIF.mimeType,
-            ExifInterface.ORIENTATION_UNDEFINED
+            ExifOrientation.ORIENTATION_UNDEFINED
         )
         val animatableDrawable =
             SketchAnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {

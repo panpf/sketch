@@ -6,7 +6,7 @@ import com.github.panpf.sketch.util.Size
 
 actual fun Image.sizeApplyToDraw(
     request: ImageRequest,
-    resizeSize: Size?,
+    size: Size?,
 ): Image {
     return this
 }

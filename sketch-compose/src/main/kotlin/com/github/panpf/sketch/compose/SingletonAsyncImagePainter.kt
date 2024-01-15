@@ -38,8 +38,8 @@ import com.github.panpf.sketch.sketch
  *   constraint. For example, to use [AsyncImagePainter] with [LazyRow] or [LazyColumn], you must
  *   set a bounded width or height respectively using `Modifier.width` or `Modifier.height`.
  * - [AsyncImageState.painterState] will not transition to [PainterState.Success] synchronously during the
- *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.resizeSize] value
- *   (e.g. `resizeSize(Size(100, 100))`) if you need this.
+ *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.size] value
+ *   (e.g. `size(Size(100, 100))`) if you need this.
  *
  * @param imageUri [ImageRequest.uriString] value.
  * @param state [AsyncImageState] that will be used to store the state of the request.
@@ -74,8 +74,8 @@ fun rememberAsyncImagePainter(
  *   constraint. For example, to use [AsyncImagePainter] with [LazyRow] or [LazyColumn], you must
  *   set a bounded width or height respectively using `Modifier.width` or `Modifier.height`.
  * - [AsyncImageState.painterState] will not transition to [PainterState.Success] synchronously during the
- *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.resizeSize] value
- *   (e.g. `resizeSize(Size(100, 100))`) if you need this.
+ *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.size] value
+ *   (e.g. `size(Size(100, 100))`) if you need this.
  *
  * @param request [ImageRequest].
  * @param state [AsyncImageState] that will be used to store the state of the request.

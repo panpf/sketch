@@ -20,7 +20,6 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -38,6 +37,8 @@ import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.ExifOrientation
+import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.util.Size
@@ -106,18 +107,16 @@ open class AnimatedImageDecoderDecoder(
                     info.size.width,
                     info.size.height,
                     info.mimeType,
-                    ExifInterface.ORIENTATION_UNDEFINED
+                    ExifOrientation.ORIENTATION_UNDEFINED
                 )
-                val resizeSize = requestContext.resizeSize!!
-                val precision = request.resizePrecisionDecider.get(
-                    imageWidth = info.size.width,
-                    imageHeight = info.size.height,
-                    resizeWidth = resizeSize.width,
-                    resizeHeight = resizeSize.height
+                val size = requestContext.size!!
+                val precision = request.precisionDecider.get(
+                    imageSize = Size(info.size.width, info.size.height),
+                    targetSize = size,
                 )
                 inSampleSize = calculateSampleSize(
                     imageSize = Size(info.size.width, info.size.height),
-                    targetSize = Size(resizeSize.width, resizeSize.height),
+                    targetSize = Size(size.width, size.height),
                     smallerSizeMode = precision.isSmallerSizeMode()
                 )
                 decoder.setTargetSampleSize(inSampleSize)

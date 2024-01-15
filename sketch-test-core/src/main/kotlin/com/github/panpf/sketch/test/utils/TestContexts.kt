@@ -18,6 +18,7 @@ package com.github.panpf.sketch.test.utils
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.test.utils.newTestDiskCacheDirectory
 import com.github.panpf.sketch.util.Logger
@@ -33,16 +34,8 @@ fun newSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
     return Sketch.Builder(context).apply {
         logger(Logger(VERBOSE))
         val directory = context.newTestDiskCacheDirectory()
-        downloadCache(
-            LruDiskCache.ForDownloadBuilder(context)
-                .directory(File(directory, "download"))
-                .build()
-        )
-        resultCache(
-            LruDiskCache.ForResultBuilder(context)
-                .directory(File(directory, "result"))
-                .build()
-        )
+        downloadCache(DiskCache.Options(directory = File(directory, "download")))
+        resultCache(DiskCache.Options(directory = File(directory, "result")))
         block.invoke(this, context)
     }.build()
 }

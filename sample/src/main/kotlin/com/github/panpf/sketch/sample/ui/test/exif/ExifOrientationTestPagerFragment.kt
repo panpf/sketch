@@ -20,7 +20,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
-import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.test.transform.ExifOrientationTestFragment
@@ -40,7 +40,7 @@ class ExifOrientationTestPagerFragment : BaseToolbarBindingFragment<FragmentTabP
         toolbar.title = "ExifOrientation"
 
         viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
-            val titles = list.map { exifOrientationName(it.exifOrientation) }
+            val titles = list.map { ExifOrientation.name(it.exifOrientation) }
             val fragments = list.map { ExifOrientationTestFragment.create(it.file) }
 
             binding.pager.adapter = ArrayFragmentStateAdapter(this, fragments)

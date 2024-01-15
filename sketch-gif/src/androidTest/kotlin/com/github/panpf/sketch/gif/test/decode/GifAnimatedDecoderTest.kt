@@ -178,7 +178,7 @@ class GifAnimatedDecoderTest {
 
         val request1 = ImageRequest(context, AssetImages.animGif.uri) {
             repeatCount(3)
-            resizeSize(300, 300)
+            size(300, 300)
         }
         val fetchResult1 = sketch.components.newFetcherOrThrow(request1)
             .let { runBlocking { it.fetch() }.getOrThrow() }

@@ -80,8 +80,11 @@ class ExifOrientationTestFileHelper(
         sourceBitmap: Bitmap,
         orientation: Int
     ) {
-        val newBitmap = ExifOrientationHelper(orientation)
-            .addToBitmap(sourceBitmap, sketch.bitmapPool, false) ?: sourceBitmap
+        val newBitmap = ExifOrientationHelper(orientation).addToBitmap(
+            inBitmap = sourceBitmap,
+//            sketch.bitmapPool,
+            disallowReuseBitmap = false
+        ) ?: sourceBitmap
         file.parentFile?.mkdirs()
         file.createNewFile()
         FileOutputStream(file).use {

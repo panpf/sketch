@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.Key
+import com.github.panpf.sketch.util.Size
 
 fun PrecisionDecider(precision: Precision): PrecisionDecider {
     return FixedPrecisionDecider(precision)
@@ -26,7 +27,7 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
  */
 interface PrecisionDecider : Key {
 
-    fun get(imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int): Precision
+    fun get(imageSize: Size, targetSize: Size): Precision
 }
 
 
@@ -37,9 +38,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
 
     override val key: String by lazy { "Fixed($precision)" }
 
-    override fun get(
-        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
-    ): Precision {
+    override fun get(imageSize: Size, targetSize: Size): Precision {
         return precision
     }
 
@@ -62,11 +61,8 @@ class LongImageClipPrecisionDecider constructor(
 
     override val key: String by lazy { "LongImageClip($precision,$otherPrecision,${longImageDecider.key})" }
 
-    override fun get(
-        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
-    ): Precision {
-        val isLongImage = longImageDecider
-            .isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight)
+    override fun get(imageSize: Size, targetSize: Size): Precision {
+        val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
         return if (isLongImage) precision else otherPrecision
     }
 

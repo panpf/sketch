@@ -122,19 +122,19 @@ interface ImageRequest {
 
 
     /**
-     * Lazy calculation of resize size. If resizeSize is null at runtime, size is calculated and assigned to resizeSize
+     * Lazy calculation of resize size. If size is null at runtime, size is calculated and assigned to size
      */
-    val resizeSizeResolver: SizeResolver
+    val sizeResolver: SizeResolver
 
     /**
-     * Decide what Precision to use with [resizeSizeResolver] to calculate the size of the final Bitmap
+     * Decide what Precision to use with [sizeResolver] to calculate the size of the final Bitmap
      */
-    val resizePrecisionDecider: PrecisionDecider
+    val precisionDecider: PrecisionDecider
 
     /**
-     * Which part of the original image to keep when [resizePrecisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
+     * Which part of the original image to keep when [precisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
-    val resizeScaleDecider: ScaleDecider
+    val scaleDecider: ScaleDecider
 
     /**
      * The list of [Transformation]s to be applied to this request
@@ -154,7 +154,7 @@ interface ImageRequest {
     val ignoreExifOrientation: Boolean
 
     /**
-     * Disk caching policy for Bitmaps affected by [resizeSizeResolver] or [transformations]
+     * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
      */
@@ -187,7 +187,7 @@ interface ImageRequest {
     val disallowAnimatedImage: Boolean
 
     /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSizeResolver]
+     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
      */
     val sizeApplyToDraw: Boolean
 
@@ -533,50 +533,50 @@ interface ImageRequest {
         /**
          * Set the [SizeResolver] to lazy resolve the requested size.
          */
-        fun resizeSize(sizeResolver: SizeResolver?): Builder = apply {
-            definedOptionsBuilder.resizeSize(sizeResolver)
+        fun size(sizeResolver: SizeResolver?): Builder = apply {
+            definedOptionsBuilder.size(sizeResolver)
         }
 
         /**
          * Set the resize size
          */
-        fun resizeSize(size: Size): Builder = apply {
-            definedOptionsBuilder.resizeSize(size)
+        fun size(size: Size): Builder = apply {
+            definedOptionsBuilder.size(size)
         }
 
         /**
          * Set the resize size
          */
-        fun resizeSize(@Px width: Int, @Px height: Int): Builder = apply {
-            definedOptionsBuilder.resizeSize(width, height)
+        fun size(@Px width: Int, @Px height: Int): Builder = apply {
+            definedOptionsBuilder.size(width, height)
         }
 
         /**
          * Set the resize precision
          */
-        fun resizePrecision(precisionDecider: PrecisionDecider?): Builder = apply {
-            definedOptionsBuilder.resizePrecision(precisionDecider)
+        fun precision(precisionDecider: PrecisionDecider?): Builder = apply {
+            definedOptionsBuilder.precision(precisionDecider)
         }
 
         /**
          * Set the resize precision
          */
-        fun resizePrecision(precision: Precision): Builder = apply {
-            definedOptionsBuilder.resizePrecision(precision)
+        fun precision(precision: Precision): Builder = apply {
+            definedOptionsBuilder.precision(precision)
         }
 
         /**
          * Set the resize scale
          */
-        fun resizeScale(scaleDecider: ScaleDecider?): Builder = apply {
-            definedOptionsBuilder.resizeScale(scaleDecider)
+        fun scale(scaleDecider: ScaleDecider?): Builder = apply {
+            definedOptionsBuilder.scale(scaleDecider)
         }
 
         /**
          * Set the resize scale
          */
-        fun resizeScale(scale: Scale): Builder = apply {
-            definedOptionsBuilder.resizeScale(scale)
+        fun scale(scale: Scale): Builder = apply {
+            definedOptionsBuilder.scale(scale)
         }
 
         /**
@@ -636,7 +636,7 @@ interface ImageRequest {
         }
 
         /**
-         * Set disk caching policy for Bitmaps affected by [resizeSize] or [transformations]
+         * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.resultCachePolicy(cachePolicy)
@@ -696,7 +696,7 @@ interface ImageRequest {
         }
 
         /**
-         * Set wrap the final [Drawable] or [Painter] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [resizeSize]
+         * Set wrap the final [Drawable] or [Painter] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
          */
         fun sizeApplyToDraw(sizeApplyToDraw: Boolean? = true): Builder = apply {
             definedOptionsBuilder.sizeApplyToDraw(sizeApplyToDraw)
@@ -753,12 +753,11 @@ interface ImageRequest {
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
-            val resizeSizeResolver = finalOptions.resizeSizeResolver
-                ?: resolveResizeSizeResolver()
-            val resizePrecisionDecider = finalOptions.resizePrecisionDecider
+            val sizeResolver = finalOptions.sizeResolver
+                ?: resolveSizeResolver()
+            val precisionDecider = finalOptions.precisionDecider
                 ?: PrecisionDecider(Precision.LESS_PIXELS)
-            val resizeScaleDecider =
-                finalOptions.resizeScaleDecider ?: ScaleDecider(resolveResizeScale())
+            val scaleDecider = finalOptions.scaleDecider ?: ScaleDecider(resolveScale())
             val transformations = finalOptions.transformations
             val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
@@ -785,9 +784,9 @@ interface ImageRequest {
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
-                resizeSizeResolver = resizeSizeResolver,
-                resizePrecisionDecider = resizePrecisionDecider,
-                resizeScaleDecider = resizeScaleDecider,
+                sizeResolver = sizeResolver,
+                precisionDecider = precisionDecider,
+                scaleDecider = scaleDecider,
                 transformations = transformations,
                 disallowReuseBitmap = disallowReuseBitmap,
                 ignoreExifOrientation = ignoreExifOrientation,
@@ -802,13 +801,13 @@ interface ImageRequest {
             )
         }
 
-        private fun resolveResizeSizeResolver(): SizeResolver =
+        private fun resolveSizeResolver(): SizeResolver =
             target?.getSizeResolver() ?: defaultSizeResolver(context)
 
         private fun resolveLifecycleResolver(): LifecycleResolver =
             target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalTargetLifecycle)
 
-        private fun resolveResizeScale(): Scale =
+        private fun resolveScale(): Scale =
             target?.getScale() ?: Scale.CENTER_CROP
 
         private fun combinationListener(): Listener? {
@@ -856,9 +855,9 @@ interface ImageRequest {
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy,
-        override val resizeSizeResolver: SizeResolver,
-        override val resizePrecisionDecider: PrecisionDecider,
-        override val resizeScaleDecider: ScaleDecider,
+        override val sizeResolver: SizeResolver,
+        override val precisionDecider: PrecisionDecider,
+        override val scaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
         override val disallowReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,

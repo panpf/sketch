@@ -17,9 +17,10 @@
 package com.github.panpf.zoomimage.sketch
 
 import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.cache.CountBitmapValue
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.cache.BitmapImageValue
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
@@ -45,24 +46,25 @@ class SketchTileBitmapCache constructor(
         disallowReuseBitmap: Boolean
     ): CacheTileBitmap? {
         val bitmap = (tileBitmap as AndroidTileBitmap).bitmap ?: return null
-        val newCountBitmap = CountBitmap(
-            originBitmap = bitmap,
-            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = disallowReuseBitmap,
-        )
-        val newCacheValue = CountBitmapValue(
-            countBitmap = newCountBitmap,
-            extras = newCacheValueExtras(
-                imageInfo = ImageInfo(
-                    imageInfo.width,
-                    imageInfo.height,
-                    imageInfo.mimeType,
-                    ExifInterface.ORIENTATION_UNDEFINED
-                ),
-                transformedList = null,
-                extras = null,
-            )
-        )
+//        val newCountBitmap = CountBitmap(
+//            originBitmap = bitmap,
+//            bitmapPool = sketch.bitmapPool,
+//            disallowReuseBitmap = disallowReuseBitmap,
+//        )
+//        val newCacheValue = CountBitmapValue(
+//            countBitmap = newCountBitmap,
+//            extras = newCacheValueExtras(
+//                imageInfo = ImageInfo(
+//                    imageInfo.width,
+//                    imageInfo.height,
+//                    imageInfo.mimeType,
+//                    ExifInterface.ORIENTATION_UNDEFINED
+//                ),
+//                transformedList = null,
+//                extras = null,
+//            )
+//        )
+        val newCacheValue = BitmapImageValue(bitmap.asSketchImage())
         if (!sketch.memoryCache.put(key, newCacheValue)) {
             return null
         }

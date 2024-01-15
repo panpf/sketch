@@ -34,7 +34,7 @@ import java.io.File
 fun ImageView.displayImage(
     uri: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     context.sketch.enqueue(ImageRequest(this, uri, configBlock))
 
 /**
@@ -45,7 +45,7 @@ fun ImageView.displayImage(
 fun ImageView.displayImage(
     uri: Uri?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     displayImage(uri?.toString(), configBlock)
 
 /**
@@ -56,7 +56,7 @@ fun ImageView.displayImage(
 fun ImageView.displayImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
@@ -67,7 +67,7 @@ fun ImageView.displayImage(
 fun ImageView.displayImage(
     file: File?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     displayImage(file?.let { newFileUri(it.path) }, configBlock)
 
 /**
@@ -78,7 +78,7 @@ fun ImageView.displayImage(
 fun ImageView.displayAssetImage(
     assetFileName: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     displayImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
 
 /**
@@ -89,7 +89,7 @@ fun ImageView.displayAssetImage(
 fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
@@ -101,5 +101,5 @@ fun ImageView.displayResourceImage(
     packageName: String,
     @DrawableRes drawableResId: Int,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     displayImage(newResourceUri(packageName, drawableResId), configBlock)

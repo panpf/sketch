@@ -259,7 +259,7 @@ fun SubcomposeAsyncImage(
         contentScale = contentScale,
         filterQuality = filterQuality
     )
-    if (request.definedOptions.resizeSizeResolver == null) {
+    if (request.definedOptions.sizeResolver == null) {
         // Slow path: draw the content with subcomposition as we need to resolve the constraints
         // before calling `content`.
         BoxWithConstraints(

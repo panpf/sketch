@@ -45,7 +45,6 @@ import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Error
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.PainterState.Success
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.resize.Scale
 import com.google.accompanist.drawablepainter.DrawablePainter
 import kotlin.math.roundToInt
@@ -145,22 +144,22 @@ internal fun Drawable.toPainter() = DrawablePainter(mutate())
 //        else -> DrawablePainter(mutate())
 //    }
 
-/**
- * Traverse all SketchCountBitmapDrawable in specified Drawable
- */
-fun Painter.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
-    val painter = this
-    when {
-        painter is DrawablePainter && painter.drawable is SketchCountBitmapDrawable -> {
-            block(painter.drawable as SketchCountBitmapDrawable)
-        }
-
-        painter is CrossfadePainter -> {
-            painter.start?.forEachSketchCountBitmapDrawable(block)
-            painter.end?.forEachSketchCountBitmapDrawable(block)
-        }
-    }
-}
+///**
+// * Traverse all SketchCountBitmapDrawable in specified Drawable
+// */
+//fun Painter.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
+//    val painter = this
+//    when {
+//        painter is DrawablePainter && painter.drawable is SketchCountBitmapDrawable -> {
+//            block(painter.drawable as SketchCountBitmapDrawable)
+//        }
+//
+//        painter is CrossfadePainter -> {
+//            painter.start?.forEachSketchCountBitmapDrawable(block)
+//            painter.end?.forEachSketchCountBitmapDrawable(block)
+//        }
+//    }
+//}
 
 fun Painter.forEachRememberObserver(block: (RememberObserver) -> Unit) {
     when (this) {
@@ -176,9 +175,9 @@ fun Painter.forEachRememberObserver(block: (RememberObserver) -> Unit) {
 }
 
 fun Painter.updateIsDisplayed(displayed: Boolean, caller: String) {
-    this.forEachSketchCountBitmapDrawable {
-        it.countBitmap.setIsDisplayed(displayed, caller)
-    }
+//    this.forEachSketchCountBitmapDrawable {
+//        it.countBitmap.setIsDisplayed(displayed, caller)
+//    }
 }
 
 internal val ContentScale.fitScale: Boolean

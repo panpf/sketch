@@ -33,18 +33,13 @@ import kotlinx.coroutines.Job
  * A listener that accepts the result of an image request.
  */
 interface Target {
-    /**
-     * If display counting is not supported, memory caching will not be used.
-     * If true is returned, call the SketchCountBitmapDrawable.countBitmap.setIsDisplayed() method to record the number of impressions.
-     * Otherwise, there will be image confusion and crashes
-     */
-    val supportDisplayCount: Boolean
 
     /**
      * Called when the request starts.
      */
     @MainThread
     fun onStart(requestContext: RequestContext, placeholder: Image?) {
+
     }
 
     /**
@@ -52,6 +47,7 @@ interface Target {
      */
     @MainThread
     fun onSuccess(requestContext: RequestContext, result: Image) {
+
     }
 
     /**
@@ -59,23 +55,31 @@ interface Target {
      */
     @MainThread
     fun onError(requestContext: RequestContext, error: Image?) {
+
     }
 
-    fun getImageOptions(): ImageOptions?
+    /**
+     * If display counting is not supported, memory caching will not be used.
+     * If true is returned, call the SketchCountBitmapDrawable.countBitmap.setIsDisplayed() method to record the number of impressions.
+     * Otherwise, there will be image confusion and crashes
+     */
+    fun supportDisplayCount(): Boolean = false
+
+    fun getImageOptions(): ImageOptions? = null
 
     fun getSizeResolver(): SizeResolver? = null
 
-    fun getScale(): Scale?
+    fun getScale(): Scale? = null
 
-    fun getLifecycleResolver(): LifecycleResolver?
+    fun getLifecycleResolver(): LifecycleResolver? = null
+
+    fun getListener(): Listener? = null
+
+    fun getProgressListener(): ProgressListener? = null
 
     fun getRequestDelegate(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate?
-
-    fun getListener(): Listener?
-
-    fun getProgressListener(): ProgressListener?
+    ): RequestDelegate? = null
 }

@@ -25,7 +25,10 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
@@ -85,21 +88,21 @@ class AppSettingsService(val context: Context) {
     val disabledDownloadCache by lazy {
         SettingsStateFlow("disabledDownloadCache", false, preferences)
     }
-    val disallowReuseBitmap by lazy {
-        SettingsStateFlow("disallowReuseBitmap", false, preferences)
-    }
+//    val disallowReuseBitmap by lazy {
+//        SettingsStateFlow("disallowReuseBitmap", false, preferences)
+//    }
 
-    val resizePrecision by lazy {
-        SettingsStateFlow("resizePrecision", "LongImageClipMode", preferences)
+    val precision by lazy {
+        SettingsStateFlow("precision", "LongImageClipMode", preferences)
     }
-    val resizeScale by lazy {
-        SettingsStateFlow("resizeScale", "LongImageMode", preferences)
+    val scale by lazy {
+        SettingsStateFlow("scale", "LongImageMode", preferences)
     }
-    val longImageResizeScale by lazy {
-        SettingsStateFlow("longImageResizeScale", Scale.START_CROP.name, preferences)
+    val longImageScale by lazy {
+        SettingsStateFlow("longImageScale", Scale.START_CROP.name, preferences)
     }
-    val otherImageResizeScale by lazy {
-        SettingsStateFlow("otherImageResizeScale", Scale.CENTER_CROP.name, preferences)
+    val otherImageScale by lazy {
+        SettingsStateFlow("otherImageScale", Scale.CENTER_CROP.name, preferences)
     }
 
     val ignoreExifOrientation by lazy {
@@ -154,11 +157,11 @@ class AppSettingsService(val context: Context) {
         }
 
     @get:RequiresApi(VERSION_CODES.O)
-    private val colorSpaceValue: ColorSpace?
+    private val colorSpaceValue: ColorSpace.Named?
         get() = if (VERSION.SDK_INT >= VERSION_CODES.O) {
             when (val value = colorSpace.value) {
                 "Default" -> null
-                else -> ColorSpace.get(ColorSpace.Named.valueOf(value))
+                else -> ColorSpace.Named.valueOf(value)
             }
         } else {
             null
@@ -169,19 +172,19 @@ class AppSettingsService(val context: Context) {
         get() = if (disabledDownloadCache.value) DISABLED else ENABLED
     private val disabledResultCacheValue: CachePolicy
         get() = if (disabledResultCache.value) DISABLED else ENABLED
-    private val resizePrecisionValue: PrecisionDecider
-        get() = when (resizePrecision.value) {
+    private val precisionValue: PrecisionDecider
+        get() = when (precision.value) {
             "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
-            else -> PrecisionDecider(Precision.valueOf(resizePrecision.value))
+            else -> PrecisionDecider(Precision.valueOf(precision.value))
         }
-    private val resizeScaleValue: ScaleDecider
-        get() = when (resizeScale.value) {
+    private val scaleValue: ScaleDecider
+        get() = when (scale.value) {
             "LongImageMode" -> LongImageScaleDecider(
-                longImage = Scale.valueOf(value = longImageResizeScale.value),
-                otherImage = Scale.valueOf(value = otherImageResizeScale.value)
+                longImage = Scale.valueOf(value = longImageScale.value),
+                otherImage = Scale.valueOf(value = otherImageScale.value)
             )
 
-            else -> ScaleDecider(Scale.valueOf(value = resizeScale.value))
+            else -> ScaleDecider(Scale.valueOf(value = scale.value))
         }
 
     private val listFlows = listOf(
@@ -192,12 +195,12 @@ class AppSettingsService(val context: Context) {
         disabledMemoryCache,
         disabledResultCache,
         disabledDownloadCache,
-        disallowReuseBitmap,
+//        disallowReuseBitmap,
 
-        resizePrecision,
-        resizeScale,
-        longImageResizeScale,
-        otherImageResizeScale,
+        precision,
+        scale,
+        longImageScale,
+        otherImageScale,
 
         ignoreExifOrientation,
         saveCellularTrafficInList,
@@ -214,7 +217,7 @@ class AppSettingsService(val context: Context) {
         disabledMemoryCache,
         disabledResultCache,
         disabledDownloadCache,
-        disallowReuseBitmap,
+//        disallowReuseBitmap,
 
         ignoreExifOrientation,
     )
@@ -233,10 +236,10 @@ class AppSettingsService(val context: Context) {
         memoryCachePolicy(disabledMemoryCacheValue)
         resultCachePolicy(disabledResultCacheValue)
         downloadCachePolicy(disabledDownloadCacheValue)
-        disallowReuseBitmap(disallowReuseBitmap.value)
+//        disallowReuseBitmap(disallowReuseBitmap.value)
 
-        resizePrecision(resizePrecisionValue)
-        resizeScale(resizeScaleValue)
+        precision(precisionValue)
+        scale(scaleValue)
 
         ignoreExifOrientation(ignoreExifOrientation.value)
         saveCellularTraffic(saveCellularTrafficInList.value)
@@ -253,7 +256,7 @@ class AppSettingsService(val context: Context) {
         memoryCachePolicy(disabledMemoryCacheValue)
         resultCachePolicy(disabledResultCacheValue)
         downloadCachePolicy(disabledDownloadCacheValue)
-        disallowReuseBitmap(disallowReuseBitmap.value)
+//        disallowReuseBitmap(disallowReuseBitmap.value)
 
         ignoreExifOrientation(ignoreExifOrientation.value)
     }

@@ -30,10 +30,11 @@
  */
 package com.github.panpf.sketch.transition
 
+import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.asOrNull
 

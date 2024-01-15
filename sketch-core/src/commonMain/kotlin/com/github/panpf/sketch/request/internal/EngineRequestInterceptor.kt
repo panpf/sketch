@@ -41,7 +41,7 @@ class EngineRequestInterceptor : RequestInterceptor {
         request.target?.let {
             val placeholderDrawable = request.placeholder
                 ?.getImage(sketch, request, null)
-                ?.sizeApplyToDraw(request, requestContext.resizeSize)
+                ?.sizeApplyToDraw(request, requestContext.size)
             it.onStart(requestContext, placeholderDrawable)
         }
         val decodeResult = withContext(sketch.decodeTaskDispatcher) {

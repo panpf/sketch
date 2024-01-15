@@ -67,10 +67,10 @@ class SettingsViewModel(application1: Application, val page: Page) :
             appSettingsService.showProgressIndicatorInList.ignoreFirst(),
             appSettingsService.saveCellularTrafficInList.ignoreFirst(),
             appSettingsService.pauseLoadWhenScrollInList.ignoreFirst(),
-            appSettingsService.resizePrecision.ignoreFirst(),
-            appSettingsService.resizeScale.ignoreFirst(),
-            appSettingsService.longImageResizeScale.ignoreFirst(),
-            appSettingsService.otherImageResizeScale.ignoreFirst(),
+            appSettingsService.precision.ignoreFirst(),
+            appSettingsService.scale.ignoreFirst(),
+            appSettingsService.longImageScale.ignoreFirst(),
+            appSettingsService.otherImageScale.ignoreFirst(),
             appSettingsService.inPreferQualityOverSpeed.ignoreFirst(),
             appSettingsService.bitmapQuality.ignoreFirst(),
             if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.ignoreFirst() else null,
@@ -78,7 +78,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             appSettingsService.disabledMemoryCache.ignoreFirst(),
             appSettingsService.disabledResultCache.ignoreFirst(),
             appSettingsService.disabledDownloadCache.ignoreFirst(),
-            appSettingsService.disallowReuseBitmap.ignoreFirst(),
+//            appSettingsService.disallowReuseBitmap.ignoreFirst(),
             appSettingsService.showDataFromLogo.ignoreFirst(),
             appSettingsService.showTileBounds.ignoreFirst(),
             appSettingsService.logLevel.ignoreFirst(),
@@ -173,8 +173,8 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Resize Precision",
                 desc = null,
                 values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
-                getValue = { appSettingsService.resizePrecision.value },
-                onSelect = { _, value -> appSettingsService.resizePrecision.value = value }
+                getValue = { appSettingsService.precision.value },
+                onSelect = { _, value -> appSettingsService.precision.value = value }
             )
         )
         add(
@@ -182,18 +182,18 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Resize Scale",
                 desc = null,
                 values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
-                getValue = { appSettingsService.resizeScale.value },
-                onSelect = { _, value -> appSettingsService.resizeScale.value = value }
+                getValue = { appSettingsService.scale.value },
+                onSelect = { _, value -> appSettingsService.scale.value = value }
             )
         )
-        if (appSettingsService.resizeScale.value == "LongImageMode") {
+        if (appSettingsService.scale.value == "LongImageMode") {
             add(
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { appSettingsService.longImageResizeScale.value },
-                    onSelect = { _, value -> appSettingsService.longImageResizeScale.value = value }
+                    getValue = { appSettingsService.longImageScale.value },
+                    onSelect = { _, value -> appSettingsService.longImageScale.value = value }
                 )
             )
             add(
@@ -201,9 +201,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { appSettingsService.otherImageResizeScale.value },
+                    getValue = { appSettingsService.otherImageScale.value },
                     onSelect = { _, value ->
-                        appSettingsService.otherImageResizeScale.value = value
+                        appSettingsService.otherImageScale.value = value
                     }
                 )
             )
@@ -394,29 +394,29 @@ class SettingsViewModel(application1: Application, val page: Page) :
             )
         )
 
-        add(
-            SwitchMenuFlow(
-                title = "Bitmap Pool",
-                desc = "%s/%s（Long Click Clean）".format(
-                    sketch.bitmapPool.size.formatFileSize(
-                        0,
-                        decimalPlacesFillZero = false,
-                        compact = true
-                    ),
-                    sketch.bitmapPool.maxSize.formatFileSize(
-                        0,
-                        decimalPlacesFillZero = false,
-                        compact = true
-                    )
-                ),
-                data = appSettingsService.disallowReuseBitmap,
-                reverse = true,
-                onLongClick = {
-                    sketch.bitmapPool.clear()
-                    updateList()
-                }
-            )
-        )
+//        add(
+//            SwitchMenuFlow(
+//                title = "Bitmap Pool",
+//                desc = "%s/%s（Long Click Clean）".format(
+//                    sketch.bitmapPool.size.formatFileSize(
+//                        0,
+//                        decimalPlacesFillZero = false,
+//                        compact = true
+//                    ),
+//                    sketch.bitmapPool.maxSize.formatFileSize(
+//                        0,
+//                        decimalPlacesFillZero = false,
+//                        compact = true
+//                    )
+//                ),
+//                data = appSettingsService.disallowReuseBitmap,
+//                reverse = true,
+//                onLongClick = {
+//                    sketch.bitmapPool.clear()
+//                    updateList()
+//                }
+//            )
+//        )
     }
 
     private fun makeOtherMenuList(): List<Any> = buildList {

@@ -288,24 +288,20 @@ fun realDecode(
 ): DecodeResult {
     requiredWorkThread()
     val request = requestContext.request
-    val resizeSize = requestContext.resizeSize!!
+    val size = requestContext.size!!
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val imageSize = Size(imageInfo.width, imageInfo.height)
     val appliedImageSize = exifOrientationHelper.applyToSize(imageSize)
     val resize = Resize(
-        width = resizeSize.width,
-        height = resizeSize.height,
-        precision = request.resizePrecisionDecider.get(
-            imageWidth = appliedImageSize.width,
-            imageHeight = appliedImageSize.height,
-            resizeWidth = resizeSize.width,
-            resizeHeight = resizeSize.height
+        width = size.width,
+        height = size.height,
+        precision = request.precisionDecider.get(
+            imageSize = appliedImageSize,
+            targetSize = size,
         ),
-        scale = request.resizeScaleDecider.get(
-            imageWidth = appliedImageSize.width,
-            imageHeight = appliedImageSize.height,
-            resizeWidth = resizeSize.width,
-            resizeHeight = resizeSize.height
+        scale = request.scaleDecider.get(
+            imageSize = appliedImageSize,
+            targetSize = size,
         )
     )
     val addedResize = exifOrientationHelper.addToResize(resize, appliedImageSize)
@@ -322,7 +318,7 @@ fun realDecode(
             resizeWidth = addedResize.width,
             resizeHeight = addedResize.height,
             precision = addedResize.precision,
-            resizeScale = addedResize.scale,
+            scale = addedResize.scale,
         )
         val sampleSize = calculateSampleSizeForRegion(
             regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
@@ -414,21 +410,17 @@ fun DecodeResult.appliedResize(
     requiredWorkThread()
     if (image !is BitmapImage) return this
     val request = requestContext.request
-    val resizeSize = requestContext.resizeSize!!
+    val size = requestContext.size!!
     val resize = Resize(
-        width = resizeSize.width,
-        height = resizeSize.height,
-        precision = request.resizePrecisionDecider.get(
-            imageWidth = imageInfo.width,
-            imageHeight = imageInfo.height,
-            resizeWidth = resizeSize.width,
-            resizeHeight = resizeSize.height
+        width = size.width,
+        height = size.height,
+        precision = request.precisionDecider.get(
+            imageSize = Size(imageInfo.width, imageInfo.height),
+            targetSize = size,
         ),
-        scale = request.resizeScaleDecider.get(
-            imageWidth = imageInfo.width,
-            imageHeight = imageInfo.height,
-            resizeWidth = resizeSize.width,
-            resizeHeight = resizeSize.height
+        scale = request.scaleDecider.get(
+            imageSize = Size(imageInfo.width, imageInfo.height),
+            targetSize = size,
         )
     )
     val inputBitmap = image.bitmap
@@ -454,7 +446,7 @@ fun DecodeResult.appliedResize(
             resizeWidth = resize.width,
             resizeHeight = resize.height,
             precision = resize.precision,
-            resizeScale = resize.scale,
+            scale = resize.scale,
         )
         val config = inputBitmap.safeConfig
         // TODO BitmapPool

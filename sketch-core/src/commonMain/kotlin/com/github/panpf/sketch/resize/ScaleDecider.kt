@@ -18,6 +18,7 @@ package com.github.panpf.sketch.resize
 import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.util.Size
 
 fun ScaleDecider(scale: Scale): ScaleDecider {
     return FixedScaleDecider(scale)
@@ -28,9 +29,8 @@ fun ScaleDecider(scale: Scale): ScaleDecider {
  */
 interface ScaleDecider: Key {
 
-    fun get(imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int): Scale
+    fun get(imageSize: Size, targetSize: Size): Scale
 }
-
 
 /**
  * Always return specified precision
@@ -39,9 +39,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 
     override val key: String by lazy { "Fixed($scale)" }
 
-    override fun get(
-        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
-    ): Scale {
+    override fun get(imageSize: Size, targetSize: Size): Scale {
         return scale
     }
 
@@ -62,11 +60,8 @@ class LongImageScaleDecider constructor(
 
     override val key: String by lazy { "LongImage($longImage,$otherImage,${longImageDecider.key})" }
 
-    override fun get(
-        imageWidth: Int, imageHeight: Int, resizeWidth: Int, resizeHeight: Int
-    ): Scale {
-        val isLongImage = longImageDecider
-            .isLongImage(imageWidth, imageHeight, resizeWidth, resizeHeight)
+    override fun get(imageSize: Size, targetSize: Size): Scale {
+        val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
         return if (isLongImage) longImage else otherImage
     }
 

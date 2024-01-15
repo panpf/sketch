@@ -355,7 +355,7 @@ class SketchTest {
         Assert.assertEquals(listOf("onStart", "onError"), listenerSupervisor2.callbackActionList)
 
         /* cancel */
-        var disposable3: Disposable<ImageResult>? = null
+        var disposable3: Disposable? = null
         val listenerSupervisor3 = ListenerSupervisor()
         val request3 = ImageRequest(context, AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)

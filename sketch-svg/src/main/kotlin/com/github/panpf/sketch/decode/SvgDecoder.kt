@@ -21,7 +21,6 @@ import android.graphics.Canvas
 import android.graphics.RectF
 import android.os.Build.VERSION
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.ComponentRegistry
@@ -32,12 +31,12 @@ import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
-import com.github.panpf.sketch.decode.internal.getOrCreate
 import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
@@ -94,24 +93,22 @@ class SvgDecoder constructor(
             width = imageWidth.roundToInt(),
             height = imageHeight.roundToInt(),
             mimeType = MIME_TYPE,
-            exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
+            exifOrientation = ExifOrientation.ORIENTATION_UNDEFINED
         )
 
-        val resizeSize = requestContext.resizeSize!!
+        val size = requestContext.size!!
         val dstWidth: Int
         val dstHeight: Int
         var transformedList: List<String>? = null
-        if (request.resizeSizeResolver is DisplaySizeResolver) {
+        if (request.sizeResolver is DisplaySizeResolver) {
             val imageSize = Size(imageInfo.width, imageInfo.height)
-            val precision = request.resizePrecisionDecider.get(
-                imageWidth = imageSize.width,
-                imageHeight = imageSize.height,
-                resizeWidth = resizeSize.width,
-                resizeHeight = resizeSize.height
+            val precision = request.precisionDecider.get(
+                imageSize = imageSize,
+                targetSize = size,
             )
             val inSampleSize = calculateSampleSize(
                 imageSize = imageSize,
-                targetSize = resizeSize,
+                targetSize = size,
                 smallerSizeMode = precision.isSmallerSizeMode(),
                 mimeType = null
             )
@@ -121,7 +118,7 @@ class SvgDecoder constructor(
                 transformedList = listOf(createInSampledTransformed(inSampleSize))
             }
         } else {
-            val scale: Float = min(resizeSize.width / imageWidth, resizeSize.height / imageHeight)
+            val scale: Float = min(size.width / imageWidth, size.height / imageHeight)
             dstWidth = (imageWidth * scale).roundToInt()
             dstHeight = (imageHeight * scale).roundToInt()
             if (scale != 1f) {
@@ -136,12 +133,17 @@ class SvgDecoder constructor(
         svg.setDocumentWidth("100%")
         svg.setDocumentHeight("100%")
 
-        val bitmap = sketch.bitmapPool.getOrCreate(
-            width = dstWidth,
-            height = dstHeight,
-            config = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware(),
-            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-            caller = "SvgDecoder"
+//        val bitmap = sketch.bitmapPool.getOrCreate(
+//            width = dstWidth,
+//            height = dstHeight,
+//            config = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware(),
+//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
+//            caller = "SvgDecoder"
+//        )
+        val bitmap = Bitmap.createBitmap(
+            /* width = */ dstWidth,
+            /* height = */ dstHeight,
+            /* config = */ request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware(),
         )
         val canvas = Canvas(bitmap)
         backgroundColor?.let { canvas.drawColor(it) }

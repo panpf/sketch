@@ -65,7 +65,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     private val keyBuilder = StringBuilder(request.uriString)
 
     private fun appendQueryParameter(name: String, value: String) {
-        val askIndex = request.uriString.indexOf("?")
+        val askIndex = keyBuilder.lastIndexOf("?")
         if (askIndex != -1) {
             if (askIndex != keyBuilder.length - 1) {
                 keyBuilder.append("&")
@@ -132,16 +132,16 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         if (size != null) {
             appendQueryParameter("_size", size.toString())
         } else {
-            appendQueryParameter("_size", request.resizeSizeResolver.key)
+            appendQueryParameter("_size", request.sizeResolver.key)
         }
     }
 
     fun appendPrecision(): ImageRequestKeyBuilder = apply {
-        appendQueryParameter("_precision", request.resizePrecisionDecider.key)
+        appendQueryParameter("_precision", request.precisionDecider.key)
     }
 
     fun appendScale(): ImageRequestKeyBuilder = apply {
-        appendQueryParameter("_scale", request.resizeScaleDecider.key)
+        appendQueryParameter("_scale", request.scaleDecider.key)
     }
 
     fun appendTransformations(): ImageRequestKeyBuilder = apply {

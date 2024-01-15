@@ -20,7 +20,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
-import com.github.panpf.sketch.decode.internal.exifOrientationName
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.DialogImageInfoBinding
@@ -69,7 +69,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
             var throwableString: String? = null
             if (imageResult is ImageResult.Success) {
                 imageInfo = imageResult.imageInfo.run {
-                    "${width}x${height}, ${mimeType}, ${exifOrientationName(exifOrientation)}"
+                    "${width}x${height}, ${mimeType}, ${ExifOrientation.name(exifOrientation)}"
                 }
 
                 optionsInfo = imageResult.cacheKey

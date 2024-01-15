@@ -81,7 +81,7 @@ class ExifOrientationTestFileHelper constructor(
     ) {
         val newBitmap = ExifOrientationHelper(orientation).addToBitmap(
             sourceBitmap,
-            context.sketch.bitmapPool,
+//            context.sketch.bitmapPool,
             false
         ) ?: sourceBitmap
         FileOutputStream(file).use {

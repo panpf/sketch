@@ -16,12 +16,14 @@
 package com.github.panpf.sketch.compose.request
 
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.ByteCountProvider
+import com.github.panpf.sketch.CountingImage
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -77,4 +79,8 @@ data class PainterImage(val painter: Painter, override val shareable: Boolean = 
         requestContext: RequestContext,
         extras: Map<String, Any?>
     ): Value? = null
+
+    override fun checkValid(): Boolean = true
+
+    override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
 }

@@ -30,10 +30,10 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Loading
-import com.github.panpf.sketch.compose.internal.AsyncImageScaleDecider
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
 import com.github.panpf.sketch.compose.internal.forEachRememberObserver
@@ -41,18 +41,21 @@ import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.request.asPainter
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
 import com.github.panpf.sketch.compose.transition.CrossfadeComposeTransition
-import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.request.isDefault
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
+import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -103,6 +106,7 @@ class AsyncImageState internal constructor(
     internal var filterQuality = DrawScope.DefaultFilterQuality
     private val sizeResolver = AsyncImageSizeResolver(size)
 
+    var options: ImageOptions? by mutableStateOf(null)
     var loadState: LoadState? by mutableStateOf(null)
         private set
     var result: ImageResult? by mutableStateOf(null)
@@ -204,24 +208,14 @@ class AsyncImageState internal constructor(
         }
     }
 
-    private fun loadImage(sketch: Sketch, request: ImageRequest, contentScale: ContentScale) {
+    private fun loadImage(
+        sketch: Sketch,
+        request: ImageRequest,
+        @Suppress("UNUSED_PARAMETER") contentScale: ContentScale
+    ) {
         val coroutineScope = coroutineScope ?: return
-        val noSetSize = request.definedOptions.resizeSizeResolver == null
-        val noSetScale = request.definedOptions.resizeScaleDecider == null
-        val defaultLifecycleResolver = request.lifecycleResolver.isDefault()
         val fullRequest = request.newRequest {
-            if (noSetSize) {
-                resizeSize(sizeResolver)
-            }
-            if (noSetScale) {
-                resizeScale(AsyncImageScaleDecider(ScaleDecider(contentScale.toScale())))
-            }
-            if (defaultLifecycleResolver) {
-                lifecycle(lifecycle)
-            }
             target(target)
-            listener(listener)
-            progressListener(listener)
             val transitionFactory = request.transitionFactory
             if (transitionFactory is CrossfadeTransition.Factory) {
                 transitionFactory(
@@ -304,6 +298,30 @@ class AsyncImageState internal constructor(
 
         override val fitScale: Boolean
             get() = contentScale?.fitScale ?: true
+
+        override fun getImageOptions(): ImageOptions? {
+            return this@AsyncImageState.options
+        }
+
+        override fun getSizeResolver(): SizeResolver {
+            return this@AsyncImageState.sizeResolver
+        }
+
+        override fun getScale(): Scale? {
+            return this@AsyncImageState.contentScale?.toScale()
+        }
+
+        override fun getLifecycleResolver(): LifecycleResolver {
+            return LifecycleResolver(AndroidTargetLifecycle(this@AsyncImageState.lifecycle))
+        }
+
+        override fun getListener(): Listener {
+            return this@AsyncImageState.listener
+        }
+
+        override fun getProgressListener(): ProgressListener {
+            return this@AsyncImageState.listener
+        }
 
         override fun onStart(requestContext: RequestContext, placeholder: Image?) {
             super.onStart(requestContext, placeholder)

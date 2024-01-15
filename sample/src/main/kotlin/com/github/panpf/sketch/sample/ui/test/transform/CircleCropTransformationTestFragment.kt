@@ -48,7 +48,7 @@ class CircleCropTransformationTestFragment :
             binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                resizeScale(it)
+                scale(it)
                 addTransformations(CircleCropTransformation())
             }
         }

@@ -9,26 +9,42 @@ class AndroidTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
     override val currentState: State
         get() = lifecycle.currentState.toTargetLifecycleState()
 
-    init {
-        lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_DESTROY) {
-                    val event1 = event.toTargetLifecycleEvent()
-                    observers.forEach { it.onStateChanged(this@AndroidTargetLifecycle, event1) }
-                }
-            }
-        })
+    private val observerMap = mutableMapOf<EventObserver, LifecycleEventObserverWrapper>()
+
+    override fun addObserver(observer: EventObserver) {
+        val previous = observerMap[observer]
+        if (previous != null) return
+        val wrapper = LifecycleEventObserverWrapper(this, observer)
+        lifecycle.addObserver(wrapper)
+        observerMap[observer] = wrapper
     }
 
-    private fun Lifecycle.Event.toTargetLifecycleEvent(): Event {
-        return when (this) {
-            Lifecycle.Event.ON_CREATE -> Event.ON_CREATE
-            Lifecycle.Event.ON_START -> Event.ON_START
-            Lifecycle.Event.ON_RESUME -> Event.ON_RESUME
-            Lifecycle.Event.ON_PAUSE -> Event.ON_PAUSE
-            Lifecycle.Event.ON_STOP -> Event.ON_STOP
-            Lifecycle.Event.ON_DESTROY -> Event.ON_DESTROY
-            Lifecycle.Event.ON_ANY -> Event.ON_ANY
+    override fun removeObserver(observer: EventObserver) {
+        val wrapper = observerMap.remove(observer)
+        if (wrapper != null) {
+            lifecycle.removeObserver(wrapper)
+        }
+    }
+
+    private class LifecycleEventObserverWrapper(
+        private val lifecycle: AndroidTargetLifecycle,
+        private val observer: EventObserver,
+    ) : LifecycleEventObserver {
+
+        override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+            observer.onStateChanged(lifecycle, event.toTargetLifecycleEvent())
+        }
+
+        private fun Lifecycle.Event.toTargetLifecycleEvent(): Event {
+            return when (this) {
+                Lifecycle.Event.ON_CREATE -> Event.ON_CREATE
+                Lifecycle.Event.ON_START -> Event.ON_START
+                Lifecycle.Event.ON_RESUME -> Event.ON_RESUME
+                Lifecycle.Event.ON_PAUSE -> Event.ON_PAUSE
+                Lifecycle.Event.ON_STOP -> Event.ON_STOP
+                Lifecycle.Event.ON_DESTROY -> Event.ON_DESTROY
+                Lifecycle.Event.ON_ANY -> Event.ON_ANY
+            }
         }
     }
 

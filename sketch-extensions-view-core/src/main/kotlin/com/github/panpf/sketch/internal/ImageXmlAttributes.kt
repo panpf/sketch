@@ -35,8 +35,15 @@ import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.extensions.view.core.R
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.crossfade
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.stateimage.uriEmptyError
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
@@ -79,19 +86,19 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
             val resizeHeight =
                 typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_resizeHeight)
             if (resizeWidth != null && resizeHeight != null) {
-                resizeSize(resizeWidth, resizeHeight)
+                size(resizeWidth, resizeHeight)
             }
-            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_resizePrecision)
+            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_precision)
                 ?.apply {
-                    resizePrecision(parseResizePrecision(this))
+                    precision(parsePrecision(this))
                 }
-            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_resizeScale)
+            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_scale)
                 ?.apply {
-                    resizeScale(parseResizeScale(this))
+                    scale(parseScale(this))
                 }
             typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_resizeApplyToDrawable)
                 ?.apply {
-                    resizeApplyToDrawable(this)
+                    sizeApplyToDraw(this)
                 }
             typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation)?.apply {
                 transformations(parseTransformation(this, typedArray))
@@ -207,22 +214,22 @@ private fun TypedArray.getDimensionOrNull(index: Int): Float? =
 private fun TypedArray.getColorOrNull(index: Int): Int? =
     getColor(index, Int.MIN_VALUE).takeIf { it != Int.MIN_VALUE }
 
-private fun parseResizePrecision(value: Int): Precision =
+private fun parsePrecision(value: Int): Precision =
     when (value) {
         1 -> Precision.EXACTLY
         2 -> Precision.SAME_ASPECT_RATIO
         3 -> Precision.LESS_PIXELS
         4 -> Precision.SMALLER_SIZE
-        else -> throw IllegalArgumentException("Value not supported by the 'sketch_resizePrecision' attribute: $value")
+        else -> throw IllegalArgumentException("Value not supported by the 'sketch_precision' attribute: $value")
     }
 
-private fun parseResizeScale(value: Int): Scale =
+private fun parseScale(value: Int): Scale =
     when (value) {
         1 -> Scale.START_CROP
         2 -> Scale.CENTER_CROP
         3 -> Scale.END_CROP
         4 -> Scale.FILL
-        else -> throw IllegalArgumentException("Value not supported by the 'sketch_resizeScale' attribute: $value")
+        else -> throw IllegalArgumentException("Value not supported by the 'sketch_scale' attribute: $value")
     }
 
 

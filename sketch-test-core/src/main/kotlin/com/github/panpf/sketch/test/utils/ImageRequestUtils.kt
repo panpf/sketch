@@ -9,9 +9,9 @@ import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 
 
-fun ImageRequest.toRequestContext(sketch: Sketch, resizeSize: Size? = null): RequestContext {
+fun ImageRequest.toRequestContext(sketch: Sketch, size: Size? = null): RequestContext {
     return RequestContext(sketch, this).apply {
-        this@apply.resizeSize = resizeSize ?: runBlocking { resizeSizeResolver.size() }
+        this@apply.size = size ?: runBlocking { sizeResolver.size() }
     }
 }
 
@@ -21,7 +21,9 @@ inline fun ImageRequest.Builder.target(
     crossinline onError: (requestContext: RequestContext, error: Image?) -> Unit = { _, _ -> },
     crossinline onSuccess: (requestContext: RequestContext, result: Image) -> Unit = { _, _ -> },
 ) = target(object : Target {
-    override val supportDisplayCount: Boolean = supportDisplayCount
+
+    override fun supportDisplayCount(): Boolean = supportDisplayCount
+
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         onStart(requestContext, placeholder)
 

@@ -30,7 +30,7 @@ import com.github.panpf.sketch.target.ViewTarget
  * @return A [Disposable] which can be used to cancel or check the status of the request.
  */
 @AnyThread
-fun ImageRequest.enqueue(): Disposable<ImageResult> {
+fun ImageRequest.enqueue(): Disposable {
     return context.sketch.enqueue(this)
 }
 

@@ -34,7 +34,7 @@ import com.github.panpf.sketch.test.singleton.sketch
  * @return A [Disposable] which can be used to cancel or check the status of the request.
  */
 @AnyThread
-fun ImageRequest.enqueue(sketch: Sketch = context.sketch): Disposable<ImageResult> {
+fun ImageRequest.enqueue(sketch: Sketch = context.sketch): Disposable {
     return sketch.enqueue(this)
 }
 

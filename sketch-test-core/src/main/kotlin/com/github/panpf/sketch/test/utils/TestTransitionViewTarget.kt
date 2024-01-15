@@ -26,7 +26,8 @@ class TestTransitionViewTarget : Target, TransitionViewTarget {
 
     override var drawable: Drawable? = null
     override val fitScale: Boolean get() = true
-    override val supportDisplayCount: Boolean = true
+
+    override fun supportDisplayCount(): Boolean = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) {
         this.drawable = placeholder?.asDrawable()

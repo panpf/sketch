@@ -30,11 +30,11 @@ import com.github.panpf.sketch.util.height
 import com.github.panpf.sketch.util.isImmutable
 import com.github.panpf.sketch.util.width
 
-fun Bitmap.asSketchImage(resources: Resources? = null, shareable: Boolean = isImmutable): Image {
+fun Bitmap.asSketchImage(resources: Resources? = null, shareable: Boolean = isImmutable): BitmapImage {
     return BitmapImage(this, shareable, resources)
 }
 
-fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): Image {
+fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): DrawableImage {
     return DrawableImage(this, shareable)
 }
 
@@ -56,11 +56,11 @@ fun Image.getDrawableOrNull(): Drawable? = when (this) {
 fun Image.getDrawableOrThrow(): Drawable = getDrawableOrNull()
     ?: throw IllegalArgumentException("Unable to get Drawable from Image '$this'")
 
-//fun Image.asDrawable(): Drawable = when (this) {
-//    is BitmapImage -> BitmapDrawable(resources, bitmap)
-//    is DrawableImage -> drawable
-//    else -> throw IllegalArgumentException("Not supported conversion to Drawable from Image '$this'")
-//}
+fun Image.asDrawable(): Drawable = when (this) {
+    is BitmapImage -> BitmapDrawable(resources, bitmap)
+    is DrawableImage -> drawable
+    else -> throw IllegalArgumentException("'$this' can't be converted to Drawable")
+}
 
 actual interface Image {
 
@@ -93,8 +93,6 @@ actual interface Image {
     actual fun checkValid(): Boolean
 
     actual fun toCountingImage(requestContext: RequestContext): CountingImage?
-
-    fun asDrawable(): Drawable
 }
 
 open class BitmapImage internal constructor(
@@ -125,10 +123,6 @@ open class BitmapImage internal constructor(
     override fun toCountingImage(requestContext: RequestContext): CountingImage? {
 //        return this.toCountingBitmapImage(requestContext)
         return null
-    }
-
-    override fun asDrawable(): Drawable {
-        return BitmapDrawable(resources, bitmap)
     }
 
     override fun toString(): String {
@@ -183,8 +177,4 @@ data class DrawableImage internal constructor(
     }
 
     override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
-
-    override fun asDrawable(): Drawable {
-        return drawable
-    }
 }

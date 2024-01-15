@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
  */
 abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
 
-    override val supportDisplayCount: Boolean = true
+    override fun supportDisplayCount(): Boolean = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         updateImage(requestContext, placeholder)
@@ -49,6 +49,7 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
         if (image != null || requestContext.request.allowSetNullDrawable) {
             val newPainter = image?.asPainter()
             updatePainter(newPainter)
+            // TODO Start and stop animations based on lifecycle
         }
     }
 

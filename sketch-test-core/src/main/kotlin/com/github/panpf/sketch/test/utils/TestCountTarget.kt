@@ -4,5 +4,5 @@ import com.github.panpf.sketch.target.Target
 
 class TestCountTarget : Target {
 
-    override val supportDisplayCount: Boolean = true
+    override fun supportDisplayCount(): Boolean = true
 }

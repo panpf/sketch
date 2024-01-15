@@ -25,7 +25,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.request.updateDisplayImageOptions
+import com.github.panpf.sketch.request.crossfade
+import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
@@ -79,7 +80,7 @@ class PhotoGridItemFactory(val animatedPlaceholder: Boolean = false) :
     ) {
         binding.myListImage.apply {
             setClickIgnoreSaveCellularTrafficEnabled(true)
-            updateDisplayImageOptions {
+            updateImageOptions {
                 if (animatedPlaceholder) {
                     placeholder(
                         AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
@@ -105,7 +106,7 @@ class PhotoGridItemFactory(val animatedPlaceholder: Boolean = false) :
                     )
                 }
                 crossfade()
-                resizeApplyToDrawable()
+                sizeApplyToDraw()
             }
         }
     }

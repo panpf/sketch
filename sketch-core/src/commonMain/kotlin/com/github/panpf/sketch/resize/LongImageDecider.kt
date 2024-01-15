@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.resize
 
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 
 fun LongImageDecider(): LongImageDecider {
@@ -31,9 +32,7 @@ interface LongImageDecider {
     /**
      * Determine whether it is a long image given the image size and target size
      */
-    fun isLongImage(
-        imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
-    ): Boolean
+    fun isLongImage(imageSize: Size, targetSize: Size): Boolean
 }
 
 /**
@@ -53,11 +52,9 @@ open class DefaultLongImageDecider constructor(
      * the two is considered as a long image when the aspect ratio reaches [sameDirectionMultiple] times,
      * otherwise it is considered as a long image when it reaches [notSameDirectionMultiple] times
      */
-    override fun isLongImage(
-        imageWidth: Int, imageHeight: Int, targetWidth: Int, targetHeight: Int
-    ): Boolean {
-        val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(2)
-        val targetAspectRatio = targetWidth.toFloat().div(targetHeight).format(2)
+    override fun isLongImage(imageSize: Size, targetSize: Size): Boolean {
+        val imageAspectRatio = imageSize.width.toFloat().div(imageSize.height).format(2)
+        val targetAspectRatio = targetSize.width.toFloat().div(targetSize.height).format(2)
         val sameDirection = imageAspectRatio == 1.0f
                 || targetAspectRatio == 1.0f
                 || (imageAspectRatio > 1.0f && targetAspectRatio > 1.0f)

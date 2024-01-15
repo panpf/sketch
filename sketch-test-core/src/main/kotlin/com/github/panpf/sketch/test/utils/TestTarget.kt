@@ -21,8 +21,6 @@ import com.github.panpf.sketch.target.Target
 
 class TestTarget : Target {
 
-    override val supportDisplayCount: Boolean = true
-
     var startImage: Image? = null
     var successImage: Image? = null
     var errorImage: Image? = null

@@ -18,12 +18,11 @@ package com.github.panpf.sketch.compose.transition
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.internal.CrossfadePainter
 import com.github.panpf.sketch.compose.internal.asOrNull
-import com.github.panpf.sketch.compose.internal.toPainter
+import com.github.panpf.sketch.compose.request.asPainter
 import com.github.panpf.sketch.compose.request.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
@@ -45,8 +44,7 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
     override fun transition() {
         val startPainter: Painter? =
             target.painter?.asOrNull<CrossfadePainter>()?.end ?: target.painter
-        val endPainter: Painter? =
-            result.image?.asDrawable()?.toPainter()
+        val endPainter: Painter? = result.image?.asPainter()
         if (startPainter === endPainter) {
             return
         }

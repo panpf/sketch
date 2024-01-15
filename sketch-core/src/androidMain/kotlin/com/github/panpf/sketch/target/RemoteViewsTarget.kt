@@ -40,8 +40,6 @@ class RemoteViewsTarget constructor(
     private val onUpdated: () -> Unit,
 ) : Target {
 
-    override val supportDisplayCount: Boolean = false
-
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         setDrawable(requestContext, placeholder)
 

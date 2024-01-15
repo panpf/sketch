@@ -31,5 +31,5 @@ fun ImageView.displayAppIconImage(
     packageName: String,
     versionCode: Int,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable<ImageResult> =
+): Disposable =
     ImageRequest(this, newAppIconUri(packageName, versionCode), configBlock).enqueue()

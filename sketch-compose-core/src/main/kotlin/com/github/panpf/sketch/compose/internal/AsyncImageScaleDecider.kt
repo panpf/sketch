@@ -17,6 +17,7 @@ package com.github.panpf.sketch.compose.internal
 
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
+import com.github.panpf.sketch.util.Size
 
 /**
  * Just to show that it's [ScaleDecider] from AsyncImage
@@ -26,13 +27,8 @@ class AsyncImageScaleDecider(val wrapped: ScaleDecider) : ScaleDecider {
     override val key: String
         get() = wrapped.key
 
-    override fun get(
-        imageWidth: Int,
-        imageHeight: Int,
-        resizeWidth: Int,
-        resizeHeight: Int
-    ): Scale {
-        return wrapped.get(imageWidth, imageHeight, resizeWidth, resizeHeight)
+    override fun get(imageSize: Size, targetSize: Size): Scale {
+        return wrapped.get(imageSize, targetSize)
     }
 
     override fun equals(other: Any?): Boolean {

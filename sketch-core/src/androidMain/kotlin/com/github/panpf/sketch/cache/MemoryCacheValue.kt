@@ -30,7 +30,7 @@ class BitmapImageValue(
     }
 
     override fun checkValid(): Boolean {
-        return !image.checkValid()
+        return image.checkValid()
     }
 
     override fun equals(other: Any?): Boolean {

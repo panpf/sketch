@@ -6,17 +6,13 @@ import kotlin.coroutines.resume
 
 abstract class TargetLifecycle {
 
-    protected val observers = mutableSetOf<EventObserver>()
+//    protected val observers = mutableSetOf<EventObserver>()
 
     abstract val currentState: State
 
-    open fun addObserver(observer: EventObserver) {
-        observers.add(observer)
-    }
+    abstract fun addObserver(observer: EventObserver)
 
-    open fun removeObserver(observer: EventObserver) {
-        observers.remove(observer)
-    }
+    abstract fun removeObserver(observer: EventObserver)
 
     fun interface EventObserver {
         public fun onStateChanged(source: TargetLifecycle, event: Event)

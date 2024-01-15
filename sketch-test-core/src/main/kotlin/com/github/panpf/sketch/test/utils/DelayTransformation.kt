@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import android.graphics.Bitmap
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transform.TransformResult
@@ -33,7 +33,7 @@ class DelayTransformation(
     override suspend fun transform(
         sketch: Sketch,
         requestContext: RequestContext,
-        input: Bitmap
+        input: Image
     ): TransformResult? {
         onTransform?.invoke()
         delay(delayTime)

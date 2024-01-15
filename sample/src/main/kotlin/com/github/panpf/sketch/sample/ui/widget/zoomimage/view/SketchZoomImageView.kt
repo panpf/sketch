@@ -27,7 +27,6 @@ import com.github.panpf.sketch.sketch
 import com.github.panpf.zoomimage.internal.AbsStateZoomImageView
 import com.github.panpf.zoomimage.sketch.SketchImageSource
 import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
-import com.github.panpf.zoomimage.sketch.SketchTileBitmapPool
 import com.github.panpf.zoomimage.subsampling.ImageSource
 
 /**
@@ -50,8 +49,8 @@ open class SketchZoomImageView @JvmOverloads constructor(
 ) : AbsStateZoomImageView(context, attrs, defStyle) {
 
     init {
-        _subsamplingEngine?.tileBitmapPoolState?.value =
-            SketchTileBitmapPool(context.sketch, "SketchZoomImageView")
+//        _subsamplingEngine?.tileBitmapPoolState?.value =
+//            SketchTileBitmapPool(context.sketch, "SketchZoomImageView")
         _subsamplingEngine?.tileBitmapCacheState?.value =
             SketchTileBitmapCache(context.sketch, "SketchZoomImageView")
     }

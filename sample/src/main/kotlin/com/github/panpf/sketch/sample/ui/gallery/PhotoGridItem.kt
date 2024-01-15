@@ -24,6 +24,7 @@ import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
@@ -118,7 +119,7 @@ fun PhotoGridItem(
                 )
             }
             crossfade()
-            resizeApplyToDrawable()
+            sizeApplyToDraw()
             merge(appSettingsService.buildListImageOptions())
         }
     }
