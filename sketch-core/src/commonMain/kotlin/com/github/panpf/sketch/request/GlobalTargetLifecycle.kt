@@ -20,7 +20,7 @@ import com.github.panpf.sketch.target.TargetLifecycle
 /**
  * A [TargetLifecycle] implementation that is always resumed and never destroyed.
  */
-internal data object GlobalTargetLifecycle : TargetLifecycle() {
+data object GlobalTargetLifecycle : TargetLifecycle() {
 
     override val currentState: State
         get() = State.RESUMED

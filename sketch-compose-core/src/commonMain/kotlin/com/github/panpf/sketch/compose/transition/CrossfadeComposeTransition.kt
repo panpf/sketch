@@ -1,52 +1,34 @@
 /*
- * Copyright 2023 Coil Contributors
+ * Copyright (C) 2023 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * ------------------------------------------------------------------------
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.transition
+package com.github.panpf.sketch.compose.transition
 
-import com.github.panpf.sketch.asDrawable
-import com.github.panpf.sketch.asSketchImage
+import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.compose.asPainter
+import com.github.panpf.sketch.compose.asSketchImage
+import com.github.panpf.sketch.compose.internal.CrossfadePainter
+import com.github.panpf.sketch.compose.internal.asOrNull
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.transition.TransitionTarget
 
-/**
- * A [Transition] that crossfades from the current drawable to a new one.
- *
- * @param durationMillis The duration of the animation in milliseconds.
- * @param preferExactIntrinsicSize See [CrossfadeDrawable.preferExactIntrinsicSize].
- */
-class CrossfadeTransition @JvmOverloads constructor(
+class CrossfadeComposeTransition @JvmOverloads constructor(
     private val requestContext: RequestContext,
-    private val target: TransitionViewTarget,
+    private val target: TransitionComposeTarget,
     private val result: ImageResult,
     val durationMillis: Int = Transition.DEFAULT_DURATION,
     val fadeStart: Boolean = true,
@@ -59,30 +41,28 @@ class CrossfadeTransition @JvmOverloads constructor(
     }
 
     override fun transition() {
-        val startDrawable = target.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: target.drawable
-        val endDrawable = result.image?.asDrawable()
-        if (startDrawable === endDrawable) {
+        val startPainter: Painter? =
+            target.painter?.asOrNull<CrossfadePainter>()?.end ?: target.painter
+        val endPainter: Painter? = result.image?.asPainter()
+        if (startPainter === endPainter) {
             return
         }
 
-        val crossfadeDrawable = CrossfadeDrawable(
-            start = startDrawable,
-            end = endDrawable,
+        val crossfadePainter = CrossfadePainter(
+            start = startPainter,
+            end = endPainter,
             fitScale = fitScale,
-            fadeStart = fadeStart,
             durationMillis = durationMillis,
+            fadeStart = fadeStart,
             preferExactIntrinsicSize = preferExactIntrinsicSize
         )
         when (result) {
             is ImageResult.Success -> target.onSuccess(
                 requestContext,
-                crossfadeDrawable.asSketchImage()
+                crossfadePainter.asSketchImage()
             )
 
-            is ImageResult.Error -> target.onError(
-                requestContext,
-                crossfadeDrawable.asSketchImage()
-            )
+            is ImageResult.Error -> target.onError(requestContext, crossfadePainter.asSketchImage())
         }
     }
 
@@ -102,7 +82,7 @@ class CrossfadeTransition @JvmOverloads constructor(
             target: TransitionTarget,
             result: ImageResult,
         ): Transition? {
-            if (target !is TransitionViewTarget) {
+            if (target !is TransitionComposeTarget) {
                 return null
             }
             val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE
@@ -110,7 +90,7 @@ class CrossfadeTransition @JvmOverloads constructor(
                 return null
             }
             val fitScale = target.fitScale
-            return CrossfadeTransition(
+            return CrossfadeComposeTransition(
                 requestContext = requestContext,
                 target = target,
                 result = result,

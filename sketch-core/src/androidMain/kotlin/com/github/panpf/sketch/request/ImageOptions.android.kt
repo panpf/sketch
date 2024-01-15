@@ -11,6 +11,7 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.Transition
 
 
 /**
@@ -161,11 +162,11 @@ val ImageOptions.preferQualityOverSpeed: Boolean?
 /**
  * Sets the transition that crossfade
  */
-actual fun ImageOptions.Builder.crossfade(
-    durationMillis: Int,
-    fadeStart: Boolean,
-    preferExactIntrinsicSize: Boolean,
-    alwaysUse: Boolean,
+fun ImageOptions.Builder.crossfade(
+    durationMillis: Int = Transition.DEFAULT_DURATION,
+    fadeStart: Boolean = true,
+    preferExactIntrinsicSize: Boolean = false,
+    alwaysUse: Boolean = false,
 ): ImageOptions.Builder = apply {
     transitionFactory(
         CrossfadeTransition.Factory(

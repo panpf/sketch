@@ -51,6 +51,7 @@ import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -74,7 +75,7 @@ open class CrossfadeDrawable @JvmOverloads constructor(
     start: Drawable?,
     end: Drawable?,
     val fitScale: Boolean = true,
-    val durationMillis: Int = DEFAULT_DURATION,
+    val durationMillis: Int = Transition.DEFAULT_DURATION,
     val fadeStart: Boolean = true,
     val preferExactIntrinsicSize: Boolean = false,
 ) : Drawable(), Animatable2Compat, Callback {
@@ -83,8 +84,6 @@ open class CrossfadeDrawable @JvmOverloads constructor(
         private const val STATE_START = 0
         private const val STATE_RUNNING = 1
         private const val STATE_DONE = 2
-
-        const val DEFAULT_DURATION = 200
     }
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()

@@ -43,6 +43,10 @@ import com.github.panpf.sketch.target.Target
  */
 fun interface Transition {
 
+    companion object {
+        const val DEFAULT_DURATION = 200
+    }
+
     /**
      * Start the transition animation.
      *

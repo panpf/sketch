@@ -1,6 +1,61 @@
 plugins {
+    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
+    alias(libs.plugins.org.jetbrains.compose)
     alias(libs.plugins.com.android.library)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
+}
+
+group = property("GROUP").toString()
+version = property("versionName").toString()
+
+kotlin {
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    jvm("desktop") {
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        named("androidMain") {
+            dependencies {
+                api(libs.google.accompanist.drawablepainter)
+            }
+        }
+        named("androidInstrumentedTest") {
+            dependencies {
+                implementation(project(":sketch-test"))
+            }
+        }
+
+        named("commonMain") {
+            dependencies {
+                api(project(":sketch-core"))
+                api(compose.foundation)
+            }
+        }
+        named("commonTest") {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.junit)
+//                implementation(libs.panpf.tools4j.test)
+            }
+        }
+    }
+}
+
+compose {
+    // TODO Migrate to zoomimage
+    kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
 }
 
 android {
@@ -35,20 +90,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs =
-            freeCompilerArgs + "-P" + "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
-    }
-
     composeOptions {
+        // TODO Migrate to zoomimage
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
-}
-
-dependencies {
-    api(project(":sketch-core"))
-    api(libs.androidx.compose.foundation)
-    api(libs.google.accompanist.drawablepainter)
-    androidTestImplementation(project(":sketch-test"))
 }

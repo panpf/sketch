@@ -50,6 +50,7 @@ import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transition.Transition
 
 fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): ImageOptions? {
     val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)
@@ -127,8 +128,7 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                         val alwaysUse =
                             typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_crossfadeAlwaysUse)
                         crossfade(
-                            durationMillis = durationMillis
-                                ?: CrossfadeDrawable.DEFAULT_DURATION,
+                            durationMillis = durationMillis ?: Transition.DEFAULT_DURATION,
                             fadeStart = fadeStart ?: true,
                             preferExactIntrinsicSize = preferExactIntrinsicSize ?: false,
                             alwaysUse = alwaysUse ?: false,

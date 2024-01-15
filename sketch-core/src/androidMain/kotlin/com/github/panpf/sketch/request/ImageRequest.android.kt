@@ -14,6 +14,7 @@ import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.Transition
 
 
 /**
@@ -184,11 +185,11 @@ val ImageRequest.preferQualityOverSpeed: Boolean
 /**
  * Sets the transition that crossfade
  */
-actual fun ImageRequest.Builder.crossfade(
-    durationMillis: Int,
-    fadeStart: Boolean,
-    preferExactIntrinsicSize: Boolean,
-    alwaysUse: Boolean,
+fun ImageRequest.Builder.crossfade(
+    durationMillis: Int = Transition.DEFAULT_DURATION,
+    fadeStart: Boolean = true,
+    preferExactIntrinsicSize: Boolean = false,
+    alwaysUse: Boolean = false,
 ): ImageRequest.Builder = apply {
     transitionFactory(
         CrossfadeTransition.Factory(
