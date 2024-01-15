@@ -57,7 +57,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         get() = cache.size()
 
     override fun put(key: String, value: Value): Boolean {
-        require(value.checkValid()) { "cache value invalid. $value" }
+        check(value.checkValid()) { "cache value invalid. value=$value, key=$key" }
         if (cache[key] != null) {
             logger?.w(MODULE, "put. exist. $value")
             return false
@@ -83,7 +83,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
     override fun get(key: String): Value? {
         val value = cache[key]?.apply {
-            require(this.checkValid()) { "cache value invalid. $this" }
+            check(this.checkValid()) { "cache value invalid. value=$this, key=$key" }
         }
         val getCount1 = getCount.addAndGet(1)
         val hitCount1 = if (value != null) {
@@ -108,7 +108,7 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
 
     override fun exist(key: String): Boolean {
         val value = cache[key]?.apply {
-            require(this.checkValid()) { "cache value invalid. $this" }
+            check(this.checkValid()) { "cache value invalid. value=$this, key=$key" }
         }
         return value != null
     }

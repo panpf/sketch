@@ -63,7 +63,11 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
             return Result.failure(e)
         }
         return if (transformedList.isNotEmpty()) {
-            require(!newImage.checkValid())
+            check(newImage.checkValid()) {
+                val transformedListString =
+                    transformedList.joinToString(prefix = "[", postfix = "]")
+                "Invalid image after transform. transformedList=$transformedListString"
+            }
             val newDecodeResult = decodeResult.newResult(image = newImage) {
                 transformedList.forEach {
                     addTransformed(it)
