@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/view"
+        android:icon="@drawable/ic_android"
+        android:title="View" />
+    <item
+        android:id="@+id/compose"
+        android:icon="@drawable/ic_compose"
+        android:title="Compose" />
+    <item
+        android:id="@+id/test"
+        android:icon="@drawable/ic_bug"
+        android:title="Test" />
+</menu>

@@ -15,36 +15,18 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
-import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.Photo
 import kotlinx.coroutines.flow.Flow
 
 class GifPhotoListViewFragment : BasePhotoListViewFragment() {
 
-    override val showPlayMenu: Boolean
-        get() = true
-    override val animatedPlaceholder: Boolean
-        get() = true
-    override val photoPagingFlow: Flow<PagingData<Photo>>
-        get() = gifPhotoListViewModel.pagingFlow
-
     private val gifPhotoListViewModel by viewModels<GifPhotoListViewModel>()
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onViewCreated(
-        toolbar: Toolbar,
-        binding: FragmentRecyclerRefreshBinding,
-        savedInstanceState: Bundle?
-    ) {
-        super.onViewCreated(toolbar, binding, savedInstanceState)
-        toolbar.apply {
-            title = "Giphy GIFs"
-            subtitle = "View"
-        }
-    }
+    override val animatedPlaceholder: Boolean
+        get() = true
+
+    override val photoPagingFlow: Flow<PagingData<Photo>>
+        get() = gifPhotoListViewModel.pagingFlow
 }

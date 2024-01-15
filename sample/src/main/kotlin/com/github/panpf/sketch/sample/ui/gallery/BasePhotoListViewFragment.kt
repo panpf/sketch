@@ -17,8 +17,6 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -46,11 +44,10 @@ import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
-import com.github.panpf.sketch.sample.ui.setting.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -61,49 +58,19 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 abstract class BasePhotoListViewFragment :
-    BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
+    BaseBindingFragment<FragmentRecyclerRefreshBinding>() {
 
-    abstract val showPlayMenu: Boolean
     abstract val animatedPlaceholder: Boolean
     abstract val photoPagingFlow: Flow<PagingData<Photo>>
 
-    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
-        ToolbarMenuViewModel.Factory(
-            requireActivity().application,
-            showLayoutModeMenu = true,
-            showPlayMenu = showPlayMenu
-        )
-    }
     private var pagingFlowCollectJob: Job? = null
     private var loadStateFlowCollectJob: Job? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(
-        toolbar: Toolbar,
         binding: FragmentRecyclerRefreshBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.apply {
-            toolbarMenuViewModel.menuFlow
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
-                    menu.clear()
-                    list.forEachIndexed { groupIndex, group ->
-                        group.items.forEachIndexed { index, menuItemInfo ->
-                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                                menuItemInfo.iconResId?.let { iconResId ->
-                                    setIcon(iconResId)
-                                }
-                                setOnMenuItemClickListener {
-                                    menuItemInfo.onClick(this@BasePhotoListViewFragment)
-                                    true
-                                }
-                                setShowAsAction(menuItemInfo.showAsAction)
-                            }
-                        }
-                    }
-                }
-        }
-
         binding.myRecycler.apply {
             appSettingsService.photoListLayoutMode
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {

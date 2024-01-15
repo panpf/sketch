@@ -15,37 +15,21 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.runtime.Composable
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
-import com.github.panpf.sketch.sample.ui.setting.ToolbarMenuViewModel
-import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
+import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-abstract class BasePhotoListComposeFragment : BaseToolbarComposeFragment() {
+abstract class BasePhotoListComposeFragment : BaseComposeFragment() {
 
-    abstract val showPlayMenu: Boolean
     abstract val animatedPlaceholder: Boolean
     abstract val photoPagingFlow: Flow<PagingData<Photo>>
-
-    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
-        ToolbarMenuViewModel.Factory(
-            requireActivity().application,
-            showLayoutModeMenu = true,
-            showPlayMenu = showPlayMenu,
-            fromComposePage = true,
-        )
-    }
 
     @Composable
     override fun DrawContent() {
@@ -54,30 +38,6 @@ abstract class BasePhotoListComposeFragment : BaseToolbarComposeFragment() {
             animatedPlaceholder = animatedPlaceholder,
         ) { items, _, index ->
             startImageDetail(items, index)
-        }
-    }
-
-    override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
-        super.onViewCreated(toolbar, savedInstanceState)
-        toolbar.apply {
-            toolbarMenuViewModel.menuFlow
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
-                    menu.clear()
-                    list.forEachIndexed { groupIndex, group ->
-                        group.items.forEachIndexed { index, menuItemInfo ->
-                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                                menuItemInfo.iconResId?.let { iconResId ->
-                                    setIcon(iconResId)
-                                }
-                                setOnMenuItemClickListener {
-                                    menuItemInfo.onClick(this@BasePhotoListComposeFragment)
-                                    true
-                                }
-                                setShowAsAction(menuItemInfo.showAsAction)
-                            }
-                        }
-                    }
-                }
         }
     }
 

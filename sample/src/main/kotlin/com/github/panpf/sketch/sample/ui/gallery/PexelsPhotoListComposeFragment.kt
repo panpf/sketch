@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
 import com.github.panpf.sketch.sample.model.Photo
@@ -24,20 +22,11 @@ import kotlinx.coroutines.flow.Flow
 
 class PexelsPhotoListComposeFragment : BasePhotoListComposeFragment() {
 
-    override val showPlayMenu: Boolean
-        get() = false
-    override val animatedPlaceholder: Boolean
-        get() = false
-    override val photoPagingFlow: Flow<PagingData<Photo>>
-        get() = pexelsImageListViewModel.pagingFlow
-
     private val pexelsImageListViewModel by viewModels<PexelsPhotoListViewModel>()
 
-    override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
-        super.onViewCreated(toolbar, savedInstanceState)
-        toolbar.apply {
-            title = "Pexels Photos"
-            subtitle = "Compose"
-        }
-    }
+    override val animatedPlaceholder: Boolean
+        get() = false
+
+    override val photoPagingFlow: Flow<PagingData<Photo>>
+        get() = pexelsImageListViewModel.pagingFlow
 }

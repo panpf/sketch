@@ -15,210 +15,95 @@
  */
 package com.github.panpf.sketch.sample.ui
 
-import android.Manifest.permission
 import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.view.MenuItem
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
-import androidx.navigation.fragment.findNavController
-import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
-import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
-import com.github.panpf.assemblyadapter.recycler.ItemSpan
-import com.github.panpf.assemblyadapter.recycler.divider.AssemblyGridDividerItemDecoration
-import com.github.panpf.assemblyadapter.recycler.divider.Divider
-import com.github.panpf.sketch.sample.BuildConfig
-import com.github.panpf.sketch.sample.NavMainDirections
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle.State
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.sketch.sample.model.Link
-import com.github.panpf.sketch.sample.model.ListSeparator
+import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
-import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
-import com.github.panpf.tools4a.dimen.ktx.dp2px
+import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
+import com.github.panpf.sketch.sample.ui.gallery.ErrorStateFragment
+import com.github.panpf.sketch.sample.ui.gallery.ViewHomeFragment
+import com.github.panpf.sketch.sample.ui.setting.ToolbarMenuViewModel
+import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class MainFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
+class MainFragment : BaseToolbarBindingFragment<FragmentMainBinding>() {
 
-    private var pendingStartLink: Link? = null
-    private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grantedMap ->
-            val pendingStartLink = pendingStartLink ?: return@registerForActivityResult
-            this@MainFragment.pendingStartLink = null
-            requestLinkPermissionsResult(grantedMap, pendingStartLink)
-        }
+    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
+        ToolbarMenuViewModel.Factory(
+            requireActivity().application,
+            showLayoutModeMenu = true,
+            showPlayMenu = true
+        )
+    }
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentRecyclerBinding,
+        binding: FragmentMainBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.menu.add(0, 0, 0, "Settings").apply {
-            setIcon(R.drawable.ic_settings)
-            setOnMenuItemClickListener {
-                findNavController().navigate(NavMainDirections.actionSettingsFragment())
-                true
-            }
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        toolbar.apply {
+            toolbarMenuViewModel.menuFlow
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
+                    menu.clear()
+                    list.forEachIndexed { groupIndex, group ->
+                        group.items.forEachIndexed { index, menuItemInfo ->
+                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
+                                menuItemInfo.iconResId?.let { iconResId ->
+                                    setIcon(iconResId)
+                                }
+                                setOnMenuItemClickListener {
+                                    menuItemInfo.onClick(this@MainFragment)
+                                    true
+                                }
+                                setShowAsAction(menuItemInfo.showAsAction)
+                            }
+                        }
+                    }
+                }
         }
 
-        binding.recycler.apply {
-            layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
-                itemSpanByItemFactory(GridSeparatorItemFactory::class to ItemSpan.fullSpan())
-            }.build()
-            adapter = AssemblyRecyclerAdapter(
-                itemFactoryList = listOf(
-                    LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
-                        startLink(data)
-                    },
-                    GridSeparatorItemFactory()
-                ),
-                initDataList = pageList()
-            )
-            addItemDecoration(AssemblyGridDividerItemDecoration.Builder(requireContext()).apply {
-                divider(Divider.space(16.dp2px))
-                footerDivider(Divider.space(16.dp2px))
-                sideDivider(Divider.space(16.dp2px))
-                useSideDividerAsSideHeaderAndFooterDivider()
-            }.build())
-        }
-    }
-
-    private fun pageList(): List<Any> = listOf(
-        ListSeparator("Samples"),
-
-        Link(
-            title = "Local Photos\n(View)",
-            navDirections = NavMainDirections.actionLocalPhotoListViewFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
-        ),
-        Link(
-            title = "Local Photos\n(Compose)",
-            navDirections = NavMainDirections.actionLocalPhotoListComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP,
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
-        ),
-
-        Link(
-            title = "Pexels Photos\n(View)",
-            navDirections = NavMainDirections.actionPexelsPhotoListViewFragment()
-        ),
-        Link(
-            title = "Pexels Photos\n(Compose)",
-            navDirections = NavMainDirections.actionPexelsPhotoListComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-
-        Link(
-            title = "Giphy GIFs\n(View)",
-            navDirections = NavMainDirections.actionGifPhotoListViewFragment()
-        ),
-
-        Link(
-            title = "Giphy GIFs\n(Compose)",
-            navDirections = NavMainDirections.actionGifPhotoListComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-
-        ListSeparator("Test"),
-        Link(
-            title = "Local Videos",
-            navDirections = NavMainDirections.actionLocalVideoListFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
-        ),
-        Link(
-            title = "RemoteViews",
-            navDirections = NavMainDirections.actionRemoteViewsFragment()
-        ),
-        Link(
-            title = "Fetcher",
-            navDirections = NavMainDirections.actionFetcherTestFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
-        ),
-        Link(
-            title = "Decoder",
-            navDirections = NavMainDirections.actionDecoderTestPagerFragment()
-        ),
-        Link(
-            title = "Transformation",
-            navDirections = NavMainDirections.actionTransformationTestPagerFragment()
-        ),
-        Link(
-            title = "ExifOrientation",
-            navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
-        ),
-        Link(
-            title = "ProgressIndicator\n(View)",
-            navDirections = NavMainDirections.actionProgressIndicatorTestViewFragment()
-        ),
-        Link(
-            title = "ProgressIndicator\n(Compose)",
-            navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-        Link(
-            title = "Display Insanity\n(View)",
-            navDirections = NavMainDirections.actionInsanityTestViewFragment()
-        ),
-        Link(
-            title = "Display Insanity\n(Compose)",
-            navDirections = NavMainDirections.actionInsanityTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-        Link(
-            title = "Animatable Placeholder\n(View)",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
-        ),
-        Link(
-            title = "Animatable Placeholder\n(Compose)",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-        Link(
-            title = "Share Element\n(View)",
-            navDirections = NavMainDirections.actionShareElementTestFragment(),
-        ),
-    ).let {
-        if (BuildConfig.DEBUG) {
-            it.plus(debugPageList())
-        } else {
-            it
-        }
-    }
-
-    private fun debugPageList(): List<Link> = listOf(
-        Link(
-            title = "Temp Test\n(Compose)",
-            navDirections = NavMainDirections.actionTempTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-    )
-
-    private fun startLink(data: Link) {
-        if (data.minSdk == null || Build.VERSION.SDK_INT >= data.minSdk) {
-            val permissions = data.permissions
-            if (permissions != null) {
-                pendingStartLink = data
-                permissionLauncher.launch(permissions.toTypedArray())
+        binding.pager.apply {
+            val composeFragment = if (Build.VERSION.SDK_INT >= 21) {
+                ComposeHomeFragment()
             } else {
-                findNavController().navigate(data.navDirections)
+                ErrorStateFragment.create("This feature requires Android 5.0 or later")
             }
-        } else {
-            Toast.makeText(
-                context,
-                "Must be API ${data.minSdk} or above",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
 
-    private fun requestLinkPermissionsResult(grantedMap: Map<String, Boolean>, data: Link) {
-        if (grantedMap.values.all { it }) {
-            findNavController().navigate(data.navDirections)
-        } else {
-            Toast.makeText(context, "Please grant permission", Toast.LENGTH_LONG).show()
+            adapter = ArrayFragmentStateAdapter(
+                childFragmentManager,
+                viewLifecycleOwner.lifecycle,
+                listOf(
+                    ViewHomeFragment(),
+                    composeFragment,
+                    TestHomeFragment()
+                )
+            )
+            registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    when (position) {
+                        0 -> binding.navigation.selectedItemId = R.id.view
+                        1 -> binding.navigation.selectedItemId = R.id.compose
+                        2 -> binding.navigation.selectedItemId = R.id.test
+                    }
+                }
+            })
+            isUserInputEnabled = false
+        }
+
+        binding.navigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.view -> binding.pager.setCurrentItem(0, false)
+                R.id.compose -> binding.pager.setCurrentItem(1, false)
+                R.id.test -> binding.pager.setCurrentItem(2, false)
+            }
+            true
         }
     }
 }

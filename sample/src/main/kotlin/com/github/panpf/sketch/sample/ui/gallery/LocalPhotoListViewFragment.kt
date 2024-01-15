@@ -15,36 +15,18 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
-import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.Photo
 import kotlinx.coroutines.flow.Flow
 
 class LocalPhotoListViewFragment : BasePhotoListViewFragment() {
 
-    override val showPlayMenu: Boolean
-        get() = true
-    override val animatedPlaceholder: Boolean
-        get() = false
-    override val photoPagingFlow: Flow<PagingData<Photo>>
-        get() = localPhotoListViewModel.pagingFlow
-
     private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onViewCreated(
-        toolbar: Toolbar,
-        binding: FragmentRecyclerRefreshBinding,
-        savedInstanceState: Bundle?
-    ) {
-        super.onViewCreated(toolbar, binding, savedInstanceState)
-        toolbar.apply {
-            title = "Local Photos"
-            subtitle = "View"
-        }
-    }
+    override val animatedPlaceholder: Boolean
+        get() = false
+
+    override val photoPagingFlow: Flow<PagingData<Photo>>
+        get() = localPhotoListViewModel.pagingFlow
 }
