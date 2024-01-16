@@ -22,9 +22,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -74,14 +74,21 @@ abstract class BasePhotoListViewFragment :
         binding.myRecycler.apply {
             appSettingsService.photoListLayoutMode
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    (0 until itemDecorationCount).forEach { index ->
-                        removeItemDecorationAt(index)
-                    }
                     val (layoutManager1, itemDecoration) =
                         newLayoutManagerAndItemDecoration(LayoutMode.valueOf(it))
                     layoutManager = layoutManager1
+                    (0 until itemDecorationCount).forEach { index ->
+                        removeItemDecorationAt(index)
+                    }
                     addItemDecoration(itemDecoration)
-                    this@apply.adapter = newAdapter(binding)
+
+                    val pagingAdapter = newPagingAdapter(binding)
+                    val loadStateAdapter = MyLoadStateAdapter().apply {
+                        noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
+                    }
+                    adapter = pagingAdapter.withLoadStateFooter(loadStateAdapter)
+
+                    bindRefreshAndAdapter(binding, pagingAdapter)
                 }
 
             appSettingsService.listsCombinedFlow.ignoreFirst()
@@ -134,8 +141,8 @@ abstract class BasePhotoListViewFragment :
         return layoutManager to itemDecoration
     }
 
-    private fun newAdapter(binding: FragmentRecyclerRefreshBinding): RecyclerView.Adapter<*> {
-        val pagingAdapter = AssemblyPagingDataAdapter<Photo>(listOf(
+    private fun newPagingAdapter(binding: FragmentRecyclerRefreshBinding): PagingDataAdapter<*, *> {
+        return AssemblyPagingDataAdapter<Photo>(listOf(
             PhotoGridItemFactory(animatedPlaceholder = animatedPlaceholder)
                 .setOnViewClickListener(R.id.myListImage) { _, _, _, absoluteAdapterPosition, _ ->
                     startImageDetail(binding, absoluteAdapterPosition)
@@ -148,7 +155,12 @@ abstract class BasePhotoListViewFragment :
                 }
             }
         }
+    }
 
+    private fun bindRefreshAndAdapter(
+        binding: FragmentRecyclerRefreshBinding,
+        pagingAdapter: PagingDataAdapter<*, *>
+    ) {
         binding.swipeRefresh.setOnRefreshListener {
             pagingAdapter.refresh()
         }
@@ -185,11 +197,6 @@ abstract class BasePhotoListViewFragment :
                     }
                 }
             }
-
-        val loadStateAdapter = MyLoadStateAdapter().apply {
-            noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
-        }
-        return pagingAdapter.withLoadStateFooter(loadStateAdapter)
     }
 
     private fun startImageDetail(binding: FragmentRecyclerRefreshBinding, position: Int) {

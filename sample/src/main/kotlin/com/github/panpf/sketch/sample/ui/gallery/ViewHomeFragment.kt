@@ -15,38 +15,11 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.os.Bundle
-import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
-import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
-import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.google.android.material.tabs.TabLayoutMediator
+class ViewHomeFragment : BaseHomeFragment() {
 
-class ViewHomeFragment : BaseBindingFragment<FragmentTabPagerBinding>() {
-
-    private val fragmentMap = mapOf(
+    override val fragmentMap = mapOf(
         "Local" to LocalPhotoListViewFragment(),
         "Pexels" to PexelsPhotoListViewFragment(),
         "Giphy" to GifPhotoListViewFragment()
     )
-
-    override fun onViewCreated(
-        binding: FragmentTabPagerBinding,
-        savedInstanceState: Bundle?
-    ) {
-        val titles = fragmentMap.keys.toList()
-        val fragments = fragmentMap.values.toList()
-
-        binding.pager.apply {
-            adapter = ArrayFragmentStateAdapter(
-                fragmentManager = childFragmentManager,
-                lifecycle = viewLifecycleOwner.lifecycle,
-                templateFragmentList = fragments
-            )
-            offscreenPageLimit = 1
-        }
-
-        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-            tab.text = titles[position]
-        }.attach()
-    }
 }

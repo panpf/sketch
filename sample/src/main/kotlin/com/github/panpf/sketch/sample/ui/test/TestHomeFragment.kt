@@ -4,8 +4,10 @@ import android.Manifest.permission
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
@@ -16,12 +18,12 @@ import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.model.Link
-import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
+class TestHomeFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
     private var pendingStartLink: Link? = null
     private val permissionLauncher =
@@ -31,7 +33,12 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             requestLinkPermissionsResult(grantedMap, pendingStartLink)
         }
 
+    override fun getTopInsetsView(): View? {
+        return null
+    }
+
     override fun onViewCreated(
+        toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {

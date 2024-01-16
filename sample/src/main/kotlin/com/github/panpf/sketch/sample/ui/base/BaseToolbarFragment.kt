@@ -54,7 +54,7 @@ abstract class BaseToolbarFragment : BaseFragment() {
 
     }
 
-    final override fun getTopInsetsView(): View? {
+    override fun getTopInsetsView(): View? {
         return toolbar!!
     }
 

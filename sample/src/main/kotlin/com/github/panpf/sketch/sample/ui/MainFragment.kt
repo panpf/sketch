@@ -17,57 +17,27 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle.State
+import android.view.View
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.ui.gallery.ErrorStateFragment
 import com.github.panpf.sketch.sample.ui.gallery.ViewHomeFragment
-import com.github.panpf.sketch.sample.ui.setting.ToolbarMenuViewModel
 import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
-import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class MainFragment : BaseToolbarBindingFragment<FragmentMainBinding>() {
+class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
-    private val toolbarMenuViewModel by viewModels<ToolbarMenuViewModel> {
-        ToolbarMenuViewModel.Factory(
-            requireActivity().application,
-            showLayoutModeMenu = true,
-            showPlayMenu = true
-        )
+    override fun getTopInsetsView(binding: FragmentMainBinding): View? {
+        return binding.root
     }
 
     override fun onViewCreated(
-        toolbar: Toolbar,
         binding: FragmentMainBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.apply {
-            toolbarMenuViewModel.menuFlow
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
-                    menu.clear()
-                    list.forEachIndexed { groupIndex, group ->
-                        group.items.forEachIndexed { index, menuItemInfo ->
-                            menu.add(groupIndex, index, index, menuItemInfo.title).apply {
-                                menuItemInfo.iconResId?.let { iconResId ->
-                                    setIcon(iconResId)
-                                }
-                                setOnMenuItemClickListener {
-                                    menuItemInfo.onClick(this@MainFragment)
-                                    true
-                                }
-                                setShowAsAction(menuItemInfo.showAsAction)
-                            }
-                        }
-                    }
-                }
-        }
-
         binding.pager.apply {
             val composeFragment = if (Build.VERSION.SDK_INT >= 21) {
                 ComposeHomeFragment()
