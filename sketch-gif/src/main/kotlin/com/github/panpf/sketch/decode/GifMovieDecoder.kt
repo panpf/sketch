@@ -22,7 +22,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
@@ -69,7 +68,7 @@ class GifMovieDecoder(
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        val movie: Movie? = dataSource.newInputStream().buffered().use { Movie.decodeStream(it) }
+        val movie: Movie? = dataSource.openInputStream().buffered().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0
         val height = movie?.height() ?: 0
@@ -113,7 +112,6 @@ class GifMovieDecoder(
         override val key: String = "GifMovieDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {

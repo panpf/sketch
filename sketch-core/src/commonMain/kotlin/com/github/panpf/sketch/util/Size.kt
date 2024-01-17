@@ -81,3 +81,10 @@ fun Size.isSameAspectRatio(other: Size, delta: Float = 0f): Boolean {
     }
     return false
 }
+
+/**
+ * The size after rotating [rotation] degrees
+ */
+fun Size.rotate(rotation: Int): Size {
+    return if (rotation % 180 == 0) this else Size(width = height, height = width)
+}

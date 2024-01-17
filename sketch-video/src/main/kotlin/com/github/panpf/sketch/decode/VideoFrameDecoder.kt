@@ -23,13 +23,14 @@ import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -57,7 +58,6 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
 class VideoFrameDecoder(
-    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val mimeType: String,
@@ -92,11 +92,11 @@ class VideoFrameDecoder(
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
                 decodeFull = {
-                    realDecodeFull(mediaMetadataRetriever, imageInfo, it)
+                    realDecodeFull(mediaMetadataRetriever, imageInfo, it).asSketchImage()
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(sketch, requestContext)
-                .appliedResize(sketch, requestContext)
+            ).appliedExifOrientation(requestContext)
+                .appliedResize(requestContext)
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()
@@ -143,9 +143,11 @@ class VideoFrameDecoder(
     private fun realDecodeFull(
         mediaMetadataRetriever: MediaMetadataRetriever,
         imageInfo: ImageInfo,
-        decodeConfig: DecodeConfig
+        sampleSize: Int
     ): Bitmap {
         val request = requestContext.request
+        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+        decodeConfig.inSampleSize = sampleSize
         val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
             ?: request.videoFramePercent?.let { percentDuration ->
@@ -205,7 +207,7 @@ class VideoFrameDecoder(
                     )
             }
         }
-        sketch.logger.d(MODULE) {
+        requestContext.sketch.logger.d(MODULE) {
             "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
         }
         return bitmap
@@ -227,7 +229,6 @@ class VideoFrameDecoder(
         override val key: String = "VideoFrameDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): VideoFrameDecoder? {
@@ -237,7 +238,6 @@ class VideoFrameDecoder(
                 && (dataSource is ContentDataSource || dataSource is BasedFileDataSource)
             ) {
                 return VideoFrameDecoder(
-                    sketch = sketch,
                     requestContext = requestContext,
                     dataSource = dataSource,
                     mimeType = mimeType

@@ -29,6 +29,9 @@ import kotlin.annotation.AnnotationRetention.SOURCE
 import kotlin.annotation.AnnotationTarget.FIELD
 import kotlin.annotation.AnnotationTarget.LOCAL_VARIABLE
 import kotlin.annotation.AnnotationTarget.PROPERTY
+import kotlin.annotation.AnnotationTarget.PROPERTY_GETTER
+import kotlin.annotation.AnnotationTarget.PROPERTY_SETTER
+import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 
 @IntDef(
     value = [
@@ -44,7 +47,7 @@ import kotlin.annotation.AnnotationTarget.PROPERTY
     ]
 )
 @Retention(SOURCE)
-@Target(FIELD, PROPERTY, LOCAL_VARIABLE)
+@Target(FIELD, PROPERTY, LOCAL_VARIABLE, VALUE_PARAMETER, PROPERTY_GETTER, PROPERTY_SETTER)
 annotation class ExifOrientation {
     companion object {
         const val ORIENTATION_UNDEFINED = 0

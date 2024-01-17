@@ -17,6 +17,7 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.Size
 
 expect interface Image {
@@ -50,6 +51,15 @@ expect interface Image {
     fun checkValid(): Boolean
 
     fun toCountingImage(requestContext: RequestContext): CountingImage?
+
+    fun transformer(): ImageTransformer?
+}
+
+interface ImageTransformer {
+
+    fun scaled(image: Image, scaleFactor: Float): Image
+
+    fun mapping(image: Image, mapping: ResizeMapping): Image
 }
 
 val Image.size: Size

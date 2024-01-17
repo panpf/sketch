@@ -43,7 +43,7 @@ class ResourceDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream =
+    override fun openInputStream(): InputStream =
         resources.openRawResource(resId)
 
     @WorkerThread

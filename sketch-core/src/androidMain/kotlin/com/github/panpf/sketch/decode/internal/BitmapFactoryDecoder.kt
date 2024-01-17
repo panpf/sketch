@@ -18,23 +18,21 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.DecodeException
-import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toAndroidRect
 
 /**
  * Decode image files using BitmapFactory
  */
 open class BitmapFactoryDecoder(
-    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val dataSource: BasedStreamDataSource,
 ) : Decoder {
@@ -54,18 +52,20 @@ open class BitmapFactoryDecoder(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
-            decodeFull = { decodeConfig ->
-                realDecodeFull(imageInfo, decodeConfig)
+            decodeFull = { sampleSize ->
+                realDecodeFull(imageInfo, sampleSize).asSketchImage()
             },
-            decodeRegion = if (canDecodeRegion) { srcRect, decodeConfig ->
-                realDecodeRegion(imageInfo, srcRect, decodeConfig)
+            decodeRegion = if (canDecodeRegion) { srcRect, sampleSize ->
+                realDecodeRegion(imageInfo, srcRect.toAndroidRect(), sampleSize).asSketchImage()
             } else null
-        ).appliedExifOrientation(sketch, requestContext)
-            .appliedResize(sketch, requestContext)
+        ).appliedExifOrientation(requestContext)
+            .appliedResize(requestContext)
     }
 
-    private fun realDecodeFull(imageInfo: ImageInfo, decodeConfig: DecodeConfig): Bitmap {
+    private fun realDecodeFull(imageInfo: ImageInfo, sampleSize: Int): Bitmap {
         val request = requestContext.request
+        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+        decodeConfig.inSampleSize = sampleSize
         val decodeOptions = decodeConfig.toBitmapOptions()
 
         // Set inBitmap from bitmap pool
@@ -76,9 +76,9 @@ open class BitmapFactoryDecoder(
 //            disallowReuseBitmap = request.disallowReuseBitmap,
 //            caller = "DefaultBitmapDecoder:realDecodeFull"
 //        )
-        sketch.logger.d(MODULE) {
-            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
-        }
+//        requestContext.logger.d(MODULE) {
+//            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
+//        }
 
         val bitmap: Bitmap = try {
             dataSource.decodeBitmap(decodeOptions)
@@ -86,16 +86,16 @@ open class BitmapFactoryDecoder(
             val inBitmap = decodeOptions.inBitmap
             if (inBitmap != null && isInBitmapError(throwable)) {
                 val message = "Bitmap decode error. Because inBitmap. '${requestContext.logKey}'"
-                sketch.logger.e(MODULE, throwable, message)
+                requestContext.logger.e(MODULE, throwable, message)
 
 //                sketch.bitmapPool.freeBitmap(
 //                    bitmap = inBitmap,
 //                    disallowReuseBitmap = request.disallowReuseBitmap,
 //                    caller = "decode:error"
 //                )
-                sketch.logger.d(MODULE) {
-                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
-                }
+//                requestContext.logger.d(MODULE) {
+//                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
+//                }
 
                 decodeOptions.inBitmap = null
                 try {
@@ -108,23 +108,23 @@ open class BitmapFactoryDecoder(
             }
         } ?: throw ImageInvalidException("Invalid image. decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
-            sketch.logger.e(MODULE) {
+            requestContext.logger.e(MODULE) {
                 "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
-            sketch.logger.d(MODULE) {
+            requestContext.logger.d(MODULE) {
                 "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
             }
         }
         return bitmap
     }
 
-    private fun realDecodeRegion(
-        imageInfo: ImageInfo, srcRect: Rect, decodeConfig: DecodeConfig
-    ): Bitmap {
+    private fun realDecodeRegion(imageInfo: ImageInfo, srcRect: Rect, sampleSize: Int): Bitmap {
         val request = requestContext.request
+        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+        decodeConfig.inSampleSize = sampleSize
         val decodeOptions = decodeConfig.toBitmapOptions()
 //        sketch.bitmapPool.setInBitmapForRegion(
 //            options = decodeOptions,
@@ -134,11 +134,11 @@ open class BitmapFactoryDecoder(
 //            disallowReuseBitmap = request.disallowReuseBitmap,
 //            caller = "DefaultBitmapDecoder:realDecodeRegion"
 //        )
-        sketch.logger.d(MODULE) {
-            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
-        }
+//        requestContext.logger.d(MODULE) {
+//            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
+//        }
 
-        val bitmap = try {
+        val bitmap: Bitmap = try {
             dataSource.decodeRegionBitmap(srcRect, decodeOptions)
         } catch (throwable: Throwable) {
             val inBitmap = decodeOptions.inBitmap
@@ -146,16 +146,16 @@ open class BitmapFactoryDecoder(
                 inBitmap != null && isInBitmapError(throwable) -> {
                     val message =
                         "Bitmap decode region error. Because inBitmap. '${requestContext.logKey}'"
-                    sketch.logger.e(MODULE, throwable, message)
+                    requestContext.logger.e(MODULE, throwable, message)
 
 //                    sketch.bitmapPool.freeBitmap(
 //                        bitmap = inBitmap,
 //                        disallowReuseBitmap = request.disallowReuseBitmap,
 //                        caller = "decodeRegion:error"
 //                    )
-                    sketch.logger.d(MODULE) {
-                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
-                    }
+//                    requestContext.logger.d(MODULE) {
+//                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
+//                    }
 
                     decodeOptions.inBitmap = null
                     try {
@@ -178,13 +178,13 @@ open class BitmapFactoryDecoder(
             }
         } ?: throw ImageInvalidException("Invalid image. region decode return null")
         if (bitmap.width <= 0 || bitmap.height <= 0) {
-            sketch.logger.e(MODULE) {
+            requestContext.logger.e(MODULE) {
                 "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
-            sketch.logger.d(MODULE) {
+            requestContext.logger.d(MODULE) {
                 "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
         }
@@ -196,13 +196,12 @@ open class BitmapFactoryDecoder(
         override val key: String = "BitmapFactoryDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
             val dataSource = fetchResult.dataSource
             return if (dataSource is BasedStreamDataSource) {
-                BitmapFactoryDecoder(sketch, requestContext, dataSource)
+                BitmapFactoryDecoder(requestContext, dataSource)
             } else {
                 null
             }

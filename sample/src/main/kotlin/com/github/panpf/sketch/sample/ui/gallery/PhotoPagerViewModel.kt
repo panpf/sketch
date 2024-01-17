@@ -65,7 +65,7 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
 
         try {
             withContext(Dispatchers.IO) {
-                fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().newInputStream()
+                fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().openInputStream()
                     .use { input ->
                         imageFile.outputStream().buffered().use { output ->
                             input.copyTo(output)
@@ -112,7 +112,7 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
         if (!imageFile.exists()) {
             try {
                 withContext(Dispatchers.IO) {
-                    fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().newInputStream()
+                    fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().openInputStream()
                         .use { input ->
                             imageFile.outputStream().buffered().use { output ->
                                 input.copyTo(output)

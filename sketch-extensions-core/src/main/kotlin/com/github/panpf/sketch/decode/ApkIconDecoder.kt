@@ -41,15 +41,13 @@ fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = appl
  * Extract the icon of the Apk file and convert it to Bitmap
  */
 class ApkIconDecoder(
-    sketch: Sketch,
     requestContext: RequestContext,
     dataFrom: DataFrom,
     file: File
 ) : DrawableDecoder(
-    sketch = sketch,
     requestContext = requestContext,
     drawableDataSource = DrawableDataSource(
-        sketch = sketch,
+        sketch = requestContext.sketch,
         request = requestContext.request,
         dataFrom = dataFrom,
         drawableFetcher = ApkIconDrawableFetcher(file),
@@ -67,7 +65,6 @@ class ApkIconDecoder(
         override val key: String = "ApkIconDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
@@ -77,7 +74,6 @@ class ApkIconDecoder(
                 && dataSource is BasedFileDataSource
             ) {
                 ApkIconDecoder(
-                    sketch = sketch,
                     requestContext = requestContext,
                     dataFrom = fetchResult.dataFrom,
                     file = dataSource.getFile()

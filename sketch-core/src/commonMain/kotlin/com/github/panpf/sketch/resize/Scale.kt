@@ -40,3 +40,12 @@ enum class Scale {
      */
     FILL,
 }
+
+fun Scale.reverse(): Scale {
+    return when (this) {
+        Scale.START_CROP -> Scale.END_CROP
+        Scale.CENTER_CROP -> Scale.CENTER_CROP
+        Scale.END_CROP -> Scale.START_CROP
+        Scale.FILL -> Scale.FILL
+    }
+}

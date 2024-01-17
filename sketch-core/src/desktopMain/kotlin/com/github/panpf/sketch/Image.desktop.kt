@@ -17,6 +17,8 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.internal.ResizeMapping
+import java.awt.image.BufferedImage
 
 actual interface Image {
 
@@ -49,4 +51,43 @@ actual interface Image {
     actual fun checkValid(): Boolean
 
     actual fun toCountingImage(requestContext: RequestContext): CountingImage?
+
+    actual fun transformer(): ImageTransformer?
+}
+
+fun BufferedImage.asSketchImage(): Image = BufferedImageImage(this)
+
+class BufferedImageImage(
+    val bufferedImage: BufferedImage,
+    override val shareable: Boolean = true
+) : Image {
+
+    override val width: Int = bufferedImage.width
+
+    override val height: Int = bufferedImage.height
+
+    override val byteCount: Int = width * height * (bufferedImage.colorModel.pixelSize / 8)
+
+    override val allocationByteCount: Int = byteCount
+
+    override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? {
+        return null
+    }
+
+    override fun checkValid(): Boolean = true
+
+    override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
+
+    override fun processor(): ImageTransformer = BufferedImageTransformer()
+}
+
+class BufferedImageTransformer : ImageTransformer {
+
+    override fun scaled(image: Image, scaleFactor: Float): Image {
+        TODO("Not yet implemented")
+    }
+
+    override fun mapping(image: Image, mapping: ResizeMapping): Image {
+        TODO("Not yet implemented")
+    }
 }

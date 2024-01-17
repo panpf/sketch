@@ -53,7 +53,7 @@ open class DefaultFetchResult constructor(
         val dataSource = dataSource
         if (dataSource is BasedStreamDataSource) {
             val byteArray = ByteArray(100)
-            val readLength = dataSource.newInputStream().use {
+            val readLength = dataSource.openInputStream().use {
                 it.read(byteArray)
             }
             if (readLength != -1) {

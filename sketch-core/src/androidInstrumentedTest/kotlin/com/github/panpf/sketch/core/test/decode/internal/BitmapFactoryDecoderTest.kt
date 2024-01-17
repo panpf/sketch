@@ -1230,7 +1230,7 @@ class BitmapFactoryDecoderTest {
         private var count = 0
 
         @WorkerThread
-        override fun newInputStream(): InputStream {
+        override fun openInputStream(): InputStream {
             val stackStringList = Exception().stackTraceToString().split("\n")
             if (stackStringList.find { it.contains(".realDecodeFull(") } != null) {
                 count++
@@ -1238,7 +1238,7 @@ class BitmapFactoryDecoderTest {
                     throw IllegalArgumentException("Problem decoding into existing bitmap")
                 }
             }
-            return fileDataSource.newInputStream()
+            return fileDataSource.openInputStream()
         }
     }
 
@@ -1251,7 +1251,7 @@ class BitmapFactoryDecoderTest {
         private var count = 0
 
         @WorkerThread
-        override fun newInputStream(): InputStream {
+        override fun openInputStream(): InputStream {
             val stackStringList = Exception().stackTraceToString().split("\n")
             if (stackStringList.find { it.contains(".realDecodeRegion(") } != null) {
                 when (srcError) {
@@ -1271,7 +1271,7 @@ class BitmapFactoryDecoderTest {
                     }
                 }
             }
-            return fileDataSource.newInputStream()
+            return fileDataSource.openInputStream()
         }
     }
 }

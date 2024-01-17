@@ -45,7 +45,6 @@ fun interface Decoder {
          * create a [Decoder] and return it, otherwise return null
          */
         fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult,
         ): Decoder?

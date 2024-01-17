@@ -37,7 +37,7 @@ class FileDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = FileInputStream(file)
+    override fun openInputStream(): InputStream = FileInputStream(file)
 
     @WorkerThread
     @Throws(IOException::class)

@@ -36,7 +36,7 @@ class ByteArrayDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = ByteArrayInputStream(data)
+    override fun openInputStream(): InputStream = ByteArrayInputStream(data)
 
     @WorkerThread
     @Throws(IOException::class)

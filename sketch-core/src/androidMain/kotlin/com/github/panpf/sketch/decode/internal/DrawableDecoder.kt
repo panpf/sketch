@@ -17,7 +17,6 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.DecodeResult
@@ -40,7 +39,6 @@ import kotlin.math.roundToInt
  * Extract the icon of the installed app and convert it to Bitmap
  */
 open class DrawableDecoder constructor(
-    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val drawableDataSource: DrawableDataSource,
     private val mimeType: String?
@@ -107,7 +105,7 @@ open class DrawableDecoder constructor(
             mimeType = mimeType ?: "image/png",
             exifOrientation = ExifOrientation.ORIENTATION_UNDEFINED
         )
-        sketch.logger.d(MODULE) {
+        requestContext.logger.d(MODULE) {
             "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
         }
         DecodeResult(
@@ -116,7 +114,7 @@ open class DrawableDecoder constructor(
             dataFrom = LOCAL,
             transformedList = transformedList,
             extras = null
-        ).appliedResize(sketch, requestContext)
+        ).appliedResize(requestContext)
     }
 
     class Factory : Decoder.Factory {
@@ -124,13 +122,12 @@ open class DrawableDecoder constructor(
         override val key: String = "DrawableDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
             val dataSource = fetchResult.dataSource
             return if (dataSource is DrawableDataSource) {
-                DrawableDecoder(sketch, requestContext, dataSource, fetchResult.mimeType)
+                DrawableDecoder(requestContext, dataSource, fetchResult.mimeType)
             } else {
                 null
             }

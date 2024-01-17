@@ -67,7 +67,7 @@ class FileDataSourceTest {
             request = ImageRequest(context, newFileUri(file.path)),
             file = file
         ).apply {
-            newInputStream().close()
+            openInputStream().close()
         }
 
         assertThrow(FileNotFoundException::class) {
@@ -76,7 +76,7 @@ class FileDataSourceTest {
                 request = ImageRequest(context, newFileUri("/sdcard/not_found.jpeg")),
                 file = File("/sdcard/not_found.jpeg")
             ).apply {
-                newInputStream()
+                openInputStream()
             }
         }
     }

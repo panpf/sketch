@@ -78,7 +78,6 @@ fun ImageRequest.decode(sketch: Sketch): DecodeResult {
         sketch.components.newFetcherOrThrow(request).fetch()
     }.getOrThrow()
     return BitmapFactoryDecoder(
-        sketch = sketch,
         requestContext = request.toRequestContext(sketch),
         dataSource = fetchResult.dataSource.asOrThrow()
     ).let { runBlocking { it.decode() }.getOrThrow() }

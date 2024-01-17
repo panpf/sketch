@@ -39,7 +39,7 @@ class ContentDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream =
+    override fun openInputStream(): InputStream =
         request.context.contentResolver.openInputStream(contentUri)
             ?: throw IOException("Invalid content uri: $contentUri")
 

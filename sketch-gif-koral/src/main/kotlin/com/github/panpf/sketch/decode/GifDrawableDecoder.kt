@@ -21,7 +21,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
@@ -151,7 +150,6 @@ class GifDrawableDecoder(
         override val key: String = "GifDrawableDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {

@@ -24,7 +24,6 @@ import androidx.annotation.WorkerThread
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.appliedResize
@@ -56,7 +55,6 @@ fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
  * Decode svg file and convert to Bitmap
  */
 class SvgDecoder constructor(
-    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val dataSource: BasedStreamDataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
@@ -72,7 +70,7 @@ class SvgDecoder constructor(
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        val svg = dataSource.newInputStream().buffered().use { SVG.getFromInputStream(it) }
+        val svg = dataSource.openInputStream().buffered().use { SVG.getFromInputStream(it) }
 
         val imageWidth: Float
         val imageHeight: Float
@@ -149,7 +147,7 @@ class SvgDecoder constructor(
         backgroundColor?.let { canvas.drawColor(it) }
         val renderOptions = css?.let { RenderOptions().css(it) }
         svg.renderToCanvas(canvas, renderOptions)
-        sketch.logger.d(MODULE) {
+        requestContext.sketch.logger.d(MODULE) {
             "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
         }
 
@@ -159,7 +157,7 @@ class SvgDecoder constructor(
             dataFrom = dataSource.dataFrom,
             transformedList = transformedList,
             extras = null
-        ).appliedResize(sketch, requestContext)
+        ).appliedResize(requestContext)
     }
 
     /**
@@ -174,7 +172,6 @@ class SvgDecoder constructor(
         override val key: String = "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): SvgDecoder? {
@@ -185,7 +182,6 @@ class SvgDecoder constructor(
                 && dataSource is BasedStreamDataSource
             ) {
                 SvgDecoder(
-                    sketch = sketch,
                     requestContext = requestContext,
                     dataSource = dataSource,
                     useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,

@@ -21,13 +21,14 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -52,7 +53,6 @@ fun ComponentRegistry.Builder.supportFFmpegVideoFrame(): ComponentRegistry.Build
  * Notes：ImageRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect
  */
 class FFmpegVideoFrameDecoder(
-    private val sketch: Sketch,
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val mimeType: String,
@@ -86,11 +86,11 @@ class FFmpegVideoFrameDecoder(
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
                 decodeFull = {
-                    realDecodeFull(mediaMetadataRetriever, imageInfo, it)
+                    realDecodeFull(mediaMetadataRetriever, imageInfo, it).asSketchImage()
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(sketch, requestContext)
-                .appliedResize(sketch, requestContext)
+            ).appliedExifOrientation(requestContext)
+                .appliedResize(requestContext)
         } finally {
             mediaMetadataRetriever.release()
         }
@@ -133,9 +133,11 @@ class FFmpegVideoFrameDecoder(
     private fun realDecodeFull(
         mediaMetadataRetriever: FFmpegMediaMetadataRetriever,
         imageInfo: ImageInfo,
-        decodeConfig: DecodeConfig
+        sampleSize: Int
     ): Bitmap {
         val request = requestContext.request
+        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
+        decodeConfig.inSampleSize = sampleSize
         val option =
             request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
@@ -167,7 +169,7 @@ class FFmpegVideoFrameDecoder(
                             imageInfo.width, imageInfo.height
                         )
                 )
-        sketch.logger.d(MODULE) {
+        requestContext.logger.d(MODULE) {
             "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
         }
         return bitmap
@@ -188,7 +190,6 @@ class FFmpegVideoFrameDecoder(
         override val key: String = "FFmpegVideoFrameDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): FFmpegVideoFrameDecoder? {
@@ -198,7 +199,6 @@ class FFmpegVideoFrameDecoder(
                 && (dataSource is ContentDataSource || dataSource is BasedFileDataSource)
             ) {
                 return FFmpegVideoFrameDecoder(
-                    sketch = sketch,
                     requestContext = requestContext,
                     dataSource = dataSource,
                     mimeType = mimeType

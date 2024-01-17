@@ -164,7 +164,7 @@ internal fun getCacheFileFromStreamDataSource(
             val editor = resultCache.edit(resultCacheKey)
                 ?: throw IOException("Disk cache cannot be used")
             try {
-                streamDataSource.newInputStream().use { inputStream ->
+                streamDataSource.openInputStream().use { inputStream ->
                     editor.newOutputStream().buffered().use { outputStream ->
                         inputStream.copyTo(outputStream)
                     }

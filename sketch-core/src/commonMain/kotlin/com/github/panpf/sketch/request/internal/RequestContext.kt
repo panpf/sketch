@@ -17,6 +17,7 @@ package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 
 class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {
@@ -25,6 +26,9 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
     private val _requestList = mutableListOf(initialRequest)
     private var _request: ImageRequest = initialRequest
     private var _cacheKey: String? = null
+
+    val logger: Logger
+        get() = sketch.logger
 
     val requestList: List<ImageRequest>
         get() = _requestList.toList()

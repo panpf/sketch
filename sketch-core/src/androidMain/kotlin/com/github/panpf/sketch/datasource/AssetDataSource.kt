@@ -38,7 +38,7 @@ class AssetDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = request.context.assets.open(assetFileName)
+    override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
 
     @WorkerThread
     @Throws(IOException::class)

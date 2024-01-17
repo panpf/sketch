@@ -18,7 +18,6 @@ package com.github.panpf.sketch.decode
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -61,7 +60,6 @@ class WebpAnimatedDecoder(
         override val key: String = "WebpAnimatedDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {

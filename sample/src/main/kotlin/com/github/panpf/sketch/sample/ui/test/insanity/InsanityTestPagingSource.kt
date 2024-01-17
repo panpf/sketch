@@ -60,8 +60,8 @@ class InsanityTestPagingSource(private val context: Context) :
                 dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-                val size =
-                    exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
+                val imageSize = Size(imageInfo.width, imageInfo.height)
+                val size = exifOrientationHelper?.applyToSize(imageSize) ?: imageSize
                 Photo(
                     originalUrl = uri,
                     mediumUrl = null,

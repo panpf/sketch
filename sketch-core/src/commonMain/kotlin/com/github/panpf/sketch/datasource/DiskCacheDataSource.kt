@@ -35,7 +35,7 @@ class DiskCacheDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun newInputStream(): InputStream = snapshot.newInputStream()
+    override fun openInputStream(): InputStream = snapshot.newInputStream()
 
     @WorkerThread
     @Throws(IOException::class)

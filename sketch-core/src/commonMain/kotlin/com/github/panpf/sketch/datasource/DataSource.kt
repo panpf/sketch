@@ -38,7 +38,7 @@ interface BasedStreamDataSource : DataSource {
 
     @WorkerThread
     @Throws(IOException::class)
-    fun newInputStream(): InputStream
+    fun openInputStream(): InputStream
 }
 
 interface BasedFileDataSource : BasedStreamDataSource {

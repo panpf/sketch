@@ -657,3 +657,61 @@ class Rect {
         }
     }
 }
+
+/**
+ * Flip this rect horizontally or vertically within a given container
+ */
+fun Rect.flip(spaceSize: Size, vertical: Boolean = false): Rect {
+    return if (!vertical) {
+        Rect(
+            left = spaceSize.width - right,
+            top = top,
+            right = spaceSize.width - left,
+            bottom = bottom
+        )
+    } else {
+        Rect(
+            left = left,
+            top = spaceSize.height - bottom,
+            right = right,
+            bottom = spaceSize.height - top
+        )
+    }
+}
+
+/**
+ * Rotate the space by [rotation] degrees, and then return the rotated Rect
+ */
+fun Rect.rotateInSpace(spaceSize: Size, rotation: Int): Rect {
+    require(rotation % 90 == 0) { "rotation must be a multiple of 90, rotation: $rotation" }
+    return when ((rotation % 360).let { if (it < 0) 360 + it else it }) {
+        90 -> {
+            Rect(
+                left = spaceSize.height - this.bottom,
+                top = this.left,
+                right = spaceSize.height - this.top,
+                bottom = this.right
+            )
+        }
+
+        180 -> {
+            Rect(
+                left = spaceSize.width - this.right,
+                top = spaceSize.height - this.bottom,
+                right = spaceSize.width - this.left,
+                bottom = spaceSize.height - this.top,
+            )
+        }
+
+        270 -> {
+            Rect(
+                left = this.top,
+                top = spaceSize.width - this.right,
+                right = this.bottom,
+                bottom = spaceSize.width - this.left,
+            )
+        }
+
+        else -> this
+    }
+}

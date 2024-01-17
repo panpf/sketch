@@ -104,13 +104,12 @@ open class ComponentRegistry private constructor(
      */
     @WorkerThread
     internal fun newDecoderOrNull(
-        sketch: Sketch,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): Decoder? {
         requiredWorkThread()
         return decoderFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, requestContext, fetchResult)
+            it.create(requestContext, fetchResult)
         }
     }
 
@@ -119,11 +118,10 @@ open class ComponentRegistry private constructor(
      */
     @WorkerThread
     internal fun newDecoderOrThrow(
-        sketch: Sketch,
         requestContext: RequestContext,
         fetchResult: FetchResult,
     ): Decoder {
-        return newDecoderOrNull(sketch, requestContext, fetchResult)
+        return newDecoderOrNull(requestContext, fetchResult)
             ?: throw IllegalArgumentException(
                 "No Decoder can handle this uri '${requestContext.request.uriString}', " +
                         "please pass ComponentRegistry.Builder.addDecoder() function to add a new Decoder to support it"
@@ -296,8 +294,8 @@ class Components(private val sketch: Sketch, internal val registry: ComponentReg
         fetchResult: FetchResult,
     ): Decoder =
         requestContext.request.componentRegistry
-            ?.newDecoderOrNull(sketch, requestContext, fetchResult)
-            ?: registry.newDecoderOrThrow(sketch, requestContext, fetchResult)
+            ?.newDecoderOrNull(requestContext, fetchResult)
+            ?: registry.newDecoderOrThrow(requestContext, fetchResult)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

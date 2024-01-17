@@ -114,8 +114,8 @@ class LocalPhotoListPagingSource(private val context: Context) :
             }
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-                val size =
-                    exifOrientationHelper.applyToSize(Size(imageInfo.width, imageInfo.height))
+                val imageSize = Size(imageInfo.width, imageInfo.height)
+                val size = exifOrientationHelper?.applyToSize(imageSize) ?: imageSize
                 Photo(
                     originalUrl = uri,
                     mediumUrl = null,
@@ -138,7 +138,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
     }
 
     private fun BasedStreamDataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
-        val svg = newInputStream().buffered().use { SVG.getFromInputStream(it) }
+        val svg = openInputStream().buffered().use { SVG.getFromInputStream(it) }
         val width: Int
         val height: Int
         val viewBox: RectF? = svg.documentViewBox

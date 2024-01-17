@@ -15,9 +15,9 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import android.graphics.Rect
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.format
 
 fun createInSampledTransformed(inSampleSize: Int): String = "InSampledTransformed($inSampleSize)"

@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.FetchResult
@@ -32,7 +31,6 @@ class TestDecoder : Decoder {
         override val key: String = "TestDecoder"
 
         override fun create(
-            sketch: Sketch,
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder {

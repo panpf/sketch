@@ -49,7 +49,7 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
             }
 
             is BasedStreamDataSource -> {
-                GifInfoHandle(dataSource.newInputStream())
+                GifInfoHandle(dataSource.openInputStream())
             }
 
             else -> {

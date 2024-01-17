@@ -67,7 +67,7 @@ class ResourceDataSourceTest {
             resources = context.resources,
             resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
         ).apply {
-            newInputStream().close()
+            openInputStream().close()
         }
 
         assertThrow(Resources.NotFoundException::class) {
@@ -78,7 +78,7 @@ class ResourceDataSourceTest {
                 resources = context.resources,
                 resId = 42
             ).apply {
-                newInputStream()
+                openInputStream()
             }
         }
     }

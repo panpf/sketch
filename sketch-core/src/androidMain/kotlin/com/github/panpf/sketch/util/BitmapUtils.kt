@@ -73,7 +73,7 @@ internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
 internal fun Bitmap.scaled(
     scale: Double,
 //    bitmapPool: BitmapPool,
-    disallowReuseBitmap: Boolean
+//    disallowReuseBitmap: Boolean
 ): Bitmap {
     val config = this.safeConfig
     val scaledWidth = ceil(width * scale).toInt()

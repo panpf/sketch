@@ -55,7 +55,7 @@ class SketchImageSource(
         if (dataSource !is BasedStreamDataSource) {
             return Result.failure(IllegalStateException("DataSource is not BasedStreamDataSource. imageUri='$imageUri'"))
         }
-        dataSource.newInputStream()
+        dataSource.openInputStream()
     }
 
     override fun equals(other: Any?): Boolean {

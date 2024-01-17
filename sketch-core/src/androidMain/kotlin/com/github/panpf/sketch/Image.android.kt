@@ -17,6 +17,7 @@ package com.github.panpf.sketch
 
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -24,13 +25,21 @@ import com.github.panpf.sketch.cache.BitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.height
 import com.github.panpf.sketch.util.isImmutable
+import com.github.panpf.sketch.util.safeConfig
+import com.github.panpf.sketch.util.scaled
+import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.width
 
-fun Bitmap.asSketchImage(resources: Resources? = null, shareable: Boolean = isImmutable): BitmapImage {
+fun Bitmap.asSketchImage(
+    resources: Resources? = null,
+    shareable: Boolean = isImmutable
+): BitmapImage {
     return BitmapImage(this, shareable, resources)
 }
 
@@ -93,6 +102,8 @@ actual interface Image {
     actual fun checkValid(): Boolean
 
     actual fun toCountingImage(requestContext: RequestContext): CountingImage?
+
+    actual fun transformer(): ImageTransformer?
 }
 
 open class BitmapImage internal constructor(
@@ -125,6 +136,8 @@ open class BitmapImage internal constructor(
         return null
     }
 
+    override fun transformer(): ImageTransformer? = BitmapImageTransformer()
+
     override fun toString(): String {
         return "BitmapImage(bitmap=${bitmap.logString}, shareable=$shareable)"
     }
@@ -143,6 +156,44 @@ open class BitmapImage internal constructor(
         result = 31 * result + shareable.hashCode()
         result = 31 * result + (resources?.hashCode() ?: 0)
         return result
+    }
+}
+
+class BitmapImageTransformer : ImageTransformer {
+
+    override fun scaled(image: Image, scaleFactor: Float): Image {
+        val inputBitmap = image.asOrThrow<BitmapImage>().bitmap
+        val outBitmap = inputBitmap.scaled(
+            scale = scaleFactor.toDouble(),
+//                bitmapPool = sketch.bitmapPool,
+//            disallowReuseBitmap = request.disallowReuseBitmap
+        )
+        return outBitmap.asSketchImage()
+    }
+
+    override fun mapping(image: Image, mapping: ResizeMapping): Image {
+        val inputBitmap = image.asOrThrow<BitmapImage>().bitmap
+        val config = inputBitmap.safeConfig
+        // TODO BitmapPool
+//        val outBitmap = sketch.bitmapPool.getOrCreate(
+//            width = mapping.newWidth,
+//            height = mapping.newHeight,
+//            config = config,
+//            disallowReuseBitmap = request.disallowReuseBitmap,
+//            caller = "appliedResize"
+//        )
+        val outBitmap = Bitmap.createBitmap(
+            /* width = */ mapping.newWidth,
+            /* height = */ mapping.newHeight,
+            /* config = */ config,
+        )
+        Canvas(outBitmap).drawBitmap(
+            /* bitmap = */ inputBitmap,
+            /* src = */ mapping.srcRect.toAndroidRect(),
+            /* dst = */ mapping.destRect.toAndroidRect(),
+            /* paint = */ null
+        )
+        return outBitmap.asSketchImage()
     }
 }
 
@@ -177,4 +228,6 @@ data class DrawableImage internal constructor(
     }
 
     override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
+
+    override fun transformer(): ImageTransformer? = null
 }
