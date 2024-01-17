@@ -18,8 +18,9 @@ package com.github.panpf.sketch.sample.ui
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.github.panpf.assemblyadapter.pager.ArrayFragmentStatePagerAdapter
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
@@ -45,26 +46,34 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 ErrorStateFragment.create("This feature requires Android 5.0 or later")
             }
 
-            adapter = ArrayFragmentStateAdapter(
-                childFragmentManager,
-                viewLifecycleOwner.lifecycle,
-                listOf(
+            adapter = ArrayFragmentStatePagerAdapter(
+                fragmentManager = childFragmentManager,
+                behavior = FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+                templateFragmentList = listOf(
                     ViewHomeFragment(),
                     composeFragment,
                     TestHomeFragment()
                 )
             )
-            registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
                 override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
                     when (position) {
                         0 -> binding.navigation.selectedItemId = R.id.view
                         1 -> binding.navigation.selectedItemId = R.id.compose
                         2 -> binding.navigation.selectedItemId = R.id.test
                     }
                 }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                }
             })
-            isUserInputEnabled = false
         }
 
         binding.navigation.setOnItemSelectedListener {
