@@ -15,6 +15,9 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
+import android.os.Bundle
+import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
+
 class ComposeHomeFragment : BaseHomeFragment() {
 
     override val fragmentMap = mapOf(
@@ -22,4 +25,9 @@ class ComposeHomeFragment : BaseHomeFragment() {
         "Pexels" to PexelsPhotoListComposeFragment(),
         "Giphy" to GifPhotoListComposeFragment()
     )
+
+    override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
+        super.onViewCreated(binding, savedInstanceState)
+        binding.toolbar.subtitle = "Compose"
+    }
 }

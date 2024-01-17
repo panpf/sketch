@@ -42,6 +42,7 @@ class TestHomeFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
+        toolbar.subtitle = "Test"
         binding.recycler.apply {
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
                 itemSpanByItemFactory(GridSeparatorItemFactory::class to ItemSpan.fullSpan())

@@ -15,6 +15,9 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
+import android.os.Bundle
+import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
+
 class ViewHomeFragment : BaseHomeFragment() {
 
     override val fragmentMap = mapOf(
@@ -22,4 +25,9 @@ class ViewHomeFragment : BaseHomeFragment() {
         "Pexels" to PexelsPhotoListViewFragment(),
         "Giphy" to GifPhotoListViewFragment()
     )
+
+    override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
+        super.onViewCreated(binding, savedInstanceState)
+        binding.toolbar.subtitle = "View"
+    }
 }
