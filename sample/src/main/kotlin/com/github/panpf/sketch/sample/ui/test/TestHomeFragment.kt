@@ -58,8 +58,8 @@ class TestHomeFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             )
             addItemDecoration(AssemblyGridDividerItemDecoration.Builder(requireContext()).apply {
                 divider(Divider.space(16.dp2px))
-                footerDivider(Divider.space(16.dp2px))
                 sideDivider(Divider.space(16.dp2px))
+                useDividerAsHeaderAndFooterDivider()
                 useSideDividerAsSideHeaderAndFooterDivider()
             }.build())
         }
