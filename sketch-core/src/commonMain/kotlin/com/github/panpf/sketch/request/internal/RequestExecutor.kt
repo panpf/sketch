@@ -115,7 +115,7 @@ class RequestExecutor {
         val lastRequest = requestContext.request
         val successImage =
             imageData.image.sizeApplyToDraw(lastRequest, requestContext.size)
-        val successResult = ImageResult.Success(
+        val result = ImageResult.Success(
             request = lastRequest,
             image = successImage,
             cacheKey = requestContext.cacheKey,
@@ -126,15 +126,20 @@ class RequestExecutor {
         )
         val target = lastRequest.target
         if (target != null) {
-            setImage(requestContext, target, successResult) {
-                target.onSuccess(requestContext, successResult.image)
+            setImage(requestContext, target, result) {
+                target.onSuccess(requestContext, result.image)
             }
         }
-        lastRequest.listener?.onSuccess(lastRequest, successResult)
+        lastRequest.listener?.onSuccess(lastRequest, result)
         requestContext.sketch.logger.d(MODULE) {
-            "Request Successful. ${successResult.image}. '${requestContext.logKey}'"
+            val resultString = "image=${result.image}, " +
+                    "imageInfo=${result.imageInfo}, " +
+                    "dataFrom=${result.dataFrom}, " +
+                    "transformedList=${result.transformedList}, " +
+                    "extras=${result.extras}"
+            "Request Successful. Result($resultString). '${requestContext.logKey}'"
         }
-        return successResult
+        return result
     }
 
     private fun doError(

@@ -15,8 +15,10 @@
  */
 package com.github.panpf.sketch.drawable.internal
 
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
@@ -66,7 +68,15 @@ open class ResizeDrawable constructor(
     }
 
     override fun toString(): String {
-        return "ResizeDrawable(wrapped=$drawable, size=$size, scale=$scale)"
+        val drawableString = drawable.run {
+            val contentString = if (this is BitmapDrawable) {
+                bitmap.logString
+            } else {
+                "${intrinsicWidth}x${intrinsicHeight}"
+            }
+            if (this == null) "null" else "${this.javaClass.simpleName}($contentString)"
+        }
+        return "ResizeDrawable(wrapped=$drawableString, size=$size, scale=$scale)"
     }
 }
 

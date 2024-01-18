@@ -83,7 +83,6 @@ class GifDrawableWrapperDrawable(
     }
 
     override fun toString(): String {
-        val toHexString = Integer.toHexString(gifDrawable.hashCode())
-        return "GifDrawableWrapperDrawable(GifDrawable(${gifDrawable.intrinsicWidth}x${gifDrawable.intrinsicHeight})@$toHexString)"
+        return "GifDrawableWrapperDrawable(${gifDrawable.intrinsicWidth}x${gifDrawable.intrinsicHeight})"
     }
 }

@@ -230,8 +230,4 @@ data class DrawableImage internal constructor(
     override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
 
     override fun transformer(): ImageTransformer? = null
-
-    override fun toString(): String {
-        return super.toString() // TODO
-    }
 }

@@ -197,6 +197,6 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(${drawable.intrinsicWidth}x${drawable.intrinsicHeight})@${drawable.toHexString()},fitScale=$fitScale)"
+        return "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(${drawable.intrinsicWidth}x${drawable.intrinsicHeight}), fitScale=$fitScale)"
     }
 }
