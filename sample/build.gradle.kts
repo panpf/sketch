@@ -1,9 +1,131 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
+    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.com.android.application)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.compose)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
     alias(libs.plugins.org.jetbrains.kotlin.parcelize)
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
+}
+
+kotlin {
+    androidTarget {
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    jvm("desktop") {
+//        jvmToolchain(17)
+//        withJava()
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        named("androidMain") {
+            dependencies {
+                implementation(project(":sketch-extensions"))
+                implementation(project(":sketch-extensions-compose"))
+                implementation(project(":sketch-gif-movie"))
+                implementation(project(":sketch-gif-koral"))
+                implementation(project(":sketch-okhttp"))
+                implementation(project(":sketch-svg"))
+                implementation(project(":sketch-video"))
+                implementation(project(":sketch-video-ffmpeg"))
+
+                implementation(libs.kotlinx.serialization.json)
+
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.compose.animation)
+                implementation(libs.androidx.compose.foundation)
+                implementation(libs.androidx.lifecycle.viewmodel.compose)
+                implementation(libs.androidx.paging.compose)
+                implementation(libs.androidx.appcompat)
+                implementation(libs.androidx.constraintlayout)
+                implementation(libs.androidx.core)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime)
+                implementation(libs.androidx.multidex)
+                implementation(libs.androidx.navigation.fragment)
+                implementation(libs.androidx.navigation.ui)
+                implementation(libs.androidx.paging.common)
+                implementation(libs.androidx.paging.runtime)
+                implementation(libs.androidx.recyclerview)
+                implementation(libs.androidx.swiperefreshlayout)
+                implementation(libs.androidx.palette)
+
+                implementation(libs.google.material)
+                implementation(libs.panpf.assemblyadapter4.pager)
+                implementation(libs.panpf.assemblyadapter4.pager2)
+                implementation(libs.panpf.assemblyadapter4.recycler)
+                implementation(libs.panpf.assemblyadapter4.recycler.paging)
+                implementation(libs.panpf.tools4a.activity)
+                implementation(libs.panpf.tools4a.device)
+                implementation(libs.panpf.tools4a.display)
+                implementation(libs.panpf.tools4a.dimen)
+                implementation(libs.panpf.tools4a.fileprovider)
+                implementation(libs.panpf.tools4a.network)
+                implementation(libs.panpf.tools4a.toast)
+                implementation(libs.panpf.tools4j.date)
+                implementation(libs.panpf.tools4j.math)
+                implementation(libs.panpf.tools4j.io)
+                implementation(libs.panpf.tools4j.security)
+                implementation(libs.panpf.tools4k)
+                implementation(libs.panpf.activitymonitor)
+                implementation(libs.panpf.zoomimage.compose)
+                implementation(libs.panpf.zoomimage.view)
+                implementation(libs.retrofit2)
+                implementation(libs.retrofit2.kotlinxSerializationConverter)
+                implementation(libs.tinypinyin)
+                implementation(libs.okhttp3.logging)
+            }
+        }
+        named("commonMain") {
+            dependencies {
+                implementation(project(":sketch-compose"))
+                implementation(project(":sketch-resources"))
+                implementation(compose.material)
+                implementation(compose.material3)
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.uiTooling)
+                implementation(compose.uiTooling.replace("ui-tooling", "ui-util"))
+            }
+        }
+        named("desktopMain") {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+            }
+        }
+    }
+}
+
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = property("GROUP").toString()
+            packageVersion = property("versionName").toString().let {
+                if (it.contains("-")) {
+                    it.substring(0, it.indexOf("-"))
+                } else {
+                    it
+                }
+            }
+        }
+    }
+}
+
+compose {
+    kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
 }
 
 android {
@@ -62,9 +184,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
@@ -80,72 +199,8 @@ android {
             }
         }
     }
-}
 
-dependencies {
-    implementation(project(":sample-common"))
-    implementation(project(":sketch"))
-    implementation(project(":sketch-compose"))
-    implementation(project(":sketch-extensions"))
-    implementation(project(":sketch-extensions-compose"))
-    implementation(project(":sketch-gif-movie"))
-    implementation(project(":sketch-gif-koral"))
-    implementation(project(":sketch-okhttp"))
-    implementation(project(":sketch-svg"))
-    implementation(project(":sketch-video"))
-    implementation(project(":sketch-video-ffmpeg"))
-    implementation(project(":sketch-resources"))
-
-    implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.animation)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.multidex)
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
-    implementation(libs.androidx.paging.common)
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.swiperefreshlayout)
-    implementation(libs.androidx.palette)
-
-    implementation(libs.google.material)
-    implementation(libs.panpf.assemblyadapter4.pager)
-    implementation(libs.panpf.assemblyadapter4.pager2)
-    implementation(libs.panpf.assemblyadapter4.recycler)
-    implementation(libs.panpf.assemblyadapter4.recycler.paging)
-    implementation(libs.panpf.tools4a.activity)
-    implementation(libs.panpf.tools4a.device)
-    implementation(libs.panpf.tools4a.display)
-    implementation(libs.panpf.tools4a.dimen)
-    implementation(libs.panpf.tools4a.fileprovider)
-    implementation(libs.panpf.tools4a.network)
-    implementation(libs.panpf.tools4a.toast)
-    implementation(libs.panpf.tools4j.date)
-    implementation(libs.panpf.tools4j.math)
-    implementation(libs.panpf.tools4j.io)
-    implementation(libs.panpf.tools4j.security)
-    implementation(libs.panpf.tools4k)
-    implementation(libs.panpf.activitymonitor)
-    implementation(libs.panpf.zoomimage.compose)
-    implementation(libs.panpf.zoomimage.view)
-    implementation(libs.retrofit2)
-    implementation(libs.retrofit2.kotlinxSerializationConverter)
-    implementation(libs.tinypinyin)
-    implementation(libs.okhttp3.logging)
-
-    debugImplementation(libs.leakcanary)
+    dependencies {
+        debugImplementation(libs.leakcanary)
+    }
 }
