@@ -15,11 +15,12 @@
  */
 package com.github.panpf.sketch.sample
 
+import android.content.Context
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.multidex.MultiDexApplication
+import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.SketchFactory
 import com.github.panpf.sketch.decode.supportAnimatedGif
 import com.github.panpf.sketch.decode.supportAnimatedHeif
 import com.github.panpf.sketch.decode.supportAnimatedWebp
@@ -35,9 +36,9 @@ import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import com.github.panpf.sketch.util.Logger
 
-class MyApplication : MultiDexApplication(), SketchFactory {
+class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
 
-    override fun createSketch(): Sketch = Sketch.Builder(this).apply {
+    override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
         logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))
         httpStack(OkHttpStack.Builder().apply {
             if (VERSION.SDK_INT <= 19) {

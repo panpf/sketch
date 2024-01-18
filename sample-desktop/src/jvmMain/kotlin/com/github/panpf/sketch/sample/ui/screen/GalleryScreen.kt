@@ -45,12 +45,6 @@ fun GalleryScreen(navigation: Navigation) {
         )
     }
     val divider = Arrangement.spacedBy(4.dp)
-    val platformContext = LocalPlatformContext.current
-    val sketch = remember {
-        Sketch.Builder(platformContext).apply {
-            logger(Logger(Logger.Level.DEBUG))
-        }.build()
-    }
 
     Box(Modifier.fillMaxSize()) {
         val state: LazyGridState = rememberLazyGridState()
@@ -62,20 +56,8 @@ fun GalleryScreen(navigation: Navigation) {
             state = state,
         ) {
             itemsIndexed(imageResourceList) { index, imageResource ->
-//                Image(
-//                    painter = painterResource(imageResource.fileName),
-//                    contentDescription = "image",
-//                    contentScale = ContentScale.Crop,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(1f)
-//                        .clickable {
-////                            navigation.push(Page.Slideshow(imageResourceList, index))
-//                        }
-//                )
                 AsyncImage(
                     imageUri = imageResource.uri,
-                    sketch = sketch,
                     contentDescription = "image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

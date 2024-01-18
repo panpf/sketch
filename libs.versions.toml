@@ -4,6 +4,8 @@
 kotlin = "1.9.0"
 kotlinx-coroutines = "1.7.3"
 kotlinx-serialization-json = "1.5.1"
+# sync kotlin version
+kotlinx-atomicfu = "0.22.0"
 
 jetbrains-compose = "1.5.0"
 androidx-compose = "1.5.0"
@@ -70,6 +72,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlinx-atomicfu = {module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref="kotlinx-atomicfu"}
 
 # android
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }

@@ -18,7 +18,7 @@ kotlin {
             dependencies {
                 implementation(project(":sample-common"))
                 implementation(project(":sketch-resources"))
-                implementation(project(":sketch-compose-core"))
+                implementation(project(":sketch-compose"))
                 implementation(compose.desktop.currentOs)
             }
         }

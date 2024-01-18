@@ -1,6 +1,52 @@
 plugins {
     alias(libs.plugins.com.android.library)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
+    id("kotlinx-atomicfu")
+}
+
+kotlin {
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    jvm("desktop") {
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        named("androidMain") {
+            dependencies {
+                api(libs.google.accompanist.drawablepainter)
+            }
+        }
+        named("androidInstrumentedTest") {
+            dependencies {
+                implementation(project(":sketch-test-core"))
+            }
+        }
+
+        named("commonMain") {
+            dependencies {
+                api(project(":sketch-core"))
+            }
+        }
+        named("commonTest") {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.junit)
+//                implementation(libs.panpf.tools4j.test)
+            }
+        }
+    }
 }
 
 android {
@@ -30,13 +76,4 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
-dependencies {
-    api(project(":sketch-core"))
-    androidTestImplementation(project(":sketch-test-core"))
 }

@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath(libs.kotlinx.atomicfu)
+    }
+}
+
 plugins {
     alias(libs.plugins.com.android.application) apply false
     alias(libs.plugins.com.android.library) apply false

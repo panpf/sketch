@@ -1,6 +1,60 @@
 plugins {
+    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
+    alias(libs.plugins.org.jetbrains.compose)
     alias(libs.plugins.com.android.library)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
+}
+
+group = property("GROUP").toString()
+version = property("versionName").toString()
+
+kotlin {
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    jvm("desktop") {
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        named("androidMain") {
+            dependencies {
+            }
+        }
+//        named("androidInstrumentedTest") {
+//            dependencies {
+//                implementation(project(":sketch-test"))
+//            }
+//        }
+
+        named("commonMain") {
+            dependencies {
+                api(project(":sketch"))
+                api(project(":sketch-compose-core"))
+            }
+        }
+//        named("commonTest") {
+//            dependencies {
+//                implementation(kotlin("test"))
+//                implementation(libs.junit)
+////                implementation(libs.panpf.tools4j.test)
+//            }
+//        }
+    }
+}
+
+compose {
+    // TODO Migrate to zoomimage
+    kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
 }
 
 android {
@@ -35,17 +89,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
-}
-
-dependencies {
-    api(project(":sketch"))
-    api(project(":sketch-compose-core"))
-    androidTestImplementation(project(":sketch-test"))
 }
