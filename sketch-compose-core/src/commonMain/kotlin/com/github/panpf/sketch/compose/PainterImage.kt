@@ -31,17 +31,13 @@ fun Painter.asSketchImage(shareable: Boolean = false): Image {
 
 data class PainterImage(val painter: Painter, override val shareable: Boolean = false) : Image {
 
-    override val width: Int
-        get() = painter.intrinsicSize.width.roundToInt()
+    override val width: Int = painter.intrinsicSize.width.roundToInt()
 
-    override val height: Int
-        get() = painter.intrinsicSize.height.roundToInt()
+    override val height: Int = painter.intrinsicSize.height.roundToInt()
 
-    override val byteCount: Int
-        get() = 4 * width * height  // TODO check
+    override val byteCount: Int = 4 * width * height  // TODO check
 
-    override val allocationByteCount: Int
-        get() = 4 * width * height
+    override val allocationByteCount: Int = 4 * width * height
 
     override fun cacheValue(
         requestContext: RequestContext,
@@ -53,4 +49,8 @@ data class PainterImage(val painter: Painter, override val shareable: Boolean = 
     override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
 
     override fun transformer(): ImageTransformer? = null
+
+    override fun toString(): String {
+        return super.toString() // TODO
+    }
 }

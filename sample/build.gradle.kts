@@ -83,6 +83,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":sample-common"))
     implementation(project(":sketch"))
     implementation(project(":sketch-compose"))
     implementation(project(":sketch-extensions"))

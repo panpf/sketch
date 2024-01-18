@@ -1,5 +1,7 @@
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.decode.internal.ImageReaderDecoder
+import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -11,6 +13,8 @@ internal actual fun platformComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         // TODO add desktop components
         // TODO ResultCache
+        addFetcher(ResourceUriFetcher.Factory())
+        addDecoder(ImageReaderDecoder.Factory())
     }.build()
 }
 

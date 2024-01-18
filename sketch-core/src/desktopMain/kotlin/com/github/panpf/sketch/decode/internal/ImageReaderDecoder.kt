@@ -116,5 +116,9 @@ class ImageReaderDecoder(
                 null
             }
         }
+
+        override fun toString(): String {
+            return "ImageReaderDecoder"
+        }
     }
 }

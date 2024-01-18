@@ -78,7 +78,11 @@ class BufferedImageImage(
 
     override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
 
-    override fun processor(): ImageTransformer = BufferedImageTransformer()
+    override fun transformer(): ImageTransformer = BufferedImageTransformer()
+
+    override fun toString(): String {
+        return super.toString() // TODO
+    }
 }
 
 class BufferedImageTransformer : ImageTransformer {
