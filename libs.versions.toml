@@ -6,6 +6,7 @@ kotlinx-coroutines = "1.7.3"
 kotlinx-serialization-json = "1.5.1"
 # sync kotlin version
 kotlinx-atomicfu = "0.22.0"
+ktor = "2.3.7"
 
 jetbrains-compose = "1.5.0"
 androidx-compose = "1.5.0"

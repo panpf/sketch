@@ -85,6 +85,8 @@ kotlin {
                 implementation(libs.retrofit2.kotlinxSerializationConverter)
                 implementation(libs.tinypinyin)
                 implementation(libs.okhttp3.logging)
+
+                implementation("io.ktor:ktor-client-android:${libs.versions.ktor.get()}")
             }
         }
         named("commonMain") {
@@ -97,11 +99,16 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.uiTooling)
                 implementation(compose.uiTooling.replace("ui-tooling", "ui-util"))
+                implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-client-logging:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:${libs.versions.ktor.get()}")
             }
         }
         named("desktopMain") {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                implementation("io.ktor:ktor-client-java:${libs.versions.ktor.get()}")
             }
         }
     }
