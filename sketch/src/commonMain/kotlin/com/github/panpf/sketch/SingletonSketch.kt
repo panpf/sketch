@@ -22,16 +22,12 @@ object SingletonSketch {
 
     private val reference = atomic<Any?>(null)
 
-//    @Volatile
-//    private var sketch: Sketch? = null
-//    private var factory: Factory? = null
-
     /**
      * Get the singleton [Sketch].
      */
     @JvmStatic
     fun get(context: PlatformContext): Sketch {
-        return (reference.value as Sketch?) ?: initialSketch(context)
+        return (reference.value as? Sketch) ?: initialSketch(context)
     }
 
     /**

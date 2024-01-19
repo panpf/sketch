@@ -18,7 +18,7 @@ package com.github.panpf.sketch
 import android.content.Context
 
 internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory? {
-    return applicationContext as SingletonSketch.Factory?
+    return applicationContext as? SingletonSketch.Factory
 }
 
 /**
