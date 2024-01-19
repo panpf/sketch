@@ -17,47 +17,38 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Key
-import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.resize.sizeApplyToDraw
-import kotlinx.coroutines.withContext
 
-class EngineRequestInterceptor : RequestInterceptor {
+/**
+ * Initialize the placeholder image and fill it into the target
+ *
+ * [PlaceholderRequestInterceptor] must be executed after [MemoryCacheRequestInterceptor]
+ * * First, when the memory cache is valid, one callback can be reduced
+ * * Secondly, when RecyclerView executes notifyDataSetChanged(),
+ * it can avoid the flickering phenomenon caused by the fast switching of the picture between placeholder and result
+ */
+class PlaceholderRequestInterceptor : RequestInterceptor {
 
     override val key: String = Key.INVALID_KEY
 
-    override val sortWeight: Int = 100
+    override val sortWeight: Int = 95
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
         val sketch = chain.sketch
         val request = chain.request
         val requestContext = chain.requestContext
-        val decodeResult = withContext(sketch.decodeTaskDispatcher) {
-            DecodeInterceptorChain(
-                sketch = sketch,
-                request = request,
-                requestContext = requestContext,
-                fetchResult = null,
-                interceptors = sketch.components.getDecodeInterceptorList(request),
-                index = 0,
-            ).proceed()
-        }.let {
-            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
+        val target = request.target
+        if (target != null) {
+            val placeholderDrawable = request.placeholder
+                ?.getImage(sketch, request, null)
+                ?.sizeApplyToDraw(request, requestContext.size)
+            target.onStart(requestContext, placeholderDrawable)
         }
-        return Result.success(
-            ImageData(
-                image = decodeResult.image,
-                imageInfo = decodeResult.imageInfo,
-                dataFrom = decodeResult.dataFrom,
-                transformedList = decodeResult.transformedList,
-                extras = decodeResult.extras
-            )
-        )
+        return chain.proceed(request)
     }
-
-    override fun toString(): String = "EngineRequestInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -68,4 +59,6 @@ class EngineRequestInterceptor : RequestInterceptor {
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
+
+    override fun toString(): String = "PlaceholderRequestInterceptor(sortWeight=$sortWeight)"
 }

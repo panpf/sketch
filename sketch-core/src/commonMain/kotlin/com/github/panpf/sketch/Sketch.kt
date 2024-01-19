@@ -37,6 +37,7 @@ import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
@@ -395,6 +396,7 @@ internal fun defaultComponents(): ComponentRegistry {
 
         addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
         addRequestInterceptor(MemoryCacheRequestInterceptor())
+        addRequestInterceptor(PlaceholderRequestInterceptor())
         addRequestInterceptor(EngineRequestInterceptor())
 
         addDecodeInterceptor(TransformationDecodeInterceptor())
