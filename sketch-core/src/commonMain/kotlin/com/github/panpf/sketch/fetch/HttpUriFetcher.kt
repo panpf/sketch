@@ -110,8 +110,7 @@ open class HttpUriFetcher(
             val httpCode = response.code
             if (httpCode != 200) {
                 val httpMessage = response.message
-                val message =
-                    "HTTP status must be 200. $httpCode $httpMessage. ${request.uriString}"
+                val message = "HTTP code error. $httpCode $httpMessage. ${request.uriString}"
                 return@withContext Result.failure(IOException(message))
             }
 
