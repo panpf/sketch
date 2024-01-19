@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageScaleDecider
+import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -174,12 +174,12 @@ class AppSettingsService(val context: Context) {
         get() = if (disabledResultCache.value) DISABLED else ENABLED
     private val precisionValue: PrecisionDecider
         get() = when (precision.value) {
-            "LongImageClipMode" -> LongImageClipPrecisionDecider(precision = SAME_ASPECT_RATIO)
+            "LongImageClipMode" -> LongImageClipPrecisionDecider(longImage = SAME_ASPECT_RATIO)
             else -> PrecisionDecider(Precision.valueOf(precision.value))
         }
     private val scaleValue: ScaleDecider
         get() = when (scale.value) {
-            "LongImageMode" -> LongImageScaleDecider(
+            "LongImageMode" -> LongImageStartCropScaleDecider(
                 longImage = Scale.valueOf(value = longImageScale.value),
                 otherImage = Scale.valueOf(value = otherImageScale.value)
             )

@@ -82,16 +82,16 @@ class ExifOrientationTestFileHelper(
         sourceBitmap: Bitmap,
         orientation: Int
     ) {
+        // TODO The generated bitmap has bugs and needs to be fixed
         val newBitmap = ExifOrientationHelper(orientation)
             ?.applyToImage(image = sourceBitmap.asSketchImage(), reverse = true)
             ?.getBitmapOrThrow()
-            ?: sourceBitmap
         file.parentFile?.mkdirs()
         file.createNewFile()
         FileOutputStream(file).use {
-            newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            (newBitmap ?: sourceBitmap).compress(Bitmap.CompressFormat.JPEG, 100, it)
         }
-        newBitmap.recycle()
+        newBitmap?.recycle()
 
         val exifInterface: ExifInterface
         try {

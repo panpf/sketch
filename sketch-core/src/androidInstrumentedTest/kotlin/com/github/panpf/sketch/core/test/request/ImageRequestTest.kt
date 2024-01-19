@@ -63,7 +63,7 @@ import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageScaleDecider
+import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -1018,9 +1018,9 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
             }
 
-            scale(LongImageScaleDecider(START_CROP, END_CROP))
+            scale(LongImageStartCropScaleDecider(START_CROP, END_CROP))
             build().apply {
-                Assert.assertEquals(LongImageScaleDecider(START_CROP, END_CROP), scaleDecider)
+                Assert.assertEquals(LongImageStartCropScaleDecider(START_CROP, END_CROP), scaleDecider)
             }
 
             scale(FILL)
@@ -1870,7 +1870,7 @@ class ImageRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizeScale(LongImageScaleDecider())
+            resizeScale(LongImageStartCropScaleDecider())
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {

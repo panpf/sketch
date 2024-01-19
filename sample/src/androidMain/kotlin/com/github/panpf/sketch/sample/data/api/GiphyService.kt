@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.sample.data.api
 
-import com.github.panpf.sketch.sample.model.GiphySearchResponse
+import com.github.panpf.sketch.sample.data.giphy.GiphySearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

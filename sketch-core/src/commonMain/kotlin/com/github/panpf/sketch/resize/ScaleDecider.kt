@@ -52,7 +52,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 /**
  * Use different Scales for long and non-long images
  */
-class LongImageScaleDecider constructor(
+class LongImageStartCropScaleDecider constructor(
     val longImage: Scale = START_CROP,
     val otherImage: Scale = CENTER_CROP,
     val longImageDecider: LongImageDecider = LongImageDecider(),
@@ -68,7 +68,7 @@ class LongImageScaleDecider constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as LongImageScaleDecider
+        other as LongImageStartCropScaleDecider
         if (longImage != other.longImage) return false
         if (otherImage != other.otherImage) return false
         if (longImageDecider != other.longImageDecider) return false

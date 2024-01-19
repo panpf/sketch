@@ -54,35 +54,35 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
  */
 class LongImageClipPrecisionDecider constructor(
-    val precision: Precision = Precision.SAME_ASPECT_RATIO,
-    val otherPrecision: Precision = Precision.LESS_PIXELS,
+    val longImage: Precision = Precision.SAME_ASPECT_RATIO,
+    val otherImage: Precision = Precision.LESS_PIXELS,
     val longImageDecider: LongImageDecider = LongImageDecider(),
 ) : PrecisionDecider {
 
-    override val key: String by lazy { "LongImageClip($precision,$otherPrecision,${longImageDecider.key})" }
+    override val key: String by lazy { "LongImageClip($longImage,$otherImage,${longImageDecider.key})" }
 
     override fun get(imageSize: Size, targetSize: Size): Precision {
         val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
-        return if (isLongImage) precision else otherPrecision
+        return if (isLongImage) longImage else otherImage
     }
 
     override fun toString(): String {
-        return "LongImageClipPrecisionDecider(precision=$precision, otherPrecision=$otherPrecision, longImageDecider=$longImageDecider)"
+        return "LongImageClipPrecisionDecider(precision=$longImage, otherPrecision=$otherImage, longImageDecider=$longImageDecider)"
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as LongImageClipPrecisionDecider
-        if (precision != other.precision) return false
-        if (otherPrecision != other.otherPrecision) return false
+        if (longImage != other.longImage) return false
+        if (otherImage != other.otherImage) return false
         if (longImageDecider != other.longImageDecider) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = precision.hashCode()
-        result = 31 * result + otherPrecision.hashCode()
+        var result = longImage.hashCode()
+        result = 31 * result + otherImage.hashCode()
         result = 31 * result + longImageDecider.hashCode()
         return result
     }

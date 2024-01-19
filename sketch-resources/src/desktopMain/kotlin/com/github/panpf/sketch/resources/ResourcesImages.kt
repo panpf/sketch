@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.resources
 
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.util.Size
 
@@ -36,8 +37,30 @@ object ResourcesImages {
     val mp4 = Image("sample.mp4", "MP4", Size(500, 250))
     val videos = arrayOf(mp4)
 
-//    val longQMSHT = Image("sample_long_qmsht.jpg", "QMSHT", Size(30000, 926))
-//
+    val longQMSHT = Image("sample_long_qmsht.jpg", "QMSHT", Size(30000, 926))
+
+    val clockExifUndefined = Image("clock.jpeg", "clock", Size(1500, 750), ExifOrientation.ORIENTATION_UNDEFINED)
+    val clockExifFlipHorizontal =
+        Image("clock_exif_flip_horizontal.jpeg", "clock", Size(1500, 750), ExifOrientation.ORIENTATION_FLIP_HORIZONTAL)
+    val clockExifFlipVertical = Image("clock_exif_flip_vertical.jpeg", "clock", Size(1500, 750), ExifOrientation.ORIENTATION_FLIP_VERTICAL)
+    val clockExifNormal = Image("clock_exif_normal.jpeg", "clock", Size(1500, 750), ExifOrientation.ORIENTATION_NORMAL)
+    val clockExifRotate90 = Image("clock_exif_rotate_90.jpeg", "clock", Size(750, 1500), ExifOrientation.ORIENTATION_ROTATE_90)
+    val clockExifRotate180 = Image("clock_exif_rotate_180.jpeg", "clock", Size(1500, 750), ExifOrientation.ORIENTATION_ROTATE_180)
+    val clockExifRotate270 = Image("clock_exif_rotate_270.jpeg", "clock", Size(750, 1500), ExifOrientation.ORIENTATION_ROTATE_270)
+    val clockExifTranspose = Image("clock_exif_transpose.jpeg", "clock", Size(750, 1500), ExifOrientation.ORIENTATION_TRANSPOSE)
+    val clockExifTransverse = Image("clock_exif_transverse.jpeg", "clock", Size(750, 1500), ExifOrientation.ORIENTATION_TRANSVERSE)
+    val clockExifs = arrayOf(
+        clockExifUndefined,
+        clockExifFlipHorizontal,
+        clockExifFlipVertical,
+        clockExifNormal,
+        clockExifRotate90,
+        clockExifRotate180,
+        clockExifRotate270,
+        clockExifTranspose,
+        clockExifTransverse
+    )
+
 //    val number1 = Image("number_1.png", "NUMBER_1", Size(698, 776))
 //    val number2 = Image("number_2.png", "NUMBER_2", Size(698, 776))
 //    val number3 = Image("number_3.png", "NUMBER_3", Size(698, 776))
@@ -53,7 +76,12 @@ object ResourcesImages {
 //    val clockHor = Image("clock_hor.jpeg", "CLOCK_HOR", Size(1500, 750))
 //    val clockVer = Image("clock_ver.jpeg", "CLOCK_VER", Size(750, 1500))
 
-    class Image(val fileName: String, val name: String, val size: Size) {
+    class Image(
+        val fileName: String,
+        val name: String,
+        val size: Size,
+        @ExifOrientation exifOrientation: Int = ExifOrientation.ORIENTATION_UNDEFINED
+    ) {
         val uri: String by lazy { newResourceUri(fileName) }
     }
 }

@@ -89,6 +89,11 @@ kotlin {
                 implementation("io.ktor:ktor-client-android:${libs.versions.ktor.get()}")
             }
         }
+        named("androidInstrumentedTest") {
+            dependencies {
+                implementation(project(":sketch-test"))
+            }
+        }
         named("commonMain") {
             dependencies {
                 implementation(project(":sketch-compose"))

@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.sample.data.api
 
-import com.github.panpf.sketch.sample.model.PexelsCurated
+import com.github.panpf.sketch.sample.data.pexels.PexelsCurated
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
