@@ -63,6 +63,6 @@ AsyncImage(
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[MimeTypeLogoAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/viewability/MimeTypeLogoAbility.kt
+[MimeTypeLogoAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
 [MimeTypeLogoModifier]: ../../sketch-extensions-compose/src/main/kotlin/com/github/panpf/sketch/compose/ability/MimeTypeLogoModifier.kt

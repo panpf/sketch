@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.crossfade
@@ -36,7 +35,7 @@ import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
@@ -106,8 +105,7 @@ fun PhotoViewer(
         }
     }
 
-    val progressPainter =
-        rememberDrawableProgressPainter(remember { createDayNightSectorProgressDrawable(context) })
+    val progressPainter = rememberThemeSectorProgressPainter()
 
     val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
     val request = remember(imageUrl, viewerSettings) {

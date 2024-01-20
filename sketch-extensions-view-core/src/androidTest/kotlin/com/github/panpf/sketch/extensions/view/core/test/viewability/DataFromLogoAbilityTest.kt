@@ -18,9 +18,9 @@ package com.github.panpf.sketch.extensions.view.core.test.viewability
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.viewability.isShowDataFromLogo
-import com.github.panpf.sketch.viewability.removeDataFromLogo
-import com.github.panpf.sketch.viewability.showDataFromLogo
+import com.github.panpf.sketch.ability.isShowDataFromLogo
+import com.github.panpf.sketch.ability.removeDataFromLogo
+import com.github.panpf.sketch.ability.showDataFromLogo
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

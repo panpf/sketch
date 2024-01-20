@@ -18,16 +18,16 @@ package com.github.panpf.sketch.sample.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.createMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
-import com.github.panpf.sketch.viewability.removeDataFromLogo
-import com.github.panpf.sketch.viewability.removeMimeTypeLogo
-import com.github.panpf.sketch.viewability.removeProgressIndicator
-import com.github.panpf.sketch.viewability.showDataFromLogo
-import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
-import com.github.panpf.sketch.viewability.showProgressIndicator
+import com.github.panpf.sketch.ability.removeDataFromLogo
+import com.github.panpf.sketch.ability.removeMimeTypeLogo
+import com.github.panpf.sketch.ability.removeProgressIndicator
+import com.github.panpf.sketch.ability.showDataFromLogo
+import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
+import com.github.panpf.sketch.ability.showProgressIndicator
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class MyListImageView @JvmOverloads constructor(
@@ -59,7 +59,7 @@ class MyListImageView @JvmOverloads constructor(
     private fun setShowProgressIndicator(show: Boolean) {
         if (show) {
             showProgressIndicator(
-                createDayNightSectorProgressDrawable(
+                createThemeSectorProgressDrawable(
                     context = context,
                     hiddenWhenIndeterminate = true
                 )

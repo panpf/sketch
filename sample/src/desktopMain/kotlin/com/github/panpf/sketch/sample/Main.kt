@@ -14,6 +14,7 @@ import com.github.panpf.sketch.sample.ui.navigation.NavigationContainer
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.EventBus
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.launch
 
 fun main() = application {
@@ -22,6 +23,7 @@ fun main() = application {
             components {
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
             }
+            logger(Logger(Logger.Level.DEBUG))
         }.build()
     }
     val coroutineScope = rememberCoroutineScope()

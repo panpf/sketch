@@ -38,14 +38,14 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.viewability.showProgressIndicator
+import com.github.panpf.sketch.ability.showProgressIndicator
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -93,7 +93,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             }
 
             showProgressIndicator(
-                createDayNightSectorProgressDrawable(requireContext())
+                createThemeSectorProgressDrawable(requireContext())
             )
 
             setOnClickListener {

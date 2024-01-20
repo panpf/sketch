@@ -103,7 +103,7 @@ supports the following functions:
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[ViewAbilityContainer]: ../../sketch-viewability/src/main/kotlin/com/github/panpf/sketch/viewability/ViewAbilityContainer.kt
+[ViewAbilityContainer]: ../../sketch-viewability/src/main/kotlin/com/github/panpf/sketch/ability/ViewAbilityContainer.kt
 
 [attrs]: ../../sketch-extensions-view-core/src/main/res/values/attrs.xml
 

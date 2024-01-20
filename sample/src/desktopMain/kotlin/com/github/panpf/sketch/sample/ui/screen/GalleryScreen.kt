@@ -34,11 +34,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.compose.ability.dataFromLogo
+import com.github.panpf.sketch.compose.ability.mimeTypeLogo
+import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
 import com.github.panpf.sketch.sample.ui.navigation.Navigation
+import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
+import com.github.panpf.sketch.sample.util.rememberMimeTypeLogoMap
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -104,10 +109,12 @@ fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
         ) {
             itemsIndexed(photoList) { _, photo ->
                 val imageState = rememberAsyncImageState()
+
                 AsyncImage(
                     request = ImageRequest(LocalPlatformContext.current, photo.thumbnailUrl) {
                         precision(LongImageClipPrecisionDecider())
                         scale(LongImageStartCropScaleDecider())
+//                        memoryCachePolicy(DISABLED)
                     },
                     state = imageState,
                     contentDescription = "image",
@@ -115,6 +122,9 @@ fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
+                        .dataFromLogo(imageState)
+                        .mimeTypeLogo(imageState, rememberMimeTypeLogoMap(), margin = 4.dp)
+                        .progressIndicator(imageState, rememberThemeSectorProgressPainter())
                         .clickable {
 //                            navigation.push(Page.Slideshow(imageResourceList, index))
                         }

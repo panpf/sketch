@@ -35,7 +35,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
-import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 

@@ -13,19 +13,19 @@ import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.R.transition
 import com.github.panpf.sketch.sample.databinding.FragmentTestProgressIndicatorBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.util.createDayNightMaskProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.createDayNightRingProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createThemeMaskProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createThemeRingProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.DirectlyComplete
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.Error
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.Progress
 import com.github.panpf.sketch.sample.ui.util.getDrawableCompat
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.viewability.ProgressIndicatorAbility
-import com.github.panpf.sketch.viewability.ViewAbilityContainer
-import com.github.panpf.sketch.viewability.removeProgressIndicator
-import com.github.panpf.sketch.viewability.showProgressIndicator
+import com.github.panpf.sketch.ability.ProgressIndicatorAbility
+import com.github.panpf.sketch.ability.ViewAbilityContainer
+import com.github.panpf.sketch.ability.removeProgressIndicator
+import com.github.panpf.sketch.ability.showProgressIndicator
 import kotlinx.coroutines.flow.combine
 
 class ProgressIndicatorTestViewFragment :
@@ -164,7 +164,7 @@ class ProgressIndicatorTestViewFragment :
         val shortStep = viewModel.shortStepState.value
         val stepAnimationDuration = if (shortStep) 1000 else 300
         binding.image1.showProgressIndicator(
-            createDayNightMaskProgressDrawable(
+            createThemeMaskProgressDrawable(
                 context = requireContext(),
                 hiddenWhenIndeterminate = hiddenWhenIndeterminate,
                 hiddenWhenCompleted = hiddenWhenCompleted,
@@ -172,7 +172,7 @@ class ProgressIndicatorTestViewFragment :
             )
         )
         binding.image2.showProgressIndicator(
-            createDayNightSectorProgressDrawable(
+            createThemeSectorProgressDrawable(
                 context = requireContext(),
                 hiddenWhenIndeterminate = hiddenWhenIndeterminate,
                 hiddenWhenCompleted = hiddenWhenCompleted,
@@ -180,7 +180,7 @@ class ProgressIndicatorTestViewFragment :
             )
         )
         binding.image3.showProgressIndicator(
-            createDayNightRingProgressDrawable(
+            createThemeRingProgressDrawable(
                 context = requireContext(),
                 hiddenWhenIndeterminate = hiddenWhenIndeterminate,
                 hiddenWhenCompleted = hiddenWhenCompleted,

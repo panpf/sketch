@@ -20,10 +20,10 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.viewability.isShowMimeTypeLogo
-import com.github.panpf.sketch.viewability.removeMimeTypeLogo
-import com.github.panpf.sketch.viewability.showMimeTypeLogoWithDrawable
-import com.github.panpf.sketch.viewability.showMimeTypeLogoWithRes
+import com.github.panpf.sketch.ability.isShowMimeTypeLogo
+import com.github.panpf.sketch.ability.removeMimeTypeLogo
+import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
+import com.github.panpf.sketch.ability.showMimeTypeLogoWithRes
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

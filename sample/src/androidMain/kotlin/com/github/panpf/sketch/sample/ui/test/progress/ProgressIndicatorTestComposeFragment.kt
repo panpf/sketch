@@ -34,21 +34,20 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.drawable.internal.IconDrawable
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.R.transition
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
-import com.github.panpf.sketch.sample.ui.util.createDayNightMaskProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.createDayNightRingProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.DirectlyComplete
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.Error
 import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.Progress
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.getDrawableCompat
+import com.github.panpf.sketch.sample.ui.util.rememberThemeMaskProgressPainter
+import com.github.panpf.sketch.sample.ui.util.rememberThemeRingProgressPainter
+import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.google.accompanist.drawablepainter.DrawablePainter
 
 class ProgressIndicatorTestComposeFragment : BaseToolbarComposeFragment() {
@@ -103,37 +102,22 @@ private fun Content(viewModel: ProgressIndicatorTestViewModel) {
         val hiddenWhenIndeterminate by viewModel.hiddenWhenIndeterminateState.collectAsState()
         val hiddenWhenCompleted by viewModel.hiddenWhenCompletedState.collectAsState()
         val shortStep by viewModel.shortStepState.collectAsState()
-        val maskProgressPainter = rememberDrawableProgressPainter(
-            remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
-                val stepAnimationDuration = if (shortStep) 1000 else 300
-                createDayNightMaskProgressDrawable(
-                    context = context,
-                    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
-                    hiddenWhenCompleted = hiddenWhenCompleted,
-                    stepAnimationDuration = stepAnimationDuration
-                )
-            }
+        val stepAnimationDuration = if (shortStep) 1000 else 300
+        val maskProgressPainter = rememberThemeMaskProgressPainter(
+            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+            hiddenWhenCompleted = hiddenWhenCompleted,
+            stepAnimationDuration = stepAnimationDuration
         )
-        val sectorProgressPainter = rememberDrawableProgressPainter(
-            remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
-                val stepAnimationDuration = if (shortStep) 1000 else 300
-                createDayNightSectorProgressDrawable(
-                    context = context,
-                    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
-                    hiddenWhenCompleted = hiddenWhenCompleted,
-                    stepAnimationDuration = stepAnimationDuration,
-                )
-            })
-        val ringProgressPainter = rememberDrawableProgressPainter(
-            remember(hiddenWhenIndeterminate, hiddenWhenCompleted, shortStep) {
-                val stepAnimationDuration = if (shortStep) 1000 else 300
-                createDayNightRingProgressDrawable(
-                    context = context,
-                    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
-                    hiddenWhenCompleted = hiddenWhenCompleted,
-                    stepAnimationDuration = stepAnimationDuration
-                )
-            })
+        val sectorProgressPainter = rememberThemeSectorProgressPainter(
+            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+            hiddenWhenCompleted = hiddenWhenCompleted,
+            stepAnimationDuration = stepAnimationDuration,
+        )
+        val ringProgressPainter = rememberThemeRingProgressPainter(
+            hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+            hiddenWhenCompleted = hiddenWhenCompleted,
+            stepAnimationDuration = stepAnimationDuration
+        )
         val progress by viewModel.progressState.collectAsState()
         LaunchedEffect(progress) {
             maskProgressPainter.progress = progress

@@ -25,9 +25,6 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult.Error
-import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
@@ -44,9 +41,9 @@ import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import com.github.panpf.sketch.viewability.removeProgressIndicator
-import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.viewability.showMaskProgressIndicator
+import com.github.panpf.sketch.ability.removeProgressIndicator
+import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.showMaskProgressIndicator
 import com.github.panpf.tools4j.reflect.ktx.callMethod
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import org.junit.Assert

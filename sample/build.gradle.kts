@@ -32,7 +32,6 @@ kotlin {
         named("androidMain") {
             dependencies {
                 implementation(project(":sketch-extensions"))
-                implementation(project(":sketch-extensions-compose"))
                 implementation(project(":sketch-gif-movie"))
                 implementation(project(":sketch-gif-koral"))
                 implementation(project(":sketch-okhttp"))
@@ -98,6 +97,7 @@ kotlin {
             dependencies {
                 implementation(project(":sketch-compose"))
                 implementation(project(":sketch-resources"))
+                implementation(project(":sketch-extensions-compose"))
                 implementation(compose.material)
                 implementation(compose.material3)
                 implementation(compose.runtime)

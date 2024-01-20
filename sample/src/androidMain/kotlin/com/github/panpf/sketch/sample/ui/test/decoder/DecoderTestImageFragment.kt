@@ -27,11 +27,11 @@ import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.viewability.showDataFromLogo
-import com.github.panpf.sketch.viewability.showProgressIndicator
+import com.github.panpf.sketch.ability.showDataFromLogo
+import com.github.panpf.sketch.ability.showProgressIndicator
 
 class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
@@ -46,7 +46,7 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                 if (item.minAPI == null || Build.VERSION.SDK_INT >= item.minAPI) {
                     binding.myImage.apply {
                         showDataFromLogo()
-                        showProgressIndicator(createDayNightSectorProgressDrawable(requireContext()))
+                        showProgressIndicator(createThemeSectorProgressDrawable(requireContext()))
                         displayImage(item.imageUri) {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)

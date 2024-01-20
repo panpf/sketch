@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.RequestState
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.ProgressListeners
-import com.github.panpf.sketch.viewability.AbsAbilityImageView
+import com.github.panpf.sketch.ability.AbsAbilityImageView
 
 open class SketchImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0

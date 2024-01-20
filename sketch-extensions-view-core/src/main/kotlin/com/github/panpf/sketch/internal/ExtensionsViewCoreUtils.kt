@@ -17,6 +17,7 @@ package com.github.panpf.sketch.internal
 
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.roundToInt
 
 internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
@@ -24,4 +25,8 @@ internal fun Float.format(newScale: Int): Float {
     } else {
         BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
     }
+}
+
+internal fun Float.dp2Px(): Int {
+    return (this * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt()
 }

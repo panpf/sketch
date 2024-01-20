@@ -18,8 +18,8 @@ package com.github.panpf.sketch.extensions.view.test.viewability
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.viewability.isClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.viewability.setClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.isClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

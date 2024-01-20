@@ -60,9 +60,9 @@ AsyncImage(
 
 ```kotlin
 class MyProgressDrawable(
-    hiddenWhenIndeterminate: Boolean = false,
-    hiddenWhenCompleted: Boolean = true,
-    stepAnimationDuration: Int = AbsProgressDrawable.DEFAULT_STEP_ANIMATION_DURATION,
+    hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
+    hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
+    stepAnimationDuration: Int = PROGRESS_INDICATOR_DEFAULT_STEP_ANIMATION_DURATION,
 ) : AbsProgressDrawable(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
@@ -137,7 +137,7 @@ AsyncImage(
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[ProgressIndicatorAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/viewability/MimeTypeLogoAbility.kt
+[ProgressIndicatorAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
 [AbsProgressDrawable]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/drawable/AbsProgressDrawable.kt
 

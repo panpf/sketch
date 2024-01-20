@@ -20,7 +20,6 @@ import com.github.panpf.sketch.compose.SubcomposeAsyncImage
 import com.github.panpf.sketch.compose.ability.dataFromLogo
 import com.github.panpf.sketch.compose.ability.mimeTypeLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.ability.rememberDrawableProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
@@ -29,8 +28,8 @@ import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.util.createDayNightSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.createMimeTypeLogoMap
+import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.letIf
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
@@ -50,9 +49,7 @@ fun PhotoGridItem(
     val imageState = rememberAsyncImageState()
     val mimeTypeLogoMap =
         remember { createMimeTypeLogoMap().mapValues { DrawablePainter(it.value) } }
-    val progressPainter = rememberDrawableProgressPainter(remember {
-        createDayNightSectorProgressDrawable(context, hiddenWhenIndeterminate = true)
-    })
+    val progressPainter = rememberThemeSectorProgressPainter(hiddenWhenIndeterminate = true)
     val appSettingsService = context.appSettingsService
     val showDataFromLogo by appSettingsService.showDataFromLogo.collectAsState()
     val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.collectAsState()
