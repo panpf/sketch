@@ -22,10 +22,13 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        named("commonMain") {
             dependencies {
                 api(project(":sketch-core"))
             }
+        }
+        named("desktopMain") {
+            resources.srcDirs("src/images")
         }
     }
 }
@@ -46,6 +49,8 @@ android {
             enableAndroidTestCoverage = true
         }
     }
+
+    sourceSets["main"].assets.srcDirs("src/images")
 
     @Suppress("UnstableApiUsage")
     testOptions {
