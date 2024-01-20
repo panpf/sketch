@@ -41,9 +41,9 @@ class GifPhotoListPagingSource(private val context: Context) :
         return if (response.isSuccessful) {
             val dataList = response.body()?.dataList?.map {
                 Photo(
-                    originalUrl = it.images.original.url,
-                    mediumUrl = it.images.original.url,
-                    thumbnailUrl = it.images.fixedWidth.url,
+                    originalUrl = it.images.original.downloadUrl,
+                    mediumUrl = it.images.original.downloadUrl,
+                    thumbnailUrl = it.images.fixedWidth.downloadUrl,
                     width = it.images.original.width.toInt(),
                     height = it.images.original.height.toInt(),
                     exifOrientation = 0,

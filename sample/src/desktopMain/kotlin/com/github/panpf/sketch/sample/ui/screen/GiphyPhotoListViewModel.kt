@@ -48,7 +48,7 @@ class GiphyPhotoListViewModel internal constructor() : BaseRememberObserver() {
 
 fun GiphyGif.toPhoto(): Photo {
     return Photo(
-        originalUrl = images.original.url,
-        thumbnailUrl = images.fixedWidth.url,
+        originalUrl = images.original.downloadUrl,
+        thumbnailUrl = images.fixedWidth.downloadUrl,
     )
 }

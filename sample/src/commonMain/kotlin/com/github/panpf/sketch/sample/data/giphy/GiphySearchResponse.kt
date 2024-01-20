@@ -38,7 +38,7 @@ class GiphyImages(
 
 @Serializable
 class GiphyImage(
-    @SerialName("url") val url: String,
+    @SerialName("url") private val url: String,
     @SerialName("preview") val preview: String? = null,
     @SerialName("size") val size: Long,
     @SerialName("webp_size") val webpSize: Long? = null,
@@ -49,10 +49,12 @@ class GiphyImage(
 ) {
 
     val downloadUrl: String by lazy {
+        // url response Content-Type is text/html
         Regex("media[\\d].giphy.com").replace(url, "i.giphy.com")
     }
 
     val webpDownloadUrl: String? by lazy {
+        // webpUrl response Content-Type is text/html
         if (webpUrl != null) Regex("media[\\d].giphy.com").replace(webpUrl, "i.giphy.com") else null
     }
 }
