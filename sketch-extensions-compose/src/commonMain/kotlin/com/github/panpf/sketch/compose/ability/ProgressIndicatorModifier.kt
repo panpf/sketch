@@ -84,7 +84,6 @@ internal class ProgressIndicatorNode(
         val progressPainter = progressPainter
         // Reading this ensures that we invalidate when progressPainter.invalidateDraw() is called
         progressPainter.drawInvalidateTick.value
-        println("ProgressPainterTest. ProgressIndicatorNode. draw")
         val progressPainterSize = progressPainter.intrinsicSize
             .takeIf { it.isSpecified && !it.isEmpty() }
             ?: size
