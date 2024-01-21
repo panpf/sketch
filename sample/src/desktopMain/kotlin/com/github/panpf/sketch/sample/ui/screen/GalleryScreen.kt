@@ -115,6 +115,7 @@ fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
             itemsIndexed(photoList) { _, photo ->
                 val imageState = rememberAsyncImageState()
                 val imagePainter = painterResource("ic_image_outline.xml")
+                val errorPainter = painterResource("ic_error_baseline.xml")
                 AsyncImage(
                     request = ImageRequest(LocalPlatformContext.current, photo.thumbnailUrl) {
                         precision(LongImageClipPrecisionDecider())
@@ -124,6 +125,13 @@ fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
                         placeholder(
                             iconPainterStateImage(
                                 icon = imagePainter,
+                                background = colorScheme.primaryContainer,
+                                iconTint = colorScheme.onPrimaryContainer
+                            )
+                        )
+                        error(
+                            iconPainterStateImage(
+                                icon = errorPainter,
                                 background = colorScheme.primaryContainer,
                                 iconTint = colorScheme.onPrimaryContainer
                             )
