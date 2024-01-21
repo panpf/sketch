@@ -19,6 +19,7 @@ import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.util.Size
 
+// TODO Merge with AssetImages
 object ResourcesImages {
 
     val bmp = Image("sample.bmp", "BMP", Size(700, 1012))
