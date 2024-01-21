@@ -18,7 +18,6 @@ package com.github.panpf.sketch.decode
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.BitmapConfig.FixedBitmapConfig
 import com.github.panpf.sketch.decode.internal.ImageFormat
 
@@ -30,9 +29,9 @@ fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedBitmapConfig(config
 /**
  * Adapt the appropriate [Bitmap.Config] according to the mimeType and set it to the [BitmapFactory.Options.inPreferredConfig] parameter
  */
-sealed interface BitmapConfig : Key {
+sealed interface BitmapConfig {
 
-    fun getConfig(mimeType: String?): Bitmap.Config
+    val key: String
 
     val value: String
 
@@ -47,6 +46,8 @@ sealed interface BitmapConfig : Key {
 
     val isDynamic: Boolean
         get() = this !is FixedBitmapConfig
+
+    fun getConfig(mimeType: String?): Bitmap.Config
 
     companion object {
         fun valueOf(value: String?): BitmapConfig? = when (value) {
@@ -118,7 +119,7 @@ sealed interface BitmapConfig : Key {
     class FixedBitmapConfig(private val config: Bitmap.Config) : BitmapConfig {
 
         override val key: String by lazy {
-            "BitmapConfig($config)"
+            "BitmapConfig(${config.name})"
         }
 
         override val value: String

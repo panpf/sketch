@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.resize
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.util.Size
 
@@ -29,7 +28,9 @@ expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
  *
  * @see com.github.panpf.sketch.request.ImageRequest.Builder.size
  */
-interface SizeResolver : Key {
+interface SizeResolver {
+
+    val key: String
 
     /** Return the [Size] that the image should be loaded at. */
     @MainThread

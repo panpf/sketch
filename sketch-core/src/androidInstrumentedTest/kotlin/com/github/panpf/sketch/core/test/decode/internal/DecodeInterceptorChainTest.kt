@@ -18,7 +18,6 @@ package com.github.panpf.sketch.core.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain

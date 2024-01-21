@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +50,7 @@ class PauseLoadWhenScrollingDecodeInterceptor(
 
     var enabled = true
 
-    override val key: String = Key.INVALID_KEY
+    override val key: String? = null
 
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
         val request = chain.request

@@ -32,14 +32,13 @@ package com.github.panpf.sketch.transform
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
  * An interface for making transformations to an image's pixel data.
  */
-interface Transformation : Key {
+interface Transformation {
 
     /**
      * The unique cache key for this transformation.
@@ -47,7 +46,7 @@ interface Transformation : Key {
      * The key is added to the image request's memory cache key and should contain any params that
      * are part of this transformation (e.g. size, scale, color, radius, etc.).
      */
-    override val key: String
+    val key: String
 
     /**
      * Apply the transformation to [input] and return the transformed [Image].

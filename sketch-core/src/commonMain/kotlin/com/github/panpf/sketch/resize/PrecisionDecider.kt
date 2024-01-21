@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.resize
 
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.util.Size
 
 fun PrecisionDecider(precision: Precision): PrecisionDecider {
@@ -25,7 +24,9 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
 /**
  * Determines which precision to use dynamically based on image size and resizing
  */
-interface PrecisionDecider : Key {
+interface PrecisionDecider {
+
+    val key: String
 
     fun get(imageSize: Size, targetSize: Size): Precision
 }

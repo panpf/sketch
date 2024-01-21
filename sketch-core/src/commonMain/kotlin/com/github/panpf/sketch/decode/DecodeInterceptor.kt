@@ -17,7 +17,6 @@ package com.github.panpf.sketch.decode
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
@@ -27,13 +26,13 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * Intercept the execution of Image decode, you can change the output, register to [ComponentRegistry] to take effect
  */
-interface DecodeInterceptor : Key {
+interface DecodeInterceptor {
 
     /**
      * If the current DecodeInterceptor will change the DecodeResult,
-     * please provide a valid key to build request key and cache key, otherwise return [Key.INVALID_KEY]
+     * please provide a valid key to build request key and cache key, otherwise return null
      */
-    override val key: String
+    val key: String?
 
     /**
      * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.

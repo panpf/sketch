@@ -16,16 +16,14 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.resize.sizeApplyToDraw
 import kotlinx.coroutines.withContext
 
 class EngineRequestInterceptor : RequestInterceptor {
 
-    override val key: String = Key.INVALID_KEY
+    override val key: String? = null
 
     override val sortWeight: Int = 100
 

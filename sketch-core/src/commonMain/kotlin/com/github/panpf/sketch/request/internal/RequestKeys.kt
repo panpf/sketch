@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
@@ -174,7 +173,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
 
     fun appendDecoders(): ImageRequestKeyBuilder = apply {
         request.componentRegistry?.decoderFactoryList.orEmpty()
-            .mapNotNull { it.key.takeIf { key -> key != Key.INVALID_KEY } }
+            .map { it.key }
             .takeIf { it.isNotEmpty() }
             ?.also { list ->
                 val decoderKeys = list.joinToString(prefix = "[", postfix = "]", separator = ",")
@@ -184,7 +183,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
 
     fun appendDecodeInterceptors(): ImageRequestKeyBuilder = apply {
         request.componentRegistry?.decodeInterceptorList.orEmpty()
-            .mapNotNull { it.key.takeIf { key -> key != Key.INVALID_KEY } }
+            .mapNotNull { it.key }
             .takeIf { it.isNotEmpty() }
             ?.also { list ->
                 val decodeInterceptorKeys =
@@ -213,7 +212,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
 
     fun appendRequestInterceptors(): ImageRequestKeyBuilder = apply {
         request.componentRegistry?.requestInterceptorList.orEmpty()
-            .mapNotNull { it.key.takeIf { key -> key != Key.INVALID_KEY } }
+            .mapNotNull { it.key }
             .takeIf { it.isNotEmpty() }
             ?.also { list ->
                 val requestInterceptorKeys =

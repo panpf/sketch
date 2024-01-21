@@ -7,14 +7,13 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor.Companion.simplePaletteFromJSONObject
 import org.json.JSONObject
 
 class PaletteDecodeInterceptor : DecodeInterceptor {
 
-    override val key: String = Key.INVALID_KEY
+    override val key: String? = null
 
     override val sortWeight: Int = 0
 

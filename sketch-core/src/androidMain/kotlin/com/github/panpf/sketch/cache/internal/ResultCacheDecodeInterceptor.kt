@@ -27,16 +27,13 @@ import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.isInBitmapError
 import com.github.panpf.sketch.decode.internal.logString
 import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.sync.Mutex
 import org.json.JSONArray
@@ -48,7 +45,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         const val MODULE = "ResultCacheDecodeInterceptor"
     }
 
-    override val key: String = Key.INVALID_KEY
+    override val key: String? = null
 
     override val sortWeight: Int = 80
 

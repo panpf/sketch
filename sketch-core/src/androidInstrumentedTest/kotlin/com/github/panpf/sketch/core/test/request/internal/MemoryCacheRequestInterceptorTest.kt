@@ -30,7 +30,6 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor

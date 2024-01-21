@@ -17,7 +17,6 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -25,13 +24,13 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * Intercept the execution of [ImageRequest], you can change the input and output, register to [ComponentRegistry] to take effect
  */
-interface RequestInterceptor : Key {
+interface RequestInterceptor {
 
     /**
      * If the current RequestInterceptor will change the ImageData,
-     * please provide a valid key to build request key and cache key, otherwise return [Key.INVALID_KEY]
+     * please provide a valid key to build request key and cache key, otherwise return null
      */
-    override val key: String
+    val key: String?
 
     /**
      * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.

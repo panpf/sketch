@@ -1,13 +1,12 @@
 package com.github.panpf.sketch.sample.image
 
-import com.github.panpf.sketch.Key
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import kotlinx.coroutines.delay
 
 data class DelayDecodeInterceptor(val delay: Long) : DecodeInterceptor {
 
-    override val key: String = Key.INVALID_KEY
+    override val key: String? = null
 
     override val sortWeight: Int
         get() = 0

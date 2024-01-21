@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 
 class AwtImage2ComposeImageRequestInterceptor : RequestInterceptor {
 
-    override val key: String = "AwtImage2ComposeImageRequestInterceptor"
+    override val key: String? = null
 
     override val sortWeight: Int = 95
 
