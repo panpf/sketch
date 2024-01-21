@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -31,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
@@ -38,6 +40,8 @@ import com.github.panpf.sketch.compose.ability.dataFromLogo
 import com.github.panpf.sketch.compose.ability.mimeTypeLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.compose.request.crossfade
+import com.github.panpf.sketch.compose.stateimage.iconPainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
@@ -97,6 +101,7 @@ fun GalleryScreen(navigation: Navigation) {
 fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
     val photoList by photoListState.collectAsState()
     val divider = Arrangement.spacedBy(4.dp)
+    val colorScheme = MaterialTheme.colorScheme
 
     Box(Modifier.fillMaxSize()) {
         val gridState: LazyGridState = rememberLazyGridState()
@@ -109,12 +114,21 @@ fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
         ) {
             itemsIndexed(photoList) { _, photo ->
                 val imageState = rememberAsyncImageState()
-
+                val imagePainter = painterResource("ic_image_outline.xml")
                 AsyncImage(
                     request = ImageRequest(LocalPlatformContext.current, photo.thumbnailUrl) {
                         precision(LongImageClipPrecisionDecider())
                         scale(LongImageStartCropScaleDecider())
 //                        memoryCachePolicy(DISABLED)
+//                        placeholder(colorPainterStateImage(colorScheme.primaryContainer))
+                        placeholder(
+                            iconPainterStateImage(
+                                icon = imagePainter,
+                                background = colorScheme.primaryContainer,
+                                iconTint = colorScheme.onPrimaryContainer
+                            )
+                        )
+                        crossfade()
                     },
                     state = imageState,
                     contentDescription = "image",

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.compose
 
+import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.CountingImage
 import com.github.panpf.sketch.Image
@@ -31,9 +32,9 @@ fun Painter.asSketchImage(shareable: Boolean = false): Image {
 
 data class PainterImage(val painter: Painter, override val shareable: Boolean = false) : Image {
 
-    override val width: Int = painter.intrinsicSize.width.roundToInt()
+    override val width: Int = painter.intrinsicSize.takeIf { it.isSpecified }?.width?.roundToInt() ?: -1
 
-    override val height: Int = painter.intrinsicSize.height.roundToInt()
+    override val height: Int = painter.intrinsicSize.takeIf { it.isSpecified }?.height?.roundToInt() ?: -1
 
     override val byteCount: Int = 4 * width * height  // TODO check
 

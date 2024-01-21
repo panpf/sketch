@@ -28,7 +28,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 interface RequestInterceptor : Key {
 
     /**
-     * If the current DecodeInterceptor will change the ImageData,
+     * If the current RequestInterceptor will change the ImageData,
      * please provide a valid key to build request key and cache key, otherwise return [Key.INVALID_KEY]
      */
     override val key: String

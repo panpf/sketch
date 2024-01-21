@@ -328,13 +328,6 @@ class AsyncImageState internal constructor(
             return "AsyncImageTarget@${Integer.toHexString(hashCode())}"
         }
     }
-
-    companion object {
-        /**
-         * A state transform that does not modify the state.
-         */
-        val DefaultTransform: (PainterState) -> PainterState = { it }
-    }
 }
 
 /**

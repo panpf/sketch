@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.painter.internal
+package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.runtime.MutableIntState
 

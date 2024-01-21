@@ -91,7 +91,10 @@ internal fun Size.toIntSizeOrNull() = when {
 internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
 
 @Stable
-internal fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
+fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
+
+@Stable
+fun SketchSize.toSize(): IntSize = IntSize(width, height)
 
 @Stable
 internal fun Constraints.toIntSizeOrNull(): IntSize? = when {

@@ -37,6 +37,7 @@ class IconDrawable constructor(
     val icon: Drawable,
     val background: Drawable? = null,
     val iconSize: Size? = null,
+    // TODO iconTint
 ) : Drawable(), Callback {
 
     init {
