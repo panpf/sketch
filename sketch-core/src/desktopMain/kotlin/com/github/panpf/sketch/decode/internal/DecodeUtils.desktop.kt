@@ -35,7 +35,7 @@ fun BasedStreamDataSource.readImageInfoWithImageReader(ignoreExifOrientation: Bo
         val exifOrientation = if (!ignoreExifOrientation) {
             decodeExifOrientation()
         } else {
-            ExifOrientation.ORIENTATION_UNDEFINED
+            ExifOrientation.UNDEFINED
         }
         return ImageInfo(
             width = width,
@@ -80,12 +80,12 @@ internal fun BasedStreamDataSource.decodeExifOrientation(): Int {
     val directory = metadata.directories
         .find { it.tags.find { tag -> tag.tagName == "Orientation" } != null }
     if (directory == null) {
-        return ExifOrientation.ORIENTATION_UNDEFINED
+        return ExifOrientation.UNDEFINED
     }
     val orientationTag = directory
         .tags?.find { it.tagName == "Orientation" }
     if (orientationTag == null) {
-        return ExifOrientation.ORIENTATION_UNDEFINED
+        return ExifOrientation.UNDEFINED
     }
     return directory.getInt(orientationTag.tagType)
 }

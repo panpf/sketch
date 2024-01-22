@@ -44,56 +44,56 @@ object AssetImages {
         "clock_exif_undefined.jpeg",
         "UNDEFINED",
         Size(1500, 750),
-        ExifOrientation.ORIENTATION_UNDEFINED
+        ExifOrientation.UNDEFINED
     )
     val clockExifFlipHorizontal =
         Image(
             "clock_exif_flip_horizontal.jpeg",
             "FLIP_HOR",
             Size(1500, 750),
-            ExifOrientation.ORIENTATION_FLIP_HORIZONTAL
+            ExifOrientation.FLIP_HORIZONTAL
         )
     val clockExifFlipVertical = Image(
         "clock_exif_flip_vertical.jpeg",
         "FLIP_VER",
         Size(1500, 750),
-        ExifOrientation.ORIENTATION_FLIP_VERTICAL
+        ExifOrientation.FLIP_VERTICAL
     )
     val clockExifNormal = Image(
         "clock_exif_normal.jpeg",
         "NORMAL",
         Size(1500, 750),
-        ExifOrientation.ORIENTATION_NORMAL
+        ExifOrientation.NORMAL
     )
     val clockExifRotate90 = Image(
         "clock_exif_rotate_90.jpeg",
         "ROTATE_90",
         Size(750, 1500),
-        ExifOrientation.ORIENTATION_ROTATE_90
+        ExifOrientation.ROTATE_90
     )
     val clockExifRotate180 = Image(
         "clock_exif_rotate_180.jpeg",
         "ROTATE_180",
         Size(1500, 750),
-        ExifOrientation.ORIENTATION_ROTATE_180
+        ExifOrientation.ROTATE_180
     )
     val clockExifRotate270 = Image(
         "clock_exif_rotate_270.jpeg",
         "ROTATE_270",
         Size(750, 1500),
-        ExifOrientation.ORIENTATION_ROTATE_270
+        ExifOrientation.ROTATE_270
     )
     val clockExifTranspose = Image(
         "clock_exif_transpose.jpeg",
         "TRANSPOSE",
         Size(750, 1500),
-        ExifOrientation.ORIENTATION_TRANSPOSE
+        ExifOrientation.TRANSPOSE
     )
     val clockExifTransverse = Image(
         "clock_exif_transverse.jpeg",
         "TRANSVERSE",
         Size(750, 1500),
-        ExifOrientation.ORIENTATION_TRANSVERSE
+        ExifOrientation.TRANSVERSE
     )
     val clockExifs = arrayOf(
         clockExifUndefined,
@@ -126,7 +126,7 @@ object AssetImages {
         val fileName: String,
         val name: String,
         val size: Size,
-        @ExifOrientation exifOrientation: Int = ExifOrientation.ORIENTATION_UNDEFINED
+        @ExifOrientation exifOrientation: Int = ExifOrientation.UNDEFINED
     ) {
         val uri: String = nameToUri(fileName)
     }

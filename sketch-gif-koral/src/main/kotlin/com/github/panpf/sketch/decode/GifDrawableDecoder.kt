@@ -122,7 +122,7 @@ class GifDrawableDecoder(
             imageWidth,
             imageHeight,
             ImageFormat.GIF.mimeType,
-            ExifOrientation.ORIENTATION_UNDEFINED
+            ExifOrientation.UNDEFINED
         )
         val animatableDrawable =
             SketchAnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {

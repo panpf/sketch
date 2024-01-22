@@ -107,7 +107,7 @@ open class AnimatedImageDecoderDecoder(
                     info.size.width,
                     info.size.height,
                     info.mimeType,
-                    ExifOrientation.ORIENTATION_UNDEFINED
+                    ExifOrientation.UNDEFINED
                 )
                 val size = requestContext.size!!
                 val precision = request.precisionDecider.get(

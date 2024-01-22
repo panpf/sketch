@@ -42,10 +42,10 @@ interface ExifOrientationHelper {
      */
     fun isFlipped(): Boolean {
         return when (exifOrientation) {
-            ExifOrientation.ORIENTATION_FLIP_HORIZONTAL,
-            ExifOrientation.ORIENTATION_TRANSVERSE,
-            ExifOrientation.ORIENTATION_FLIP_VERTICAL,
-            ExifOrientation.ORIENTATION_TRANSPOSE -> true
+            ExifOrientation.FLIP_HORIZONTAL,
+            ExifOrientation.TRANSVERSE,
+            ExifOrientation.FLIP_VERTICAL,
+            ExifOrientation.TRANSPOSE -> true
 
             else -> false
         }
@@ -55,7 +55,7 @@ interface ExifOrientationHelper {
      * Returns the rotation degrees for the current image orientation. If the image is flipped,
      * i.e., [.isFlipped] returns `true`, the rotation degrees will be base on
      * the assumption that the image is first flipped horizontally (along Y-axis), and then do
-     * the rotation. For example, [.ORIENTATION_TRANSPOSE] will be interpreted as flipped
+     * the rotation. For example, [.TRANSPOSE] will be interpreted as flipped
      * horizontally first, and then rotate 270 degrees clockwise.
      *
      * @return The rotation degrees of the image after the horizontal flipping is applied, if any.
@@ -63,27 +63,27 @@ interface ExifOrientationHelper {
      * @see isFlipped
      */
     fun getRotationDegrees(): Int = when (exifOrientation) {
-        ExifOrientation.ORIENTATION_ROTATE_90,
-        ExifOrientation.ORIENTATION_TRANSVERSE -> 90
+        ExifOrientation.ROTATE_90,
+        ExifOrientation.TRANSVERSE -> 90
 
-        ExifOrientation.ORIENTATION_ROTATE_180,
-        ExifOrientation.ORIENTATION_FLIP_VERTICAL -> 180
+        ExifOrientation.ROTATE_180,
+        ExifOrientation.FLIP_VERTICAL -> 180
 
-        ExifOrientation.ORIENTATION_ROTATE_270,
-        ExifOrientation.ORIENTATION_TRANSPOSE -> 270
+        ExifOrientation.ROTATE_270,
+        ExifOrientation.TRANSPOSE -> 270
 
-        ExifOrientation.ORIENTATION_UNDEFINED,
-        ExifOrientation.ORIENTATION_NORMAL,
-        ExifOrientation.ORIENTATION_FLIP_HORIZONTAL -> 0
+        ExifOrientation.UNDEFINED,
+        ExifOrientation.NORMAL,
+        ExifOrientation.FLIP_HORIZONTAL -> 0
 
         else -> 0
     }
 
     fun getTranslation(): Int = when (exifOrientation) {
-        ExifOrientation.ORIENTATION_FLIP_HORIZONTAL,
-        ExifOrientation.ORIENTATION_FLIP_VERTICAL,
-        ExifOrientation.ORIENTATION_TRANSPOSE,
-        ExifOrientation.ORIENTATION_TRANSVERSE -> -1
+        ExifOrientation.FLIP_HORIZONTAL,
+        ExifOrientation.FLIP_VERTICAL,
+        ExifOrientation.TRANSPOSE,
+        ExifOrientation.TRANSVERSE -> -1
 
         else -> 1
     }

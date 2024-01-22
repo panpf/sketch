@@ -103,7 +103,7 @@ open class DrawableDecoder constructor(
             width = imageWidth,
             height = imageHeight,
             mimeType = mimeType ?: "image/png",
-            exifOrientation = ExifOrientation.ORIENTATION_UNDEFINED
+            exifOrientation = ExifOrientation.UNDEFINED
         )
         requestContext.logger.d(MODULE) {
             "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"

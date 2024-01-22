@@ -101,8 +101,8 @@ fun DecodeResult.appliedExifOrientation(
 ): DecodeResult {
     requiredWorkThread()
     if (transformedList?.getExifOrientationTransformed() != null
-        || imageInfo.exifOrientation == ExifOrientation.ORIENTATION_UNDEFINED
-        || imageInfo.exifOrientation == ExifOrientation.ORIENTATION_NORMAL
+        || imageInfo.exifOrientation == ExifOrientation.UNDEFINED
+        || imageInfo.exifOrientation == ExifOrientation.NORMAL
     ) {
         return this
     }

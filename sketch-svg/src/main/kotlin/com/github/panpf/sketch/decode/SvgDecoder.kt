@@ -91,7 +91,7 @@ class SvgDecoder constructor(
             width = imageWidth.roundToInt(),
             height = imageHeight.roundToInt(),
             mimeType = MIME_TYPE,
-            exifOrientation = ExifOrientation.ORIENTATION_UNDEFINED
+            exifOrientation = ExifOrientation.UNDEFINED
         )
 
         val size = requestContext.size!!
