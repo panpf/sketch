@@ -19,18 +19,13 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
-import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.BMP
@@ -43,19 +38,11 @@ import com.github.panpf.sketch.decode.internal.ImageFormat.WEBP
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.configOrNull
-import com.github.panpf.sketch.util.requiredWorkThread
-import com.github.panpf.sketch.util.safeConfig
-import com.github.panpf.sketch.util.scaled
-import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toHexString
+import okio.buffer
 import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -259,7 +246,7 @@ fun limitedSampleSizeByMaxBitmapSizeForRegion(
 
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = false): ImageInfo {
+fun DataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = false): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
     }
@@ -279,7 +266,7 @@ fun BasedStreamDataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: 
 }
 
 @Throws(IOException::class, ImageInvalidException::class)
-fun BasedStreamDataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
+fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory(ignoreExifOrientation)
     val width = imageInfo.width
     val height = imageInfo.height
@@ -290,7 +277,7 @@ fun BasedStreamDataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrient
 }
 
 @WorkerThread
-fun BasedStreamDataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
+fun DataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
     try {
         readImageInfoWithBitmapFactory(ignoreExifOrientation).takeIf {
             it.width > 0 && it.height > 0
@@ -302,8 +289,8 @@ fun BasedStreamDataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrienta
 
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
-    openInputStream().buffered().use {
+fun DataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
+    openSource().buffer().inputStream().use {
         BitmapFactory.decodeStream(it, null, options)
     }
 
@@ -316,11 +303,11 @@ fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
             || (this == HEIF && VERSION.SDK_INT >= VERSION_CODES.P)
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.decodeRegionBitmap(
+fun DataSource.decodeRegionBitmap(
     srcRect: Rect,
     options: BitmapFactory.Options? = null
 ): Bitmap? =
-    openInputStream().buffered().use {
+    openSource().buffer().inputStream().use {
         @Suppress("DEPRECATION")
         val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {
             BitmapRegionDecoder.newInstance(it)

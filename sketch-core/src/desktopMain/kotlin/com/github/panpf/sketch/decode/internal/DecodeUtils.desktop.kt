@@ -2,12 +2,13 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
 import com.drew.imaging.ImageMetadataReader
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.util.Size
+import okio.buffer
 import java.awt.image.BufferedImage
 import java.io.IOException
 import java.io.InputStream
@@ -20,8 +21,8 @@ import kotlin.math.floor
 
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.readImageInfoWithImageReader(ignoreExifOrientation: Boolean = false): ImageInfo {
-    val inputStream: InputStream = openInputStream()
+fun DataSource.readImageInfoWithImageReader(ignoreExifOrientation: Boolean = false): ImageInfo {
+    val inputStream: InputStream = openSource().buffer().inputStream()
     var imageStream: ImageInputStream? = null
     var reader: ImageReader? = null
     try {
@@ -51,7 +52,7 @@ fun BasedStreamDataSource.readImageInfoWithImageReader(ignoreExifOrientation: Bo
 }
 
 @Throws(IOException::class, ImageInvalidException::class)
-fun BasedStreamDataSource.readImageInfoWithImageReaderOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
+fun DataSource.readImageInfoWithImageReaderOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
     val imageInfo = readImageInfoWithImageReader(ignoreExifOrientation)
     val width = imageInfo.width
     val height = imageInfo.height
@@ -62,7 +63,7 @@ fun BasedStreamDataSource.readImageInfoWithImageReaderOrThrow(ignoreExifOrientat
 }
 
 @WorkerThread
-fun BasedStreamDataSource.readImageInfoWithImageReaderOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
+fun DataSource.readImageInfoWithImageReaderOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
     try {
         readImageInfoWithImageReader(ignoreExifOrientation).takeIf {
             it.width > 0 && it.height > 0
@@ -74,8 +75,8 @@ fun BasedStreamDataSource.readImageInfoWithImageReaderOrNull(ignoreExifOrientati
 
 @WorkerThread
 @Suppress("FoldInitializerAndIfToElvis")
-internal fun BasedStreamDataSource.decodeExifOrientation(): Int {
-    val inputStream = openInputStream()
+internal fun DataSource.decodeExifOrientation(): Int {
+    val inputStream = openSource().buffer().inputStream()
     val metadata = inputStream.use { ImageMetadataReader.readMetadata(it) }
     val directory = metadata.directories
         .find { it.tags.find { tag -> tag.tagName == "Orientation" } != null }
@@ -211,14 +212,15 @@ fun limitedSampleSizeByMaxBitmapSize(
     return finalSampleSize
 }
 
-fun BasedStreamDataSource.decodeImage(block: ImageReadParam.() -> Unit): BufferedImage {
-    val inputStream = openInputStream().buffered()
-    val imageStream = ImageIO.createImageInputStream(inputStream)
-    val imageReader = ImageIO.getImageReaders(imageStream).next().apply {
-        input = imageStream
+fun DataSource.decodeImage(block: ImageReadParam.() -> Unit): BufferedImage {
+    openSource().buffer().inputStream().use { inputStream ->
+        val imageStream = ImageIO.createImageInputStream(inputStream)
+        val imageReader = ImageIO.getImageReaders(imageStream).next().apply {
+            input = imageStream
+        }
+        val readParam = imageReader.defaultReadParam.apply {
+            block()
+        }
+        return imageReader.read(0, readParam)
     }
-    val readParam = imageReader.defaultReadParam.apply {
-        block()
-    }
-    return imageReader.read(0, readParam)
 }

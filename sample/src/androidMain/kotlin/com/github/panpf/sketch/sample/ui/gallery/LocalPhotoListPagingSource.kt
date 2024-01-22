@@ -18,11 +18,11 @@ package com.github.panpf.sketch.sample.ui.gallery
 import android.content.Context
 import android.graphics.RectF
 import android.provider.MediaStore
-import androidx.exifinterface.media.ExifInterface
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.caverock.androidsvg.SVG
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
@@ -35,6 +35,7 @@ import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
+import okio.buffer
 
 class LocalPhotoListPagingSource(private val context: Context) :
     PagingSource<Int, Photo>() {
@@ -73,7 +74,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
 
     private suspend fun readLocalPhotos(startPosition: Int, pageSize: Int): List<String> =
         withToIO {
-            @Suppress("DEPRECATION") val cursor = context.contentResolver.query(
+            val cursor = context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 arrayOf(
                     MediaStore.Images.Media.TITLE,
@@ -89,8 +90,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             ArrayList<String>(cursor?.count ?: 0).apply {
                 cursor?.use {
                     while (cursor.moveToNext()) {
-                        @Suppress("DEPRECATION") val uri =
-                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                        val uri = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                         add(uri)
                     }
                 }
@@ -103,7 +103,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             val sketch = context.sketch
             try {
                 val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
-                val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
+                val dataSource = fetcher.fetch().getOrThrow().dataSource
                 imageInfo = if (uri.endsWith(".svg")) {
                     dataSource.readImageInfoWithSVG()
                 } else {
@@ -137,8 +137,8 @@ class LocalPhotoListPagingSource(private val context: Context) :
         }
     }
 
-    private fun BasedStreamDataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
-        val svg = openInputStream().buffered().use { SVG.getFromInputStream(it) }
+    private fun DataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
+        val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
         val width: Int
         val height: Int
         val viewBox: RectF? = svg.documentViewBox
@@ -153,7 +153,7 @@ class LocalPhotoListPagingSource(private val context: Context) :
             width,
             height,
             SvgDecoder.MIME_TYPE,
-            ExifInterface.ORIENTATION_UNDEFINED
+            ExifOrientation.UNDEFINED
         )
     }
 }

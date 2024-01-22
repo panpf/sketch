@@ -18,6 +18,10 @@ package com.github.panpf.sketch.datasource
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import okio.Source
+import okio.source
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -30,18 +34,18 @@ class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
     private val file: File
-) : BasedFileDataSource {
+) : DataSource {
 
     override val dataFrom: DataFrom
         get() = DataFrom.LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream = FileInputStream(file)
+    override fun openSourceOrNull(): Source = FileInputStream(file).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File = file
+    override fun getFileOrNull(): Path = file.toOkioPath()
 
     override fun toString(): String = "FileDataSource('${file.path}')"
 }

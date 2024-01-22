@@ -22,6 +22,10 @@ import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import okio.Source
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -33,22 +37,22 @@ class ContentDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
     val contentUri: Uri
-) : BasedFileDataSource {
+) : DataSource {
 
     override val dataFrom: DataFrom = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream =
-        request.context.contentResolver.openInputStream(contentUri)
-            ?: throw IOException("Invalid content uri: $contentUri")
+    override fun openSourceOrNull(): Source =
+        (request.context.contentResolver.openInputStream(contentUri)
+            ?: throw IOException("Invalid content uri: $contentUri")).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File =
+    override fun getFileOrNull(): Path =
         if (contentUri.scheme.equals("file", ignoreCase = true)) {
             val filePath = FileUriFetcher.parseFilePathFromFileUri(contentUri.toString())!!
-            File(filePath)
+            File(filePath).toOkioPath()
         } else {
             getCacheFileFromStreamDataSource(sketch, request, this)
         }

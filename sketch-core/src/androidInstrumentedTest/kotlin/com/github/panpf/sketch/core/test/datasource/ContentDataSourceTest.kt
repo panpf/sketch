@@ -68,7 +68,7 @@ class ContentDataSourceTest {
             request = ImageRequest(context, contentUri.toString()),
             contentUri = contentUri,
         ).apply {
-            openInputStream().close()
+            openSource().close()
         }
 
         assertThrow(FileNotFoundException::class) {
@@ -80,7 +80,7 @@ class ContentDataSourceTest {
                 request = ImageRequest(context, errorContentUri.toString()),
                 contentUri = errorContentUri,
             ).apply {
-                openInputStream()
+                openSource()
             }
         }
     }

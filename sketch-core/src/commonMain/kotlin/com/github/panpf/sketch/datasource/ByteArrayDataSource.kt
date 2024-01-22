@@ -19,6 +19,9 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import okio.Path
+import okio.Source
+import okio.source
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
@@ -32,15 +35,15 @@ class ByteArrayDataSource constructor(
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
     val data: ByteArray,
-) : BasedFileDataSource {
+) : DataSource {
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream = ByteArrayInputStream(data)
+    override fun openSourceOrNull(): Source = ByteArrayInputStream(data).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String =
         "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"

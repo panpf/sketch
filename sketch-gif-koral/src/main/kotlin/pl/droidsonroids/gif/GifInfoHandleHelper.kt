@@ -16,12 +16,11 @@
 package pl.droidsonroids.gif
 
 import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.BasedFileDataSource
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import okio.buffer
 
 class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
 
@@ -44,16 +43,10 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
                 GifInfoHandle(context.assets.openFd(dataSource.assetFileName))
             }
 
-            is BasedFileDataSource -> {
-                GifInfoHandle(dataSource.getFile().path)
-            }
-
-            is BasedStreamDataSource -> {
-                GifInfoHandle(dataSource.openInputStream())
-            }
-
             else -> {
-                throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
+                dataSource.openSourceOrNull()?.let { GifInfoHandle(it.buffer().inputStream()) }
+                    ?: dataSource.getFileOrNull()?.let { GifInfoHandle(it.toFile().path) }
+                    ?: throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
             }
         }
     }

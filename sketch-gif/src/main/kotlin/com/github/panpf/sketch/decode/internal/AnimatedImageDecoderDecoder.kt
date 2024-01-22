@@ -20,14 +20,15 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
@@ -36,8 +37,6 @@ import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
@@ -88,12 +87,10 @@ open class AnimatedImageDecoderDecoder(
                 }
             }
 
-            is BasedFileDataSource -> {
-                ImageDecoder.createSource(dataSource.getFile())
-            }
-
             else -> {
-                throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
+                dataSource.getFileOrNull()
+                    ?.let { ImageDecoder.createSource(it.toFile()) }
+                    ?: throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
             }
         }
 

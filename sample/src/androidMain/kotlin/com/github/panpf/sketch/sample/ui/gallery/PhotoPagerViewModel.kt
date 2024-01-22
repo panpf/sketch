@@ -21,24 +21,24 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
 import androidx.core.graphics.ColorUtils
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.base.ActionResult
+import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sketch
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
 import com.github.panpf.tools4j.security.ktx.getMD5Digest
-import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
+import okio.buffer
 import java.io.File
 
 class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
 
-    private val _buttonBgColor = MutableStateFlow(ColorUtils.setAlphaComponent(Color.parseColor("#bf5660"), 160))
+    private val _buttonBgColor =
+        MutableStateFlow(ColorUtils.setAlphaComponent(Color.parseColor("#bf5660"), 160))
     val buttonBgColor: StateFlow<Int> = _buttonBgColor
 
     fun setButtonBgColor(color: Int) {
@@ -65,10 +65,10 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
 
         try {
             withContext(Dispatchers.IO) {
-                fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().openInputStream()
+                fetchResult.dataSource.openSource()
                     .use { input ->
                         imageFile.outputStream().buffered().use { output ->
-                            input.copyTo(output)
+                            input.buffer().buffer.copyTo(output)
                         }
                     }
             }
@@ -112,10 +112,10 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
         if (!imageFile.exists()) {
             try {
                 withContext(Dispatchers.IO) {
-                    fetchResult.dataSource.asOrThrow<BasedStreamDataSource>().openInputStream()
+                    fetchResult.dataSource.openSource()
                         .use { input ->
                             imageFile.outputStream().buffered().use { output ->
-                                input.copyTo(output)
+                                input.buffer().buffer.copyTo(output)
                             }
                         }
                 }

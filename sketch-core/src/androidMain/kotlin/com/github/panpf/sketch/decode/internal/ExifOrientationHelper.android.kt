@@ -25,16 +25,17 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.safeConfig
+import okio.buffer
 import java.io.IOException
 import kotlin.math.abs
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.readExifOrientation(): Int =
-    openInputStream().buffered().use {
+fun DataSource.readExifOrientation(): Int =
+    openSource().buffer().inputStream().use {
         ExifInterface(it).getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
             ExifInterface.ORIENTATION_UNDEFINED
@@ -42,7 +43,7 @@ fun BasedStreamDataSource.readExifOrientation(): Int =
     }
 
 @Throws(IOException::class)
-fun BasedStreamDataSource.readExifOrientationWithMimeType(mimeType: String): Int =
+fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
     if (ExifInterface.isSupportedMimeType(mimeType)) {
         readExifOrientation()
     } else {

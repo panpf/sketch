@@ -21,13 +21,8 @@ import android.graphics.Paint
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.BasedFileDataSource
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
-import com.github.panpf.sketch.datasource.ContentDataSource
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
@@ -41,7 +36,6 @@ import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.util.Size
@@ -153,15 +147,7 @@ class GifDrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            val dataSource = fetchResult.dataSource
-            if (!requestContext.request.disallowAnimatedImage
-                && (dataSource is ByteArrayDataSource
-                        || dataSource is ResourceDataSource
-                        || dataSource is ContentDataSource
-                        || dataSource is AssetDataSource
-                        || dataSource is BasedFileDataSource
-                        || dataSource is BasedStreamDataSource)
-            ) {
+            if (!requestContext.request.disallowAnimatedImage) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 // Some sites disguise the suffix of a GIF file as a JPEG, which must be identified by the file header
                 val isGif = if (imageFormat == null) {

@@ -17,22 +17,17 @@ package com.github.panpf.sketch.util
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
-import okio.Buffer
-import okio.Sink
-import okio.Source
+import okio.Path
+import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.sink
-import okio.source
-import java.io.File
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -160,8 +155,8 @@ internal fun intSplit(value: Int): Pair<Int, Int> {
 internal fun getCacheFileFromStreamDataSource(
     sketch: Sketch,
     request: ImageRequest,
-    streamDataSource: BasedStreamDataSource,
-): File = runBlocking {
+    dataSource: DataSource,
+): Path = runBlocking {
     val resultCache = sketch.resultCache
     val resultCacheKey = request.uriString + "_data_source"
     resultCache.editLock(resultCacheKey).withLock {
@@ -172,16 +167,16 @@ internal fun getCacheFileFromStreamDataSource(
             val editor = resultCache.edit(resultCacheKey)
                 ?: throw IOException("Disk cache cannot be used")
             try {
-                streamDataSource.openInputStream().use { inputStream ->
-                    editor.newOutputStream().buffered().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
-//                streamDataSource.openInputStream().buffer().use { source ->
-//                    editor.newOutputStream().sink().buffer().use { sink ->
-//                        source.buffer.copyTo(sink.buffer)
+//                streamDataSource.openInputStream().use { inputStream ->
+//                    editor.newOutputStream().buffered().use { outputStream ->
+//                        inputStream.copyTo(outputStream)
 //                    }
 //                }
+                dataSource.openSource().buffer().use { source ->
+                    editor.newOutputStream().sink().buffer().use { sink ->
+                        source.buffer.copyTo(sink.buffer)
+                    }
+                }
                 editor.commit()
             } catch (e: Throwable) {
                 editor.abort()
@@ -190,7 +185,7 @@ internal fun getCacheFileFromStreamDataSource(
             resultCache[resultCacheKey]
                 ?: throw IOException("Disk cache cannot be used after edit")
         }
-    }.file
+    }.file.toOkioPath()
 }
 
 
@@ -216,20 +211,3 @@ internal fun ceilRoundPow2(number: Int): Int {
 }
 
 internal expect fun getMimeTypeFromExtension(extension: String): String?
-
-///**
-// * Copies this stream to the given output stream, returning the number of bytes copied
-// *
-// * **Note** It is the caller's responsibility to close both of these resources.
-// */
-//public fun Source.copyTo(out: Sink, bufferSize: Int = DEFAULT_BUFFER_SIZE): Long {
-//    var bytesCopied: Long = 0
-//    val buffer = Buffer(bufferSize)
-//    var bytes = read(buffer)
-//    while (bytes >= 0) {
-//        out.write(buffer, 0, bytes)
-//        bytesCopied += bytes
-//        bytes = read(buffer)
-//    }
-//    return bytesCopied
-//}

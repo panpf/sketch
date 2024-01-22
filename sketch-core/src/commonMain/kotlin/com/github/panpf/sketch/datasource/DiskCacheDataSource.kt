@@ -19,6 +19,10 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.ImageRequest
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import okio.Source
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -31,15 +35,15 @@ class DiskCacheDataSource constructor(
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
     val snapshot: DiskCache.Snapshot,
-) : BasedFileDataSource {
+) : DataSource {
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream = snapshot.newInputStream()
+    override fun openSourceOrNull(): Source = snapshot.newInputStream().source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File = snapshot.file
+    override fun getFileOrNull(): Path = snapshot.file.toOkioPath()
 
     override fun toString(): String =
         "DiskCacheDataSource(from=$dataFrom,file='${snapshot.file.path}')"

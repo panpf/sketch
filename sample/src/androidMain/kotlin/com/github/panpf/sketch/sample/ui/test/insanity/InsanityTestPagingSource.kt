@@ -18,7 +18,6 @@ package com.github.panpf.sketch.sample.ui.test.insanity
 import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.request.ImageRequest
@@ -55,7 +54,7 @@ class InsanityTestPagingSource(private val context: Context) :
         uris.mapIndexed { index, uri ->
             val sketch = context.sketch
             val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
-            val dataSource = fetcher.fetch().getOrThrow().dataSource as BasedStreamDataSource
+            val dataSource = fetcher.fetch().getOrThrow().dataSource
             val imageInfo =
                 dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)
             if (imageInfo != null) {

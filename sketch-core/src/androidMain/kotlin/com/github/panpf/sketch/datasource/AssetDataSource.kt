@@ -34,20 +34,20 @@ class AssetDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
     val assetFileName: String
-) : BasedFileDataSource {
+) : DataSource {
 
     override val dataFrom: DataFrom
         get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
-//    override fun openInputStream(): Source = request.context.assets.open(assetFileName).source()
+//    override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
+    override fun openSourceOrNull(): Source = request.context.assets.open(assetFileName).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
-//    override fun getFile(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
+//    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String =
         "AssetDataSource('$assetFileName')"

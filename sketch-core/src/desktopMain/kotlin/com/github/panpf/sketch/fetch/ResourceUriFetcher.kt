@@ -6,11 +6,15 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ResourceLoader
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.toUri
+import okio.Path
+import okio.Source
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -62,18 +66,18 @@ class ResourceDataSource(
     override val sketch: Sketch,
     override val request: ImageRequest,
     val resourceName: String,
-) : BasedFileDataSource {
+) : DataSource {
 
     override val dataFrom: DataFrom
         get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream = ResourceLoader.Default.load(resourceName)
+    override fun openSourceOrNull(): Source = ResourceLoader.Default.load(resourceName).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String = "ResourceDataSource($resourceName)"
 }

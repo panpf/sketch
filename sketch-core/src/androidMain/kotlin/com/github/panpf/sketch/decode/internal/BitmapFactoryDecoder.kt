@@ -19,7 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
@@ -34,7 +34,7 @@ import com.github.panpf.sketch.util.toAndroidRect
  */
 open class BitmapFactoryDecoder(
     private val requestContext: RequestContext,
-    private val dataSource: BasedStreamDataSource,
+    private val dataSource: DataSource,
 ) : Decoder {
 
     companion object {
@@ -198,13 +198,9 @@ open class BitmapFactoryDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): Decoder {
             val dataSource = fetchResult.dataSource
-            return if (dataSource is BasedStreamDataSource) {
-                BitmapFactoryDecoder(requestContext, dataSource)
-            } else {
-                null
-            }
+            return BitmapFactoryDecoder(requestContext, dataSource)
         }
 
         override fun toString(): String = "BitmapFactoryDecoder"

@@ -57,7 +57,7 @@ class AssetDataSourceTest {
             request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).apply {
-            openInputStream().close()
+            openSource().close()
         }
 
         assertThrow(FileNotFoundException::class) {
@@ -66,7 +66,7 @@ class AssetDataSourceTest {
                 request = ImageRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
-                openInputStream()
+                openSource()
             }
         }
     }

@@ -23,6 +23,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import okio.Path
+import okio.Source
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -36,19 +39,19 @@ class ResourceDataSource constructor(
     val packageName: String,
     val resources: Resources,
     @RawRes @DrawableRes val resId: Int
-) : BasedFileDataSource {
+) : DataSource {
 
     override val dataFrom: DataFrom
         get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openInputStream(): InputStream =
-        resources.openRawResource(resId)
+    override fun openSourceOrNull(): Source =
+        resources.openRawResource(resId).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String = "ResourceDataSource($resId)"
 }

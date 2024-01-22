@@ -15,14 +15,11 @@
  */
 package com.github.panpf.sketch.datasource
 
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import okio.IOException
 import okio.Path
 import okio.Source
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
 
 /**
  * Provides access to the image data.
@@ -34,20 +31,16 @@ interface DataSource {
     val request: ImageRequest
 
     val dataFrom: DataFrom
-}
 
-interface BasedStreamDataSource : DataSource {
-
-    @WorkerThread
     @Throws(IOException::class)
-    fun openInputStream(): InputStream
-//    fun openInputStream(): Source
-}
+    fun openSource(): Source = openSourceOrNull() ?: throw IOException("Not supported Source")
 
-interface BasedFileDataSource : BasedStreamDataSource {
-
-    @WorkerThread
     @Throws(IOException::class)
-    fun getFile(): File
-//    fun getFile(): Path
+    fun openSourceOrNull(): Source?
+
+    @Throws(IOException::class)
+    fun getFile(): Path = getFileOrNull() ?: throw IOException("Not supported File")
+
+    @Throws(IOException::class)
+    fun getFileOrNull(): Path?
 }

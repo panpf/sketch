@@ -52,7 +52,7 @@ class ByteArrayDataSourceTest {
             dataFrom = DataFrom.MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ).apply {
-            openInputStream().close()
+            openSource().close()
         }
     }
 

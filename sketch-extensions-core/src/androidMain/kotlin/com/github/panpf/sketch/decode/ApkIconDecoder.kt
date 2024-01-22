@@ -19,7 +19,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
@@ -68,14 +67,11 @@ class ApkIconDecoder(
             fetchResult: FetchResult
         ): Decoder? {
             val dataSource = fetchResult.dataSource
-            return if (
-                MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
-                && dataSource is BasedFileDataSource
-            ) {
+            return if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
                 ApkIconDecoder(
                     requestContext = requestContext,
                     dataFrom = fetchResult.dataFrom,
-                    file = dataSource.getFile()
+                    file = dataSource.getFile().toFile()
                 )
             } else {
                 null

@@ -20,11 +20,11 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.zoomimage.subsampling.ImageSource
 import kotlinx.coroutines.runBlocking
+import okio.buffer
 import java.io.InputStream
 
 class SketchImageSource(
@@ -52,10 +52,8 @@ class SketchImageSource(
             it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
         }
         val dataSource = fetchResult.dataSource
-        if (dataSource !is BasedStreamDataSource) {
-            return Result.failure(IllegalStateException("DataSource is not BasedStreamDataSource. imageUri='$imageUri'"))
-        }
-        dataSource.openInputStream()
+        dataSource.openSourceOrNull()?.buffer()?.inputStream() ?:
+            return Result.failure(IllegalStateException("DataSource not supported Source. imageUri='$imageUri'"))
     }
 
     override fun equals(other: Any?): Boolean {

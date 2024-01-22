@@ -15,10 +15,10 @@
  */
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.util.Bytes
+import okio.buffer
 
 fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
     DefaultFetchResult(dataSource, mimeType)
@@ -51,16 +51,12 @@ open class DefaultFetchResult constructor(
 
     override val headerBytes: Bytes by lazy {
         val dataSource = dataSource
-        if (dataSource is BasedStreamDataSource) {
-            val byteArray = ByteArray(100)
-            val readLength = dataSource.openInputStream().use {
-                it.read(byteArray)
-            }
-            if (readLength != -1) {
-                Bytes(if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength))
-            } else {
-                EMPTY
-            }
+        val byteArray = ByteArray(100)
+        val readLength = dataSource.openSourceOrNull()?.use {
+            it.buffer().read(byteArray)
+        } ?: -1
+        if (readLength != -1) {
+            Bytes(if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength))
         } else {
             EMPTY
         }

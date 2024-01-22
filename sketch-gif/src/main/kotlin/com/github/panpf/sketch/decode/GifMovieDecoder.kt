@@ -22,7 +22,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -39,6 +39,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okio.buffer
 
 /**
  * Adds gif support by Movie
@@ -62,13 +63,13 @@ fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = app
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDecoder(
     private val requestContext: RequestContext,
-    private val dataSource: BasedStreamDataSource,
+    private val dataSource: DataSource,
 ) : Decoder {
 
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        val movie: Movie? = dataSource.openInputStream().buffered().use { Movie.decodeStream(it) }
+        val movie: Movie? = dataSource.openSource().buffer().inputStream().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0
         val height = movie?.height() ?: 0
@@ -118,7 +119,6 @@ class GifMovieDecoder(
             val dataSource = fetchResult.dataSource
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && !requestContext.request.disallowAnimatedImage
-                && dataSource is BasedStreamDataSource
             ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 val isGif =

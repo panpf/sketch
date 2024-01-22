@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.BasedStreamDataSource
+import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
@@ -9,13 +9,14 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Rect
+import okio.buffer
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 class ImageReaderDecoder(
     private val requestContext: RequestContext,
-    private val dataSource: BasedStreamDataSource,
+    private val dataSource: DataSource,
 ) : Decoder {
 
     companion object {
@@ -27,7 +28,7 @@ class ImageReaderDecoder(
         val imageInfo =
             dataSource.readImageInfoWithImageReaderOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = checkSupportSubsamplingByMimeType(imageInfo.mimeType)
-        val inputStream = dataSource.openInputStream().buffered()
+        val inputStream = dataSource.openSource().buffer().inputStream()
         val imageStream = ImageIO.createImageInputStream(inputStream)
         val imageReader = ImageIO.getImageReaders(imageStream).next().apply {
             input = imageStream
@@ -108,13 +109,9 @@ class ImageReaderDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult,
-        ): Decoder? {
+        ): Decoder {
             val dataSource = fetchResult.dataSource
-            return if (dataSource is BasedStreamDataSource) {
-                ImageReaderDecoder(requestContext, dataSource)
-            } else {
-                null
-            }
+            return ImageReaderDecoder(requestContext, dataSource)
         }
 
         override fun toString(): String {

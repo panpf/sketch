@@ -19,6 +19,8 @@ import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.DrawableFetcher
+import okio.Path
+import okio.Source
 
 /**
  * Provides access to local file image data
@@ -33,6 +35,10 @@ class DrawableDataSource constructor(
     val drawable: Drawable by lazy {
         drawableFetcher.getDrawable(request.context)
     }
+
+    override fun openSourceOrNull(): Source? = null
+
+    override fun getFileOrNull(): Path? = null
 
     override fun toString(): String = "DrawableDataSource"
 }

@@ -22,7 +22,6 @@ import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.BasedFileDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.appliedExifOrientation
@@ -70,12 +69,9 @@ class FFmpegVideoFrameDecoder(
                     setDataSource(dataSource.request.context, dataSource.contentUri)
                 }
 
-                is BasedFileDataSource -> {
-                    setDataSource(dataSource.getFile().path)
-                }
-
                 else -> {
-                    throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
+                    dataSource.getFileOrNull()?.let { setDataSource(it.toFile().path)}
+                        ?: throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
                 }
             }
         }
@@ -195,9 +191,7 @@ class FFmpegVideoFrameDecoder(
         ): FFmpegVideoFrameDecoder? {
             val dataSource = fetchResult.dataSource
             val mimeType = fetchResult.mimeType
-            if (mimeType?.startsWith("video/") == true
-                && (dataSource is ContentDataSource || dataSource is BasedFileDataSource)
-            ) {
+            if (mimeType?.startsWith("video/") == true) {
                 return FFmpegVideoFrameDecoder(
                     requestContext = requestContext,
                     dataSource = dataSource,

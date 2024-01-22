@@ -70,7 +70,7 @@ class DiskCacheDataSourceTest {
             dataFrom = DataFrom.DOWNLOAD_CACHE,
             snapshot = diskCacheSnapshot,
         ).apply {
-            openInputStream().close()
+            openSource().close()
         }
     }
 
