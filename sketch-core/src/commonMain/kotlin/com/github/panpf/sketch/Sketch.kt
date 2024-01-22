@@ -53,6 +53,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
+import okio.FileSystem
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -106,6 +107,8 @@ class Sketch private constructor(options: Options) {
 
     /** Monitor network connection and system status */
     val systemCallbacks = SystemCallbacks()
+
+    val fileSystem = FileSystem.SYSTEM
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -20,6 +20,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import okio.Path
+import okio.Source
+import okio.source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -39,10 +42,12 @@ class AssetDataSource constructor(
     @WorkerThread
     @Throws(IOException::class)
     override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
+//    override fun openInputStream(): Source = request.context.assets.open(assetFileName).source()
 
     @WorkerThread
     @Throws(IOException::class)
     override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
+//    override fun getFile(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
 
     override fun toString(): String =
         "AssetDataSource('$assetFileName')"

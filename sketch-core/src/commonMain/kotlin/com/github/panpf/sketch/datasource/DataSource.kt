@@ -18,6 +18,8 @@ package com.github.panpf.sketch.datasource
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import okio.Path
+import okio.Source
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -39,6 +41,7 @@ interface BasedStreamDataSource : DataSource {
     @WorkerThread
     @Throws(IOException::class)
     fun openInputStream(): InputStream
+//    fun openInputStream(): Source
 }
 
 interface BasedFileDataSource : BasedStreamDataSource {
@@ -46,4 +49,5 @@ interface BasedFileDataSource : BasedStreamDataSource {
     @WorkerThread
     @Throws(IOException::class)
     fun getFile(): File
+//    fun getFile(): Path
 }

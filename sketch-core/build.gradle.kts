@@ -45,6 +45,7 @@ kotlin {
                 api(libs.androidx.annotation)
                 api(libs.kotlinx.coroutines.core)
                 compileOnly(libs.composeStableMarker)
+                api(libs.okio)
             }
         }
         named("commonTest") {

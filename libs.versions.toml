@@ -63,6 +63,7 @@ tinypinyin = "2.0.3"
 mavenpublish = "0.25.3"
 composeStableMarker = "1.0.3"
 metadataExtractor = "2.18.0"
+okio = "3.7.0"
 
 
 [libraries]
@@ -152,6 +153,7 @@ retrofit2-kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:r
 tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
 composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
 metadataExtractor={ module = "com.drewnoakes:metadata-extractor", version.ref = "metadataExtractor" }
+okio={ module = "com.squareup.okio:okio", version.ref = "okio" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-plugin" }

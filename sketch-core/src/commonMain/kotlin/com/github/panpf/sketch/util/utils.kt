@@ -23,8 +23,16 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
+import okio.Buffer
+import okio.Sink
+import okio.Source
+import okio.buffer
+import okio.sink
+import okio.source
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -169,6 +177,11 @@ internal fun getCacheFileFromStreamDataSource(
                         inputStream.copyTo(outputStream)
                     }
                 }
+//                streamDataSource.openInputStream().buffer().use { source ->
+//                    editor.newOutputStream().sink().buffer().use { sink ->
+//                        source.buffer.copyTo(sink.buffer)
+//                    }
+//                }
                 editor.commit()
             } catch (e: Throwable) {
                 editor.abort()
@@ -203,3 +216,20 @@ internal fun ceilRoundPow2(number: Int): Int {
 }
 
 internal expect fun getMimeTypeFromExtension(extension: String): String?
+
+///**
+// * Copies this stream to the given output stream, returning the number of bytes copied
+// *
+// * **Note** It is the caller's responsibility to close both of these resources.
+// */
+//public fun Source.copyTo(out: Sink, bufferSize: Int = DEFAULT_BUFFER_SIZE): Long {
+//    var bytesCopied: Long = 0
+//    val buffer = Buffer(bufferSize)
+//    var bytes = read(buffer)
+//    while (bytes >= 0) {
+//        out.write(buffer, 0, bytes)
+//        bytesCopied += bytes
+//        bytes = read(buffer)
+//    }
+//    return bytesCopied
+//}
