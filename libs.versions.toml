@@ -64,6 +64,7 @@ mavenpublish = "0.25.3"
 composeStableMarker = "1.0.3"
 metadataExtractor = "2.18.0"
 okio = "3.7.0"
+cashapp-paging = "3.3.0-alpha02-0.4.0"
 
 
 [libraries]
@@ -154,6 +155,9 @@ tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyi
 composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
 metadataExtractor={ module = "com.drewnoakes:metadata-extractor", version.ref = "metadataExtractor" }
 okio={ module = "com.squareup.okio:okio", version.ref = "okio" }
+cashapp-paging-common={ module = "app.cash.paging:paging-common", version.ref = "cashapp-paging" }
+#cashapp-paging-runtime={ module = "app.cash.paging:paging-runtime", version.ref = "cashapp-paging" }
+cashapp-paging-compose-common={ module = "app.cash.paging:paging-compose-common", version.ref = "cashapp-paging" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-plugin" }

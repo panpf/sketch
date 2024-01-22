@@ -30,6 +30,7 @@
         com.github.panpf.sketch.extensions.compose,
         com.github.panpf.zoomimage.compose.sketch,
         com.github.panpf.zoomimage.compose.sketch.core,
+        app.cash.paging.compose,
     " />
 
     <uses-permission android:name="android.permission.INTERNET" />

@@ -34,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import app.cash.paging.compose.LazyPagingItems
+import app.cash.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.ability.dataFromLogo
@@ -57,14 +59,14 @@ import kotlinx.coroutines.launch
 @Preview
 fun GalleryScreen(navigation: Navigation) {
     val coroutineScope = rememberCoroutineScope()
-    val localListViewModel = rememberLocalPhotoListViewModel()
-    val pexelsListViewModel = rememberPexelsPhotoListViewModel()
-    val giphyListViewModel = rememberGiphyPhotoListViewModel()
+    val localListViewModel = rememberLocalPhotoListViewModel().pagingFlow.collectAsLazyPagingItems()
+    val pexelsListViewModel = rememberPexelsPhotoListViewModel().pagingFlow.collectAsLazyPagingItems()
+    val giphyListViewModel = rememberGiphyPhotoListViewModel().pagingFlow.collectAsLazyPagingItems()
     val photoListStates = remember {
         listOf(
-            localListViewModel.photoList,
-            pexelsListViewModel.photoList,
-            giphyListViewModel.photoList,
+            localListViewModel,
+            pexelsListViewModel,
+            giphyListViewModel,
         )
     }
     val tabTiles = remember {
@@ -98,8 +100,8 @@ fun GalleryScreen(navigation: Navigation) {
 }
 
 @Composable
-fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
-    val photoList by photoListState.collectAsState()
+fun PhotoGridPage(photoListState: LazyPagingItems<Photo>) {
+//    val photoList by photoListState.collectAsState()
     val divider = Arrangement.spacedBy(4.dp)
     val colorScheme = MaterialTheme.colorScheme
 
@@ -112,7 +114,11 @@ fun PhotoGridPage(photoListState: StateFlow<List<Photo>>) {
             modifier = Modifier.fillMaxSize(),
             state = gridState,
         ) {
-            itemsIndexed(photoList) { _, photo ->
+            items(
+                count = photoListState.itemCount,
+                key = { photoListState.peek(it)?.diffKey ?: "" },
+            ) { index ->
+                val photo = photoListState[index]!!
                 val imageState = rememberAsyncImageState()
                 val imagePainter = painterResource("ic_image_outline.xml")
                 val errorPainter = painterResource("ic_error_baseline.xml")

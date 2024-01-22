@@ -16,9 +16,9 @@ class PexelsApi(client: HttpClient) : BaseApi(client, "https://api.pexels.com") 
         }
     }
 
-    suspend fun curated(pageIndex: Int, size: Int): Response<PexelsCurated> {
+    suspend fun curated(page: Int, size: Int): Response<PexelsCurated> {
         return execute(buildGetRequestWithPath("/v1/curated") {
-            parameter("page", pageIndex)
+            parameter("page", page)
             parameter("per_page", size)
         })
     }

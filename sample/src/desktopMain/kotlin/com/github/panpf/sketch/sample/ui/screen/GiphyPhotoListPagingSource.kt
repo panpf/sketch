@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui.screen
 
-import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.apiService
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.data.Apis
+import com.github.panpf.sketch.sample.data.Response
+import com.github.panpf.sketch.sample.data.giphy.GiphyGif
 
-class GifPhotoListPagingSource(private val context: Context) :
-    PagingSource<Int, Photo>() {
+class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
 
@@ -32,27 +31,28 @@ class GifPhotoListPagingSource(private val context: Context) :
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
-            context.apiService.giphy.trending(pageStart, pageSize)
+            Apis.giphyApi.trending(pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return LoadResult.Error(e)
         }
 
-        return if (response.isSuccessful) {
-            val dataList = response.body()?.dataList?.map {
-                Photo(
-                    originalUrl = it.images.original.downloadUrl,
-                    mediumUrl = it.images.original.downloadUrl,
-                    thumbnailUrl = it.images.fixedWidth.downloadUrl,
-                    width = it.images.original.width.toInt(),
-                    height = it.images.original.height.toInt(),
-                    exifOrientation = 0,
-                )
-            } ?: emptyList()
-            val nextKey = if (dataList.isNotEmpty()) pageStart + pageSize else null
-            LoadResult.Page(dataList.filter { keySet.add(it.diffKey) }, null, nextKey)
+        return if (response is Response.Success) {
+            val giphyPhotos = response.body.dataList ?: emptyList()
+            val photos = giphyPhotos.map { it.toPhoto() }
+            val filteredPhotos = photos.filter { keySet.add(it.diffKey) }
+            val nextKey = if (giphyPhotos.isNotEmpty()) pageStart + pageSize else null
+            LoadResult.Page(filteredPhotos, null, nextKey)
         } else {
-            LoadResult.Error(Exception("Http coded error: code=${response.code()}. message=${response.message()}"))
+            response as Response.Error
+            LoadResult.Error(Exception("Http error: ${response.throwable?.message}"))
         }
+    }
+
+    private fun GiphyGif.toPhoto(): Photo {
+        return Photo(
+            originalUrl = images.original.downloadUrl,
+            thumbnailUrl = images.fixedWidth.downloadUrl,
+        )
     }
 }

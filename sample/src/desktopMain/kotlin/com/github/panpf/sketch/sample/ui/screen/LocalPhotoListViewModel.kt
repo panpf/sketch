@@ -2,39 +2,36 @@ package com.github.panpf.sketch.sample.ui.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.resources.AssetImages
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.github.panpf.sketch.sample.ui.screen.base.BaseRememberObserver
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 @Composable
 fun rememberLocalPhotoListViewModel(): LocalPhotoListViewModel {
+    val coroutineScope = rememberCoroutineScope()
     return remember {
-        LocalPhotoListViewModel()
+        LocalPhotoListViewModel(coroutineScope)
     }
 }
 
-class LocalPhotoListViewModel internal constructor() : BaseRememberObserver() {
+class LocalPhotoListViewModel(private val coroutineScope: CoroutineScope) : BaseRememberObserver() {
 
-    private var coroutineScope: CoroutineScope? = null
-
-    private val _photoList = MutableStateFlow<List<Photo>>(emptyList())
-    val photoList: StateFlow<List<Photo>> = _photoList
+    val pagingFlow = Pager(
+        config = PagingConfig(
+            pageSize = 40,
+            enablePlaceholders = false,
+        ),
+        initialKey = 0,
+        pagingSourceFactory = {
+            LocalPhotoListPagingSource()
+        }
+    ).flow.cachedIn(coroutineScope)
 
     override fun onFirstRemembered() {
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
-        this.coroutineScope = coroutineScope
 
-        coroutineScope.launch {
-            val longImages = arrayOf(AssetImages.longQMSHT)
-            _photoList.value =
-                (AssetImages.statics + AssetImages.anims + AssetImages.clockExifs + longImages).map {
-                    Photo(it.uri, it.uri)
-                }
-        }
     }
 
     override fun onLastRemembered() {

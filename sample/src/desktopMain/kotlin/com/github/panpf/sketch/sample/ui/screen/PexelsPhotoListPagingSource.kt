@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui.screen
 
-import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.apiService
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.data.Apis
+import com.github.panpf.sketch.sample.data.Response
+import com.github.panpf.sketch.sample.data.pexels.PexelsPhoto
 
-class PexelsPhotoListPagingSource(private val context: Context) :
+class PexelsPhotoListPagingSource :
     PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
@@ -31,27 +31,25 @@ class PexelsPhotoListPagingSource(private val context: Context) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val pageNumber = (params.key ?: 0).coerceAtLeast(1)
         val response = try {
-            context.apiService.pexels.curated(pageNumber, params.loadSize)
+            Apis.pexelsApi.curated(pageNumber, params.loadSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return LoadResult.Error(e)
         }
 
-        return if (response.isSuccessful) {
-            val dataList = (response.body()?.photos?.map {
-                Photo(
-                    originalUrl = it.src.original,
-                    mediumUrl = it.src.large,
-                    thumbnailUrl = it.src.medium,
-                    width = it.width,
-                    height = it.height,
-                    exifOrientation = 0,
-                )
-            } ?: emptyList())
-            val nextKey = if (dataList.isNotEmpty()) pageNumber + 1 else null
-            LoadResult.Page(dataList.filter { keySet.add(it.diffKey) }, null, nextKey)
+        return if (response is Response.Success) {
+            val pexelsPhotos = response.body.photos
+            val photos = pexelsPhotos.map { it.toPhoto() }
+            val filteredPhotos = photos.filter { keySet.add(it.diffKey) }
+            val nextKey = if (pexelsPhotos.isNotEmpty()) pageNumber + 1 else null
+            LoadResult.Page(filteredPhotos, null, nextKey)
         } else {
-            LoadResult.Error(Exception("Http coded error: code=${response.code()}. message=${response.message()}"))
+            response as Response.Error
+            LoadResult.Error(Exception("Http error: ${response.throwable?.message}"))
         }
+    }
+
+    private fun PexelsPhoto.toPhoto(): Photo {
+        return Photo(thumbnailUrl = this.src.medium, originalUrl = this.src.original)
     }
 }

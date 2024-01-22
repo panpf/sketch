@@ -23,7 +23,7 @@ kotlin {
 //        withJava()
         compilations.configureEach {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -45,7 +45,7 @@ kotlin {
                 implementation(libs.androidx.compose.animation)
                 implementation(libs.androidx.compose.foundation)
                 implementation(libs.androidx.lifecycle.viewmodel.compose)
-                implementation(libs.androidx.paging.compose)
+//                implementation(libs.androidx.paging.compose)
                 implementation(libs.androidx.appcompat)
                 implementation(libs.androidx.constraintlayout)
                 implementation(libs.androidx.core)
@@ -54,7 +54,7 @@ kotlin {
                 implementation(libs.androidx.multidex)
                 implementation(libs.androidx.navigation.fragment)
                 implementation(libs.androidx.navigation.ui)
-                implementation(libs.androidx.paging.common)
+//                implementation(libs.androidx.paging.common)
                 implementation(libs.androidx.paging.runtime)
                 implementation(libs.androidx.recyclerview)
                 implementation(libs.androidx.swiperefreshlayout)
@@ -108,6 +108,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:${libs.versions.ktor.get()}")
                 implementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:${libs.versions.ktor.get()}")
+                implementation(libs.cashapp.paging.compose.common)
             }
         }
         named("desktopMain") {
