@@ -15,8 +15,10 @@
  */
 package com.github.panpf.sketch.resources
 
-import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.util.Size
+
+expect fun nameToUri(name: String): String
 
 object AssetImages {
 
@@ -38,6 +40,73 @@ object AssetImages {
 
     val longQMSHT = Image("sample_long_qmsht.jpg", "QMSHT", Size(30000, 926))
 
+    val clockExifUndefined = Image(
+        "clock_exif_undefined.jpeg",
+        "UNDEFINED",
+        Size(1500, 750),
+        ExifOrientation.ORIENTATION_UNDEFINED
+    )
+    val clockExifFlipHorizontal =
+        Image(
+            "clock_exif_flip_horizontal.jpeg",
+            "FLIP_HOR",
+            Size(1500, 750),
+            ExifOrientation.ORIENTATION_FLIP_HORIZONTAL
+        )
+    val clockExifFlipVertical = Image(
+        "clock_exif_flip_vertical.jpeg",
+        "FLIP_VER",
+        Size(1500, 750),
+        ExifOrientation.ORIENTATION_FLIP_VERTICAL
+    )
+    val clockExifNormal = Image(
+        "clock_exif_normal.jpeg",
+        "NORMAL",
+        Size(1500, 750),
+        ExifOrientation.ORIENTATION_NORMAL
+    )
+    val clockExifRotate90 = Image(
+        "clock_exif_rotate_90.jpeg",
+        "ROTATE_90",
+        Size(750, 1500),
+        ExifOrientation.ORIENTATION_ROTATE_90
+    )
+    val clockExifRotate180 = Image(
+        "clock_exif_rotate_180.jpeg",
+        "ROTATE_180",
+        Size(1500, 750),
+        ExifOrientation.ORIENTATION_ROTATE_180
+    )
+    val clockExifRotate270 = Image(
+        "clock_exif_rotate_270.jpeg",
+        "ROTATE_270",
+        Size(750, 1500),
+        ExifOrientation.ORIENTATION_ROTATE_270
+    )
+    val clockExifTranspose = Image(
+        "clock_exif_transpose.jpeg",
+        "TRANSPOSE",
+        Size(750, 1500),
+        ExifOrientation.ORIENTATION_TRANSPOSE
+    )
+    val clockExifTransverse = Image(
+        "clock_exif_transverse.jpeg",
+        "TRANSVERSE",
+        Size(750, 1500),
+        ExifOrientation.ORIENTATION_TRANSVERSE
+    )
+    val clockExifs = arrayOf(
+        clockExifUndefined,
+        clockExifFlipHorizontal,
+        clockExifFlipVertical,
+        clockExifNormal,
+        clockExifRotate90,
+        clockExifRotate180,
+        clockExifRotate270,
+        clockExifTranspose,
+        clockExifTransverse
+    )
+
     val number1 = Image("number_1.png", "NUMBER_1", Size(698, 776))
     val number2 = Image("number_2.png", "NUMBER_2", Size(698, 776))
     val number3 = Image("number_3.png", "NUMBER_3", Size(698, 776))
@@ -53,7 +122,12 @@ object AssetImages {
     val clockHor = Image("clock_hor.jpeg", "CLOCK_HOR", Size(1500, 750))
     val clockVer = Image("clock_ver.jpeg", "CLOCK_VER", Size(750, 1500))
 
-    class Image(val fileName: String, val name: String, val size: Size) {
-        val uri: String by lazy { newAssetUri(fileName) }
+    class Image(
+        val fileName: String,
+        val name: String,
+        val size: Size,
+        @ExifOrientation exifOrientation: Int = ExifOrientation.ORIENTATION_UNDEFINED
+    ) {
+        val uri: String = nameToUri(fileName)
     }
 }

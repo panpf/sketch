@@ -2,7 +2,7 @@ package com.github.panpf.sketch.sample.ui.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.resources.ResourcesImages
+import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.ui.screen.base.BaseRememberObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +29,9 @@ class LocalPhotoListViewModel internal constructor() : BaseRememberObserver() {
         this.coroutineScope = coroutineScope
 
         coroutineScope.launch {
-            val longImages = arrayOf(ResourcesImages.longQMSHT)
+            val longImages = arrayOf(AssetImages.longQMSHT)
             _photoList.value =
-                (ResourcesImages.statics + ResourcesImages.anims + ResourcesImages.clockExifs + longImages).map {
+                (AssetImages.statics + AssetImages.anims + AssetImages.clockExifs + longImages).map {
                     Photo(it.uri, it.uri)
                 }
         }
