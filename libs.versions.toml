@@ -1,17 +1,17 @@
 [versions]
 
 # kotlin
-kotlin = "1.9.0"
+kotlin = "1.9.22"
 kotlinx-coroutines = "1.7.3"
 kotlinx-serialization-json = "1.5.1"
 # sync kotlin version
-kotlinx-atomicfu = "0.22.0"
+kotlinx-atomicfu = "0.23.1"
 ktor = "2.3.7"
 
 jetbrains-compose = "1.5.0"
 androidx-compose = "1.5.0"
-androidx-compose-compiler = "1.5.0"
-jetbrains-compose-compiler = "1.5.0"
+androidx-compose-compiler = "1.5.7"
+jetbrains-compose-compiler = "1.5.7"
 androidx-compose-material = "1.5.0"
 androidx-compose-material3 = "1.1.2"
 
