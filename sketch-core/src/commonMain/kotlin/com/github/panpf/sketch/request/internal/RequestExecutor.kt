@@ -166,7 +166,7 @@ class RequestExecutor {
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
-        val logMessage = "Request failed. ${throwable1.message}. '${requestContext.logKey}'"
+        val logMessage = "Request failed. '${throwable1.message}'. '${requestContext.logKey}'"
         when (throwable1) {
             is DepthException -> sketch.logger.d(MODULE) { logMessage }
             is SketchException -> sketch.logger.e(MODULE, logMessage)
