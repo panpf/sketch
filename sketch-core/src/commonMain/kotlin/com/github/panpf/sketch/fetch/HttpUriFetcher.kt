@@ -186,6 +186,7 @@ open class HttpUriFetcher(
             return Result.failure(e)
         }
 
+        // TODO Use diskCache.Editor.metadata to save the contentType so that the metadata can be cleared when the data is cleared.
         // Save contentType
         val contentType = response.contentType?.takeIf { it.isNotEmpty() && it.isNotBlank() }
         val contentTypeEditor =
