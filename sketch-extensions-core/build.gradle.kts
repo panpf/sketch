@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
-    alias(libs.plugins.com.android.library)
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
 }
 
 group = property("GROUP").toString()

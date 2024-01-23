@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
-    alias(libs.plugins.org.jetbrains.compose)
-    alias(libs.plugins.com.android.library)
+    id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.compose")
+    id("com.android.library")
 }
 
 group = property("GROUP").toString()

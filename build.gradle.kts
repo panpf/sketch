@@ -1,20 +1,19 @@
 buildscript {
-    dependencies {
-        classpath(libs.kotlinx.atomicfu)
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
-}
-
-plugins {
-    alias(libs.plugins.com.android.application) apply false
-    alias(libs.plugins.com.android.library) apply false
-    alias(libs.plugins.androidx.navigation.safeargs.kotlin) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.android) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.serialization) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.parcelize) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.multiplatform) apply false
-    alias(libs.plugins.org.jetbrains.compose) apply false
-    alias(libs.plugins.mavenpublish) apply false
+    dependencies {
+        classpath(libs.gradlePlugin.kotlin)
+        classpath(libs.gradlePlugin.kotlinSerialization)
+//        classpath(libs.gradlePlugin.kotlinParcelize)
+        classpath(libs.gradlePlugin.kotlinxAtomicfu)
+        classpath(libs.gradlePlugin.android)
+        classpath(libs.gradlePlugin.androidxNavigationSafeArgs)
+        classpath(libs.gradlePlugin.jetbrainsCompose)
+        classpath(libs.gradlePlugin.mavenPublish)
+    }
 }
 
 tasks.register("clean", Delete::class) {

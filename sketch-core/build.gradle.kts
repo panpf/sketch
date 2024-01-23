@@ -1,10 +1,14 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+
 plugins {
-    alias(libs.plugins.com.android.library)
-    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.multiplatform")
     id("kotlinx-atomicfu")
 }
 
 kotlin {
+    applyMyHierarchyTemplate()
+
     androidTarget {
         publishLibraryVariants("release")
         compilations.configureEach {

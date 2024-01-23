@@ -1,12 +1,12 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
-    alias(libs.plugins.com.android.application)
-    alias(libs.plugins.org.jetbrains.compose)
-    alias(libs.plugins.org.jetbrains.kotlin.serialization)
-    alias(libs.plugins.org.jetbrains.kotlin.parcelize)
-    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
+    id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.compose")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 kotlin {
