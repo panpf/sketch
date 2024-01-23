@@ -21,7 +21,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.getMimeTypeFromUrl
+import com.github.panpf.sketch.util.MimeTypeMap
 
 /**
  * Sample: 'asset://test.png'
@@ -43,7 +43,7 @@ class AssetUriFetcher(
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val mimeType = getMimeTypeFromUrl(assetFileName)
+        val mimeType = MimeTypeMap.getMimeTypeFromUrl(assetFileName)
         FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)
     }
 

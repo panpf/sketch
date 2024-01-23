@@ -15,8 +15,10 @@
  */
 package com.github.panpf.sketch.fetch.internal
 
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -74,4 +76,9 @@ internal fun CoroutineScope.copyToWithActive(
  * "text/plain" is often used as a default/fallback MIME type.
  * Attempt to guess a better MIME type from the file extension.
  */
-internal expect fun getMimeType(url: String, contentType: String?): String?
+internal fun getMimeType(url: String, contentType: String?): String? {
+    if (contentType == null || contentType.startsWith(HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)) {
+        MimeTypeMap.getMimeTypeFromUrl(url)?.let { return it }
+    }
+    return contentType?.substringBefore(';')
+}

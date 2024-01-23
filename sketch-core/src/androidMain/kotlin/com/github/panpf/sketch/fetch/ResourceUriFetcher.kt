@@ -29,8 +29,8 @@ import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.ResDrawable
-import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.ifOrNull
 
 /**
@@ -133,7 +133,7 @@ class ResourceUriFetcher(
         val entryName = path.lastIndexOf('/').takeIf { it != -1 }
             ?.let { path.substring(it + 1) }
             ?: path.toString()
-        val mimeType = getMimeTypeFromUrl(entryName)
+        val mimeType = MimeTypeMap.getMimeTypeFromUrl(entryName)
         val dataSource = if (resources.getResourceTypeName(finalResId) == "raw") {
             ResourceDataSource(
                 sketch = sketch,
