@@ -17,8 +17,8 @@ package com.github.panpf.sketch.compose.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
-import java.math.BigDecimal
-import java.math.RoundingMode
+import kotlin.math.pow
+import kotlin.math.round
 
 internal fun <T> Flow<T>.ignoreFirst(): Flow<T> {
     var first = true
@@ -36,6 +36,7 @@ internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
         this
     } else {
-        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+        val multiplier = 10.0.pow(newScale)
+        (round(this * multiplier) / multiplier).toFloat()
     }
 }

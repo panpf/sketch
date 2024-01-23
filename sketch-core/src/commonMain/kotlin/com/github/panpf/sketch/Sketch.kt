@@ -43,6 +43,7 @@ import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.SystemCallbacks
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -54,7 +55,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import okio.FileSystem
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * A service class that performs an [ImageRequest] to load an image.
@@ -75,7 +75,7 @@ class Sketch private constructor(options: Options) {
         }
     )
     private val requestExecutor = RequestExecutor()
-    private val isShutdown = AtomicBoolean(false)
+    private val isShutdown = atomic(false)
 
     /** Application Context */
     val context: PlatformContext = options.context

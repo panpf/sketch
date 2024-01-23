@@ -20,8 +20,8 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager.NetworkCallback
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
+import kotlinx.atomicfu.atomic
 import java.lang.ref.WeakReference
-import java.util.concurrent.atomic.AtomicBoolean
 
 internal actual fun SystemCallbacks(): SystemCallbacks = AndroidSystemCallbacks()
 
@@ -33,7 +33,7 @@ class AndroidSystemCallbacks : SystemCallbacks {
     private var context: PlatformContext? = null
     private var sketchReference: WeakReference<Sketch>? = null
     private var networkObserver: NetworkObserver? = null
-    private val _isShutdown = AtomicBoolean(false)
+    private val _isShutdown = atomic(false)
     private val componentCallbacks2 = object : ComponentCallbacks2 {
         override fun onConfigurationChanged(newConfig: Configuration) {
         }
@@ -57,7 +57,7 @@ class AndroidSystemCallbacks : SystemCallbacks {
         }
     }
 
-    override val isShutdown: Boolean get() = _isShutdown.get()
+    override val isShutdown: Boolean by _isShutdown
 
     override val isCellularNetworkConnected: Boolean
         get() = networkObserver?.isCellularNetworkConnected != false

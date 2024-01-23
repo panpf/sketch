@@ -34,8 +34,8 @@ import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.InputStream
-import java.math.BigDecimal
-import java.math.RoundingMode
+import kotlin.math.pow
+import kotlin.math.round
 
 var sketchCount = 0
 
@@ -96,7 +96,8 @@ internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
         this
     } else {
-        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+        val multiplier = 10.0.pow(newScale)
+        (round(this * multiplier) / multiplier).toFloat()
     }
 }
 

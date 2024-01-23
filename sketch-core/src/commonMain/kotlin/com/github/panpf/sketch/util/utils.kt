@@ -28,9 +28,10 @@ import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.sink
 import java.io.IOException
-import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import kotlin.math.pow
+import kotlin.math.round
 
 
 internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
@@ -72,7 +73,8 @@ internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
         this
     } else {
-        BigDecimal(toDouble()).setScale(newScale, RoundingMode.HALF_UP).toFloat()
+        val multiplier = 10.0.pow(newScale)
+        (round(this * multiplier) / multiplier).toFloat()
     }
 }
 

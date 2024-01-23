@@ -33,7 +33,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.WeakHashMap
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * A disk cache that manages the cache according to a least-used rule
@@ -58,8 +57,8 @@ class LruDiskCache constructor(
     private var _cache: DiskLruCache? = null
     private val keyMapperCache = KeyMapperCache { md5(it) }
     private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
-    private val getCount = AtomicInteger()
-    private val hitCount = AtomicInteger()
+    private var getCount = 0
+    private var hitCount = 0
 
     override var logger: Logger? = null
     override val size: Long
@@ -140,15 +139,15 @@ class LruDiskCache constructor(
             e.printStackTrace()
         }
         return (snapshot?.let { MySnapshot(key, encodedKey, cache, it, logger) }).apply {
-            val getCount1 = getCount.addAndGet(1)
+            val getCount1 = ++getCount
             val hitCount1 = if (this != null) {
-                hitCount.addAndGet(1)
+                ++hitCount
             } else {
-                hitCount.get()
+                hitCount
             }
             if (getCount1 == Int.MAX_VALUE || hitCount1 == Int.MAX_VALUE) {
-                getCount.set(0)
-                hitCount.set(0)
+                getCount = 0
+                hitCount = 0
             }
             logger?.d(MODULE) {
                 val hitRatio = (hitCount1.toFloat() / getCount1).format(2)

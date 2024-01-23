@@ -21,7 +21,6 @@ import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
 /**
@@ -49,8 +48,8 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
                 oldValue.setIsCached(false)
             }
         }
-    private val getCount = AtomicInteger()
-    private val hitCount = AtomicInteger()
+    private var getCount = 0
+    private var hitCount = 0
 
     override var logger: Logger? = null
     override val size: Long
@@ -85,15 +84,15 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         val value = cache[key]?.apply {
             check(this.checkValid()) { "cache value invalid. value=$this, key=$key" }
         }
-        val getCount1 = getCount.addAndGet(1)
+        val getCount1 = ++getCount
         val hitCount1 = if (value != null) {
-            hitCount.addAndGet(1)
+            ++hitCount
         } else {
-            hitCount.get()
+            hitCount
         }
         if (getCount1 == Int.MAX_VALUE || hitCount1 == Int.MAX_VALUE) {
-            getCount.set(0)
-            hitCount.set(0)
+            getCount = 0
+            hitCount = 0
         }
         logger?.d(MODULE) {
             val hitRatio = ((hitCount1.toFloat() / getCount1).format(2) * 100).roundToInt()
