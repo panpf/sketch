@@ -35,7 +35,6 @@ import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
-import java.util.LinkedList
 
 const val DEPTH_FROM_KEY = "sketch#depth_from"
 
@@ -479,7 +478,7 @@ interface ImageOptions {
             val filterTransformations = transformations.filter { newTransformation ->
                 this.transformations?.find { it.key == newTransformation.key } == null
             }
-            this.transformations = (this.transformations ?: LinkedList()).apply {
+            this.transformations = (this.transformations ?: mutableListOf()).apply {
                 addAll(filterTransformations)
             }
         }

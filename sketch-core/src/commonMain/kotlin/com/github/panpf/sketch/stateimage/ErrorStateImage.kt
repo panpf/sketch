@@ -19,7 +19,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
 import com.github.panpf.sketch.stateimage.internal.CombinedStateImage
-import java.util.LinkedList
 
 /**
  * Create an ErrorStateImage
@@ -57,7 +56,7 @@ class ErrorStateImage(
 
     class Builder constructor(private val defaultImage: StateImage?) {
 
-        private val stateList = LinkedList<Pair<CombinedStateImage.Condition, StateImage?>>()
+        private val stateList = mutableListOf<Pair<CombinedStateImage.Condition, StateImage?>>()
 
         /**
          * Add a custom state

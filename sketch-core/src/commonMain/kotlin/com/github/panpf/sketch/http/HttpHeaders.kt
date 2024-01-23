@@ -15,8 +15,6 @@
  */
 package com.github.panpf.sketch.http
 
-import java.util.LinkedList
-
 /**
  * Set headers for http requests
  */
@@ -93,8 +91,8 @@ class HttpHeaders(
 
     class Builder {
 
-        private val addList = LinkedList<Pair<String, String>>()
-        private val setList = LinkedList<Pair<String, String>>()
+        private val addList = mutableListOf<Pair<String, String>>()
+        private val setList = mutableListOf<Pair<String, String>>()
 
         constructor()
 

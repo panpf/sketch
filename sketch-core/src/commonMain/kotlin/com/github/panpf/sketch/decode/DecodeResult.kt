@@ -15,9 +15,8 @@
  */
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.Image
-import java.util.LinkedList
+import com.github.panpf.sketch.datasource.DataFrom
 
 /**
  * The result of [Decoder.decode]
@@ -69,7 +68,7 @@ data class DecodeResult constructor(
     ) {
 
         fun addTransformed(transformed: String): Builder = apply {
-            this.transformedList = (this.transformedList ?: LinkedList()).apply {
+            this.transformedList = (this.transformedList ?: mutableListOf()).apply {
                 add(transformed)
             }
         }

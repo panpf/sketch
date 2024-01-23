@@ -38,6 +38,7 @@ fun newFileUri(file: File): String = "$SCHEME://${file.path}"
 /**
  * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
  */
+// TODO Move to jvmCommonMain
 class FileUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,

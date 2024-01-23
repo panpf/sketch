@@ -19,13 +19,10 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import okio.Buffer
+import okio.IOException
 import okio.Path
 import okio.Source
-import okio.source
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
 
 /**
  * Provides access to byte array image data.
@@ -39,7 +36,7 @@ class ByteArrayDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = ByteArrayInputStream(data).source()
+    override fun openSourceOrNull(): Source = Buffer().write(data)
 
     @WorkerThread
     @Throws(IOException::class)

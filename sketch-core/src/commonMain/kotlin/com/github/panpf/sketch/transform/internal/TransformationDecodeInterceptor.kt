@@ -18,7 +18,6 @@ package com.github.panpf.sketch.transform.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
-import java.util.LinkedList
 
 class TransformationDecodeInterceptor : DecodeInterceptor {
 
@@ -36,7 +35,7 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
         val decodeResult = result.let { it.getOrNull() ?: return it }
 
         val oldImage = decodeResult.image
-        val transformedList = LinkedList<String>()
+        val transformedList = mutableListOf<String>()
         val newImage = try {
             transformations.fold(oldImage) { inputImage, next ->
                 val transformResult = next.transform(sketch, requestContext, inputImage)
