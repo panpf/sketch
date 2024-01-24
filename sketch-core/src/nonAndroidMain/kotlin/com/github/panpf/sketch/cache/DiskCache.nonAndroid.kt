@@ -8,8 +8,7 @@ actual fun defaultDiskCacheOptions(
     context: PlatformContext,
     type: DiskCache.Type,
 ): DiskCache.Options {
-    val cacheDir = context.externalCacheDir ?: context.cacheDir
-    val directory = File(cacheDir, DiskCache.DEFAULT_DIR_NAME + File.separator + type.dirName)
+    val directory = File("/tmp/${DiskCache.DEFAULT_DIR_NAME}/${type.dirName}")
 
     val maxSize = when (type) {
         DiskCache.Type.DOWNLOAD -> 300L * 1024 * 1024

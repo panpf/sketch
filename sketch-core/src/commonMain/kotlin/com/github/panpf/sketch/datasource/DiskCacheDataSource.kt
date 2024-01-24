@@ -17,15 +17,11 @@ package com.github.panpf.sketch.datasource
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.request.ImageRequest
+import okio.FileSystem
+import okio.IOException
 import okio.Path
-import okio.Path.Companion.toOkioPath
 import okio.Source
-import okio.source
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
 
 /**
  * Provides access to image data in disk cache
@@ -34,17 +30,18 @@ class DiskCacheDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
-    val snapshot: DiskCache.Snapshot,
+    val fileSystem: FileSystem,
+    val path: Path,
 ) : DataSource {
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = snapshot.newInputStream().source()
+    override fun openSourceOrNull(): Source = fileSystem.source(path)
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path = snapshot.file.toOkioPath()
+    override fun getFileOrNull(): Path = path
 
     override fun toString(): String =
-        "DiskCacheDataSource(from=$dataFrom,file='${snapshot.file.path}')"
+        "DiskCacheDataSource(from=$dataFrom,path='${path}')"
 }

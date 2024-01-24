@@ -534,7 +534,7 @@ class LruDiskCacheTest {
 
     private fun LruDiskCache.putFile(fileName: String, sizeMB: Int) {
         val sizeBytes = sizeMB * 1024 * 1024
-        edit(fileName)?.apply {
+        openEditor(fileName)?.apply {
             try {
                 newOutputStream().buffered().use {
                     val bytes = ByteArray(8192)

@@ -25,9 +25,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 import okio.IOException
 import okio.Path
-import okio.Path.Companion.toOkioPath
 import okio.buffer
-import okio.sink
 import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.round
@@ -178,33 +176,27 @@ internal fun getCacheFileFromStreamDataSource(
 ): Path = runBlocking {
     val resultCache = sketch.resultCache
     val resultCacheKey = request.uriString + "_data_source"
-    resultCache.editLock(resultCacheKey).withLock {
-        val snapshot = resultCache[resultCacheKey]
+    val snapshot = resultCache.editLock(resultCacheKey).withLock {
+        val snapshot = resultCache.openSnapshot(resultCacheKey)
         if (snapshot != null) {
             snapshot
         } else {
-            val editor = resultCache.edit(resultCacheKey)
+            val editor = resultCache.openEditor(resultCacheKey)
                 ?: throw IOException("Disk cache cannot be used")
             try {
-//                streamDataSource.openInputStream().use { inputStream ->
-//                    editor.newOutputStream().buffered().use { outputStream ->
-//                        inputStream.copyTo(outputStream)
-//                    }
-//                }
                 dataSource.openSource().buffer().use { source ->
-                    editor.newOutputStream().sink().buffer().use { sink ->
+                    resultCache.fileSystem.sink(editor.data).buffer().use { sink ->
                         source.buffer.copyTo(sink.buffer)
                     }
                 }
-                editor.commit()
+                editor.commitAndOpenSnapshot()
             } catch (e: Throwable) {
                 editor.abort()
                 throw e
             }
-            resultCache[resultCacheKey]
-                ?: throw IOException("Disk cache cannot be used after edit")
         }
-    }.file.toOkioPath()
+    } ?: throw IOException("Disk cache cannot be used after edit")
+    snapshot.use { it.data }
 }
 
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.cache.internal
 
 /**
  * Static library version of `android.util.LruCache`. Used to write apps

@@ -88,11 +88,13 @@ class Sketch private constructor(options: Options) {
 //    /** Reuse Bitmap */
 //    val bitmapPool: BitmapPool  // TODO 4.0 no longer supports inBitmap
 
+    val fileSystem = FileSystem.SYSTEM
+
     /** Disk caching of http downloads images */
-    val downloadCache: DiskCache by lazy { options.downloadCacheFactory.create(options.context) }
+    val downloadCache: DiskCache by lazy { options.downloadCacheFactory.create(options.context, fileSystem) }
 
     /** Disk caching of transformed images */
-    val resultCache: DiskCache by lazy { options.resultCacheFactory.create(options.context) }
+    val resultCache: DiskCache by lazy { options.resultCacheFactory.create(options.context, fileSystem) }
 
     /** Execute HTTP request */
     val httpStack: HttpStack = options.httpStack
@@ -106,8 +108,6 @@ class Sketch private constructor(options: Options) {
 
     /** Monitor network connection and system status */
     val systemCallbacks = SystemCallbacks()
-
-    val fileSystem = FileSystem.SYSTEM
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -18,7 +18,6 @@ package com.github.panpf.sketch.cache.internal
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import kotlin.math.roundToInt

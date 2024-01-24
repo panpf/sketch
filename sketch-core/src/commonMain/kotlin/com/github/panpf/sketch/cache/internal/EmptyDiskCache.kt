@@ -7,12 +7,14 @@ import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 import okio.ByteString.Companion.encodeUtf8
-import java.io.File
+import okio.FileSystem
+import okio.Path
 import java.util.WeakHashMap
 
 class EmptyDiskCache(
+    override val fileSystem: FileSystem,
     override val maxSize: Long,
-    override val directory: File
+    override val directory: Path
 ) : DiskCache {
 
     companion object {
@@ -29,13 +31,11 @@ class EmptyDiskCache(
 
     override val size: Long = 0L
 
-    override fun edit(key: String): Editor? = null
+    override fun openEditor(key: String): Editor? = null
 
     override fun remove(key: String): Boolean = false
 
-    override fun get(key: String): Snapshot? = null
-
-    override fun exist(key: String): Boolean = false
+    override fun openSnapshot(key: String): Snapshot? = null
 
     override fun clear() {
 
@@ -49,6 +49,7 @@ class EmptyDiskCache(
     }
 
     override fun close() {
+
     }
 
     override fun toString(): String = "${MODULE}(${maxSize.formatFileSize()})"

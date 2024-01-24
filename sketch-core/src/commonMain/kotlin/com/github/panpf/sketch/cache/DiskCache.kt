@@ -17,13 +17,12 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.DiskCache.Options
+import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.sync.Mutex
-import java.io.Closeable
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+import okio.Closeable
+import okio.FileSystem
+import okio.Path
 
 /**
  * Disk cache for bitmap or uri data
@@ -36,10 +35,12 @@ interface DiskCache : Closeable {
 
     var logger: Logger?
 
+    val fileSystem: FileSystem
+
     /**
      * Get the cache directory on disk
      */
-    val directory: File
+    val directory: Path
 
     /**
      * Maximum allowed sum of the size of the all cache
@@ -52,28 +53,34 @@ interface DiskCache : Closeable {
     val size: Long
 
     /**
-     * Returns an editor for the entry named [key], or null if another
-     * edit is in progress.
+     * Read the entry associated with [key].
+     *
+     * IMPORTANT: **You must** call either [Snapshot.close] or [Snapshot.closeAndOpenEditor] when
+     * finished reading the snapshot. An open snapshot prevents opening a new [Editor] or deleting
+     * the entry on disk.
      */
-    fun edit(key: String): Editor?
+    fun openSnapshot(key: String): Snapshot?
 
     /**
-     * Drops the entry for [key] if it exists and can be removed. Entries
-     * actively being edited cannot be removed.
+     * Write to the entry associated with [key].
      *
-     * @return true if an entry was removed.
+     * IMPORTANT: **You must** call one of [Editor.commit], [Editor.commitAndOpenSnapshot], or
+     * [Editor.abort] to complete the edit. An open editor prevents opening a new [Snapshot],
+     * opening a new [Editor], or deleting the entry on disk.
+     */
+    fun openEditor(key: String): Editor?
+
+    /**
+     * Delete the entry referenced by [key].
+     *
+     * @return 'true' if [key] was removed successfully. Else, return 'false'.
      */
     fun remove(key: String): Boolean
 
-    /**
-     * Returns a snapshot of the entry named [key], or null if it doesn't exist.
-     */
-    operator fun get(key: String): Snapshot?
-
-    /**
-     * Returns exist of the entry named [key]
-     */
-    fun exist(key: String): Boolean
+//    /**
+//     * Returns exist of the entry named [key]
+//     */
+//    fun exist(key: String): Boolean = get(key) != null
 
     /**
      * Clear all cached
@@ -88,63 +95,90 @@ interface DiskCache : Closeable {
     /**
      * Snapshot the values for an entry.
      */
-    interface Snapshot {
-        /**
-         * Returns cache key
-         */
-        val key: String
+    interface Snapshot : Closeable {
+//        /**
+//         * Returns cache key
+//         */
+//        val key: String
+//
+//        /**
+//         * Returns cache file
+//         */
+//        val file: File
+//
+//        /**
+//         * Returns the unbuffered stream
+//         */
+//        @Throws(IOException::class)
+//        fun newInputStream(): InputStream
+//
+//        /**
+//         * Returns an editor, or null if another edit is in progress.
+//         */
+//        fun edit(): Editor?
+//
+//        /**
+//         * Delete cache file
+//         *
+//         * @return If true is returned, the deletion is successful
+//         */
+//        fun remove(): Boolean
 
-        /**
-         * Returns cache file
-         */
-        val file: File
+        /** Get the metadata file path for this entry. */
+        val metadata: Path
 
-        /**
-         * Returns the unbuffered stream
-         */
-        @Throws(IOException::class)
-        fun newInputStream(): InputStream
+        /** Get the data file path for this entry. */
+        val data: Path
 
-        /**
-         * Returns an editor, or null if another edit is in progress.
-         */
-        fun edit(): Editor?
+        /** Close the snapshot to allow editing. */
+        override fun close()
 
-        /**
-         * Delete cache file
-         *
-         * @return If true is returned, the deletion is successful
-         */
-        fun remove(): Boolean
+        /** Close the snapshot and call [openEditor] for this entry atomically. */
+        fun closeAndOpenEditor(): Editor?
     }
 
     /**
      * Edits the values for an entry.
      */
     interface Editor {
-        /**
-         * Returns a new unbuffered output stream.
-         * Call [commit] when you write done, or call [abort] if you don't want it
-         */
-        @Throws(IOException::class)
-        fun newOutputStream(): OutputStream
+//        /**
+//         * Returns a new unbuffered output stream.
+//         * Call [commit] when you write done, or call [abort] if you don't want it
+//         */
+//        @Throws(IOException::class)
+//        fun newOutputStream(): OutputStream
+//
+//        /**
+//         * Commits this edit so it is visible to readers.  This releases the
+//         * edit lock so another edit may be started on the same key.
+//         */
+//        @Throws(IOException::class)
+//        fun commit()
+//
+//        /**
+//         * Aborts this edit. This releases the edit lock so another edit may be
+//         * started on the same key.
+//         */
+//        fun abort()
 
-        /**
-         * Commits this edit so it is visible to readers.  This releases the
-         * edit lock so another edit may be started on the same key.
-         */
-        @Throws(IOException::class)
+        /** Get the metadata file path for this entry. */
+        val metadata: Path
+
+        /** Get the data file path for this entry. */
+        val data: Path
+
+        /** Commit the edit so the changes are visible to readers. */
         fun commit()
 
-        /**
-         * Aborts this edit. This releases the edit lock so another edit may be
-         * started on the same key.
-         */
+        /** Commit the write and call [openSnapshot] for this entry atomically. */
+        fun commitAndOpenSnapshot(): Snapshot?
+
+        /** Abort the edit. Any written data will be discarded. */
         fun abort()
     }
 
     data class Options(
-        val directory: File? = null,
+        val directory: Path? = null,
         val maxSize: Long? = null,
         val appVersion: Int? = null,
     ) {
@@ -159,25 +193,36 @@ interface DiskCache : Closeable {
     }
 
     interface Factory {
-        fun create(context: PlatformContext): DiskCache
+        fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache
     }
 
     class FixedFactory(val diskCache: DiskCache) : Factory {
-        override fun create(context: PlatformContext): DiskCache {
+        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
             return diskCache
         }
     }
 
-    class OptionsFactory(val type: Type, val options: Options) : Factory {
-        override fun create(context: PlatformContext): DiskCache {
-            return createDiskCache(context, type, options)
+    class OptionsFactory(
+        val type: Type,
+        val options: Options
+    ) : Factory {
+        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
+            val defaultOptions = defaultDiskCacheOptions(context, type)
+            return LruDiskCache(
+                context = context,
+                fileSystem = fileSystem,
+                maxSize = options.maxSize ?: defaultOptions.maxSize!!,
+                directory = options.directory ?: defaultOptions.directory!!,
+                appVersion = options.appVersion ?: 1,
+                internalVersion = type.internalVersion,
+            )
         }
     }
 
     class LazyFactory(
         val initializer: (PlatformContext) -> DiskCache
     ) : Factory {
-        override fun create(context: PlatformContext): DiskCache {
+        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
             return initializer(context)
         }
     }
@@ -186,19 +231,35 @@ interface DiskCache : Closeable {
         val type: Type,
         val initializer: LazyOptions
     ) : Factory {
-        override fun create(context: PlatformContext): DiskCache {
+        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
             val options = initializer.get(context)
-            return createDiskCache(context, type, options)
+            val defaultOptions = defaultDiskCacheOptions(context, type)
+            return LruDiskCache(
+                context = context,
+                fileSystem = fileSystem,
+                maxSize = options.maxSize ?: defaultOptions.maxSize!!,
+                directory = options.directory ?: defaultOptions.directory!!,
+                appVersion = options.appVersion ?: 1,
+                internalVersion = type.internalVersion,
+            )
         }
     }
 
-    fun interface LazyOptions{
+    fun interface LazyOptions {
         fun get(context: PlatformContext): Options
     }
 
     class DefaultFactory(val type: Type) : Factory {
-        override fun create(context: PlatformContext): DiskCache {
-            return createDiskCache(context, type, null)
+        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
+            val defaultOptions = defaultDiskCacheOptions(context, type)
+            return LruDiskCache(
+                context = context,
+                fileSystem = fileSystem,
+                maxSize = defaultOptions.maxSize!!,
+                directory = defaultOptions.directory!!,
+                appVersion = 1,
+                internalVersion = type.internalVersion,
+            )
         }
     }
 
@@ -208,8 +269,7 @@ interface DiskCache : Closeable {
     }
 }
 
-expect fun createDiskCache(
+expect fun defaultDiskCacheOptions(
     context: PlatformContext,
     type: DiskCache.Type,
-    options: Options?
-): DiskCache
+): Options

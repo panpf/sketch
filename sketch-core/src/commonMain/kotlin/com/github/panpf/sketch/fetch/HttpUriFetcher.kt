@@ -38,8 +38,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.IOException
+import okio.Path
 import okio.buffer
-import okio.sink
 
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpg' uri
@@ -60,8 +60,7 @@ open class HttpUriFetcher(
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
 
-    private val dataKey = request.uriString
-    private val contentTypeKey = "${request.uriString}_contentType"
+    private val cacheKey = request.uriString
     private val downloadCacheLockKey = request.uriString
 
     @WorkerThread
@@ -134,29 +133,35 @@ open class HttpUriFetcher(
     private fun readCache(): Result<FetchResult>? {
         val downloadCache = sketch.downloadCache
         try {
-            val dataSnapshot = downloadCache[dataKey] ?: return null
-            val contentType = downloadCache[contentTypeKey]?.let { contentTypeSnapshot ->
-                try {
-                    contentTypeSnapshot.newInputStream()
-                        .use { it.bufferedReader().readText() }
-                        .takeIf { it.isNotEmpty() && it.isNotBlank() }
-                        ?: throw IOException("contentType disk cache text empty")
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    contentTypeSnapshot.remove()
+            return downloadCache.openSnapshot(cacheKey)?.use { snapshot ->
+                val contentType: String? = runCatching {
+                    if (downloadCache.fileSystem.exists(snapshot.metadata)) {
+                        downloadCache.fileSystem.source(snapshot.metadata).use {
+                            it.buffer().readUtf8()
+                        }.takeIf { it.isNotEmpty() && it.isNotBlank() }
+                    } else {
+                        null
+                    }
+                }.onFailure {
+                    it.printStackTrace()
+                    downloadCache.remove(cacheKey)
                     sketch.logger.w("HttpUriFetcher") {
                         "Read contentType disk cache failed, removed cache file. " +
-                                "message='${e.message}', " +
-                                "contentTypeKey=$contentTypeKey. " +
+                                "message='${it.message}', " +
+                                "cacheKey=$cacheKey. " +
                                 "'${request.uriString}'"
                     }
-                    null
-                }
+                }.getOrNull()
+                val mimeType = getMimeType(request.uriString, contentType)
+                val dataSource = DiskCacheDataSource(
+                    sketch = sketch,
+                    request = request,
+                    dataFrom = DOWNLOAD_CACHE,
+                    fileSystem = downloadCache.fileSystem,
+                    path = snapshot.data
+                )
+                Result.success(FetchResult(dataSource, mimeType))
             }
-            val mimeType = getMimeType(request.uriString, contentType)
-            val dataSource =
-                DiskCacheDataSource(sketch, request, DOWNLOAD_CACHE, dataSnapshot)
-            return Result.success(FetchResult(dataSource, mimeType))
         } catch (e: Throwable) {
             return Result.failure(e)
         }
@@ -169,11 +174,11 @@ open class HttpUriFetcher(
         val downloadCache = sketch.downloadCache
 
         // Save image data
-        val diskCacheEditor = downloadCache.edit(dataKey) ?: return null
-        try {
+        val editor = downloadCache.openEditor(cacheKey) ?: return null
+        val cachePath: Path = try {
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
-                diskCacheEditor.newOutputStream().sink().buffer().use { sink ->
+                downloadCache.fileSystem.sink(editor.data).buffer().use { sink ->
                     copyToWithActive(request, content, sink, contentLength)
                 }
             }
@@ -181,41 +186,34 @@ open class HttpUriFetcher(
             if (contentLength > 0 && readLength != contentLength) {
                 throw IOException("readLength error. readLength=$readLength, contentLength=$contentLength. ${request.uriString}")
             }
-            diskCacheEditor.commit()
+
+            val contentType = response.contentType?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+            if (contentType != null) {
+                downloadCache.fileSystem.sink(editor.metadata).buffer().use { sink ->
+                    sink.writeUtf8(contentType)
+                }
+            }
+
+            editor.commitAndOpenSnapshot()?.use { it.data }
+                ?: return Result.failure(IOException("Disk cache loss after write. dataKey='$cacheKey'. ${request.uriString}"))
         } catch (e: Throwable) {
-            diskCacheEditor.abort()
+            editor.abort()
             return Result.failure(e)
         }
 
-        // TODO Use diskCache.Editor.metadata to save the contentType so that the metadata can be cleared when the data is cleared.
-        // Save contentType
-        val contentType = response.contentType?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-        val contentTypeEditor =
-            if (contentType != null) downloadCache.edit(contentTypeKey) else null
-        if (contentTypeEditor != null) {
-            try {
-                contentTypeEditor.newOutputStream().bufferedWriter().use {
-                    it.write(contentType)
-                }
-                contentTypeEditor.commit()
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                contentTypeEditor.abort()
-            }
-        }
-
         // Build FetchResult
-        val snapshot = downloadCache[dataKey]
-        if (snapshot == null) {
-            return Result.failure(IOException("Disk cache loss after write. dataKey='$dataKey'. ${request.uriString}"))
-        }
         val dataSource = if (request.downloadCachePolicy.readEnabled) {
-            DiskCacheDataSource(sketch, request, NETWORK, snapshot)
+            DiskCacheDataSource(
+                sketch = sketch,
+                request = request,
+                dataFrom = NETWORK,
+                fileSystem = sketch.fileSystem,
+                path = cachePath
+            )
         } else {
             try {
-                snapshot.newInputStream()
-                    .use { it.readBytes() }
-                    .let { ByteArrayDataSource(sketch, request, NETWORK, it) }
+                val byteArray = sketch.fileSystem.source(cachePath).buffer().readByteArray()
+                ByteArrayDataSource(sketch, request, NETWORK, byteArray)
             } catch (e: Throwable) {
                 return Result.failure(e)
             }
