@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.http
 
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException
 import java.io.InputStream
@@ -65,7 +66,7 @@ class HurlStack private constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override suspend fun getResponse(request: ImageRequest, url: String): Response {
         var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
@@ -137,29 +138,35 @@ class HurlStack private constructor(
         return result
     }
 
-
-    private class HurlResponse(private val connection: HttpURLConnection) : HttpStack.Response {
-
-        @get:Throws(IOException::class)
-        override val code: Int by lazy { connection.responseCode }
+    class HurlResponse(val connection: HttpURLConnection) : Response {
 
         @get:Throws(IOException::class)
-        override val message: String? by lazy { connection.responseMessage }
-
-        override val contentLength: Long by lazy {
-            connection.getHeaderField("content-length").toLongOrNull() ?: -1
-        }
-
-        override val contentType: String? by lazy {
-            connection.contentType
-        }
+        override val code: Int = connection.responseCode
 
         @get:Throws(IOException::class)
-        override val content: InputStream
-            get() = connection.inputStream
+        override val message: String? = connection.responseMessage
+
+        override val contentLength: Long = getHeaderField("content-length")?.toLongOrNull() ?: -1L
+
+        override val contentType: String? = getHeaderField("content-type")
 
         override fun getHeaderField(name: String): String? {
             return connection.getHeaderField(name)
+        }
+
+        override suspend fun content(): HttpStack.Content {
+            return Content(connection.inputStream)
+        }
+    }
+
+    class Content(private val inputStream: InputStream) : HttpStack.Content {
+
+        override suspend fun read(buffer: ByteArray): Int {
+            return inputStream.read(buffer)
+        }
+
+        override fun close() {
+            inputStream.close()
         }
     }
 

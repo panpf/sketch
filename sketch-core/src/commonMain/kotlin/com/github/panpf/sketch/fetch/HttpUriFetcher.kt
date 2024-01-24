@@ -33,7 +33,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
@@ -161,7 +160,7 @@ open class HttpUriFetcher(
         }
     }
 
-    private fun CoroutineScope.writeCache(
+    private suspend fun writeCache(
         response: Response,
         mimeType: String?
     ): Result<FetchResult>? {
@@ -171,7 +170,7 @@ open class HttpUriFetcher(
         val diskCacheEditor = downloadCache.edit(dataKey) ?: return null
         try {
             val contentLength = response.contentLength
-            val readLength = response.content.use { inputStream ->
+            val readLength = response.content().use { inputStream ->
                 diskCacheEditor.newOutputStream().buffered().use { outputStream ->
                     copyToWithActive(request, inputStream, outputStream, contentLength)
                 }
@@ -223,14 +222,14 @@ open class HttpUriFetcher(
         return Result.success(result)
     }
 
-    private fun CoroutineScope.readBytes(
+    private suspend fun readBytes(
         response: Response,
         mimeType: String?
     ): Result<FetchResult> {
         val contentLength = response.contentLength
         val byteArrayOutputStream = ByteArrayOutputStream()
         val readLength = byteArrayOutputStream.use { outputStream ->
-            response.content.use { inputStream ->
+            response.content().use { inputStream ->
                 copyToWithActive(request, inputStream, outputStream, contentLength)
             }
         }
@@ -282,4 +281,3 @@ open class HttpUriFetcher(
         }
     }
 }
-

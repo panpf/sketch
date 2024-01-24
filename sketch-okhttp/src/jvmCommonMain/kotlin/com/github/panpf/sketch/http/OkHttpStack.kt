@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.http
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.ImageRequest
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
@@ -30,7 +29,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getResponse(request: ImageRequest, url: String): Response {
+    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
         val httpRequest = Request.Builder().apply {
             url(url)
             request.httpHeaders?.apply {
@@ -42,7 +41,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                 }
             }
         }.build()
-        return OkHttpResponse(okHttpClient.newCall(httpRequest).execute())
+        return Response(okHttpClient.newCall(httpRequest).execute())
     }
 
     override fun toString(): String =
@@ -60,24 +59,34 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         return okHttpClient.hashCode()
     }
 
-    private class OkHttpResponse(val response: okhttp3.Response) : Response {
-        override val code: Int by lazy {
-            response.code()
-        }
-        override val message: String? by lazy {
-            response.message()
-        }
-        override val contentLength: Long by lazy {
-            response.header("Content-Length")?.toLongOrNull() ?: -1L
-        }
-        override val contentType: String? by lazy {
-            response.header("content-type")
-        }
+    class Response(val response: okhttp3.Response) :
+        HttpStack.Response {
+
+        override val code: Int = response.code()
+
+        override val message: String? = response.message()
+
+        override val contentLength: Long = getHeaderField("content-length")?.toLongOrNull() ?: -1L
+
+        override val contentType: String? = getHeaderField("content-type")
 
         override fun getHeaderField(name: String): String? = response.header(name)
 
-        override val content: InputStream
-            get() = response.body()?.byteStream()!!
+        override suspend fun content(): HttpStack.Content {
+            val body = response.body() ?: throw IOException("response body is null")
+            return Content(body.byteStream())
+        }
+    }
+
+    class Content(private val inputStream: InputStream) : HttpStack.Content {
+
+        override suspend fun read(buffer: ByteArray): Int {
+            return inputStream.read(buffer)
+        }
+
+        override fun close() {
+            inputStream.close()
+        }
     }
 
     class Builder {

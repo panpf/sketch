@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.http
 
-import android.util.Log
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
@@ -32,12 +31,9 @@ fun OkHttpClient.Builder.setEnabledTlsProtocols(enabledTlsProtocols: Array<Strin
             connectionSpecs(
                 listOf(connectionSpec, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT)
             )
-        } catch (exc: Exception) {
-            Log.e(
-                "OkHttpTLSCompat",
-                "Error while setting TLS ${enabledTlsProtocols.joinToString()}",
-                exc
-            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            println("OkHttpTLSCompat. Error while setting TLS ${enabledTlsProtocols.joinToString()}")
         }
     }
     return this

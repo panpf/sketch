@@ -17,8 +17,8 @@ package com.github.panpf.sketch.http
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageRequest
-import java.io.IOException
-import java.io.InputStream
+import okio.Closeable
+import okio.IOException
 
 /**
  * Responsible for sending HTTP requests and returning responses
@@ -31,7 +31,7 @@ interface HttpStack {
 
     @WorkerThread
     @Throws(IOException::class)
-    fun getResponse(request: ImageRequest, url: String): Response
+    suspend fun getResponse(request: ImageRequest, url: String): Response
 
     interface Response {
         @get:Throws(IOException::class)
@@ -46,7 +46,11 @@ interface HttpStack {
 
         fun getHeaderField(name: String): String?
 
-        @get:Throws(IOException::class)
-        val content: InputStream
+        @Throws(IOException::class)
+        suspend fun content(): Content
+    }
+
+    interface Content : Closeable {
+        suspend fun read(buffer: ByteArray): Int
     }
 }

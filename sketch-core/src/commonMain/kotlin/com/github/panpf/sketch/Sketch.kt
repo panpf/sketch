@@ -25,10 +25,9 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.http.HurlStack
+import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -380,7 +379,7 @@ class Sketch private constructor(options: Options) {
                 resultCacheFactory = resultCacheFactory
                     ?: DiskCache.DefaultFactory(DiskCache.Type.RESULT),
 //            bitmapPool = bitmapPool,
-                httpStack = httpStack ?: HurlStack.Builder().build(),
+                httpStack = httpStack ?: KtorStack(),
                 componentRegistry = componentRegistry,
                 globalImageOptions = globalImageOptions,
             )
@@ -394,7 +393,6 @@ internal expect fun platformComponents(): ComponentRegistry
 internal fun defaultComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(HttpUriFetcher.Factory())
-        addFetcher(FileUriFetcher.Factory())
         addFetcher(Base64UriFetcher.Factory())
 
         addRequestInterceptor(GlobalImageOptionsRequestInterceptor())

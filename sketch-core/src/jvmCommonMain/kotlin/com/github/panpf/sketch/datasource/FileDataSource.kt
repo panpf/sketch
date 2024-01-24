@@ -17,6 +17,7 @@ package com.github.panpf.sketch.datasource
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import okio.Path
 import okio.Path.Companion.toOkioPath
@@ -25,12 +26,10 @@ import okio.source
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
 
 /**
  * Provides access to local file image data
  */
-// TODO Move to jvmCommonMain
 class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
@@ -38,7 +37,7 @@ class FileDataSource constructor(
 ) : DataSource {
 
     override val dataFrom: DataFrom
-        get() = DataFrom.LOCAL
+        get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)

@@ -16,30 +16,30 @@
 package com.github.panpf.sketch.fetch.internal
 
 import com.github.panpf.sketch.fetch.HttpUriFetcher
+import com.github.panpf.sketch.http.HttpStack.Content
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import java.io.IOException
-import java.io.InputStream
 import java.io.OutputStream
 
 @Throws(IOException::class, CancellationException::class)
-internal fun CoroutineScope.copyToWithActive(
+internal suspend fun copyToWithActive(
     request: ImageRequest,
-    inputStream: InputStream,
+    inputStream: Content,
     outputStream: OutputStream,
     contentLength: Long,
     bufferSize: Int = DEFAULT_BUFFER_SIZE,
-): Long {
+): Long = coroutineScope {
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
     var bytes = inputStream.read(buffer)
     var lastNotifyTime = 0L
     val progressListenerDelegate = request.progressListener?.let {
-        ProgressListenerDelegate(this@copyToWithActive, it)
+        ProgressListenerDelegate(this@coroutineScope, it)
     }
     var lastUpdateProgressBytesCopied = 0L
     while (bytes >= 0 && isActive) {
@@ -67,7 +67,7 @@ internal fun CoroutineScope.copyToWithActive(
     ) {
         progressListenerDelegate.onUpdateProgress(request, contentLength, bytesCopied)
     }
-    return bytesCopied
+    return@coroutineScope bytesCopied
 }
 
 /**

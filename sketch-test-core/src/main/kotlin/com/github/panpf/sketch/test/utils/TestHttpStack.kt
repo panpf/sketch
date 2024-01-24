@@ -17,8 +17,8 @@ package com.github.panpf.sketch.test.utils
 
 import android.content.Context
 import com.github.panpf.sketch.http.HttpStack
+import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.ImageRequest
-import java.io.InputStream
 
 class TestHttpStack constructor(
     private val context: Context,
@@ -40,7 +40,7 @@ class TestHttpStack constructor(
         )
     }
 
-    override fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
         connectionDelayMillis?.let {
             Thread.sleep(it)
         }
@@ -84,10 +84,8 @@ class TestHttpStack constructor(
             return null
         }
 
-        override val content: InputStream
-            get() = throw Exception()
+        override suspend fun content(): HttpStack.Content = throw Exception()
     }
-
 
     class TestResponse(
         private val context: Context,
@@ -106,19 +104,18 @@ class TestHttpStack constructor(
 
         override fun getHeaderField(name: String): String? = testImage.headerMap?.get(name)
 
-        override val content: InputStream
-            get() {
-                val assetFileName =
-                    testImage.uriString.substring(testImage.uriString.lastIndexOf("/") + 1)
-                return context.assets.open(assetFileName).run {
-                    if (readDelayMillis != null) {
-                        SlowInputStream(this, readDelayMillis)
-                    } else {
-                        this
-                    }
+        override suspend fun content(): HttpStack.Content {
+            val assetFileName =
+                testImage.uriString.substring(testImage.uriString.lastIndexOf("/") + 1)
+            val inputStream = context.assets.open(assetFileName).run {
+                if (readDelayMillis != null) {
+                    SlowInputStream(this, readDelayMillis)
+                } else {
+                    this
                 }
             }
-
+            return HurlStack.Content(inputStream)
+        }
     }
 
     class TestImage constructor(

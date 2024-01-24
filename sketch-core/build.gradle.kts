@@ -36,6 +36,7 @@ kotlin {
                 api(libs.androidx.core)
                 api(libs.androidx.exifinterface)
                 api(libs.androidx.lifecycle.runtime)
+                implementation(libs.ktor.client.android)
             }
         }
         named("androidInstrumentedTest") {
@@ -51,6 +52,7 @@ kotlin {
                 api(libs.kotlinx.coroutines.core)
                 compileOnly(libs.composeStableMarker)
                 api(libs.okio)
+                implementation(libs.ktor.client.core)
             }
         }
         named("commonTest") {
@@ -65,6 +67,7 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.coroutines.swing)
                 api(libs.metadataExtractor)
+                implementation(libs.ktor.client.java)
             }
         }
 
