@@ -31,7 +31,7 @@ import java.io.OutputStream
 interface DiskCache : Closeable {
 
     companion object {
-        const val DEFAULT_DIR_NAME = "sketch3"
+        const val DEFAULT_DIR_NAME = "sketch4"
     }
 
     var logger: Logger?

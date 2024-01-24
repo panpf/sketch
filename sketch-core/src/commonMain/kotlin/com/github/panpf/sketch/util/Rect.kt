@@ -1,32 +1,12 @@
 package com.github.panpf.sketch.util
 
 import androidx.annotation.CheckResult
-import java.awt.Insets
-import java.io.PrintWriter
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 class Rect {
     var left = 0
     var top = 0
     var right = 0
     var bottom = 0
-
-    /**
-     * A helper class for flattened rectange pattern recognition. A separate
-     * class to avoid an initialization dependency on a regular expression
-     * causing Rect to not be initializable with an ahead-of-time compilation
-     * scheme.
-     */
-    private object UnflattenHelper {
-        private val FLATTENED_PATTERN = Pattern.compile(
-            "(-?\\d+) (-?\\d+) (-?\\d+) (-?\\d+)"
-        )
-
-        fun getMatcher(str: String?): Matcher {
-            return FLATTENED_PATTERN.matcher(str)
-        }
-    }
 
     /**
      * Create a new empty Rect. All coordinates are initialized to 0.
@@ -71,23 +51,6 @@ class Rect {
         }
     }
 
-    /**
-     * @hide
-     */
-    constructor(r: Insets?) {
-        if (r == null) {
-            bottom = 0
-            right = bottom
-            top = right
-            left = top
-        } else {
-            left = r.left
-            top = r.top
-            right = r.right
-            bottom = r.bottom
-        }
-    }
-
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
@@ -116,10 +79,7 @@ class Rect {
         sb.append(")")
         return sb.toString()
     }
-    /**
-     * Return a string representation of the rectangle in a compact form.
-     * @hide
-     */
+
     /**
      * Return a string representation of the rectangle in a compact form.
      */
@@ -159,22 +119,6 @@ class Rect {
         sb.append(' ')
         sb.append(bottom)
         return sb.toString()
-    }
-
-    /**
-     * Print short representation to given writer.
-     * @hide
-     */
-    fun printShortString(pw: PrintWriter) {
-        pw.print('[')
-        pw.print(left)
-        pw.print(',')
-        pw.print(top)
-        pw.print("][")
-        pw.print(right)
-        pw.print(',')
-        pw.print(bottom)
-        pw.print(']')
     }
 
     val isEmpty: Boolean
@@ -329,18 +273,6 @@ class Rect {
      * @param insets The rectangle specifying the insets on all side.
      */
     fun inset(insets: Rect) {
-        left += insets.left
-        top += insets.top
-        right -= insets.right
-        bottom -= insets.bottom
-    }
-
-    /**
-     * Insets the rectangle on all sides specified by the dimensions of `insets`.
-     *
-     * @param insets The insets to inset the rect by.
-     */
-    fun inset(insets: Insets) {
         left += insets.left
         top += insets.top
         right -= insets.right
@@ -621,25 +553,6 @@ class Rect {
          */
         fun copyOrNull(r: Rect?): Rect? {
             return if (r == null) null else Rect(r)
-        }
-
-        /**
-         * Returns a Rect from a string of the form returned by [.flattenToString],
-         * or null if the string is not of that form.
-         */
-        fun unflattenFromString(str: String): Rect? {
-            if (str.isEmpty()) {
-                return null
-            }
-            val matcher = UnflattenHelper.getMatcher(str)
-            return if (!matcher.matches()) {
-                null
-            } else Rect(
-                matcher.group(1).toInt(),
-                matcher.group(2).toInt(),
-                matcher.group(3).toInt(),
-                matcher.group(4).toInt()
-            )
         }
 
         /**

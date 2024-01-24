@@ -25,8 +25,8 @@ import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
-import com.github.panpf.sketch.util.md5
 import kotlinx.coroutines.sync.Mutex
+import okio.ByteString.Companion.encodeUtf8
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -55,7 +55,7 @@ class LruDiskCache constructor(
     }
 
     private var _cache: DiskLruCache? = null
-    private val keyMapperCache = KeyMapperCache { md5(it) }
+    private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
     private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
     private var getCount = 0
     private var hitCount = 0

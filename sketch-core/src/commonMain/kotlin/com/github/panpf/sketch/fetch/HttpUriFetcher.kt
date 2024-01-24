@@ -36,8 +36,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
-import java.io.IOException
+import okio.Buffer
+import okio.IOException
+import okio.buffer
+import okio.sink
 
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpg' uri
@@ -170,9 +172,9 @@ open class HttpUriFetcher(
         val diskCacheEditor = downloadCache.edit(dataKey) ?: return null
         try {
             val contentLength = response.contentLength
-            val readLength = response.content().use { inputStream ->
-                diskCacheEditor.newOutputStream().buffered().use { outputStream ->
-                    copyToWithActive(request, inputStream, outputStream, contentLength)
+            val readLength = response.content().use { content ->
+                diskCacheEditor.newOutputStream().sink().buffer().use { sink ->
+                    copyToWithActive(request, content, sink, contentLength)
                 }
             }
             // 'Transform-Encoding: chunked' contentLength is -1
@@ -227,18 +229,16 @@ open class HttpUriFetcher(
         mimeType: String?
     ): Result<FetchResult> {
         val contentLength = response.contentLength
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val readLength = byteArrayOutputStream.use { outputStream ->
-            response.content().use { inputStream ->
-                copyToWithActive(request, inputStream, outputStream, contentLength)
-            }
+        val buffer = Buffer()
+        val readLength = response.content().use { content ->
+            copyToWithActive(request, content, buffer, contentLength)
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =
                 "readLength error. readLength=$readLength, contentLength=$contentLength. ${request.uriString}"
             return Result.failure(IOException(message))
         }
-        val bytes = byteArrayOutputStream.toByteArray()
+        val bytes = buffer.readByteArray()
         val dataSource = ByteArrayDataSource(sketch, request, NETWORK, bytes)
         val result = FetchResult(dataSource, mimeType)
         return Result.success(result)

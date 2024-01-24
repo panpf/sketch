@@ -5,8 +5,8 @@ import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
-import com.github.panpf.sketch.util.md5
 import kotlinx.coroutines.sync.Mutex
+import okio.ByteString.Companion.encodeUtf8
 import java.io.File
 import java.util.WeakHashMap
 
@@ -22,7 +22,7 @@ class EmptyDiskCache(
         private val editLockLock = Any()
     }
 
-    private val keyMapperCache = KeyMapperCache { md5(it) }
+    private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
     private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
 
     override var logger: Logger? = null

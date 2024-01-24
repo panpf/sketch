@@ -23,27 +23,27 @@ import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
-import java.io.IOException
-import java.io.OutputStream
+import okio.BufferedSink
+import okio.IOException
 
 @Throws(IOException::class, CancellationException::class)
 internal suspend fun copyToWithActive(
     request: ImageRequest,
-    inputStream: Content,
-    outputStream: OutputStream,
+    content: Content,
+    sink: BufferedSink,
     contentLength: Long,
     bufferSize: Int = DEFAULT_BUFFER_SIZE,
 ): Long = coroutineScope {
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
-    var bytes = inputStream.read(buffer)
+    var bytes = content.read(buffer)
     var lastNotifyTime = 0L
     val progressListenerDelegate = request.progressListener?.let {
         ProgressListenerDelegate(this@coroutineScope, it)
     }
     var lastUpdateProgressBytesCopied = 0L
     while (bytes >= 0 && isActive) {
-        outputStream.write(buffer, 0, bytes)
+        sink.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
             val currentTime = System.currentTimeMillis()
@@ -56,7 +56,7 @@ internal suspend fun copyToWithActive(
                 )
             }
         }
-        bytes = inputStream.read(buffer)
+        bytes = content.read(buffer)
     }
     if (!isActive) {
         throw CancellationException()

@@ -47,8 +47,8 @@ class DownloadUtilsTest {
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
-                inputStream = SlowInputStream(string.byteInputStream(), 100),
-                outputStream = outputStream,
+                content = SlowInputStream(string.byteInputStream(), 100),
+                sink = outputStream,
                 bufferSize = ceil(string.length / 3f).toInt(),
                 contentLength = string.length.toLong()
             )
@@ -63,8 +63,8 @@ class DownloadUtilsTest {
         runBlocking {
             copyToWithActive(
                 request = ImageRequest(context, "http://sample.com/sample.jpeg"),
-                inputStream = SlowInputStream(string.byteInputStream(), 100),
-                outputStream = outputStream2,
+                content = SlowInputStream(string.byteInputStream(), 100),
+                sink = outputStream2,
                 bufferSize = ceil(string.length / 3f).toInt(),
                 contentLength = string.length.toLong()
             )
@@ -81,8 +81,8 @@ class DownloadUtilsTest {
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
-                inputStream = SlowInputStream(string.byteInputStream(), 100),
-                outputStream = outputStream3,
+                content = SlowInputStream(string.byteInputStream(), 100),
+                sink = outputStream3,
                 bufferSize = ceil(string.length / 3f).toInt(),
                 contentLength = 0
             )
@@ -99,8 +99,8 @@ class DownloadUtilsTest {
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
-                inputStream = SlowInputStream(string.byteInputStream(), 400),
-                outputStream = outputStream4,
+                content = SlowInputStream(string.byteInputStream(), 400),
+                sink = outputStream4,
                 bufferSize = ceil(string.length / 3f).toInt(),
                 contentLength = string.length.toLong()
             )
