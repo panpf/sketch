@@ -160,7 +160,6 @@ AsyncImage(
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
 * [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
-* [BitmapPool：复用 Bitmap，减少 GC][bitmap_pool]
 * [DownloadRequest：下载图片到磁盘][download_request]
 * [LoadRequest：加载图片获取 Bitmap][load_request]
 * [预加载图片到内存][preloading]
@@ -201,7 +200,6 @@ AsyncImage(
 ## 特别感谢
 
 * [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose、sketch-gif-movie 部分
-* [bumptech]/[glide]: BitmapPool
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg

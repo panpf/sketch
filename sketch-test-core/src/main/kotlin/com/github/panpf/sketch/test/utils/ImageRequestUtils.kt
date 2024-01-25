@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
@@ -16,13 +16,10 @@ fun ImageRequest.toRequestContext(sketch: Sketch, size: Size? = null): RequestCo
 }
 
 inline fun ImageRequest.Builder.target(
-    supportDisplayCount: Boolean = false,
     crossinline onStart: (requestContext: RequestContext, placeholder: Image?) -> Unit = { _, _ -> },
     crossinline onError: (requestContext: RequestContext, error: Image?) -> Unit = { _, _ -> },
     crossinline onSuccess: (requestContext: RequestContext, result: Image) -> Unit = { _, _ -> },
 ) = target(object : Target {
-
-    override fun supportDisplayCount(): Boolean = supportDisplayCount
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         onStart(requestContext, placeholder)

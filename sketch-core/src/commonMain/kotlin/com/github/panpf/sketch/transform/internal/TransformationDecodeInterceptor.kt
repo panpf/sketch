@@ -40,16 +40,10 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
             transformations.fold(oldImage) { inputImage, next ->
                 val transformResult = next.transform(sketch, requestContext, inputImage)
                 if (transformResult != null) {
-                    if (transformResult.image !== inputImage) {
-                        // TODO bitmapPool
-//                        sketch.bitmapPool.freeBitmap(
-//                            bitmap = inputImage,
-//                            disallowReuseBitmap = request.disallowReuseBitmap,
-//                            caller = "transform:${next}"
-//                        )
-                        sketch.logger.d("BitmapTransformationDecodeInterceptor") {
-                            "transform. freeBitmap. inputImage=${inputImage}. '${requestContext.logKey}'"
-                        }
+                    check(transformResult.image.checkValid()) {
+                        val transformedListString =
+                            transformedList.joinToString(prefix = "[", postfix = "]")
+                        "Invalid image after transform. transformedList=$transformedListString"
                     }
                     transformedList.add(transformResult.transformed)
                     transformResult.image
@@ -61,11 +55,6 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
             return Result.failure(e)
         }
         return if (transformedList.isNotEmpty()) {
-            check(newImage.checkValid()) {
-                val transformedListString =
-                    transformedList.joinToString(prefix = "[", postfix = "]")
-                "Invalid image after transform. transformedList=$transformedListString"
-            }
             val newDecodeResult = decodeResult.newResult(image = newImage) {
                 transformedList.forEach {
                     addTransformed(it)

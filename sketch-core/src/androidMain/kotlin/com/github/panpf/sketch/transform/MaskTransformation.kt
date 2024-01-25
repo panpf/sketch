@@ -57,14 +57,6 @@ class MaskTransformation(
         if (inputBitmap.isMutable) {
             maskBitmap = inputBitmap
         } else {
-            // TODO BitmapPool
-//            maskBitmap = sketch.bitmapPool.getOrCreate(
-//                width = inputBitmap.width,
-//                height = inputBitmap.height,
-//                config = inputBitmap.safeConfig,
-//                disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-//                caller = "MaskTransformation"
-//            )
             maskBitmap = Bitmap.createBitmap(
                 /* width = */ inputBitmap.width,
                 /* height = */ inputBitmap.height,

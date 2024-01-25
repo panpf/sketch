@@ -49,8 +49,6 @@ open class SketchZoomImageView @JvmOverloads constructor(
 ) : AbsStateZoomImageView(context, attrs, defStyle) {
 
     init {
-//        _subsamplingEngine?.tileBitmapPoolState?.value =
-//            SketchTileBitmapPool(context.sketch, "SketchZoomImageView")
         _subsamplingEngine?.tileBitmapCacheState?.value =
             SketchTileBitmapCache(context.sketch, "SketchZoomImageView")
     }
@@ -85,8 +83,6 @@ open class SketchZoomImageView @JvmOverloads constructor(
             }
             _subsamplingEngine?.disabledTileBitmapCacheState?.value =
                 result.request.memoryCachePolicy != CachePolicy.ENABLED
-            _subsamplingEngine?.disabledTileBitmapReuseState?.value =
-                result.request.disallowReuseBitmap
             _subsamplingEngine?.ignoreExifOrientationState?.value =
                 result.request.ignoreExifOrientation
             _subsamplingEngine?.setImageSource(newImageSource(result))

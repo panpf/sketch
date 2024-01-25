@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -66,9 +67,7 @@ fun Drawable.getLastChildDrawable(): Drawable? {
  */
 @WorkerThread
 internal fun Drawable.toNewBitmap(
-//    bitmapPool: BitmapPool,
-    disallowReuseBitmap: Boolean,
-    preferredConfig: Bitmap.Config? = null,
+    preferredConfig: Config? = null,
     targetSize: Size? = null
 ): Bitmap {
     val (oldLeft, oldTop, oldRight, oldBottom) = bounds
@@ -77,13 +76,6 @@ internal fun Drawable.toNewBitmap(
     setBounds(0, 0, targetWidth, targetHeight)
 
     val config = preferredConfig ?: ARGB_8888
-//    val bitmap: Bitmap = bitmapPool.getOrCreate(
-//        width = targetWidth,
-//        height = targetHeight,
-//        config = config,
-//        disallowReuseBitmap = disallowReuseBitmap,
-//        caller = "toNewBitmap"
-//    )
     val bitmap: Bitmap = Bitmap.createBitmap(
         /* width = */ targetWidth,
         /* height = */ targetHeight,

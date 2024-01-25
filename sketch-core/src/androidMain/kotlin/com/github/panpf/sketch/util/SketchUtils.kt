@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.util
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.core.R
@@ -56,42 +55,4 @@ class SketchUtils private constructor() {
          */
         fun getSketch(view: View): Sketch? = requestManagerOrNull(view)?.getSketch()
     }
-}
-
-/**
- * Traverse all SketchCountBitmapDrawable in specified Drawable
- */
-//fun Drawable.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
-//    val drawable = this
-//    when {
-//        drawable is SketchCountBitmapDrawable -> {
-//            block(drawable)
-//        }
-//
-//        drawable is LayerDrawable -> {
-//            val layerCount = drawable.numberOfLayers
-//            for (index in 0 until layerCount) {
-//                drawable.getDrawable(index).forEachSketchCountBitmapDrawable(block)
-//            }
-//        }
-//
-//        drawable is CrossfadeDrawable -> {
-//            drawable.start?.forEachSketchCountBitmapDrawable(block)
-//            drawable.end?.forEachSketchCountBitmapDrawable(block)
-//        }
-//
-//        drawable is DrawableWrapperCompat -> {
-//            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
-//        }
-//
-//        VERSION.SDK_INT >= VERSION_CODES.M && drawable is DrawableWrapper -> {
-//            drawable.drawable?.forEachSketchCountBitmapDrawable(block)
-//        }
-//    }
-//}
-
-fun Drawable.updateIsDisplayed(displayed: Boolean, caller: String) {
-//    this.forEachSketchCountBitmapDrawable {
-//        it.countingBitmapImage.setIsDisplayed(displayed, caller)
-//    }
 }

@@ -96,9 +96,7 @@ fun realDecode(
 }
 
 @WorkerThread
-fun DecodeResult.appliedExifOrientation(
-    requestContext: RequestContext
-): DecodeResult {
+fun DecodeResult.appliedExifOrientation(requestContext: RequestContext): DecodeResult {
     requiredWorkThread()
     if (transformedList?.getExifOrientationTransformed() != null
         || imageInfo.exifOrientation == ExifOrientation.UNDEFINED
@@ -107,29 +105,15 @@ fun DecodeResult.appliedExifOrientation(
         return this
     }
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation) ?: return this
-    val newBitmap = exifOrientationHelper.applyToImage(
-        image = image,
-//        bitmapPool = sketch.bitmapPool,
-//        disallowReuseBitmap = request.disallowReuseBitmap
-    ) ?: return this
-    // TODO bitmapPool
-//    sketch.bitmapPool.freeBitmap(
-//        bitmap = inputBitmap,
-//        disallowReuseBitmap = request.disallowReuseBitmap,
-//        caller = "appliedExifOrientation"
-//    )
-//    requestContext.sketch.logger.d("appliedExifOrientation") {
-//        "appliedExifOrientation. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.logKey}'"
-//    }
-
+    val newImage = exifOrientationHelper.applyToImage(image) ?: return this
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
     requestContext.sketch.logger.d("appliedExifOrientation") {
-        "appliedExifOrientation. successful. ${newBitmap}. ${imageInfo}. '${requestContext.logKey}'"
+        "appliedExifOrientation. successful. ${newImage}. ${imageInfo}. '${requestContext.logKey}'"
     }
     return newResult(
-        image = newBitmap,
+        image = newImage,
         imageInfo = imageInfo.newImageInfo(width = newSize.width, height = newSize.height)
     ) {
         addTransformed(createExifOrientationTransformed(imageInfo.exifOrientation))
@@ -161,12 +145,7 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
             smallerSizeMode = resize.precision.isSmallerSizeMode()
         )
         if (sampleSize != 1) {
-            imageTransformer.scaled(
-                image = image,
-                scaleFactor = 1 / sampleSize.toFloat(),
-//                bitmapPool = sketch.bitmapPool,
-//                disallowReuseBitmap = request.disallowReuseBitmap
-            )
+            imageTransformer.scaled(image = image, scaleFactor = 1 / sampleSize.toFloat())
         } else {
             null
         }
@@ -187,15 +166,6 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
         requestContext.sketch.logger.d("appliedResize") {
             "appliedResize. successful. ${newImage}. ${imageInfo}. '${requestContext.logKey}'"
         }
-        // TODO bitmapPool
-//        sketch.bitmapPool.freeBitmap(
-//            bitmap = inputBitmap,
-//            disallowReuseBitmap = request.disallowReuseBitmap,
-//            caller = "appliedResize"
-//        )
-//        requestContext.sketch.logger.d("appliedResize") {
-//            "appliedResize. freeBitmap. bitmap=${inputBitmap.logString}. '${requestContext.logKey}'"
-//        }
         newResult(image = newImage) {
             addTransformed(createResizeTransformed(resize))
         }

@@ -355,7 +355,6 @@ Basic functions:
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
 * [DecodeInterceptor: Intercept Bitmap or Drawable decoding][decode_interceptor]
-* [BitmapPool: Reuse Bitmap to reduce GC][bitmap_pool]
 * [DownloadRequest: Download the image to disk][download_request]
 * [LoadRequest: Load the image to get the Bitmap][load_request]
 * [Preload images into memory][preloading]
@@ -429,8 +428,6 @@ Featured functions:
 [request_interceptor]: request_interceptor.md
 
 [decode_interceptor]: decode_interceptor.md
-
-[bitmap_pool]: bitmap_pool.md
 
 [preloading]: preloading.md
 

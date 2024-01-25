@@ -68,45 +68,12 @@ open class BitmapFactoryDecoder(
         decodeConfig.inSampleSize = sampleSize
         val decodeOptions = decodeConfig.toBitmapOptions()
 
-        // Set inBitmap from bitmap pool
-//        sketch.bitmapPool.setInBitmap(
-//            options = decodeOptions,
-//            imageSize = Size(imageInfo.width, imageInfo.height),
-//            imageMimeType = imageInfo.mimeType,
-//            disallowReuseBitmap = request.disallowReuseBitmap,
-//            caller = "DefaultBitmapDecoder:realDecodeFull"
-//        )
-//        requestContext.logger.d(MODULE) {
-//            "realDecodeFull. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
-//        }
-
         val bitmap: Bitmap = try {
             dataSource.decodeBitmap(decodeOptions)
+                ?: throw ImageInvalidException("Invalid image. decode return null")
         } catch (throwable: Throwable) {
-            val inBitmap = decodeOptions.inBitmap
-            if (inBitmap != null && isInBitmapError(throwable)) {
-                val message = "Bitmap decode error. Because inBitmap. '${requestContext.logKey}'"
-                requestContext.logger.e(MODULE, throwable, message)
-
-//                sketch.bitmapPool.freeBitmap(
-//                    bitmap = inBitmap,
-//                    disallowReuseBitmap = request.disallowReuseBitmap,
-//                    caller = "decode:error"
-//                )
-//                requestContext.logger.d(MODULE) {
-//                    "realDecodeFull. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
-//                }
-
-                decodeOptions.inBitmap = null
-                try {
-                    dataSource.decodeBitmap(decodeOptions)
-                } catch (throwable2: Throwable) {
-                    throw DecodeException("Bitmap decode error2: $throwable", throwable2)
-                }
-            } else {
-                throw DecodeException("Bitmap decode error: $throwable", throwable)
-            }
-        } ?: throw ImageInvalidException("Invalid image. decode return null")
+            throw DecodeException("Bitmap decode error: $throwable", throwable)
+        }
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             requestContext.logger.e(MODULE) {
                 "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
@@ -126,57 +93,13 @@ open class BitmapFactoryDecoder(
         val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
         decodeConfig.inSampleSize = sampleSize
         val decodeOptions = decodeConfig.toBitmapOptions()
-//        sketch.bitmapPool.setInBitmapForRegion(
-//            options = decodeOptions,
-//            regionSize = Size(srcRect.width(), srcRect.height()),
-//            imageMimeType = imageInfo.mimeType,
-//            imageSize = Size(imageInfo.width, imageInfo.height),
-//            disallowReuseBitmap = request.disallowReuseBitmap,
-//            caller = "DefaultBitmapDecoder:realDecodeRegion"
-//        )
-//        requestContext.logger.d(MODULE) {
-//            "realDecodeRegion. inBitmap=${decodeOptions.inBitmap?.logString}. '${requestContext.logKey}'"
-//        }
 
         val bitmap: Bitmap = try {
             dataSource.decodeRegionBitmap(srcRect, decodeOptions)
+                ?: throw ImageInvalidException("Invalid image. region decode return null")
         } catch (throwable: Throwable) {
-            val inBitmap = decodeOptions.inBitmap
-            when {
-                inBitmap != null && isInBitmapError(throwable) -> {
-                    val message =
-                        "Bitmap decode region error. Because inBitmap. '${requestContext.logKey}'"
-                    requestContext.logger.e(MODULE, throwable, message)
-
-//                    sketch.bitmapPool.freeBitmap(
-//                        bitmap = inBitmap,
-//                        disallowReuseBitmap = request.disallowReuseBitmap,
-//                        caller = "decodeRegion:error"
-//                    )
-//                    requestContext.logger.d(MODULE) {
-//                        "realDecodeRegion. freeBitmap. inBitmap error. bitmap=${inBitmap.logString}. '${requestContext.logKey}'"
-//                    }
-
-                    decodeOptions.inBitmap = null
-                    try {
-                        dataSource.decodeRegionBitmap(srcRect, decodeOptions)
-                    } catch (throwable2: Throwable) {
-                        val message2 = "Bitmap region decode error"
-                        throw DecodeException(message2, throwable2)
-                    }
-                }
-
-                isSrcRectError(throwable) -> {
-                    val message =
-                        "Bitmap region decode error. Because srcRect. imageInfo=${imageInfo}, srcRect=${srcRect}"
-                    throw DecodeException(message, throwable)
-                }
-
-                else -> {
-                    throw DecodeException("Bitmap region decode error", throwable)
-                }
-            }
-        } ?: throw ImageInvalidException("Invalid image. region decode return null")
+            throw DecodeException("Bitmap region decode error", throwable)
+        }
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             requestContext.logger.e(MODULE) {
                 "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"

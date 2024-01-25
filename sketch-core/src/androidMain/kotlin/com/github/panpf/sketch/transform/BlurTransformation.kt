@@ -72,14 +72,6 @@ class BlurTransformation constructor(
         val inputBitmap = input.getBitmapOrNull() ?: return null
         // Transparent pixels cannot be blurred
         val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
-            // TODO BitmapPool
-//            val bitmap = sketch.bitmapPool.getOrCreate(
-//                inputBitmap.width,
-//                inputBitmap.height,
-//                inputBitmap.safeConfig,
-//                requestContext.request.disallowReuseBitmap,
-//                "BlurTransformation"
-//            )
             val bitmap = Bitmap.createBitmap(
                 /* width = */ inputBitmap.width,
                 /* height = */ inputBitmap.height,
@@ -97,16 +89,6 @@ class BlurTransformation constructor(
         if (outBitmap !== compatAlphaBitmap) {
             sketch.logger.d(MODULE) {
                 "transform. newBitmap. ${outBitmap.logString}. '${requestContext.logKey}'"
-            }
-            if (compatAlphaBitmap !== inputBitmap) {
-//                sketch.bitmapPool.freeBitmap(
-//                    bitmap = compatAlphaBitmap,
-//                    disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-//                    caller = "BlurTransformation"
-//                )
-                sketch.logger.d(MODULE) {
-                    "transform. freeBitmap. bitmap=${compatAlphaBitmap.logString}. '${requestContext.logKey}'"
-                }
             }
         }
         maskColor?.let {

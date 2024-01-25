@@ -63,14 +63,6 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
             inputBitmap.width, inputBitmap.height, newSize, newSize, SAME_ASPECT_RATIO, scale
         )
         val config = inputBitmap.safeConfig
-        // TODO BitmapPool
-//        val outBitmap = sketch.bitmapPool.getOrCreate(
-//            width = resizeMapping.newWidth,
-//            height = resizeMapping.newHeight,
-//            config = config,
-//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-//            caller = "CircleCropTransformation"
-//        )
         val outBitmap = Bitmap.createBitmap(
             /* width = */ resizeMapping.newWidth,
             /* height = */ resizeMapping.newHeight,

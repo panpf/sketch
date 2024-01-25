@@ -101,8 +101,6 @@ actual interface Image {
 
     actual fun checkValid(): Boolean
 
-    actual fun toCountingImage(requestContext: RequestContext): CountingImage?
-
     actual fun transformer(): ImageTransformer?
 }
 
@@ -122,25 +120,15 @@ open class BitmapImage internal constructor(
 
     open val bitmap: Bitmap = bitmap
 
-    override fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): Value = BitmapImageValue(this, extras)
+    override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value =
+        BitmapImageValue(this, extras)
 
-    override fun checkValid(): Boolean {
-        return !bitmap.isRecycled
-    }
-
-    override fun toCountingImage(requestContext: RequestContext): CountingImage? {
-//        return this.toCountingBitmapImage(requestContext)
-        return null
-    }
+    override fun checkValid(): Boolean = !bitmap.isRecycled
 
     override fun transformer(): ImageTransformer? = BitmapImageTransformer()
 
-    override fun toString(): String {
-        return "BitmapImage(bitmap=${bitmap.logString}, shareable=$shareable)"
-    }
+    override fun toString(): String =
+        "BitmapImage(bitmap=${bitmap.logString}, shareable=$shareable)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -163,25 +151,13 @@ class BitmapImageTransformer : ImageTransformer {
 
     override fun scaled(image: Image, scaleFactor: Float): Image {
         val inputBitmap = image.asOrThrow<BitmapImage>().bitmap
-        val outBitmap = inputBitmap.scaled(
-            scale = scaleFactor.toDouble(),
-//                bitmapPool = sketch.bitmapPool,
-//            disallowReuseBitmap = request.disallowReuseBitmap
-        )
+        val outBitmap = inputBitmap.scaled(scale = scaleFactor.toDouble())
         return outBitmap.asSketchImage()
     }
 
     override fun mapping(image: Image, mapping: ResizeMapping): Image {
         val inputBitmap = image.asOrThrow<BitmapImage>().bitmap
         val config = inputBitmap.safeConfig
-        // TODO BitmapPool
-//        val outBitmap = sketch.bitmapPool.getOrCreate(
-//            width = mapping.newWidth,
-//            height = mapping.newHeight,
-//            config = config,
-//            disallowReuseBitmap = request.disallowReuseBitmap,
-//            caller = "appliedResize"
-//        )
         val outBitmap = Bitmap.createBitmap(
             /* width = */ mapping.newWidth,
             /* height = */ mapping.newHeight,
@@ -218,16 +194,10 @@ data class DrawableImage internal constructor(
         else -> 4 * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
     }
 
-    override fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): Value? = null
+    override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? =
+        null
 
-    override fun checkValid(): Boolean {
-        return true
-    }
-
-    override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
+    override fun checkValid(): Boolean = true
 
     override fun transformer(): ImageTransformer? = null
 }

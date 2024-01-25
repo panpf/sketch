@@ -169,7 +169,6 @@ Basic functions：
 * [ImageOptions：Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor：Intercept ImageRequest][request_interceptor]
 * [DecodeInterceptor：Intercept Bitmap or Drawable decoding][decode_interceptor]
-* [BitmapPool：Reuse Bitmap to reduce GC][bitmap_pool]
 * [DownloadRequest：Download the image to disk][download_request]
 * [LoadRequest：Load the image to get the Bitmap][load_request]
 * [Preload images into memory][preloading]
@@ -217,7 +216,6 @@ Please review the [CHANGELOG.md] file
 
 * [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose, sketch-gif-movie
   parts
-* [bumptech]/[glide]: BitmapPool
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg

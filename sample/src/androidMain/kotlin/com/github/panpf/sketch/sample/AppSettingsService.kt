@@ -88,9 +88,6 @@ class AppSettingsService(val context: Context) {
     val disabledDownloadCache by lazy {
         SettingsStateFlow("disabledDownloadCache", false, preferences)
     }
-//    val disallowReuseBitmap by lazy {
-//        SettingsStateFlow("disallowReuseBitmap", false, preferences)
-//    }
 
     val precision by lazy {
         SettingsStateFlow("precision", "LongImageClipMode", preferences)
@@ -195,7 +192,6 @@ class AppSettingsService(val context: Context) {
         disabledMemoryCache,
         disabledResultCache,
         disabledDownloadCache,
-//        disallowReuseBitmap,
 
         precision,
         scale,
@@ -217,7 +213,6 @@ class AppSettingsService(val context: Context) {
         disabledMemoryCache,
         disabledResultCache,
         disabledDownloadCache,
-//        disallowReuseBitmap,
 
         ignoreExifOrientation,
     )
@@ -236,7 +231,6 @@ class AppSettingsService(val context: Context) {
         memoryCachePolicy(disabledMemoryCacheValue)
         resultCachePolicy(disabledResultCacheValue)
         downloadCachePolicy(disabledDownloadCacheValue)
-//        disallowReuseBitmap(disallowReuseBitmap.value)
 
         precision(precisionValue)
         scale(scaleValue)
@@ -256,7 +250,6 @@ class AppSettingsService(val context: Context) {
         memoryCachePolicy(disabledMemoryCacheValue)
         resultCachePolicy(disabledResultCacheValue)
         downloadCachePolicy(disabledDownloadCacheValue)
-//        disallowReuseBitmap(disallowReuseBitmap.value)
 
         ignoreExifOrientation(ignoreExifOrientation.value)
     }

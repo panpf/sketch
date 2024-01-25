@@ -25,9 +25,8 @@ import com.github.panpf.sketch.transition.TransitionViewTarget
 class TestTransitionViewTarget : Target, TransitionViewTarget {
 
     override var drawable: Drawable? = null
-    override val fitScale: Boolean get() = true
 
-    override fun supportDisplayCount(): Boolean = true
+    override val fitScale: Boolean get() = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) {
         this.drawable = placeholder?.asDrawable()

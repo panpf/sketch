@@ -86,9 +86,6 @@ class Sketch private constructor(options: Options) {
     /** Memory cache of previously loaded images */
     val memoryCache: MemoryCache by lazy { options.memoryCacheFactory.create(options.context) }
 
-//    /** Reuse Bitmap */
-//    val bitmapPool: BitmapPool  // TODO 4.0 no longer supports inBitmap
-
     val fileSystem = FileSystem.SYSTEM
 
     /** Disk caching of http downloads images */
@@ -120,7 +117,6 @@ class Sketch private constructor(options: Options) {
 
     init {
         memoryCache.logger = logger
-//        bitmapPool.logger = logger
         downloadCache.logger = logger
         resultCache.logger = logger
 
@@ -137,7 +133,6 @@ class Sketch private constructor(options: Options) {
                 append("\n").append("logger: $logger")
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
-//                append("\n").append("bitmapPool: $bitmapPool")
                 append("\n").append("downloadCache: $downloadCache")
                 append("\n").append("resultCache: $resultCache")
                 append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList}")
@@ -184,7 +179,7 @@ class Sketch private constructor(options: Options) {
 
 
     /**
-     * Cancel any new and in progress requests, clear the [MemoryCache] and [BitmapPool], and close any open
+     * Cancel any new and in progress requests, clear the [MemoryCache] and [DiskCache], and close any open
      * system resources.
      *
      * Shutting down an image loader is optional.
@@ -196,7 +191,6 @@ class Sketch private constructor(options: Options) {
         memoryCache.clear()
         downloadCache.close()
         resultCache.close()
-//        bitmapPool.clear()
     }
 
     data class Options(
@@ -217,7 +211,6 @@ class Sketch private constructor(options: Options) {
         private var downloadCacheFactory: DiskCache.Factory? = null
         private var resultCacheFactory: DiskCache.Factory? = null
 
-        //        private var bitmapPool: BitmapPool? = null
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
@@ -336,13 +329,6 @@ class Sketch private constructor(options: Options) {
                 DiskCache.LazyOptionsFactory(DiskCache.Type.RESULT, initializer)
         }
 
-//        /**
-//         * Set the [BitmapPool]
-//         */
-//        fun bitmapPool(bitmapPool: BitmapPool?): Builder = apply {
-//            this.bitmapPool = bitmapPool
-//        }
-
         /**
          * Set the [ComponentRegistry]
          */
@@ -379,7 +365,6 @@ class Sketch private constructor(options: Options) {
                     ?: DiskCache.DefaultFactory(DiskCache.Type.DOWNLOAD),
                 resultCacheFactory = resultCacheFactory
                     ?: DiskCache.DefaultFactory(DiskCache.Type.RESULT),
-//            bitmapPool = bitmapPool,
                 httpStack = httpStack ?: KtorStack(),
                 componentRegistry = componentRegistry,
                 globalImageOptions = globalImageOptions,

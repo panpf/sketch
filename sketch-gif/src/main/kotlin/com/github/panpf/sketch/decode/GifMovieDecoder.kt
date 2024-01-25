@@ -58,7 +58,6 @@ fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = app
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
- * * disallowReuseBitmap
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDecoder(

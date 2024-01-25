@@ -43,7 +43,7 @@ the [Transformation] list, the uniqueness and certainty of the key attribute mus
 * The same [Transformation] inputs different parameters and outputs different keys.
 
 > Note: For custom Transformation, do not perform recycle() on the input Bitmap of the transform
-> method or put it into a BitmapPool. This will cause unpredictable errors.
+> method. This will cause unpredictable errors.
 
 [Transformation]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transform/Transformation.kt
 

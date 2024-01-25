@@ -25,14 +25,10 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendParameters()
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
-//    .appendBitmapConfig()
-//    .appendColorSpace()
-//    .appendPreferQualityOverSpeed()
     .appendSize()
     .appendPrecision()
     .appendScale()
     .appendTransformations()
-    .appendDisallowReuseBitmap()
     .appendIgnoreExifOrientation()
     .appendResultCachePolicy()
     .appendDisallowAnimatedImage()
@@ -150,12 +146,6 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
                     it.key.replace("Transformation", "")
                 }
             appendQueryParameter("_transformations", transformationKeys)
-        }
-    }
-
-    fun appendDisallowReuseBitmap(): ImageRequestKeyBuilder = apply {
-        if (request.disallowReuseBitmap) {
-            appendQueryParameter("_disallowReuseBitmap", true.toString())
         }
     }
 

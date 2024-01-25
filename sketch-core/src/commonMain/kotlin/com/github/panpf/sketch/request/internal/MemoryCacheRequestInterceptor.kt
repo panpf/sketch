@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.CountingImage
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
@@ -37,58 +36,29 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val request = chain.request
         val requestContext = chain.requestContext
         val memoryCachePolicy = request.memoryCachePolicy
-//        val targetSupportDisplayCount =
-//            request.target.asOrNull<Target>()?.supportDisplayCount == true
 
-        if (memoryCachePolicy.readEnabled
-//            && targetSupportDisplayCount    // TODO check targetSupportDisplayCount
-        ) {
+        if (memoryCachePolicy.readEnabled) {
             val imageDataFromCache = readFromMemoryCache(requestContext)
             if (imageDataFromCache != null) {
-                val image = imageDataFromCache.image
-                if (image is CountingImage) {
-                    image.setIsPending(true, "loadBefore")
-                    requestContext.registerCompletedListener {
-                        image.setIsPending(false, "RequestCompleted")
-                    }
-                }
                 return Result.success(imageDataFromCache)
             } else if (request.depth >= Depth.MEMORY) {
                 return Result.failure(DepthException("Request depth limited to ${request.depth}. ${request.key}"))
             }
         }
 
-        val result = chain.proceed(request).convertToCountingImage(requestContext)
+        val result = chain.proceed(request)
         val imageData = result.getOrNull()
-        if (imageData != null
-            && memoryCachePolicy.writeEnabled
-//            && targetSupportDisplayCount    // TODO check targetSupportDisplayCount
-        ) {
+        if (imageData != null && memoryCachePolicy.writeEnabled) {
             val saveSuccess = saveToMemoryCache(requestContext, imageData)
             if (saveSuccess && memoryCachePolicy.readEnabled) {
                 val imageDataFromCache = readFromMemoryCache(requestContext)
                 if (imageDataFromCache != null) {
-                    val image = imageDataFromCache.image
-                    if (image is CountingImage) {
-                        image.setIsPending(true, "newDecode")
-                        requestContext.registerCompletedListener {
-                            image.setIsPending(false, "RequestCompleted")
-                        }
-                    }
                     return Result.success(imageDataFromCache.copy(dataFrom = imageData.dataFrom))
                 }
             }
         }
 
         return result
-    }
-
-    private fun Result<ImageData>.convertToCountingImage(
-        requestContext: RequestContext
-    ): Result<ImageData> {
-        val imageData = getOrNull() ?: return this
-        val image = imageData.image.toCountingImage(requestContext) ?: return this
-        return Result.success(imageData.copy(image = image))
     }
 
     @MainThread
@@ -136,7 +106,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
-
 }
 
 val RequestContext.memoryCacheKey: String

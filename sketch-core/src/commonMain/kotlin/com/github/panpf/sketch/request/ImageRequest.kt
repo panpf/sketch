@@ -142,11 +142,6 @@ interface ImageRequest {
     val transformations: List<Transformation>?
 
     /**
-     * Disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
-     */
-    val disallowReuseBitmap: Boolean
-
-    /**
      * Ignore Orientation property in file Exif info
      *
      * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
@@ -156,7 +151,7 @@ interface ImageRequest {
     /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
-     * @see com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
+     * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
      */
     val resultCachePolicy: CachePolicy
 
@@ -622,13 +617,6 @@ interface ImageRequest {
         }
 
         /**
-         * Set disallow the use of [BitmapFactory.Options.inBitmap] to reuse Bitmap
-         */
-        fun disallowReuseBitmap(disabled: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.disallowReuseBitmap(disabled)
-        }
-
-        /**
          * Set ignore Orientation property in file Exif info
          */
         fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
@@ -759,7 +747,6 @@ interface ImageRequest {
                 ?: PrecisionDecider(Precision.LESS_PIXELS)
             val scaleDecider = finalOptions.scaleDecider ?: ScaleDecider(resolveScale())
             val transformations = finalOptions.transformations
-            val disallowReuseBitmap = finalOptions.disallowReuseBitmap ?: false
             val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val placeholder = finalOptions.placeholder
             val uriEmpty = finalOptions.uriEmpty
@@ -788,7 +775,6 @@ interface ImageRequest {
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
-                disallowReuseBitmap = disallowReuseBitmap,
                 ignoreExifOrientation = ignoreExifOrientation,
                 placeholder = placeholder,
                 uriEmpty = uriEmpty,
@@ -859,7 +845,6 @@ interface ImageRequest {
         override val precisionDecider: PrecisionDecider,
         override val scaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
-        override val disallowReuseBitmap: Boolean,
         override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
         override val placeholder: StateImage?,

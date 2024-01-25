@@ -1339,7 +1339,6 @@ class ImageRequestExecuteTest {
         val request = ImageRequest(context, imageUri) {
             resizeSize(500, 500)
             target(object : Target {
-                override fun supportDisplayCount(): Boolean = true
                 override fun onStart(requestContext: RequestContext, placeholder: Image?) {
                     super.onStart(requestContext, placeholder)
                     onStartDrawable = placeholder

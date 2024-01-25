@@ -19,7 +19,6 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.Size
-import okio.BufferedSink
 
 expect interface Image {
 
@@ -44,14 +43,9 @@ expect interface Image {
      */
     val shareable: Boolean
 
-    fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): Value?
+    fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value?
 
     fun checkValid(): Boolean
-
-    fun toCountingImage(requestContext: RequestContext): CountingImage?
 
     fun transformer(): ImageTransformer?
 }
@@ -66,40 +60,21 @@ interface ImageTransformer {
 val Image.size: Size
     get() = Size(width, height)
 
-interface CountingImage : Image {
-    fun setIsPending(pending: Boolean, caller: String? = null)
-    fun setIsCached(cached: Boolean, caller: String? = null)
-    fun setIsDisplayed(displayed: Boolean, caller: String? = null)
-    fun getPendingCount(): Int
-    fun getCachedCount(): Int
-    fun getDisplayedCount(): Int
-}
 
-fun Image.findLeafImage(): Image {
-    return if (this is ImageWrapper) {
-        image.findLeafImage()
-    } else {
-        this
-    }
-}
+fun Image.findLeafImage(): Image = if (this is ImageWrapper) image.findLeafImage() else this
 
 open class ImageWrapper(val image: Image) : Image by image {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-
         other as ImageWrapper
-
         return image == other.image
     }
 
-    override fun hashCode(): Int {
-        return image.hashCode()
-    }
+    override fun hashCode(): Int = image.hashCode()
 
-    override fun toString(): String {
-        return "ImageWrapper(image=$image)"
-    }
+    override fun toString(): String = "ImageWrapper(image=$image)"
 }
 
 interface ByteCountProvider {

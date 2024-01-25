@@ -58,13 +58,6 @@ interface Target {
 
     }
 
-    /**
-     * If display counting is not supported, memory caching will not be used.
-     * If true is returned, call the SketchCountBitmapDrawable.countBitmap.setIsDisplayed() method to record the number of impressions.
-     * Otherwise, there will be image confusion and crashes
-     */
-    fun supportDisplayCount(): Boolean = false
-
     fun getImageOptions(): ImageOptions? = null
 
     fun getSizeResolver(): SizeResolver? = null

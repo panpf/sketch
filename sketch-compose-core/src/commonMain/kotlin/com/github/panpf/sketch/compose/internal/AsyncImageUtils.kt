@@ -130,23 +130,6 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
 
-///**
-// * Traverse all SketchCountBitmapDrawable in specified Drawable
-// */
-//fun Painter.forEachSketchCountBitmapDrawable(block: (SketchCountBitmapDrawable) -> Unit) {
-//    val painter = this
-//    when {
-//        painter is DrawablePainter && painter.drawable is SketchCountBitmapDrawable -> {
-//            block(painter.drawable as SketchCountBitmapDrawable)
-//        }
-//
-//        painter is CrossfadePainter -> {
-//            painter.start?.forEachSketchCountBitmapDrawable(block)
-//            painter.end?.forEachSketchCountBitmapDrawable(block)
-//        }
-//    }
-//}
-
 fun Painter.forEachRememberObserver(block: (RememberObserver) -> Unit) {
     when (this) {
         is RememberObserver -> {
@@ -158,12 +141,6 @@ fun Painter.forEachRememberObserver(block: (RememberObserver) -> Unit) {
             end?.forEachRememberObserver(block)
         }
     }
-}
-
-fun Painter.updateIsDisplayed(displayed: Boolean, caller: String) {
-//    this.forEachSketchCountBitmapDrawable {
-//        it.countBitmap.setIsDisplayed(displayed, caller)
-//    }
 }
 
 internal val ContentScale.fitScale: Boolean

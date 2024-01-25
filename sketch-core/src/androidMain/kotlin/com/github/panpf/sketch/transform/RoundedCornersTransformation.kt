@@ -95,14 +95,6 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     ): TransformResult? {
         val inputBitmap = input.getBitmapOrNull() ?: return null
         val config = inputBitmap.safeConfig
-        // TODO BitmapPool
-//        val newBitmap = sketch.bitmapPool.getOrCreate(
-//            width = inputBitmap.width,
-//            height = inputBitmap.height,
-//            config = config,
-//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-//            caller = "RoundedCornersTransformation"
-//        )
         val newBitmap = Bitmap.createBitmap(
             /* width = */ inputBitmap.width,
             /* height = */ inputBitmap.height,

@@ -94,8 +94,6 @@ open class DrawableDecoder constructor(
             }
         val targetSize = Size(width = dstSize.width, height = dstSize.height)
         val bitmap = drawable.toNewBitmap(
-//            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = request.disallowReuseBitmap,
             preferredConfig = request.bitmapConfig?.getConfig(PNG.mimeType),
             targetSize = targetSize
         )

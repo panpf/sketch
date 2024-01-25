@@ -338,7 +338,6 @@ when (imageResult) {
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
 * [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
-* [BitmapPool：复用 Bitmap，减少 GC][bitmap_pool]
 * [DownloadRequest：下载图片到磁盘][download_request]
 * [LoadRequest：加载图片获取 Bitmap][load_request]
 * [预加载图片到内存][preloading]
@@ -412,8 +411,6 @@ when (imageResult) {
 [request_interceptor]: request_interceptor_zh.md
 
 [decode_interceptor]: decode_interceptor_zh.md
-
-[bitmap_pool]: bitmap_pool_zh.md
 
 [preloading]: preloading_zh.md
 

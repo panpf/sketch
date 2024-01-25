@@ -46,24 +46,6 @@ class SketchTileBitmapCache constructor(
         disallowReuseBitmap: Boolean
     ): CacheTileBitmap? {
         val bitmap = (tileBitmap as AndroidTileBitmap).bitmap ?: return null
-//        val newCountBitmap = CountBitmap(
-//            originBitmap = bitmap,
-//            bitmapPool = sketch.bitmapPool,
-//            disallowReuseBitmap = disallowReuseBitmap,
-//        )
-//        val newCacheValue = CountBitmapValue(
-//            countBitmap = newCountBitmap,
-//            extras = newCacheValueExtras(
-//                imageInfo = ImageInfo(
-//                    imageInfo.width,
-//                    imageInfo.height,
-//                    imageInfo.mimeType,
-//                    ExifInterface.ORIENTATION_UNDEFINED
-//                ),
-//                transformedList = null,
-//                extras = null,
-//            )
-//        )
         val newCacheValue = BitmapImageValue(bitmap.asSketchImage())
         if (!sketch.memoryCache.put(key, newCacheValue)) {
             return null

@@ -57,14 +57,6 @@ class RotateTransformation(val degrees: Int) : Transformation {
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
             config = Bitmap.Config.ARGB_8888
         }
-        // TODO BitmapPool
-//        val result = sketch.bitmapPool.getOrCreate(
-//            width = newWidth,
-//            height = newHeight,
-//            config = config,
-//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-//            caller = "RotateTransformation"
-//        )
         val result = Bitmap.createBitmap(
             /* width = */ newWidth,
             /* height = */ newHeight,

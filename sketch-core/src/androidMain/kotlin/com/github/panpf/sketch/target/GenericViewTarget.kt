@@ -42,7 +42,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.TargetLifecycle.Event
 import com.github.panpf.sketch.transition.TransitionViewTarget
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.updateIsDisplayed
 
 /**
  * An opinionated [ViewTarget] that simplifies updating the [Image] attached to a [View]
@@ -55,8 +54,6 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     TargetLifecycle.EventObserver, OnAttachStateChangeListener {
 
     private var isStarted = false
-
-    override fun supportDisplayCount(): Boolean = true
 
     init {
         if (canBindTarget(view)) {
@@ -127,9 +124,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         val oldDrawable = drawable
         if (newDrawable !== oldDrawable) {
             oldDrawable.asOrNull<Animatable>()?.stop()
-            newDrawable?.updateIsDisplayed(true, "ImageView")
             this.drawable = newDrawable
-            oldDrawable?.updateIsDisplayed(false, "ImageView")
             updateAnimation()
         }
     }

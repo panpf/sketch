@@ -78,7 +78,6 @@ class SettingsViewModel(application1: Application, val page: Page) :
             appSettingsService.disabledMemoryCache.ignoreFirst(),
             appSettingsService.disabledResultCache.ignoreFirst(),
             appSettingsService.disabledDownloadCache.ignoreFirst(),
-//            appSettingsService.disallowReuseBitmap.ignoreFirst(),
             appSettingsService.showDataFromLogo.ignoreFirst(),
             appSettingsService.showTileBounds.ignoreFirst(),
             appSettingsService.logLevel.ignoreFirst(),
@@ -393,30 +392,6 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 }
             )
         )
-
-//        add(
-//            SwitchMenuFlow(
-//                title = "Bitmap Pool",
-//                desc = "%s/%s（Long Click Clean）".format(
-//                    sketch.bitmapPool.size.formatFileSize(
-//                        0,
-//                        decimalPlacesFillZero = false,
-//                        compact = true
-//                    ),
-//                    sketch.bitmapPool.maxSize.formatFileSize(
-//                        0,
-//                        decimalPlacesFillZero = false,
-//                        compact = true
-//                    )
-//                ),
-//                data = appSettingsService.disallowReuseBitmap,
-//                reverse = true,
-//                onLongClick = {
-//                    sketch.bitmapPool.clear()
-//                    updateList()
-//                }
-//            )
-//        )
     }
 
     private fun makeOtherMenuList(): List<Any> = buildList {

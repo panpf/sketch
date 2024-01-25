@@ -43,14 +43,9 @@ actual interface Image {
      */
     actual val shareable: Boolean
 
-    actual fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): Value?
+    actual fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value?
 
     actual fun checkValid(): Boolean
-
-    actual fun toCountingImage(requestContext: RequestContext): CountingImage?
 
     actual fun transformer(): ImageTransformer?
 }
@@ -75,8 +70,6 @@ class BufferedImageImage(
     }
 
     override fun checkValid(): Boolean = true
-
-    override fun toCountingImage(requestContext: RequestContext): CountingImage? = null
 
     override fun transformer(): ImageTransformer = BufferedImageTransformer()
 

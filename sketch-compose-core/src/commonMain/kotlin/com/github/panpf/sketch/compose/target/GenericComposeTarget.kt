@@ -18,7 +18,6 @@ package com.github.panpf.sketch.compose.target
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.compose.asPainter
-import com.github.panpf.sketch.compose.internal.updateIsDisplayed
 import com.github.panpf.sketch.compose.transition.TransitionComposeTarget
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -30,8 +29,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
  * to implement [ComposeTarget] directly.
  */
 abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
-
-    override fun supportDisplayCount(): Boolean = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         updateImage(requestContext, placeholder)
@@ -56,9 +53,7 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
     private fun updatePainter(newPainter: Painter?) {
         val oldPainter = painter
         if (newPainter !== oldPainter) {
-            newPainter?.updateIsDisplayed(true, "AsyncImage")
             painter = newPainter
-            oldPainter?.updateIsDisplayed(false, "AsyncImage")
             // AsyncImageState's AsyncImageTarget will call Painter's onRemembered and onForgotten
             // methods to trigger the start and stop of Animatable in DrawablePainter
         }

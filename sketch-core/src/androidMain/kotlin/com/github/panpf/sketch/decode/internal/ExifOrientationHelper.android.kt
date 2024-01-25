@@ -62,12 +62,7 @@ class AndroidExifOrientationHelper constructor(
 ) : ExifOrientationHelper {
 
     @WorkerThread
-    override fun applyToImage(
-        image: Image,
-//        bitmapPool: BitmapPool,
-//        disallowReuseBitmap: Boolean
-        reverse: Boolean
-    ): Image? {
+    override fun applyToImage(image: Image, reverse: Boolean): Image? {
         val inBitmap = image.asOrNull<BitmapImage>()?.bitmap ?: return null
         val rotationDegrees = getRotationDegrees().let {
             if (reverse) it * -1 else it
@@ -76,8 +71,6 @@ class AndroidExifOrientationHelper constructor(
             inBitmap = inBitmap,
             isFlipped = isFlipped(),
             rotationDegrees = rotationDegrees,
-//            bitmapPool = bitmapPool,
-//            disallowReuseBitmap = disallowReuseBitmap,
             apply = !reverse
         ) ?: return null
         return outBitmap.asSketchImage()
@@ -88,8 +81,6 @@ class AndroidExifOrientationHelper constructor(
         inBitmap: Bitmap,
         isFlipped: Boolean,
         rotationDegrees: Int,
-//        bitmapPool: BitmapPool,
-//        disallowReuseBitmap: Boolean,
         apply: Boolean,
     ): Bitmap? {
         val isRotated = abs(rotationDegrees % 360) != 0
@@ -107,13 +98,6 @@ class AndroidExifOrientationHelper constructor(
         val config = inBitmap.safeConfig
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
-//        val outBitmap = bitmapPool.getOrCreate(
-//            width = newWidth,
-//            height = newHeight,
-//            config = config,
-//            disallowReuseBitmap = disallowReuseBitmap,
-//            caller = "applyFlipAndRotation"
-//        )
         val outBitmap = Bitmap.createBitmap(
             /* width = */ newWidth,
             /* height = */ newHeight,

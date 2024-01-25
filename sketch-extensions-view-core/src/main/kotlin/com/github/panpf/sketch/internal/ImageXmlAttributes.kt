@@ -74,10 +74,6 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                 ?.apply {
                     bitmapConfig(parseBitmapConfigAttribute(this))
                 }
-            typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_disallowReuseBitmap)
-                ?.apply {
-                    disallowReuseBitmap(this)
-                }
             typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_ignoreExifOrientation)
                 ?.apply {
                     ignoreExifOrientation(this)

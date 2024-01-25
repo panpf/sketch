@@ -40,12 +40,7 @@ class DesktopExifOrientationHelper constructor(
 ) : ExifOrientationHelper {
 
     @WorkerThread
-    override fun applyToImage(
-        image: Image,
-//        bitmapPool: BitmapPool,
-//        disallowReuseBitmap: Boolean
-        reverse: Boolean
-    ): Image? {
+    override fun applyToImage(image: Image, reverse: Boolean): Image? {
         val bufferedImage = image.asOrNull<BufferedImageImage>()?.bufferedImage ?: return null
         val rotationDegrees = getRotationDegrees()
         val isFlipped = isFlipped()

@@ -70,21 +70,10 @@ fun calculateBitmapByteCount(width: Int, height: Int, config: Bitmap.Config?): I
 internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
 
-internal fun Bitmap.scaled(
-    scale: Double,
-//    bitmapPool: BitmapPool,
-//    disallowReuseBitmap: Boolean
-): Bitmap {
+internal fun Bitmap.scaled(scale: Double): Bitmap {
     val config = this.safeConfig
     val scaledWidth = ceil(width * scale).toInt()
     val scaledHeight = ceil(height * scale).toInt()
-//    val newBitmap = bitmapPool.getOrCreate(
-//        width = scaledWidth,
-//        height = scaledHeight,
-//        config = config,
-//        disallowReuseBitmap = disallowReuseBitmap,
-//        caller = "scaled"
-//    )
     val newBitmap = Bitmap.createBitmap(
         /* width = */ scaledWidth,
         /* height = */ scaledHeight,

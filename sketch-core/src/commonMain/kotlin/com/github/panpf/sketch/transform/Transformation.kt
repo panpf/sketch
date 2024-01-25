@@ -52,7 +52,7 @@ interface Transformation {
      * Apply the transformation to [input] and return the transformed [Image].
      *
      * @param requestContext [RequestContext].
-     * @param input The input [Image] to transform. Don't recycle or put input into BitmapPool, it will cause unpredictable errors
+     * @param input The input [Image] to transform. Don't recycle it, it will cause unpredictable errors
      * @return The transformed [Image].
      */
     @WorkerThread

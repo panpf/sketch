@@ -132,13 +132,6 @@ class SvgDecoder constructor(
         svg.setDocumentWidth("100%")
         svg.setDocumentHeight("100%")
 
-//        val bitmap = sketch.bitmapPool.getOrCreate(
-//            width = dstWidth,
-//            height = dstHeight,
-//            config = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware(),
-//            disallowReuseBitmap = requestContext.request.disallowReuseBitmap,
-//            caller = "SvgDecoder"
-//        )
         val bitmap = Bitmap.createBitmap(
             /* width = */ dstWidth,
             /* height = */ dstHeight,

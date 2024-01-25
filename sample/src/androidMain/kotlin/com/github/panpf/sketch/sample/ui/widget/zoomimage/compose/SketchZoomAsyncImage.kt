@@ -162,7 +162,6 @@ fun SketchZoomAsyncImage(
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-//        state.subsampling.tileBitmapPool = SketchTileBitmapPool(sketch, "SketchZoomAsyncImage")
         state.subsampling.tileBitmapCache = SketchTileBitmapCache(sketch, "SketchZoomAsyncImage")
     }
 
@@ -210,7 +209,6 @@ private fun onPainterState(
             subsamplingState.ignoreExifOrientation = request.ignoreExifOrientation
             subsamplingState.disabledTileBitmapCache =
                 request.memoryCachePolicy != CachePolicy.ENABLED
-            subsamplingState.disabledTileBitmapReuse = request.disallowReuseBitmap
             val imageSource = SketchImageSource(context, sketch, request.uriString)
             subsamplingState.setImageSource(imageSource)
         }
