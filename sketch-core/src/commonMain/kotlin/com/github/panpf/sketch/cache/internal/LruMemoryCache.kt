@@ -18,14 +18,16 @@ package com.github.panpf.sketch.cache.internal
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
-import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
  */
-class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
+class LruMemoryCache constructor(
+    override val maxSize: Long,
+    val valueLimitedSize: Long = (maxSize * 0.3f).roundToLong()
+) : MemoryCache {
 
     companion object {
         private const val MODULE = "LruMemoryCache"
@@ -37,78 +39,50 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
                 val valueSize = value.size
                 return if (valueSize == 0) 1 else valueSize
             }
-
-            override fun entryRemoved(
-                evicted: Boolean, key: String, oldValue: Value, newValue: Value?
-            ) {
-                logger?.d(MODULE) {
-                    "removed. ${oldValue}. ${size.formatFileSize()}"
-                }
-                oldValue.setIsCached(false)
-            }
         }
-    private var getCount = 0
-    private var hitCount = 0
 
     override var logger: Logger? = null
     override val size: Long
         get() = cache.size()
 
     override fun put(key: String, value: Value): Boolean {
-        check(value.checkValid()) { "cache value invalid. value=$value, key=$key" }
-        if (cache[key] != null) {
-            logger?.w(MODULE, "put. exist. $value")
+        if (!value.checkValid()) {
+            logger?.w(MODULE, "put. invalid. $value. $key")
             return false
         }
-        if (value.size >= maxSize * 0.7f) {
-            logger?.d(MODULE) {
-                val bitmapSize = value.size.formatFileSize()
-                val maxSize = maxSize.formatFileSize()
-                "put. reject. Bitmap too big: ${bitmapSize}, maxSize is $maxSize, $value"
+        if (cache[key] != null) {
+            logger?.w(MODULE, "put. exist. $value. $key")
+            return false
+        }
+        val valueSize = value.size
+        if (valueSize > valueLimitedSize) {
+            logger?.w(MODULE) {
+                "put. value size exceeds limited. valueSize=${valueSize.formatFileSize()}, $value. $key"
             }
             return false
         }
-
-        value.setIsCached(true)
         cache.put(key, value)
-        logger?.d(MODULE) {
-            "put. successful. ${size.formatFileSize()}. $value"
-        }
         return true
     }
 
     override fun remove(key: String): Value? = cache.remove(key)
 
     override fun get(key: String): Value? {
-        val value = cache[key]?.apply {
-            check(this.checkValid()) { "cache value invalid. value=$this, key=$key" }
-        }
-        val getCount1 = ++getCount
-        val hitCount1 = if (value != null) {
-            ++hitCount
-        } else {
-            hitCount
-        }
-        if (getCount1 == Int.MAX_VALUE || hitCount1 == Int.MAX_VALUE) {
-            getCount = 0
-            hitCount = 0
-        }
-        logger?.d(MODULE) {
-            val hitRatio = ((hitCount1.toFloat() / getCount1).format(2) * 100).roundToInt()
-            if (value != null) {
-                "get. hit($hitRatio%). ${value}}"
-            } else {
-                "get. miss($hitRatio%). $key"
-            }
+        val value = cache[key] ?: return null
+        if (!value.checkValid()) {
+            logger?.w(MODULE, "get. invalid. $value. $key")
+            return null
         }
         return value
     }
 
     override fun exist(key: String): Boolean {
-        val value = cache[key]?.apply {
-            check(this.checkValid()) { "cache value invalid. value=$this, key=$key" }
+        val value = cache[key] ?: return false
+        if (!value.checkValid()) {
+            logger?.w(MODULE, "exist. invalid. $value. $key")
+            return false
         }
-        return value != null
+        return true
     }
 
     override fun trim(targetSize: Long) {
@@ -116,7 +90,9 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         cache.trimToSize(targetSize)
         logger?.d(MODULE) {
             val releasedSize = oldSize - size
-            "trim. released ${releasedSize.formatFileSize()}, size ${size.formatFileSize()}"
+            "trim. targetSize=${targetSize.formatFileSize()}, " +
+                    "releasedSize=${releasedSize.formatFileSize()}, " +
+                    "size=${size.formatFileSize()}"
         }
     }
 
@@ -128,11 +104,12 @@ class LruMemoryCache constructor(override val maxSize: Long) : MemoryCache {
         val oldSize = size
         cache.evictAll()
         logger?.d(MODULE) {
-            "clear. cleared ${oldSize.formatFileSize()}"
+            "clear. clearedSize=${oldSize.formatFileSize()}"
         }
     }
 
-    override fun toString(): String = "$MODULE(${maxSize.formatFileSize()})"
+    override fun toString(): String =
+        "$MODULE(maxSize=${maxSize.formatFileSize()},valueLimitedSize=${valueLimitedSize.formatFileSize()})"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

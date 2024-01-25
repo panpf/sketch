@@ -45,9 +45,5 @@ class ImageBitmapValue(
 
     override val size: Int = imageBitmapImage.byteCount
 
-    override fun setIsCached(cached: Boolean) {
-
-    }
-
     override fun checkValid(): Boolean = imageBitmapImage.checkValid()
 }

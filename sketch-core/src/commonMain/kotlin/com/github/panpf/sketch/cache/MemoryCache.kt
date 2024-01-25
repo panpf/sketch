@@ -84,8 +84,6 @@ interface MemoryCache {
 
         val extras: Map<String, Any?>
 
-        fun setIsCached(cached: Boolean)
-
         fun checkValid(): Boolean
     }
 
@@ -132,7 +130,6 @@ interface MemoryCache {
         override fun create(context: PlatformContext): MemoryCache {
             val defaultMemoryCacheBytes =
                 context.totalAvailableMemoryBytes() * context.defaultMemoryCacheSizePercent()
-//            return LruMemoryCache((defaultMemoryCacheBytes * 0.66f).roundToLong())
             return LruMemoryCache((defaultMemoryCacheBytes * 1f).roundToLong())
         }
     }

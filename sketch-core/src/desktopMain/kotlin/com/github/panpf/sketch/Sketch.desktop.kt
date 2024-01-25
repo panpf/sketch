@@ -14,7 +14,6 @@ internal actual fun platformComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(FileUriFetcher.Factory())
         // TODO add desktop components
-        // TODO ResultCache
         addFetcher(ResourceUriFetcher.Factory())
         addDecoder(ImageReaderDecoder.Factory())
     }.build()
