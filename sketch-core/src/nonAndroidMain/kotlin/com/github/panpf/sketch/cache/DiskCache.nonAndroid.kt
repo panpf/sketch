@@ -8,6 +8,7 @@ actual fun defaultDiskCacheOptions(
     context: PlatformContext,
     type: DiskCache.Type,
 ): DiskCache.Options {
+    // TODO - Use a better directory
     val directory = File("/tmp/${DiskCache.DEFAULT_DIR_NAME}/${type.dirName}")
 
     val maxSize = when (type) {

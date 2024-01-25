@@ -24,8 +24,6 @@ internal actual fun platformComponents(): ComponentRegistry {
 
         addDecoder(DrawableDecoder.Factory())
         addDecoder(BitmapFactoryDecoder.Factory())
-
-        addDecodeInterceptor(ResultCacheDecodeInterceptor())
     }.build()
 }
 

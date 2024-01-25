@@ -212,14 +212,14 @@ fun limitedSampleSizeByMaxBitmapSize(
     return finalSampleSize
 }
 
-fun DataSource.decodeImage(block: ImageReadParam.() -> Unit): BufferedImage {
+fun DataSource.decodeImage(block: (ImageReadParam.() -> Unit)? = null): BufferedImage {
     openSource().buffer().inputStream().use { inputStream ->
         val imageStream = ImageIO.createImageInputStream(inputStream)
         val imageReader = ImageIO.getImageReaders(imageStream).next().apply {
             input = imageStream
         }
         val readParam = imageReader.defaultReadParam.apply {
-            block()
+            block?.invoke(this)
         }
         return imageReader.read(0, readParam)
     }

@@ -17,30 +17,20 @@
 
 package com.github.panpf.sketch.cache.internal
 
-import android.graphics.Bitmap.CompressFormat
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.decodeBitmap
-import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
-import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.closeQuietly
 import com.github.panpf.sketch.util.ifOrNull
 import kotlinx.coroutines.sync.Mutex
 import okio.buffer
-import org.json.JSONArray
-import org.json.JSONObject
-import kotlin.collections.Map.Entry
 
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
@@ -97,6 +87,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val resultCache = sketch.resultCache
         val fileSystem = resultCache.fileSystem
         val cacheKey = requestContext.cacheKey
+        val imageSerializer = createImageSerializer() ?: return null
         val snapshot = runCatching { resultCache.openSnapshot(cacheKey) }.getOrNull()
         if (snapshot == null) return null
         val result = runCatching {
@@ -107,44 +98,15 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                 fileSystem = fileSystem,
                 path = snapshot.data
             )
-            val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
-            val decodeOptions = requestContext.request
-                .newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
-                .toBitmapOptions()
-            val bitmap = dataSource.decodeBitmap(decodeOptions)
-            if (bitmap == null) {
-                throw DecodeException("Decode bitmap return null. '${requestContext.logKey}'")
-            }
-
-            val metadataJSONObject = fileSystem
-                .source(snapshot.metadata).buffer()
-                .readUtf8()
-                .let { JSONObject(it) }
-            val imageInfo = ImageInfo(
-                width = metadataJSONObject.getInt("width"),
-                height = metadataJSONObject.getInt("height"),
-                mimeType = metadataJSONObject.getString("mimeType"),
-                exifOrientation = metadataJSONObject.getInt("exifOrientation"),
-            )
-            val transformedList =
-                metadataJSONObject.optJSONArray("transformedList")?.let { jsonArray ->
-                    (0 until jsonArray.length()).map { index ->
-                        jsonArray[index].toString()
-                    }
-                }
-            val extras = metadataJSONObject.optJSONObject("extras")?.let {
-                val extras = mutableMapOf<String, String>()
-                it.keys().forEach { key ->
-                    extras[key] = it.getString(key)
-                }
-                extras.toMap()
-            }
+            val metadataString = fileSystem.source(snapshot.metadata).buffer().use { it.readUtf8() }
+            val metadata = Metadata.fromMetadataString(metadataString)
+            val image = imageSerializer.decode(requestContext, metadata.imageInfo, dataSource)
             DecodeResult(
-                image = bitmap.asSketchImage(requestContext.request.context.resources),
-                imageInfo = imageInfo,
+                image = image,
+                imageInfo = metadata.imageInfo,
                 dataFrom = RESULT_CACHE,
-                transformedList = transformedList,
-                extras = extras
+                transformedList = metadata.transformedList,
+                extras = metadata.extras
             )
         }
         snapshot.closeQuietly()
@@ -168,44 +130,27 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val transformedList = decodeResult.transformedList
         if (transformedList.isNullOrEmpty()) return false
         val image = decodeResult.image
-        if (image !is BitmapImage) return false
-
+        val imageSerializer = createImageSerializer() ?: return false
         val resultCache = sketch.resultCache
         val cacheKey = requestContext.cacheKey
         val editor = resultCache.openEditor(cacheKey)
         if (editor == null) return false
-
         val result = runCatching {
-            resultCache.fileSystem.sink(editor.data).buffer().outputStream().use {
-                image.bitmap.compress(CompressFormat.PNG, 100, it)
+            resultCache.fileSystem.sink(editor.data).buffer().use {
+                imageSerializer.compress(image, it)
             }
 
-            val metadataJsonString = JSONObject().apply {
-                put("width", decodeResult.imageInfo.width)
-                put("height", decodeResult.imageInfo.height)
-                put("mimeType", decodeResult.imageInfo.mimeType)
-                put("exifOrientation", decodeResult.imageInfo.exifOrientation)
-                put("transformedList", transformedList.let { list ->
-                    JSONArray().apply {
-                        list.forEach { transformed ->
-                            put(transformed)
-                        }
-                    }
-                })
-                decodeResult.extras?.entries?.takeIf { it.isNotEmpty() }
-                    ?.let<Set<Entry<String, String>>, Unit> { entries ->
-                        put("extras", JSONObject().apply {
-                            entries.forEach { entry ->
-                                put(entry.key, entry.value)
-                            }
-                        })
-                    }
-            }.toString()
+            val metadataString = Metadata(
+                imageInfo = decodeResult.imageInfo,
+                transformedList = transformedList,
+                extras = decodeResult.extras
+            ).toMetadataString()
             resultCache.fileSystem.sink(editor.metadata).buffer().use { writer ->
-                writer.writeUtf8(metadataJsonString)
+                writer.writeUtf8(metadataString)
             }
         }
         return if (result.isFailure) {
+            result.exceptionOrNull()?.printStackTrace()
             editor.abort()
             false
         } else {
@@ -213,8 +158,6 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             true
         }
     }
-
-    override fun toString(): String = "ResultCacheDecodeInterceptor(sortWeight=$sortWeight)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -224,5 +167,64 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
     override fun hashCode(): Int {
         return javaClass.hashCode()
+    }
+
+    override fun toString(): String = "ResultCacheDecodeInterceptor(sortWeight=$sortWeight)"
+
+    private class Metadata(
+        val imageInfo: ImageInfo,
+        val transformedList: List<String>?,
+        val extras: Map<String, String>?
+    ) {
+
+        fun toMetadataString(): String = buildString {
+            appendLine("width=${imageInfo.width}")
+            appendLine("height=${imageInfo.height}")
+            appendLine("mimeType=${imageInfo.mimeType}")
+            appendLine("exifOrientation=${imageInfo.exifOrientation}")
+            transformedList?.forEach {
+                appendLine("transformed=${it}")
+            }
+            extras?.entries?.forEach {
+                appendLine("extras.${it.key}=${it.value}")
+            }
+        }
+
+        companion object {
+
+            fun fromMetadataString(metadataString: String): Metadata {
+                val propertiesMap = metadataString
+                    .split("\n")
+                    .filter { line -> line.trim().isNotEmpty() }
+                    .associate { line ->
+                        val delimiterIndex = line.indexOf("=").takeIf { index -> index > 0 }
+                            ?: throw IllegalArgumentException("Illegal result cache properties: $metadataString")
+                        line.substring(0, delimiterIndex) to line.substring(delimiterIndex + 1)
+                    }
+                val imageInfo = ImageInfo(
+                    width = propertiesMap["width"]!!.toInt(),
+                    height = propertiesMap["height"]!!.toInt(),
+                    mimeType = propertiesMap["mimeType"]!!,
+                    exifOrientation = propertiesMap["exifOrientation"]!!.toInt(),
+                )
+                val transformedList = propertiesMap.keys.asSequence()
+                    .filter { key -> key == "transformed" }
+                    .mapNotNull { key -> propertiesMap[key] }
+                    .toList()
+                val extras = propertiesMap.keys.asSequence()
+                    .filter { key -> key.startsWith("extras.") }
+                    .associate { key ->
+                        val extraKey = key.replace("extras.", "")
+                        val extraValue = propertiesMap[key]
+                            ?: throw IllegalArgumentException("Illegal result cache properties: $metadataString")
+                        extraKey to extraValue
+                    }
+                return Metadata(
+                    imageInfo = imageInfo,
+                    transformedList = transformedList,
+                    extras = extras
+                )
+            }
+        }
     }
 }

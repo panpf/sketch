@@ -20,6 +20,7 @@ import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.DefaultFactory
+import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
@@ -400,6 +401,7 @@ internal fun defaultComponents(): ComponentRegistry {
         addRequestInterceptor(PlaceholderRequestInterceptor())
         addRequestInterceptor(EngineRequestInterceptor())
 
+        addDecodeInterceptor(ResultCacheDecodeInterceptor())
         addDecodeInterceptor(TransformationDecodeInterceptor())
         addDecodeInterceptor(EngineDecodeInterceptor())
     }.build()

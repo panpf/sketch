@@ -19,6 +19,7 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.Size
+import okio.BufferedSink
 
 expect interface Image {
 
