@@ -67,7 +67,7 @@ open class HttpUriFetcher(
     override suspend fun fetch(): Result<FetchResult> {
         requiredWorkThread()
         val result = if (request.downloadCachePolicy.isReadOrWrite) {
-            lockDownloadCache {
+            sketch.downloadCache.withLock(downloadCacheLockKey) {
                 request.downloadCachePolicy
                     .takeIf { it.readEnabled }
                     ?.let { readCache() }
@@ -242,15 +242,15 @@ open class HttpUriFetcher(
         return Result.success(result)
     }
 
-    private suspend fun <R> lockDownloadCache(block: suspend () -> R): R {
-        val lock: Mutex = sketch.downloadCache.editLock(downloadCacheLockKey)
-        lock.lock()
-        try {
-            return block()
-        } finally {
-            lock.unlock()
-        }
-    }
+//    private suspend fun <R> lockDownloadCache(block: suspend () -> R): R {
+//        val lock: Mutex = sketch.downloadCache.editLock(downloadCacheLockKey)
+//        lock.lock()
+//        try {
+//            return block()
+//        } finally {
+//            lock.unlock()
+//        }
+//    }
 
     class Factory : Fetcher.Factory {
 

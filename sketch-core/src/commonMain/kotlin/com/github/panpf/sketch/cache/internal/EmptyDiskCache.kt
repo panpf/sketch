@@ -6,10 +6,10 @@ import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okio.ByteString.Companion.encodeUtf8
 import okio.FileSystem
 import okio.Path
-import java.util.WeakHashMap
 
 class EmptyDiskCache(
     override val fileSystem: FileSystem,
@@ -19,13 +19,11 @@ class EmptyDiskCache(
 
     companion object {
         private const val MODULE = "EmptyDiskCache"
-
-        @JvmStatic
-        private val editLockLock = Any()
     }
 
+    // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
+    private val mutexMap = LruCache<String, Mutex>(200)
     private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
-    private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
 
     override var logger: Logger? = null
 
@@ -41,10 +39,13 @@ class EmptyDiskCache(
 
     }
 
-    override fun editLock(key: String): Mutex = synchronized(editLockLock) {
+    override suspend fun <R> withLock(key: String, action: suspend DiskCache.() -> R): R {
         val encodedKey = keyMapperCache.mapKey(key)
-        editLockMap[encodedKey] ?: Mutex().apply {
-            this@EmptyDiskCache.editLockMap[encodedKey] = this
+        val lock = mutexMap[encodedKey] ?: Mutex().apply {
+            this@EmptyDiskCache.mutexMap.put(encodedKey, this)
+        }
+        return lock.withLock {
+            action(this@EmptyDiskCache)
         }
     }
 

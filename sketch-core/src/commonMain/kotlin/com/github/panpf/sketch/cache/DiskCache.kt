@@ -19,7 +19,6 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.DiskCache.Options
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.util.Logger
-import kotlinx.coroutines.sync.Mutex
 import okio.Closeable
 import okio.FileSystem
 import okio.Path
@@ -77,52 +76,20 @@ interface DiskCache : Closeable {
      */
     fun remove(key: String): Boolean
 
-//    /**
-//     * Returns exist of the entry named [key]
-//     */
-//    fun exist(key: String): Boolean = get(key) != null
-
     /**
      * Clear all cached
      */
     fun clear()
 
     /**
-     * Gets an edit lock bound to the specified [key], or creates a new one if it does not exist
+     * Executes the given [action] under this mutex's lock.
      */
-    fun editLock(key: String): Mutex
+    suspend fun <R> withLock(key: String, action: suspend DiskCache.() -> R): R
 
     /**
      * Snapshot the values for an entry.
      */
     interface Snapshot : Closeable {
-//        /**
-//         * Returns cache key
-//         */
-//        val key: String
-//
-//        /**
-//         * Returns cache file
-//         */
-//        val file: File
-//
-//        /**
-//         * Returns the unbuffered stream
-//         */
-//        @Throws(IOException::class)
-//        fun newInputStream(): InputStream
-//
-//        /**
-//         * Returns an editor, or null if another edit is in progress.
-//         */
-//        fun edit(): Editor?
-//
-//        /**
-//         * Delete cache file
-//         *
-//         * @return If true is returned, the deletion is successful
-//         */
-//        fun remove(): Boolean
 
         /** Get the metadata file path for this entry. */
         val metadata: Path
@@ -141,25 +108,6 @@ interface DiskCache : Closeable {
      * Edits the values for an entry.
      */
     interface Editor {
-//        /**
-//         * Returns a new unbuffered output stream.
-//         * Call [commit] when you write done, or call [abort] if you don't want it
-//         */
-//        @Throws(IOException::class)
-//        fun newOutputStream(): OutputStream
-//
-//        /**
-//         * Commits this edit so it is visible to readers.  This releases the
-//         * edit lock so another edit may be started on the same key.
-//         */
-//        @Throws(IOException::class)
-//        fun commit()
-//
-//        /**
-//         * Aborts this edit. This releases the edit lock so another edit may be
-//         * started on the same key.
-//         */
-//        fun abort()
 
         /** Get the metadata file path for this entry. */
         val metadata: Path

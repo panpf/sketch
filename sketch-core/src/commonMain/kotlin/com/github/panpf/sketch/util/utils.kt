@@ -176,7 +176,7 @@ internal fun getCacheFileFromStreamDataSource(
 ): Path = runBlocking {
     val resultCache = sketch.resultCache
     val resultCacheKey = request.uriString + "_data_source"
-    val snapshot = resultCache.editLock(resultCacheKey).withLock {
+    val snapshot = resultCache.withLock(resultCacheKey) {
         val snapshot = resultCache.openSnapshot(resultCacheKey)
         if (snapshot != null) {
             snapshot

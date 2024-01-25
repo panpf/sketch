@@ -50,7 +50,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val resultCachePolicy = requestContext.request.resultCachePolicy
 
         return if (resultCachePolicy.isReadOrWrite) {
-            resultCache.lockResultCache(requestContext) {
+            resultCache.withLock(requestContext.cacheKey) {
                 ifOrNull(resultCachePolicy.readEnabled) {
                     readCache(sketch, requestContext)
                         ?.let { Result.success(it) }
@@ -66,18 +66,18 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         }
     }
 
-    private suspend fun <R> DiskCache.lockResultCache(
-        requestContext: RequestContext,
-        block: suspend () -> R
-    ): R {
-        val lock: Mutex = editLock(requestContext.cacheKey)
-        lock.lock()
-        try {
-            return block()
-        } finally {
-            lock.unlock()
-        }
-    }
+//    private suspend fun <R> DiskCache.lockResultCache(
+//        requestContext: RequestContext,
+//        block: suspend () -> R
+//    ): R {
+//        val lock: Mutex = withLock(requestContext.cacheKey, block)
+//        lock.lock()
+//        try {
+//            return block()
+//        } finally {
+//            lock.unlock()
+//        }
+//    }
 
     @WorkerThread
     private fun readCache(

@@ -26,10 +26,10 @@ import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okio.ByteString.Companion.encodeUtf8
 import okio.FileSystem
 import okio.Path
-import java.util.WeakHashMap
 
 expect fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): Path
 
@@ -52,15 +52,14 @@ class LruDiskCache constructor(
         private const val MODULE = "LruDiskCache"
         private const val ENTRY_DATA = 0
         private const val ENTRY_METADATA = 1
-
-        @JvmStatic
-        private val editLockLock = Any()
     }
 
     override val directory: Path by lazy { checkDiskCacheDirectory(context, directory) }
 
+    // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
+    private val mutexMap = LruCache<String, Mutex>(200)
     private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
-    private val editLockMap: MutableMap<String, Mutex> = WeakHashMap()
+
     private val cache: DiskLruCache by lazy {
         val unionVersion = intMerged(appVersion, internalVersion)
         DiskLruCache(
@@ -110,10 +109,13 @@ class LruDiskCache constructor(
         }
     }
 
-    override fun editLock(key: String): Mutex = synchronized(editLockLock) {
+    override suspend fun <R> withLock(key: String, action: suspend DiskCache.() -> R): R {
         val encodedKey = keyMapperCache.mapKey(key)
-        editLockMap[encodedKey] ?: Mutex().apply {
-            this@LruDiskCache.editLockMap[encodedKey] = this
+        val lock = mutexMap[encodedKey] ?: Mutex().apply {
+            this@LruDiskCache.mutexMap.put(encodedKey, this)
+        }
+        return lock.withLock {
+            action(this@LruDiskCache)
         }
     }
 
