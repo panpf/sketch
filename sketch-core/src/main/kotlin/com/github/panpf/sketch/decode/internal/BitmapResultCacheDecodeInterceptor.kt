@@ -122,6 +122,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             )
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
             val decodeOptions = requestContext.request
+                // TODO Use imageInfo.mimeType here
                 .newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
                 .toBitmapOptions()
             sketch.bitmapPool.setInBitmap(
@@ -192,6 +193,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         }
 
         val resultCache = sketch.resultCache
+        // TODO Use metadata
         val bitmapDataEditor = resultCache.edit(requestContext.resultCacheDataKey)
         val metaDataEditor = resultCache.edit(requestContext.resultCacheMetaKey)
         if (bitmapDataEditor == null || metaDataEditor == null) {
