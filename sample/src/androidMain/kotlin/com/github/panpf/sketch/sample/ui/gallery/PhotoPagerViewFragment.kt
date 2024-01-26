@@ -31,6 +31,7 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.request.sizeApplyToDraw
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding

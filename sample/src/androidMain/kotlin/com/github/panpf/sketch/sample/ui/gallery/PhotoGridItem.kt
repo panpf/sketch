@@ -24,6 +24,7 @@ import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.crossfade
+import com.github.panpf.sketch.request.sizeApplyToDraw
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService

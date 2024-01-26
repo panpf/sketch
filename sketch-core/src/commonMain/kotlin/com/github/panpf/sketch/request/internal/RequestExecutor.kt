@@ -113,8 +113,7 @@ class RequestExecutor {
         imageData: ImageData
     ): ImageResult.Success {
         val lastRequest = requestContext.request
-        val successImage =
-            imageData.image.sizeApplyToDraw(lastRequest, requestContext.size)
+        val successImage = imageData.image.sizeApplyToDraw(lastRequest, requestContext.size)
         val result = ImageResult.Success(
             request = lastRequest,
             image = successImage,

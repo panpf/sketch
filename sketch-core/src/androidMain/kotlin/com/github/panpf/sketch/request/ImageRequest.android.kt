@@ -9,6 +9,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.resize.AndroidSizeApplyToDrawHelper
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
@@ -199,4 +200,13 @@ fun ImageRequest.Builder.crossfade(
             alwaysUse = alwaysUse
         )
     )
+}
+
+
+fun ImageRequest.Builder.sizeApplyToDraw(apply: Boolean = true): ImageRequest.Builder = apply {
+    if (apply) {
+        sizeApplyToDraw(AndroidSizeApplyToDrawHelper())
+    } else {
+        sizeApplyToDraw(null)
+    }
 }

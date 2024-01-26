@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
 
-class CrossfadeComposeTransition @JvmOverloads constructor(
+class ComposeCrossfadeTransition @JvmOverloads constructor(
     private val requestContext: RequestContext,
     private val target: TransitionComposeTarget,
     private val result: ImageResult,
@@ -90,7 +90,7 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
                 return null
             }
             val fitScale = target.fitScale
-            return CrossfadeComposeTransition(
+            return ComposeCrossfadeTransition(
                 requestContext = requestContext,
                 target = target,
                 result = result,
@@ -119,7 +119,7 @@ class CrossfadeComposeTransition @JvmOverloads constructor(
         }
 
         override fun toString(): String {
-            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
+            return "ComposeCrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
         }
     }
 }

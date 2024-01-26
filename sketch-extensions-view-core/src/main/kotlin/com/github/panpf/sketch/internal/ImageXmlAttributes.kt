@@ -50,6 +50,7 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.request.sizeApplyToDraw
 
 fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): ImageOptions? {
     val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)

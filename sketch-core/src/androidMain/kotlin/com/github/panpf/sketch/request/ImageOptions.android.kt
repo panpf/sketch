@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.resize.AndroidSizeApplyToDrawHelper
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.transition.CrossfadeTransition
@@ -176,4 +177,12 @@ fun ImageOptions.Builder.crossfade(
             alwaysUse = alwaysUse
         )
     )
+}
+
+fun ImageOptions.Builder.sizeApplyToDraw(apply: Boolean = true): ImageOptions.Builder = apply {
+    if (apply) {
+        sizeApplyToDraw(AndroidSizeApplyToDrawHelper())
+    } else {
+        sizeApplyToDraw(null)
+    }
 }

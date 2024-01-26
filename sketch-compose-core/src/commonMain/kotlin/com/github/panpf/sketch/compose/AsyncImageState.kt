@@ -37,10 +37,8 @@ import com.github.panpf.sketch.compose.internal.fitScale
 import com.github.panpf.sketch.compose.internal.forEachRememberObserver
 import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
-import com.github.panpf.sketch.compose.transition.CrossfadeComposeTransition
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success

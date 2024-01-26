@@ -29,6 +29,7 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
+import com.github.panpf.sketch.resize.SizeApplyToDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -147,7 +148,7 @@ interface ImageOptions {
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
      */
-    val sizeApplyToDraw: Boolean?
+    val sizeApplyToDraw: SizeApplyToDrawHelper?
 
     /**
      * Bitmap memory caching policy
@@ -240,7 +241,7 @@ interface ImageOptions {
         private var error: ErrorStateImage? = null
         private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
-        private var sizeApplyToDraw: Boolean? = null
+        private var sizeApplyToDraw: SizeApplyToDrawHelper? = null
         private var memoryCachePolicy: CachePolicy? = null
 
         private var componentRegistry: ComponentRegistry? = null
@@ -567,7 +568,7 @@ interface ImageOptions {
          * TODO
          * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
          */
-        fun sizeApplyToDraw(apply: Boolean? = true): Builder = apply {
+        fun sizeApplyToDraw(apply: SizeApplyToDrawHelper?): Builder = apply {
             this.sizeApplyToDraw = apply
         }
 
@@ -697,7 +698,7 @@ interface ImageOptions {
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
-        override val sizeApplyToDraw: Boolean?,
+        override val sizeApplyToDraw: SizeApplyToDrawHelper?,
         override val memoryCachePolicy: CachePolicy?,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageOptions {
