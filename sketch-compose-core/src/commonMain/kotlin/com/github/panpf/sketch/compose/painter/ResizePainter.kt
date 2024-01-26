@@ -47,7 +47,6 @@ class ResizePainter(
                     Scale.END_CROP -> drawSize.width - painterScaledSize.width to drawSize.height - painterScaledSize.height
                     else -> (drawSize.width - painterScaledSize.width) / 2 to (drawSize.height - painterScaledSize.height) / 2
                 }
-                // TODO 有问题
                 inset(
                     horizontal = horizontal,
                     vertical = vertical
@@ -66,7 +65,7 @@ class ResizePainter(
             srcHeight = srcSize.height.roundToInt(),
             dstWidth = dstSize.width.roundToInt(),
             dstHeight = dstSize.height.roundToInt(),
-            fitScale = true
+            fitScale = false
         )
         return srcSize * ScaleFactor(sizeMultiplier.toFloat(), sizeMultiplier.toFloat())
     }
