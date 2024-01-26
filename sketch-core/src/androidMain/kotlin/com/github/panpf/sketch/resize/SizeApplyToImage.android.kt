@@ -4,8 +4,8 @@ import android.graphics.drawable.Animatable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeDrawable
+import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
+import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size

@@ -13,9 +13,9 @@ import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class AbsProgressPainter(
-    private val hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
-    private val hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
-    private val stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
+    val hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
+    val hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
+    val stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
 ) : ProgressPainter() {
 
     private var stepAnimationRunning: Boolean = false

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.drawable
 
+import android.R.drawable
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Rect
@@ -24,10 +25,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeDrawable
+import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
+import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.drawable.internal.resizeApplyToDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.asSketchImage
@@ -95,7 +96,7 @@ class ResizeDrawableTest {
                 Assert.assertEquals(Size(500, 300), size)
             }
 
-        val animDrawable = SketchAnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
+        val animDrawable = AnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
         animDrawable.asSketchImage()
             .resizeApplyToDrawable(request3, request3.toRequestContext(sketch).resizeSize)
             .asDrawable()
@@ -203,7 +204,7 @@ class ResizeDrawableTest {
         val context = getTestContext()
 
         ResizeDrawable(
-            context.getDrawableCompat(android.R.drawable.bottom_bar),
+            context.getDrawableCompat(drawable.bottom_bar),
             Size(500, 300),
             CENTER_CROP
         ).apply {
@@ -218,7 +219,7 @@ class ResizeDrawableTest {
         }
 
         ResizeDrawable(
-            TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar)),
             Size(500, 300),
             CENTER_CROP
         ).apply {

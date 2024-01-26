@@ -24,15 +24,16 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import androidx.annotation.ColorInt
 import androidx.core.graphics.withSave
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_SIZE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_STROKE_COLOR
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.internal.dp2Px
 
 /**
@@ -51,7 +52,7 @@ class SectorProgressDrawable constructor(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
     stepAnimationDuration = stepAnimationDuration
-) {
+), SketchDrawable {
 
     private val backgroundPaint = Paint().apply {
         isAntiAlias = true
@@ -123,5 +124,35 @@ class SectorProgressDrawable constructor(
 
     override fun mutate(): ProgressDrawable {
         return this
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as SectorProgressDrawable
+        if (size != other.size) return false
+        if (backgroundColor != other.backgroundColor) return false
+        if (strokeColor != other.strokeColor) return false
+        if (progressColor != other.progressColor) return false
+        if (strokeWidth == other.strokeWidth) return false
+        if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
+        if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
+        return stepAnimationDuration == other.stepAnimationDuration
+    }
+
+    override fun hashCode(): Int {
+        var result = size
+        result = 31 * result + backgroundColor
+        result = 31 * result + strokeColor
+        result = 31 * result + progressColor
+        result = 31 * result + strokeWidth.hashCode()
+        result = 31 * result + hiddenWhenIndeterminate.hashCode()
+        result = 31 * result + hiddenWhenCompleted.hashCode()
+        result = 31 * result + stepAnimationDuration.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "SectorProgressDrawable(size=$size, backgroundColor=$backgroundColor, strokeColor=$strokeColor, progressColor=$progressColor, strokeWidth=$strokeWidth, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
     }
 }

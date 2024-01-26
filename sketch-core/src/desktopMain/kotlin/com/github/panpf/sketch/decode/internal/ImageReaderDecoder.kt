@@ -9,6 +9,7 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Rect
+import com.github.panpf.sketch.util.toLogString
 import okio.buffer
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
@@ -59,12 +60,12 @@ class ImageReaderDecoder(
         }
         if (image.width <= 0 || image.height <= 0) {
             requestContext.logger.e(MODULE) {
-                "realDecodeFull. Invalid image. ${image}. ${imageInfo}. '${requestContext.logKey}'"
+                "realDecodeFull. Invalid image. ${image.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
             }
             throw ImageInvalidException("Invalid image. size=${image.width}x${image.height}")
         } else {
             requestContext.logger.d(MODULE) {
-                "realDecodeFull. successful. ${image}. ${imageInfo}. '${requestContext.logKey}'"
+                "realDecodeFull. successful. ${image.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
             }
         }
         return image
@@ -91,12 +92,12 @@ class ImageReaderDecoder(
         }
         if (image.width <= 0 || image.height <= 0) {
             requestContext.logger.e(MODULE) {
-                "realDecodeRegion. Invalid image. ${image}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
+                "realDecodeRegion. Invalid image. ${image.toLogString()}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
             throw ImageInvalidException("Invalid image. size=${image.width}x${image.height}")
         } else {
             requestContext.logger.d(MODULE) {
-                "realDecodeRegion. successful. ${image}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
+                "realDecodeRegion. successful. ${image.toLogString()}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
         }
         return image

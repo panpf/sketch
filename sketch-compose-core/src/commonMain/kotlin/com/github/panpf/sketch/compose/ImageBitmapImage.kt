@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.ImageTransformer
 import com.github.panpf.sketch.cache.MemoryCache.Value
+import com.github.panpf.sketch.compose.painter.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
 
 
@@ -32,7 +33,7 @@ data class ImageBitmapImage(
     override fun transformer(): ImageTransformer? = null
 
     override fun toString(): String {
-        return super.toString() // TODO implement
+        return "ImageBitmapImage(imageBitmap=${imageBitmap.toLogString()}, shareable=$shareable)"
     }
 }
 

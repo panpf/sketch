@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.compose.painter.internal.SketchPainter
+import com.github.panpf.sketch.compose.painter.internal.toLogString
 
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
@@ -33,7 +35,7 @@ class IconPainter constructor(
     val background: Painter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
-) : Painter() {
+) : Painter(), SketchPainter {
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
@@ -84,5 +86,27 @@ class IconPainter constructor(
                 draw(size = finalIconSize, colorFilter = filter)
             }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as IconPainter
+        if (icon != other.icon) return false
+        if (background != other.background) return false
+        if (iconSize != other.iconSize) return false
+        return iconTint == other.iconTint
+    }
+
+    override fun hashCode(): Int {
+        var result = icon.hashCode()
+        result = 31 * result + (background?.hashCode() ?: 0)
+        result = 31 * result + (iconSize?.hashCode() ?: 0)
+        result = 31 * result + (iconTint?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "IconPainter(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
     }
 }

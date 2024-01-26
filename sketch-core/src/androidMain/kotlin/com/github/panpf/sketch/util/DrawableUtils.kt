@@ -27,7 +27,7 @@ import androidx.core.graphics.component1
 import androidx.core.graphics.component2
 import androidx.core.graphics.component3
 import androidx.core.graphics.component4
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
 
 /**
  * Find the last child [Drawable] from the specified Drawable

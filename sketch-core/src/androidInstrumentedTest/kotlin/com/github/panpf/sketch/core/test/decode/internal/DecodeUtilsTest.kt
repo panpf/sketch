@@ -57,7 +57,7 @@ import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.decode.internal.realDecode
-import com.github.panpf.sketch.decode.internal.sizeString
+import com.github.panpf.sketch.decode.internal.toSizeString()
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
@@ -1399,7 +1399,7 @@ class DecodeUtilsTest {
         var result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("20x13", this.image.getBitmapOrThrow().sizeString)
+            Assert.assertEquals("20x13", this.image.getBitmapOrThrow().toSizeString())
         }
         // big
         request = request.newRequest {
@@ -1420,7 +1420,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().sizeString)
+            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
         }
         // big
         request = request.newRequest {
@@ -1429,7 +1429,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("17x50", this.image.getBitmapOrThrow().sizeString)
+            Assert.assertEquals("17x50", this.image.getBitmapOrThrow().toSizeString())
         }
 
         /*
@@ -1442,7 +1442,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().sizeString)
+            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
         }
         // big
         request = request.newRequest {
@@ -1451,7 +1451,7 @@ class DecodeUtilsTest {
         result = newResult()
         result.appliedResize(sketch, request.toRequestContext(sketch)).apply {
             Assert.assertTrue(this !== result)
-            Assert.assertEquals("50x150", this.image.getBitmapOrThrow().sizeString)
+            Assert.assertEquals("50x150", this.image.getBitmapOrThrow().toSizeString())
         }
     }
 

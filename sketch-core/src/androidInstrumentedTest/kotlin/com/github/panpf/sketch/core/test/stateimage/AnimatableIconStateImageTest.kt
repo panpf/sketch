@@ -19,7 +19,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.drawable.internal.AnimatableIconDrawable
+import com.github.panpf.sketch.drawable.IconAnimatableDrawable
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
@@ -49,7 +49,7 @@ class AnimatableIconStateImageTest {
         }.apply {
             getImage(sketch, request, null)
                 ?.asOrThrow<DrawableImage>()?.drawable
-                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                .asOrNull<IconAnimatableDrawable>()!!.apply {
                     Assert.assertEquals(iconDrawable, icon)
                     Assert.assertEquals(greenBgDrawable, background)
                     Assert.assertNull(iconSize)
@@ -62,7 +62,7 @@ class AnimatableIconStateImageTest {
         }.apply {
             getImage(sketch, request, null)
                 ?.asOrThrow<DrawableImage>()?.drawable
-                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                .asOrNull<IconAnimatableDrawable>()!!.apply {
                     Assert.assertEquals(iconDrawable, icon)
                     Assert.assertTrue(background is BitmapDrawable)
                     Assert.assertEquals(Size(40, 40), iconSize)
@@ -74,7 +74,7 @@ class AnimatableIconStateImageTest {
         }.apply {
             getImage(sketch, request, null)
                 ?.asOrThrow<DrawableImage>()?.drawable
-                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                .asOrNull<IconAnimatableDrawable>()!!.apply {
                     Assert.assertEquals(iconDrawable, icon)
                     Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
                     Assert.assertNull(iconSize)
@@ -84,7 +84,7 @@ class AnimatableIconStateImageTest {
         AnimatableIconStateImage(iconDrawable).apply {
             getImage(sketch, request, null)
                 ?.asOrThrow<DrawableImage>()?.drawable
-                .asOrNull<AnimatableIconDrawable>()!!.apply {
+                .asOrNull<IconAnimatableDrawable>()!!.apply {
                     Assert.assertEquals(iconDrawable, icon)
                     Assert.assertNull(background)
                     Assert.assertNull(iconSize)

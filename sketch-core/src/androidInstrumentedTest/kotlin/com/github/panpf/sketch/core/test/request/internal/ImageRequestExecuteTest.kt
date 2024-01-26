@@ -45,8 +45,8 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.cache.internal.resultCacheDataKey
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeDrawable
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.request.DefaultLifecycleResolver

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.github.panpf.sketch.compose.internal
+package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
+import com.github.panpf.sketch.compose.painter.internal.SketchPainter
+import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -44,15 +46,17 @@ import kotlin.time.TimeSource
  * the end of the transition.
  */
 @Stable
-internal class CrossfadePainter(
-    var start: Painter?,
+class CrossfadePainter(
+    val start: Painter?,
     val end: Painter?,
     private val fitScale: Boolean = true,
     private val durationMillis: Int,
     private val fadeStart: Boolean,
     private val preferExactIntrinsicSize: Boolean,
-) : Painter() {
+) : Painter(), SketchPainter {
 
+    private var _start: Painter? = start
+    private val _end: Painter? = end
     private var invalidateTick by mutableIntStateOf(0)
     private var startTime: TimeSource.Monotonic.ValueTimeMark? = null
     private var isDone = false
@@ -64,7 +68,7 @@ internal class CrossfadePainter(
 
     override fun DrawScope.onDraw() {
         if (isDone) {
-            drawPainter(end, maxAlpha)
+            drawPainter(_end, maxAlpha)
             return
         }
 
@@ -75,11 +79,11 @@ internal class CrossfadePainter(
         val startAlpha = if (fadeStart) maxAlpha - endAlpha else maxAlpha
         isDone = percent >= 1f
 
-        drawPainter(start, startAlpha)
-        drawPainter(end, endAlpha)
+        drawPainter(_start, startAlpha)
+        drawPainter(_end, endAlpha)
 
         if (isDone) {
-            start = null
+            _start = null
         } else {
             // Increment this value to force the painter to be redrawn.
             invalidateTick++
@@ -97,9 +101,9 @@ internal class CrossfadePainter(
     }
 
     private fun computeIntrinsicSize(): Size {
-        if (start == null && end == null) return Size.Unspecified
-        val startSize = start?.intrinsicSize ?: Size.Zero
-        val endSize = end?.intrinsicSize ?: Size.Zero
+        if (_start == null && _end == null) return Size.Unspecified
+        val startSize = _start?.intrinsicSize ?: Size.Zero
+        val endSize = _end?.intrinsicSize ?: Size.Zero
 
         val isStartSpecified = startSize.isSpecified
         val isEndSpecified = endSize.isSpecified
@@ -146,5 +150,31 @@ internal class CrossfadePainter(
             fitScale = fitScale
         )
         return srcSize * ScaleFactor(sizeMultiplier.toFloat(), sizeMultiplier.toFloat())
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as CrossfadePainter
+        if (start != other.start) return false
+        if (end != other.end) return false
+        if (fitScale != other.fitScale) return false
+        if (durationMillis != other.durationMillis) return false
+        if (fadeStart != other.fadeStart) return false
+        return preferExactIntrinsicSize == other.preferExactIntrinsicSize
+    }
+
+    override fun hashCode(): Int {
+        var result = start?.hashCode() ?: 0
+        result = 31 * result + (end?.hashCode() ?: 0)
+        result = 31 * result + fitScale.hashCode()
+        result = 31 * result + durationMillis
+        result = 31 * result + fadeStart.hashCode()
+        result = 31 * result + preferExactIntrinsicSize.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "CrossfadePainter(start=${start?.toLogString()}, end=${end?.toLogString()}, fitScale=$fitScale, durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize)"
     }
 }

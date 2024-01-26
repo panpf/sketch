@@ -46,8 +46,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.util.toHexString
 import kotlin.math.roundToInt
 
 /**
@@ -60,7 +61,7 @@ import kotlin.math.roundToInt
 class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     val drawable: AnimatedImageDrawable,
     val fitScale: Boolean = true
-) : Drawable(), Animatable2, Callback {
+) : Drawable(), Animatable2, Callback, SketchDrawable {
 
     private var childDx = 0f
     private var childDy = 0f
@@ -197,6 +198,6 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(${drawable.intrinsicWidth}x${drawable.intrinsicHeight}), fitScale=$fitScale)"
+        return "ScaledAnimatedImageDrawable(drawable=${drawable.toLogString()}, fitScale=$fitScale)"
     }
 }

@@ -236,6 +236,8 @@ class AsyncImageState internal constructor(
         }
     }
 
+    override fun toString(): String = "AsyncImageState@${Integer.toHexString(hashCode())}"
+
     private inner class AsyncImageListener : Listener, ProgressListener {
 
         override fun onStart(request: ImageRequest) {

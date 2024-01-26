@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.transition.TransitionInflater
-import com.github.panpf.sketch.drawable.internal.IconDrawable
+import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable

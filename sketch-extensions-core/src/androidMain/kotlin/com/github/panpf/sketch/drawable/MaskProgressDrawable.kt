@@ -21,11 +21,12 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import androidx.annotation.ColorInt
 import androidx.core.graphics.withSave
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_MASK_COLOR
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_MASK_COLOR
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
 
 /**
  * Mask Progress Drawable
@@ -39,7 +40,7 @@ class MaskProgressDrawable(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
     stepAnimationDuration = stepAnimationDuration
-) {
+), SketchDrawable {
 
     private val paint = Paint().apply {
         color = maskColor
@@ -80,5 +81,27 @@ class MaskProgressDrawable(
 
     override fun mutate(): ProgressDrawable {
         return this
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as MaskProgressDrawable
+        if (maskColor != other.maskColor) return false
+        if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
+        if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
+        return stepAnimationDuration == other.stepAnimationDuration
+    }
+
+    override fun hashCode(): Int {
+        var result = maskColor
+        result = 31 * result + hiddenWhenIndeterminate.hashCode()
+        result = 31 * result + hiddenWhenCompleted.hashCode()
+        result = 31 * result + stepAnimationDuration.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "MaskProgressDrawable(maskColor=$maskColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
     }
 }

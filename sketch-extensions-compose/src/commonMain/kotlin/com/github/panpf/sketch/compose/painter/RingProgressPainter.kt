@@ -20,6 +20,7 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATIO
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.compose.painter.internal.AbsProgressPainter
+import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 
 @Composable
 fun rememberRingProgressPainter(
@@ -68,7 +69,7 @@ class RingProgressPainter(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
     stepAnimationDuration = stepAnimationDuration
-) {
+), SketchPainter {
 
     override val intrinsicSize: Size = with(density) { Size(size.toPx(), size.toPx()) }
 
@@ -98,5 +99,33 @@ class RingProgressPainter(
             size = Size(radius * 2f, radius * 2f),
             style = Stroke(ringWidth.toPx(), cap = StrokeCap.Round),
         )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as RingProgressPainter
+        if (size != other.size) return false
+        if (ringWidth != other.ringWidth) return false
+        if (ringColor != other.ringColor) return false
+        if (backgroundColor == other.backgroundColor) return false
+        if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
+        if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
+        return stepAnimationDuration == other.stepAnimationDuration
+    }
+
+    override fun hashCode(): Int {
+        var result = size.hashCode()
+        result = 31 * result + ringWidth.hashCode()
+        result = 31 * result + ringColor.hashCode()
+        result = 31 * result + backgroundColor.hashCode()
+        result = 31 * result + hiddenWhenIndeterminate.hashCode()
+        result = 31 * result + hiddenWhenCompleted.hashCode()
+        result = 31 * result + stepAnimationDuration.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "RingProgressPainter(size=$size, ringWidth=$ringWidth, ringColor=$ringColor, backgroundColor=$backgroundColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
     }
 }

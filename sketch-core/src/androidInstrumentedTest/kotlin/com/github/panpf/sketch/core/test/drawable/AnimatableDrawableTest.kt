@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable2
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
@@ -38,30 +38,30 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SketchAnimatableDrawableTest {
+class AnimatableDrawableTest {
 
     @Test
     fun testConstructor() {
         val context = getTestContext()
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable1(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
         )
         if (Build.VERSION.SDK_INT >= 23) {
-            SketchAnimatableDrawable(
+            AnimatableDrawable(
                 TestAnimatableDrawable2(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 ),
             )
         }
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable3(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
         )
         assertThrow(IllegalArgumentException::class) {
-            SketchAnimatableDrawable(
+            AnimatableDrawable(
                 BitmapDrawable(
                     context.resources,
                     Bitmap.createBitmap(100, 100, ARGB_8888)
@@ -74,7 +74,7 @@ class SketchAnimatableDrawableTest {
     fun testStartStopIsRunning() {
         val context = getTestContext()
 
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable1(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
@@ -110,7 +110,7 @@ class SketchAnimatableDrawableTest {
         }
 
         if (Build.VERSION.SDK_INT >= 23) {
-            SketchAnimatableDrawable(
+            AnimatableDrawable(
                 TestAnimatableDrawable2(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 )
@@ -146,7 +146,7 @@ class SketchAnimatableDrawableTest {
             }
         }
 
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable3(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
@@ -186,7 +186,7 @@ class SketchAnimatableDrawableTest {
     fun testCallback() {
         val context = getTestContext()
 
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable1(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
@@ -204,7 +204,7 @@ class SketchAnimatableDrawableTest {
 
 
         if (Build.VERSION.SDK_INT >= 23) {
-            SketchAnimatableDrawable(
+            AnimatableDrawable(
                 TestAnimatableDrawable2(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 )
@@ -221,7 +221,7 @@ class SketchAnimatableDrawableTest {
             }
         }
 
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable3(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
@@ -242,7 +242,7 @@ class SketchAnimatableDrawableTest {
     fun testMutate() {
         val context = getTestContext()
 
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable3(
                 context.getDrawableCompat(drawable.bottom_bar)
             ),
@@ -257,7 +257,7 @@ class SketchAnimatableDrawableTest {
             }
         }
 
-        SketchAnimatableDrawable(
+        AnimatableDrawable(
             TestAnimatableDrawable3(
                 TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar))
             ),
@@ -284,9 +284,9 @@ class SketchAnimatableDrawableTest {
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
         )
 
-        val element1 = SketchAnimatableDrawable(drawable)
-        val element11 = SketchAnimatableDrawable(drawable)
-        val element2 = SketchAnimatableDrawable(
+        val element1 = AnimatableDrawable(drawable)
+        val element11 = AnimatableDrawable(drawable)
+        val element2 = AnimatableDrawable(
             drawable1,
         )
 
@@ -312,10 +312,10 @@ class SketchAnimatableDrawableTest {
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
         )
 
-        val sketchAnimatableDrawable = SketchAnimatableDrawable(drawable)
+        val animatableDrawable = AnimatableDrawable(drawable)
         Assert.assertEquals(
             "SketchAnimatableDrawable($drawable)",
-            sketchAnimatableDrawable.toString()
+            animatableDrawable.toString()
         )
     }
 }

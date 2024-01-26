@@ -23,7 +23,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.cache.BitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.decode.internal.toLogString
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.allocationByteCountCompat
@@ -104,8 +105,8 @@ actual interface Image {
     actual fun transformer(): ImageTransformer?
 }
 
-open class BitmapImage internal constructor(
-    bitmap: Bitmap,
+data class BitmapImage internal constructor(
+    val bitmap: Bitmap,
     override val shareable: Boolean = !bitmap.isMutable,
     val resources: Resources? = null
 ) : Image {
@@ -118,17 +119,12 @@ open class BitmapImage internal constructor(
 
     override val allocationByteCount: Int = bitmap.allocationByteCountCompat
 
-    open val bitmap: Bitmap = bitmap
-
     override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value =
         BitmapImageValue(this, extras)
 
     override fun checkValid(): Boolean = !bitmap.isRecycled
 
-    override fun transformer(): ImageTransformer? = BitmapImageTransformer()
-
-    override fun toString(): String =
-        "BitmapImage(bitmap=${bitmap.logString}, shareable=$shareable)"
+    override fun transformer(): ImageTransformer = BitmapImageTransformer()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -145,6 +141,9 @@ open class BitmapImage internal constructor(
         result = 31 * result + (resources?.hashCode() ?: 0)
         return result
     }
+
+    override fun toString(): String =
+        "BitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
 }
 
 class BitmapImageTransformer : ImageTransformer {
@@ -200,4 +199,8 @@ data class DrawableImage internal constructor(
     override fun checkValid(): Boolean = true
 
     override fun transformer(): ImageTransformer? = null
+
+    override fun toString(): String {
+        return "DrawableImage(drawable=${drawable.toLogString()}, shareable=$shareable)"
+    }
 }

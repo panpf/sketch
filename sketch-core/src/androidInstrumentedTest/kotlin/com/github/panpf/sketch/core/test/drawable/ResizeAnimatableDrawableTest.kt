@@ -21,8 +21,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
-import com.github.panpf.sketch.drawable.internal.ResizeAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
@@ -42,7 +42,7 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun test() {
         ResizeAnimatableDrawable(
-            SketchAnimatableDrawable(TestAnimatableDrawable1(ColorDrawable(Color.GREEN))),
+            AnimatableDrawable(TestAnimatableDrawable1(ColorDrawable(Color.GREEN))),
             Size(100, 500),
             CENTER_CROP
         ).apply {
@@ -66,7 +66,7 @@ class ResizeAnimatableDrawableTest {
         val imageUri = AssetImages.jpeg.uri
 
         ResizeAnimatableDrawable(
-            SketchAnimatableDrawable(
+            AnimatableDrawable(
                 TestAnimatableDrawable1(context.getDrawableCompat(drawable.bottom_bar))
             ),
             Size(500, 300),
@@ -83,7 +83,7 @@ class ResizeAnimatableDrawableTest {
         }
 
         ResizeAnimatableDrawable(
-            SketchAnimatableDrawable(
+            AnimatableDrawable(
                 TestAnimatableDrawable1(
                     TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar))
                 )
@@ -105,7 +105,7 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testToString() {
         val animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN))
-        val sketchAnimatableDrawable = SketchAnimatableDrawable(animatableDrawable)
+        val sketchAnimatableDrawable = AnimatableDrawable(animatableDrawable)
         ResizeAnimatableDrawable(
             sketchAnimatableDrawable,
             Size(100, 500),

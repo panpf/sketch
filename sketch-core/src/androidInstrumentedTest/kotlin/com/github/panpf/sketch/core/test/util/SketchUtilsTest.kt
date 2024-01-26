@@ -29,7 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.core.test.ImageViewExtensionsTest
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.displayAssetImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch

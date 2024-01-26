@@ -50,6 +50,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
@@ -62,7 +63,7 @@ import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 class MovieDrawable constructor(
     private val movie: Movie,
     val config: Bitmap.Config = Bitmap.Config.ARGB_8888,
-) : Drawable(), Animatable2Compat {
+) : Drawable(), Animatable2Compat, SketchDrawable {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 
@@ -321,7 +322,7 @@ class MovieDrawable constructor(
     }
 
     override fun toString(): String {
-        return "MovieDrawable(${movie.width()}x${movie.height()}, config=$config)"
+        return "MovieDrawable(size=(${movie.width()}x${movie.height()}), config=$config)"
     }
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }

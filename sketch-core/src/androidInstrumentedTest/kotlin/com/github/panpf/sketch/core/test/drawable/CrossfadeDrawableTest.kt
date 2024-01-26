@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.drawable
 
+import android.R.drawable
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
@@ -33,7 +34,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
@@ -118,8 +119,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             val callback = object : Animatable2Compat.AnimationCallback() {}
             runBlocking(Dispatchers.Main) {
@@ -138,8 +139,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             mutate()
             alpha = 146
@@ -157,8 +158,8 @@ class CrossfadeDrawableTest {
         }
 
         CrossfadeDrawable(
-            TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_input_add)),
-            TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_delete)),
+            TestNewMutateDrawable(context.getDrawableCompat(drawable.ic_input_add)),
+            TestNewMutateDrawable(context.getDrawableCompat(drawable.ic_delete)),
         ).apply {
             mutate()
             alpha = 146
@@ -181,8 +182,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             setTint(Color.RED)
             setTintList(ColorStateList.valueOf(Color.GREEN))
@@ -198,8 +199,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             val callbackAction = mutableListOf<String>()
             val callback3 = object : Animatable2Compat.AnimationCallback() {
@@ -237,8 +238,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
                 Assert.assertNull(colorFilter)
@@ -261,8 +262,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             level = 4
             state = intArrayOf(android.R.attr.state_enabled)
@@ -274,8 +275,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
 
@@ -292,8 +293,8 @@ class CrossfadeDrawableTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
+            context.getDrawableCompat(drawable.ic_input_add),
+            context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
             draw(canvas)

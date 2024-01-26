@@ -44,6 +44,7 @@ import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Error
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.PainterState.Success
+import com.github.panpf.sketch.compose.painter.CrossfadePainter
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
 import com.github.panpf.sketch.util.Size as SketchSize

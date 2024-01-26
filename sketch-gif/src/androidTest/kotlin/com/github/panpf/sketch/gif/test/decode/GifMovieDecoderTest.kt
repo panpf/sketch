@@ -25,7 +25,7 @@ import com.github.panpf.sketch.decode.GifMovieDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
@@ -221,7 +221,7 @@ class GifMovieDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =
-                    (image.getDrawableOrThrow() as SketchAnimatableDrawable).drawable as MovieDrawable
+                    (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
                 Assert.assertEquals(-1, movieDrawable.getRepeatCount())
                 Assert.assertNull(movieDrawable.getAnimatedTransformation())
             }
@@ -246,7 +246,7 @@ class GifMovieDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val movieDrawable =
-                    (image.getDrawableOrThrow() as SketchAnimatableDrawable).drawable as MovieDrawable
+                    (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
                 Assert.assertEquals(3, movieDrawable.getRepeatCount())
                 Assert.assertNotNull(movieDrawable.getAnimatedTransformation())
             }

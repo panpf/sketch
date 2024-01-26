@@ -31,6 +31,8 @@ fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
     return block(this)
 }
 
+fun Bitmap.toSizeString(): String = "${width}x${height}"
+
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
 
 @Suppress("USELESS_ELVIS")

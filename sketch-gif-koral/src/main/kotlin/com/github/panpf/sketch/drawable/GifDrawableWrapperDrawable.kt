@@ -3,11 +3,12 @@ package com.github.panpf.sketch.drawable
 import android.graphics.drawable.Animatable
 import android.widget.MediaController.MediaPlayerControl
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import pl.droidsonroids.gif.GifDrawable
 
 class GifDrawableWrapperDrawable(
     val gifDrawable: GifDrawable
-) : DrawableWrapperCompat(gifDrawable), Animatable, MediaPlayerControl {
+) : DrawableWrapperCompat(gifDrawable), Animatable, MediaPlayerControl, SketchDrawable {
 
     override fun start() {
         gifDrawable.start()

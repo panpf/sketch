@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable.internal
+package com.github.panpf.sketch.drawable
 
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
-import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
@@ -31,7 +31,7 @@ open class ResizeDrawable constructor(
     drawable: Drawable,
     val size: Size,
     val scale: Scale
-) : DrawableWrapperCompat(drawable) {
+) : DrawableWrapperCompat(drawable), SketchDrawable {
 
     override fun getIntrinsicWidth(): Int {
         return size.width
@@ -67,64 +67,23 @@ open class ResizeDrawable constructor(
         }
     }
 
-    override fun toString(): String {
-        val drawableString = drawable.run {
-            val contentString = if (this is BitmapDrawable) {
-                bitmap.logString
-            } else {
-                "${intrinsicWidth}x${intrinsicHeight}"
-            }
-            if (this == null) "null" else "${this.javaClass.simpleName}($contentString)"
-        }
-        return "ResizeDrawable(wrapped=$drawableString, size=$size, scale=$scale)"
-    }
-}
-
-/**
- * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].
- * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
- */
-open class ResizeAnimatableDrawable(
-    drawable: Drawable,
-    val size: Size,
-    val scale: Scale
-) : AnimatableDrawableWrapper(drawable) {
-
-    override fun getIntrinsicWidth(): Int {
-        return size.width
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as ResizeDrawable
+        if (size != other.size) return false
+        if (drawable != other.drawable) return false
+        return scale == other.scale
     }
 
-    override fun getIntrinsicHeight(): Int {
-        return size.height
-    }
-
-    override fun mutate(): ResizeAnimatableDrawable {
-        val mutateDrawable = drawable?.mutate()
-        return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            ResizeAnimatableDrawable(mutateDrawable, size, scale)
-        } else {
-            this
-        }
-    }
-
-    override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
-        super.setBounds(left, top, right, bottom)
-        drawable?.apply {
-            this@apply.bounds = calculateBounds(
-                srcSize = Size(
-                    width = this@apply.intrinsicWidth,
-                    height = this@apply.intrinsicHeight
-                ),
-                dstSize = Size(
-                    width = this@ResizeAnimatableDrawable.bounds.width(),
-                    height = this@ResizeAnimatableDrawable.bounds.height()
-                ),
-                scale = scale
-            )
-        }
+    override fun hashCode(): Int {
+        var result = size.hashCode()
+        result = 31 * result + scale.hashCode()
+        result = 31 * result + drawable.hashCode()
+        return result
     }
 
     override fun toString(): String {
-        return "ResizeAnimatableDrawable(wrapped=$drawable, size=$size, scale=$scale)"
+        return "ResizeDrawable(drawable=${drawable?.toLogString()}, size=$size, scale=$scale)"
     }
 }

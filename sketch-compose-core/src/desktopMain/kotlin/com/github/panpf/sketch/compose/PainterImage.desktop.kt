@@ -2,7 +2,7 @@ package com.github.panpf.sketch.compose
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.compose.internal.asPainter
+import com.github.panpf.sketch.compose.painter.asPainter
 
 actual fun Image.asPainter(): Painter = when (this) {
     is PainterImage -> painter

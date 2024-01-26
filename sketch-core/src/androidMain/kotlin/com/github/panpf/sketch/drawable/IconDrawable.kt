@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable.internal
+package com.github.panpf.sketch.drawable
 
 import android.content.res.ColorStateList
 import android.graphics.Canvas
@@ -27,6 +27,9 @@ import android.graphics.drawable.Drawable.Callback
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.core.graphics.drawable.DrawableCompat
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
+import com.github.panpf.sketch.drawable.internal.calculateFitBounds
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.util.Size
 
 /**
@@ -38,7 +41,7 @@ class IconDrawable constructor(
     val background: Drawable? = null,
     val iconSize: Size? = null,
     // TODO iconTint
-) : Drawable(), Callback {
+) : Drawable(), Callback, SketchDrawable {
 
     init {
         background?.callback = this
@@ -215,5 +218,25 @@ class IconDrawable constructor(
 
     override fun unscheduleDrawable(who: Drawable, what: Runnable) {
         unscheduleSelf(what)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as IconAnimatableDrawable
+        if (icon != other.icon) return false
+        if (background != other.background) return false
+        return iconSize == other.iconSize
+    }
+
+    override fun hashCode(): Int {
+        var result = icon.hashCode()
+        result = 31 * result + (background?.hashCode() ?: 0)
+        result = 31 * result + (iconSize?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "IconDrawable(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize)"
     }
 }

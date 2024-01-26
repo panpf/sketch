@@ -29,7 +29,7 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -119,7 +119,7 @@ class GifDrawableDecoder(
             ExifOrientation.UNDEFINED
         )
         val animatableDrawable =
-            SketchAnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {
+            AnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {
                 // Set the start and end animation callbacks if any one is supplied through the request.
                 val onStart = request.animationStartCallback
                 val onEnd = request.animationEndCallback

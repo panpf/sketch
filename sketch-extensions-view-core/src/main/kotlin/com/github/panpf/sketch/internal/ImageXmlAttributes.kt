@@ -31,7 +31,6 @@ import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.drawable.internal.CrossfadeDrawable
 import com.github.panpf.sketch.extensions.view.core.R
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions

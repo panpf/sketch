@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.ImageTransformer
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
 import kotlin.math.roundToInt
 
@@ -50,7 +51,5 @@ data class PainterImage(val painter: Painter, override val shareable: Boolean = 
 
     override fun transformer(): ImageTransformer? = null
 
-    override fun toString(): String {
-        return super.toString() // TODO
-    }
+    override fun toString(): String = "PainterImage(painter=${painter.toLogString()}, shareable=$shareable)"
 }

@@ -18,6 +18,7 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
+import com.github.panpf.sketch.util.toLogString
 import java.awt.image.BufferedImage
 
 actual interface Image {
@@ -52,7 +53,7 @@ actual interface Image {
 
 fun BufferedImage.asSketchImage(): Image = BufferedImageImage(this)
 
-class BufferedImageImage(
+data class BufferedImageImage(
     val bufferedImage: BufferedImage,
     override val shareable: Boolean = true
 ) : Image {
@@ -74,7 +75,7 @@ class BufferedImageImage(
     override fun transformer(): ImageTransformer = BufferedImageTransformer()
 
     override fun toString(): String {
-        return super.toString() // TODO
+        return "BufferedImageImage(bufferedImage=${bufferedImage.toLogString()}, shareable=$shareable)"
     }
 }
 

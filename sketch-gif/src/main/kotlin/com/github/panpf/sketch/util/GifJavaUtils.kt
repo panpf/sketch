@@ -38,5 +38,3 @@ internal fun requiredMainThread() {
         "This method must be executed in the UI thread"
     }
 }
-
-internal fun Any.toHexString(): String = Integer.toHexString(this.hashCode())

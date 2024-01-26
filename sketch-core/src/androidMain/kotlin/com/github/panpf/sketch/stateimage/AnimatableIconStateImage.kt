@@ -19,7 +19,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.drawable.internal.AnimatableIconDrawable
+import com.github.panpf.sketch.drawable.IconAnimatableDrawable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.asSketchImage
@@ -95,7 +95,7 @@ class AnimatableIconStateImage internal constructor(
                 }
             }
             val background = background?.getDrawable(request.context)
-            AnimatableIconDrawable(icon, background, iconSize)
+            IconAnimatableDrawable(icon, background, iconSize)
         } catch (e: Throwable) {
             sketch.logger.w("AnimatableIconDrawable", "getDrawable error. ${e.message}")
             e.printStackTrace()

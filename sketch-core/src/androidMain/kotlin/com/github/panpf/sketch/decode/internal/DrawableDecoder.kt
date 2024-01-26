@@ -104,7 +104,7 @@ open class DrawableDecoder constructor(
             exifOrientation = ExifOrientation.UNDEFINED
         )
         requestContext.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
+            "decode. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
         }
         DecodeResult(
             image = bitmap.asSketchImage(resources = requestContext.request.context.resources),

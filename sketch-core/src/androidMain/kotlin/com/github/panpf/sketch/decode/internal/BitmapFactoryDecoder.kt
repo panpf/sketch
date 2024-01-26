@@ -76,13 +76,13 @@ open class BitmapFactoryDecoder(
         }
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             requestContext.logger.e(MODULE) {
-                "realDecodeFull. Invalid image. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
+                "realDecodeFull. Invalid image. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
             requestContext.logger.d(MODULE) {
-                "realDecodeFull. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
+                "realDecodeFull. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
             }
         }
         return bitmap
@@ -102,13 +102,13 @@ open class BitmapFactoryDecoder(
         }
         if (bitmap.width <= 0 || bitmap.height <= 0) {
             requestContext.logger.e(MODULE) {
-                "realDecodeRegion. Invalid image. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
+                "realDecodeRegion. Invalid image. ${bitmap.toLogString()}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
             bitmap.recycle()
             throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
         } else {
             requestContext.logger.d(MODULE) {
-                "realDecodeRegion. successful. ${bitmap.logString}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
+                "realDecodeRegion. successful. ${bitmap.toLogString()}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
             }
         }
         return bitmap

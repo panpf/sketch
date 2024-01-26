@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.drawable
 
+import android.R.drawable
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
@@ -32,7 +33,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.drawable.internal.IconDrawable
+import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.drawable.internal.calculateFitBounds
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.util.Size
@@ -52,7 +53,7 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete)
+            icon = context.getDrawableCompat(drawable.ic_delete)
         ).apply {
             Assert.assertTrue(icon is BitmapDrawable)
             Assert.assertNull(iconSize)
@@ -60,7 +61,7 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
+            icon = context.getDrawableCompat(drawable.ic_delete),
             background = ColorDrawable(Color.GREEN),
             iconSize = Size(69, 44),
         ).apply {
@@ -75,7 +76,7 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.bottom_bar),
+            icon = context.getDrawableCompat(drawable.bottom_bar),
             background = ColorDrawable(Color.GREEN)
         ).apply {
             mutate()
@@ -89,7 +90,7 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            icon = TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar)),
             background = ColorDrawable(Color.GREEN)
         ).apply {
             mutate()
@@ -103,7 +104,7 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.bottom_bar),
+            icon = context.getDrawableCompat(drawable.bottom_bar),
             background = TestNewMutateDrawable(ColorDrawable(Color.GREEN))
         ).apply {
             mutate()
@@ -122,7 +123,7 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_delete)
+            context.getDrawableCompat(drawable.ic_delete)
         ).apply {
             setTint(Color.RED)
             setTintList(ColorStateList.valueOf(Color.GREEN))
@@ -133,8 +134,8 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
-            background = context.getDrawableCompat(android.R.drawable.ic_input_add)
+            icon = context.getDrawableCompat(drawable.ic_delete),
+            background = context.getDrawableCompat(drawable.ic_input_add)
         ).apply {
             setTint(Color.RED)
             setTintList(ColorStateList.valueOf(Color.GREEN))
@@ -150,7 +151,7 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete)
+            icon = context.getDrawableCompat(drawable.ic_delete)
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
                 Assert.assertNull(colorFilter)
@@ -175,8 +176,8 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
-            background = context.getDrawableCompat(android.R.drawable.ic_input_add)
+            icon = context.getDrawableCompat(drawable.ic_delete),
+            background = context.getDrawableCompat(drawable.ic_input_add)
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
                 Assert.assertNull(colorFilter)
@@ -206,7 +207,7 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
+            icon = context.getDrawableCompat(drawable.ic_delete),
             background = ColorDrawable(Color.RED)
         ).apply {
             level = 4
@@ -214,7 +215,7 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
+            icon = context.getDrawableCompat(drawable.ic_delete),
         ).apply {
             level = 4
             state = intArrayOf(android.R.attr.state_enabled)
@@ -226,7 +227,7 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete)
+            icon = context.getDrawableCompat(drawable.ic_delete)
         ).apply {
             @Suppress("DEPRECATION")
             Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
@@ -238,14 +239,14 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete)
+            icon = context.getDrawableCompat(drawable.ic_delete)
         ).apply {
             val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
             draw(canvas)
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
+            icon = context.getDrawableCompat(drawable.ic_delete),
             background = ColorDrawable(Color.RED)
         ).apply {
             val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
@@ -385,7 +386,7 @@ class IconDrawableTest {
     fun testAlpha() {
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        IconDrawable(icon = context.getDrawableCompat(android.R.drawable.ic_delete)).apply {
+        IconDrawable(icon = context.getDrawableCompat(drawable.ic_delete)).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Assert.assertEquals(255, alpha)
             }

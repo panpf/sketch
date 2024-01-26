@@ -41,6 +41,7 @@ kotlin {
             dependencies {
                 api(project(":sketch-core"))
                 api(compose.foundation)
+                api(compose.ui)
             }
         }
         named("commonTest") {

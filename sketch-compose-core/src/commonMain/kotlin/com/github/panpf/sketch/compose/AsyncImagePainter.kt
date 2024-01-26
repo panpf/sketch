@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.internal.isEmpty
 import com.github.panpf.sketch.compose.internal.toIntSizeOrNull
+import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -124,7 +125,7 @@ fun rememberAsyncImagePainter(
 @Stable
 class AsyncImagePainter internal constructor(
     private val state: AsyncImageState,
-) : Painter() {
+) : Painter(), SketchPainter {
 
     private var alpha: Float by mutableFloatStateOf(DefaultAlpha)
     private var colorFilter: ColorFilter? by mutableStateOf(null)
@@ -157,5 +158,20 @@ class AsyncImagePainter internal constructor(
     override fun applyColorFilter(colorFilter: ColorFilter?): Boolean {
         this.colorFilter = colorFilter
         return true
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as AsyncImagePainter
+        return state == other.state
+    }
+
+    override fun hashCode(): Int {
+        return state.hashCode()
+    }
+
+    override fun toString(): String {
+        return "AsyncImagePainter(state=$state)"
     }
 }

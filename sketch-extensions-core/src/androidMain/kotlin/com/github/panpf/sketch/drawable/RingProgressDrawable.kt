@@ -35,6 +35,7 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATIO
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.internal.dp2Px
 import kotlin.math.roundToInt
 
@@ -56,7 +57,7 @@ class RingProgressDrawable constructor(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
     stepAnimationDuration = stepAnimationDuration
-) {
+), SketchDrawable {
 
     private val backgroundPaint = Paint().apply {
         isAntiAlias = true
@@ -116,5 +117,33 @@ class RingProgressDrawable constructor(
 
     override fun mutate(): ProgressDrawable {
         return this
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as RingProgressDrawable
+        if (size != other.size) return false
+        if (ringWidth != other.ringWidth) return false
+        if (ringColor != other.ringColor) return false
+        if (backgroundColor == other.backgroundColor) return false
+        if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
+        if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
+        return stepAnimationDuration == other.stepAnimationDuration
+    }
+
+    override fun hashCode(): Int {
+        var result = size
+        result = 31 * result + ringWidth.hashCode()
+        result = 31 * result + ringColor
+        result = 31 * result + backgroundColor
+        result = 31 * result + hiddenWhenIndeterminate.hashCode()
+        result = 31 * result + hiddenWhenCompleted.hashCode()
+        result = 31 * result + stepAnimationDuration.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "RingProgressDrawable(size=$size, ringWidth=$ringWidth, ringColor=$ringColor, backgroundColor=$backgroundColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
     }
 }

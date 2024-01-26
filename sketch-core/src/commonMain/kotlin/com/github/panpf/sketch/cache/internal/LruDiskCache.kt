@@ -88,7 +88,7 @@ class LruDiskCache constructor(
         val encodedKey = keyMapperCache.mapKey(key)
         val editor = cache.edit(encodedKey)
         if (editor == null) return null   // for debug
-        return MyEditor(editor = editor)
+        return MyEditor(editor)
     }
 
     override fun remove(key: String): Boolean {
@@ -105,7 +105,7 @@ class LruDiskCache constructor(
             it.printStackTrace()
         }
         logger?.d(MODULE) {
-            "clear. cleared ${oldSize.formatFileSize()}"
+            "clear. clearedSize=${oldSize.formatFileSize()}"
         }
     }
 

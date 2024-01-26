@@ -24,7 +24,7 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.decode.internal.toLogString
 import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.fastGaussianBlur
@@ -88,7 +88,7 @@ class BlurTransformation constructor(
         val outBitmap = fastGaussianBlur(compatAlphaBitmap, radius)
         if (outBitmap !== compatAlphaBitmap) {
             sketch.logger.d(MODULE) {
-                "transform. newBitmap. ${outBitmap.logString}. '${requestContext.logKey}'"
+                "transform. newBitmap. ${outBitmap.toLogString()}. '${requestContext.logKey}'"
             }
         }
         maskColor?.let {

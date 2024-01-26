@@ -31,7 +31,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
@@ -141,7 +141,7 @@ open class AnimatedImageDecoderDecoder(
         // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
         // Use ScaledAnimatedImageDrawable package solution to this it
         val animatableDrawable =
-            SketchAnimatableDrawable(ScaledAnimatedImageDrawable(drawable)).apply {
+            AnimatableDrawable(ScaledAnimatedImageDrawable(drawable)).apply {
                 val onStart = request.animationStartCallback
                 val onEnd = request.animationEndCallback
                 if (onStart != null || onEnd != null) {

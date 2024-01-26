@@ -21,7 +21,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.drawable.internal.IconDrawable
+import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.asSketchImage

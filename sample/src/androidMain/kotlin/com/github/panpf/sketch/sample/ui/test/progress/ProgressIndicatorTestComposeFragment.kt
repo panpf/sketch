@@ -35,7 +35,7 @@ import androidx.fragment.app.viewModels
 import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.drawable.internal.IconDrawable
+import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.R.transition

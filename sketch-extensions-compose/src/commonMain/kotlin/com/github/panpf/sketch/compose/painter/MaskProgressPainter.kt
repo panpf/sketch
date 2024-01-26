@@ -11,6 +11,7 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATIO
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.compose.painter.internal.AbsProgressPainter
+import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 
 @Composable
 fun rememberMaskProgressPainter(
@@ -43,7 +44,7 @@ class MaskProgressPainter(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
     stepAnimationDuration = stepAnimationDuration
-) {
+), SketchPainter {
 
     override val intrinsicSize: Size = Size.Unspecified
 
@@ -54,5 +55,27 @@ class MaskProgressPainter(
             topLeft = Offset(0f, progressHeight),
             size = Size(size.width, size.height - progressHeight)
         )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as MaskProgressPainter
+        if (maskColor != other.maskColor) return false
+        if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
+        if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
+        return stepAnimationDuration == other.stepAnimationDuration
+    }
+
+    override fun hashCode(): Int {
+        var result = maskColor.hashCode()
+        result = 31 * result + hiddenWhenIndeterminate.hashCode()
+        result = 31 * result + hiddenWhenCompleted.hashCode()
+        result = 31 * result + stepAnimationDuration.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "MaskProgressPainter(maskColor=$maskColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
     }
 }

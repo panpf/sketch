@@ -26,7 +26,7 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -86,7 +86,7 @@ class GifMovieDecoder(
         val imageInfo =
             ImageInfo(width, height, ImageFormat.GIF.mimeType, ExifOrientation.UNDEFINED)
 
-        val animatableDrawable = SketchAnimatableDrawable(movieDrawable).apply {
+        val animatableDrawable = AnimatableDrawable(movieDrawable).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback

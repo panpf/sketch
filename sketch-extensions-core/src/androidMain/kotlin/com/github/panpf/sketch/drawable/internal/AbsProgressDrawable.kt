@@ -26,9 +26,9 @@ import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 abstract class AbsProgressDrawable(
-    private val hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
-    private val hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
-    private val stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
+    val hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
+    val hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
+    val stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
 ) : ProgressDrawable() {
 
     private var stepAnimationRunning: Boolean = false

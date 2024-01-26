@@ -33,7 +33,7 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.decode.internal.isSvg
-import com.github.panpf.sketch.decode.internal.logString
+import com.github.panpf.sketch.decode.internal.toLogString
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -142,7 +142,7 @@ class SvgDecoder constructor(
         val renderOptions = css?.let { RenderOptions().css(it) }
         svg.renderToCanvas(canvas, renderOptions)
         requestContext.sketch.logger.d(MODULE) {
-            "decode. successful. ${bitmap.logString}. ${imageInfo}. '${requestContext.logKey}'"
+            "decode. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
         }
 
         DecodeResult(

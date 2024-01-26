@@ -20,6 +20,7 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATIO
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.compose.painter.internal.AbsProgressPainter
+import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 
 @Composable
 fun rememberSectorProgressPainter(
@@ -72,7 +73,7 @@ class SectorProgressPainter(
     hiddenWhenIndeterminate = hiddenWhenIndeterminate,
     hiddenWhenCompleted = hiddenWhenCompleted,
     stepAnimationDuration = stepAnimationDuration
-) {
+), SketchPainter {
 
     override val intrinsicSize: Size = with(density) { Size(size.toPx(), size.toPx()) }
 
@@ -109,5 +110,35 @@ class SectorProgressPainter(
             topLeft = Offset(cx - radius + space, cy - radius + space),
             size = Size((radius - space) * 2f, (radius - space) * 2f),
         )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as SectorProgressPainter
+        if (size != other.size) return false
+        if (backgroundColor != other.backgroundColor) return false
+        if (strokeColor != other.strokeColor) return false
+        if (progressColor != other.progressColor) return false
+        if (strokeWidth == other.strokeWidth) return false
+        if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
+        if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
+        return stepAnimationDuration == other.stepAnimationDuration
+    }
+
+    override fun hashCode(): Int {
+        var result = size.hashCode()
+        result = 31 * result + backgroundColor.hashCode()
+        result = 31 * result + strokeColor.hashCode()
+        result = 31 * result + progressColor.hashCode()
+        result = 31 * result + strokeWidth.hashCode()
+        result = 31 * result + hiddenWhenIndeterminate.hashCode()
+        result = 31 * result + hiddenWhenCompleted.hashCode()
+        result = 31 * result + stepAnimationDuration.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "SectorProgressPainter(size=$size, backgroundColor=$backgroundColor, strokeColor=$strokeColor, progressColor=$progressColor, strokeWidth=$strokeWidth, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
     }
 }

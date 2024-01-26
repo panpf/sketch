@@ -26,7 +26,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportKoralGif
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
-import com.github.panpf.sketch.drawable.SketchAnimatableDrawable
+import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
@@ -211,7 +211,7 @@ class GifDrawableDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertNull(this.transformedList)
                 val gifDrawable =
-                    ((image.getDrawableOrThrow() as SketchAnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
+                    ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
                 Assert.assertEquals(0, gifDrawable.loopCount)
                 Assert.assertNull(gifDrawable.transform)
             }
@@ -236,7 +236,7 @@ class GifDrawableDecoderTest {
                 Assert.assertEquals(LOCAL, this.dataFrom)
                 Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
                 val gifDrawable =
-                    ((image.getDrawableOrThrow() as SketchAnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
+                    ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
                 Assert.assertEquals(3, gifDrawable.loopCount)
                 Assert.assertNotNull(gifDrawable.transform)
                 gifDrawable.transform!!.onDraw(Canvas(), null, null)

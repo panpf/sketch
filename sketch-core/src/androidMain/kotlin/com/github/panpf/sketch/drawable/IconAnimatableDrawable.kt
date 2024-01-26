@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable.internal
+package com.github.panpf.sketch.drawable
 
 import android.content.res.ColorStateList
 import android.graphics.Canvas
@@ -27,17 +27,22 @@ import android.graphics.drawable.Drawable.Callback
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.core.graphics.drawable.DrawableCompat
+import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
+import com.github.panpf.sketch.drawable.internal.SketchDrawable
+import com.github.panpf.sketch.drawable.internal.calculateFitBounds
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.util.Size
 
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
  */
-class AnimatableIconDrawable constructor(
+class IconAnimatableDrawable constructor(
     val icon: Drawable,
     val background: Drawable? = null,
     val iconSize: Size? = null,
-) : AnimatableDrawableWrapper(icon), Callback {
+    // TODO iconTint
+) : AnimatableDrawableWrapper(icon), Callback, SketchDrawable {
 
     init {
         background?.callback = this
@@ -52,11 +57,11 @@ class AnimatableIconDrawable constructor(
         return -1
     }
 
-    override fun mutate(): AnimatableIconDrawable {
+    override fun mutate(): IconAnimatableDrawable {
         val newIcon = icon.mutate()
         val newBackground = background?.mutate()
         return if (newIcon !== icon || newBackground !== background) {
-            AnimatableIconDrawable(newIcon, newBackground, iconSize)
+            IconAnimatableDrawable(newIcon, newBackground, iconSize)
         } else {
             this
         }
@@ -214,5 +219,25 @@ class AnimatableIconDrawable constructor(
 
     override fun unscheduleDrawable(who: Drawable, what: Runnable) {
         unscheduleSelf(what)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as IconAnimatableDrawable
+        if (icon != other.icon) return false
+        if (background != other.background) return false
+        return iconSize == other.iconSize
+    }
+
+    override fun hashCode(): Int {
+        var result = icon.hashCode()
+        result = 31 * result + (background?.hashCode() ?: 0)
+        result = 31 * result + (iconSize?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "IconAnimatableDrawable(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize)"
     }
 }
