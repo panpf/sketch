@@ -28,7 +28,7 @@ kotlin {
     sourceSets {
         named("androidMain") {
             dependencies {
-                api(libs.google.accompanist.drawablepainter)
+//                api(libs.google.accompanist.drawablepainter)
             }
         }
         named("androidInstrumentedTest") {

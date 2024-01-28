@@ -106,7 +106,10 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     }
 
     override fun onViewDetachedFromWindow(v: View) {
+        // TODO 不需要再设置为 null 了
         updateDrawable(null)    // To trigger setIsDisplayed
+        // TODO stop animation
+        // TODO 应该放在 ViewTargetRequestManager 中处理，因为每一个 View 都只有一个 ViewTargetRequestManager，类似 Compose 中的 AsyncImageState
     }
 
     private fun updateImage(requestContext: RequestContext, image: Image?) {
