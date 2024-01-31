@@ -19,6 +19,10 @@ actual fun createImageSerializer(): ImageSerializer? {
 
 class BitmapImageImageSerializer : ImageSerializer {
 
+    override fun supportImage(image: Image): Boolean {
+        return image is BitmapImage
+    }
+
     override fun compress(image: Image, sink: BufferedSink) {
         image as BitmapImage
         image.bitmap.compress(CompressFormat.PNG, 100, sink.outputStream())

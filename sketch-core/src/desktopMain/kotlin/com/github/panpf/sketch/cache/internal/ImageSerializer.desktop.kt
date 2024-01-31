@@ -14,6 +14,10 @@ actual fun createImageSerializer(): ImageSerializer? = BufferedImageImageSeriali
 
 class BufferedImageImageSerializer : ImageSerializer {
 
+    override fun supportImage(image: Image): Boolean {
+        return image is BufferedImageImage
+    }
+
     override fun compress(image: Image, sink: BufferedSink) {
         image as BufferedImageImage
         ImageIO.write(image.bufferedImage, "png", sink.outputStream())

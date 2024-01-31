@@ -19,7 +19,6 @@ package com.github.panpf.sketch.cache.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
@@ -29,7 +28,6 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.closeQuietly
 import com.github.panpf.sketch.util.ifOrNull
-import kotlinx.coroutines.sync.Mutex
 import okio.buffer
 
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
@@ -130,7 +128,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val transformedList = decodeResult.transformedList
         if (transformedList.isNullOrEmpty()) return false
         val image = decodeResult.image
-        val imageSerializer = createImageSerializer() ?: return false
+        val imageSerializer =
+            createImageSerializer()?.takeIf { it.supportImage(image) } ?: return false
         val resultCache = sketch.resultCache
         val cacheKey = requestContext.cacheKey
         val editor = resultCache.openEditor(cacheKey)

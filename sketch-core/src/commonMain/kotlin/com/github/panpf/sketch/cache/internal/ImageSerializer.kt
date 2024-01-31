@@ -10,6 +10,7 @@ import okio.BufferedSink
 expect fun createImageSerializer(): ImageSerializer?
 
 interface ImageSerializer {
+    fun supportImage(image: Image): Boolean
     fun compress(image: Image, sink: BufferedSink)
     fun decode(requestContext: RequestContext, imageInfo: ImageInfo, dataSource: DataSource): Image
 }
