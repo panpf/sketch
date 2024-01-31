@@ -33,6 +33,7 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
@@ -47,7 +48,6 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
@@ -158,7 +158,8 @@ class Sketch private constructor(options: Options) {
             requestExecutor.execute(this@Sketch, request, enqueue = true)
         }
         // Update the current request attached to the view and return a new disposable.
-        return getDisposable(request, job)
+        val requestManager = request.target?.getRequestManager()
+        return requestManager?.getDisposable(job) ?: OneShotDisposable(job)
     }
 
     /**
@@ -174,7 +175,9 @@ class Sketch private constructor(options: Options) {
             requestExecutor.execute(this@Sketch, request, enqueue = false)
         }
         // Update the current request attached to the view and await the result.
-        return@coroutineScope getDisposable(request, job).job.await()
+        val requestManager = request.target?.getRequestManager()
+        val disposable = requestManager?.getDisposable(job) ?: OneShotDisposable(job)
+        return@coroutineScope disposable.job.await()
     }
 
 
@@ -391,8 +394,3 @@ internal fun defaultComponents(): ComponentRegistry {
         addDecodeInterceptor(EngineDecodeInterceptor())
     }.build()
 }
-
-internal expect fun getDisposable(
-    request: ImageRequest,
-    job: Deferred<ImageResult>,
-): Disposable

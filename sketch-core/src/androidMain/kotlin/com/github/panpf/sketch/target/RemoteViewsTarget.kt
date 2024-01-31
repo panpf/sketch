@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.RequestManager
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -55,6 +56,8 @@ class RemoteViewsTarget constructor(
             onUpdated()
         }
     }
+
+    override fun getRequestManager(): RequestManager? = null
 
     override fun getImageOptions(): ImageOptions? = null
 

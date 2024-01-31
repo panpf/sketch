@@ -23,6 +23,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.RequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.Scale
@@ -33,6 +34,26 @@ import kotlinx.coroutines.Job
  * A listener that accepts the result of an image request.
  */
 interface Target {
+
+    fun getRequestManager(): RequestManager? = null
+
+    fun getRequestDelegate(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        job: Job
+    ): RequestDelegate? = null
+
+    fun getImageOptions(): ImageOptions? = null
+
+    fun getSizeResolver(): SizeResolver? = null
+
+    fun getScale(): Scale? = null
+
+    fun getLifecycleResolver(): LifecycleResolver? = null
+
+    fun getListener(): Listener? = null
+
+    fun getProgressListener(): ProgressListener? = null
 
     /**
      * Called when the request starts.
@@ -57,22 +78,4 @@ interface Target {
     fun onError(requestContext: RequestContext, error: Image?) {
 
     }
-
-    fun getImageOptions(): ImageOptions? = null
-
-    fun getSizeResolver(): SizeResolver? = null
-
-    fun getScale(): Scale? = null
-
-    fun getLifecycleResolver(): LifecycleResolver? = null
-
-    fun getListener(): Listener? = null
-
-    fun getProgressListener(): ProgressListener? = null
-
-    fun getRequestDelegate(
-        sketch: Sketch,
-        initialRequest: ImageRequest,
-        job: Job
-    ): RequestDelegate? = null
 }

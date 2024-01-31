@@ -41,9 +41,11 @@ import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.RequestManager
 import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
+import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.util.asOrNull
@@ -68,33 +70,27 @@ interface ViewTarget<T : View> : Target {
      */
     var drawable: Drawable?
 
-    override fun getImageOptions(): ImageOptions? {
-        return view?.asOrNull<ImageOptionsProvider>()?.displayImageOptions
-    }
+    override fun getRequestManager(): RequestManager? =
+        view?.requestManager
 
-    override fun getSizeResolver(): SizeResolver? {
-        val view: View = view ?: return null
-        return ViewSizeResolver(view)
-    }
+    override fun getImageOptions(): ImageOptions? =
+        view?.asOrNull<ImageOptionsProvider>()?.displayImageOptions
 
-    override fun getLifecycleResolver(): LifecycleResolver? {
-        val view: View = view ?: return null
-        return ViewLifecycleResolver(view)
-    }
+    override fun getSizeResolver(): SizeResolver? =
+        view?.let { ViewSizeResolver(it) }
+
+    override fun getLifecycleResolver(): LifecycleResolver? =
+        view?.let { ViewLifecycleResolver(it) }
 
     override fun getRequestDelegate(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate? {
-        return ViewTargetRequestDelegate(sketch, initialRequest, this, job)
-    }
+    ): RequestDelegate? = ViewTargetRequestDelegate(sketch, initialRequest, this, job)
 
-    override fun getListener(): Listener? {
-        return view?.asOrNull<ListenerProvider>()?.getListener()
-    }
+    override fun getListener(): Listener? =
+        view?.asOrNull<ListenerProvider>()?.getListener()
 
-    override fun getProgressListener(): ProgressListener? {
-        return view?.asOrNull<ListenerProvider>()?.getProgressListener()
-    }
+    override fun getProgressListener(): ProgressListener? =
+        view?.asOrNull<ListenerProvider>()?.getProgressListener()
 }

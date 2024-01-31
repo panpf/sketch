@@ -34,8 +34,10 @@ import android.view.View
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.core.R
+import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.RequestManager
 import com.github.panpf.sketch.request.ViewTargetDisposable
 import com.github.panpf.sketch.util.getCompletedOrNull
 import com.github.panpf.sketch.util.isMainThread
@@ -63,7 +65,7 @@ internal val View.requestManager: ViewTargetRequestManager
         }
     }
 
-class ViewTargetRequestManager constructor(private val view: View) :
+class ViewTargetRequestManager constructor(private val view: View) : RequestManager,
     View.OnAttachStateChangeListener {
 
     // The disposable for the current request attached to this view.
@@ -76,9 +78,16 @@ class ViewTargetRequestManager constructor(private val view: View) :
     private var currentRequestDelegate: ViewTargetRequestDelegate? = null
     private var isRestart = false
 
+    /** Attach [requestDelegate] to this view and cancel the old request. */
+    @MainThread
+    override fun setRequest(requestDelegate: RequestDelegate?) {
+        currentRequestDelegate?.dispose()
+        currentRequestDelegate = requestDelegate as ViewTargetRequestDelegate?
+    }
+
     /** Return 'true' if [disposable] is not attached to this view. */
     @Synchronized
-    fun isDisposed(disposable: ViewTargetDisposable): Boolean {
+    override fun isDisposed(disposable: Disposable): Boolean {
         return disposable !== currentDisposable
     }
 
@@ -86,7 +95,7 @@ class ViewTargetRequestManager constructor(private val view: View) :
      * Create and return a new disposable unless this is a restarted request.
      */
     @Synchronized
-    internal fun getDisposable(job: Deferred<ImageResult>): ViewTargetDisposable {
+    override fun getDisposable(job: Deferred<ImageResult>): ViewTargetDisposable {
         // If this is a restarted request, update the current disposable and return it.
         val disposable = currentDisposable
         if (disposable != null && isMainThread() && isRestart) {
@@ -100,7 +109,7 @@ class ViewTargetRequestManager constructor(private val view: View) :
         pendingClear = null
 
         // Create a new disposable as this is a new request.
-        return ViewTargetDisposable(WeakReference(view), job).also {
+        return ViewTargetDisposable(WeakReference(this@ViewTargetRequestManager), job).also {
             currentDisposable = it
         }
     }
@@ -108,7 +117,7 @@ class ViewTargetRequestManager constructor(private val view: View) :
     /** Cancel any in progress work and detach [currentRequestDelegate] from this view. */
     @Synchronized
     @OptIn(DelicateCoroutinesApi::class)
-    fun dispose() {
+    override fun dispose() {
         pendingClear?.cancel()
         pendingClear = GlobalScope.launch(Dispatchers.Main.immediate) {
             setRequest(null)
@@ -118,15 +127,8 @@ class ViewTargetRequestManager constructor(private val view: View) :
 
     /** Return the completed value of the latest job if it has completed. Else, return 'null'. */
     @Synchronized
-    fun getResult(): ImageResult? {
+    override fun getResult(): ImageResult? {
         return currentDisposable?.job?.getCompletedOrNull()
-    }
-
-    /** Attach [requestDelegate] to this view and cancel the old request. */
-    @MainThread
-    internal fun setRequest(requestDelegate: ViewTargetRequestDelegate?) {
-        currentRequestDelegate?.dispose()
-        currentRequestDelegate = requestDelegate
     }
 
     @MainThread
@@ -139,7 +141,7 @@ class ViewTargetRequestManager constructor(private val view: View) :
         currentRequestDelegate?.dispose()
     }
 
-    fun restart() {
+    override fun restart() {
         val requestDelegate = currentRequestDelegate ?: return
 
         // As this is called from the main thread, isRestart will
@@ -148,11 +150,11 @@ class ViewTargetRequestManager constructor(private val view: View) :
         requestDelegate.restart()
     }
 
-    internal fun getRequest(): ImageRequest? {
+    override fun getRequest(): ImageRequest? {
         return currentRequestDelegate?.initialRequest
     }
 
-    internal fun getSketch(): Sketch? {
+    override fun getSketch(): Sketch? {
         return currentRequestDelegate?.sketch
     }
 }
