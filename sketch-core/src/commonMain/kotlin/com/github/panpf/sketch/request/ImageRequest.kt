@@ -25,6 +25,7 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
+import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -94,6 +95,8 @@ interface ImageRequest {
 
     /** Default ImageOptions */
     val defaultOptions: ImageOptions?
+
+    val definedRequestOptions: RequestOptions
 
 
     /** The processing depth of the request. */
@@ -225,51 +228,26 @@ interface ImageRequest {
         private val context: PlatformContext
         private val uriString: String
 
-        private var listeners: MutableSet<Listener>? = null
-        private var listener: Listener? = null
-        private var targetListener: Listener? = null
-        private var progressListeners: MutableSet<ProgressListener>? = null
-        private var progressListener: ProgressListener? = null
-        private var targetProgressListener: ProgressListener? = null
         private var target: Target? = null
-        private var lifecycleResolver: LifecycleResolver? = null
+
         private var defaultOptions: ImageOptions? = null
         private val definedOptionsBuilder: ImageOptions.Builder
+        private val definedRequestOptionsBuilder: RequestOptions.Builder
 
         constructor(context: PlatformContext, uriString: String?) {
             this.context = context
             this.uriString = uriString.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
+            this.definedRequestOptionsBuilder = RequestOptions.Builder()
         }
 
         constructor(request: ImageRequest) {
             this.context = request.context
             this.uriString = request.uriString
-            val oldListener = request.listener
-            if (oldListener is CombinedListener) {
-                this.listener = oldListener.fromBuilderListener
-                this.listeners = oldListener.fromBuilderListeners?.toMutableSet()
-                this.targetListener = oldListener.fromTargetListener
-            } else {
-                this.listener = oldListener
-                this.listeners = null
-                this.targetListener = null
-            }
-            val oldProgressListener = request.progressListener
-            if (oldProgressListener is CombinedProgressListener) {
-                this.progressListener = oldProgressListener.fromBuilderProgressListener
-                this.progressListeners =
-                    oldProgressListener.fromBuilderProgressListeners?.toMutableSet()
-                this.targetProgressListener = oldProgressListener.fromTargetProgressListener
-            } else {
-                this.progressListener = oldProgressListener
-                this.progressListeners = null
-                this.targetProgressListener = null
-            }
             this.target = request.target
-            this.lifecycleResolver = request.lifecycleResolver
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
+            this.definedRequestOptionsBuilder = request.definedRequestOptions.newBuilder()
         }
 
         /**
@@ -278,7 +256,7 @@ interface ImageRequest {
         fun listener(
             listener: Listener?
         ): Builder = apply {
-            this.listener = listener
+            definedRequestOptionsBuilder.listener(listener)
         }
 
         /**
@@ -308,11 +286,7 @@ interface ImageRequest {
         fun addListener(
             listener: Listener
         ): Builder = apply {
-            val listeners = listeners
-                ?: mutableSetOf<Listener>().apply {
-                    this@Builder.listeners = this
-                }
-            listeners.add(listener)
+            definedRequestOptionsBuilder.addListener(listener)
         }
 
         /**
@@ -342,7 +316,7 @@ interface ImageRequest {
         fun removeListener(
             listener: Listener
         ): Builder = apply {
-            listeners?.remove(listener)
+            definedRequestOptionsBuilder.removeListener(listener)
         }
 
         /**
@@ -351,7 +325,7 @@ interface ImageRequest {
         fun progressListener(
             progressListener: ProgressListener?
         ): Builder = apply {
-            this.progressListener = progressListener
+            definedRequestOptionsBuilder.progressListener(progressListener)
         }
 
         /**
@@ -360,11 +334,7 @@ interface ImageRequest {
         fun addProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
-            val progressListeners =
-                progressListeners ?: mutableSetOf<ProgressListener>().apply {
-                    this@Builder.progressListeners = this
-                }
-            progressListeners.add(progressListener)
+            definedRequestOptionsBuilder.addProgressListener(progressListener)
         }
 
         /**
@@ -373,7 +343,7 @@ interface ImageRequest {
         fun removeProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
-            progressListeners?.remove(progressListener)
+            definedRequestOptionsBuilder.removeProgressListener(progressListener)
         }
 
         /**
@@ -386,7 +356,7 @@ interface ImageRequest {
          * for this request through its [context].
          */
         fun lifecycle(lifecycle: TargetLifecycle?): Builder = apply {
-            this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
+            definedRequestOptionsBuilder.lifecycle(lifecycle)
         }
 
         /**
@@ -399,7 +369,7 @@ interface ImageRequest {
          * for this request through its [context].
          */
         fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
-            this.lifecycleResolver = lifecycleResolver
+            definedRequestOptionsBuilder.lifecycle(lifecycleResolver)
         }
 
         /**
@@ -730,10 +700,12 @@ interface ImageRequest {
 
 
         fun build(): ImageRequest {
-            val listener = combinationListener()
-            val progressListener = combinationProgressListener()
-            val lifecycleResolver =
-                lifecycleResolver ?: DefaultLifecycleResolver(resolveLifecycleResolver())
+            val target = target
+            val definedRequestOptions = definedRequestOptionsBuilder.build()
+            val listener = combinationListener(definedRequestOptions, target)
+            val progressListener = combinationProgressListener(definedRequestOptions, target)
+            val lifecycleResolver = definedRequestOptions.lifecycleResolver
+                ?: DefaultLifecycleResolver(resolveLifecycleResolver())
             val targetOptions = target?.getImageOptions()
             val definedOptions = definedOptionsBuilder.merge(targetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
@@ -767,6 +739,7 @@ interface ImageRequest {
                 lifecycleResolver = lifecycleResolver,
                 defaultOptions = defaultOptions,
                 definedOptions = definedOptions,
+                definedRequestOptions = definedRequestOptions,
                 depth = depth,
                 parameters = parameters,
                 httpHeaders = httpHeaders,
@@ -797,10 +770,13 @@ interface ImageRequest {
         private fun resolveScale(): Scale =
             target?.getScale() ?: Scale.CENTER_CROP
 
-        private fun combinationListener(): Listener? {
-            val listener = listener
-            val listeners = listeners?.takeIf { it.isNotEmpty() }?.toList()
-            val targetListener = targetListener ?: target?.getListener()
+        private fun combinationListener(
+            definedRequestOptions: RequestOptions,
+            target: Target?
+        ): Listener? {
+            val listener = definedRequestOptions.listener
+            val listeners = definedRequestOptions.listeners?.takeIf { it.isNotEmpty() }?.toList()
+            val targetListener = target?.getListener()
             return if (listeners != null || targetListener != null) {
                 CombinedListener(
                     fromTargetListener = targetListener,
@@ -812,11 +788,14 @@ interface ImageRequest {
             }
         }
 
-        private fun combinationProgressListener(): ProgressListener? {
-            val target = target
-            val progressListener = progressListener
-            val progressListeners = progressListeners?.takeIf { it.isNotEmpty() }?.toList()
-            val targetProgressListener = targetProgressListener ?: target?.getProgressListener()
+        private fun combinationProgressListener(
+            definedRequestOptions: RequestOptions,
+            target: Target?
+        ): ProgressListener? {
+            val progressListener = definedRequestOptions.progressListener
+            val progressListeners =
+                definedRequestOptions.progressListeners?.takeIf { it.isNotEmpty() }?.toList()
+            val targetProgressListener = target?.getProgressListener()
             return if (progressListeners != null || targetProgressListener != null) {
                 CombinedProgressListener(
                     fromTargetProgressListener = targetProgressListener,
@@ -838,6 +817,7 @@ interface ImageRequest {
         override val lifecycleResolver: LifecycleResolver,
         override val definedOptions: ImageOptions,
         override val defaultOptions: ImageOptions?,
+        override val definedRequestOptions: RequestOptions,
         override val depth: Depth,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
