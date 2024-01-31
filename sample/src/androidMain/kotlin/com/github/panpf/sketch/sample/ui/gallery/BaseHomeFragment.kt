@@ -34,10 +34,33 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
 
     abstract val fragmentMap: Map<String, Fragment>
 
-    override fun onViewCreated(
-        binding: FragmentSamplesBinding,
-        savedInstanceState: Bundle?
-    ) {
+    private var resumedCount = 0
+    private var createdCount = 0
+
+    override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
+        createdCount++
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        resumedCount++
+        if (resumedCount == 1 && createdCount == 1) {
+            onFirstResume()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        createdCount--
+        resumedCount = 0
+    }
+
+    /*
+     * The old version of ViewPager will always load the content of the second screen
+     */
+    private fun onFirstResume() {
+        val binding = binding ?: return
         val titles = fragmentMap.keys.toList()
         val fragments = fragmentMap.values.toList()
 
@@ -47,7 +70,6 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
                 lifecycle = viewLifecycleOwner.lifecycle,
                 templateFragmentList = fragments
             )
-            offscreenPageLimit = 1
         }
 
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->

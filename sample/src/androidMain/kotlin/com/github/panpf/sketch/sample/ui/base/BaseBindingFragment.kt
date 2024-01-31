@@ -23,7 +23,7 @@ import androidx.viewbinding.ViewBinding
 
 abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
 
-    private var binding: VIEW_BINDING? = null
+    protected var binding: VIEW_BINDING? = null
 
     @Suppress("UNCHECKED_CAST")
     final override fun onCreateView(
