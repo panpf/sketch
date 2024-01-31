@@ -33,12 +33,13 @@ package com.github.panpf.sketch.target
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.View.OnAttachStateChangeListener
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asDrawable
-import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.RequestManager
+import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.TargetLifecycle.Event
 import com.github.panpf.sketch.transition.TransitionViewTarget
 import com.github.panpf.sketch.util.asOrNull
@@ -51,29 +52,13 @@ import com.github.panpf.sketch.util.asOrNull
  * to implement [ViewTarget] directly.
  */
 abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionViewTarget,
-    TargetLifecycle.EventObserver, OnAttachStateChangeListener {
+    TargetLifecycle.EventObserver, AttachObserver {
 
     private var isStarted = false
+    private var isAttached = false
+    private val requestManager = view.requestManager
 
-    init {
-        if (canBindTarget(view)) {
-            view.setTag(R.id.sketch_generic_view_target, this@GenericViewTarget)
-            view.addOnAttachStateChangeListener(this@GenericViewTarget)
-        }
-    }
-
-    private fun canBindTarget(view: View): Boolean {
-        val tag = view.getTag(R.id.sketch_generic_view_target)
-        if (tag != null && tag is GenericViewTarget<*>) {
-            val existTarget: GenericViewTarget<*> = tag
-            if (existTarget === this@GenericViewTarget) {
-                return false
-            } else {
-                view.removeOnAttachStateChangeListener(existTarget)
-            }
-        }
-        return true
-    }
+    override fun getRequestManager(): RequestManager = requestManager
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         updateImage(requestContext, placeholder)
@@ -102,14 +87,15 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         }
     }
 
-    override fun onViewAttachedToWindow(v: View) {
-    }
-
-    override fun onViewDetachedFromWindow(v: View) {
-        // TODO 不需要再设置为 null 了
-        updateDrawable(null)    // To trigger setIsDisplayed
-        // TODO stop animation
-        // TODO 应该放在 ViewTargetRequestManager 中处理，因为每一个 View 都只有一个 ViewTargetRequestManager，类似 Compose 中的 AsyncImageState
+    override fun onAttachedChanged(attached: Boolean) {
+        this.isAttached = attached
+        updateAnimation()
+        if (!attached) {
+            // TODO 不需要再设置为 null 了
+            updateDrawable(null)    // To trigger setIsDisplayed
+            // TODO stop animation
+            // TODO 应该放在 ViewTargetRequestManager 中处理，因为每一个 View 都只有一个 ViewTargetRequestManager，类似 Compose 中的 AsyncImageState
+        }
     }
 
     private fun updateImage(requestContext: RequestContext, image: Image?) {
@@ -136,6 +122,6 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun updateAnimation() {
         val animatable = this.drawable.asOrNull<Animatable>() ?: return
-        if (isStarted) animatable.start() else animatable.stop()
+        if (isStarted && isAttached) animatable.start() else animatable.stop()
     }
 }

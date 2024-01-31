@@ -36,6 +36,8 @@ import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
 import com.github.panpf.sketch.compose.internal.forEachRememberObserver
 import com.github.panpf.sketch.compose.internal.toScale
+import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestDelegate
+import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestManager
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -48,6 +50,8 @@ import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.RequestDelegate
+import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.target.TargetLifecycle
@@ -75,6 +79,7 @@ class AsyncImageState internal constructor(
 
     private val target = AsyncImageTarget()
     private val listener = AsyncImageListener()
+    private val requestManager = ComposeTargetRequestManager(this)
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
     private var rememberedCount = 0
@@ -130,6 +135,8 @@ class AsyncImageState internal constructor(
         val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         this.coroutineScope = coroutineScope
 
+        requestManager.onRemembered()
+
         if (inspectionMode) {
             coroutineScope.launch {
                 combine(
@@ -183,7 +190,7 @@ class AsyncImageState internal constructor(
         this.coroutineScope = null
         (_painterState.painter as? RememberObserver)?.onForgotten()
         painterState = Empty
-        target.onForgotten()
+        requestManager.onForgotten()
     }
 
     private fun validateRequest(request: ImageRequest) {
@@ -233,6 +240,8 @@ class AsyncImageState internal constructor(
             loadImageJob.cancel()
         }
     }
+
+    internal fun isRemembered(): Boolean = rememberedCount > 0
 
     override fun toString(): String = "AsyncImageState@${Integer.toHexString(hashCode())}"
 
@@ -285,29 +294,26 @@ class AsyncImageState internal constructor(
         override val fitScale: Boolean
             get() = contentScale?.fitScale ?: true
 
-        override fun getImageOptions(): ImageOptions? {
-            return this@AsyncImageState.options
-        }
+        override fun getRequestManager(): RequestManager = requestManager
 
-        override fun getSizeResolver(): SizeResolver {
-            return this@AsyncImageState.sizeResolver
-        }
+        override fun newRequestDelegate(
+            sketch: Sketch,
+            initialRequest: ImageRequest,
+            job: Job
+        ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
 
-        override fun getScale(): Scale? {
-            return this@AsyncImageState.contentScale?.toScale()
-        }
+        override fun getImageOptions(): ImageOptions? = this@AsyncImageState.options
 
-        override fun getLifecycleResolver(): LifecycleResolver? {
-            return this@AsyncImageState.lifecycle?.let { LifecycleResolver(it) }
-        }
+        override fun getSizeResolver(): SizeResolver = this@AsyncImageState.sizeResolver
 
-        override fun getListener(): Listener {
-            return this@AsyncImageState.listener
-        }
+        override fun getScale(): Scale? = this@AsyncImageState.contentScale?.toScale()
 
-        override fun getProgressListener(): ProgressListener {
-            return this@AsyncImageState.listener
-        }
+        override fun getLifecycleResolver(): LifecycleResolver? =
+            this@AsyncImageState.lifecycle?.let { LifecycleResolver(it) }
+
+        override fun getListener(): Listener = this@AsyncImageState.listener
+
+        override fun getProgressListener(): ProgressListener = this@AsyncImageState.listener
 
         override fun onStart(requestContext: RequestContext, placeholder: Image?) {
             super.onStart(requestContext, placeholder)
@@ -324,9 +330,7 @@ class AsyncImageState internal constructor(
             painterState = PainterState.Error(painter)
         }
 
-        override fun toString(): String {
-            return "AsyncImageTarget@${Integer.toHexString(hashCode())}"
-        }
+        override fun toString(): String = "AsyncImageTarget@${hashCode().toString(16)}"
     }
 }
 

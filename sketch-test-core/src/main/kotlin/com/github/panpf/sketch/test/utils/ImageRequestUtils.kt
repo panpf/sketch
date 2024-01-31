@@ -3,7 +3,9 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
@@ -20,6 +22,10 @@ inline fun ImageRequest.Builder.target(
     crossinline onError: (requestContext: RequestContext, error: Image?) -> Unit = { _, _ -> },
     crossinline onSuccess: (requestContext: RequestContext, result: Image) -> Unit = { _, _ -> },
 ) = target(object : Target {
+
+    private val requestManager = BaseRequestManager()
+
+    override fun getRequestManager(): RequestManager = requestManager
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         onStart(requestContext, placeholder)

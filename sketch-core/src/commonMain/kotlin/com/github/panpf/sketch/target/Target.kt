@@ -23,9 +23,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.RequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
+import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
 import kotlinx.coroutines.Job
@@ -35,9 +35,9 @@ import kotlinx.coroutines.Job
  */
 interface Target {
 
-    fun getRequestManager(): RequestManager? = null
+    fun getRequestManager(): RequestManager
 
-    fun getRequestDelegate(
+    fun newRequestDelegate(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job

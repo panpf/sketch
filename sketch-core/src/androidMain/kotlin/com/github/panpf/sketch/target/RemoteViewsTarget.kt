@@ -24,8 +24,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.RequestManager
+import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.Scale
@@ -57,13 +58,15 @@ class RemoteViewsTarget constructor(
         }
     }
 
-    override fun getRequestManager(): RequestManager? = null
+    private val requestManager = BaseRequestManager()
+
+    override fun getRequestManager(): RequestManager = requestManager
 
     override fun getImageOptions(): ImageOptions? = null
 
     override fun getLifecycleResolver(): LifecycleResolver? = null
 
-    override fun getRequestDelegate(
+    override fun newRequestDelegate(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job

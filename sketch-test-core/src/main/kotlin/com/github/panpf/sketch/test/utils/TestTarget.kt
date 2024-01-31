@@ -16,7 +16,9 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
 
 class TestTarget : Target {
@@ -39,4 +41,8 @@ class TestTarget : Target {
         super.onError(requestContext, error)
         errorImage = error
     }
+
+    private val requestManager = BaseRequestManager()
+
+    override fun getRequestManager(): RequestManager = requestManager
 }

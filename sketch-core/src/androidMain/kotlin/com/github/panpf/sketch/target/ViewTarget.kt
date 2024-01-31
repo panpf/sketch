@@ -41,11 +41,9 @@ import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.RequestManager
 import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
-import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.util.asOrNull
@@ -66,12 +64,9 @@ interface ViewTarget<T : View> : Target {
     val view: T?
 
     /**
-     * The [view]'s current [Drawable].
+     * Th e [view]'s current [Drawable].
      */
     var drawable: Drawable?
-
-    override fun getRequestManager(): RequestManager? =
-        view?.requestManager
 
     override fun getImageOptions(): ImageOptions? =
         view?.asOrNull<ImageOptionsProvider>()?.displayImageOptions
@@ -82,7 +77,7 @@ interface ViewTarget<T : View> : Target {
     override fun getLifecycleResolver(): LifecycleResolver? =
         view?.let { ViewLifecycleResolver(it) }
 
-    override fun getRequestDelegate(
+    override fun newRequestDelegate(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job

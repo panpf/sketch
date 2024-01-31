@@ -39,4 +39,6 @@ interface ComposeTarget : Target {
      * The component's current [Painter].
      */
     var painter: Painter?
+
+// TODO   fun getRequestDelegate() = ComposeTargetRequestDelegate
 }

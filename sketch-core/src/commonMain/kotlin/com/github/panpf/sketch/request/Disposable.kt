@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.internal.RequestManager
 import kotlinx.coroutines.Deferred
 
 /**
@@ -38,6 +39,21 @@ interface Disposable {
      * Cancels this disposable's work and releases any held resources.
      */
     fun dispose()
+}
+
+class ReusableDisposable(
+    val requestManager: RequestManager,
+    @Volatile override var job: Deferred<ImageResult>
+) : Disposable {
+
+    override val isDisposed: Boolean
+        get() = requestManager.isDisposed(this)
+
+    override fun dispose() {
+        if (!isDisposed) {
+            requestManager.dispose()
+        }
+    }
 }
 
 /**

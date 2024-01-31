@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="sketch_request_manager" type="id" />
-    <item name="sketch_generic_view_target" type="id" />
 </resources>

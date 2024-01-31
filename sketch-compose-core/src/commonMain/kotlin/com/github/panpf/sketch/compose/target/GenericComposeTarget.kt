@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.compose.target
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.compose.asPainter
@@ -23,7 +22,10 @@ import com.github.panpf.sketch.compose.internal.asOrNull
 import com.github.panpf.sketch.compose.painter.AnimatablePainter
 import com.github.panpf.sketch.compose.transition.TransitionComposeTarget
 import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.target.TargetLifecycle
+import com.github.panpf.sketch.target.TargetLifecycle.Event
 
 /**
  * An opinionated [ComposeTarget] that simplifies updating the [Image] attached to a ComposeComponent.
@@ -31,16 +33,49 @@ import com.github.panpf.sketch.request.internal.RequestContext
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ComposeTarget] directly.
  */
-abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
+abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
+    TargetLifecycle.EventObserver, AttachObserver {
+
+    private var isStarted = false
+    private var isAttached = false
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         updateImage(requestContext, placeholder)
 
+    override fun onError(requestContext: RequestContext, error: Image?) =
+        updateImage(requestContext, error)
+
     override fun onSuccess(requestContext: RequestContext, result: Image) =
         updateImage(requestContext, result)
 
-    override fun onError(requestContext: RequestContext, error: Image?) =
-        updateImage(requestContext, error)
+    override fun onStateChanged(source: TargetLifecycle, event: Event) {
+        when (event) {
+            Event.ON_START -> {
+                isStarted = true
+                updateAnimation()
+            }
+
+            Event.ON_STOP -> {
+                isStarted = false
+                updateAnimation()
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    override fun onAttachedChanged(attached: Boolean) {
+        this.isAttached = attached
+        updateAnimation()
+        if (!attached) {
+            // TODO 不需要再设置为 null 了
+            updatePainter(null)  // To trigger setIsDisplayed and onForgotten
+            // TODO 搞一个 ComposeRequestManager，用来回调 onForgotten，以及回调 Lifecycle 的 Event
+            // TODO RequestManager 从 Target 获取，Compose 版本最终由 AsyncImageState 提供
+        }
+    }
 
     private fun updateImage(requestContext: RequestContext, image: Image?) {
         // 'image != null' is important.
@@ -49,32 +84,22 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget {
         if (image != null || requestContext.request.allowSetNullDrawable) {
             val newPainter = image?.asPainter()
             updatePainter(newPainter)
-            // TODO Start and stop animations based on lifecycle
         }
     }
 
     private fun updatePainter(newPainter: Painter?) {
         val oldPainter = painter
         if (newPainter !== oldPainter) {
-            // TODO 停止旧动画
+            oldPainter.asOrNull<AnimatablePainter>()?.stop()
             painter = newPainter
-            // AsyncImageState's AsyncImageTarget will call Painter's onRemembered and onForgotten
-            // methods to trigger the start and stop of Animatable in DrawablePainter
-            // TODO 播放动画
+            updateAnimation()
         }
     }
 
-    fun onForgotten() {
-        // TODO 不需要再设置为 null 了
-        updatePainter(null)  // To trigger setIsDisplayed and onForgotten
-        // TODO 搞一个 ComposeRequestManager，用来回调 onForgotten，以及回调 Lifecycle 的 Event
-        // TODO RequestManager 从 Target 获取，Compose 版本最终由 AsyncImageState 提供
+    /** Start/stop the current [AnimatablePainter]'s animation based on the current lifecycle state. */
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun updateAnimation() {
+        val animatable = this.painter.asOrNull<AnimatablePainter>() ?: return
+        if (isStarted && isAttached) animatable.start() else animatable.stop()
     }
-
-//    /** Start/stop the current [Drawable]'s animation based on the current lifecycle state. */
-//    @Suppress("MemberVisibilityCanBePrivate")
-//    protected fun updateAnimation() {
-//        val animatable = this.painter.asOrNull<AnimatablePainter>() ?: return
-//        if (isStarted) animatable.start() else animatable.stop()
-//    }
 }

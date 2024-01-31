@@ -32,11 +32,15 @@ internal fun requestDelegate(
     job: Job
 ): RequestDelegate {
     val targetRequestDelegate =
-        initialRequest.target?.getRequestDelegate(sketch, initialRequest, job)
-    return targetRequestDelegate ?: BaseRequestDelegate(job)
+        initialRequest.target?.newRequestDelegate(sketch, initialRequest, job)
+    return targetRequestDelegate ?: BaseRequestDelegate(sketch, initialRequest, job)
 }
 
-interface RequestDelegate {
+interface RequestDelegate : AttachObserver {
+
+    val sketch: Sketch
+
+    val initialRequest: ImageRequest
 
     /** Throw a [CancellationException] if this request should be cancelled before starting. */
     @MainThread
@@ -57,6 +61,8 @@ interface RequestDelegate {
 
 /** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
 class BaseRequestDelegate(
+    override val sketch: Sketch,
+    override val initialRequest: ImageRequest,
     private val job: Job
 ) : RequestDelegate, TargetLifecycle.EventObserver {
 
@@ -77,6 +83,10 @@ class BaseRequestDelegate(
 
     override fun dispose() {
         job.cancel()
+    }
+
+    override fun onAttachedChanged(attached: Boolean) {
+        // Do nothing
     }
 
     override fun onStateChanged(source: TargetLifecycle, event: TargetLifecycle.Event) {

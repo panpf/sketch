@@ -50,8 +50,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 fragmentManager = childFragmentManager,
                 behavior = FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
                 templateFragmentList = listOf(
-                    ViewHomeFragment(),
                     composeFragment,
+                    ViewHomeFragment(),
                     TestHomeFragment()
                 )
             )
