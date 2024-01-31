@@ -5,6 +5,11 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.stateimage.StateImage
 
+/**
+ * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
+ * that is, the equals() and hashCode() methods of instances created with the same
+ * construction parameters return consistent results. This is important in Compose
+ */
 interface CombinedStateImage : StateImage {
 
     val stateList: List<Pair<Condition, StateImage?>>

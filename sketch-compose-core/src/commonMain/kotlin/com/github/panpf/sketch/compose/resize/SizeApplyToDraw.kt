@@ -12,7 +12,7 @@ import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size
 
 
-class ComposeSizeApplyToDrawHelper : SizeApplyToDrawHelper {
+object ComposeSizeApplyToDrawHelper : SizeApplyToDrawHelper {
 
     override val key: String = "ComposeSizeApplyToDrawHelper"
 

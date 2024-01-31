@@ -205,7 +205,7 @@ fun ImageRequest.Builder.crossfade(
 
 fun ImageRequest.Builder.sizeApplyToDraw(apply: Boolean = true): ImageRequest.Builder = apply {
     if (apply) {
-        sizeApplyToDraw(AndroidSizeApplyToDrawHelper())
+        sizeApplyToDraw(AndroidSizeApplyToDrawHelper)
     } else {
         sizeApplyToDraw(null)
     }

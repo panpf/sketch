@@ -11,7 +11,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size
 
-class AndroidSizeApplyToDrawHelper : SizeApplyToDrawHelper {
+object AndroidSizeApplyToDrawHelper : SizeApplyToDrawHelper {
 
     override val key: String = "AndroidSizeApplyToDrawHelper"
 

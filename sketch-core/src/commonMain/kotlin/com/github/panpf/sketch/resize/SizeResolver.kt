@@ -26,6 +26,10 @@ expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
 /**
  * An interface for measuring the target size for an image request.
  *
+ * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
+ * that is, the equals() and hashCode() methods of instances created with the same
+ * construction parameters return consistent results. This is important in Compose
+ * 
  * @see com.github.panpf.sketch.request.ImageRequest.Builder.size
  */
 interface SizeResolver {

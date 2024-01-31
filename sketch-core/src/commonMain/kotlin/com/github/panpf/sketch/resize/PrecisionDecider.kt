@@ -23,6 +23,10 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
 
 /**
  * Determines which precision to use dynamically based on image size and resizing
+ * 
+ * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
+ * that is, the equals() and hashCode() methods of instances created with the same
+ * construction parameters return consistent results. This is important in Compose
  */
 interface PrecisionDecider {
 

@@ -37,6 +37,10 @@ import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
  * An interface for making transformations to an image's pixel data.
+ * 
+ * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
+ * that is, the equals() and hashCode() methods of instances created with the same
+ * construction parameters return consistent results. This is important in Compose
  */
 interface Transformation {
 

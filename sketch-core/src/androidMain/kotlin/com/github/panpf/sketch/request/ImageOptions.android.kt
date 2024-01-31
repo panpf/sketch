@@ -181,7 +181,7 @@ fun ImageOptions.Builder.crossfade(
 
 fun ImageOptions.Builder.sizeApplyToDraw(apply: Boolean = true): ImageOptions.Builder = apply {
     if (apply) {
-        sizeApplyToDraw(AndroidSizeApplyToDrawHelper())
+        sizeApplyToDraw(AndroidSizeApplyToDrawHelper)
     } else {
         sizeApplyToDraw(null)
     }

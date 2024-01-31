@@ -21,6 +21,6 @@ actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
     }
 
     if (request.sizeApplyToDraw is AndroidSizeApplyToDrawHelper) {
-        builder.sizeApplyToDraw(ComposeSizeApplyToDrawHelper())
+        builder.sizeApplyToDraw(ComposeSizeApplyToDrawHelper)
     }
 }
