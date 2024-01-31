@@ -31,7 +31,12 @@
 package com.github.panpf.sketch.compose.target
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestDelegate
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.target.Target
+import kotlinx.coroutines.Job
 
 interface ComposeTarget : Target {
 
@@ -40,5 +45,9 @@ interface ComposeTarget : Target {
      */
     var painter: Painter?
 
-// TODO   fun getRequestDelegate() = ComposeTargetRequestDelegate
+    override fun newRequestDelegate(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        job: Job
+    ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
 }

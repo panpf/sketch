@@ -37,11 +37,7 @@ interface Target {
 
     fun getRequestManager(): RequestManager
 
-    fun newRequestDelegate(
-        sketch: Sketch,
-        initialRequest: ImageRequest,
-        job: Job
-    ): RequestDelegate? = null
+    fun newRequestDelegate(sketch: Sketch, initialRequest: ImageRequest, job: Job): RequestDelegate
 
     fun getImageOptions(): ImageOptions? = null
 

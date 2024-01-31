@@ -24,11 +24,12 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.internal.BaseRequestDelegate
 import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
+import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.toBitmap
 import kotlinx.coroutines.Job
@@ -70,7 +71,7 @@ class RemoteViewsTarget constructor(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate? = null
+    ): RequestDelegate = RemoteViewsDelegate(sketch, initialRequest, this, job)
 
     override fun getScale(): Scale? = null
 
@@ -99,3 +100,10 @@ class RemoteViewsTarget constructor(
         return "RemoteViewsDisplayTarget(remoteViews=$remoteViews, imageViewId=$imageViewId, onUpdated=$onUpdated)"
     }
 }
+
+class RemoteViewsDelegate(
+    sketch: Sketch,
+    initialRequest: ImageRequest,
+    target: RemoteViewsTarget,
+    job: Job
+) : BaseRequestDelegate(sketch, initialRequest, target, job)

@@ -81,7 +81,7 @@ interface ViewTarget<T : View> : Target {
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate? = ViewTargetRequestDelegate(sketch, initialRequest, this, job)
+    ): RequestDelegate = ViewTargetRequestDelegate(sketch, initialRequest, this, job)
 
     override fun getListener(): Listener? =
         view?.asOrNull<ListenerProvider>()?.getListener()

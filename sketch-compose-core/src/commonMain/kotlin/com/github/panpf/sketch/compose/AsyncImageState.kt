@@ -296,12 +296,6 @@ class AsyncImageState internal constructor(
 
         override fun getRequestManager(): RequestManager = requestManager
 
-        override fun newRequestDelegate(
-            sketch: Sketch,
-            initialRequest: ImageRequest,
-            job: Job
-        ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
-
         override fun getImageOptions(): ImageOptions? = this@AsyncImageState.options
 
         override fun getSizeResolver(): SizeResolver = this@AsyncImageState.sizeResolver

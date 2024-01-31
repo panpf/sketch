@@ -18,7 +18,9 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.TargetLifecycle
+import com.github.panpf.sketch.target.removeAndAddObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 
@@ -31,12 +33,13 @@ internal fun requestDelegate(
     initialRequest: ImageRequest,
     job: Job
 ): RequestDelegate {
+    val target = initialRequest.target
     val targetRequestDelegate =
-        initialRequest.target?.newRequestDelegate(sketch, initialRequest, job)
-    return targetRequestDelegate ?: BaseRequestDelegate(sketch, initialRequest, job)
+        target?.newRequestDelegate(sketch, initialRequest, job)
+    return targetRequestDelegate ?: NoTargetRequestDelegate(sketch, initialRequest, job)
 }
 
-interface RequestDelegate : AttachObserver {
+interface RequestDelegate {
 
     val sketch: Sketch
 
@@ -59,39 +62,69 @@ interface RequestDelegate : AttachObserver {
     fun dispose()
 }
 
-/** A request delegate for a one-shot requests with no target or a non-[ViewTarget]. */
-class BaseRequestDelegate(
+class NoTargetRequestDelegate(
+    sketch: Sketch,
+    initialRequest: ImageRequest,
+    job: Job
+) : BaseRequestDelegate(sketch, initialRequest, null, job)
+
+open class BaseRequestDelegate(
     override val sketch: Sketch,
     override val initialRequest: ImageRequest,
-    private val job: Job
-) : RequestDelegate, TargetLifecycle.EventObserver {
+    protected val target: Target?,
+    protected val job: Job
+) : RequestDelegate, AttachObserver, TargetLifecycle.EventObserver {
 
-    private var lifecycle: TargetLifecycle? = null
+    protected var lifecycle: TargetLifecycle? = null
 
     override fun assertActive() {
-        // Do nothing
+        // Do Nothing.
     }
 
     override fun start(lifecycle: TargetLifecycle) {
         this.lifecycle = lifecycle
         lifecycle.addObserver(this)
-    }
 
-    override fun finish() {
-        lifecycle?.removeObserver(this)
+        val target = target
+        if (target != null) {
+            target.getRequestManager().setRequest(this)
+            if (target is TargetLifecycle.EventObserver) {
+                lifecycle.removeAndAddObserver(target)
+            }
+        }
     }
 
     override fun dispose() {
         job.cancel()
+        val target = target
+        if (target is TargetLifecycle.EventObserver) {
+            lifecycle?.removeObserver(target)
+        }
+        lifecycle?.removeObserver(this)
+    }
+
+    override fun finish() {
+        val target = target
+        if (target is TargetLifecycle.EventObserver) {
+            lifecycle?.removeObserver(target)
+        }
+        lifecycle?.removeObserver(this)
     }
 
     override fun onAttachedChanged(attached: Boolean) {
-        // Do nothing
+        if (target is AttachObserver) {
+            target.onAttachedChanged(attached)
+        }
     }
 
     override fun onStateChanged(source: TargetLifecycle, event: TargetLifecycle.Event) {
         if (event == TargetLifecycle.Event.ON_DESTROY) {
-            dispose()
+            val target = target
+            if (target != null) {
+                target.getRequestManager().dispose()
+            } else {
+                dispose()
+            }
         }
     }
 }

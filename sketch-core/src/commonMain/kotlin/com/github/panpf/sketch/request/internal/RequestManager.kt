@@ -45,7 +45,6 @@ interface RequestManager {
     fun getSketch(): Sketch?
 }
 
-// TODO 搞一个 Empty RequestManager
 open class BaseRequestManager : RequestManager {
 
     // The disposable for the current request attached to this view.
