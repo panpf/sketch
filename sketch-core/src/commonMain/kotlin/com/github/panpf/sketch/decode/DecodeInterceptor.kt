@@ -25,6 +25,10 @@ import com.github.panpf.sketch.request.internal.RequestContext
 
 /**
  * Intercept the execution of Image decode, you can change the output, register to [ComponentRegistry] to take effect
+ *
+ * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
+ * that is, the equals() and hashCode() methods of instances created with the same
+ * construction parameters return consistent results. This is important in Compose
  */
 interface DecodeInterceptor {
 

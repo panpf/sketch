@@ -34,6 +34,19 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
         return Result.success(newDecodeResult)
     }
 
+    override fun toString(): String =
+        "PaletteDecodeInterceptor(sortWeight=$sortWeight)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
+
     companion object {
         fun paletteToJSONObject(palette: Palette): JSONObject {
             return JSONObject().apply {

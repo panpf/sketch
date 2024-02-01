@@ -31,4 +31,17 @@ class AwtImage2ComposeImageRequestInterceptor : RequestInterceptor {
         }
         return result
     }
+
+    override fun toString(): String =
+        "AwtImage2ComposeImageRequestInterceptor(sortWeight=$sortWeight)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }

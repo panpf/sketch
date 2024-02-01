@@ -36,6 +36,10 @@ fun interface Fetcher {
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]
      * to create [Fetcher] when it needs to extract [ImageRequest] data
+     *
+     * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
+     * that is, the equals() and hashCode() methods of instances created with the same
+     * construction parameters return consistent results. This is important in Compose
      */
     fun interface Factory {
 
