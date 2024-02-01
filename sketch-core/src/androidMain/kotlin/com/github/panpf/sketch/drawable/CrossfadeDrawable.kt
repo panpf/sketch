@@ -74,8 +74,8 @@ import kotlin.math.roundToInt
  *  require an exact intrinsic size to scale the drawable.
  */
 class CrossfadeDrawable @JvmOverloads constructor(
-    val start: Drawable?,
-    val end: Drawable?,
+    start: Drawable?,
+    end: Drawable?,
     val fitScale: Boolean = true,
     val durationMillis: Int = Transition.DEFAULT_DURATION,
     val fadeStart: Boolean = true,
@@ -87,6 +87,16 @@ class CrossfadeDrawable @JvmOverloads constructor(
         private const val STATE_RUNNING = 1
         private const val STATE_DONE = 2
     }
+
+    // Because start will be released at the end of the transition, this can only be done
+    private val toString = "CrossfadeDrawable(" +
+            "start=${start?.toLogString()}, " +
+            "end=${end?.toLogString()}, " +
+            "fitScale=$fitScale, " +
+            "durationMillis=$durationMillis, " +
+            "fadeStart=$fadeStart, " +
+            "preferExactIntrinsicSize=$preferExactIntrinsicSize" +
+            ")"
 
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -100,8 +110,8 @@ class CrossfadeDrawable @JvmOverloads constructor(
     private var maxAlpha = 255
     private var state = STATE_START
 
-    private var _start: Drawable? = start?.mutate()
-    private val _end: Drawable? = end?.mutate()
+    var start: Drawable? = start?.mutate()
+    val end: Drawable? = end?.mutate()
 
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
@@ -109,12 +119,12 @@ class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     private fun setChildCallback() {
-        this._start?.apply {
+        this.start?.apply {
             if (callback == null || callback !== this@CrossfadeDrawable) {
                 callback = this@CrossfadeDrawable
             }
         }
-        this._end?.apply {
+        this.end?.apply {
             if (callback == null || callback !== this@CrossfadeDrawable) {
                 callback = this@CrossfadeDrawable
             }
@@ -123,7 +133,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
     override fun draw(canvas: Canvas) {
         if (state == STATE_START) {
-            _start?.apply {
+            start?.apply {
                 alpha = maxAlpha
                 canvas.withSave { draw(canvas) }
             }
@@ -131,7 +141,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
         }
 
         if (state == STATE_DONE) {
-            _end?.apply {
+            end?.apply {
                 alpha = maxAlpha
                 canvas.withSave { draw(canvas) }
             }
@@ -145,14 +155,14 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
         // Draw the start drawable.
         if (!isDone) {
-            _start?.apply {
+            start?.apply {
                 alpha = startAlpha
                 canvas.withSave { draw(canvas) }
             }
         }
 
         // Draw the end drawable.
-        _end?.apply {
+        end?.apply {
             alpha = endAlpha
             canvas.withSave { draw(canvas) }
         }
@@ -174,21 +184,21 @@ class CrossfadeDrawable @JvmOverloads constructor(
     @Deprecated("Deprecated in Java")
     @Suppress("DEPRECATION")
     override fun getOpacity(): Int {
-        val _start = _start
-        val _end = _end
+        val start = start
+        val end = end
 
         if (state == STATE_START) {
-            return _start?.opacity ?: PixelFormat.TRANSPARENT
+            return start?.opacity ?: PixelFormat.TRANSPARENT
         }
 
         if (state == STATE_DONE) {
-            return _end?.opacity ?: PixelFormat.TRANSPARENT
+            return end?.opacity ?: PixelFormat.TRANSPARENT
         }
 
         return when {
-            _start != null && _end != null -> resolveOpacity(_start.opacity, _end.opacity)
-            _start != null -> _start.opacity
-            _end != null -> _end.opacity
+            start != null && end != null -> resolveOpacity(start.opacity, end.opacity)
+            start != null -> start.opacity
+            end != null -> end.opacity
             else -> PixelFormat.TRANSPARENT
         }
     }
@@ -196,9 +206,9 @@ class CrossfadeDrawable @JvmOverloads constructor(
     override fun getColorFilter(): ColorFilter? =
         if (VERSION.SDK_INT >= 21) {
             when (state) {
-                STATE_START -> _start?.colorFilter
-                STATE_RUNNING -> _end?.colorFilter ?: _start?.colorFilter
-                STATE_DONE -> _end?.colorFilter
+                STATE_START -> start?.colorFilter
+                STATE_RUNNING -> end?.colorFilter ?: start?.colorFilter
+                STATE_DONE -> end?.colorFilter
                 else -> null
             }
         } else {
@@ -206,8 +216,8 @@ class CrossfadeDrawable @JvmOverloads constructor(
         }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        _start?.colorFilter = colorFilter
-        _end?.colorFilter = colorFilter
+        start?.colorFilter = colorFilter
+        end?.colorFilter = colorFilter
     }
 
     override fun onBoundsChange(bounds: Rect) {
@@ -219,19 +229,19 @@ class CrossfadeDrawable @JvmOverloads constructor(
          but it is final and can only be called in onBoundsChange
          */
         setChildCallback()
-        _start?.let { updateBounds(it, bounds) }
-        _end?.let { updateBounds(it, bounds) }
+        start?.let { updateBounds(it, bounds) }
+        end?.let { updateBounds(it, bounds) }
     }
 
     override fun onLevelChange(level: Int): Boolean {
-        val startChanged = _start?.setLevel(level) ?: false
-        val endChanged = _end?.setLevel(level) ?: false
+        val startChanged = start?.setLevel(level) ?: false
+        val endChanged = end?.setLevel(level) ?: false
         return startChanged || endChanged
     }
 
     override fun onStateChange(state: IntArray): Boolean {
-        val startChanged = _start?.setState(state) ?: false
-        val endChanged = _end?.setState(state) ?: false
+        val startChanged = start?.setState(state) ?: false
+        val endChanged = end?.setState(state) ?: false
         return startChanged || endChanged
     }
 
@@ -240,41 +250,41 @@ class CrossfadeDrawable @JvmOverloads constructor(
     override fun getIntrinsicHeight() = intrinsicHeight
 
     override fun setTint(tintColor: Int) {
-        _start?.let { DrawableCompat.setTint(it, tintColor) }
-        _end?.let { DrawableCompat.setTint(it, tintColor) }
+        start?.let { DrawableCompat.setTint(it, tintColor) }
+        end?.let { DrawableCompat.setTint(it, tintColor) }
     }
 
     override fun setTintList(tint: ColorStateList?) {
-        _start?.let { DrawableCompat.setTintList(it, tint) }
-        _end?.let { DrawableCompat.setTintList(it, tint) }
+        start?.let { DrawableCompat.setTintList(it, tint) }
+        end?.let { DrawableCompat.setTintList(it, tint) }
     }
 
     @SuppressLint("RestrictedApi")
     override fun setTintMode(tintMode: PorterDuff.Mode?) {
         if (VERSION.SDK_INT >= 21) {
-            _start?.setTintMode(tintMode)
-            _end?.setTintMode(tintMode)
+            start?.setTintMode(tintMode)
+            end?.setTintMode(tintMode)
         } else {
-            if (_start is TintAwareDrawable && tintMode != null) {
-                (_start as TintAwareDrawable).setTintMode(tintMode)
+            if (start is TintAwareDrawable && tintMode != null) {
+                (start as TintAwareDrawable).setTintMode(tintMode)
             }
-            if (_end is TintAwareDrawable && tintMode != null) {
-                (_end as TintAwareDrawable).setTintMode(tintMode)
+            if (end is TintAwareDrawable && tintMode != null) {
+                (end as TintAwareDrawable).setTintMode(tintMode)
             }
         }
     }
 
     @RequiresApi(29)
     override fun setTintBlendMode(blendMode: BlendMode?) {
-        _start?.setTintBlendMode(blendMode)
-        _end?.setTintBlendMode(blendMode)
+        start?.setTintBlendMode(blendMode)
+        end?.setTintBlendMode(blendMode)
     }
 
     override fun isRunning() = state == STATE_RUNNING
 
     override fun start() {
-        (_start as? Animatable)?.start()
-        (_end as? Animatable)?.start()
+        (start as? Animatable)?.start()
+        (end as? Animatable)?.start()
 
         if (state != STATE_START) {
             return
@@ -290,11 +300,21 @@ class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun stop() {
-        (_start as? Animatable)?.stop()
-        (_end as? Animatable)?.stop()
+        (start as? Animatable)?.stop()
+        (end as? Animatable)?.stop()
 
         if (state != STATE_DONE) {
             markDone()
+        }
+    }
+
+    private fun markDone() {
+        state = STATE_DONE
+        (start as? Animatable)?.stop()
+        start?.callback = null
+        start = null
+        handler.post {
+            callbacks.forEach { it.onAnimationEnd(this) }
         }
     }
 
@@ -344,18 +364,10 @@ class CrossfadeDrawable @JvmOverloads constructor(
         return -1
     }
 
-    private fun markDone() {
-        state = STATE_DONE
-        _start = null
-        handler.post {
-            callbacks.forEach { it.onAnimationEnd(this) }
-        }
-    }
-
     override fun mutate(): CrossfadeDrawable {
-        val newStart = _start?.mutate()
-        val newEnd = _end?.mutate()
-        return if (newStart !== _start || newEnd !== _end) {
+        val newStart = start?.mutate()
+        val newEnd = end?.mutate()
+        return if (newStart !== start || newEnd !== end) {
             CrossfadeDrawable(
                 start = newStart,
                 end = newEnd,
@@ -382,28 +394,14 @@ class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as CrossfadeDrawable
-        if (start != other.start) return false
-        if (end != other.end) return false
-        if (fitScale != other.fitScale) return false
-        if (durationMillis != other.durationMillis) return false
-        if (fadeStart != other.fadeStart) return false
-        return preferExactIntrinsicSize == other.preferExactIntrinsicSize
+        // Because start will be released at the end of the transition, this can only be done
+        return super.equals(other)
     }
 
     override fun hashCode(): Int {
-        var result = start?.hashCode() ?: 0
-        result = 31 * result + (end?.hashCode() ?: 0)
-        result = 31 * result + fitScale.hashCode()
-        result = 31 * result + durationMillis
-        result = 31 * result + fadeStart.hashCode()
-        result = 31 * result + preferExactIntrinsicSize.hashCode()
-        return result
+        // Because start will be released at the end of the transition, this can only be done
+        return super.hashCode()
     }
 
-    override fun toString(): String {
-        return "CrossfadeDrawable(start=${start?.toLogString()}, end=${end?.toLogString()}, fitScale=$fitScale, durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize)"
-    }
+    override fun toString(): String = toString
 }
