@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.compose.painter
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.ColorFilter
@@ -12,18 +15,46 @@ import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import kotlin.math.roundToInt
 
-class ResizePainter(
+@Composable
+fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CROP): ResizePainter {
+    return remember(painter, size, scale) {
+        painter.resize(size, scale)
+    }
+}
+
+fun Painter.resize(size: Size, scale: Scale): ResizePainter {
+    return if (this is AnimatablePainter) {
+        ResizeAnimatablePainter(this, size, scale)
+    } else {
+        ResizePainter(this, size, scale)
+    }
+}
+
+open class ResizePainter(
     val painter: Painter,
     val size: Size,
     val scale: Scale
-) : Painter(), SketchPainter {
+) : Painter(), RememberObserver, SketchPainter {
 
     override val intrinsicSize: Size = size
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
+
+    override fun onRemembered() {
+        if (painter is RememberObserver) painter.onRemembered()
+        if (painter is AnimatablePainter) painter.start()
+    }
+
+    override fun onAbandoned() = onForgotten()
+
+    override fun onForgotten() {
+        if (painter is AnimatablePainter) painter.stop()
+        if (painter is RememberObserver) painter.onForgotten()
+    }
 
     override fun applyAlpha(alpha: Float): Boolean {
         this.alpha = alpha
@@ -88,5 +119,53 @@ class ResizePainter(
 
     override fun toString(): String {
         return "ResizePainter(painter=${painter.toLogString()}, size=$size, scale=$scale)"
+    }
+}
+
+class ResizeAnimatablePainter(
+    painter: Painter,
+    size: Size,
+    scale: Scale
+) : ResizePainter(painter, size, scale), AnimatablePainter {
+
+    private val animatable: AnimatablePainter
+
+    init {
+        require(painter is AnimatablePainter) {
+            "painter must be AnimatablePainter"
+        }
+        animatable = painter
+    }
+
+    override fun start() {
+        animatable.start()
+    }
+
+    override fun stop() {
+        animatable.stop()
+    }
+
+    override fun isRunning(): Boolean {
+        return animatable.isRunning()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as ResizeAnimatablePainter
+        if (painter != other.painter) return false
+        if (size != other.size) return false
+        return scale == other.scale
+    }
+
+    override fun hashCode(): Int {
+        var result = painter.hashCode()
+        result = 31 * result + size.hashCode()
+        result = 31 * result + scale.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "ResizeAnimatablePainter(painter=${painter.toLogString()}, size=$size, scale=$scale)"
     }
 }

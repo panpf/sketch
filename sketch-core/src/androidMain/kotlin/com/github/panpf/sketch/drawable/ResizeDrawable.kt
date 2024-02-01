@@ -15,13 +15,23 @@
  */
 package com.github.panpf.sketch.drawable
 
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
+
+fun Drawable.resize(size: Size, scale: Scale = CENTER_CROP): Drawable {
+    return if (this is Animatable) {
+        ResizeAnimatableDrawable(this, size, scale)
+    } else {
+        ResizeDrawable(this, size, scale)
+    }
+}
 
 /**
  * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].
