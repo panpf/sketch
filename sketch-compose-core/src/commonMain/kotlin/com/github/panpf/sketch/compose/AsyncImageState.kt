@@ -36,7 +36,6 @@ import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
 import com.github.panpf.sketch.compose.internal.forEachRememberObserver
 import com.github.panpf.sketch.compose.internal.toScale
-import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestDelegate
 import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestManager
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
 import com.github.panpf.sketch.request.ImageOptions
@@ -50,7 +49,6 @@ import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
@@ -79,6 +77,7 @@ class AsyncImageState internal constructor(
 
     private val target = AsyncImageTarget()
     private val listener = AsyncImageListener()
+    private var lastRequest: ImageRequest? = null
     private val requestManager = ComposeTargetRequestManager(this)
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
@@ -169,6 +168,11 @@ class AsyncImageState internal constructor(
                     val request = (it[0] as ImageRequest).apply { validateRequest(this) }
                     val sketch = it[1] as Sketch
                     val contentScale = it[2] as ContentScale
+                    val lastRequest = this@AsyncImageState.lastRequest
+                    if (lastRequest != null && lastRequest.key == request.key && lastRequest != request) {
+                        throw IllegalArgumentException("ImageRequest equals error")
+                    }
+                    this@AsyncImageState.lastRequest = request
                     cancelLoadImageJob()
                     loadImage(sketch, request, contentScale)
                 }
