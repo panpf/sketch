@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.compose.painter
 
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
@@ -30,12 +31,12 @@ import com.github.panpf.sketch.compose.painter.internal.toLogString
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
  */
-class IconPainter constructor(
+open class IconPainter constructor(
     val icon: Painter,
     val background: Painter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
-) : Painter(), SketchPainter {
+) : Painter(), RememberObserver, SketchPainter {
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
@@ -88,6 +89,22 @@ class IconPainter constructor(
         }
     }
 
+    override fun onRemembered() {
+        (icon as? RememberObserver)?.onRemembered()
+        (background as? RememberObserver)?.onRemembered()
+        (icon as? AnimatablePainter)?.start()
+        (background as? AnimatablePainter)?.start()
+    }
+
+    override fun onAbandoned() = onForgotten()
+
+    override fun onForgotten() {
+        (icon as? AnimatablePainter)?.stop()
+        (background as? AnimatablePainter)?.stop()
+        (icon as? RememberObserver)?.onForgotten()
+        (background as? RememberObserver)?.onForgotten()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -108,5 +125,60 @@ class IconPainter constructor(
 
     override fun toString(): String {
         return "IconPainter(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
+    }
+}
+
+class IconAnimatablePainter(
+    icon: Painter,
+    background: Painter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
+
+    private val animatableIcon: AnimatablePainter?
+    private val animatableBackground: AnimatablePainter?
+
+    init {
+        require(icon is AnimatablePainter || background is AnimatablePainter) {
+            "painter must be AnimatablePainter"
+        }
+        animatableIcon = icon as? AnimatablePainter
+        animatableBackground = background as? AnimatablePainter
+    }
+
+    override fun start() {
+        animatableIcon?.start()
+        animatableBackground?.start()
+    }
+
+    override fun stop() {
+        animatableIcon?.stop()
+        animatableBackground?.stop()
+    }
+
+    override fun isRunning(): Boolean {
+        return animatableIcon?.isRunning() == true || animatableBackground?.isRunning() == true
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as IconPainter
+        if (icon != other.icon) return false
+        if (background != other.background) return false
+        if (iconSize != other.iconSize) return false
+        return iconTint == other.iconTint
+    }
+
+    override fun hashCode(): Int {
+        var result = icon.hashCode()
+        result = 31 * result + (background?.hashCode() ?: 0)
+        result = 31 * result + (iconSize?.hashCode() ?: 0)
+        result = 31 * result + (iconTint?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "IconAnimatablePainter(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
     }
 }
