@@ -56,7 +56,12 @@ class ViewTargetRequestManager constructor(private val view: View) : BaseRequest
 
     @MainThread
     override fun onViewAttachedToWindow(v: View) {
+        // On Android the request may be executed before the View is attached to the Window
+        // ViewTargetRequestDelegate.assertActive() will cancel the request when it detects
+        //  that the View is not attached to the Window.
+        // So the request must be restarted here
         restart()
+
 //        callbackAttachedState()   // Because the request will always be restarted here, no callback is needed
     }
 

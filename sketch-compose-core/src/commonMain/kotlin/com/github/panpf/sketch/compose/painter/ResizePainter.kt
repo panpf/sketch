@@ -45,15 +45,15 @@ open class ResizePainter(
     private var colorFilter: ColorFilter? = null
 
     override fun onRemembered() {
-        if (painter is RememberObserver) painter.onRemembered()
-        if (painter is AnimatablePainter) painter.start()
+        (painter as? RememberObserver)?.onRemembered()
+        (painter as? AnimatablePainter)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        if (painter is AnimatablePainter) painter.stop()
-        if (painter is RememberObserver) painter.onForgotten()
+        (painter as? AnimatablePainter)?.stop()
+        (painter as? RememberObserver)?.onForgotten()
     }
 
     override fun applyAlpha(alpha: Float): Boolean {

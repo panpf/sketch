@@ -34,7 +34,6 @@ import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
-import com.github.panpf.sketch.compose.internal.forEachRememberObserver
 import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestManager
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
@@ -82,16 +81,6 @@ class AsyncImageState internal constructor(
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
     private var rememberedCount = 0
-    private var _painterState: PainterState = Empty
-        set(value) {
-            field = value
-            painterState = value
-        }
-    private var _painter: Painter? = null
-        set(value) {
-            field = value
-            painter = value
-        }
 
     var sketch: Sketch? by mutableStateOf(null)
         internal set
@@ -192,7 +181,8 @@ class AsyncImageState internal constructor(
         cancelLoadImageJob()
         coroutineScope.cancel()
         this.coroutineScope = null
-        (_painterState.painter as? RememberObserver)?.onForgotten()
+        (painter as? RememberObserver)?.onForgotten()
+        painter = null
         painterState = Empty
         requestManager.onForgotten()
     }
@@ -285,13 +275,13 @@ class AsyncImageState internal constructor(
     private inner class AsyncImageTarget : GenericComposeTarget() {
 
         override var painter: Painter?
-            get() = _painter
+            get() = this@AsyncImageState.painter
             set(newPainter) {
-                val oldPainter = _painter
+                val oldPainter = this@AsyncImageState.painter
                 if (newPainter !== oldPainter) {
-                    oldPainter?.forEachRememberObserver { it.onForgotten() }
-                    _painter = newPainter
-                    newPainter?.forEachRememberObserver { it.onRemembered() }
+                    (oldPainter as? RememberObserver)?.onForgotten()
+                    this@AsyncImageState.painter = newPainter
+                    (newPainter as? RememberObserver)?.onRemembered()
                 }
             }
 

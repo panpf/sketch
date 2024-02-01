@@ -30,7 +30,6 @@
  */
 package com.github.panpf.sketch.compose.internal
 
-import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -129,19 +128,6 @@ internal fun Painter.findLeafChildPainter(): Painter? {
  */
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
-}
-
-fun Painter.forEachRememberObserver(block: (RememberObserver) -> Unit) {
-    when (this) {
-        is RememberObserver -> {
-            block(this)
-        }
-
-        is CrossfadePainter -> {
-            start?.forEachRememberObserver(block)
-            end?.forEachRememberObserver(block)
-        }
-    }
 }
 
 internal val ContentScale.fitScale: Boolean

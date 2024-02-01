@@ -28,7 +28,8 @@ import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle.Event
 
 /**
- * An opinionated [ComposeTarget] that simplifies updating the [Image] attached to a ComposeComponent.
+ * An opinionated [ComposeTarget] that simplifies updating the [Image] attached to a Compose Component
+ * and supports automatically starting and stopping animated [Painter]s.
  *
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ComposeTarget] directly.
@@ -69,12 +70,6 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     override fun onAttachedChanged(attached: Boolean) {
         this.isAttached = attached
         updateAnimation()
-        if (!attached) {
-            // TODO 不需要再设置为 null 了
-            updatePainter(null)  // To trigger setIsDisplayed and onForgotten
-            // TODO 搞一个 ComposeRequestManager，用来回调 onForgotten，以及回调 Lifecycle 的 Event
-            // TODO RequestManager 从 Target 获取，Compose 版本最终由 AsyncImageState 提供
-        }
     }
 
     private fun updateImage(requestContext: RequestContext, image: Image?) {

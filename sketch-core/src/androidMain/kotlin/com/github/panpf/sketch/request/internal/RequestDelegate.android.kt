@@ -11,15 +11,15 @@ import kotlinx.coroutines.Job
 class ViewTargetRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
-    private val targetTarget: ViewTarget<*>,
+    private val viewTarget: ViewTarget<*>,
     job: Job
-) : BaseRequestDelegate(sketch, initialRequest, targetTarget, job) {
+) : BaseRequestDelegate(sketch, initialRequest, viewTarget, job) {
 
     override fun assertActive() {
-        val view = targetTarget.view
+        val view = viewTarget.view
             ?: throw CancellationException("'ViewTarget.view' is cleared.")
         if (!ViewCompat.isAttachedToWindow(view)) {
-            targetTarget.getRequestManager().setRequest(this)
+            viewTarget.getRequestManager().setRequest(this)
             throw CancellationException("'ViewTarget.view' must be attached to a window.")
         }
     }

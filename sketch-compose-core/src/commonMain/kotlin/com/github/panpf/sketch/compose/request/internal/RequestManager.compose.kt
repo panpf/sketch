@@ -9,7 +9,7 @@ class ComposeTargetRequestManager(
 
     fun onRemembered() {
         // AsyncImageState will always perform a request when it is remembered,
-        // so there is nothing to do here
+        // So there is no need to restart the request here
     }
 
     fun onForgotten() {
