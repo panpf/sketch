@@ -20,7 +20,7 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.target.TargetLifecycle
 
-class RequestOptions(
+data class RequestOptions(
     val listener: Listener?,
     val listeners: Set<Listener>?,
     val progressListener: ProgressListener?,
