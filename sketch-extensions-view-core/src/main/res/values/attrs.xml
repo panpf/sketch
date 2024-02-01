@@ -26,21 +26,21 @@
         <enum name="hardware" value="9" />
     </attr>
     <attr name="sketch_ignoreExifOrientation" format="boolean|reference" />
-    <attr name="sketch_resizeWidth" format="dimension|reference" />
-    <attr name="sketch_resizeHeight" format="dimension|reference" />
-    <attr name="sketch_resizePrecision" format="enum">
+    <attr name="sketch_sizeWidth" format="dimension|reference" />
+    <attr name="sketch_sizeHeight" format="dimension|reference" />
+    <attr name="sketch_precision" format="enum">
         <enum name="exactly" value="1" />
         <enum name="sameAspectRatio" value="2" />
         <enum name="lessPixels" value="3" />
         <enum name="smallerSize" value="4" />
     </attr>
-    <attr name="sketch_resizeScale" format="enum">
+    <attr name="sketch_scale" format="enum">
         <enum name="startCrop" value="1" />
         <enum name="centerCrop" value="2" />
         <enum name="endCrop" value="3" />
         <enum name="fill" value="4" />
     </attr>
-    <attr name="sketch_resizeApplyToDrawable" format="boolean|reference" />
+    <attr name="sketch_resizeOnDraw" format="boolean|reference" />
     <attr name="sketch_transformation" format="enum">
         <enum name="rotate" value="1" />
         <enum name="roundedCorners" value="2" />
@@ -94,11 +94,11 @@
         <attr name="sketch_preferQualityOverSpeed" />
         <attr name="sketch_bitmapConfig" />
         <attr name="sketch_ignoreExifOrientation" />
-        <attr name="sketch_resizeWidth" />
-        <attr name="sketch_resizeHeight" />
+        <attr name="sketch_sizeWidth" />
+        <attr name="sketch_sizeHeight" />
         <attr name="sketch_precision" />
         <attr name="sketch_scale" />
-        <attr name="sketch_resizeApplyToDrawable" />
+        <attr name="sketch_resizeOnDraw" />
         <attr name="sketch_transformation" />
         <attr name="sketch_transformation_rotate_degrees" />
         <attr name="sketch_transformation_roundedCorners_radius" />

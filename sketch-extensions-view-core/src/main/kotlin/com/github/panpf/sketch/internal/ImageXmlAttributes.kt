@@ -50,7 +50,7 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.request.sizeApplyToDraw
+import com.github.panpf.sketch.request.resizeOnDraw
 
 fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): ImageOptions? {
     val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)
@@ -78,12 +78,12 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                 ?.apply {
                     ignoreExifOrientation(this)
                 }
-            val resizeWidth =
-                typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_resizeWidth)
-            val resizeHeight =
-                typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_resizeHeight)
-            if (resizeWidth != null && resizeHeight != null) {
-                size(resizeWidth, resizeHeight)
+            val sizeWidth =
+                typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_sizeWidth)
+            val sizeHeight =
+                typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_sizeHeight)
+            if (sizeWidth != null && sizeHeight != null) {
+                size(sizeWidth, sizeHeight)
             }
             typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_precision)
                 ?.apply {
@@ -93,9 +93,9 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                 ?.apply {
                     scale(parseScale(this))
                 }
-            typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_resizeApplyToDrawable)
+            typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_resizeOnDraw)
                 ?.apply {
-                    sizeApplyToDraw(this)
+                    resizeOnDraw(this)
                 }
             typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_transformation)?.apply {
                 transformations(parseTransformation(this, typedArray))

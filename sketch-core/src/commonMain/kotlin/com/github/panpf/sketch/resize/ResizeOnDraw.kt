@@ -4,10 +4,10 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
 
-fun Image.sizeApplyToDraw(request: ImageRequest, size: Size?): Image {
-    val sizeApplyToDrawHelper = request.sizeApplyToDraw
-    if (sizeApplyToDrawHelper == null || size == null) return this
-    return sizeApplyToDrawHelper.applySizeToDraw(request, size, this)
+fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
+    val resizeOnDrawHelper = request.resizeOnDrawHelper
+    if (resizeOnDrawHelper == null || size == null) return this
+    return resizeOnDrawHelper.resize(request, size, this)
 }
 
 /**
@@ -15,9 +15,9 @@ fun Image.sizeApplyToDraw(request: ImageRequest, size: Size?): Image {
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface SizeApplyToDrawHelper {
+interface ResizeOnDrawHelper {
 
     val key: String
 
-    fun applySizeToDraw(request: ImageRequest, size: Size, image: Image): Image
+    fun resize(request: ImageRequest, size: Size, image: Image): Image
 }

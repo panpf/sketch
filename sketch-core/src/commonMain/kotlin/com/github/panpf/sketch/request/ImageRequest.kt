@@ -31,7 +31,7 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.SizeApplyToDrawHelper
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.defaultSizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -188,7 +188,7 @@ interface ImageRequest {
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
      */
-    val sizeApplyToDraw: SizeApplyToDrawHelper?
+    val resizeOnDrawHelper: ResizeOnDrawHelper?
 
     /**
      * Bitmap memory caching policy
@@ -647,7 +647,6 @@ interface ImageRequest {
         }
 
         /**
-         * TODO
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
          */
         fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
@@ -657,8 +656,8 @@ interface ImageRequest {
         /**
          * Set wrap the final [Drawable] or [Painter] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
          */
-        fun sizeApplyToDraw(sizeApplyToDraw: SizeApplyToDrawHelper?): Builder = apply {
-            definedOptionsBuilder.sizeApplyToDraw(sizeApplyToDraw)
+        fun resizeOnDraw(helper: ResizeOnDrawHelper?): Builder = apply {
+            definedOptionsBuilder.resizeOnDraw(helper)
         }
 
         /**
@@ -726,7 +725,7 @@ interface ImageRequest {
             val error = finalOptions.error
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
-            val sizeApplyToDraw = finalOptions.sizeApplyToDraw
+            val resizeOnDrawHelper = finalOptions.resizeOnDrawHelper
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
@@ -755,7 +754,7 @@ interface ImageRequest {
                 error = error,
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,
-                sizeApplyToDraw = sizeApplyToDraw,
+                resizeOnDrawHelper = resizeOnDrawHelper,
                 memoryCachePolicy = memoryCachePolicy,
                 componentRegistry = componentRegistry,
             )
@@ -833,7 +832,7 @@ interface ImageRequest {
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean,
-        override val sizeApplyToDraw: SizeApplyToDrawHelper?,
+        override val resizeOnDrawHelper: ResizeOnDrawHelper?,
         override val memoryCachePolicy: CachePolicy,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageRequest {

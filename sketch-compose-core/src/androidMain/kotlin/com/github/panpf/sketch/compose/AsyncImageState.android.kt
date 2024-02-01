@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.compose
 
-import com.github.panpf.sketch.compose.resize.ComposeSizeApplyToDrawHelper
+import com.github.panpf.sketch.compose.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.compose.transition.ComposeCrossfadeTransition
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageRequest.Builder
-import com.github.panpf.sketch.resize.AndroidSizeApplyToDrawHelper
+import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.transition.CrossfadeTransition
 
 actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
@@ -20,7 +20,7 @@ actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
         )
     }
 
-    if (request.sizeApplyToDraw is AndroidSizeApplyToDrawHelper) {
-        builder.sizeApplyToDraw(ComposeSizeApplyToDrawHelper)
+    if (request.resizeOnDrawHelper is AndroidResizeOnDrawHelper) {
+        builder.resizeOnDraw(ComposeResizeOnDrawHelper)
     }
 }

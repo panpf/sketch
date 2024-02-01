@@ -8,11 +8,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size
 
-object AndroidSizeApplyToDrawHelper : SizeApplyToDrawHelper {
+object AndroidResizeOnDrawHelper : ResizeOnDrawHelper {
 
-    override val key: String = "AndroidSizeApplyToDrawHelper"
+    override val key: String = "AndroidResizeOnDrawHelper"
 
-    override fun applySizeToDraw(request: ImageRequest, size: Size, image: Image): Image {
+    override fun resize(request: ImageRequest, size: Size, image: Image): Image {
         val scale = request.scaleDecider.get(imageSize = image.size, targetSize = size)
         val drawable = image.asDrawable()
         val resizeDrawable = drawable.resize(size, scale)

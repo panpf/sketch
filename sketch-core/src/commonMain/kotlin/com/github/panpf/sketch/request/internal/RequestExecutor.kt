@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.resize.sizeApplyToDraw
+import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.awaitStarted
 import com.github.panpf.sketch.transition.TransitionTarget
@@ -113,7 +113,7 @@ class RequestExecutor {
         imageData: ImageData
     ): ImageResult.Success {
         val lastRequest = requestContext.request
-        val successImage = imageData.image.sizeApplyToDraw(lastRequest, requestContext.size)
+        val successImage = imageData.image.resizeOnDraw(lastRequest, requestContext.size)
         val result = ImageResult.Success(
             request = lastRequest,
             image = successImage,
@@ -151,7 +151,7 @@ class RequestExecutor {
             sketch = sketch,
             request = lastRequest,
             throwable = throwable
-        )?.sizeApplyToDraw(lastRequest, requestContext.size)
+        )?.resizeOnDraw(lastRequest, requestContext.size)
         val errorResult: ImageResult.Error = ImageResult.Error(
             request = lastRequest,
             image = errorImage,

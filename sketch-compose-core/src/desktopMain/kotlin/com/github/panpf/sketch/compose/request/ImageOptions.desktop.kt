@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.compose.request
 
-import com.github.panpf.sketch.compose.resize.ComposeSizeApplyToDrawHelper
+import com.github.panpf.sketch.compose.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.compose.transition.ComposeCrossfadeTransition
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.transition.Transition
@@ -25,10 +25,10 @@ fun ImageOptions.Builder.crossfade(
     )
 }
 
-fun ImageOptions.Builder.sizeApplyToDraw(apply: Boolean = true): ImageOptions.Builder = apply {
+fun ImageOptions.Builder.resizeOnDraw(apply: Boolean = true): ImageOptions.Builder = apply {
     if (apply) {
-        sizeApplyToDraw(ComposeSizeApplyToDrawHelper())
+        resizeOnDraw(ComposeResizeOnDrawHelper)
     } else {
-        sizeApplyToDraw(null)
+        resizeOnDraw(null)
     }
 }

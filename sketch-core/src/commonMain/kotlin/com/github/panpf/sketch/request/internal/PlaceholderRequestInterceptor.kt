@@ -18,7 +18,7 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.resize.sizeApplyToDraw
+import com.github.panpf.sketch.resize.resizeOnDraw
 
 /**
  * Initialize the placeholder image and fill it into the target
@@ -43,7 +43,7 @@ class PlaceholderRequestInterceptor : RequestInterceptor {
         if (target != null) {
             val placeholderDrawable = request.placeholder
                 ?.getImage(sketch, request, null)
-                ?.sizeApplyToDraw(request, requestContext.size)
+                ?.resizeOnDraw(request, requestContext.size)
             target.onStart(requestContext, placeholderDrawable)
         }
         return chain.proceed(request)

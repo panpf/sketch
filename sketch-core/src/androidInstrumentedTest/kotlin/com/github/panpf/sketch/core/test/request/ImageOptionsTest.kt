@@ -123,7 +123,7 @@ class ImageOptionsTest {
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertNull(this.disallowAnimatedImage)
-            Assert.assertNull(this.sizeApplyToDraw)
+            Assert.assertNull(this.resizeOnDrawHelper)
             Assert.assertNull(this.memoryCachePolicy)
             Assert.assertNull(this.componentRegistry)
         }
@@ -285,11 +285,11 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            sizeApplyToDraw(true)
+            resizeOnDraw(true)
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
-            Assert.assertNotNull(this.sizeApplyToDraw)
+            Assert.assertNotNull(this.resizeOnDrawHelper)
         }
 
         ImageOptions {
@@ -644,15 +644,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.sizeApplyToDraw)
+            Assert.assertEquals(null, this.resizeOnDrawHelper)
         }.merged(ImageOptions {
-            sizeApplyToDraw(true)
+            resizeOnDraw(true)
         }).apply {
-            Assert.assertEquals(true, this.sizeApplyToDraw)
+            Assert.assertEquals(true, this.resizeOnDrawHelper)
         }.merged(ImageOptions {
-            sizeApplyToDraw(false)
+            resizeOnDraw(false)
         }).apply {
-            Assert.assertEquals(true, this.sizeApplyToDraw)
+            Assert.assertEquals(true, this.resizeOnDrawHelper)
         }
 
         ImageOptions().apply {
@@ -760,7 +760,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.newOptions {
                     transitionFactory(CrossfadeTransition.Factory())
                 }.apply { add(this) }.newOptions {
-                    sizeApplyToDraw(true)
+                    resizeOnDraw(true)
                 }.apply { add(this) }.newOptions {
                     memoryCachePolicy(ENABLED)
                 }.apply { add(this) }.newOptions {
@@ -1581,22 +1581,22 @@ class ImageOptionsTest {
     fun testResizeApplyToDrawable() {
         ImageOptions.Builder().apply {
             build().apply {
-                Assert.assertNull(sizeApplyToDraw)
+                Assert.assertNull(resizeOnDrawHelper)
             }
 
-            sizeApplyToDraw()
+            resizeOnDraw()
             build().apply {
-                Assert.assertEquals(true, sizeApplyToDraw)
+                Assert.assertEquals(true, resizeOnDrawHelper)
             }
 
-            sizeApplyToDraw(false)
+            resizeOnDraw(false)
             build().apply {
-                Assert.assertEquals(false, sizeApplyToDraw)
+                Assert.assertEquals(false, resizeOnDrawHelper)
             }
 
-            sizeApplyToDraw(null)
+            resizeOnDraw(null)
             build().apply {
-                Assert.assertNull(sizeApplyToDraw)
+                Assert.assertNull(resizeOnDrawHelper)
             }
         }
     }

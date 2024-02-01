@@ -29,7 +29,7 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.SizeApplyToDrawHelper
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
@@ -148,7 +148,7 @@ interface ImageOptions {
     /**
      * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
      */
-    val sizeApplyToDraw: SizeApplyToDrawHelper?
+    val resizeOnDrawHelper: ResizeOnDrawHelper?
 
     /**
      * Bitmap memory caching policy
@@ -217,7 +217,7 @@ interface ImageOptions {
                 && error == null
                 && transitionFactory == null
                 && disallowAnimatedImage == null
-                && sizeApplyToDraw == null
+                && resizeOnDrawHelper == null
                 && memoryCachePolicy == null
                 && componentRegistry == null
 
@@ -241,7 +241,7 @@ interface ImageOptions {
         private var error: ErrorStateImage? = null
         private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
-        private var sizeApplyToDraw: SizeApplyToDrawHelper? = null
+        private var resizeOnDrawHelper: ResizeOnDrawHelper? = null
         private var memoryCachePolicy: CachePolicy? = null
 
         private var componentRegistry: ComponentRegistry? = null
@@ -267,7 +267,7 @@ interface ImageOptions {
             this.error = request.error
             this.transitionFactory = request.transitionFactory
             this.disallowAnimatedImage = request.disallowAnimatedImage
-            this.sizeApplyToDraw = request.sizeApplyToDraw
+            this.resizeOnDrawHelper = request.resizeOnDrawHelper
             this.memoryCachePolicy = request.memoryCachePolicy
 
             this.componentRegistry = request.componentRegistry
@@ -565,11 +565,10 @@ interface ImageOptions {
         }
 
         /**
-         * TODO
          * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
          */
-        fun sizeApplyToDraw(apply: SizeApplyToDrawHelper?): Builder = apply {
-            this.sizeApplyToDraw = apply
+        fun resizeOnDraw(helper: ResizeOnDrawHelper?): Builder = apply {
+            this.resizeOnDrawHelper = helper
         }
 
         /**
@@ -647,8 +646,8 @@ interface ImageOptions {
             if (this.disallowAnimatedImage == null) {
                 this.disallowAnimatedImage = options.disallowAnimatedImage
             }
-            if (this.sizeApplyToDraw == null) {
-                this.sizeApplyToDraw = options.sizeApplyToDraw
+            if (this.resizeOnDrawHelper == null) {
+                this.resizeOnDrawHelper = options.resizeOnDrawHelper
             }
             if (this.memoryCachePolicy == null) {
                 this.memoryCachePolicy = options.memoryCachePolicy
@@ -674,7 +673,7 @@ interface ImageOptions {
             error = error,
             transitionFactory = transitionFactory,
             disallowAnimatedImage = disallowAnimatedImage,
-            sizeApplyToDraw = sizeApplyToDraw,
+            resizeOnDrawHelper = resizeOnDrawHelper,
             memoryCachePolicy = memoryCachePolicy,
             componentRegistry = componentRegistry,
         )
@@ -698,7 +697,7 @@ interface ImageOptions {
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
-        override val sizeApplyToDraw: SizeApplyToDrawHelper?,
+        override val resizeOnDrawHelper: ResizeOnDrawHelper?,
         override val memoryCachePolicy: CachePolicy?,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageOptions {
@@ -722,7 +721,7 @@ interface ImageOptions {
             if (error != other.error) return false
             if (transitionFactory != other.transitionFactory) return false
             if (disallowAnimatedImage != other.disallowAnimatedImage) return false
-            if (sizeApplyToDraw != other.sizeApplyToDraw) return false
+            if (resizeOnDrawHelper != other.resizeOnDrawHelper) return false
             if (memoryCachePolicy != other.memoryCachePolicy) return false
             if (componentRegistry != other.componentRegistry) return false
             return true
@@ -744,7 +743,7 @@ interface ImageOptions {
             result = 31 * result + (error?.hashCode() ?: 0)
             result = 31 * result + (transitionFactory?.hashCode() ?: 0)
             result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
-            result = 31 * result + (sizeApplyToDraw?.hashCode() ?: 0)
+            result = 31 * result + (resizeOnDrawHelper?.hashCode() ?: 0)
             result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (componentRegistry?.hashCode() ?: 0)
             return result
@@ -768,7 +767,7 @@ interface ImageOptions {
                 append("error=$error, ")
                 append("transition=$transitionFactory, ")
                 append("disallowAnimatedImage=$disallowAnimatedImage, ")
-                append("sizeApplyToDraw=$sizeApplyToDraw")
+                append("resizeOnDraw=$resizeOnDrawHelper")
                 append("memoryCachePolicy=$memoryCachePolicy, ")
                 append("componentRegistry=$componentRegistry, ")
                 append(")")

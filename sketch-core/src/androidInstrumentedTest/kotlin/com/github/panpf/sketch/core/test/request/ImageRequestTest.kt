@@ -185,7 +185,7 @@ class ImageRequestTest {
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
-            Assert.assertFalse(this.sizeApplyToDraw)
+            Assert.assertFalse(this.resizeOnDrawHelper)
             Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
     }
@@ -1438,22 +1438,22 @@ class ImageRequestTest {
         val uriString1 = AssetImages.jpeg.uri
         ImageRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertFalse(sizeApplyToDraw)
+                Assert.assertFalse(resizeOnDrawHelper)
             }
 
-            sizeApplyToDraw()
+            resizeOnDraw()
             build().apply {
-                Assert.assertEquals(true, sizeApplyToDraw)
+                Assert.assertEquals(true, resizeOnDrawHelper)
             }
 
-            sizeApplyToDraw(false)
+            resizeOnDraw(false)
             build().apply {
-                Assert.assertEquals(false, sizeApplyToDraw)
+                Assert.assertEquals(false, resizeOnDrawHelper)
             }
 
-            sizeApplyToDraw(null)
+            resizeOnDraw(null)
             build().apply {
-                Assert.assertFalse(sizeApplyToDraw)
+                Assert.assertFalse(resizeOnDrawHelper)
             }
         }
     }

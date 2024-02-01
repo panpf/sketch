@@ -32,7 +32,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendIgnoreExifOrientation()
     .appendResultCachePolicy()
     .appendDisallowAnimatedImage()
-    .appendSizeApplyToDraw()
+    .appendResizeOnDraw()
     .appendMemoryCachePolicy()
     .appendDecoders()
     .appendDecodeInterceptors()
@@ -188,10 +188,10 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         }
     }
 
-    fun appendSizeApplyToDraw(): ImageRequestKeyBuilder = apply {
-        val sizeApplyToDrawHelper = request.sizeApplyToDraw
-        if (sizeApplyToDrawHelper != null) {
-            appendQueryParameter("_resizeApplyToDraw", sizeApplyToDrawHelper.key)
+    fun appendResizeOnDraw(): ImageRequestKeyBuilder = apply {
+        val resizeOnDrawHelper = request.resizeOnDrawHelper
+        if (resizeOnDrawHelper != null) {
+            appendQueryParameter("_resizeOnDraw", resizeOnDrawHelper.key)
         }
     }
 

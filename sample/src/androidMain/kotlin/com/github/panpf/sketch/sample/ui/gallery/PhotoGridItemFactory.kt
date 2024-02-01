@@ -36,7 +36,7 @@ import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.request.sizeApplyToDraw
+import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
@@ -107,7 +107,7 @@ class PhotoGridItemFactory(val animatedPlaceholder: Boolean = false) :
                     )
                 }
                 crossfade()
-                sizeApplyToDraw()
+                resizeOnDraw()
             }
         }
     }

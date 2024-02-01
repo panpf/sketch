@@ -43,6 +43,7 @@ import com.github.panpf.sketch.compose.ability.mimeTypeLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.compose.request.crossfade
+import com.github.panpf.sketch.compose.request.resizeOnDraw
 import com.github.panpf.sketch.compose.stateimage.iconPainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
@@ -142,6 +143,7 @@ fun PhotoGridPage(photoListState: LazyPagingItems<Photo>) {
                                 iconTint = colorScheme.onPrimaryContainer
                             )
                         )
+                        resizeOnDraw()
                         crossfade()
                     },
                     state = imageState,
