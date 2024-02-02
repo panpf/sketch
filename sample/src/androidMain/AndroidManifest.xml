@@ -31,6 +31,12 @@
         com.github.panpf.zoomimage.compose.sketch,
         com.github.panpf.zoomimage.compose.sketch.core,
         app.cash.paging.compose,
+        cafe.adriel.voyager.screenmodel,
+        cafe.adriel.voyager.navigator.bottomSheet,
+        cafe.adriel.voyager.navigator.tab,
+        cafe.adriel.voyager.transitions,
+        cafe.adriel.voyager.core,
+        androidx.datastore.core,
     " />
 
     <uses-permission android:name="android.permission.INTERNET" />

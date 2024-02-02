@@ -49,7 +49,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.ui.common.list.AppendState
+import com.github.panpf.sketch.sample.ui.list.AppendState
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.Flow
 

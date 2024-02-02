@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.common.list
+package com.github.panpf.sketch.sample.ui.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,12 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
-import com.github.panpf.sketch.sample.R
 
 @Composable
 fun AppendState(loadState: LoadState, onClick: () -> Unit) {
@@ -21,19 +19,19 @@ fun AppendState(loadState: LoadState, onClick: () -> Unit) {
     var click: (() -> Unit)? = null
     when (loadState) {
         is LoadState.Loading -> {
-            message = stringResource(R.string.text_loading)
+            message = "LOADING..."
         }
 
         is LoadState.Error -> {
-            message = stringResource(R.string.text_load_error)
+            message = "LOAD ERROR"
             click = onClick
         }
 
         is LoadState.NotLoading -> {
             message = if (loadState.endOfPaginationReached) {
-                stringResource(R.string.text_load_end)
+                "THE END"
             } else {
-                stringResource(R.string.text_loading)
+                "LOADING..."
             }
         }
 

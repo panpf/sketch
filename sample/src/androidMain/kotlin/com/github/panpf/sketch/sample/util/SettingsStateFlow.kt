@@ -27,7 +27,7 @@ fun SettingsStateFlow(
 ): SettingsStateFlow<String> =
     SharedPreferencesSettingsStateFlowImpl(
         initialize,
-        StringSharedPreferencesAdapter(preferences, key, initialize)
+        StringDataStoreAdapter(preferences, key, initialize)
     )
 
 fun SettingsStateFlow(
@@ -35,7 +35,7 @@ fun SettingsStateFlow(
 ): SettingsStateFlow<Boolean> =
     SharedPreferencesSettingsStateFlowImpl(
         initialize,
-        BooleanSharedPreferencesAdapter(preferences, key, initialize)
+        BooleanDataStoreAdapter(preferences, key, initialize)
     )
 
 interface SettingsStateFlow<T> : MutableStateFlow<T>
@@ -92,7 +92,7 @@ private interface SharedPreferencesAdapter<T> {
     var state: T
 }
 
-private class StringSharedPreferencesAdapter(
+private class StringDataStoreAdapter(
     private val preferences: SharedPreferences,
     private val key: String,
     private val defaultValue: String
@@ -107,7 +107,7 @@ private class StringSharedPreferencesAdapter(
         }
 }
 
-private class BooleanSharedPreferencesAdapter(
+private class BooleanDataStoreAdapter(
     private val preferences: SharedPreferences,
     private val key: String,
     private val defaultValue: Boolean

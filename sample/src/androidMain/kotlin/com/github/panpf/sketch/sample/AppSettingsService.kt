@@ -54,7 +54,11 @@ class AppSettingsService(val context: Context) {
      * list config
      */
     val showMimeTypeLogoInLIst by lazy {
-        SettingsStateFlow("showMimeTypeLogoInLIst", true, preferences)
+        SettingsStateFlow(
+            "showMimeTypeLogoInLIst",
+            true,
+            preferences
+        )
     }
     val showProgressIndicatorInList by lazy {
         SettingsStateFlow("showProgressIndicatorInList", true, preferences)

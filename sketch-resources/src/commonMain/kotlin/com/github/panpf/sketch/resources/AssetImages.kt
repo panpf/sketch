@@ -126,7 +126,7 @@ object AssetImages {
         val fileName: String,
         val name: String,
         val size: Size,
-        @ExifOrientation exifOrientation: Int = ExifOrientation.UNDEFINED
+        @ExifOrientation val exifOrientation: Int = ExifOrientation.UNDEFINED
     ) {
         val uri: String = nameToUri(fileName)
     }

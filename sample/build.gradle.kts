@@ -78,7 +78,6 @@ kotlin {
                 implementation(libs.panpf.tools4j.security)
                 implementation(libs.panpf.tools4k)
                 implementation(libs.panpf.activitymonitor)
-                implementation(libs.panpf.zoomimage.compose)
                 implementation(libs.panpf.zoomimage.view)
                 implementation(libs.retrofit2)
                 implementation(libs.retrofit2.kotlinxSerializationConverter)
@@ -106,6 +105,14 @@ kotlin {
                 implementation(libs.ktor.client.contentNegotiation)
                 implementation(libs.ktor.serialization.kotlinxJson)
                 implementation(libs.cashapp.paging.compose.common)
+                implementation(libs.voyager.navigator)
+                implementation(libs.voyager.screenModel)
+                implementation(libs.voyager.bottomSheetNavigator)
+                implementation(libs.voyager.tabNavigator)
+                implementation(libs.voyager.transitions)
+                implementation(libs.androidx.datastore.core.okio)
+                implementation(libs.androidx.datastore.preferences.core)
+                implementation(libs.panpf.zoomimage.compose)
             }
         }
         named("desktopMain") {

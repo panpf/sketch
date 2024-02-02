@@ -44,11 +44,13 @@ import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.compose.request.crossfade
 import com.github.panpf.sketch.compose.request.resizeOnDraw
-import com.github.panpf.sketch.compose.stateimage.iconPainterStateImage
+import com.github.panpf.sketch.compose.stateimage.rememberIconPainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
 import com.github.panpf.sketch.sample.ui.navigation.Navigation
+import com.github.panpf.sketch.sample.ui.rememberIconErrorBaselinePainter
+import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.rememberMimeTypeLogoMap
 import kotlinx.coroutines.flow.StateFlow
@@ -121,28 +123,24 @@ fun PhotoGridPage(photoListState: LazyPagingItems<Photo>) {
             ) { index ->
                 val photo = photoListState[index]!!
                 val imageState = rememberAsyncImageState()
-                val imagePainter = painterResource("ic_image_outline.xml")
-                val errorPainter = painterResource("ic_error_baseline.xml")
+                val placeholderStateImage = rememberIconPainterStateImage(
+                    icon = rememberIconImageOutlinePainter(),
+                    background = colorScheme.primaryContainer,
+                    iconTint = colorScheme.onPrimaryContainer
+                )
+                val errorStateImage = rememberIconPainterStateImage(
+                    icon = rememberIconErrorBaselinePainter(),
+                    background = colorScheme.primaryContainer,
+                    iconTint = colorScheme.onPrimaryContainer
+                )
                 AsyncImage(
                     request = ImageRequest(LocalPlatformContext.current, photo.thumbnailUrl) {
                         precision(LongImageClipPrecisionDecider())
                         scale(LongImageStartCropScaleDecider())
 //                        memoryCachePolicy(DISABLED)
 //                        placeholder(colorPainterStateImage(colorScheme.primaryContainer))
-                        placeholder(
-                            iconPainterStateImage(
-                                icon = imagePainter,
-                                background = colorScheme.primaryContainer,
-                                iconTint = colorScheme.onPrimaryContainer
-                            )
-                        )
-                        error(
-                            iconPainterStateImage(
-                                icon = errorPainter,
-                                background = colorScheme.primaryContainer,
-                                iconTint = colorScheme.onPrimaryContainer
-                            )
-                        )
+                        placeholder(placeholderStateImage)
+                        error(errorStateImage)
                         resizeOnDraw()
                         crossfade()
                     },
