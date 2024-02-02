@@ -15,7 +15,9 @@
  */
 package com.github.panpf.sketch.compose.painter
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
@@ -23,9 +25,60 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
+
+@Composable
+fun rememberIconPainter(
+    icon: Painter,
+    background: Painter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    return remember(icon, background, iconSize, iconTint) {
+        IconPainter(icon, background, iconSize, iconTint)
+    }
+}
+
+@Composable
+fun rememberIconPainter(
+    icon: Painter,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background?.let { ColorPainter(it) }
+        IconPainter(icon, backgroundPainter, iconSize, iconTint)
+    }
+}
+
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: Painter,
+    background: Painter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    return remember(icon, background, iconSize, iconTint) {
+        IconAnimatablePainter(icon, background, iconSize, iconTint)
+    }
+}
+
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: Painter,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background?.let { ColorPainter(it) }
+        IconPainter(icon, backgroundPainter, iconSize, iconTint)
+    }
+}
 
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.

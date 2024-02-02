@@ -8,16 +8,17 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.rememberIconAnimatablePainter
 import com.github.panpf.sketch.compose.painter.rememberIconPainter
 
+
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Painter,
-    background: Painter? = null,
+    iconPath: String,
+    backgroundPath: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val painter = rememberIconPainter(
-        icon = icon,
-        background = background,
+        iconPath = iconPath,
+        backgroundPath = backgroundPath,
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -26,13 +27,13 @@ fun rememberIconPainterStateImage(
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Painter,
+    iconPath: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val painter = rememberIconPainter(
-        icon = icon,
+        iconPath = iconPath,
         background = background,
         iconSize = iconSize,
         iconTint = iconTint
@@ -42,14 +43,14 @@ fun rememberIconPainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
-    icon: Painter,
-    background: Painter? = null,
+    iconPath: String,
+    backgroundPath: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val painter = rememberIconAnimatablePainter(
-        icon = icon,
-        background = background,
+        iconPath = iconPath,
+        backgroundPath = backgroundPath,
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -58,13 +59,13 @@ fun rememberIconAnimatablePainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
-    icon: Painter,
+    iconPath: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val painter = rememberIconAnimatablePainter(
-        icon = icon,
+        iconPath = iconPath,
         background = background,
         iconSize = iconSize,
         iconTint = iconTint
