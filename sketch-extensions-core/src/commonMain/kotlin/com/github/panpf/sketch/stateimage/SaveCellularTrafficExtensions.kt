@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.stateimage
 
-import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 import com.github.panpf.sketch.stateimage.internal.CombinedStateImage
@@ -24,34 +23,18 @@ import com.github.panpf.sketch.stateimage.internal.CombinedStateImage
 /**
  * Set the error image when the save cellular traffic
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder =
-    apply {
-        addState(SaveCellularTrafficCondition to null)
-    }
+fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder = apply {
+    addState(SaveCellularTrafficCondition to null)
+}
 
 /**
  * Set the error image when the save cellular traffic
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImage: StateImage): ErrorStateImage.Builder =
-    apply {
-        addState(SaveCellularTrafficCondition to saveCellularTrafficImage)
-    }
-
-/**
- * Set the error image when the save cellular traffic
- */
-fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficDrawable: Drawable): ErrorStateImage.Builder =
-    apply {
-        addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficDrawable))
-    }
-
-/**
- * Set the error image when the save cellular traffic
- */
-fun ErrorStateImage.Builder.saveCellularTrafficError(saveCellularTrafficImageResId: Int): ErrorStateImage.Builder =
-    apply {
-        addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficImageResId))
-    }
+fun ErrorStateImage.Builder.saveCellularTrafficError(
+    saveCellularTrafficImage: StateImage
+): ErrorStateImage.Builder = apply {
+    addState(SaveCellularTrafficCondition to saveCellularTrafficImage)
+}
 
 object SaveCellularTrafficCondition : CombinedStateImage.Condition {
 
