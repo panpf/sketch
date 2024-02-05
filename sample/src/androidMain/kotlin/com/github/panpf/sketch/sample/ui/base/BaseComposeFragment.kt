@@ -29,16 +29,15 @@ abstract class BaseComposeFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = ComposeView(inflater.context).apply {
-        setContent {
+    ): View = ComposeView(inflater.context)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as ComposeView).setContent {
             AppTheme {
                 DrawContent()
             }
         }
-    }
-
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         onViewCreated(savedInstanceState)
     }
 

@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import okio.buffer
+import okio.sink
 import java.io.File
 
 class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
@@ -65,12 +66,11 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
 
         try {
             withContext(Dispatchers.IO) {
-                fetchResult.dataSource.openSource()
-                    .use { input ->
-                        imageFile.outputStream().buffered().use { output ->
-                            input.buffer().buffer.copyTo(output)
-                        }
+                fetchResult.dataSource.openSource().use { input ->
+                    imageFile.outputStream().sink().buffer().use { output ->
+                        output.writeAll(input)
                     }
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -109,26 +109,23 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
         val fileExtension = fetchResult.mimeType
             ?.let { readFileExtensionFromMimeType(it) } ?: "jpeg"
         val imageFile = File(outDir, "${imageUri.getMD5Digest()}.$fileExtension")
-        if (!imageFile.exists()) {
-            try {
-                withContext(Dispatchers.IO) {
-                    fetchResult.dataSource.openSource()
-                        .use { input ->
-                            imageFile.outputStream().buffered().use { output ->
-                                input.buffer().buffer.copyTo(output)
-                            }
-                        }
+        val result = withContext(Dispatchers.IO) {
+            runCatching {
+                fetchResult.dataSource.openSource().use { input ->
+                    imageFile.outputStream().sink().buffer().use { output ->
+                        output.writeAll(input)
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return ActionResult.error("Failed to save picture: ${e.message}")
             }
-
+        }
+        return if (result.isSuccess) {
             val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(imageFile))
             application.sendBroadcast(intent)
+            ActionResult.success("Saved to the '${imageFile.parentFile?.path}' directory")
+        } else {
+            val exception = result.exceptionOrNull()
+            ActionResult.error("Failed to save picture: ${exception?.message}")
         }
-
-        return ActionResult.success("Saved to the '${imageFile.parentFile?.path}' directory")
     }
 
     private fun readFileExtensionFromMimeType(mimeType: String): String? {

@@ -15,8 +15,11 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
+import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.Photo
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +32,16 @@ class LocalPhotoListViewFragment : BasePhotoListViewFragment() {
 
     override val photoPagingFlow: Flow<PagingData<Photo>>
         get() = localPhotoListViewModel.pagingFlow
+
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+            super.onViewCreated(binding!!, null)
+        }
+
+    override fun onViewCreated(
+        binding: FragmentRecyclerRefreshBinding,
+        savedInstanceState: Bundle?
+    ) {
+        permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
 }

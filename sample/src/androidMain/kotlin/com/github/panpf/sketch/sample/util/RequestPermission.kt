@@ -40,15 +40,14 @@ object WithDataActivityResultContracts {
     abstract class WithDataActivityResultContract<I, O> : ActivityResultContract<I, O>(),
         ActivityResultCallback<O>
 
-    class RequestPermission :
-        WithDataActivityResultContract<Input, Boolean>() {
+    class RequestPermission : WithDataActivityResultContract<Input, Boolean>() {
 
         private var input: Input? = null
 
         override fun createIntent(context: Context, input: Input): Intent {
             this.input = input
             return Intent(ACTION_REQUEST_PERMISSIONS).apply {
-                putExtra(RequestMultiplePermissions.EXTRA_PERMISSIONS, arrayOf(input))
+                putExtra(RequestMultiplePermissions.EXTRA_PERMISSIONS, arrayOf(input.permission))
             }
         }
 

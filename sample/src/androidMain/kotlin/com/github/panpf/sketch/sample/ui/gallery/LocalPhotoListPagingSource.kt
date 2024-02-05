@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.gallery
 import android.content.Context
 import android.graphics.RectF
 import android.provider.MediaStore
+import androidx.core.content.PermissionChecker
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.caverock.androidsvg.SVG
@@ -26,14 +27,12 @@ import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
+import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.Photo
-import com.github.panpf.sketch.sample.util.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
 import okio.buffer
 
@@ -41,6 +40,13 @@ class LocalPhotoListPagingSource(private val context: Context) :
     PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
+    private val builtInPhotos: List<String> by lazy {
+        AssetImages.statics
+            .plus(AssetImages.anims)
+            .plus(AssetImages.longQMSHT)
+            .plus(AssetImages.clockExifs)
+            .map { it.uri }
+    }
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
@@ -48,96 +54,99 @@ class LocalPhotoListPagingSource(private val context: Context) :
         val startPosition = params.key ?: 0
         val pageSize = params.loadSize
 
-        val assetPhotos = if (startPosition == 0) readAssetPhotos() else emptyList()
-        val exifPhotos = if (startPosition == 0) readExifPhotos() else emptyList()
-        val dataList = readLocalPhotos(startPosition, pageSize)
-
-        val photos = urisToPhotos(assetPhotos.plus(exifPhotos).plus(dataList))
-        val nextKey = if (dataList.isNotEmpty()) startPosition + pageSize else null
-        return LoadResult.Page(photos.filter { keySet.add(it.diffKey) }, null, nextKey)
+        val photoUris = if (startPosition < builtInPhotos.size) {
+            val fromBuiltInPhotos = builtInPhotos.subList(
+                fromIndex = startPosition,
+                toIndex = (startPosition + pageSize).coerceAtMost(builtInPhotos.size)
+            )
+            val fromPhotoAlbumPhotos = if (fromBuiltInPhotos.size < pageSize) {
+                val photoAlbumStartPosition = 0
+                val photoAlbumPageSize = pageSize - fromBuiltInPhotos.size
+                readPhotosFromPhotoAlbum(photoAlbumStartPosition, photoAlbumPageSize)
+            } else {
+                emptyList()
+            }
+            fromBuiltInPhotos.toMutableList().apply {
+                addAll(fromPhotoAlbumPhotos)
+            }
+        } else {
+            val photoAlbumStartPosition = startPosition - builtInPhotos.size
+            @Suppress("UnnecessaryVariable") val photoAlbumPageSize = pageSize
+            readPhotosFromPhotoAlbum(photoAlbumStartPosition, photoAlbumPageSize)
+        }
+        val nextKey = if (photoUris.isNotEmpty()) startPosition + pageSize else null
+        val photos = photoUris
+            .map { uri -> uriToPhoto(uri) }
+            .filter { keySet.add(it.diffKey) }
+        return LoadResult.Page(photos, null, nextKey)
     }
 
-    private suspend fun readAssetPhotos(): List<String> = withToIO {
-        AssetImages.statics
-            .plus(AssetImages.anims)
-            .plus(AssetImages.longQMSHT)
-            .map { it.uri }
-            .toList()
-    }
-
-    private suspend fun readExifPhotos(): List<String> = withToIO {
-        ExifOrientationTestFileHelper(context, AssetImages.clockHor.fileName)
-            .files()
-            .map { it.file.path }
-            .toList()
-    }
-
-    private suspend fun readLocalPhotos(startPosition: Int, pageSize: Int): List<String> =
-        withToIO {
+    private suspend fun readPhotosFromPhotoAlbum(startPosition: Int, pageSize: Int): List<String> {
+        val checkSelfPermission = PermissionChecker
+            .checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {
+            return emptyList()
+        }
+        return withToIO {
             val cursor = context.contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                /* uri = */ MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                /* projection = */
                 arrayOf(
                     MediaStore.Images.Media.TITLE,
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.SIZE,
                     MediaStore.Images.Media.DATE_TAKEN,
-                    MediaStore.Images.Media.MIME_TYPE
                 ),
+                /* selection = */
                 null,
+                /* selectionArgs = */
                 null,
+                /* sortOrder = */
                 MediaStore.Images.Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize
             )
             ArrayList<String>(cursor?.count ?: 0).apply {
                 cursor?.use {
                     while (cursor.moveToNext()) {
-                        val uri = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                        val uri =
+                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                         add(uri)
                     }
                 }
             }
         }
-
-    private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
-        uris.map { uri ->
-            var imageInfo: ImageInfo? = null
-            val sketch = context.sketch
-            try {
-                val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
-                val dataSource = fetcher.fetch().getOrThrow().dataSource
-                imageInfo = if (uri.endsWith(".svg")) {
-                    dataSource.readImageInfoWithSVG()
-                } else {
-                    dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            if (imageInfo != null) {
-                val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
-                val imageSize = Size(imageInfo.width, imageInfo.height)
-                val size = exifOrientationHelper?.applyToSize(imageSize) ?: imageSize
-                Photo(
-                    originalUrl = uri,
-                    mediumUrl = null,
-                    thumbnailUrl = null,
-                    width = size.width,
-                    height = size.height,
-                    exifOrientation = imageInfo.exifOrientation,
-                )
-            } else {
-                Photo(
-                    originalUrl = uri,
-                    mediumUrl = null,
-                    thumbnailUrl = null,
-                    width = null,
-                    height = null,
-                    exifOrientation = 0,
-                )
-            }
-        }
     }
 
-    private fun DataSource.readImageInfoWithSVG(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
+    private suspend fun uriToPhoto(uri: String): Photo {
+        val imageInfo = withToIO {
+            runCatching {
+                val sketch = context.sketch
+                val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
+                val dataSource = fetcher.fetch().getOrThrow().dataSource
+                if (uri.endsWith(".svg")) {
+                    dataSource.readSVGImageInfo()
+                } else {
+                    dataSource.readImageInfoWithBitmapFactoryOrThrow(context.appSettingsService.ignoreExifOrientation.value)
+                }
+            }.apply {
+                if (isFailure) {
+                    exceptionOrNull()?.printStackTrace()
+                }
+            }.getOrNull()
+        }?.let {
+            val newSize = ExifOrientationHelper(it.exifOrientation)?.applyToSize(it.size) ?: it.size
+            it.copy(size = newSize)
+        }
+        return Photo(
+            originalUrl = uri,
+            mediumUrl = null,
+            thumbnailUrl = null,
+            width = imageInfo?.width,
+            height = imageInfo?.height,
+            exifOrientation = imageInfo?.exifOrientation ?: ExifOrientation.UNDEFINED,
+        )
+    }
+
+    private fun DataSource.readSVGImageInfo(useViewBoundsAsIntrinsicSize: Boolean = true): ImageInfo {
         val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
         val width: Int
         val height: Int
