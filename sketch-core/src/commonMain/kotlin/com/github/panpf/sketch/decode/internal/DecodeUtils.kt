@@ -114,7 +114,7 @@ fun DecodeResult.appliedExifOrientation(requestContext: RequestContext): DecodeR
     }
     return newResult(
         image = newImage,
-        imageInfo = imageInfo.newImageInfo(width = newSize.width, height = newSize.height)
+        imageInfo = imageInfo.copy(size = newSize)
     ) {
         addTransformed(createExifOrientationTransformed(imageInfo.exifOrientation))
     }

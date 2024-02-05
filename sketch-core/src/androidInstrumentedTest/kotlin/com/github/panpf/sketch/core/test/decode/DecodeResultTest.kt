@@ -28,6 +28,7 @@ import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.createRotateTransformed
+import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -143,7 +144,7 @@ class DecodeResultTest {
             )
         }
 
-        result.newResult(imageInfo = result.imageInfo.newImageInfo(width = 200, height = 200))
+        result.newResult(imageInfo = result.imageInfo.copy(Size(200, 200)))
             .apply {
                 Assert.assertNotSame(result, this)
                 Assert.assertNotEquals(result, this)

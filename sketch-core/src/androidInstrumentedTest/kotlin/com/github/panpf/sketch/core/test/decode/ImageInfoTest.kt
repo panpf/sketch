@@ -18,6 +18,7 @@ package com.github.panpf.sketch.core.test.decode
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,7 +52,7 @@ class ImageInfoTest {
             Assert.assertEquals(0, exifOrientation)
         }
 
-        imageInfo.newImageInfo().apply {
+        imageInfo.copy().apply {
             Assert.assertNotSame(imageInfo, this)
             Assert.assertEquals(imageInfo, this)
             Assert.assertEquals(300, width)
@@ -60,7 +61,7 @@ class ImageInfoTest {
             Assert.assertEquals(0, exifOrientation)
         }
 
-        imageInfo.newImageInfo(width = 200).apply {
+        imageInfo.copy(Size(200, 500)).apply {
             Assert.assertNotSame(imageInfo, this)
             Assert.assertNotEquals(imageInfo, this)
             Assert.assertEquals(200, width)
@@ -69,7 +70,7 @@ class ImageInfoTest {
             Assert.assertEquals(0, exifOrientation)
         }
 
-        imageInfo.newImageInfo(height = 400).apply {
+        imageInfo.copy(Size(300, 400)).apply {
             Assert.assertNotSame(imageInfo, this)
             Assert.assertNotEquals(imageInfo, this)
             Assert.assertEquals(300, width)
@@ -78,7 +79,7 @@ class ImageInfoTest {
             Assert.assertEquals(0, exifOrientation)
         }
 
-        imageInfo.newImageInfo(mimeType = "image/png").apply {
+        imageInfo.copy(mimeType = "image/png").apply {
             Assert.assertNotSame(imageInfo, this)
             Assert.assertNotEquals(imageInfo, this)
             Assert.assertEquals(300, width)
@@ -87,7 +88,7 @@ class ImageInfoTest {
             Assert.assertEquals(0, exifOrientation)
         }
 
-        imageInfo.newImageInfo(exifOrientation = 2).apply {
+        imageInfo.copy(exifOrientation = 2).apply {
             Assert.assertNotSame(imageInfo, this)
             Assert.assertNotEquals(imageInfo, this)
             Assert.assertEquals(300, width)

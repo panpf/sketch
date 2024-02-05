@@ -15,23 +15,27 @@
  */
 package com.github.panpf.sketch.decode
 
+import com.github.panpf.sketch.util.Size
+
 data class ImageInfo constructor(
-    val width: Int,
-    val height: Int,
+    val size: Size,
     val mimeType: String,
     @ExifOrientation val exifOrientation: Int,
 ) {
 
-    fun newImageInfo(
-        width: Int = this.width,
-        height: Int = this.height,
-        mimeType: String = this.mimeType,
-        exifOrientation: Int = this.exifOrientation,
-    ): ImageInfo = ImageInfo(width, height, mimeType, exifOrientation)
+    val width: Int get() = size.width
+    val height: Int get() = size.height
+
+    constructor(
+        width: Int,
+        height: Int,
+        mimeType: String,
+        @ExifOrientation exifOrientation: Int,
+    ) : this(Size(width, height), mimeType, exifOrientation)
 
     override fun toString(): String {
         val exifOrientationName = ExifOrientation.name(exifOrientation)
-        return "ImageInfo(width=$width, height=$height, mimeType='$mimeType', exifOrientation=$exifOrientationName)"
+        return "ImageInfo(size=$size, mimeType='$mimeType', exifOrientation=$exifOrientationName)"
     }
 
     fun toShortString(): String =

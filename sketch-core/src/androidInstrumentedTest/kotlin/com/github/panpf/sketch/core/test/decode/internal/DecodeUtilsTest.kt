@@ -1365,7 +1365,7 @@ class DecodeUtilsTest {
         }
 
         val noExifOrientationResult = result.newResult(
-            imageInfo = result.imageInfo.newImageInfo(exifOrientation = 0)
+            imageInfo = result.imageInfo.copy(exifOrientation = 0)
         )
         noExifOrientationResult.appliedExifOrientation(
             sketch,
