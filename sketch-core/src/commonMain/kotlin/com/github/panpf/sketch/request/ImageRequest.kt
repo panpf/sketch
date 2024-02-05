@@ -39,6 +39,7 @@ import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 
@@ -52,6 +53,34 @@ fun ImageRequest(
 ): ImageRequest = ImageRequest.Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }.build()
+
+/**
+ * Sets the transition that crossfade
+ */
+fun ImageRequest.Builder.crossfade(
+    durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
+    fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
+    preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+    alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
+): ImageRequest.Builder = apply {
+    setParameter(
+        key = CROSSFADE_KEY,
+        value = Crossfade(
+            durationMillis = durationMillis,
+            fadeStart = fadeStart,
+            preferExactIntrinsicSize = preferExactIntrinsicSize,
+            alwaysUse = alwaysUse
+        ),
+        cacheKey = null
+    )
+}
+
+fun ImageRequest.Builder.removeCrossfade(): ImageRequest.Builder = apply {
+    removeParameter(CROSSFADE_KEY)
+}
+
+val ImageRequest.crossfade: Crossfade?
+    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
 
 /**
  * An immutable image request that contains all the required parameters,
@@ -728,6 +757,8 @@ interface ImageRequest {
             val resizeOnDrawHelper = finalOptions.resizeOnDrawHelper
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
+
+            // TODO 转换 Crossfade 为 CrossfadeTransition.Factory
 
             return ImageRequestImpl(
                 context = context,

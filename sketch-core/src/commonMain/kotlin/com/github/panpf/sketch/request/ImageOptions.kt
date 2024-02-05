@@ -27,13 +27,14 @@ import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.stateimage.StateImage
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 
@@ -47,6 +48,36 @@ fun ImageOptions(
 ): ImageOptions = ImageOptions.Builder().apply {
     configBlock?.invoke(this)
 }.build()
+
+internal val CROSSFADE_KEY = "sketch#crossfade"
+
+/**
+ * Sets the transition that crossfade
+ */
+fun ImageOptions.Builder.crossfade(
+    durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
+    fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
+    preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+    alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
+): ImageOptions.Builder = apply {
+    setParameter(
+        key = CROSSFADE_KEY,
+        value = Crossfade(
+            durationMillis = durationMillis,
+            fadeStart = fadeStart,
+            preferExactIntrinsicSize = preferExactIntrinsicSize,
+            alwaysUse = alwaysUse
+        ),
+        cacheKey = null
+    )
+}
+
+fun ImageOptions.Builder.removeCrossfade(): ImageOptions.Builder = apply {
+    removeParameter(CROSSFADE_KEY)
+}
+
+val ImageOptions.crossfade: Crossfade?
+    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
 
 /**
  * Stores parameters required to download, load, display images
