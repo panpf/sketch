@@ -22,13 +22,11 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import com.github.panpf.sketch.util.getDataSourceCacheFile
 import okio.Path
 import okio.Source
 import okio.source
-import java.io.File
 import java.io.IOException
-import java.io.InputStream
 
 /**
  * Provides access to image data in android resources
@@ -51,7 +49,7 @@ class ResourceDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path = getDataSourceCacheFile(sketch, request, this)
 
     override fun toString(): String = "ResourceDataSource($resId)"
 }

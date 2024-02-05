@@ -22,7 +22,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.withLock
 import okio.IOException
 import okio.Path
 import okio.buffer
@@ -169,7 +168,7 @@ internal fun intSplit(value: Int): Pair<Int, Int> {
 
 @WorkerThread
 @Throws(IOException::class)
-internal fun getCacheFileFromStreamDataSource(
+internal fun getDataSourceCacheFile(
     sketch: Sketch,
     request: ImageRequest,
     dataSource: DataSource,
@@ -184,9 +183,9 @@ internal fun getCacheFileFromStreamDataSource(
             val editor = resultCache.openEditor(resultCacheKey)
                 ?: throw IOException("Disk cache cannot be used")
             try {
-                dataSource.openSource().buffer().use { source ->
+                dataSource.openSource().use { source ->
                     resultCache.fileSystem.sink(editor.data).buffer().use { sink ->
-                        source.buffer.copyTo(sink.buffer)
+                        sink.writeAll(source)
                     }
                 }
                 editor.commitAndOpenSnapshot()

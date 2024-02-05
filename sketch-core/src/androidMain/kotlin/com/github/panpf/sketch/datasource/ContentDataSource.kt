@@ -21,14 +21,13 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import com.github.panpf.sketch.util.getDataSourceCacheFile
 import okio.Path
 import okio.Path.Companion.toOkioPath
 import okio.Source
 import okio.source
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
 
 /**
  * Provides access to image data in content resources
@@ -54,7 +53,7 @@ class ContentDataSource constructor(
             val filePath = FileUriFetcher.parseFilePathFromFileUri(contentUri.toString())!!
             File(filePath).toOkioPath()
         } else {
-            getCacheFileFromStreamDataSource(sketch, request, this)
+            getDataSourceCacheFile(sketch, request, this)
         }
 
     override fun toString(): String = "ContentDataSource('$contentUri')"

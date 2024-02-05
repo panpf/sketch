@@ -35,7 +35,7 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import com.github.panpf.sketch.util.getDataSourceCacheFile
 import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.intMerged
@@ -214,9 +214,9 @@ class UtilsTest {
             request = ImageRequest(context, AssetImages.jpeg.uri),
             assetFileName = AssetImages.jpeg.fileName
         ).apply {
-            val file = getCacheFileFromStreamDataSource(sketch, request, this)
+            val file = getDataSourceCacheFile(sketch, request, this)
             Assert.assertTrue(file.path.contains("/cache/"))
-            val file1 = getCacheFileFromStreamDataSource(sketch, request, this)
+            val file1 = getDataSourceCacheFile(sketch, request, this)
             Assert.assertEquals(file.path, file1.path)
         }
 
@@ -226,7 +226,7 @@ class UtilsTest {
                 request = ImageRequest(context, newAssetUri("not_found.jpeg")),
                 assetFileName = "not_found.jpeg"
             ).apply {
-                getCacheFileFromStreamDataSource(sketch, request, this)
+                getDataSourceCacheFile(sketch, request, this)
             }
         }
     }

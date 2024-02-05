@@ -27,10 +27,9 @@ import okio.BufferedSink
 import okio.IOException
 
 @Throws(IOException::class, CancellationException::class)
-internal suspend fun copyToWithActive(
+internal suspend fun BufferedSink.writeAllWithProgress(
     request: ImageRequest,
     content: Content,
-    sink: BufferedSink,
     contentLength: Long,
     bufferSize: Int = DEFAULT_BUFFER_SIZE,
 ): Long = coroutineScope {
@@ -43,7 +42,7 @@ internal suspend fun copyToWithActive(
     }
     var lastUpdateProgressBytesCopied = 0L
     while (bytes >= 0 && isActive) {
-        sink.write(buffer, 0, bytes)
+        this@writeAllWithProgress.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
             val currentTime = System.currentTimeMillis()

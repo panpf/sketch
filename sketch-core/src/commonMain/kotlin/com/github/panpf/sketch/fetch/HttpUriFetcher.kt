@@ -24,7 +24,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.fetch.internal.copyToWithActive
+import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.Depth
@@ -34,7 +34,6 @@ import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
 import okio.Buffer
 import okio.IOException
@@ -179,7 +178,7 @@ open class HttpUriFetcher(
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
                 downloadCache.fileSystem.sink(editor.data).buffer().use { sink ->
-                    copyToWithActive(request, content, sink, contentLength)
+                    sink.writeAllWithProgress(request, content, contentLength)
                 }
             }
             // 'Transform-Encoding: chunked' contentLength is -1
@@ -229,7 +228,7 @@ open class HttpUriFetcher(
         val contentLength = response.contentLength
         val buffer = Buffer()
         val readLength = response.content().use { content ->
-            copyToWithActive(request, content, buffer, contentLength)
+            buffer.writeAllWithProgress(request, content, contentLength)
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =

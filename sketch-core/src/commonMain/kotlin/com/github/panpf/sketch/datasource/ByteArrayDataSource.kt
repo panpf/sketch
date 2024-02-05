@@ -18,7 +18,7 @@ package com.github.panpf.sketch.datasource
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.getCacheFileFromStreamDataSource
+import com.github.panpf.sketch.util.getDataSourceCacheFile
 import okio.Buffer
 import okio.IOException
 import okio.Path
@@ -40,7 +40,7 @@ class ByteArrayDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path = getDataSourceCacheFile(sketch, request, this)
 
     override fun toString(): String =
         "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"

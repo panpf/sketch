@@ -17,7 +17,7 @@ package com.github.panpf.sketch.core.test.fetch.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.fetch.internal.copyToWithActive
+import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
@@ -43,7 +43,7 @@ class DownloadUtilsTest {
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream = ByteArrayOutputStream()
         runBlocking {
-            copyToWithActive(
+            writeAllWithProgress(
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
@@ -61,7 +61,7 @@ class DownloadUtilsTest {
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream2 = ByteArrayOutputStream()
         runBlocking {
-            copyToWithActive(
+            writeAllWithProgress(
                 request = ImageRequest(context, "http://sample.com/sample.jpeg"),
                 content = SlowInputStream(string.byteInputStream(), 100),
                 sink = outputStream2,
@@ -77,7 +77,7 @@ class DownloadUtilsTest {
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream3 = ByteArrayOutputStream()
         runBlocking {
-            copyToWithActive(
+            writeAllWithProgress(
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
@@ -95,7 +95,7 @@ class DownloadUtilsTest {
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream4 = ByteArrayOutputStream()
         runBlocking {
-            copyToWithActive(
+            writeAllWithProgress(
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
