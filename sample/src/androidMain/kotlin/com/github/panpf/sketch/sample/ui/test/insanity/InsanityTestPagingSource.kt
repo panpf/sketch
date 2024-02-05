@@ -23,7 +23,7 @@ import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrN
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
@@ -39,7 +39,7 @@ class InsanityTestPagingSource(private val context: Context) :
         val startPosition = params.key ?: 0
         val assetPhotos = if (startPosition == 0) readAssetPhotos() else emptyList()
         val photos = urisToPhotos(assetPhotos)
-        return LoadResult.Page(photos.filter { keySet.add(it.diffKey) }, null, null)
+        return LoadResult.Page(photos.filter { keySet.add(it.originalUrl) }, null, null)
     }
 
     private suspend fun readAssetPhotos(): List<String> = withToIO {

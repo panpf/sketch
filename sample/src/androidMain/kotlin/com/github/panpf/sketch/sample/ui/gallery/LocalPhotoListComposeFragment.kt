@@ -21,7 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow
 
 class LocalPhotoListComposeFragment : BasePhotoListComposeFragment() {

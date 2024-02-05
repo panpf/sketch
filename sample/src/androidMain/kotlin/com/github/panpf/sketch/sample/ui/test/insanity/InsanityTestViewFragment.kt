@@ -30,11 +30,11 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
-import com.github.panpf.sketch.sample.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
+import com.github.panpf.sketch.sample.ui.gallery.PhotoDiffCallback
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItemFactory
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -68,8 +68,9 @@ class InsanityTestViewFragment : BaseToolbarBindingFragment<FragmentRecyclerRefr
                 useSideDividerAsSideHeaderAndFooterDivider()
             }
 
-            val pagingAdapter = AssemblyPagingDataAdapter<Photo>(
-                listOf(PhotoGridItemFactory())
+            val pagingAdapter = AssemblyPagingDataAdapter(
+                itemFactoryList = listOf(PhotoGridItemFactory()),
+                diffCallback = PhotoDiffCallback()
             ).apply {
                 localPhotoListViewModel.pagingFlow
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { pagingData ->

@@ -1,7 +1,7 @@
-package com.github.panpf.sketch.sample.data.pexels
+package com.github.panpf.sketch.sample.data.api.pexels
 
-import com.github.panpf.sketch.sample.data.BaseApi
-import com.github.panpf.sketch.sample.data.Response
+import com.github.panpf.sketch.sample.data.api.BaseApi
+import com.github.panpf.sketch.sample.data.api.Response
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header

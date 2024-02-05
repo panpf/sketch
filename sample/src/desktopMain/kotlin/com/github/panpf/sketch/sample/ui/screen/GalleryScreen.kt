@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -25,17 +24,15 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.ability.dataFromLogo
@@ -48,12 +45,12 @@ import com.github.panpf.sketch.compose.stateimage.rememberIconPainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.navigation.Navigation
 import com.github.panpf.sketch.sample.ui.rememberIconErrorBaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.rememberMimeTypeLogoMap
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
@@ -62,9 +59,14 @@ import kotlinx.coroutines.launch
 @Preview
 fun GalleryScreen(navigation: Navigation) {
     val coroutineScope = rememberCoroutineScope()
-    val localListViewModel = rememberLocalPhotoListViewModel().pagingFlow.collectAsLazyPagingItems()
-    val pexelsListViewModel = rememberPexelsPhotoListViewModel().pagingFlow.collectAsLazyPagingItems()
-    val giphyListViewModel = rememberGiphyPhotoListViewModel().pagingFlow.collectAsLazyPagingItems()
+    val context = LocalPlatformContext.current
+    val sketch = SingletonSketch.get(context)
+    val localListViewModel =
+        remember { LocalPhotoListScreenModel(context, sketch) }.pagingFlow.collectAsLazyPagingItems()
+    val pexelsListViewModel =
+        remember { PexelsPhotoListScreenModel() }.pagingFlow.collectAsLazyPagingItems()
+    val giphyListViewModel =
+        remember { GiphyPhotoListScreenModel() }.pagingFlow.collectAsLazyPagingItems()
     val photoListStates = remember {
         listOf(
             localListViewModel,
@@ -75,9 +77,7 @@ fun GalleryScreen(navigation: Navigation) {
     val tabTiles = remember {
         listOf("Local", "Pexels", "Giphy")
     }
-    val pagerState = rememberPagerState() {
-        photoListStates.size
-    }
+    val pagerState = rememberPagerState { photoListStates.size }
     Column {
         TabRow(selectedTabIndex = pagerState.currentPage) {
             tabTiles.forEachIndexed { index, title ->
@@ -119,7 +119,7 @@ fun PhotoGridPage(photoListState: LazyPagingItems<Photo>) {
         ) {
             items(
                 count = photoListState.itemCount,
-                key = { photoListState.peek(it)?.diffKey ?: "" },
+                key = { photoListState.peek(it)?.originalUrl ?: "" },
             ) { index ->
                 val photo = photoListState[index]!!
                 val imageState = rememberAsyncImageState()
@@ -134,7 +134,7 @@ fun PhotoGridPage(photoListState: LazyPagingItems<Photo>) {
                     iconTint = colorScheme.onPrimaryContainer
                 )
                 AsyncImage(
-                    request = ImageRequest(LocalPlatformContext.current, photo.thumbnailUrl) {
+                    request = ImageRequest(LocalPlatformContext.current, photo.listThumbnailUrl) {
                         precision(LongImageClipPrecisionDecider())
                         scale(LongImageStartCropScaleDecider())
 //                        memoryCachePolicy(DISABLED)

@@ -79,8 +79,6 @@ kotlin {
                 implementation(libs.panpf.tools4k)
                 implementation(libs.panpf.activitymonitor)
                 implementation(libs.panpf.zoomimage.view)
-                implementation(libs.retrofit2)
-                implementation(libs.retrofit2.kotlinxSerializationConverter)
                 implementation(libs.tinypinyin)
                 implementation(libs.okhttp3.logging)
             }

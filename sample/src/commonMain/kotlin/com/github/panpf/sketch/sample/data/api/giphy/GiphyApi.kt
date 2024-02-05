@@ -1,11 +1,9 @@
-package com.github.panpf.sketch.sample.data.giphy
+package com.github.panpf.sketch.sample.data.api.giphy
 
-import com.github.panpf.sketch.sample.data.BaseApi
-import com.github.panpf.sketch.sample.data.Response
-import com.github.panpf.sketch.sample.data.pexels.PexelsCurated
+import com.github.panpf.sketch.sample.data.api.BaseApi
+import com.github.panpf.sketch.sample.data.api.Response
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 
 class GiphyApi(client: HttpClient) : BaseApi(client, "https://api.giphy.com") {
@@ -18,7 +16,11 @@ class GiphyApi(client: HttpClient) : BaseApi(client, "https://api.giphy.com") {
         }
     }
 
-    suspend fun search(queryWord: String, pageStart: Int, pageSize: Int): Response<GiphySearchResponse> {
+    suspend fun search(
+        queryWord: String,
+        pageStart: Int,
+        pageSize: Int
+    ): Response<GiphySearchResponse> {
         return execute(buildGetRequestWithPath("/v1/gifs/search?type=gifs&sort=") {
             parameter("q", queryWord)
             parameter("offset", pageStart)

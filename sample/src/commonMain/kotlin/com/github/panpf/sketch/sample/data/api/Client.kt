@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.data
+package com.github.panpf.sketch.sample.data.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

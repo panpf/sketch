@@ -43,7 +43,7 @@ import com.github.panpf.sketch.sample.model.ImageDetail
 import com.github.panpf.sketch.sample.model.LayoutMode
 import com.github.panpf.sketch.sample.model.LayoutMode.GRID
 import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
@@ -142,12 +142,15 @@ abstract class BasePhotoListViewFragment :
     }
 
     private fun newPagingAdapter(binding: FragmentRecyclerRefreshBinding): PagingDataAdapter<*, *> {
-        return AssemblyPagingDataAdapter<Photo>(listOf(
-            PhotoGridItemFactory(animatedPlaceholder = animatedPlaceholder)
-                .setOnViewClickListener(R.id.myListImage) { _, _, _, absoluteAdapterPosition, _ ->
-                    startImageDetail(binding, absoluteAdapterPosition)
-                }
-        )).apply {
+        return AssemblyPagingDataAdapter<Photo>(
+            itemFactoryList = listOf(
+                PhotoGridItemFactory(animatedPlaceholder = animatedPlaceholder)
+                    .setOnViewClickListener(R.id.myListImage) { _, _, _, absoluteAdapterPosition, _ ->
+                        startImageDetail(binding, absoluteAdapterPosition)
+                    }
+            ),
+            diffCallback = PhotoDiffCallback()
+        ).apply {
             pagingFlowCollectJob?.cancel()
             pagingFlowCollectJob = viewLifecycleOwner.lifecycleScope.launch {
                 photoPagingFlow.collect {

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.screen
+package com.github.panpf.sketch.sample.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.data.Apis
-import com.github.panpf.sketch.sample.data.Response
-import com.github.panpf.sketch.sample.data.giphy.GiphyGif
+import com.github.panpf.sketch.sample.data.api.Apis
+import com.github.panpf.sketch.sample.data.api.Response
+import com.github.panpf.sketch.sample.data.api.giphy.GiphyGif
+import com.github.panpf.sketch.sample.ui.model.Photo
 
 class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
 
@@ -40,7 +41,7 @@ class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
         return if (response is Response.Success) {
             val giphyPhotos = response.body.dataList ?: emptyList()
             val photos = giphyPhotos.map { it.toPhoto() }
-            val filteredPhotos = photos.filter { keySet.add(it.diffKey) }
+            val filteredPhotos = photos.filter { keySet.add(it.originalUrl) }
             val nextKey = if (giphyPhotos.isNotEmpty()) pageStart + pageSize else null
             LoadResult.Page(filteredPhotos, null, nextKey)
         } else {
@@ -52,7 +53,11 @@ class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
     private fun GiphyGif.toPhoto(): Photo {
         return Photo(
             originalUrl = images.original.downloadUrl,
+            mediumUrl = images.original.downloadUrl,
             thumbnailUrl = images.fixedWidth.downloadUrl,
+            width = images.original.width.toInt(),
+            height = images.original.height.toInt(),
+            exifOrientation = 0,
         )
     }
 }

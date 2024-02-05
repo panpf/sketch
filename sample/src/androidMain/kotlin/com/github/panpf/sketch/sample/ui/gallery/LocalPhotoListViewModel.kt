@@ -21,6 +21,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.github.panpf.sketch.sample.data.paging.LocalPhotoListPagingSource
+import com.github.panpf.sketch.sketch
 
 class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
@@ -30,7 +32,7 @@ class LocalPhotoListViewModel(application: Application) : AndroidViewModel(appli
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            LocalPhotoListPagingSource(application)
+            LocalPhotoListPagingSource(application, application.sketch)
         }
     ).flow.cachedIn(viewModelScope)
 }

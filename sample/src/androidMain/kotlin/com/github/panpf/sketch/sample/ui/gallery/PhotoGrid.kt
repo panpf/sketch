@@ -48,7 +48,7 @@ import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.model.LayoutMode
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.list.AppendState
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.Flow
@@ -113,7 +113,7 @@ private fun PhotoNormalGrid(
     ) {
         items(
             count = pagingItems.itemCount,
-            key = { pagingItems.peek(it)?.diffKey ?: "" },
+            key = { pagingItems.peek(it)?.originalUrl ?: "" },
             contentType = { 1 }
         ) { index ->
             val item = pagingItems[index]
@@ -164,7 +164,7 @@ private fun PhotoStaggeredGrid(
     ) {
         items(
             count = pagingItems.itemCount,
-            key = { pagingItems.peek(it)?.diffKey ?: "" },
+            key = { pagingItems.peek(it)?.originalUrl ?: "" },
             contentType = { 1 }
         ) { index ->
             val item = pagingItems[index]

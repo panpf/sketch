@@ -17,16 +17,16 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow
 
 class GifPhotoListViewFragment : BasePhotoListViewFragment() {
 
-    private val gifPhotoListViewModel by viewModels<GifPhotoListViewModel>()
+    private val giphyPhotoListViewModel by viewModels<GiphyPhotoListViewModel>()
 
     override val animatedPlaceholder: Boolean
         get() = true
 
     override val photoPagingFlow: Flow<PagingData<Photo>>
-        get() = gifPhotoListViewModel.pagingFlow
+        get() = giphyPhotoListViewModel.pagingFlow
 }

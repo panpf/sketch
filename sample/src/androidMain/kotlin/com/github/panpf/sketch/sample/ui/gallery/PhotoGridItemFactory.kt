@@ -30,7 +30,7 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
@@ -40,7 +40,7 @@ import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class PhotoGridItemFactory(val animatedPlaceholder: Boolean = false) :
+class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false) :
     BaseBindingItemFactory<Photo, GridItemImageBinding>(Photo::class) {
 
     private var itemSize: Point? = null

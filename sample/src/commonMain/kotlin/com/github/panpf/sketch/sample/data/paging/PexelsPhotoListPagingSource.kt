@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.screen
+package com.github.panpf.sketch.sample.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.panpf.sketch.sample.data.Apis
-import com.github.panpf.sketch.sample.data.Response
-import com.github.panpf.sketch.sample.data.pexels.PexelsPhoto
+import com.github.panpf.sketch.sample.data.api.Apis
+import com.github.panpf.sketch.sample.data.api.Response
+import com.github.panpf.sketch.sample.data.api.pexels.PexelsPhoto
+import com.github.panpf.sketch.sample.ui.model.Photo
 
-class PexelsPhotoListPagingSource :
-    PagingSource<Int, Photo>() {
+class PexelsPhotoListPagingSource : PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
 
@@ -40,7 +40,7 @@ class PexelsPhotoListPagingSource :
         return if (response is Response.Success) {
             val pexelsPhotos = response.body.photos
             val photos = pexelsPhotos.map { it.toPhoto() }
-            val filteredPhotos = photos.filter { keySet.add(it.diffKey) }
+            val filteredPhotos = photos.filter { keySet.add(it.originalUrl) }
             val nextKey = if (pexelsPhotos.isNotEmpty()) pageNumber + 1 else null
             LoadResult.Page(filteredPhotos, null, nextKey)
         } else {
@@ -50,6 +50,13 @@ class PexelsPhotoListPagingSource :
     }
 
     private fun PexelsPhoto.toPhoto(): Photo {
-        return Photo(thumbnailUrl = this.src.medium, originalUrl = this.src.original)
+        return Photo(
+            originalUrl = src.original,
+            mediumUrl = src.large,
+            thumbnailUrl = src.medium,
+            width = width,
+            height = height,
+            exifOrientation = 0,
+        )
     }
 }

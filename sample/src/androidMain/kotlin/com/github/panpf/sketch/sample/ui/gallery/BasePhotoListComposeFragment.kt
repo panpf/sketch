@@ -20,7 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.model.Photo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.encodeToString
