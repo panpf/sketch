@@ -2,9 +2,13 @@ package com.github.panpf.sketch.sample
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
 import com.github.panpf.sketch.resize.Precision
@@ -14,11 +18,11 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.sample.util.internal.SettingsStateFlow
-import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.sample.ui.model.LayoutMode
 import com.github.panpf.sketch.sample.util.ParamLazy
+import com.github.panpf.sketch.sample.util.internal.booleanSettingsStateFlow
+import com.github.panpf.sketch.sample.util.internal.stringSettingsStateFlow
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.name
@@ -42,114 +46,97 @@ class AppSettings(val context: PlatformContext) {
      * list config
      */
     val showMimeTypeLogoInLIst by lazy {
-        SettingsStateFlow("showMimeTypeLogoInLIst", true, dataStore)
+        booleanSettingsStateFlow("showMimeTypeLogoInLIst", true, dataStore)
     }
     val showProgressIndicatorInList by lazy {
-        SettingsStateFlow("showProgressIndicatorInList", true, dataStore)
+        booleanSettingsStateFlow("showProgressIndicatorInList", true, dataStore)
     }
     val showDataFromLogo by lazy {
-        SettingsStateFlow("showDataFrom", true, dataStore)
+        booleanSettingsStateFlow("showDataFrom", true, dataStore)
     }
     val pauseLoadWhenScrollInList by lazy {
-        SettingsStateFlow("pauseLoadWhenScrollInList", false, dataStore)
+        booleanSettingsStateFlow("pauseLoadWhenScrollInList", false, dataStore)
     }
 
     /*
      * image load
      */
     val bitmapQuality by lazy {
-        SettingsStateFlow("bitmapQuality", "Default", dataStore)
+        stringSettingsStateFlow("bitmapQuality", "Default", dataStore)
     }
     val colorSpace by lazy {
-        SettingsStateFlow("colorSpace", "Default", dataStore)
+        stringSettingsStateFlow("colorSpace", "Default", dataStore)
     }
     val inPreferQualityOverSpeed by lazy {
-        SettingsStateFlow("inPreferQualityOverSpeed", false, dataStore)
+        booleanSettingsStateFlow("inPreferQualityOverSpeed", false, dataStore)
     }
 
     val disabledMemoryCache by lazy {
-        SettingsStateFlow("disabledBitmapMemoryCache", false, dataStore)
+        booleanSettingsStateFlow("disabledBitmapMemoryCache", false, dataStore)
     }
     val disabledResultCache by lazy {
-        SettingsStateFlow("disabledBitmapResultCache", false, dataStore)
+        booleanSettingsStateFlow("disabledBitmapResultCache", false, dataStore)
     }
     val disabledDownloadCache by lazy {
-        SettingsStateFlow("disabledDownloadCache", false, dataStore)
+        booleanSettingsStateFlow("disabledDownloadCache", false, dataStore)
     }
 
     val precision by lazy {
-        SettingsStateFlow("precision", "LongImageClipMode", dataStore)
+        stringSettingsStateFlow("precision", "LongImageClipMode", dataStore)
     }
     val scale by lazy {
-        SettingsStateFlow("scale", "LongImageMode", dataStore)
+        stringSettingsStateFlow("scale", "LongImageMode", dataStore)
     }
     val longImageScale by lazy {
-        SettingsStateFlow("longImageScale", START_CROP.name, dataStore)
+        stringSettingsStateFlow("longImageScale", START_CROP.name, dataStore)
     }
     val otherImageScale by lazy {
-        SettingsStateFlow("otherImageScale", CENTER_CROP.name, dataStore)
+        stringSettingsStateFlow("otherImageScale", CENTER_CROP.name, dataStore)
     }
 
     val ignoreExifOrientation by lazy {
-        SettingsStateFlow("ignoreExifOrientation", false, dataStore)
+        booleanSettingsStateFlow("ignoreExifOrientation", false, dataStore)
     }
     val saveCellularTrafficInList by lazy {
-        SettingsStateFlow("saveCellularTrafficInList", false, dataStore)
+        booleanSettingsStateFlow("saveCellularTrafficInList", false, dataStore)
     }
     val disallowAnimatedImageInList by lazy {
-        SettingsStateFlow("disallowAnimatedImageInList", false, dataStore)
+        booleanSettingsStateFlow("disallowAnimatedImageInList", false, dataStore)
     }
 
     /*
      * view config
      */
     val contentScale by lazy {
-        SettingsStateFlow("contentScale", ContentScaleCompat.Fit.name, dataStore)
+        stringSettingsStateFlow("contentScale", ContentScaleCompat.Fit.name, dataStore)
     }
     val alignment by lazy {
-        SettingsStateFlow("alignment", AlignmentCompat.Center.name, dataStore)
+        stringSettingsStateFlow("alignment", AlignmentCompat.Center.name, dataStore)
     }
     val scrollBarEnabled by lazy {
-        SettingsStateFlow("scrollBarEnabled", true, dataStore)
+        booleanSettingsStateFlow("scrollBarEnabled", true, dataStore)
     }
     val readModeEnabled by lazy {
-        SettingsStateFlow("readModeEnabled", true, dataStore)
+        booleanSettingsStateFlow("readModeEnabled", true, dataStore)
     }
     val showTileBounds by lazy {
-        SettingsStateFlow("showTileBounds", false, dataStore)
+        booleanSettingsStateFlow("showTileBounds", false, dataStore)
     }
 
     /*
      * other
      */
     val photoListLayoutMode by lazy {
-        SettingsStateFlow("photoListLayoutMode", LayoutMode.GRID.name, dataStore)
+        stringSettingsStateFlow("photoListLayoutMode", LayoutMode.GRID.name, dataStore)
     }
     val showOriginImage by lazy {
-        SettingsStateFlow("showOriginImage", false, dataStore)
+        booleanSettingsStateFlow("showOriginImage", false, dataStore)
     }
     val logLevel by lazy {
         val defaultState = if (isDebugMode()) Logger.Level.DEBUG.name else Logger.Level.INFO.name
-        SettingsStateFlow("logLevel", defaultState, dataStore)
+        stringSettingsStateFlow("logLevel", defaultState, dataStore)
     }
 
-//    private val bitmapQualityValue: BitmapConfig?
-//        get() = when (bitmapQuality.value) {
-//            "LOW" -> BitmapConfig.LowQuality
-//            "HIGH" -> BitmapConfig.HighQuality
-//            else -> null
-//        }
-//
-//    @get:RequiresApi(VERSION_CODES.O)
-//    private val colorSpaceValue: ColorSpace.Named?
-//        get() = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-//            when (val value = colorSpace.value) {
-//                "Default" -> null
-//                else -> ColorSpace.Named.valueOf(value)
-//            }
-//        } else {
-//            null
-//        }
     private val disabledMemoryCacheValue: CachePolicy
         get() = if (disabledMemoryCache.value) DISABLED else ENABLED
     private val disabledDownloadCacheValue: CachePolicy
@@ -206,38 +193,32 @@ class AppSettings(val context: PlatformContext) {
     val viewersCombinedFlow: Flow<Any> =
         combine(viewerFlows) { it.joinToString() }
 
-//    fun buildListImageOptions(): ImageOptions = ImageOptions {
-//        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
-//
-//        bitmapConfig(bitmapQualityValue)
-//        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-//            colorSpace(colorSpaceValue)
-//        }
-//        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed.value)
-//
-//        memoryCachePolicy(disabledMemoryCacheValue)
-//        resultCachePolicy(disabledResultCacheValue)
-//        downloadCachePolicy(disabledDownloadCacheValue)
-//
-//        precision(precisionValue)
-//        scale(scaleValue)
-//
-//        ignoreExifOrientation(ignoreExifOrientation.value)
-//        saveCellularTraffic(saveCellularTrafficInList.value)
-//        disallowAnimatedImage(disallowAnimatedImageInList.value)
-//    }
-//
-//    fun buildViewerImageOptions(): ImageOptions = ImageOptions {
-//        bitmapConfig(bitmapQualityValue)
-//        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-//            colorSpace(colorSpaceValue)
-//        }
-//        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed.value)
-//
-//        memoryCachePolicy(disabledMemoryCacheValue)
-//        resultCachePolicy(disabledResultCacheValue)
-//        downloadCachePolicy(disabledDownloadCacheValue)
-//
-//        ignoreExifOrientation(ignoreExifOrientation.value)
-//    }
+    fun buildListImageOptions(): ImageOptions = ImageOptions {
+        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
+
+        platformBuildImageOptions(this@AppSettings)
+
+        memoryCachePolicy(disabledMemoryCacheValue)
+        resultCachePolicy(disabledResultCacheValue)
+        downloadCachePolicy(disabledDownloadCacheValue)
+
+        precision(precisionValue)
+        scale(scaleValue)
+
+        ignoreExifOrientation(ignoreExifOrientation.value)
+        saveCellularTraffic(saveCellularTrafficInList.value)
+        disallowAnimatedImage(disallowAnimatedImageInList.value)
+    }
+
+    fun buildViewerImageOptions(): ImageOptions = ImageOptions {
+        platformBuildImageOptions(this@AppSettings)
+
+        memoryCachePolicy(disabledMemoryCacheValue)
+        resultCachePolicy(disabledResultCacheValue)
+        downloadCachePolicy(disabledDownloadCacheValue)
+
+        ignoreExifOrientation(ignoreExifOrientation.value)
+    }
 }
+
+expect fun ImageOptions.Builder.platformBuildImageOptions(appSettings: AppSettings)

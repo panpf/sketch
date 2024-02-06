@@ -18,3 +18,28 @@ actual fun rememberIconErrorBaselinePainter(): Painter {
 actual fun rememberIconSignalCellularPainter(): Painter {
     return painterResource("ic_signal_cellular.xml")
 }
+
+@Composable
+actual fun rememberIconLayoutGridPainter(): Painter {
+    return painterResource("ic_layout_grid.xml")
+}
+
+@Composable
+actual fun rememberIconLayoutGridStaggeredPainter(): Painter {
+    return painterResource("ic_layout_grid_staggered.xml")
+}
+
+@Composable
+actual fun rememberIconPlayPainter(): Painter {
+    return painterResource("ic_play.xml")
+}
+
+@Composable
+actual fun rememberIconPausePainter(): Painter {
+    return painterResource("ic_pause.xml")
+}
+
+@Composable
+actual fun rememberIconSettingsPainter(): Painter {
+    return painterResource("ic_settings.xml")
+}

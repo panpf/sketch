@@ -30,21 +30,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-fun SettingsStateFlow(
-    key: String, initialize: String, dataStore: DataStore<Preferences>,
-): SettingsStateFlow<String> =
-    DataStoreSettingsStateFlowImpl(
-        initialize,
-        StringDataStoreAdapter(dataStore, key, initialize)
-    )
+fun stringSettingsStateFlow(
+    key: String,
+    initialize: String,
+    dataStore: DataStore<Preferences>,
+): SettingsStateFlow<String> = DataStoreSettingsStateFlowImpl(
+    initialize = initialize,
+    adapter = StringDataStoreAdapter(dataStore, key, initialize)
+)
 
-fun SettingsStateFlow(
-    key: String, initialize: Boolean, dataStore: DataStore<Preferences>,
-): SettingsStateFlow<Boolean> =
-    DataStoreSettingsStateFlowImpl(
-        initialize,
-        BooleanDataStoreAdapter(dataStore, key, initialize)
-    )
+fun booleanSettingsStateFlow(
+    key: String,
+    initialize: Boolean,
+    dataStore: DataStore<Preferences>,
+): SettingsStateFlow<Boolean> = DataStoreSettingsStateFlowImpl(
+    initialize = initialize,
+    adapter = BooleanDataStoreAdapter(dataStore, key, initialize)
+)
 
 interface SettingsStateFlow<T> : MutableStateFlow<T>
 
@@ -113,6 +115,7 @@ private class StringDataStoreAdapter(
         set(value) {
             field = value
             coroutineScope.launch {
+                // TODO invalid
                 dataStore.edit {
                     it[preferencesKey] = value
                 }

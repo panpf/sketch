@@ -2,24 +2,12 @@ package com.github.panpf.sketch.sample.ui.screen
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -28,27 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import app.cash.paging.compose.LazyPagingItems
-import app.cash.paging.compose.collectAsLazyPagingItems
+import androidx.paging.PagingData
 import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
-import com.github.panpf.sketch.compose.ability.dataFromLogo
-import com.github.panpf.sketch.compose.ability.mimeTypeLogo
-import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.compose.stateimage.rememberIconPainterStateImage
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.navigation.Navigation
-import com.github.panpf.sketch.sample.ui.rememberIconErrorBaselinePainter
-import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
-import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import com.github.panpf.sketch.sample.util.rememberMimeTypeLogoMap
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
@@ -59,26 +33,29 @@ fun GalleryScreen(navigation: Navigation) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalPlatformContext.current
     val sketch = SingletonSketch.get(context)
-    val localListViewModel =
-        remember { LocalPhotoListScreenModel(context, sketch) }.pagingFlow.collectAsLazyPagingItems()
-    val pexelsListViewModel =
-        remember { PexelsPhotoListScreenModel() }.pagingFlow.collectAsLazyPagingItems()
-    val giphyListViewModel =
-        remember { GiphyPhotoListScreenModel() }.pagingFlow.collectAsLazyPagingItems()
-    val photoListStates = remember {
+    val pages = remember {
         listOf(
-            localListViewModel,
-            pexelsListViewModel,
-            giphyListViewModel,
+            Page(
+                title = "Local",
+                animatedPlaceholder = false,
+                photoPagingFlow = LocalPhotoListScreenModel(context, sketch).pagingFlow
+            ),
+            Page(
+                title = "Pexels",
+                animatedPlaceholder = false,
+                photoPagingFlow = PexelsPhotoListScreenModel().pagingFlow
+            ),
+            Page(
+                title = "Giphy",
+                animatedPlaceholder = true,
+                photoPagingFlow = GiphyPhotoListScreenModel().pagingFlow
+            ),
         )
     }
-    val tabTiles = remember {
-        listOf("Local", "Pexels", "Giphy")
-    }
-    val pagerState = rememberPagerState { photoListStates.size }
+    val pagerState = rememberPagerState { pages.size }
     Column {
         TabRow(selectedTabIndex = pagerState.currentPage) {
-            tabTiles.forEachIndexed { index, title ->
+            pages.forEachIndexed { index, page ->
                 Tab(
                     selected = index == pagerState.currentPage,
                     onClick = {
@@ -87,82 +64,29 @@ fun GalleryScreen(navigation: Navigation) {
                         }
                     }
                 ) {
-                    Text(text = title, Modifier.padding(vertical = 10.dp))
+                    Text(text = page.title, Modifier.padding(vertical = 10.dp))
                 }
             }
         }
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize(),
-        ) { page ->
-            PhotoGridPage(photoListStates[page])
-        }
-    }
-}
-
-@Composable
-fun PhotoGridPage(photoListState: LazyPagingItems<Photo>) {
-//    val photoList by photoListState.collectAsState()
-    val divider = Arrangement.spacedBy(4.dp)
-    val colorScheme = MaterialTheme.colorScheme
-
-    Box(Modifier.fillMaxSize()) {
-        val gridState: LazyGridState = rememberLazyGridState()
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(150.dp),
-            horizontalArrangement = divider,
-            verticalArrangement = divider,
-            modifier = Modifier.fillMaxSize(),
-            state = gridState,
-        ) {
-            items(
-                count = photoListState.itemCount,
-                key = { photoListState.peek(it)?.originalUrl ?: "" },
-            ) { index ->
-                val photo = photoListState[index]!!
-                val imageState = rememberAsyncImageState()
-                val placeholderStateImage = rememberIconPainterStateImage(
-                    icon = rememberIconImageOutlinePainter(),
-                    background = colorScheme.primaryContainer,
-                    iconTint = colorScheme.onPrimaryContainer
-                )
-                val errorStateImage = rememberIconPainterStateImage(
-                    icon = rememberIconErrorBaselinePainter(),
-                    background = colorScheme.primaryContainer,
-                    iconTint = colorScheme.onPrimaryContainer
-                )
-                AsyncImage(
-                    request = ImageRequest(LocalPlatformContext.current, photo.listThumbnailUrl) {
-                        precision(LongImageClipPrecisionDecider())
-                        scale(LongImageStartCropScaleDecider())
-//                        memoryCachePolicy(DISABLED)
-//                        placeholder(colorPainterStateImage(colorScheme.primaryContainer))
-                        placeholder(placeholderStateImage)
-                        error(errorStateImage)
-                        resizeOnDraw()
-                        crossfade()
-                    },
-                    state = imageState,
-                    contentDescription = "image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .dataFromLogo(imageState)
-                        .mimeTypeLogo(imageState, rememberMimeTypeLogoMap(), margin = 4.dp)
-                        .progressIndicator(imageState, rememberThemeSectorProgressPainter())
-                        .clickable {
-//                            navigation.push(Page.Slideshow(imageResourceList, index))
-                        }
+        Box(modifier = Modifier.fillMaxSize()) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+            ) { pageIndex ->
+                val page = pages[pageIndex]
+                PhotoGrid(
+                    animatedPlaceholder = page.animatedPlaceholder,
+                    photoPagingFlow = page.photoPagingFlow
                 )
             }
-        }
 
-        VerticalScrollbar(
-            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-            adapter = rememberScrollbarAdapter(
-                scrollState = gridState
-            )
-        )
+            MainMenu(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))
+        }
     }
 }
+
+private class Page(
+    val title: String,
+    val animatedPlaceholder: Boolean,
+    val photoPagingFlow: Flow<PagingData<Photo>>
+)
