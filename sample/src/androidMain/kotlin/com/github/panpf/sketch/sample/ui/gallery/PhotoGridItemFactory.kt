@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
@@ -36,7 +35,6 @@ import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 

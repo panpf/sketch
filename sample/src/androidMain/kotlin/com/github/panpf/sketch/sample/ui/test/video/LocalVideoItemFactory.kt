@@ -17,7 +17,6 @@ package com.github.panpf.sketch.sample.ui.test.video
 
 import android.content.Context
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.R

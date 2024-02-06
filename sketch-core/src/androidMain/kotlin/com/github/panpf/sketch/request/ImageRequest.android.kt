@@ -9,12 +9,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
-import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.transition.Transition
 
 
 /**
@@ -180,32 +177,3 @@ fun ImageRequest.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
 @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
 val ImageRequest.preferQualityOverSpeed: Boolean
     get() = parameters?.value<String>(PREFER_QUALITY_OVER_SPEED_KEY)?.toBoolean() == true
-
-
-/**
- * Sets the transition that crossfade
- */
-fun ImageRequest.Builder.crossfade(
-    durationMillis: Int = Transition.DEFAULT_DURATION,
-    fadeStart: Boolean = true,
-    preferExactIntrinsicSize: Boolean = false,
-    alwaysUse: Boolean = false,
-): ImageRequest.Builder = apply {
-    transitionFactory(
-        CrossfadeTransition.Factory(
-            durationMillis = durationMillis,
-            fadeStart = fadeStart,
-            preferExactIntrinsicSize = preferExactIntrinsicSize,
-            alwaysUse = alwaysUse
-        )
-    )
-}
-
-
-fun ImageRequest.Builder.resizeOnDraw(apply: Boolean = true): ImageRequest.Builder = apply {
-    if (apply) {
-        resizeOnDraw(AndroidResizeOnDrawHelper)
-    } else {
-        resizeOnDraw(null)
-    }
-}

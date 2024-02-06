@@ -29,9 +29,9 @@ import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.defaultSizeResolver
 import com.github.panpf.sketch.stateimage.ErrorStateImage
@@ -54,33 +54,8 @@ fun ImageRequest(
     configBlock?.invoke(this)
 }.build()
 
-/**
- * Sets the transition that crossfade
- */
-fun ImageRequest.Builder.crossfade(
-    durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
-    fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
-    preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-    alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
-): ImageRequest.Builder = apply {
-    setParameter(
-        key = CROSSFADE_KEY,
-        value = Crossfade(
-            durationMillis = durationMillis,
-            fadeStart = fadeStart,
-            preferExactIntrinsicSize = preferExactIntrinsicSize,
-            alwaysUse = alwaysUse
-        ),
-        cacheKey = null
-    )
-}
-
-fun ImageRequest.Builder.removeCrossfade(): ImageRequest.Builder = apply {
-    removeParameter(CROSSFADE_KEY)
-}
-
-val ImageRequest.crossfade: Crossfade?
-    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
+//val ImageRequest.crossfade: Crossfade?
+//    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
 
 /**
  * An immutable image request that contains all the required parameters,
@@ -215,7 +190,7 @@ interface ImageRequest {
     val disallowAnimatedImage: Boolean
 
     /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
+     * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
      */
     val resizeOnDrawHelper: ResizeOnDrawHelper?
 
@@ -321,6 +296,7 @@ interface ImageRequest {
         /**
          * Add the [Listener] to set
          */
+        @Suppress("unused")
         inline fun addListener(
             crossinline onStart: (request: ImageRequest) -> Unit = {},
             crossinline onCancel: (request: ImageRequest) -> Unit = {},
@@ -427,9 +403,12 @@ interface ImageRequest {
          * Set a parameter for this request.
          */
         fun setParameter(
-            key: String, value: Any?, cacheKey: String? = value?.toString()
+            key: String,
+            value: Any?,
+            cacheKey: String? = value?.toString(),
+            notJoinRequestKey: Boolean = false
         ): Builder = apply {
-            definedOptionsBuilder.setParameter(key, value, cacheKey)
+            definedOptionsBuilder.setParameter(key, value, cacheKey, notJoinRequestKey)
         }
 
         /**
@@ -676,6 +655,30 @@ interface ImageRequest {
         }
 
         /**
+         * Sets the transition that crossfade
+         */
+        fun crossfade(
+            durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
+            fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
+            preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+            alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
+        ): Builder = apply {
+            definedOptionsBuilder.crossfade(
+                durationMillis = durationMillis,
+                fadeStart = fadeStart,
+                preferExactIntrinsicSize = preferExactIntrinsicSize,
+                alwaysUse = alwaysUse
+            )
+        }
+
+        /**
+         * Sets the transition that crossfade
+         */
+        fun crossfade(apply: Boolean): Builder = apply {
+            definedOptionsBuilder.crossfade(apply)
+        }
+
+        /**
          * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
          */
         fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
@@ -683,10 +686,17 @@ interface ImageRequest {
         }
 
         /**
-         * Set wrap the final [Drawable] or [Painter] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
+         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
          */
-        fun resizeOnDraw(helper: ResizeOnDrawHelper?): Builder = apply {
-            definedOptionsBuilder.resizeOnDraw(helper)
+        fun resizeOnDraw(resizeOnDrawHelper: ResizeOnDrawHelper?): Builder = apply {
+            definedOptionsBuilder.resizeOnDraw(resizeOnDrawHelper)
+        }
+
+        /**
+         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
+         */
+        fun resizeOnDraw(apply: Boolean = true): Builder = apply {
+            definedOptionsBuilder.resizeOnDraw(apply)
         }
 
         /**
@@ -757,8 +767,6 @@ interface ImageRequest {
             val resizeOnDrawHelper = finalOptions.resizeOnDrawHelper
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
-
-            // TODO 转换 Crossfade 为 CrossfadeTransition.Factory
 
             return ImageRequestImpl(
                 context = context,
@@ -871,3 +879,9 @@ interface ImageRequest {
         override val key: String by lazy { newKey() }
     }
 }
+
+val ImageRequest.crossfade: Crossfade?
+    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
+
+val ImageRequest.resizeOnDraw: Boolean?
+    get() = parameters?.value<Boolean>(RESIZE_ON_DRAW_KEY)

@@ -39,6 +39,8 @@ import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 
 const val DEPTH_FROM_KEY = "sketch#depth_from"
+const val CROSSFADE_KEY = "sketch#crossfade"
+const val RESIZE_ON_DRAW_KEY = "sketch#resizeOnDraw"
 
 /**
  * Build and set the [ImageOptions]
@@ -48,36 +50,6 @@ fun ImageOptions(
 ): ImageOptions = ImageOptions.Builder().apply {
     configBlock?.invoke(this)
 }.build()
-
-internal val CROSSFADE_KEY = "sketch#crossfade"
-
-/**
- * Sets the transition that crossfade
- */
-fun ImageOptions.Builder.crossfade(
-    durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
-    fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
-    preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-    alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
-): ImageOptions.Builder = apply {
-    setParameter(
-        key = CROSSFADE_KEY,
-        value = Crossfade(
-            durationMillis = durationMillis,
-            fadeStart = fadeStart,
-            preferExactIntrinsicSize = preferExactIntrinsicSize,
-            alwaysUse = alwaysUse
-        ),
-        cacheKey = null
-    )
-}
-
-fun ImageOptions.Builder.removeCrossfade(): ImageOptions.Builder = apply {
-    removeParameter(CROSSFADE_KEY)
-}
-
-val ImageOptions.crossfade: Crossfade?
-    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
 
 /**
  * Stores parameters required to download, load, display images
@@ -181,7 +153,7 @@ interface ImageOptions {
     val disallowAnimatedImage: Boolean?
 
     /**
-     * Wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [sizeResolver]
+     * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
      */
     val resizeOnDrawHelper: ResizeOnDrawHelper?
 
@@ -333,10 +305,13 @@ interface ImageOptions {
          * Set a parameter for this request.
          */
         fun setParameter(
-            key: String, value: Any?, cacheKey: String? = value?.toString()
+            key: String,
+            value: Any?,
+            cacheKey: String? = value?.toString(),
+            notJoinRequestKey: Boolean = false
         ): Builder = apply {
             this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
-                set(key, value, cacheKey)
+                set(key, value, cacheKey, notJoinRequestKey)
             }
         }
 
@@ -590,6 +565,43 @@ interface ImageOptions {
          */
         fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
             this.transitionFactory = transitionFactory
+            if (transitionFactory != null) {
+                removeParameter(CROSSFADE_KEY)
+            }
+        }
+
+        /**
+         * Sets the transition that crossfade
+         */
+        fun crossfade(
+            durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
+            fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
+            preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+            alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
+        ): Builder = apply {
+            setParameter(
+                key = CROSSFADE_KEY,
+                value = Crossfade(
+                    durationMillis = durationMillis,
+                    fadeStart = fadeStart,
+                    preferExactIntrinsicSize = preferExactIntrinsicSize,
+                    alwaysUse = alwaysUse
+                ),
+                cacheKey = null,
+                notJoinRequestKey = true,
+            )
+            this.transitionFactory = null
+        }
+
+        /**
+         * Sets the transition that crossfade
+         */
+        fun crossfade(apply: Boolean): Builder = apply {
+            if (apply) {
+                crossfade()
+            } else {
+                removeParameter(CROSSFADE_KEY)
+            }
         }
 
         /**
@@ -600,10 +612,30 @@ interface ImageOptions {
         }
 
         /**
-         * Set wrap the final [Drawable] use [ResizeDrawable] and resize, the size of [ResizeDrawable] is the same as [size]
+         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
          */
-        fun resizeOnDraw(helper: ResizeOnDrawHelper?): Builder = apply {
-            this.resizeOnDrawHelper = helper
+        fun resizeOnDraw(resizeOnDrawHelper: ResizeOnDrawHelper?): Builder = apply {
+            this.resizeOnDrawHelper = resizeOnDrawHelper
+            if (resizeOnDrawHelper != null) {
+                removeParameter(RESIZE_ON_DRAW_KEY)
+            }
+        }
+
+        /**
+         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
+         */
+        fun resizeOnDraw(apply: Boolean = true): Builder = apply {
+            if (apply) {
+                setParameter(
+                    key = RESIZE_ON_DRAW_KEY,
+                    value = true,
+                    cacheKey = null,
+                    notJoinRequestKey = true,
+                )
+                this.resizeOnDrawHelper = null
+            } else {
+                removeParameter(key = RESIZE_ON_DRAW_KEY)
+            }
         }
 
         /**
@@ -692,26 +724,44 @@ interface ImageOptions {
         }
 
 
-        fun build(): ImageOptions = ImageOptionsImpl(
-            depth = depth,
-            parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() },
-            httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() },
-            downloadCachePolicy = downloadCachePolicy,
-            resultCachePolicy = resultCachePolicy,
-            sizeResolver = sizeResolver,
-            precisionDecider = precisionDecider,
-            scaleDecider = scaleDecider,
-            transformations = transformations?.takeIf { it.isNotEmpty() },
-            ignoreExifOrientation = ignoreExifOrientation,
-            placeholder = placeholder,
-            uriEmpty = uriEmpty,
-            error = error,
-            transitionFactory = transitionFactory,
-            disallowAnimatedImage = disallowAnimatedImage,
-            resizeOnDrawHelper = resizeOnDrawHelper,
-            memoryCachePolicy = memoryCachePolicy,
-            componentRegistry = componentRegistry,
-        )
+        fun build(): ImageOptions {
+            val transitionFactory = resolveCrossfadeTransition() ?: transitionFactory
+            val resizeOnDrawHelper = resolveResizeOnDraw() ?: resizeOnDrawHelper
+            val parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() }
+            val httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() }
+            val transformations = transformations?.takeIf { it.isNotEmpty() }
+            return ImageOptionsImpl(
+                depth = depth,
+                parameters = parameters,
+                httpHeaders = httpHeaders,
+                downloadCachePolicy = downloadCachePolicy,
+                resultCachePolicy = resultCachePolicy,
+                sizeResolver = sizeResolver,
+                precisionDecider = precisionDecider,
+                scaleDecider = scaleDecider,
+                transformations = transformations,
+                ignoreExifOrientation = ignoreExifOrientation,
+                placeholder = placeholder,
+                uriEmpty = uriEmpty,
+                error = error,
+                transitionFactory = transitionFactory,
+                disallowAnimatedImage = disallowAnimatedImage,
+                resizeOnDrawHelper = resizeOnDrawHelper,
+                memoryCachePolicy = memoryCachePolicy,
+                componentRegistry = componentRegistry,
+            )
+        }
+
+        private fun resolveCrossfadeTransition(): Transition.Factory? {
+            return parametersBuilder?.value<Crossfade>(CROSSFADE_KEY)
+                ?.let { createCrossfadeTransitionFactory(it) }
+        }
+
+        private fun resolveResizeOnDraw(): ResizeOnDrawHelper? {
+            return parametersBuilder?.value<Boolean>(RESIZE_ON_DRAW_KEY)
+                ?.takeIf { it }
+                ?.let { createResizeOnDrawHelper() }
+        }
     }
 
     class ImageOptionsImpl(
@@ -815,3 +865,13 @@ interface ImageOptions {
  * Returns true as long as any property is not empty
  */
 fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()
+
+val ImageOptions.crossfade: Crossfade?
+    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
+
+val ImageOptions.resizeOnDraw: Boolean?
+    get() = parameters?.value<Boolean>(RESIZE_ON_DRAW_KEY)
+
+expect fun createCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory?
+
+expect fun createResizeOnDrawHelper(): ResizeOnDrawHelper?

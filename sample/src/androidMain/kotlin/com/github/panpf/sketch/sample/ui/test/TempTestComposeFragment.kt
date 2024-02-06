@@ -32,8 +32,6 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.crossfade
-import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable

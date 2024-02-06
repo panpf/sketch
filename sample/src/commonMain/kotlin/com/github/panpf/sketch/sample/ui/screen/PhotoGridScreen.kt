@@ -49,8 +49,6 @@ import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.compose.stateimage.rememberIconPainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
-import com.github.panpf.sketch.request.crossfade
-import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.list.AppendState
 import com.github.panpf.sketch.sample.ui.model.Photo

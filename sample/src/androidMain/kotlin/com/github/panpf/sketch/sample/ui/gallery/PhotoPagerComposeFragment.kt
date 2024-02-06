@@ -63,9 +63,7 @@ import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
-import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor

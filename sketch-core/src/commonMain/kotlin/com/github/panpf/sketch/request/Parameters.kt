@@ -47,29 +47,32 @@ class Parameters private constructor(
     val size: Int @JvmName("size") get() = entries.size
 
     val key: String? by lazy {
-        val keys = entries.mapNotNull {
-            it.value.value?.let { value ->
-                "${it.key}:$value"
-            }
-        }.sorted().joinToString(separator = ",")
-        if (keys.isNotEmpty()) {
-            "Parameters($keys)"
-        } else {
-            null
-        }
+        val keys = entries
+            .mapNotNull {
+                it.value.value?.let { value -> "${it.key}:$value" }
+            }.sorted()
+            .joinToString(separator = ",")
+        if (keys.isNotEmpty()) "Parameters($keys)" else null
+    }
+
+    val requestKey: String? by lazy {
+        val keys = entries
+            .mapNotNull {
+                it.value
+                    .takeIf { entry -> !entry.notJoinRequestKey }
+                    ?.value?.let { value -> "${it.key}:$value" }
+            }.sorted()
+            .joinToString(separator = ",")
+        if (keys.isNotEmpty()) "Parameters($keys)" else null
     }
 
     val cacheKey: String? by lazy {
-        val keys = entries.mapNotNull {
-            it.value.cacheKey?.let { cacheKey ->
-                "${it.key}:$cacheKey"
-            }
-        }.sorted().joinToString(separator = ",")
-        if (keys.isNotEmpty()) {
-            "Parameters($keys)"
-        } else {
-            null
-        }
+        val keys = entries
+            .mapNotNull {
+                it.value.cacheKey?.let { cacheKey -> "${it.key}:$cacheKey" }
+            }.sorted()
+            .joinToString(separator = ",")
+        if (keys.isNotEmpty()) "Parameters($keys)" else null
     }
 
     /** Returns the value associated with [key] or null if [key] has no mapping. */
@@ -142,6 +145,7 @@ class Parameters private constructor(
     data class Entry(
         val value: Any?,
         val cacheKey: String?,
+        val notJoinRequestKey: Boolean = false,
     )
 
     class Builder {
@@ -164,8 +168,13 @@ class Parameters private constructor(
          * @param cacheKey The parameter's cache key.
          *  If not null, this value will be added to a request's cache key.
          */
-        fun set(key: String, value: Any?, cacheKey: String? = value?.toString()) = apply {
-            entries[key] = Entry(value, cacheKey)
+        fun set(
+            key: String,
+            value: Any?,
+            cacheKey: String? = value?.toString(),
+            notJoinRequestKey: Boolean = false
+        ) = apply {
+            entries[key] = Entry(value, cacheKey, notJoinRequestKey)
         }
 
         /**
@@ -176,6 +185,8 @@ class Parameters private constructor(
         fun remove(key: String) = apply {
             entries.remove(key)
         }
+
+        internal fun <T> value(key: String): T? = entries[key]?.value as T?
 
         /** Create a new [Parameters] instance. */
         fun build() = Parameters(entries.toMap())

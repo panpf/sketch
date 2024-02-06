@@ -11,6 +11,8 @@ fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
 }
 
 /**
+ * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing
+ *
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose

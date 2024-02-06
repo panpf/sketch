@@ -9,10 +9,25 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.stateimage.DrawableStateImage
 import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
+
+actual fun createCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
+    return CrossfadeTransition.Factory(
+        durationMillis = crossfade.durationMillis,
+        fadeStart = crossfade.fadeStart,
+        preferExactIntrinsicSize = crossfade.preferExactIntrinsicSize,
+        alwaysUse = crossfade.alwaysUse
+    )
+}
+
+actual fun createResizeOnDrawHelper(): ResizeOnDrawHelper? {
+    return AndroidResizeOnDrawHelper
+}
 
 
 /**
@@ -159,30 +174,3 @@ fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
 @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
 val ImageOptions.preferQualityOverSpeed: Boolean?
     get() = parameters?.value<String>(PREFER_QUALITY_OVER_SPEED_KEY)?.toBoolean()
-
-/**
- * Sets the transition that crossfade
- */
-fun ImageOptions.Builder.crossfade(
-    durationMillis: Int = Transition.DEFAULT_DURATION,
-    fadeStart: Boolean = true,
-    preferExactIntrinsicSize: Boolean = false,
-    alwaysUse: Boolean = false,
-): ImageOptions.Builder = apply {
-    transitionFactory(
-        CrossfadeTransition.Factory(
-            durationMillis = durationMillis,
-            fadeStart = fadeStart,
-            preferExactIntrinsicSize = preferExactIntrinsicSize,
-            alwaysUse = alwaysUse
-        )
-    )
-}
-
-fun ImageOptions.Builder.resizeOnDraw(apply: Boolean = true): ImageOptions.Builder = apply {
-    if (apply) {
-        resizeOnDraw(AndroidResizeOnDrawHelper)
-    } else {
-        resizeOnDraw(null)
-    }
-}

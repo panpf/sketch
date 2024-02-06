@@ -79,7 +79,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     }
 
     fun appendParameters(): ImageRequestKeyBuilder = apply {
-        request.parameters?.key?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
+        request.parameters?.requestKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
             appendQueryParameter("_parameters", parameterKey)
         }
     }

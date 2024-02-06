@@ -35,7 +35,6 @@ import com.github.panpf.sketch.extensions.view.core.R
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
@@ -50,7 +49,6 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.request.resizeOnDraw
 
 fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): ImageOptions? {
     val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)

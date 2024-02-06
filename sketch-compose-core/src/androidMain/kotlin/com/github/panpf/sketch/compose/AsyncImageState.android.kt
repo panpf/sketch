@@ -20,7 +20,8 @@ actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
         )
     }
 
-    if (request.resizeOnDrawHelper is AndroidResizeOnDrawHelper) {
+    val resizeOnDrawHelper = request.resizeOnDrawHelper
+    if (resizeOnDrawHelper is AndroidResizeOnDrawHelper) {
         builder.resizeOnDraw(ComposeResizeOnDrawHelper)
     }
 }
