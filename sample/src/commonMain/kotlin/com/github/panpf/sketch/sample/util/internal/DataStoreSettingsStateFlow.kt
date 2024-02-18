@@ -35,7 +35,6 @@ fun stringSettingsStateFlow(
     initialize: String,
     dataStore: DataStore<Preferences>,
 ): SettingsStateFlow<String> = DataStoreSettingsStateFlowImpl(
-    initialize = initialize,
     adapter = StringDataStoreAdapter(dataStore, key, initialize)
 )
 
@@ -44,62 +43,53 @@ fun booleanSettingsStateFlow(
     initialize: Boolean,
     dataStore: DataStore<Preferences>,
 ): SettingsStateFlow<Boolean> = DataStoreSettingsStateFlowImpl(
-    initialize = initialize,
     adapter = BooleanDataStoreAdapter(dataStore, key, initialize)
 )
 
 interface SettingsStateFlow<T> : MutableStateFlow<T>
 
 private class DataStoreSettingsStateFlowImpl<T>(
-    initialize: T,
-    private val adapter: DataStoreAdapter<T>?
+    private val adapter: DataStoreAdapter<T>
 ) : SettingsStateFlow<T> {
 
-    private val delegateStateFlow = MutableStateFlow(initialize)
-
-    init {
-        if (adapter != null) {
-            delegateStateFlow.value = adapter.state
-        }
-    }
-
     override var value: T
-        get() = delegateStateFlow.value
+        get() = adapter.state.value
         set(value) {
-            adapter?.state = value
-            delegateStateFlow.value = value
+            adapter.setValue(value)
         }
 
     override val replayCache: List<T>
-        get() = delegateStateFlow.replayCache
+        get() = adapter.state.replayCache
 
     override val subscriptionCount: StateFlow<Int>
-        get() = delegateStateFlow.subscriptionCount
+        get() = adapter.state.subscriptionCount
 
     override suspend fun collect(collector: FlowCollector<T>): Nothing {
-        delegateStateFlow.collect(collector)
+        adapter.state.collect(collector)
     }
 
     override fun compareAndSet(expect: T, update: T): Boolean {
-        return delegateStateFlow.compareAndSet(expect, update)
+        return adapter.state.compareAndSet(expect, update)
     }
 
     @ExperimentalCoroutinesApi
     override fun resetReplayCache() {
-        delegateStateFlow.resetReplayCache()
+        adapter.state.resetReplayCache()
     }
 
     override fun tryEmit(value: T): Boolean {
-        return delegateStateFlow.tryEmit(value)
+        return adapter.state.tryEmit(value)
     }
 
     override suspend fun emit(value: T) {
-        delegateStateFlow.emit(value)
+        adapter.state.emit(value)
     }
 }
 
 private interface DataStoreAdapter<T> {
-    var state: T
+    val state: MutableStateFlow<T>
+
+    fun setValue(value: T?)
 }
 
 private class StringDataStoreAdapter(
@@ -109,79 +99,105 @@ private class StringDataStoreAdapter(
 ) : DataStoreAdapter<String> {
 
     private val preferencesKey = stringPreferencesKey(key)
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    override val state = MutableStateFlow(initialize)
 
-    override var state: String = initialize
-        set(value) {
-            field = value
+    init {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
+            dataStore.data.map { it[preferencesKey] }.collect {
+                state.value = it ?: initialize
+            }
+        }
+    }
+
+    override fun setValue(value: String?) {
+        if (value != null) {
+            state.value = value
             coroutineScope.launch {
-                // TODO invalid
                 dataStore.edit {
                     it[preferencesKey] = value
                 }
             }
-        }
-
-    init {
-        coroutineScope.launch {
-            dataStore.data.map { it[preferencesKey] }.collect {
-                state = it ?: initialize
+        } else {
+            state.value = initialize
+            coroutineScope.launch {
+                dataStore.edit {
+                    it.remove(preferencesKey)
+                }
             }
         }
     }
 }
 
 private class BooleanDataStoreAdapter(
-    private val preferences: DataStore<Preferences>,
+    private val dataStore: DataStore<Preferences>,
     key: String,
     private val initialize: Boolean
 ) : DataStoreAdapter<Boolean> {
 
     private val preferencesKey = booleanPreferencesKey(key)
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
-    override var state: Boolean = initialize
-        set(value) {
-            field = value
-            coroutineScope.launch {
-                preferences.edit {
-                    it[preferencesKey] = value
-                }
-            }
-        }
+    override val state = MutableStateFlow(initialize)
 
     init {
         coroutineScope.launch {
-            preferences.data.map { it[preferencesKey] }.collect {
-                state = it ?: initialize
+            dataStore.data.map { it[preferencesKey] }.collect {
+                state.value = it ?: initialize
+            }
+        }
+    }
+
+    override fun setValue(value: Boolean?) {
+        if (value != null) {
+            state.value = value
+            coroutineScope.launch {
+                dataStore.edit {
+                    it[preferencesKey] = value
+                }
+            }
+        } else {
+            state.value = initialize
+            coroutineScope.launch {
+                dataStore.edit {
+                    it.remove(preferencesKey)
+                }
             }
         }
     }
 }
 
 private class IntDataStoreAdapter(
-    private val preferences: DataStore<Preferences>,
+    private val dataStore: DataStore<Preferences>,
     key: String,
     private val initialize: Int
 ) : DataStoreAdapter<Int> {
 
     private val preferencesKey = intPreferencesKey(key)
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
-    override var state: Int = initialize
-        set(value) {
-            field = value
-            coroutineScope.launch {
-                preferences.edit {
-                    it[preferencesKey] = value
-                }
-            }
-        }
+    override val state = MutableStateFlow(initialize)
 
     init {
         coroutineScope.launch {
-            preferences.data.map { it[preferencesKey] }.collect {
-                state = it ?: initialize
+            dataStore.data.map { it[preferencesKey] }.collect {
+                state.value = it ?: initialize
+            }
+        }
+    }
+
+    override fun setValue(value: Int?) {
+        if (value != null) {
+            state.value = value
+            coroutineScope.launch {
+                dataStore.edit {
+                    it[preferencesKey] = value
+                }
+            }
+        } else {
+            state.value = initialize
+            coroutineScope.launch {
+                dataStore.edit {
+                    it.remove(preferencesKey)
+                }
             }
         }
     }
