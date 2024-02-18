@@ -29,6 +29,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
+import com.github.panpf.sketch.sample.appSettings
 
 abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() {
 
@@ -91,7 +92,9 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
         }
 
         binding.layoutImage.apply {
-            appSettingsService.photoListLayoutMode.repeatCollectWithLifecycle(
+//            val appSettings = appSettingsService
+            val appSettings = context.appSettings
+            appSettings.photoListLayoutMode.repeatCollectWithLifecycle(
                 viewLifecycleOwner,
                 State.STARTED
             ) {
@@ -100,8 +103,8 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
                 setImageResource(iconResId)
             }
             setOnClickListener {
-                appSettingsService.photoListLayoutMode.value =
-                    if (appSettingsService.photoListLayoutMode.value == LayoutMode.GRID.name) {
+                appSettings.photoListLayoutMode.value =
+                    if (appSettings.photoListLayoutMode.value == LayoutMode.GRID.name) {
                         LayoutMode.STAGGERED_GRID.name
                     } else {
                         LayoutMode.GRID.name

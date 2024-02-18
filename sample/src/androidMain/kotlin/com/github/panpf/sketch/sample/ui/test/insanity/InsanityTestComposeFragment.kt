@@ -18,9 +18,10 @@ package com.github.panpf.sketch.sample.ui.test.insanity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
-import com.github.panpf.sketch.sample.ui.gallery.PhotoGrid
+import com.github.panpf.sketch.sample.ui.screen.PhotoGrid
 
 class InsanityTestComposeFragment : BaseToolbarComposeFragment() {
 
@@ -30,8 +31,11 @@ class InsanityTestComposeFragment : BaseToolbarComposeFragment() {
     override fun DrawContent() {
         PhotoGrid(
             photoPagingFlow = insanityTestViewModel.pagingFlow,
-        ) { _, _, _ ->
-        }
+            animatedPlaceholder = false,
+            gridCellsMinSize = 100.dp,
+            onClick = { _, _, _ -> },
+            onLongClick = { _, _, _, _ -> }
+        )
     }
 
     override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {

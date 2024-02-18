@@ -20,13 +20,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.github.panpf.sketch.sample.util.ParamLazy
 
-object MyServices {
-    val appSettingsServiceLazy = ParamLazy<Context, AppSettingsService> { AppSettingsService(it) }
-}
-
-val Context.appSettingsService: AppSettingsService
-    get() = MyServices.appSettingsServiceLazy.get(this.applicationContext)
-val Fragment.appSettingsService: AppSettingsService
-    get() = MyServices.appSettingsServiceLazy.get(this.requireContext().applicationContext)
-val View.appSettingsService: AppSettingsService
-    get() = MyServices.appSettingsServiceLazy.get(this.context.applicationContext)
+val Context.appSettingsService: AppSettings
+    get() = appSettings
+val Fragment.appSettingsService: AppSettings
+    get() = this.requireContext().appSettings
+val View.appSettingsService: AppSettings
+    get() = this.context.appSettings

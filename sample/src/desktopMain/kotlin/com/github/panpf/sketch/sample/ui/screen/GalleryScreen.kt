@@ -75,8 +75,15 @@ fun GalleryScreen(navigation: Navigation) {
             ) { pageIndex ->
                 val page = pages[pageIndex]
                 PhotoGrid(
+                    photoPagingFlow = page.photoPagingFlow,
                     animatedPlaceholder = page.animatedPlaceholder,
-                    photoPagingFlow = page.photoPagingFlow
+                    gridCellsMinSize = 150.dp,
+                    onClick = { photos, photo, index ->
+                        // TODO startImageDetail(photos, index)
+                    },
+                    onLongClick = { photos, photo, index, imageResult ->
+                        // TODO Open photo info dialog
+                    }
                 )
             }
 

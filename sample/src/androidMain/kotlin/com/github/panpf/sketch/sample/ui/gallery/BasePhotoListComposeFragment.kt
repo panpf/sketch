@@ -16,12 +16,15 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
+import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.ui.screen.PhotoGrid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -36,9 +39,10 @@ abstract class BasePhotoListComposeFragment : BaseComposeFragment() {
         PhotoGrid(
             photoPagingFlow = photoPagingFlow,
             animatedPlaceholder = animatedPlaceholder,
-        ) { items, _, index ->
-            startImageDetail(items, index)
-        }
+            gridCellsMinSize = 100.dp,
+            onClick = { items, _, index -> startImageDetail(items, index) },
+            onLongClick = { _, _, _, imageResult -> startPhotoInfoDialog(imageResult) }
+        )
     }
 
     private fun startImageDetail(items: List<Photo>, position: Int) {
@@ -62,5 +66,10 @@ abstract class BasePhotoListComposeFragment : BaseComposeFragment() {
                 initialPosition = position
             ),
         )
+    }
+
+    private fun startPhotoInfoDialog(imageResult: ImageResult?) {
+        findNavController()
+            .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
     }
 }

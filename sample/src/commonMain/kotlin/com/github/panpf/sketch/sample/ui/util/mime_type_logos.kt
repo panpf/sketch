@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.util
+package com.github.panpf.sketch.sample.ui.util
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,8 +9,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.panpf.sketch.sample.ui.util.Background
-import com.github.panpf.sketch.sample.ui.util.rememberTextPainter
 
 @Composable
 fun rememberMimeTypeLogoMap(): Map<String, Painter> {
