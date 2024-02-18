@@ -21,7 +21,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
-import com.github.panpf.sketch.sample.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.screen.PhotoGrid

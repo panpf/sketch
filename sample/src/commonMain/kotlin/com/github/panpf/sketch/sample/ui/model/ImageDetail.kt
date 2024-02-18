@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.model
+package com.github.panpf.sketch.sample.ui.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Parcelize
 @Serializable
 data class ImageDetail constructor(
     @SerialName("originUrl") val originUrl: String,
     @SerialName("mediumUrl") val mediumUrl: String?,
     @SerialName("thumbnailUrl") val thumbnailUrl: String?,
-) : Parcelable
+)

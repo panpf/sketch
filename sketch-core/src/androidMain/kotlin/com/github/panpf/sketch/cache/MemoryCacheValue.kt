@@ -17,7 +17,6 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.BitmapImage
 
-
 class BitmapImageValue(
     override val image: BitmapImage,
     override val extras: Map<String, Any?> = emptyMap(),

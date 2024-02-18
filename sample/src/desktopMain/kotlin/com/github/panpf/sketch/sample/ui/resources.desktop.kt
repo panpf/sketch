@@ -43,3 +43,43 @@ actual fun rememberIconPausePainter(): Painter {
 actual fun rememberIconSettingsPainter(): Painter {
     return painterResource("ic_settings.xml")
 }
+
+@Composable
+actual fun rememberIconInfoBaseLinePainter(): Painter {
+    return painterResource("ic_info_baseline.xml")
+}
+
+@Composable
+actual fun rememberIconRotateRightPainter(): Painter {
+    return painterResource("ic_rotate_right.xml")
+}
+
+@Composable
+actual fun rememberIconSavePainter(): Painter {
+    return painterResource("ic_save.xml")
+}
+
+@Composable
+actual fun rememberIconSharePainter(): Painter {
+    return painterResource("ic_share.xml")
+}
+
+@Composable
+actual fun rememberIconZoomInPainter(): Painter {
+    return painterResource("ic_zoom_in.xml")
+}
+
+@Composable
+actual fun rememberIconZoomOutPainter(): Painter {
+    return painterResource("ic_zoom_out.xml")
+}
+
+@Composable
+actual fun rememberIconImage2BaselinePainter(): Painter {
+    return painterResource("ic_image2_baseline.xml")
+}
+
+@Composable
+actual fun rememberIconImage2OutlinePainter(): Painter {
+    return painterResource("ic_image2_outline.xml")
+}

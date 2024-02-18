@@ -44,3 +44,43 @@ actual fun rememberIconPausePainter(): Painter {
 actual fun rememberIconSettingsPainter(): Painter {
     return painterResource(R.drawable.ic_settings)
 }
+
+@Composable
+actual fun rememberIconInfoBaseLinePainter(): Painter {
+    return painterResource(R.drawable.ic_info_baseline)
+}
+
+@Composable
+actual fun rememberIconRotateRightPainter(): Painter {
+    return painterResource(R.drawable.ic_rotate_right)
+}
+
+@Composable
+actual fun rememberIconSavePainter(): Painter {
+    return painterResource(R.drawable.ic_save)
+}
+
+@Composable
+actual fun rememberIconSharePainter(): Painter {
+    return painterResource(R.drawable.ic_share)
+}
+
+@Composable
+actual fun rememberIconZoomInPainter(): Painter {
+    return painterResource(R.drawable.ic_zoom_in)
+}
+
+@Composable
+actual fun rememberIconZoomOutPainter(): Painter {
+    return painterResource(R.drawable.ic_zoom_out)
+}
+
+@Composable
+actual fun rememberIconImage2BaselinePainter(): Painter {
+    return painterResource(R.drawable.ic_image2_baseline)
+}
+
+@Composable
+actual fun rememberIconImage2OutlinePainter(): Painter {
+    return painterResource(R.drawable.ic_image2_outline)
+}

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,21 +21,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.findNavController
+import com.github.panpf.sketch.SingletonSketch
+import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.ui.components.LoadState
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
-import com.github.panpf.sketch.sample.ui.common.list.LoadState
+import com.github.panpf.sketch.sample.ui.rememberIconInfoBaseLinePainter
+import com.github.panpf.sketch.sample.ui.rememberIconRotateRightPainter
+import com.github.panpf.sketch.sample.ui.rememberIconSavePainter
+import com.github.panpf.sketch.sample.ui.rememberIconSharePainter
+import com.github.panpf.sketch.sample.ui.rememberIconZoomInPainter
+import com.github.panpf.sketch.sample.ui.rememberIconZoomOutPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
 import com.github.panpf.zoomimage.compose.internal.toPlatform
@@ -53,12 +55,14 @@ fun PhotoViewer(
     imageDetail: ImageDetail,
     buttonBgColorState: MutableState<Int>,
     onClick: () -> Unit,
+    onLongClick: (ImageResult) -> Unit,
     onShareClick: () -> Unit,
     onSaveClick: () -> Unit,
+    onInfoClick: (ImageResult) -> Unit,
 ) {
-    val context = LocalContext.current
+    val context = LocalPlatformContext.current
     val coroutineScope = rememberCoroutineScope()
-    val appSettingsService = context.appSettingsService
+    val appSettingsService = context.appSettings
     val imageState = rememberAsyncImageState()
     val showOriginImage by appSettingsService.showOriginImage.collectAsState()
     val scrollBarEnabled by appSettingsService.scrollBarEnabled.collectAsState()
@@ -116,10 +120,9 @@ fun PhotoViewer(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        val view = LocalView.current
         SketchZoomAsyncImage(
             request = request,
-            sketch = context.sketch,
+            sketch = SingletonSketch.get(context),
             contentDescription = "view image",
             modifier = Modifier
                 .fillMaxSize()
@@ -131,11 +134,9 @@ fun PhotoViewer(
             scrollBar = scrollBar,
             onTap = { onClick.invoke() },
             onLongPress = {
-                val displayResult = imageState.result
-                if (displayResult != null) {
-                    view
-                        .findNavController()
-                        .navigate(PhotoInfoDialogFragment.createNavDirections(displayResult))
+                val imageResult = imageState.result
+                if (imageResult != null) {
+                    onLongClick(imageResult)
                 }
             }
         )
@@ -159,7 +160,7 @@ fun PhotoViewer(
                 onClick = { onShareClick.invoke() },
             ) {
                 Icon(
-                    painter = painterResource(id = drawable.ic_share),
+                    painter = rememberIconSharePainter(),
                     contentDescription = "share",
                     tint = buttonTextColor
                 )
@@ -172,7 +173,7 @@ fun PhotoViewer(
                 onClick = { onSaveClick.invoke() },
             ) {
                 Icon(
-                    painter = painterResource(id = drawable.ic_save),
+                    painter = rememberIconSavePainter(),
                     contentDescription = "save",
                     tint = buttonTextColor
                 )
@@ -180,15 +181,9 @@ fun PhotoViewer(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            val zoomIcon by remember {
+            val zoomIn by remember {
                 derivedStateOf {
-                    val zoomIn =
-                        zoomState.zoomable.getNextStepScale() > zoomState.zoomable.transform.scaleX
-                    if (zoomIn) {
-                        R.drawable.ic_zoom_in
-                    } else {
-                        R.drawable.ic_zoom_out
-                    }
+                    zoomState.zoomable.getNextStepScale() > zoomState.zoomable.transform.scaleX
                 }
             }
             IconButton(
@@ -202,7 +197,11 @@ fun PhotoViewer(
                 },
             ) {
                 Icon(
-                    painter = painterResource(id = zoomIcon),
+                    painter = if (zoomIn) {
+                        rememberIconZoomInPainter()
+                    } else {
+                        rememberIconZoomOutPainter()
+                    },
                     contentDescription = "zoom",
                     tint = buttonTextColor
                 )
@@ -220,7 +219,7 @@ fun PhotoViewer(
                 },
             ) {
                 Icon(
-                    painter = painterResource(id = drawable.ic_rotate_right),
+                    painter = rememberIconRotateRightPainter(),
                     contentDescription = "right rotate",
                     tint = buttonTextColor
                 )
@@ -231,16 +230,14 @@ fun PhotoViewer(
             IconButton(
                 modifier = buttonModifier,
                 onClick = {
-                    val displayResult = imageState.result
-                    if (displayResult != null) {
-                        view
-                            .findNavController()
-                            .navigate(PhotoInfoDialogFragment.createNavDirections(displayResult))
+                    val imageResult = imageState.result
+                    if (imageResult != null) {
+                        onInfoClick(imageResult)
                     }
                 },
             ) {
                 Icon(
-                    painter = painterResource(id = drawable.ic_info_baseline),
+                    painter = rememberIconInfoBaseLinePainter(),
                     contentDescription = "info",
                     tint = buttonTextColor
                 )

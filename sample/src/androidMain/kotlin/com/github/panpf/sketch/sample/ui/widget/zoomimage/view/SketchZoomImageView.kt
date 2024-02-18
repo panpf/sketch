@@ -26,7 +26,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sketch
 import com.github.panpf.zoomimage.internal.AbsStateZoomImageView
 import com.github.panpf.zoomimage.sketch.SketchImageSource
-import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
 import com.github.panpf.zoomimage.subsampling.ImageSource
 
 /**
@@ -50,7 +49,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
 
     init {
         _subsamplingEngine?.tileBitmapCacheState?.value =
-            SketchTileBitmapCache(context.sketch, "SketchZoomImageView")
+            createTileBitmapCache(context.sketch, "SketchZoomImageView")
     }
 
     override fun onAttachedToWindow() {

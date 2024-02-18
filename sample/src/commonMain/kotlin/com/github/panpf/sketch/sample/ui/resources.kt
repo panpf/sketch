@@ -28,3 +28,27 @@ expect fun rememberIconPausePainter(): Painter
 
 @Composable
 expect fun rememberIconSettingsPainter(): Painter
+
+@Composable
+expect fun rememberIconInfoBaseLinePainter(): Painter
+
+@Composable
+expect fun rememberIconRotateRightPainter(): Painter
+
+@Composable
+expect fun rememberIconSavePainter(): Painter
+
+@Composable
+expect fun rememberIconSharePainter(): Painter
+
+@Composable
+expect fun rememberIconZoomInPainter(): Painter
+
+@Composable
+expect fun rememberIconZoomOutPainter(): Painter
+
+@Composable
+expect fun rememberIconImage2BaselinePainter(): Painter
+
+@Composable
+expect fun rememberIconImage2OutlinePainter(): Painter
