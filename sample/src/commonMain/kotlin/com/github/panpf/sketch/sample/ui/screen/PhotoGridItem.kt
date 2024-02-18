@@ -48,8 +48,8 @@ fun PhotoGridItem(
     val mimeTypeLogoMap = rememberMimeTypeLogoMap()
     val progressPainter = rememberThemeSectorProgressPainter(hiddenWhenIndeterminate = true)
     val appSettingsService = context.appSettings
-    val showDataFromLogo by appSettingsService.showDataFromLogo.collectAsState()
-    val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInLIst.collectAsState()
+    val showDataFromLogo by appSettingsService.showDataFromLogoInList.collectAsState()
+    val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInList.collectAsState()
     val showProgressIndicator by appSettingsService.showProgressIndicatorInList.collectAsState()
     val modifier = Modifier
         .fillMaxWidth()

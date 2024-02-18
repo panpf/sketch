@@ -48,10 +48,10 @@ class MyListImageView @JvmOverloads constructor(
         appSettingsService.showProgressIndicatorInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowProgressIndicator(show = show)
         }
-        appSettingsService.showMimeTypeLogoInLIst.collectWithLifecycle(lifecycleOwner) { show ->
+        appSettingsService.showMimeTypeLogoInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowMimeTypeLogo(show = show)
         }
-        appSettingsService.showDataFromLogo.collectWithLifecycle(lifecycleOwner) { show ->
+        appSettingsService.showDataFromLogoInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowDataFromLogo(show = show)
         }
     }

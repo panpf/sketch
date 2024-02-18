@@ -30,9 +30,7 @@ import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
-import com.github.panpf.sketch.sample.ui.setting.Page.COMPOSE_LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
-import com.github.panpf.sketch.sample.ui.setting.Page.NONE
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sketch
@@ -63,7 +61,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
 
     init {
         val states = listOfNotNull(
-            appSettingsService.showMimeTypeLogoInLIst.ignoreFirst(),
+            appSettingsService.showMimeTypeLogoInList.ignoreFirst(),
             appSettingsService.showProgressIndicatorInList.ignoreFirst(),
             appSettingsService.saveCellularTrafficInList.ignoreFirst(),
             appSettingsService.pauseLoadWhenScrollInList.ignoreFirst(),
@@ -78,7 +76,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             appSettingsService.disabledMemoryCache.ignoreFirst(),
             appSettingsService.disabledResultCache.ignoreFirst(),
             appSettingsService.disabledDownloadCache.ignoreFirst(),
-            appSettingsService.showDataFromLogo.ignoreFirst(),
+            appSettingsService.showDataFromLogoInList.ignoreFirst(),
             appSettingsService.showTileBounds.ignoreFirst(),
             appSettingsService.logLevel.ignoreFirst(),
         )
@@ -93,37 +91,15 @@ class SettingsViewModel(application1: Application, val page: Page) :
 
     private fun updateList() {
         _menuListData.value = buildList {
-            when (page) {
-                LIST -> {
-                    add(ListSeparator("List"))
-                    addAll(makeListMenuList())
-                    add(ListSeparator("Decode"))
-                    addAll(makeDecodeMenuList())
-                }
-
-                COMPOSE_LIST -> {
-                    add(ListSeparator("List"))
-                    addAll(makeListMenuList())
-                    add(ListSeparator("Decode"))
-                    addAll(makeDecodeMenuList())
-                }
-
-                ZOOM -> {
-                    add(ListSeparator("Zoom"))
-                    addAll(makeZoomMenuList())
-                    add(ListSeparator("Decode"))
-                    addAll(makeDecodeMenuList())
-                }
-
-                NONE -> {
-                    add(ListSeparator("List"))
-                    addAll(makeListMenuList())
-                    add(ListSeparator("Decode"))
-                    addAll(makeDecodeMenuList())
-                    add(ListSeparator("Zoom"))
-                    addAll(makeZoomMenuList())
-                }
+            if (page == LIST) {
+                add(ListSeparator("List"))
+                addAll(makeListMenuList())
+            } else if (page == ZOOM) {
+                add(ListSeparator("Zoom"))
+                addAll(makeZoomMenuList())
             }
+            add(ListSeparator("Decode"))
+            addAll(makeDecodeMenuList())
             add(ListSeparator("Cache"))
             addAll(makeCacheMenuList())
             add(ListSeparator("Other"))
@@ -135,14 +111,14 @@ class SettingsViewModel(application1: Application, val page: Page) :
         add(
             SwitchMenuFlow(
                 title = "MimeType Logo",
-                data = appSettingsService.showMimeTypeLogoInLIst,
+                data = appSettingsService.showMimeTypeLogoInList,
                 desc = "Displays the image type in the lower right corner of the ImageView"
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Data From Logo",
-                data = appSettingsService.showDataFromLogo,
+                data = appSettingsService.showDataFromLogoInList,
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )
@@ -191,8 +167,10 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { appSettingsService.longImageScale.value },
-                    onSelect = { _, value -> appSettingsService.longImageScale.value = value }
+                    getValue = { appSettingsService.longImageScale.value.name },
+                    onSelect = { _, value ->
+                        appSettingsService.longImageScale.value = Scale.valueOf(value)
+                    }
                 )
             )
             add(
@@ -200,9 +178,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { appSettingsService.otherImageScale.value },
+                    getValue = { appSettingsService.otherImageScale.value.name },
                     onSelect = { _, value ->
-                        appSettingsService.otherImageScale.value = value
+                        appSettingsService.otherImageScale.value = Scale.valueOf(value)
                     }
                 )
             )
@@ -400,10 +378,9 @@ class SettingsViewModel(application1: Application, val page: Page) :
                 title = "Logger Level",
                 desc = if (application1.sketch.logger.level <= Level.DEBUG) "DEBUG and below will reduce UI fluency" else "",
                 values = Level.values().map { it.name },
-                getValue = { application1.sketch.logger.level.toString() },
+                getValue = { application1.sketch.logger.level.name },
                 onSelect = { _, value ->
-                    application1.sketch.logger.level = Level.valueOf(value)
-                    appSettingsService.logLevel.value = value
+                    appSettingsService.logLevel.value = Level.valueOf(value)
                 }
             )
         )

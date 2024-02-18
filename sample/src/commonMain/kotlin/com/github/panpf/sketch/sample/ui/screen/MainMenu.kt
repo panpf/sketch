@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.model.LayoutMode
+import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.rememberIconLayoutGridPainter
 import com.github.panpf.sketch.sample.ui.rememberIconLayoutGridStaggeredPainter
 import com.github.panpf.sketch.sample.ui.rememberIconPausePainter
@@ -35,13 +35,13 @@ fun MainMenu(modifier: Modifier = Modifier) {
         val appSettings = context.appSettings
         val modifier1 = Modifier.size(40.dp).padding(10.dp)
         val disallowAnimatedImageInList by appSettings.disallowAnimatedImageInList.collectAsState()
-        val photoListLayoutMode by appSettings.photoListLayoutMode.collectAsState()
+        val photoListLayoutMode by appSettings.photoGridMode.collectAsState()
         val playIcon = if (disallowAnimatedImageInList) {
             rememberIconPlayPainter()
         } else {
             rememberIconPausePainter()
         }
-        val layoutModeIcon = if (photoListLayoutMode == LayoutMode.GRID.name) {
+        val photoGridModeIcon = if (photoListLayoutMode == PhotoGridMode.SQUARE) {
             rememberIconLayoutGridStaggeredPainter()
         } else {
             rememberIconLayoutGridPainter()
@@ -55,14 +55,14 @@ fun MainMenu(modifier: Modifier = Modifier) {
             tint = colorScheme.onTertiaryContainer
         )
         Icon(
-            painter = layoutModeIcon,
+            painter = photoGridModeIcon,
             contentDescription = null,
             modifier = modifier1.clickable {
-                appSettings.photoListLayoutMode.value =
-                    if (photoListLayoutMode == LayoutMode.GRID.name) {
-                        LayoutMode.STAGGERED_GRID.name
+                appSettings.photoGridMode.value =
+                    if (photoListLayoutMode == PhotoGridMode.SQUARE) {
+                        PhotoGridMode.STAGGERED
                     } else {
-                        LayoutMode.GRID.name
+                        PhotoGridMode.SQUARE
                     }
             },
             tint = colorScheme.onTertiaryContainer

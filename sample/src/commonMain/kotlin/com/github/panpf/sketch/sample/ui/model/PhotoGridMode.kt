@@ -15,6 +15,6 @@
  */
 package com.github.panpf.sketch.sample.ui.model
 
-enum class LayoutMode {
-    GRID, STAGGERED_GRID
+enum class PhotoGridMode {
+    SQUARE, STAGGERED
 }

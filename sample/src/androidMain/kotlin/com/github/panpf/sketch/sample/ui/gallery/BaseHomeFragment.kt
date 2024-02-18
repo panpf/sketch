@@ -23,7 +23,7 @@ import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
-import com.github.panpf.sketch.sample.model.LayoutMode
+import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.setting.Page
@@ -92,22 +92,21 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
         }
 
         binding.layoutImage.apply {
-//            val appSettings = appSettingsService
             val appSettings = context.appSettings
-            appSettings.photoListLayoutMode.repeatCollectWithLifecycle(
+            appSettings.photoGridMode.repeatCollectWithLifecycle(
                 viewLifecycleOwner,
                 State.STARTED
             ) {
-                val iconResId =
-                    if (it == LayoutMode.GRID.name) R.drawable.ic_layout_grid_staggered else R.drawable.ic_layout_grid
+                val iconResId = if (it == PhotoGridMode.SQUARE)
+                    R.drawable.ic_layout_grid_staggered else R.drawable.ic_layout_grid
                 setImageResource(iconResId)
             }
             setOnClickListener {
-                appSettings.photoListLayoutMode.value =
-                    if (appSettings.photoListLayoutMode.value == LayoutMode.GRID.name) {
-                        LayoutMode.STAGGERED_GRID.name
+                appSettings.photoGridMode.value =
+                    if (appSettings.photoGridMode.value == PhotoGridMode.SQUARE) {
+                        PhotoGridMode.STAGGERED
                     } else {
-                        LayoutMode.GRID.name
+                        PhotoGridMode.SQUARE
                     }
             }
         }

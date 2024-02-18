@@ -36,7 +36,7 @@ import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.list.AppendState
-import com.github.panpf.sketch.sample.ui.model.LayoutMode
+import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.Flow
@@ -69,8 +69,8 @@ fun PhotoGrid(
             .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
-        val photoListLayoutMode by appSettingsService.photoListLayoutMode.collectAsState()
-        if (LayoutMode.valueOf(photoListLayoutMode) == LayoutMode.GRID) {
+        val photoGridMode by appSettingsService.photoGridMode.collectAsState()
+        if (photoGridMode == PhotoGridMode.SQUARE) {
             PhotoSquareGrid(
                 pagingItems = pagingItems,
                 animatedPlaceholder = animatedPlaceholder,

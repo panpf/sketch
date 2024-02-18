@@ -35,11 +35,17 @@ import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import com.github.panpf.sketch.util.Logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
 
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(Logger.Level.valueOf(appSettingsService.logLevel.value)))
+        logger(Logger(appSettingsService.logLevel.value))   // for Sketch init log
         httpStack(OkHttpStack.Builder().apply {
             if (VERSION.SDK_INT <= 19) {
                 enabledTlsProtocols("TLSv1.1", "TLSv1.2")
@@ -88,5 +94,16 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
                 supportAnimatedHeif()
             }
         }
-    }.build()
+    }.build().apply {
+        coroutineScope.launch {
+            appSettingsService.logLevel.collect {
+                logger.level = it
+            }
+        }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        coroutineScope.cancel()
+    }
 }

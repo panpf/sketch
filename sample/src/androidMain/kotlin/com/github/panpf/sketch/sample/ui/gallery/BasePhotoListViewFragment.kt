@@ -40,14 +40,12 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.ImageDetail
-import com.github.panpf.sketch.sample.model.LayoutMode
-import com.github.panpf.sketch.sample.model.LayoutMode.GRID
-import com.github.panpf.sketch.sample.model.LayoutMode.STAGGERED_GRID
-import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
+import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -72,10 +70,10 @@ abstract class BasePhotoListViewFragment :
         savedInstanceState: Bundle?
     ) {
         binding.myRecycler.apply {
-            appSettingsService.photoListLayoutMode
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            appSettingsService.photoGridMode
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { photoGridMode ->
                     val (layoutManager1, itemDecoration) =
-                        newLayoutManagerAndItemDecoration(LayoutMode.valueOf(it))
+                        newLayoutManagerAndItemDecoration(photoGridMode)
                     layoutManager = layoutManager1
                     (0 until itemDecorationCount).forEach { index ->
                         removeItemDecorationAt(index)
@@ -102,11 +100,11 @@ abstract class BasePhotoListViewFragment :
         }
     }
 
-    private fun newLayoutManagerAndItemDecoration(layoutMode: LayoutMode): Pair<LayoutManager, ItemDecoration> {
+    private fun newLayoutManagerAndItemDecoration(photoGridMode: PhotoGridMode): Pair<LayoutManager, ItemDecoration> {
         val layoutManager: LayoutManager
         val itemDecoration: ItemDecoration
-        when (layoutMode) {
-            GRID -> {
+        when (photoGridMode) {
+            PhotoGridMode.SQUARE -> {
                 layoutManager =
                     requireContext().newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
                         itemSpanByItemFactory(LoadStateItemFactory::class, ItemSpan.fullSpan())
@@ -121,7 +119,7 @@ abstract class BasePhotoListViewFragment :
                 }
             }
 
-            STAGGERED_GRID -> {
+            PhotoGridMode.STAGGERED -> {
                 layoutManager = newAssemblyStaggeredGridLayoutManager(
                     3,
                     StaggeredGridLayoutManager.VERTICAL
@@ -142,7 +140,7 @@ abstract class BasePhotoListViewFragment :
     }
 
     private fun newPagingAdapter(binding: FragmentRecyclerRefreshBinding): PagingDataAdapter<*, *> {
-        return AssemblyPagingDataAdapter<Photo>(
+        return AssemblyPagingDataAdapter(
             itemFactoryList = listOf(
                 PhotoGridItemFactory(animatedPlaceholder = animatedPlaceholder)
                     .setOnViewClickListener(R.id.myListImage) { _, _, _, absoluteAdapterPosition, _ ->

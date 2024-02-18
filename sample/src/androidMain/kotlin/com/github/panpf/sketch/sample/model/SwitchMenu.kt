@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.sample.model
 
-import com.github.panpf.sketch.sample.util.internal.SettingsStateFlow
+import com.github.panpf.sketch.sample.util.SettingsStateFlow
 
 interface SwitchMenu {
 
