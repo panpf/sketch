@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.util.internal
+package com.github.panpf.sketch.sample.util
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -27,8 +27,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 fun stringSettingsStateFlow(
     key: String,
@@ -44,6 +46,15 @@ fun booleanSettingsStateFlow(
     dataStore: DataStore<Preferences>,
 ): SettingsStateFlow<Boolean> = DataStoreSettingsStateFlowImpl(
     adapter = BooleanDataStoreAdapter(dataStore, key, initialize)
+)
+
+fun <E : Enum<E>> enumSettingsStateFlow(
+    key: String,
+    initialize: E,
+    convert: (name: String) -> E,
+    dataStore: DataStore<Preferences>,
+): SettingsStateFlow<E> = DataStoreSettingsStateFlowImpl(
+    adapter = EnumDataStoreAdapter(dataStore, key, initialize, convert)
 )
 
 interface SettingsStateFlow<T> : MutableStateFlow<T>
@@ -103,10 +114,9 @@ private class StringDataStoreAdapter(
     override val state = MutableStateFlow(initialize)
 
     init {
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            dataStore.data.map { it[preferencesKey] }.collect {
-                state.value = it ?: initialize
-            }
+        // Make sure you get the value immediately
+        state.value = runBlocking {
+            dataStore.data.map { it[preferencesKey] }.first() ?: initialize
         }
     }
 
@@ -129,6 +139,43 @@ private class StringDataStoreAdapter(
     }
 }
 
+private class EnumDataStoreAdapter<E : Enum<E>>(
+    private val dataStore: DataStore<Preferences>,
+    key: String,
+    private val initialize: E,
+    private val convert: (name: String) -> E
+) : DataStoreAdapter<E> {
+
+    private val preferencesKey = stringPreferencesKey(key)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    override val state = MutableStateFlow(initialize)
+
+    init {
+        // Make sure you get the value immediately
+        state.value = runBlocking {
+            dataStore.data.map { it[preferencesKey] }.first()?.let { convert(it) } ?: initialize
+        }
+    }
+
+    override fun setValue(value: E?) {
+        if (value != null) {
+            state.value = value
+            coroutineScope.launch {
+                dataStore.edit {
+                    it[preferencesKey] = value.name
+                }
+            }
+        } else {
+            state.value = initialize
+            coroutineScope.launch {
+                dataStore.edit {
+                    it.remove(preferencesKey)
+                }
+            }
+        }
+    }
+}
+
 private class BooleanDataStoreAdapter(
     private val dataStore: DataStore<Preferences>,
     key: String,
@@ -136,14 +183,13 @@ private class BooleanDataStoreAdapter(
 ) : DataStoreAdapter<Boolean> {
 
     private val preferencesKey = booleanPreferencesKey(key)
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
     override val state = MutableStateFlow(initialize)
 
     init {
-        coroutineScope.launch {
-            dataStore.data.map { it[preferencesKey] }.collect {
-                state.value = it ?: initialize
-            }
+        // Make sure you get the value immediately
+        state.value = runBlocking {
+            dataStore.data.map { it[preferencesKey] }.first() ?: initialize
         }
     }
 
@@ -173,14 +219,13 @@ private class IntDataStoreAdapter(
 ) : DataStoreAdapter<Int> {
 
     private val preferencesKey = intPreferencesKey(key)
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
     override val state = MutableStateFlow(initialize)
 
     init {
-        coroutineScope.launch {
-            dataStore.data.map { it[preferencesKey] }.collect {
-                state.value = it ?: initialize
-            }
+        // Make sure you get the value immediately
+        state.value = runBlocking {
+            dataStore.data.map { it[preferencesKey] }.first() ?: initialize
         }
     }
 
