@@ -11,10 +11,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.ui.dialog.AppSettingsDialog
+import com.github.panpf.sketch.sample.ui.dialog.Page.LIST
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.rememberIconLayoutGridPainter
 import com.github.panpf.sketch.sample.ui.rememberIconLayoutGridStaggeredPainter
@@ -67,13 +72,19 @@ fun MainMenu(modifier: Modifier = Modifier) {
             },
             tint = colorScheme.onTertiaryContainer
         )
+        var showSettingsDialog by remember { mutableStateOf(false) }
         Icon(
             painter = rememberIconSettingsPainter(),
             contentDescription = null,
             modifier = modifier1.clickable {
-                // TODO Open Settings dialog
+                showSettingsDialog = !showSettingsDialog
             },
             tint = colorScheme.onTertiaryContainer
         )
+        if (showSettingsDialog) {
+            AppSettingsDialog(LIST) {
+                showSettingsDialog = !showSettingsDialog
+            }
+        }
     }
 }

@@ -30,8 +30,9 @@ import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
-import com.github.panpf.sketch.sample.ui.setting.Page.LIST
-import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
+import com.github.panpf.sketch.sample.ui.dialog.Page
+import com.github.panpf.sketch.sample.ui.dialog.Page.LIST
+import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger.Level

@@ -83,3 +83,8 @@ actual fun rememberIconImage2BaselinePainter(): Painter {
 actual fun rememberIconImage2OutlinePainter(): Painter {
     return painterResource("ic_image2_outline.xml")
 }
+
+@Composable
+actual fun rememberIconExpandMorePainter(): Painter {
+    return painterResource("ic_expand_more.xml")
+}

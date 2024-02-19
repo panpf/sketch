@@ -96,7 +96,7 @@ class AppSettings(val context: PlatformContext) {
     val scale by lazy {
         stringSettingsStateFlow("scale", "LongImageMode", dataStore)
     }
-    val longImageScale by lazy {
+    val longImageScale: SettingsStateFlow<Scale> by lazy {
         enumSettingsStateFlow(
             key = "longImageScale",
             initialize = Scale.START_CROP,
@@ -104,7 +104,7 @@ class AppSettings(val context: PlatformContext) {
             dataStore = dataStore
         )
     }
-    val otherImageScale by lazy {
+    val otherImageScale: SettingsStateFlow<Scale> by lazy {
         enumSettingsStateFlow(
             key = "otherImageScale",
             initialize = Scale.CENTER_CROP,

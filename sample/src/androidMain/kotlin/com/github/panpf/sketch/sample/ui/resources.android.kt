@@ -84,3 +84,8 @@ actual fun rememberIconImage2BaselinePainter(): Painter {
 actual fun rememberIconImage2OutlinePainter(): Painter {
     return painterResource(R.drawable.ic_image2_outline)
 }
+
+@Composable
+actual fun rememberIconExpandMorePainter(): Painter {
+    return painterResource(R.drawable.ic_expand_more)
+}

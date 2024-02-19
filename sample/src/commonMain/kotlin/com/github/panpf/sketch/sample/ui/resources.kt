@@ -52,3 +52,6 @@ expect fun rememberIconImage2BaselinePainter(): Painter
 
 @Composable
 expect fun rememberIconImage2OutlinePainter(): Painter
+
+@Composable
+expect fun rememberIconExpandMorePainter(): Painter

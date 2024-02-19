@@ -24,6 +24,7 @@ import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
+import com.github.panpf.sketch.sample.ui.dialog.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class SettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding>() {
