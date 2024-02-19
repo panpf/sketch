@@ -12,77 +12,77 @@
 
     <!-- Gallery -->
 
-    <fragment
-        android:id="@+id/gifPhotoListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.GifPhotoListComposeFragment"
-        android:label="GifPhotoListComposeFragment" />
-    <action
-        android:id="@+id/action_gifPhotoListComposeFragment"
-        app:destination="@id/gifPhotoListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+<!--    <fragment-->
+<!--        android:id="@+id/gifPhotoListComposeFragment"-->
+<!--        android:name="com.github.panpf.sketch.sample.ui.gallery.GifPhotoListComposeFragment"-->
+<!--        android:label="GifPhotoListComposeFragment" />-->
+<!--    <action-->
+<!--        android:id="@+id/action_gifPhotoListComposeFragment"-->
+<!--        app:destination="@id/gifPhotoListComposeFragment"-->
+<!--        app:enterAnim="@anim/nav_enter"-->
+<!--        app:exitAnim="@anim/nav_exit"-->
+<!--        app:popEnterAnim="@anim/nav_pop_enter"-->
+<!--        app:popExitAnim="@anim/nav_pop_exit" />-->
 
-    <fragment
-        android:id="@+id/gifPhotoListViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.GifPhotoListViewFragment"
-        android:label="GifPhotoListViewFragment" />
-    <action
-        android:id="@+id/action_gifPhotoListViewFragment"
-        app:destination="@id/gifPhotoListViewFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+<!--    <fragment-->
+<!--        android:id="@+id/gifPhotoListViewFragment"-->
+<!--        android:name="com.github.panpf.sketch.sample.ui.gallery.GifPhotoListViewFragment"-->
+<!--        android:label="GifPhotoListViewFragment" />-->
+<!--    <action-->
+<!--        android:id="@+id/action_gifPhotoListViewFragment"-->
+<!--        app:destination="@id/gifPhotoListViewFragment"-->
+<!--        app:enterAnim="@anim/nav_enter"-->
+<!--        app:exitAnim="@anim/nav_exit"-->
+<!--        app:popEnterAnim="@anim/nav_pop_enter"-->
+<!--        app:popExitAnim="@anim/nav_pop_exit" />-->
 
-    <fragment
-        android:id="@+id/localPhotoListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListComposeFragment"
-        android:label="LocalPhotoListComposeFragment" />
-    <action
-        android:id="@+id/action_localPhotoListComposeFragment"
-        app:destination="@id/localPhotoListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+<!--    <fragment-->
+<!--        android:id="@+id/localPhotoListComposeFragment"-->
+<!--        android:name="com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListComposeFragment"-->
+<!--        android:label="LocalPhotoListComposeFragment" />-->
+<!--    <action-->
+<!--        android:id="@+id/action_localPhotoListComposeFragment"-->
+<!--        app:destination="@id/localPhotoListComposeFragment"-->
+<!--        app:enterAnim="@anim/nav_enter"-->
+<!--        app:exitAnim="@anim/nav_exit"-->
+<!--        app:popEnterAnim="@anim/nav_pop_enter"-->
+<!--        app:popExitAnim="@anim/nav_pop_exit" />-->
 
-    <fragment
-        android:id="@+id/localPhotoListViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewFragment"
-        android:label="LocalPhotoListViewFragment" />
-    <action
-        android:id="@+id/action_localPhotoListViewFragment"
-        app:destination="@id/localPhotoListViewFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+<!--    <fragment-->
+<!--        android:id="@+id/localPhotoListViewFragment"-->
+<!--        android:name="com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewFragment"-->
+<!--        android:label="LocalPhotoListViewFragment" />-->
+<!--    <action-->
+<!--        android:id="@+id/action_localPhotoListViewFragment"-->
+<!--        app:destination="@id/localPhotoListViewFragment"-->
+<!--        app:enterAnim="@anim/nav_enter"-->
+<!--        app:exitAnim="@anim/nav_exit"-->
+<!--        app:popEnterAnim="@anim/nav_pop_enter"-->
+<!--        app:popExitAnim="@anim/nav_pop_exit" />-->
 
-    <fragment
-        android:id="@+id/pexelsPhotoListComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListComposeFragment"
-        android:label="PexelsPhotoListComposeFragment" />
-    <action
-        android:id="@+id/action_pexelsPhotoListComposeFragment"
-        app:destination="@id/pexelsPhotoListComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+<!--    <fragment-->
+<!--        android:id="@+id/pexelsPhotoListComposeFragment"-->
+<!--        android:name="com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListComposeFragment"-->
+<!--        android:label="PexelsPhotoListComposeFragment" />-->
+<!--    <action-->
+<!--        android:id="@+id/action_pexelsPhotoListComposeFragment"-->
+<!--        app:destination="@id/pexelsPhotoListComposeFragment"-->
+<!--        app:enterAnim="@anim/nav_enter"-->
+<!--        app:exitAnim="@anim/nav_exit"-->
+<!--        app:popEnterAnim="@anim/nav_pop_enter"-->
+<!--        app:popExitAnim="@anim/nav_pop_exit" />-->
 
-    <fragment
-        android:id="@+id/pexelsPhotoListViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewFragment"
-        android:label="PexelsPhotoListViewFragment" />
-    <action
-        android:id="@+id/action_pexelsPhotoListViewFragment"
-        app:destination="@id/pexelsPhotoListViewFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
+<!--    <fragment-->
+<!--        android:id="@+id/pexelsPhotoListViewFragment"-->
+<!--        android:name="com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewFragment"-->
+<!--        android:label="PexelsPhotoListViewFragment" />-->
+<!--    <action-->
+<!--        android:id="@+id/action_pexelsPhotoListViewFragment"-->
+<!--        app:destination="@id/pexelsPhotoListViewFragment"-->
+<!--        app:enterAnim="@anim/nav_enter"-->
+<!--        app:exitAnim="@anim/nav_exit"-->
+<!--        app:popEnterAnim="@anim/nav_pop_enter"-->
+<!--        app:popExitAnim="@anim/nav_pop_exit" />-->
 
     <fragment
         android:id="@+id/photoPagerComposeFragment"

@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.compose.AsyncImage
@@ -73,6 +74,7 @@ import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
+import com.github.panpf.sketch.sample.ui.screen.PhotoPager
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
@@ -97,7 +99,7 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
 
     @Composable
     override fun DrawContent() {
-        ImagePager(
+        PhotoPager(
             imageList = imageList,
             totalCount = args.totalCount,
             startPosition = args.startPosition,
@@ -124,6 +126,14 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
             },
             onImageClick = {
                 findNavController().popBackStack()
+            },
+            onImageLongClick = { imageResult ->
+                findNavController()
+                    .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
+            },
+            onInfoClick = { imageResult ->
+                findNavController()
+                    .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
             },
         )
     }
@@ -154,217 +164,4 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
         }
         requestPermissionResult.launch(input)
     }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun ImagePager(
-    imageList: List<ImageDetail>,
-    initialPosition: Int,
-    startPosition: Int,
-    totalCount: Int,
-    onSettingsClick: () -> Unit,
-    onShowOriginClick: () -> Unit,
-    onShareClick: (ImageDetail) -> Unit,
-    onSaveClick: (ImageDetail) -> Unit,
-    onImageClick: () -> Unit,
-) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
-            imageList.size
-        }
-
-        val density = LocalDensity.current
-        val maxWidthPx = with(density) { maxWidth.toPx() }.roundToInt()
-        val maxHeightPx = with(density) { maxHeight.toPx() }.roundToInt()
-
-        val uriString = imageList[pagerState.currentPage].let {
-            it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl
-        }
-        val buttonBgColorState =
-            remember { mutableIntStateOf(android.graphics.Color.parseColor("#bf5660")) }
-
-        PagerBgImage(uriString, buttonBgColorState, IntSize(maxWidthPx, maxHeightPx))
-
-        HorizontalPager(
-            state = pagerState,
-            beyondBoundsPageCount = 0,
-            modifier = Modifier.fillMaxSize()
-        ) { index ->
-            PhotoViewer(
-                imageDetail = imageList[index],
-                buttonBgColorState = buttonBgColorState,
-                onClick = onImageClick,
-                onShareClick = {
-                    onShareClick.invoke(imageList[pagerState.currentPage])
-                },
-                onSaveClick = {
-                    onSaveClick.invoke(imageList[pagerState.currentPage])
-                },
-            )
-        }
-
-        val showOriginImage by LocalContext.current.appSettingsService.showOriginImage.collectAsState()
-        ImagePagerTools(
-            pageNumber = startPosition + pagerState.currentPage + 1,
-            pageCount = totalCount,
-            showOriginImage = showOriginImage,
-            buttonBgColorState = buttonBgColorState,
-            onSettingsClick = onSettingsClick,
-            onShowOriginClick = onShowOriginClick,
-        )
-    }
-}
-
-@Composable
-private fun PagerBgImage(
-    imageUri: String,
-    buttonBgColorState: MutableState<Int>,
-    screenSize: IntSize,
-) {
-    val imageState = rememberAsyncImageState()
-    LaunchedEffect(Unit) {
-        snapshotFlow { imageState.result }.collect {
-            if (it is ImageResult.Success) {
-                val simplePalette = it.simplePalette
-                val accentColor = (simplePalette?.dominantSwatch?.rgb
-                    ?: simplePalette?.lightVibrantSwatch?.rgb
-                    ?: simplePalette?.vibrantSwatch?.rgb
-                    ?: simplePalette?.lightMutedSwatch?.rgb
-                    ?: simplePalette?.mutedSwatch?.rgb
-                    ?: simplePalette?.darkVibrantSwatch?.rgb
-                    ?: simplePalette?.darkMutedSwatch?.rgb)
-                if (accentColor != null) {
-                    buttonBgColorState.value = accentColor
-                }
-            }
-        }
-    }
-    AsyncImage(
-        request = ImageRequest(LocalContext.current, imageUri) {
-            resize(
-                width = screenSize.width / 4,
-                height = screenSize.height / 4,
-                precision = SMALLER_SIZE
-            )
-            addTransformations(
-                BlurTransformation(
-                    radius = 20,
-                    maskColor = ColorUtils.setAlphaComponent(Color.Black.value.toInt(), 100)
-                )
-            )
-            disallowAnimatedImage()
-            crossfade(alwaysUse = true, durationMillis = 400)
-            resizeOnDraw()
-            components {
-                addDecodeInterceptor(PaletteDecodeInterceptor())
-            }
-        },
-        state = imageState,
-        contentDescription = "Background",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize()
-    )
-}
-
-@Composable
-private fun ImagePagerTools(
-    pageNumber: Int,
-    pageCount: Int,
-    showOriginImage: Boolean,
-    buttonBgColorState: MutableState<Int>,
-    onSettingsClick: () -> Unit,
-    onShowOriginClick: () -> Unit,
-) {
-    val context = LocalContext.current
-    val density = LocalDensity.current
-    val toolbarTopMarginDp = remember {
-        val toolbarTopMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            context.getStatusBarHeight()
-        } else {
-            0
-        }
-        with(density) { toolbarTopMargin.toDp() }
-    }
-    val buttonBgColor = Color(buttonBgColorState.value)
-    val buttonTextColor = Color.White
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = toolbarTopMarginDp)
-                .padding(20.dp), // margin,
-        ) {
-            val buttonModifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = buttonBgColor,
-                    shape = RoundedCornerShape(50)
-                )
-                .padding(8.dp)
-            IconButton(
-                modifier = buttonModifier,
-                onClick = { onShowOriginClick.invoke() },
-            ) {
-                val iconId =
-                    if (showOriginImage) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline
-                Icon(
-                    painter = painterResource(id = iconId),
-                    contentDescription = "show origin image",
-                    tint = buttonTextColor
-                )
-            }
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Box(
-                Modifier
-                    .width(40.dp)
-                    .background(
-                        color = buttonBgColor,
-                        shape = RoundedCornerShape(50)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "${pageNumber.coerceAtMost(999)}\n·\n${pageCount.coerceAtMost(999)}",
-                    textAlign = TextAlign.Center,
-                    color = buttonTextColor,
-                    style = TextStyle(lineHeight = 12.sp),
-                    modifier = Modifier
-                )
-            }
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            IconButton(
-                modifier = buttonModifier,
-                onClick = { onSettingsClick.invoke() },
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_settings),
-                    contentDescription = "settings",
-                    tint = buttonTextColor
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun ImagePagerToolsPreview() {
-    val buttonBgColorState = remember {
-        mutableIntStateOf(android.graphics.Color.parseColor("#bf5660"))
-    }
-    ImagePagerTools(
-        pageNumber = 9,
-        pageCount = 99,
-        showOriginImage = false,
-        buttonBgColorState = buttonBgColorState,
-        onSettingsClick = {},
-        onShowOriginClick = {},
-    )
 }

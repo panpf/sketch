@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.screen.base
+package com.github.panpf.sketch.sample.ui.util
 
 import androidx.compose.runtime.RememberObserver
 
@@ -7,7 +7,7 @@ import androidx.compose.runtime.RememberObserver
  *
  * Because when RememberObserver is passed as a parameter of the Composable function, the onRemembered method will be called when the Composable function is executed for the first time, causing it to be remembered multiple times.
  */
-abstract class BaseRememberObserver : RememberObserver {
+abstract class CountRememberObserver : RememberObserver {
 
     private var rememberedCount = 0
 

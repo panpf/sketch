@@ -26,7 +26,7 @@ import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 @Composable
 actual fun PagerBackground(
     imageUri: String,
-    buttonBgColorState: MutableState<Int>,
+    buttonBgColorState: MutableState<Color>,
     screenSize: IntSize,
 ) {
     val imageState = rememberAsyncImageState()
@@ -42,7 +42,7 @@ actual fun PagerBackground(
                     ?: simplePalette?.darkVibrantSwatch?.rgb
                     ?: simplePalette?.darkMutedSwatch?.rgb)
                 if (accentColor != null) {
-                    buttonBgColorState.value = accentColor
+                    buttonBgColorState.value = Color(accentColor)
                 }
             }
         }

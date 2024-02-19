@@ -15,12 +15,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +41,19 @@ import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlin.math.roundToInt
+
+@Composable
+fun rememberPhotoPagerEvents(): PhotoPagerEvents {
+    return remember { PhotoPagerEvents() }
+}
+
+class PhotoPagerEvents {
+    val nextPageFlow = MutableSharedFlow<Unit>()
+    val previousPageFlow = MutableSharedFlow<Unit>()
+}
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -48,6 +62,7 @@ fun PhotoPager(
     initialPosition: Int,
     startPosition: Int,
     totalCount: Int,
+    photoPagerEvents: PhotoPagerEvents = rememberPhotoPagerEvents(),
     onSettingsClick: () -> Unit,
     onShowOriginClick: () -> Unit,
     onShareClick: (ImageDetail) -> Unit,
@@ -60,6 +75,19 @@ fun PhotoPager(
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             imageList.size
         }
+        LaunchedEffect(Unit) {
+            photoPagerEvents.previousPageFlow.collect {
+                val nextPageIndex =
+                    (pagerState.currentPage - 1).let { if (it < 0) pagerState.pageCount + it else it }
+                pagerState.animateScrollToPage(nextPageIndex)
+            }
+        }
+        LaunchedEffect(Unit) {
+            photoPagerEvents.nextPageFlow.collect {
+                val nextPageIndex = (pagerState.currentPage + 1) % pagerState.pageCount
+                pagerState.animateScrollToPage(nextPageIndex)
+            }
+        }
 
         val density = LocalDensity.current
         val maxWidthPx = with(density) { maxWidth.toPx() }.roundToInt()
@@ -68,7 +96,8 @@ fun PhotoPager(
         val uriString = imageList[pagerState.currentPage].let {
             it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl
         }
-        val buttonBgColorState = remember { mutableIntStateOf(0xbf5660) }
+        val colorScheme = MaterialTheme.colorScheme
+        val buttonBgColorState = remember { mutableStateOf(colorScheme.primary) }
         PagerBackground(uriString, buttonBgColorState, IntSize(maxWidthPx, maxHeightPx))
 
         HorizontalPager(
@@ -106,7 +135,7 @@ fun PhotoPager(
 @Composable
 expect fun PagerBackground(
     imageUri: String,
-    buttonBgColorState: MutableState<Int>,
+    buttonBgColorState: MutableState<Color>,
     screenSize: IntSize,
 )
 
@@ -117,7 +146,7 @@ private fun PagerTools(
     pageNumber: Int,
     pageCount: Int,
     showOriginImage: Boolean,
-    buttonBgColorState: MutableState<Int>,
+    buttonBgColorState: MutableState<Color>,
     onSettingsClick: () -> Unit,
     onShowOriginClick: () -> Unit,
 ) {
@@ -127,7 +156,7 @@ private fun PagerTools(
         val toolbarTopMargin = getTopMargin(context)
         with(density) { toolbarTopMargin.toDp() }
     }
-    val buttonBgColor = Color(buttonBgColorState.value)
+    val buttonBgColor = buttonBgColorState.value
     val buttonTextColor = Color.White
 
     Box(modifier = Modifier.fillMaxSize()) {

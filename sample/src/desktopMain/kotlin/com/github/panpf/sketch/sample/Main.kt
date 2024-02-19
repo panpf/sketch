@@ -6,13 +6,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.sample.ui.Page
-import com.github.panpf.sketch.sample.ui.navigation.NavigationContainer
+import com.github.panpf.sketch.sample.ui.screen.PhotoListScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
-import com.github.panpf.sketch.sample.ui.util.EventBus
+import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.launch
@@ -33,13 +34,15 @@ fun main() = application {
         state = rememberWindowState(size = DpSize(1000.dp, 800.dp)),
         onKeyEvent = {
             coroutineScope.launch {
-                EventBus.keyEvent.emit(it)
+                MyEvents.keyEvent.emit(it)
             }
             false
         }
     ) {
         AppTheme {
-            NavigationContainer(Page.Main)
+            Navigator(PhotoListScreen()) { navigator ->
+                SlideTransition(navigator)
+            }
         }
     }
 }

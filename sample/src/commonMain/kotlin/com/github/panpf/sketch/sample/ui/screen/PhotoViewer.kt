@@ -53,7 +53,7 @@ import kotlin.math.roundToInt
 @Composable
 fun PhotoViewer(
     imageDetail: ImageDetail,
-    buttonBgColorState: MutableState<Int>,
+    buttonBgColorState: MutableState<Color>,
     onClick: () -> Unit,
     onLongClick: (ImageResult) -> Unit,
     onShareClick: () -> Unit,
@@ -146,7 +146,7 @@ fun PhotoViewer(
                 .align(Alignment.BottomCenter)
                 .padding(vertical = 30.dp),
         ) {
-            val buttonBgColor = Color(buttonBgColorState.value)
+            val buttonBgColor = buttonBgColorState.value
             val buttonTextColor = Color.White
             val buttonModifier = Modifier
                 .size(40.dp)

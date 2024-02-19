@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.sample.ui.util
+package com.github.panpf.sketch.sample.ui
 
 import androidx.compose.ui.input.key.KeyEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-object EventBus {
+object MyEvents {
     val keyEvent = MutableSharedFlow<KeyEvent>()
 }

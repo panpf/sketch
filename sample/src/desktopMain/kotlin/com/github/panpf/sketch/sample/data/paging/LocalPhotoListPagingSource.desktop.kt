@@ -5,6 +5,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.readImageInfoWithImageReaderOrThrow
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.sample.appSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,8 +16,7 @@ actual suspend fun readPhotosFromPhotoAlbum(
 ): List<String> = emptyList()
 
 actual fun isIgnoreExifOrientation(context: PlatformContext): Boolean {
-//    return context.appSettingsService.ignoreExifOrientation.value
-    return false    // TODO
+    return context.appSettings.ignoreExifOrientation.value
 }
 
 actual suspend fun readImageInfoOrNull(
