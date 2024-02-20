@@ -22,6 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -35,9 +38,10 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
+import com.github.panpf.sketch.sample.ui.dialog.PhotoInfoDialog
 import com.github.panpf.sketch.sample.ui.list.AppendState
-import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.Flow
 
@@ -48,7 +52,6 @@ fun PhotoGrid(
     animatedPlaceholder: Boolean,
     gridCellsMinSize: Dp = 100.dp,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
-    onLongClick: (items: List<Photo>, photo: Photo, index: Int, displayResult: ImageResult) -> Unit,
 ) {
     val pagingItems = photoPagingFlow.collectAsLazyPagingItems()
     val context = LocalPlatformContext.current
@@ -59,6 +62,8 @@ fun PhotoGrid(
             pagingItems.refresh()
         }
     }
+
+    var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pagingItems.loadState.refresh is Loading,
@@ -76,7 +81,9 @@ fun PhotoGrid(
                 animatedPlaceholder = animatedPlaceholder,
                 gridCellsMinSize = gridCellsMinSize,
                 onClick = onClick,
-                onLongClick = onLongClick,
+                onLongClick = { _, _, _, imageResult ->
+                    photoInfoImageResult = imageResult
+                },
             )
         } else {
             PhotoStaggeredGrid(
@@ -84,7 +91,9 @@ fun PhotoGrid(
                 animatedPlaceholder = animatedPlaceholder,
                 gridCellsMinSize = gridCellsMinSize,
                 onClick = onClick,
-                onLongClick = onLongClick,
+                onLongClick = { _, _, _, imageResult ->
+                    photoInfoImageResult = imageResult
+                },
             )
         }
 
@@ -93,6 +102,12 @@ fun PhotoGrid(
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
+    }
+
+    if (photoInfoImageResult != null) {
+        PhotoInfoDialog(photoInfoImageResult) {
+            photoInfoImageResult = null
+        }
     }
 }
 

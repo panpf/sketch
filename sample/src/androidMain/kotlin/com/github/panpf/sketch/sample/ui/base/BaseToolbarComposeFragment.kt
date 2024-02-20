@@ -32,11 +32,11 @@ abstract class BaseToolbarComposeFragment : BaseToolbarFragment() {
     ): View = ComposeView(inflater.context).apply {
         setContent {
             AppTheme {
-                DrawContent()
+                ComposeContent()
             }
         }
     }
 
     @Composable
-    abstract fun DrawContent()
+    abstract fun ComposeContent()
 }

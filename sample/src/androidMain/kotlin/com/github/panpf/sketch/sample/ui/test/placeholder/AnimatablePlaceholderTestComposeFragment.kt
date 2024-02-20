@@ -49,7 +49,7 @@ class AnimatablePlaceholderTestComposeFragment : BaseToolbarComposeFragment() {
     private val urlIndexFlow = MutableStateFlow(0)
 
     @Composable
-    override fun DrawContent() {
+    override fun ComposeContent() {
         Column(modifier = Modifier.fillMaxSize()) {
             val urlIndexState = urlIndexFlow.collectAsState()
             val images = remember {

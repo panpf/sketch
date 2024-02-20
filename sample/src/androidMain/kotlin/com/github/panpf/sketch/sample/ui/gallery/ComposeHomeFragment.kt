@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
-import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
@@ -123,9 +122,6 @@ class ComposeHomeFragment : BaseComposeFragment() {
                         onClick = { photos, _, index ->
                             startPhotoPager(photos, index)
                         },
-                        onLongClick = { _, _, _, imageResult ->
-                            startPhotoInfoDialog(imageResult)
-                        }
                     )
                 }
 
@@ -159,10 +155,5 @@ class ComposeHomeFragment : BaseComposeFragment() {
                 initialPosition = position
             ),
         )
-    }
-
-    private fun startPhotoInfoDialog(imageResult: ImageResult?) {
-        findNavController()
-            .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
     }
 }

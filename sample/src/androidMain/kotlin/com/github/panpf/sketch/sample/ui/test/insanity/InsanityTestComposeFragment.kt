@@ -28,13 +28,12 @@ class InsanityTestComposeFragment : BaseToolbarComposeFragment() {
     private val insanityTestViewModel by viewModels<InsanityTestViewModel>()
 
     @Composable
-    override fun DrawContent() {
+    override fun ComposeContent() {
         PhotoGrid(
             photoPagingFlow = insanityTestViewModel.pagingFlow,
             animatedPlaceholder = false,
             gridCellsMinSize = 100.dp,
             onClick = { _, _, _ -> },
-            onLongClick = { _, _, _, _ -> }
         )
     }
 

@@ -17,23 +17,21 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import android.Manifest
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
-import com.github.panpf.sketch.sample.ui.dialog.AppSettingsDialog
-import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.screen.PhotoPager
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import kotlinx.coroutines.launch
@@ -53,48 +51,26 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
 
     @Composable
     override fun ComposeContent() {
-        var showSettingsDialog by remember { mutableStateOf(false) }
+        val appSettings = LocalPlatformContext.current.appSettings
+        LaunchedEffect(Unit) {
+            appSettings.showOriginImage.ignoreFirst().collect { newValue ->
+                if (newValue) {
+                    showLongToast("Now show original image")
+                } else {
+                    showLongToast("Now show thumbnails image")
+                }
+            }
+        }
+
         PhotoPager(
             imageList = imageList,
             totalCount = args.totalCount,
             startPosition = args.startPosition,
             initialPosition = args.initialPosition,
-            onSettingsClick = {
-                showSettingsDialog = true
-            },
-            onShowOriginClick = {
-                val newValue = !appSettingsService.showOriginImage.value
-                appSettingsService.showOriginImage.value = newValue
-                if (newValue) {
-                    showLongToast("Opened View original image")
-                } else {
-                    showLongToast("Closed View original image")
-                }
-            },
-            onShareClick = {
-                share(it)
-            },
-            onSaveClick = {
-                save(it)
-            },
-            onImageClick = {
-                findNavController().popBackStack()
-            },
-            onImageLongClick = { imageResult ->
-                findNavController()
-                    .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
-            },
-            onInfoClick = { imageResult ->
-                findNavController()
-                    .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
-            },
+            onShareClick = { share(it) },
+            onSaveClick = { save(it) },
+            onImageClick = { findNavController().popBackStack() },
         )
-
-        if (showSettingsDialog) {
-            AppSettingsDialog(page = ZOOM) {
-                showSettingsDialog = false
-            }
-        }
     }
 
     private fun share(image: ImageDetail) {

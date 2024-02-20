@@ -16,7 +16,8 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.os.Bundle
-import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
@@ -24,36 +25,54 @@ import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.DialogImageInfoBinding
+import com.github.panpf.sketch.sample.databinding.ListItemImageInfoBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
-import com.github.panpf.tools4k.lang.asOrThrow
 
 class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding>() {
 
     private val args by navArgs<PhotoInfoDialogFragmentArgs>()
 
     override fun onViewCreated(binding: DialogImageInfoBinding, savedInstanceState: Bundle?) {
-        binding.uriText.text = args.uri
-        binding.optionsText.text = args.optionsInfo
 
-        binding.throwableText.text = args.throwableString
-        binding.imageInfoText.text = args.imageInfo
-        binding.bitmapInfoText.text = args.bitmapInfo
-        binding.drawableInfoText.text = args.drawableInfo
-        binding.dataFromText.text = args.dataFromInfo
-        binding.transformedText.text = args.transformedInfo
+        createItem(binding, null, args.uri.orEmpty())
+            .apply { binding.contentLayout.addView(this) }
+        createItem(binding, "Options: ", args.uri.orEmpty())
+            .apply { binding.contentLayout.addView(this) }
 
-        binding.throwableText.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString != null
-        binding.imageInfoText.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null
-        binding.bitmapInfoText.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null
-        binding.drawableInfoText.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null
-        binding.dataFromText.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null
-        binding.transformedText.parent.asOrThrow<ViewGroup>().isVisible =
-            args.throwableString == null
+        if (args.throwableString == null) {
+            createItem(binding, "Source Image: ", args.sourceImageInfo.orEmpty())
+                .apply { binding.contentLayout.addView(this) }
+
+            createItem(binding, "Result Image: ", args.resultImageInfo.orEmpty())
+                .apply { binding.contentLayout.addView(this) }
+
+            createItem(binding, "Data From: ", args.dataFromInfo.orEmpty())
+                .apply { binding.contentLayout.addView(this) }
+
+            createItem(binding, "Transformed: ", args.transformedInfo.orEmpty())
+                .apply { binding.contentLayout.addView(this) }
+        } else {
+            createItem(binding, "Throwable: ", args.throwableString.orEmpty())
+                .apply { binding.contentLayout.addView(this) }
+        }
+    }
+
+    private fun createItem(
+        binding: DialogImageInfoBinding,
+        title: String? = null,
+        content: String
+    ): View {
+        return ListItemImageInfoBinding.inflate(
+            LayoutInflater.from(binding.root.context),
+            binding.contentLayout,
+            false
+        ).apply {
+            this.titleText.apply {
+                text = title
+                isVisible = title != null
+            }
+            this.contentText.text = content
+        }.root
     }
 
     companion object {
@@ -61,14 +80,13 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
         fun createNavDirections(imageResult: ImageResult?): NavDirections {
             val uri: String? = imageResult?.request?.uriString
             var optionsInfo: String? = null
-            var imageInfo: String? = null
-            var bitmapInfo: String? = null
-            var drawableInfo: String? = null
+            var sourceImageInfo: String? = null
+            var resultImageInfo: String? = null
             var dataFromInfo: String? = null
             var transformedInfo: String? = null
             var throwableString: String? = null
             if (imageResult is ImageResult.Success) {
-                imageInfo = imageResult.imageInfo.run {
+                sourceImageInfo = imageResult.imageInfo.run {
                     "${width}x${height}, ${mimeType}, ${ExifOrientation.name(exifOrientation)}"
                 }
 
@@ -79,11 +97,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                     .filter { it.trim().isNotEmpty() }
                     .joinToString(separator = "\n")
 
-                bitmapInfo = imageResult.image.toString()
-
-                drawableInfo = imageResult.image.let {
-                    "${it.width}x${it.height}"
-                }
+                resultImageInfo = imageResult.image.toString()
 
                 dataFromInfo = imageResult.dataFrom.name
 
@@ -97,9 +111,8 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
 
             return NavMainDirections.actionPhotoInfoDialogFragment(
                 uri = uri,
-                imageInfo = imageInfo,
-                bitmapInfo = bitmapInfo,
-                drawableInfo = drawableInfo,
+                sourceImageInfo = sourceImageInfo,
+                resultImageInfo = resultImageInfo,
                 optionsInfo = optionsInfo,
                 dataFromInfo = dataFromInfo,
                 transformedInfo = transformedInfo,

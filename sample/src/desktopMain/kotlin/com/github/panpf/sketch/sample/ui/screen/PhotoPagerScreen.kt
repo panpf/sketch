@@ -15,8 +15,11 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +31,12 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
+import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScreen
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.launch
 
 class PhotoPagerScreen(
@@ -43,48 +49,45 @@ class PhotoPagerScreen(
     @Composable
     override fun Content() {
         Box(Modifier.fillMaxSize()) {
+            val snackbarHostState = remember { SnackbarHostState() }
+            val appSettings = LocalPlatformContext.current.appSettings
+            LaunchedEffect(Unit) {
+                appSettings.showOriginImage.ignoreFirst().collect { newValue ->
+                    if (newValue) {
+                        snackbarHostState.showSnackbar("Now show original image")
+                    } else {
+                        snackbarHostState.showSnackbar("Now show thumbnails image")
+                    }
+                }
+            }
+
+            val coroutineScope = rememberCoroutineScope()
             val photoPagerEvents = rememberPhotoPagerEvents()
+            val navigator = LocalNavigator.current!!
             PhotoPager(
                 imageList = imageList,
                 totalCount = totalCount,
                 startPosition = startPosition,
                 initialPosition = initialPosition,
                 photoPagerEvents = photoPagerEvents,
-                onSettingsClick = {
-//                findNavController().navigate(
-//                    MainFragmentDirections.actionSettingsDialogFragment(ZOOM.name)
-//                )
-                },
-                onShowOriginClick = {
-//                val newValue = !appSettingsService.showOriginImage.value
-//                appSettingsService.showOriginImage.value = newValue
-//                if (newValue) {
-//                    showLongToast("Opened View original image")
-//                } else {
-//                    showLongToast("Closed View original image")
-//                }
-                },
                 onShareClick = {
-//                share(it)
+                    // TODO Realize sharing
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Sharing feature is under development")
+                    }
                 },
                 onSaveClick = {
-//                save(it)
+                    // TODO Realize saving
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Save feature is under development")
+                    }
                 },
                 onImageClick = {
-//                findNavController().popBackStack()
-                },
-                onImageLongClick = { imageResult ->
-//                findNavController()
-//                    .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
-                },
-                onInfoClick = { imageResult ->
-//                findNavController()
-//                    .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
+                    navigator.pop()
                 },
             )
 
             val colorScheme = MaterialTheme.colorScheme
-            val navigator = LocalNavigator.current!!
             IconButton(
                 modifier = Modifier
                     .padding(20.dp) // margin,
@@ -104,6 +107,11 @@ class PhotoPagerScreen(
             }
 
             TurnPage(photoPagerEvents)
+
+            SnackbarHost(
+                snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 100.dp)
+            )
         }
     }
 

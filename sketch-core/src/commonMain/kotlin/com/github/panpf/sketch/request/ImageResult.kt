@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.request
 
+import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
@@ -22,6 +23,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 /**
  * Result of [ImageRequest]
  */
+@Stable
 interface ImageResult {
 
     val request: ImageRequest

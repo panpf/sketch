@@ -135,9 +135,9 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
                 val newValue = !appSettingsService.showOriginImage.value
                 appSettingsService.showOriginImage.value = newValue
                 if (newValue) {
-                    showLongToast("Opened View original image")
+                    showLongToast("Now show original image")
                 } else {
-                    showLongToast("Closed View original image")
+                    showLongToast("Now show thumbnails image")
                 }
             }
         }

@@ -83,9 +83,6 @@ class PhotoListScreen : Screen {
                         onClick = { photos, _, index ->
                             startPhotoPagerScreen(navigator, photos, index)
                         },
-                        onLongClick = { _, _, _, imageResult ->
-                            // TODO Open photo info dialog
-                        }
                     )
                 }
 

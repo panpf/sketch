@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,12 +38,14 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.ui.dialog.AppSettingsDialog
+import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
+import com.github.panpf.sketch.sample.ui.dialog.PhotoInfoDialog
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlin.math.roundToInt
 
 @Composable
@@ -63,14 +66,13 @@ fun PhotoPager(
     startPosition: Int,
     totalCount: Int,
     photoPagerEvents: PhotoPagerEvents = rememberPhotoPagerEvents(),
-    onSettingsClick: () -> Unit,
-    onShowOriginClick: () -> Unit,
     onShareClick: (ImageDetail) -> Unit,
     onSaveClick: (ImageDetail) -> Unit,
     onImageClick: () -> Unit,
-    onImageLongClick: (ImageResult) -> Unit,
-    onInfoClick: (ImageResult) -> Unit,
 ) {
+    var showSettingsDialog by remember { mutableStateOf(false) }
+    var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
+
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             imageList.size
@@ -109,8 +111,12 @@ fun PhotoPager(
                 imageDetail = imageList[index],
                 buttonBgColorState = buttonBgColorState,
                 onClick = onImageClick,
-                onLongClick = onImageLongClick,
-                onInfoClick = onInfoClick,
+                onLongClick = { imageResult ->
+                    photoInfoImageResult = imageResult
+                },
+                onInfoClick = { imageResult ->
+                    photoInfoImageResult = imageResult
+                },
                 onShareClick = {
                     onShareClick.invoke(imageList[pagerState.currentPage])
                 },
@@ -120,15 +126,32 @@ fun PhotoPager(
             )
         }
 
+        val appSettings = LocalPlatformContext.current.appSettings
         val showOriginImage by LocalPlatformContext.current.appSettings.showOriginImage.collectAsState()
         PagerTools(
             pageNumber = startPosition + pagerState.currentPage + 1,
             pageCount = totalCount,
             showOriginImage = showOriginImage,
             buttonBgColorState = buttonBgColorState,
-            onSettingsClick = onSettingsClick,
-            onShowOriginClick = onShowOriginClick,
+            onSettingsClick = {
+                showSettingsDialog = true
+            },
+            onShowOriginClick = {
+                val newValue = !appSettings.showOriginImage.value
+                appSettings.showOriginImage.value = newValue
+            },
         )
+    }
+
+    if (photoInfoImageResult != null) {
+        PhotoInfoDialog(photoInfoImageResult) {
+            photoInfoImageResult = null
+        }
+    }
+    if (showSettingsDialog) {
+        AppSettingsDialog(page = ZOOM) {
+            showSettingsDialog = false
+        }
     }
 }
 

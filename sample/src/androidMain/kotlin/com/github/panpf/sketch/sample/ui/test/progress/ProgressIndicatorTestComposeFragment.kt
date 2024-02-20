@@ -68,7 +68,7 @@ class ProgressIndicatorTestComposeFragment : BaseToolbarComposeFragment() {
     }
 
     @Composable
-    override fun DrawContent() {
+    override fun ComposeContent() {
         Content(viewModel)
     }
 }

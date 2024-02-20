@@ -54,7 +54,7 @@ class TempTestComposeFragment : BaseToolbarComposeFragment() {
     }
 
     @Composable
-    override fun DrawContent() {
+    override fun ComposeContent() {
         AnimatablePainterTest()
     }
 }

@@ -21,6 +21,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.BitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.decode.internal.toLogString
@@ -72,6 +73,7 @@ fun Image.asDrawable(): Drawable = when (this) {
     else -> throw IllegalArgumentException("'$this' can't be converted to Drawable")
 }
 
+@Stable
 actual interface Image {
 
     /** The width of the image in pixels. */
@@ -105,6 +107,7 @@ actual interface Image {
     actual fun transformer(): ImageTransformer?
 }
 
+@Stable
 data class BitmapImage internal constructor(
     val bitmap: Bitmap,
     override val shareable: Boolean = !bitmap.isMutable,
@@ -172,6 +175,7 @@ class BitmapImageTransformer : ImageTransformer {
     }
 }
 
+@Stable
 data class DrawableImage internal constructor(
     val drawable: Drawable,
     override val shareable: Boolean = drawable !is Animatable
