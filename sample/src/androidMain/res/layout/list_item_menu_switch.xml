@@ -13,12 +13,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_weight="1"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/descText"
         app:layout_constraintEnd_toStartOf="@id/switchView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Display pressed state Display pressed state Display pressed state Display pressed state" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Display pressed" />
 
     <TextView
         android:id="@+id/descText"
@@ -31,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="@id/titleText"
         app:layout_constraintStart_toStartOf="@id/titleText"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        tools:text="This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description" />
+        tools:text="This is a description" />
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/switchView"

@@ -15,125 +15,154 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.os.Bundle
-import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.viewModels
+import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
-import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.ui.screen.GiphyPhotoListScreenModel
+import com.github.panpf.sketch.sample.ui.screen.LocalPhotoListScreenModel
+import com.github.panpf.sketch.sample.ui.screen.MainMenu
+import com.github.panpf.sketch.sample.ui.screen.PexelsPhotoListScreenModel
 import com.github.panpf.sketch.sample.ui.screen.PhotoGrid
-import kotlinx.coroutines.flow.Flow
+import com.github.panpf.sketch.sample.ui.screen.PhotoTab
+import com.github.panpf.sketch.sketch
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class ComposeHomeFragment : BaseHomeFragment() {
+class ComposeHomeFragment : BaseComposeFragment() {
 
-    override val fragmentMap = mapOf(
-        "Local" to LocalPhotoListComposeFragment(),
-        "Pexels" to PexelsPhotoListComposeFragment(),
-        "Giphy" to GiphyPhotoListComposeFragment()
-    )
-
-    override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
-        super.onViewCreated(binding, savedInstanceState)
-        binding.toolbar.subtitle = "Compose"
+    private val photoTabs by lazy {
+        listOf(
+            PhotoTab(
+                title = "Local",
+                animatedPlaceholder = false,
+                photoPagingFlow = LocalPhotoListScreenModel(
+                    requireContext(),
+                    requireContext().sketch
+                ).pagingFlow
+            ),
+            PhotoTab(
+                title = "Pexels",
+                animatedPlaceholder = false,
+                photoPagingFlow = PexelsPhotoListScreenModel().pagingFlow
+            ),
+            PhotoTab(
+                title = "Giphy",
+                animatedPlaceholder = true,
+                photoPagingFlow = GiphyPhotoListScreenModel().pagingFlow
+            ),
+        )
     }
 
-    class LocalPhotoListComposeFragment : BasePhotoListComposeFragment() {
-
-        private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
-
-        override val animatedPlaceholder: Boolean
-            get() = false
-
-        override val photoPagingFlow: Flow<PagingData<Photo>>
-            get() = localPhotoListViewModel.pagingFlow
-
-        private val permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
-                super.onViewCreated(requireView(), null)
+    @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+    @Composable
+    override fun ComposeContent() {
+        val coroutineScope = rememberCoroutineScope()
+        val pagerState = rememberPagerState { photoTabs.size }
+        Column {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                TopAppBar(title = {
+                    Column {
+                        Text(text = "Sketch3")
+                        Text(text = "Compose", fontSize = 15.sp)
+                    }
+                })
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .align(Alignment.CenterEnd),
+                    divider = {}
+                ) {
+                    photoTabs.forEachIndexed { index, page ->
+                        Tab(
+                            selected = index == pagerState.currentPage,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
+                        ) {
+                            Text(text = page.title, Modifier.padding(vertical = 10.dp))
+                        }
+                    }
+                }
             }
-
-        override fun onViewCreated(
-            view: View,
-            savedInstanceState: Bundle?
-        ) {
-            permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-    }
-
-    class PexelsPhotoListComposeFragment : BasePhotoListComposeFragment() {
-
-        private val pexelsImageListViewModel by viewModels<PexelsPhotoListViewModel>()
-
-        override val animatedPlaceholder: Boolean
-            get() = false
-
-        override val photoPagingFlow: Flow<PagingData<Photo>>
-            get() = pexelsImageListViewModel.pagingFlow
-    }
-
-    class GiphyPhotoListComposeFragment : BasePhotoListComposeFragment() {
-
-        private val giphyPhotoListViewModel by viewModels<GiphyPhotoListViewModel>()
-
-        override val animatedPlaceholder: Boolean
-            get() = true
-
-        override val photoPagingFlow: Flow<PagingData<Photo>>
-            get() = giphyPhotoListViewModel.pagingFlow
-    }
-
-    abstract class BasePhotoListComposeFragment : BaseComposeFragment() {
-
-        abstract val animatedPlaceholder: Boolean
-        abstract val photoPagingFlow: Flow<PagingData<Photo>>
-
-        @Composable
-        override fun DrawContent() {
-            PhotoGrid(
-                photoPagingFlow = photoPagingFlow,
-                animatedPlaceholder = animatedPlaceholder,
-                gridCellsMinSize = 100.dp,
-                onClick = { items, _, index -> startPhotoPager(items, index) },
-                onLongClick = { _, _, _, imageResult -> startPhotoInfoDialog(imageResult) }
-            )
-        }
-
-        private fun startPhotoPager(items: List<Photo>, position: Int) {
-            val totalCount = items.size
-            val startPosition = (position - 50).coerceAtLeast(0)
-            val endPosition = (position + 50).coerceAtMost(totalCount - 1)
-            val imageList = items.asSequence()
-                .filterIndexed { index, _ -> index in startPosition..endPosition }
-                .map {
-                    ImageDetail(
-                        originUrl = it.originalUrl,
-                        mediumUrl = it.detailPreviewUrl,
-                        thumbnailUrl = it.listThumbnailUrl,
+            Box(modifier = Modifier.fillMaxSize()) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize(),
+                ) { pageIndex ->
+                    val page = photoTabs[pageIndex]
+                    PhotoGrid(
+                        photoPagingFlow = page.photoPagingFlow,
+                        animatedPlaceholder = page.animatedPlaceholder,
+                        gridCellsMinSize = 100.dp,
+                        onClick = { photos, _, index ->
+                            startPhotoPager(photos, index)
+                        },
+                        onLongClick = { _, _, _, imageResult ->
+                            startPhotoInfoDialog(imageResult)
+                        }
                     )
-                }.toList()
-            findNavController().navigate(
-                NavMainDirections.actionPhotoPagerComposeFragment(
-                    imageDetailJsonArray = Json.encodeToString(imageList),
-                    totalCount = totalCount,
-                    startPosition = startPosition,
-                    initialPosition = position
-                ),
-            )
-        }
+                }
 
-        private fun startPhotoInfoDialog(imageResult: ImageResult?) {
-            findNavController()
-                .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
+                MainMenu(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(20.dp)
+                )
+            }
         }
+    }
+
+    private fun startPhotoPager(items: List<Photo>, position: Int) {
+        val totalCount = items.size
+        val startPosition = (position - 50).coerceAtLeast(0)
+        val endPosition = (position + 50).coerceAtMost(totalCount - 1)
+        val imageList = items.asSequence()
+            .filterIndexed { index, _ -> index in startPosition..endPosition }
+            .map {
+                ImageDetail(
+                    originUrl = it.originalUrl,
+                    mediumUrl = it.detailPreviewUrl,
+                    thumbnailUrl = it.listThumbnailUrl,
+                )
+            }.toList()
+        findNavController().navigate(
+            NavMainDirections.actionPhotoPagerComposeFragment(
+                imageDetailJsonArray = Json.encodeToString(imageList),
+                totalCount = totalCount,
+                startPosition = startPosition,
+                initialPosition = position
+            ),
+        )
+    }
+
+    private fun startPhotoInfoDialog(imageResult: ImageResult?) {
+        findNavController()
+            .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
     }
 }

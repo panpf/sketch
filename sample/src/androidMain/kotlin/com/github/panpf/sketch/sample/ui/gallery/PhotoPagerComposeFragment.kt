@@ -17,18 +17,22 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import android.Manifest
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
-import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
-import com.github.panpf.sketch.sample.ui.screen.PhotoPager
+import com.github.panpf.sketch.sample.ui.dialog.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
+import com.github.panpf.sketch.sample.ui.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.screen.PhotoPager
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.tools4a.toast.ktx.showLongToast
@@ -48,16 +52,15 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
     override var statusBarTextStyle: StatusBarTextStyle? = White
 
     @Composable
-    override fun DrawContent() {
+    override fun ComposeContent() {
+        var showSettingsDialog by remember { mutableStateOf(false) }
         PhotoPager(
             imageList = imageList,
             totalCount = args.totalCount,
             startPosition = args.startPosition,
             initialPosition = args.initialPosition,
             onSettingsClick = {
-                findNavController().navigate(
-                    MainFragmentDirections.actionSettingsDialogFragment(ZOOM.name)
-                )
+                showSettingsDialog = true
             },
             onShowOriginClick = {
                 val newValue = !appSettingsService.showOriginImage.value
@@ -86,6 +89,12 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
                     .navigate(PhotoInfoDialogFragment.createNavDirections(imageResult))
             },
         )
+
+        if (showSettingsDialog) {
+            AppSettingsDialog(page = ZOOM) {
+                showSettingsDialog = false
+            }
+        }
     }
 
     private fun share(image: ImageDetail) {

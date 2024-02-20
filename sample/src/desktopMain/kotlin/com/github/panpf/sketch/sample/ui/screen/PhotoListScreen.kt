@@ -24,16 +24,9 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class PhotoListScreen : Screen {
-
-    private class PhotoTab(
-        val title: String,
-        val animatedPlaceholder: Boolean,
-        val photoPagingFlow: Flow<PagingData<Photo>>
-    )
 
     @Composable
     @OptIn(ExperimentalFoundationApi::class)

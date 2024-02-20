@@ -2,11 +2,17 @@ package com.github.panpf.sketch.sample.ui.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +51,7 @@ import com.github.panpf.sketch.sample.ui.dialog.Page.LIST
 import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.rememberIconExpandMorePainter
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
+import com.github.panpf.sketch.sample.util.letIf
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -53,11 +62,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 @Composable
+expect fun getSettingsDialogHeight(): Dp
+
+@Composable
 fun AppSettingsDialog(
     page: Page,
     onDismissRequest: () -> Unit
 ) {
-    val settingItems = createSettingItems(page)
     Dialog(onDismissRequest = onDismissRequest, properties = DialogProperties()) {
         Column(
             Modifier
@@ -66,11 +77,19 @@ fun AppSettingsDialog(
                 .background(Color.White, shape = RoundedCornerShape(20.dp))
                 .verticalScroll(rememberScrollState())
         ) {
+            val recreateSettingItems = remember { mutableStateOf(0) }
+            val context = LocalPlatformContext.current
+            val appSettings = context.appSettings
+            val logLevel by appSettings.logLevel.collectAsState()
+            val recreateCount by recreateSettingItems
+            val settingItems = remember(logLevel, recreateCount) {
+                createSettingItems(context, appSettings, page, recreateSettingItems)
+            }
             settingItems.forEach { settingItem ->
                 when (settingItem) {
                     is SwitchSettingItem -> SwitchSetting(settingItem)
                     is DropdownSettingItem<*> -> DropdownSetting(settingItem)
-                    is DividerSettingItem -> DividerSetting()
+                    is DividerSettingItem -> DividerSetting(settingItem)
                     is GroupSettingItem -> GroupSetting(settingItem)
                 }
             }
@@ -78,10 +97,12 @@ fun AppSettingsDialog(
     }
 }
 
-@Composable
-fun createSettingItems(page: Page): List<SettingItem> {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+fun createSettingItems(
+    context: PlatformContext,
+    appSettings: AppSettings,
+    page: Page,
+    recreateSettingItems: MutableState<Int>
+): List<SettingItem> {
     return buildList {
         if (page == LIST) {
             add(GroupSettingItem("List"))
@@ -94,7 +115,7 @@ fun createSettingItems(page: Page): List<SettingItem> {
         addAll(makeDecodeMenuList(appSettings))
         addAll(platformMakeDecodeMenuList(appSettings))
         add(GroupSettingItem("Cache"))
-        addAll(makeCacheMenuList(context, appSettings))
+        addAll(makeCacheMenuList(context, appSettings, recreateSettingItems))
         add(GroupSettingItem("Other"))
         addAll(makeOtherMenuList(appSettings))
     }
@@ -257,7 +278,8 @@ private fun makeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = bu
 
 private fun makeCacheMenuList(
     context: PlatformContext,
-    appSettings: AppSettings
+    appSettings: AppSettings,
+    recreateSettingItems: MutableState<Int>,
 ): List<SettingItem> = buildList {
     val sketch = SingletonSketch.get(context)
 
@@ -277,10 +299,10 @@ private fun makeCacheMenuList(
                 )
             ),
             state = appSettings.disabledMemoryCache,
-//            onLongClick = {
-//                sketch.memoryCache.clear()
-//                updateList()
-//            }
+            onLongClick = {
+                sketch.memoryCache.clear()
+                recreateSettingItems.value = recreateSettingItems.value + 1
+            }
         )
     )
 
@@ -300,10 +322,10 @@ private fun makeCacheMenuList(
                 )
             ),
             state = appSettings.disabledResultCache,
-//            onLongClick = {
-//                sketch.resultCache.clear()
-//                updateList()
-//            }
+            onLongClick = {
+                sketch.resultCache.clear()
+                recreateSettingItems.value = recreateSettingItems.value + 1
+            }
         )
     )
 
@@ -323,10 +345,10 @@ private fun makeCacheMenuList(
                 )
             ),
             state = appSettings.disabledDownloadCache,
-//            onLongClick = {
-//                sketch.downloadCache.clear()
-//                updateList()
-//            }
+            onLongClick = {
+                sketch.downloadCache.clear()
+                recreateSettingItems.value = recreateSettingItems.value + 1
+            }
         )
     )
 }
@@ -335,70 +357,119 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
     add(
         DropdownSettingItem(
             title = "Logger Level",
-            desc = if (appSettings.logLevel.value <= DEBUG) "DEBUG and below will reduce UI fluency" else "",
+            desc = if (appSettings.logLevel.value <= DEBUG) "DEBUG and below will reduce UI fluency" else null,
             values = Level.values().asList(),
             state = appSettings.logLevel,
         )
     )
 }
 
-val menuItemHeight = 50.dp
-
-interface SettingItem
+interface SettingItem {
+    val title: String
+    val desc: String?
+    val enabled: Flow<Boolean>
+}
 
 data class SwitchSettingItem(
-    val title: String,
+    override val title: String,
     val state: MutableStateFlow<Boolean>,
-    val desc: String? = null,
+    override val desc: String? = null,
+    override val enabled: Flow<Boolean> = MutableStateFlow(true),
+    val onLongClick: (() -> Unit)? = null,
 ) : SettingItem
 
 data class DropdownSettingItem<T>(
-    val title: String,
+    override val title: String,
     val values: List<T>,
     val state: MutableStateFlow<T>,
-    val desc: String? = null,
-    val enabled: Flow<Boolean> = MutableStateFlow(true),
+    override val desc: String? = null,
+    override val enabled: Flow<Boolean> = MutableStateFlow(true),
 ) : SettingItem
 
-data object DividerSettingItem : SettingItem
+data object DividerSettingItem : SettingItem {
+    override val title: String = "Divider"
+    override val desc: String? = null
+    override val enabled: Flow<Boolean> = MutableStateFlow(true)
+}
 
-data class GroupSettingItem(val title: String) : SettingItem
-
-@Composable
-fun DividerSetting() {
-    Divider(Modifier.padding(horizontal = 20.dp, vertical = 10.dp))
+data class GroupSettingItem(override val title: String) : SettingItem {
+    override val desc: String? = null
+    override val enabled: Flow<Boolean> = MutableStateFlow(true)
 }
 
 @Composable
-fun GroupSetting(settingItem: GroupSettingItem) {
-    Column(Modifier.fillMaxWidth()) {
-        Text(
-            text = settingItem.title,
-            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
-        )
-        Divider(
-            Modifier.fillMaxWidth().height(0.5.dp).padding(horizontal = 20.dp)
-                .background(Color.Gray)
-        )
+fun DividerSetting(settingItem: DividerSettingItem) {
+    val enabled by settingItem.enabled.collectAsState(false)
+    if (enabled) {
+        Divider(Modifier.padding(horizontal = 20.dp, vertical = 10.dp))
     }
 }
 
 @Composable
+fun GroupSetting(settingItem: GroupSettingItem) {
+    val enabled by settingItem.enabled.collectAsState(false)
+    if (enabled) {
+        Column(Modifier.fillMaxWidth()) {
+            Text(
+                text = settingItem.title,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 20.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
+            )
+            Divider(
+                Modifier.fillMaxWidth().height(0.5.dp).padding(horizontal = 20.dp)
+                    .background(Color.Gray)
+            )
+        }
+    }
+}
+
+val menuItemHeight = 50.dp
+
+@Composable
 fun SwitchSetting(settingItem: SwitchSettingItem) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(menuItemHeight)
-            .clickable { settingItem.state.value = !settingItem.state.value }
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = settingItem.title, modifier = Modifier.weight(1f), fontSize = 12.sp)
-        val checked by settingItem.state.collectAsState()
-        Switch(
-            checked = checked,
-            onCheckedChange = null,
-        )
+    val enabled by settingItem.enabled.collectAsState(false)
+    if (enabled) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = menuItemHeight)
+                .clickable { settingItem.state.value = !settingItem.state.value }
+                .letIf(settingItem.onLongClick != null) {
+                    it.pointerInput(settingItem) {
+                        detectTapGestures(onLongPress = { settingItem.onLongClick?.invoke() })
+                    }
+                }
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = settingItem.title,
+                    fontSize = 14.sp,
+                    lineHeight = 16.sp,
+                )
+                if (settingItem.desc != null) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = settingItem.desc,
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        lineHeight = 14.sp,
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            val checked by settingItem.state.collectAsState()
+            Switch(
+                checked = checked,
+                onCheckedChange = null,
+            )
+        }
     }
 }
 
@@ -406,20 +477,39 @@ fun SwitchSetting(settingItem: SwitchSettingItem) {
 fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
     val enabled by settingItem.enabled.collectAsState(false)
     if (enabled) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth()) {
             var expanded by remember { mutableStateOf(false) }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .height(menuItemHeight)
-                    .clickable {
-                        expanded = !expanded
-                    }
-                    .padding(horizontal = 20.dp),
+                    .heightIn(min = menuItemHeight)
+                    .clickable { expanded = true }
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = settingItem.title, modifier = Modifier.weight(1f), fontSize = 12.sp)
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = settingItem.title,
+                        fontSize = 14.sp,
+                        lineHeight = 16.sp,
+                    )
+                    if (settingItem.desc != null) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = settingItem.desc,
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                            lineHeight = 14.sp,
+                        )
+                    }
+                }
 
+                Spacer(modifier = Modifier.width(10.dp))
                 val value by settingItem.state.collectAsState()
                 Text(text = value.toString(), fontSize = 10.sp)
                 Icons.Filled.MoreVert
@@ -428,11 +518,11 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                     contentDescription = "more"
                 )
             }
+
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = {
-                    expanded = !expanded
-                },
+                modifier = Modifier.align(Alignment.CenterEnd),
+                onDismissRequest = { expanded = false },
             ) {
                 settingItem.values.forEachIndexed { index, value ->
                     if (index > 0) {
@@ -443,12 +533,10 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                         )
                     }
                     DropdownMenuItem(
-                        text = {
-                            Text(text = value.toString())
-                        },
+                        text = { Text(text = value.toString()) },
                         onClick = {
                             settingItem.state.value = value
-                            expanded = !expanded
+                            expanded = false
                         }
                     )
                 }
@@ -456,81 +544,3 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
         }
     }
 }
-
-//@Composable
-//fun MyMultiChooseMenu(
-//    name: String,
-//    values: List<String>,
-//    checkedList: List<Boolean>,
-//    onSelected: (which: Int, isChecked: Boolean) -> Unit
-//) {
-//    var expanded by remember { mutableStateOf(false) }
-//    val checkedCount = remember(key1 = checkedList) {
-//        checkedList.count { it }.toString()
-//    }
-//    Column(modifier = Modifier.fillMaxWidth()) {
-//        Row(
-//            Modifier
-//                .fillMaxWidth()
-//                .height(menuItemHeight)
-//                .clickable {
-//                    expanded = !expanded
-//                }
-//                .padding(horizontal = 20.dp),
-//            verticalAlignment = Alignment.CenterVertically,
-//        ) {
-//            Text(
-//                text = name,
-//                modifier = Modifier.weight(1f),
-//                fontSize = 12.sp,
-//                maxLines = 2,
-//                overflow = TextOverflow.Ellipsis
-//            )
-//            Text(
-//                text = checkedCount,
-//                fontSize = 10.sp,
-//                maxLines = 2,
-//                overflow = TextOverflow.Ellipsis,
-//                textAlign = TextAlign.End,
-//            )
-//            Icon(
-//                painter = icExpandMorePainter(),
-//                contentDescription = "more"
-//            )
-//        }
-//        DropdownMenu(
-//            expanded = expanded,
-//            onDismissRequest = {
-//                expanded = !expanded
-//            },
-//        ) {
-//            values.forEachIndexed { index, value ->
-//                if (index > 0) {
-//                    Divider(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(horizontal = 14.dp)
-//                    )
-//                }
-//                DropdownMenuItem(
-//                    text = {
-//                        Text(text = value, modifier = Modifier.width(150.dp))
-//                    },
-//                    trailingIcon = {
-//                        Checkbox(checked = checkedList[index], onCheckedChange = {
-////                            expanded = !expanded
-//                            onSelected(index, !checkedList[index])
-//                        })
-//                    },
-//                    onClick = {
-////                        expanded = !expanded
-//                        onSelected(index, !checkedList[index])
-//                    }
-//                )
-//            }
-//        }
-//    }
-//}
-
-@Composable
-expect fun getSettingsDialogHeight(): Dp

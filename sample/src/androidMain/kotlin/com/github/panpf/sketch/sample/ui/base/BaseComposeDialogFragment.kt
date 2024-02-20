@@ -19,35 +19,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewbinding.ViewBinding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
+import com.github.panpf.sketch.sample.ui.theme.AppTheme
 
-abstract class BaseBindingDialogFragment<VIEW_BINDING : ViewBinding> : BaseDialogFragment() {
-
-    protected var binding: VIEW_BINDING? = null
+abstract class BaseComposeDialogFragment : BaseDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, 0)
     }
 
-    @Suppress("UNCHECKED_CAST")
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = (createViewBinding(inflater, container) as VIEW_BINDING).apply {
-        this@BaseBindingDialogFragment.binding = this
-    }.root
-
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        onViewCreated(this.binding!!, savedInstanceState)
+    ): View = ComposeView(inflater.context).apply {
+        setContent {
+            AppTheme {
+                ComposeContent()
+            }
+        }
     }
 
-    protected abstract fun onViewCreated(binding: VIEW_BINDING, savedInstanceState: Bundle?)
-
-    override fun onDestroyView() {
-        this.binding = null
-        super.onDestroyView()
-    }
+    @Composable
+    abstract fun ComposeContent()
 }

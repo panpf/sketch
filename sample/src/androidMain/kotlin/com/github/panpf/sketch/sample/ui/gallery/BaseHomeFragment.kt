@@ -21,15 +21,15 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
-import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.dialog.Page
+import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
-import com.github.panpf.sketch.sample.appSettings
 
 abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() {
 
@@ -40,6 +40,36 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
 
     override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
         createdCount++
+
+        binding.playImage.apply {
+            appSettingsService.disallowAnimatedImageInList
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    val iconResId = if (it) R.drawable.ic_play else R.drawable.ic_pause
+                    setImageResource(iconResId)
+                }
+            setOnClickListener {
+                appSettingsService.disallowAnimatedImageInList.value =
+                    !appSettingsService.disallowAnimatedImageInList.value
+            }
+        }
+
+        binding.layoutImage.apply {
+            val appSettings = context.appSettings
+            appSettings.photoGridMode
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    val iconResId = if (it == PhotoGridMode.SQUARE)
+                        R.drawable.ic_layout_grid_staggered else R.drawable.ic_layout_grid
+                    setImageResource(iconResId)
+                }
+            setOnClickListener {
+                appSettings.photoGridMode.value =
+                    if (appSettings.photoGridMode.value == PhotoGridMode.SQUARE) {
+                        PhotoGridMode.STAGGERED
+                    } else {
+                        PhotoGridMode.SQUARE
+                    }
+            }
+        }
     }
 
     override fun onResume() {
@@ -76,43 +106,5 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             tab.text = titles[position]
         }.attach()
-
-        binding.playImage.apply {
-            appSettingsService.disallowAnimatedImageInList.repeatCollectWithLifecycle(
-                viewLifecycleOwner,
-                State.STARTED
-            ) {
-                val iconResId = if (it) R.drawable.ic_play else R.drawable.ic_pause
-                setImageResource(iconResId)
-            }
-            setOnClickListener {
-                appSettingsService.disallowAnimatedImageInList.value =
-                    !appSettingsService.disallowAnimatedImageInList.value
-            }
-        }
-
-        binding.layoutImage.apply {
-            val appSettings = context.appSettings
-            appSettings.photoGridMode.repeatCollectWithLifecycle(
-                viewLifecycleOwner,
-                State.STARTED
-            ) {
-                val iconResId = if (it == PhotoGridMode.SQUARE)
-                    R.drawable.ic_layout_grid_staggered else R.drawable.ic_layout_grid
-                setImageResource(iconResId)
-            }
-            setOnClickListener {
-                appSettings.photoGridMode.value =
-                    if (appSettings.photoGridMode.value == PhotoGridMode.SQUARE) {
-                        PhotoGridMode.STAGGERED
-                    } else {
-                        PhotoGridMode.SQUARE
-                    }
-            }
-        }
-
-        binding.settingsImage.setOnClickListener {
-            findNavController().navigate(MainFragmentDirections.actionSettingsDialogFragment(Page.LIST.name))
-        }
     }
 }

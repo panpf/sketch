@@ -35,7 +35,7 @@ abstract class BaseComposeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         (view as ComposeView).setContent {
             AppTheme {
-                DrawContent()
+                ComposeContent()
             }
         }
         onViewCreated(savedInstanceState)
@@ -46,5 +46,5 @@ abstract class BaseComposeFragment : BaseFragment() {
     }
 
     @Composable
-    abstract fun DrawContent()
+    abstract fun ComposeContent()
 }
