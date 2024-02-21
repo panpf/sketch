@@ -17,6 +17,7 @@
 
 package com.github.panpf.sketch.cache.internal
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
@@ -141,8 +142,7 @@ class LruDiskCache constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as LruDiskCache
+        if (other !is LruDiskCache) return false
         if (maxSize != other.maxSize) return false
         if (directory != other.directory) return false
         if (appVersion != other.appVersion) return false

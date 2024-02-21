@@ -59,8 +59,7 @@ class CombinedListener(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as CombinedListener
+        if (other !is CombinedListener) return false
         if (fromTargetListener != other.fromTargetListener) return false
         if (fromBuilderListener != other.fromBuilderListener) return false
         if (fromBuilderListeners != other.fromBuilderListeners) return false

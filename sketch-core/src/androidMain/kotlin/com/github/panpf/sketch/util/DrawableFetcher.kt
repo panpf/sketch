@@ -56,8 +56,7 @@ class ResDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ResDrawable
+        if (other !is ResDrawable) return false
         if (packageName != other.packageName) return false
         if (resources != other.resources) return false
         if (resId != other.resId) return false
@@ -88,8 +87,7 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as RealDrawable
+        if (other !is RealDrawable) return false
         if (drawable != other.drawable) return false
         return true
     }
@@ -111,8 +109,7 @@ class RealColorDrawable(@ColorInt val color: Int) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as RealColorDrawable
+        if (other !is RealColorDrawable) return false
         if (color != other.color) return false
         return true
     }
@@ -134,8 +131,7 @@ class ResColorDrawable(@ColorRes val resId: Int) : DrawableFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ResColorDrawable
+        if (other !is ResColorDrawable) return false
         if (resId != other.resId) return false
         return true
     }

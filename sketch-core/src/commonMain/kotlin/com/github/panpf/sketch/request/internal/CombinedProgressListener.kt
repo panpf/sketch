@@ -35,8 +35,7 @@ class CombinedProgressListener(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as CombinedProgressListener
+        if (other !is CombinedProgressListener) return false
         if (fromTargetProgressListener != other.fromTargetProgressListener) return false
         if (fromBuilderProgressListener != other.fromBuilderProgressListener) return false
         if (fromBuilderProgressListeners != other.fromBuilderProgressListeners) return false

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.cache.internal
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.Logger
@@ -113,8 +114,7 @@ class LruMemoryCache constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as LruMemoryCache
+        if (other !is LruMemoryCache) return false
         if (maxSize != other.maxSize) return false
         return true
     }

@@ -104,8 +104,7 @@ class BlurTransformation constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as BlurTransformation
+        if (other !is BlurTransformation) return false
         if (radius != other.radius) return false
         if (hasAlphaBitmapBgColor != other.hasAlphaBitmapBgColor) return false
         if (maskColor != other.maskColor) return false

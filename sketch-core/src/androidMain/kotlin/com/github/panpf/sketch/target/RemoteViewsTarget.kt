@@ -81,8 +81,7 @@ class RemoteViewsTarget constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as RemoteViewsTarget
+        if (other !is RemoteViewsTarget) return false
         if (remoteViews != other.remoteViews) return false
         if (imageViewId != other.imageViewId) return false
         if (onUpdated != other.onUpdated) return false

@@ -60,8 +60,7 @@ open class ImageViewTarget constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ImageViewTarget
+        if (other !is ImageViewTarget) return false
         if (view != other.view) return false
         return true
     }

@@ -67,8 +67,7 @@ internal class RealViewSizeResolver<T : View>(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as RealViewSizeResolver<*>
+        if (other !is RealViewSizeResolver<*>) return false
         if (view != other.view) return false
         if (subtractPadding != other.subtractPadding) return false
         return true
@@ -81,7 +80,7 @@ internal class RealViewSizeResolver<T : View>(
     }
 
     override fun toString(): String {
-        val viewString = view?.let { "${it.javaClass.simpleName}@${it.toHexString()}" }
+        val viewString = view?.let { "${it::class.simpleName}@${it.toHexString()}" }
         return "ViewSizeResolver(view=$viewString, subtractPadding=$subtractPadding)"
     }
 }

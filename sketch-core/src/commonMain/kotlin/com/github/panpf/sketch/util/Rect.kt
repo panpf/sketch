@@ -51,11 +51,10 @@ class Rect {
         }
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val r = o as Rect
-        return left == r.left && top == r.top && right == r.right && bottom == r.bottom
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is Rect) return false
+        return left == other.left && top == other.top && right == other.right && bottom == other.bottom
     }
 
     override fun hashCode(): Int {

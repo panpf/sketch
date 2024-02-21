@@ -69,8 +69,7 @@ open class ImageWrapper(val image: Image) : Image by image {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ImageWrapper
+        if (other !is ImageWrapper) return false
         return image == other.image
     }
 

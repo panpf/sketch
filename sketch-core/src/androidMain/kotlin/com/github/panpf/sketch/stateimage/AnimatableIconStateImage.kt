@@ -105,8 +105,7 @@ class AnimatableIconStateImage internal constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as AnimatableIconStateImage
+        if (other !is AnimatableIconStateImage) return false
         if (icon != other.icon) return false
         if (iconSize != other.iconSize) return false
         if (background != other.background) return false

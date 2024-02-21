@@ -103,8 +103,7 @@ class MaskTransformation(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as MaskTransformation
+        if (other !is MaskTransformation) return false
         if (maskColor != other.maskColor) return false
         return true
     }

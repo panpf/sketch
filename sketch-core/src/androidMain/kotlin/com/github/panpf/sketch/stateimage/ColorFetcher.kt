@@ -44,8 +44,7 @@ class IntColor(@ColorInt val color: Int) : ColorFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as IntColor
+        if (other !is IntColor) return false
         if (color != other.color) return false
         return true
     }
@@ -65,8 +64,7 @@ class ResColor(@ColorRes val resId: Int) : ColorFetcher {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ResColor
+        if (other !is ResColor) return false
         if (resId != other.resId) return false
         return true
     }

@@ -131,8 +131,7 @@ data class BitmapImage internal constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as BitmapImage
+        if (other !is BitmapImage) return false
         if (bitmap != other.bitmap) return false
         if (shareable != other.shareable) return false
         return resources == other.resources

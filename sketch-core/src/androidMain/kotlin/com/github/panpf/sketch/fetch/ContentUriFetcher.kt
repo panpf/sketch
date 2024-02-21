@@ -54,14 +54,16 @@ class ContentUriFetcher(
 
         override fun toString(): String = "ContentUriFetcher"
 
+        @Suppress("RedundantOverride")
         override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            return true
+            // If you add construction parameters to this class, you need to change it here
+            return super.equals(other)
         }
 
+        @Suppress("RedundantOverride")
         override fun hashCode(): Int {
-            return javaClass.hashCode()
+            // If you add construction parameters to this class, you need to change it here
+            return super.hashCode()
         }
     }
 }

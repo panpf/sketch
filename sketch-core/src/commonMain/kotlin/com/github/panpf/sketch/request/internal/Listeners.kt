@@ -49,8 +49,7 @@ class Listeners(val listenerList: List<Listener>) : Listener {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as Listeners
+        if (other !is Listeners) return false
         if (listenerList != other.listenerList) return false
         return true
     }

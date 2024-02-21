@@ -23,8 +23,7 @@ class FixedLifecycleResolver constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as FixedLifecycleResolver
+        if (other !is FixedLifecycleResolver) return false
         return lifecycle == other.lifecycle
     }
 
@@ -41,8 +40,7 @@ open class LifecycleResolverWrapper(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as LifecycleResolverWrapper
+        if (other !is LifecycleResolverWrapper) return false
         return wrapped == other.wrapped
     }
 
@@ -61,8 +59,7 @@ class DefaultLifecycleResolver(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as DefaultLifecycleResolver
+        if (other !is DefaultLifecycleResolver) return false
         return wrapped == other.wrapped
     }
 

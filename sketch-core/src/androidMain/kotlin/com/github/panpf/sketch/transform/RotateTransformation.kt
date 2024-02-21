@@ -73,8 +73,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as RotateTransformation
+        if (other !is RotateTransformation) return false
         if (degrees != other.degrees) return false
         return true
     }
