@@ -67,7 +67,7 @@ fun Image.getDrawableOrNull(): Drawable? = when (this) {
 fun Image.getDrawableOrThrow(): Drawable = getDrawableOrNull()
     ?: throw IllegalArgumentException("Unable to get Drawable from Image '$this'")
 
-fun Image.asDrawable(): Drawable = when (this) {
+fun Image.asDrawableOrThrow(): Drawable = when (this) {
     is BitmapImage -> BitmapDrawable(resources, bitmap)
     is DrawableImage -> drawable
     else -> throw IllegalArgumentException("'$this' can't be converted to Drawable")

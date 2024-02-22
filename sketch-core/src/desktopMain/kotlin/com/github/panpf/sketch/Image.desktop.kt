@@ -53,7 +53,7 @@ actual interface Image {
     actual fun transformer(): ImageTransformer?
 }
 
-fun BufferedImage.asSketchImage(): Image = BufferedImageImage(this)
+fun BufferedImage.asSketchImage(): BufferedImageImage = BufferedImageImage(this)
 
 @Stable
 data class BufferedImageImage(

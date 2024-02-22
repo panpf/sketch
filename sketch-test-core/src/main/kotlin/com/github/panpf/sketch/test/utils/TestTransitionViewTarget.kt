@@ -18,7 +18,7 @@ package com.github.panpf.sketch.test.utils
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asDrawableOrThrow
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.BaseRequestDelegate
 import com.github.panpf.sketch.request.internal.BaseRequestManager
@@ -36,15 +36,15 @@ class TestTransitionViewTarget : Target, TransitionViewTarget {
     override val fitScale: Boolean get() = true
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) {
-        this.drawable = placeholder?.asDrawable()
+        this.drawable = placeholder?.asDrawableOrThrow()
     }
 
     override fun onSuccess(requestContext: RequestContext, result: Image) {
-        this.drawable = result.asDrawable()
+        this.drawable = result.asDrawableOrThrow()
     }
 
     override fun onError(requestContext: RequestContext, error: Image?) {
-        this.drawable = error?.asDrawable()
+        this.drawable = error?.asDrawableOrThrow()
     }
 
     private val requestManager = BaseRequestManager()

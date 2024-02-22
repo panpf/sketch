@@ -30,7 +30,7 @@
  */
 package com.github.panpf.sketch.transition
 
-import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asDrawableOrThrow
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
@@ -60,7 +60,7 @@ class CrossfadeTransition @JvmOverloads constructor(
 
     override fun transition() {
         val startDrawable = target.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: target.drawable
-        val endDrawable = result.image?.asDrawable()
+        val endDrawable = result.image?.asDrawableOrThrow()
         if (startDrawable === endDrawable) {
             return
         }
