@@ -27,8 +27,7 @@ import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.DialogImageInfoBinding
 import com.github.panpf.sketch.sample.databinding.ListItemImageInfoBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
-import com.github.panpf.sketch.sample.ui.util.formatToString
-import com.github.panpf.sketch.sample.ui.util.parseToString
+import com.github.panpf.sketch.sample.ui.util.toStringFormat
 
 class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding>() {
 
@@ -99,8 +98,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                     .filter { it.trim().isNotEmpty() }
                     .joinToString(separator = "\n")
 
-                resultImageInfo = imageResult.image.toString()
-                    .let { parseToString(it) }.formatToString()
+                resultImageInfo = imageResult.image.toStringFormat()
 
                 dataFromInfo = imageResult.dataFrom.name
 

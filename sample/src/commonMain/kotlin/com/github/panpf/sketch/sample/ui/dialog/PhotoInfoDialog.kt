@@ -20,8 +20,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.sample.ui.util.formatToString
-import com.github.panpf.sketch.sample.ui.util.parseToString
+import com.github.panpf.sketch.sample.ui.util.toStringFormat
 
 @Composable
 fun PhotoInfoDialog(imageResult: ImageResult?, onDismissRequest: () -> Unit) {
@@ -53,8 +52,7 @@ fun PhotoInfoDialog(imageResult: ImageResult?, onDismissRequest: () -> Unit) {
                 }
                 PhotoInfoItem("Source Image: ", sourceImageInfo)
 
-                val resultImageInfo = imageResult.image.toString()
-                    .let { parseToString(it) }.formatToString()
+                val resultImageInfo = imageResult.image.toStringFormat()
                 PhotoInfoItem("Result Image: ", resultImageInfo)
 
                 val dataFromInfo = imageResult.dataFrom.name

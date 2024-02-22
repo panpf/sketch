@@ -1,11 +1,18 @@
 package com.github.panpf.sketch.sample.ui.util
 
-fun parseToString(toString: String): Item {
+/*
+ * "PainterImage(painter=ResizeAnimatablePainter(painter=DrawableAnimatablePainter(drawable=AnimatableDrawable(drawable=ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(240x240), fitScale=true))), size=Size(346.0x346.0), scale=CENTER_CROP), shareable=false)"
+ */
+
+fun Any.toStringFormat(): String =
+    formatItemToString(parseToStringToItem(this@toStringFormat.toString()))
+
+private fun parseToStringToItem(toString: String): Item {
     val startIndex = toString.indexOf('(').takeIf { it != -1 } ?: return Item2(toString)
     val endIndex = toString.lastIndexOf(')').takeIf { it != -1 } ?: return Item2(toString)
     val name = toString.substring(0, startIndex)
     val value = toString.substring(startIndex + 1, endIndex)
-    val safeValue = safeValue(value)
+    val safeValue = encodeToStringString(value)
     val propertyValues: List<Item> = safeValue.split(",")
         .map { it.trim() }
         .mapNotNull {
@@ -13,8 +20,8 @@ fun parseToString(toString: String): Item {
             when (propertyValues.size) {
                 2 -> {
                     val (propertyName, propertyValue) = propertyValues
-                    val restorePropertyValue = restoreValue(propertyValue)
-                    Item3(propertyName, parseToString(restorePropertyValue))
+                    val restorePropertyValue = decodeToStringString(propertyValue)
+                    Item3(propertyName, parseToStringToItem(restorePropertyValue))
                 }
 
                 1 -> {
@@ -29,21 +36,21 @@ fun parseToString(toString: String): Item {
     return Item1(name, propertyValues)
 }
 
-fun Item.formatToString(deep: Int = 0): String {
+private fun formatItemToString(item: Item, deep: Int = 0): String {
     return buildString {
-        when (this@formatToString) {
+        when (item) {
             is Item1 -> {
-                append(name)
+                append(item.name)
                 append("(")
                 val currentDeep = deep + 1
-                val onlyContent = properties.size == 1 && properties[0] is Item2
-                properties.forEachIndexed { index, property ->
+                val onlyContent = item.properties.size == 1 && item.properties[0] is Item2
+                item.properties.forEachIndexed { index, property ->
                     if (!onlyContent) {
                         appendLine()
                         repeat(currentDeep) { _ -> append("    ") }
                     }
-                    append(property.formatToString(currentDeep))
-                    if (properties.size > 1 && index != properties.size - 1) {
+                    append(formatItemToString(property, currentDeep))
+                    if (item.properties.size > 1 && index != item.properties.size - 1) {
                         append(",")
                     }
                 }
@@ -55,32 +62,75 @@ fun Item.formatToString(deep: Int = 0): String {
             }
 
             is Item2 -> {
-                append(value)
+                append(item.value)
             }
 
             is Item3 -> {
-                append("${name}=${value.formatToString(deep)}")
+                append("${item.name}=${formatItemToString(item.value, deep)}")
             }
         }
     }
 }
 
-private fun safeValue(value: String): String {
-    val startIndex = value.indexOf('(').takeIf { it != -1 } ?: return value
-    val endIndex = value.lastIndexOf(')').takeIf { it != -1 } ?: return value
-    val content = value.substring(startIndex + 1, endIndex)
-        .replace(",", "乀")
-        .replace("=", "乁")
-    return value.substring(0, startIndex + 1) + content + value.substring(endIndex)
+private fun encodeToStringString(value: String): String {
+    return buildString {
+        var bracketCount = 0
+        value.forEach { char ->
+            if (char == '(') {
+                bracketCount++
+                append(char)
+            } else if (char == ')') {
+                bracketCount--
+                append(char)
+            } else if (char == ',') {
+                if (bracketCount > 0) {
+                    append("乀")
+                } else {
+                    append(char)
+                }
+            } else if (char == '=') {
+                if (bracketCount > 0) {
+                    append("乁")
+                } else {
+                    append(char)
+                }
+            } else {
+                append(char)
+            }
+        }
+    }
 }
 
-private fun restoreValue(value: String): String {
-    return value
-        .replace("乀", ",")
-        .replace("乁", "=")
+private fun decodeToStringString(value: String): String {
+    return buildString {
+        var bracketCount = 0
+        value.forEach { char ->
+            if (char == '(') {
+                bracketCount++
+                append(char)
+            } else if (char == ')') {
+                bracketCount--
+                append(char)
+            } else if (char == '乀') {
+                if (bracketCount > 0) {
+                    append(",")
+                } else {
+                    append(char)
+                }
+            } else if (char == '乁') {
+                if (bracketCount > 0) {
+                    append("=")
+                } else {
+                    append(char)
+                }
+            } else {
+                append(char)
+            }
+        }
+    }
 }
 
-interface Item
-data class Item1(val name: String, val properties: List<Item>) : Item
-data class Item2(val value: String) : Item
-data class Item3(val name: String, val value: Item) : Item
+private interface Item
+private data class Item1(val name: String, val properties: List<Item>) : Item
+private data class Item2(val value: String) : Item
+private data class Item3(val name: String, val value: Item) : Item
