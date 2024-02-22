@@ -33,6 +33,7 @@ import com.github.panpf.sketch.util.safeConfig
 /**
  * Bitmap blur transformation
  */
+// TODO Support multiple platforms
 class BlurTransformation constructor(
     /** Blur radius */
     @IntRange(from = 0, to = 100)
@@ -85,7 +86,7 @@ class BlurTransformation constructor(
             inputBitmap
         }
 
-        val outBitmap = fastGaussianBlur(compatAlphaBitmap, radius)
+        val outBitmap = compatAlphaBitmap.fastGaussianBlur(radius)
         if (outBitmap !== compatAlphaBitmap) {
             sketch.logger.d(MODULE) {
                 "transform. newBitmap. ${outBitmap.toLogString()}. '${requestContext.logKey}'"

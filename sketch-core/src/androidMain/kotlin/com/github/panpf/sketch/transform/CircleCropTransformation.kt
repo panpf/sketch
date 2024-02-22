@@ -42,6 +42,7 @@ import java.lang.Integer.min
  *
  * @param scale Specify which part of the original image to keep. If null, use ImageRequest.scaleDecider
  */
+// TODO Support multiple platforms
 class CircleCropTransformation constructor(val scale: Scale? = null) : Transformation {
 
     override val key: String = "CircleCropTransformation($scale)"

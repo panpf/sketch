@@ -31,6 +31,7 @@ import com.github.panpf.sketch.util.safeConfig
 /**
  * Bitmap Rotation Transformation
  */
+// TODO Support multiple platforms
 class RotateTransformation(val degrees: Int) : Transformation {
 
     override val key: String = "RotateTransformation($degrees)"

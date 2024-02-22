@@ -44,6 +44,7 @@ import com.github.panpf.sketch.util.safeConfig
  *
  * @param radiusArray Eight radii from all four corners.
  */
+// TODO Support multiple platforms
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
     /**
