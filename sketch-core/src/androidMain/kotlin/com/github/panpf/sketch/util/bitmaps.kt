@@ -20,6 +20,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.resize.internal.ResizeMapping
 import kotlin.math.ceil
 
 internal val Bitmap.isImmutable: Boolean
@@ -70,10 +71,10 @@ fun calculateBitmapByteCount(width: Int, height: Int, config: Bitmap.Config?): I
 internal fun Bitmap.Config.isAndSupportHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == Bitmap.Config.HARDWARE
 
-internal fun Bitmap.scaled(scale: Double): Bitmap {
+internal fun Bitmap.scale(scaleFactor: Float): Bitmap {
     val config = this.safeConfig
-    val scaledWidth = ceil(width * scale).toInt()
-    val scaledHeight = ceil(height * scale).toInt()
+    val scaledWidth = ceil(width * scaleFactor).toInt()
+    val scaledHeight = ceil(height * scaleFactor).toInt()
     val newBitmap = Bitmap.createBitmap(
         /* width = */ scaledWidth,
         /* height = */ scaledHeight,
@@ -81,13 +82,31 @@ internal fun Bitmap.scaled(scale: Double): Bitmap {
     )
     val canvas = Canvas(newBitmap)
     val matrix = Matrix().apply {
-        postScale(scale.toFloat(), scale.toFloat())
+        postScale(scaleFactor, scaleFactor)
     }
     canvas.drawBitmap(this, matrix, null)
     return newBitmap
 }
 
-internal fun fastGaussianBlur(inBitmap: Bitmap, radius: Int): Bitmap {
+internal fun Bitmap.mapping(mapping: ResizeMapping): Bitmap {
+    val inputBitmap = this
+    val config = inputBitmap.safeConfig
+    val outBitmap = Bitmap.createBitmap(
+        /* width = */ mapping.newWidth,
+        /* height = */ mapping.newHeight,
+        /* config = */ config,
+    )
+    Canvas(outBitmap).drawBitmap(
+        /* bitmap = */ inputBitmap,
+        /* src = */ mapping.srcRect.toAndroidRect(),
+        /* dst = */ mapping.destRect.toAndroidRect(),
+        /* paint = */ null
+    )
+    return outBitmap
+}
+
+internal fun Bitmap.fastGaussianBlur(radius: Int): Bitmap {
+    val inBitmap = this
     val outBitmap: Bitmap? = if (inBitmap.isMutable) {
         inBitmap
     } else {

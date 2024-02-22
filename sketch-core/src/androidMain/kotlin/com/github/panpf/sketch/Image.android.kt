@@ -17,7 +17,6 @@ package com.github.panpf.sketch
 
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -33,9 +32,8 @@ import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.height
 import com.github.panpf.sketch.util.isImmutable
-import com.github.panpf.sketch.util.safeConfig
-import com.github.panpf.sketch.util.scaled
-import com.github.panpf.sketch.util.toAndroidRect
+import com.github.panpf.sketch.util.mapping
+import com.github.panpf.sketch.util.scale
 import com.github.panpf.sketch.util.width
 
 fun Bitmap.asSketchImage(
@@ -150,26 +148,15 @@ data class BitmapImage internal constructor(
 
 class BitmapImageTransformer : ImageTransformer {
 
-    override fun scaled(image: Image, scaleFactor: Float): Image {
+    override fun scale(image: Image, scaleFactor: Float): Image {
         val inputBitmap = image.asOrThrow<BitmapImage>().bitmap
-        val outBitmap = inputBitmap.scaled(scale = scaleFactor.toDouble())
+        val outBitmap = inputBitmap.scale(scaleFactor)
         return outBitmap.asSketchImage()
     }
 
     override fun mapping(image: Image, mapping: ResizeMapping): Image {
         val inputBitmap = image.asOrThrow<BitmapImage>().bitmap
-        val config = inputBitmap.safeConfig
-        val outBitmap = Bitmap.createBitmap(
-            /* width = */ mapping.newWidth,
-            /* height = */ mapping.newHeight,
-            /* config = */ config,
-        )
-        Canvas(outBitmap).drawBitmap(
-            /* bitmap = */ inputBitmap,
-            /* src = */ mapping.srcRect.toAndroidRect(),
-            /* dst = */ mapping.destRect.toAndroidRect(),
-            /* paint = */ null
-        )
+        val outBitmap = inputBitmap.mapping(mapping)
         return outBitmap.asSketchImage()
     }
 }

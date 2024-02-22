@@ -20,7 +20,6 @@ import android.graphics.BitmapFactory
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.corners
@@ -28,7 +27,7 @@ import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.fastGaussianBlur
 import com.github.panpf.sketch.util.getBytesPerPixel
 import com.github.panpf.sketch.util.safeConfig
-import com.github.panpf.sketch.util.scaled
+import com.github.panpf.sketch.util.scale
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.Assert
@@ -119,14 +118,13 @@ class BitmapUtilsTest {
 
     @Test
     fun testScaled() {
-        val bitmapPool = LruBitmapPool(1024 * 1024 * 100)
         val bitmap = Bitmap.createBitmap(300, 200, Bitmap.Config.ARGB_8888).apply {
             Assert.assertEquals("Bitmap(300x200,ARGB_8888)", toShortInfoString())
         }
-        bitmap.scaled(1.5, bitmapPool, false).apply {
+        bitmap.scale(1.5f).apply {
             Assert.assertEquals("Bitmap(450x300,ARGB_8888)", toShortInfoString())
         }
-        bitmap.scaled(0.5, bitmapPool, false).apply {
+        bitmap.scale(0.5f).apply {
             Assert.assertEquals("Bitmap(150x100,ARGB_8888)", toShortInfoString())
         }
     }
@@ -134,19 +132,18 @@ class BitmapUtilsTest {
     @Test
     fun testFastGaussianBlur() {
         val context = getTestContext()
-        val bitmapPool = LruBitmapPool(1024 * 1024 * 100)
         val bitmap = context.assets.open(AssetImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }
-        fastGaussianBlur(bitmap, 15).apply {
+        bitmap.fastGaussianBlur(15).apply {
             Assert.assertEquals(bitmap.toShortInfoString(), this.toShortInfoString())
             Assert.assertNotEquals(bitmap.corners(), this.corners())
             Assert.assertNotSame(bitmap, this)
         }
 
-        val scaledBitmap = bitmap.scaled(0.5, bitmapPool, false)
+        val scaledBitmap = bitmap.scale(0.5f)
         val scaledBitmapCorners = scaledBitmap.corners()
-        fastGaussianBlur(scaledBitmap, 15).apply {
+        scaledBitmap.fastGaussianBlur(15).apply {
             Assert.assertSame(scaledBitmap, this)
             Assert.assertNotEquals(scaledBitmapCorners, this.corners())
         }

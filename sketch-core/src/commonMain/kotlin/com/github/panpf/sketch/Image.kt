@@ -54,7 +54,7 @@ expect interface Image {
 
 interface ImageTransformer {
 
-    fun scaled(image: Image, scaleFactor: Float): Image
+    fun scale(image: Image, scaleFactor: Float): Image
 
     fun mapping(image: Image, mapping: ResizeMapping): Image
 }

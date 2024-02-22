@@ -19,6 +19,9 @@ import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
+import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.mapping
+import com.github.panpf.sketch.util.scale
 import com.github.panpf.sketch.util.toLogString
 import java.awt.image.BufferedImage
 
@@ -84,11 +87,15 @@ data class BufferedImageImage(
 
 class BufferedImageTransformer : ImageTransformer {
 
-    override fun scaled(image: Image, scaleFactor: Float): Image {
-        TODO("Not yet implemented")
+    override fun scale(image: Image, scaleFactor: Float): Image {
+        val inputBitmap = image.asOrThrow<BufferedImageImage>().bufferedImage
+        val outBitmap = inputBitmap.scale(scaleFactor)
+        return outBitmap.asSketchImage()
     }
 
     override fun mapping(image: Image, mapping: ResizeMapping): Image {
-        TODO("Not yet implemented")
+        val inputBitmap = image.asOrThrow<BufferedImageImage>().bufferedImage
+        val outBitmap = inputBitmap.mapping(mapping)
+        return outBitmap.asSketchImage()
     }
 }

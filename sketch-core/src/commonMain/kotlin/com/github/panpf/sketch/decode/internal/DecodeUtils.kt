@@ -145,7 +145,7 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
             smallerSizeMode = resize.precision.isSmallerSizeMode()
         )
         if (sampleSize != 1) {
-            imageTransformer.scaled(image = image, scaleFactor = 1 / sampleSize.toFloat())
+            imageTransformer.scale(image = image, scaleFactor = 1 / sampleSize.toFloat())
         } else {
             null
         }
