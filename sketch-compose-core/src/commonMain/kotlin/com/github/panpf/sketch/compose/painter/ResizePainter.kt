@@ -118,7 +118,7 @@ open class ResizePainter(
     }
 
     override fun toString(): String {
-        return "ResizePainter(painter=${painter.toLogString()}, size=$size, scale=$scale)"
+        return "ResizePainter(painter=${painter.toLogString()}, size=${size.width}x${size.height}, scale=$scale)"
     }
 }
 
@@ -166,6 +166,6 @@ class ResizeAnimatablePainter(
     }
 
     override fun toString(): String {
-        return "ResizeAnimatablePainter(painter=${painter.toLogString()}, size=$size, scale=$scale)"
+        return "ResizeAnimatablePainter(painter=${painter.toLogString()}, size=${size.width}x${size.height}, scale=$scale)"
     }
 }
