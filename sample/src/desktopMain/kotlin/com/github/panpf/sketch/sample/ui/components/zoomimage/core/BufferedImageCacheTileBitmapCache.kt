@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package com.github.panpf.zoomimage.sketch
+package com.github.panpf.sketch.sample.ui.components.zoomimage.core
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.cache.BitmapImageValue
-import com.github.panpf.zoomimage.sketch.SketchTileBitmap
-import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
 import com.github.panpf.zoomimage.subsampling.CacheTileBitmap
+import com.github.panpf.zoomimage.subsampling.DesktopTileBitmap
 import com.github.panpf.zoomimage.subsampling.TileBitmap
 import com.github.panpf.zoomimage.subsampling.TileBitmapCache
 
-class SketchTileBitmapCache constructor(
+class BufferedImageCacheTileBitmapCache constructor(
     private val sketch: Sketch,
-    private val caller: String
 ) : TileBitmapCache {
 
     override fun get(key: String): CacheTileBitmap? {
-        val bitmap = (sketch.memoryCache[key] as? BitmapImageValue)
-            ?.image?.bitmap ?: return null
-        return SketchTileBitmap(key = key, bitmap = bitmap, caller = caller)
+        val bufferedImage = (sketch.memoryCache[key] as? BufferedImageValue)
+            ?.image?.bufferedImage ?: return null
+        return BufferedImageCacheTileBitmap(key, bufferedImage)
     }
 
     override fun put(
@@ -43,11 +40,11 @@ class SketchTileBitmapCache constructor(
         imageInfo: com.github.panpf.zoomimage.subsampling.ImageInfo,
         disallowReuseBitmap: Boolean
     ): CacheTileBitmap? {
-        val bitmap = (tileBitmap as AndroidTileBitmap).bitmap ?: return null
-        val newCacheValue = BitmapImageValue(bitmap.asSketchImage())
+        val bufferedImage = (tileBitmap as? DesktopTileBitmap)?.bufferedImage ?: return null
+        val newCacheValue = BufferedImageValue(bufferedImage.asSketchImage())
         if (!sketch.memoryCache.put(key, newCacheValue)) {
             return null
         }
-        return SketchTileBitmap(key, bitmap, caller)
+        return BufferedImageCacheTileBitmap(key, bufferedImage)
     }
 }

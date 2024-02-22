@@ -242,7 +242,7 @@ private fun PhotoStaggeredGrid(
             }
         }
 
-        // TODO VerticalScrollbar is not yet supported in StaggeredGrid
+        // VerticalScrollbar is not yet supported in StaggeredGrid
 //        VerticalScrollbar(
 //            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
 //            adapter = rememberScrollbarAdapter(
