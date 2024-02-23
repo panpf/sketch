@@ -35,6 +35,12 @@ data class ImageBitmapImage(
     override fun toString(): String {
         return "ImageBitmapImage(imageBitmap=${imageBitmap.toLogString()}, shareable=$shareable)"
     }
+
+    override fun getPixels(): IntArray {
+        val pixels = IntArray(imageBitmap.width * imageBitmap.height)
+        imageBitmap.readPixels(pixels)
+        return pixels
+    }
 }
 
 class ImageBitmapValue(

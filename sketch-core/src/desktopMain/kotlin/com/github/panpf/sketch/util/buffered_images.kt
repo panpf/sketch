@@ -181,17 +181,22 @@ fun BufferedImage.blur(radius: Int): Boolean {
     return true
 }
 
-private fun BufferedImage.getPixels(getWidth: Int = width, getHeight: Int = height): IntArray {
-    val pixels = IntArray(getWidth * getHeight)
+fun BufferedImage.getPixels(region: Rect? = null): IntArray {
+    val targetPixels = if (region != null) {
+        region.width() * region.height()
+    } else {
+        width * height
+    }
+    val pixels = IntArray(targetPixels)
     val pixelGrabber = PixelGrabber(
         /* img = */ this,
-        /* x = */ 0,
-        /* y = */ 0,
-        /* w = */ getWidth,
-        /* h = */ getHeight,
+        /* x = */ region?.left ?: 0,
+        /* y = */ region?.top ?: 0,
+        /* w = */ region?.width() ?: width,
+        /* h = */ region?.height() ?: height,
         /* pix = */ pixels,
         /* off = */ 0,
-        /* scansize = */ getWidth
+        /* scansize = */ region?.width() ?: width
     )
     if (!pixelGrabber.grabPixels()) {
         throw AWTException("pg error" + pixelGrabber.status())
@@ -199,7 +204,7 @@ private fun BufferedImage.getPixels(getWidth: Int = width, getHeight: Int = heig
     return pixels
 }
 
-private fun doBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
+fun doBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
     val wm = width - 1
     val hm = height - 1
     val wh = width * height

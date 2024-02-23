@@ -20,6 +20,7 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.getPixels
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
@@ -54,6 +55,8 @@ actual interface Image {
     actual fun checkValid(): Boolean
 
     actual fun transformer(): ImageTransformer?
+
+    actual fun getPixels(): IntArray?
 }
 
 fun BufferedImage.asSketchImage(): BufferedImageImage = BufferedImageImage(this)
@@ -82,6 +85,10 @@ data class BufferedImageImage(
 
     override fun toString(): String {
         return "BufferedImageImage(bufferedImage=${bufferedImage.toLogString()}, shareable=$shareable)"
+    }
+
+    override fun getPixels(): IntArray {
+        return bufferedImage.getPixels()
     }
 }
 

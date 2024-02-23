@@ -51,5 +51,8 @@ data class PainterImage(val painter: Painter, override val shareable: Boolean = 
 
     override fun transformer(): ImageTransformer? = null
 
-    override fun toString(): String = "PainterImage(painter=${painter.toLogString()}, shareable=$shareable)"
+    override fun toString(): String =
+        "PainterImage(painter=${painter.toLogString()}, shareable=$shareable)"
+
+    override fun getPixels(): IntArray? = null
 }

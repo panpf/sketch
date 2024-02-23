@@ -103,6 +103,8 @@ actual interface Image {
     actual fun checkValid(): Boolean
 
     actual fun transformer(): ImageTransformer?
+
+    actual fun getPixels(): IntArray?
 }
 
 @Stable
@@ -126,6 +128,12 @@ data class BitmapImage internal constructor(
     override fun checkValid(): Boolean = !bitmap.isRecycled
 
     override fun transformer(): ImageTransformer = BitmapImageTransformer()
+
+    override fun getPixels(): IntArray {
+        val pixels = IntArray(bitmap.width * bitmap.height)
+        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+        return pixels
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -192,5 +200,15 @@ data class DrawableImage internal constructor(
 
     override fun toString(): String {
         return "DrawableImage(drawable=${drawable.toLogString()}, shareable=$shareable)"
+    }
+
+    override fun getPixels(): IntArray? {
+        if (drawable is BitmapDrawable) {
+            val bitmap = drawable.bitmap
+            val pixels = IntArray(bitmap.width * bitmap.height)
+            bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+            return pixels
+        }
+        return null
     }
 }

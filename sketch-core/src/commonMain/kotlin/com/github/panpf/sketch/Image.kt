@@ -50,6 +50,8 @@ expect interface Image {
     fun checkValid(): Boolean
 
     fun transformer(): ImageTransformer?
+
+    fun getPixels(): IntArray?
 }
 
 interface ImageTransformer {
