@@ -22,7 +22,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.reverse
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.flip
+import com.github.panpf.sketch.util.flipped
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.rotateInSpace
 import kotlin.math.abs
@@ -117,13 +117,13 @@ interface ExifOrientationHelper {
         val isRotated = abs(rotationDegrees % 360) != 0
         return if (!reverse) {
             srcRect
-                .let { if (isFlipped) it.flip(imageSize, vertical = false) else it }
+                .let { if (isFlipped) it.flipped(imageSize, vertical = false) else it }
                 .let { if (isRotated) it.rotateInSpace(imageSize, rotationDegrees) else it }
         } else {
             val rotatedImageSize = imageSize.rotate(-rotationDegrees)
             srcRect
                 .let { if (isRotated) it.rotateInSpace(imageSize, -rotationDegrees) else it }
-                .let { if (isFlipped) it.flip(rotatedImageSize, vertical = false) else it }
+                .let { if (isFlipped) it.flipped(rotatedImageSize, vertical = false) else it }
         }
     }
 

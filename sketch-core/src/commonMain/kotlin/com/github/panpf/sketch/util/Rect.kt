@@ -573,7 +573,7 @@ class Rect {
 /**
  * Flip this rect horizontally or vertically within a given container
  */
-fun Rect.flip(spaceSize: Size, vertical: Boolean = false): Rect {
+fun Rect.flipped(spaceSize: Size, vertical: Boolean = false): Rect {
     return if (!vertical) {
         Rect(
             left = spaceSize.width - right,

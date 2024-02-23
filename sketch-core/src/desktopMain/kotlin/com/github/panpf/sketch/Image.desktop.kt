@@ -21,7 +21,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.mapping
-import com.github.panpf.sketch.util.scale
+import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
 import java.awt.image.BufferedImage
 
@@ -89,7 +89,7 @@ class BufferedImageTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {
         val inputBitmap = image.asOrThrow<BufferedImageImage>().bufferedImage
-        val outBitmap = inputBitmap.scale(scaleFactor)
+        val outBitmap = inputBitmap.scaled(scaleFactor)
         return outBitmap.asSketchImage()
     }
 
