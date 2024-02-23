@@ -35,13 +35,13 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
-import com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewFragment.ItemFactory
 import com.github.panpf.sketch.sample.ui.dialog.Page
+import com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewFragment.ItemFactory
+import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenSize
@@ -91,17 +91,11 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             State.STARTED
         ) {
             if (it is LoadState.Success) {
-                val simplePalette = it.result.simplePalette
-                val accentColor =
-                    simplePalette?.dominantSwatch?.rgb
-                        ?: simplePalette?.lightVibrantSwatch?.rgb
-                        ?: simplePalette?.vibrantSwatch?.rgb
-                        ?: simplePalette?.lightMutedSwatch?.rgb
-                        ?: simplePalette?.mutedSwatch?.rgb
-                        ?: simplePalette?.darkVibrantSwatch?.rgb
-                        ?: simplePalette?.darkMutedSwatch?.rgb
-                if (accentColor != null) {
-                    viewModel.setButtonBgColor(accentColor)
+                val preferredSwatch = it.result.simplePalette?.run {
+                    listOfNotNull(dominantSwatch, mutedSwatch, vibrantSwatch).firstOrNull()
+                }
+                if (preferredSwatch != null) {
+                    viewModel.setButtonBgColor(preferredSwatch.rgb)
                 }
             }
         }

@@ -16,7 +16,7 @@ import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult.Success
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
@@ -32,17 +32,12 @@ actual fun PagerBackground(
     val imageState = rememberAsyncImageState()
     LaunchedEffect(Unit) {
         snapshotFlow { imageState.result }.collect {
-            if (it is Success) {
-                val simplePalette = it.simplePalette
-                val accentColor = (simplePalette?.dominantSwatch?.rgb
-                    ?: simplePalette?.lightVibrantSwatch?.rgb
-                    ?: simplePalette?.vibrantSwatch?.rgb
-                    ?: simplePalette?.lightMutedSwatch?.rgb
-                    ?: simplePalette?.mutedSwatch?.rgb
-                    ?: simplePalette?.darkVibrantSwatch?.rgb
-                    ?: simplePalette?.darkMutedSwatch?.rgb)
-                if (accentColor != null) {
-                    buttonBgColorState.value = Color(accentColor)
+            if (it is ImageResult.Success) {
+                val preferredSwatch = it.simplePalette?.run {
+                    listOfNotNull(dominantSwatch, mutedSwatch, vibrantSwatch).firstOrNull()
+                }
+                if (preferredSwatch != null) {
+                    buttonBgColorState.value = Color(preferredSwatch.rgb)
                 }
             }
         }
