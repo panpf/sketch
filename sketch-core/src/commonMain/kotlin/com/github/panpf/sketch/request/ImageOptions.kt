@@ -658,6 +658,22 @@ interface ImageOptions {
         fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
             components(ComponentRegistry.Builder().apply(configBlock).build())
 
+        /**
+         * Merge the [ComponentRegistry]
+         */
+        // TODO test
+        fun mergeComponents(components: ComponentRegistry?): Builder = apply {
+            this.componentRegistry = this.componentRegistry.merged(components)
+        }
+
+        /**
+         * Merge the [ComponentRegistry]
+         */
+        // TODO test
+        fun mergeComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            mergeComponents(ComponentRegistry.Builder().apply(configBlock).build())
+
+
 
         /**
          * Merge the specified [ImageOptions] into the current [Builder]. Currently [Builder] takes precedence

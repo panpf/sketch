@@ -736,6 +736,22 @@ interface ImageRequest {
             definedOptionsBuilder.components(configBlock)
         }
 
+        /**
+         * Merge the [ComponentRegistry]
+         */
+        // TODO test
+        fun mergeComponents(components: ComponentRegistry?): Builder = apply {
+            definedOptionsBuilder.mergeComponents(components)
+        }
+
+        /**
+         * Build and merge the [ComponentRegistry]
+         */
+        // TODO test
+        fun mergeComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+            definedOptionsBuilder.mergeComponents(configBlock)
+        }
+
 
         fun build(): ImageRequest {
             val target = target

@@ -27,7 +27,7 @@ actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
         builder.resizeOnDraw(ComposeResizeOnDrawHelper)
     }
 
-    builder.components {
+    builder.mergeComponents {
         addRequestInterceptor(AwtImage2ComposeImageRequestInterceptor())
     }
 }
