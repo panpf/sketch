@@ -96,7 +96,6 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             )
 
             setOnClickListener {
-                findNavController().popBackStack()
             }
 
             setOnLongClickListener {

@@ -92,7 +92,14 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
         ) {
             if (it is LoadState.Success) {
                 val preferredSwatch = it.result.simplePalette?.run {
-                    listOfNotNull(dominantSwatch, mutedSwatch, vibrantSwatch).firstOrNull()
+                    listOfNotNull(
+                        darkVibrantSwatch,
+                        darkMutedSwatch,
+                        mutedSwatch,
+                        lightMutedSwatch,
+                        vibrantSwatch,
+                        lightVibrantSwatch
+                    ).firstOrNull()
                 }
                 if (preferredSwatch != null) {
                     viewModel.setButtonBgColor(preferredSwatch.rgb)

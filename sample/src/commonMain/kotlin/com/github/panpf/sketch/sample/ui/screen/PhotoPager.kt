@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui.screen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -35,9 +41,15 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
+import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.dialog.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.dialog.PhotoInfoDialog
@@ -45,18 +57,8 @@ import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
-import kotlinx.coroutines.flow.MutableSharedFlow
+import com.github.panpf.sketch.transform.BlurTransformation
 import kotlin.math.roundToInt
-
-@Composable
-fun rememberPhotoPagerEvents(): PhotoPagerEvents {
-    return remember { PhotoPagerEvents() }
-}
-
-class PhotoPagerEvents {
-    val nextPageFlow = MutableSharedFlow<Unit>()
-    val previousPageFlow = MutableSharedFlow<Unit>()
-}
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -65,10 +67,10 @@ fun PhotoPager(
     initialPosition: Int,
     startPosition: Int,
     totalCount: Int,
-    photoPagerEvents: PhotoPagerEvents = rememberPhotoPagerEvents(),
     onShareClick: (ImageDetail) -> Unit,
     onSaveClick: (ImageDetail) -> Unit,
     onImageClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     var showSettingsDialog by remember { mutableStateOf(false) }
     var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
@@ -76,19 +78,6 @@ fun PhotoPager(
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             imageList.size
-        }
-        LaunchedEffect(Unit) {
-            photoPagerEvents.previousPageFlow.collect {
-                val nextPageIndex =
-                    (pagerState.currentPage - 1).let { if (it < 0) pagerState.pageCount + it else it }
-                pagerState.animateScrollToPage(nextPageIndex)
-            }
-        }
-        LaunchedEffect(Unit) {
-            photoPagerEvents.nextPageFlow.collect {
-                val nextPageIndex = (pagerState.currentPage + 1) % pagerState.pageCount
-                pagerState.animateScrollToPage(nextPageIndex)
-            }
         }
 
         val density = LocalDensity.current
@@ -133,6 +122,7 @@ fun PhotoPager(
             pageCount = totalCount,
             showOriginImage = showOriginImage,
             buttonBgColorState = buttonBgColorState,
+            pagerState = pagerState,
             onSettingsClick = {
                 showSettingsDialog = true
             },
@@ -140,6 +130,7 @@ fun PhotoPager(
                 val newValue = !appSettings.showOriginImage.value
                 appSettings.showOriginImage.value = newValue
             },
+            onBackClick = onBackClick,
         )
     }
 
@@ -156,22 +147,70 @@ fun PhotoPager(
 }
 
 @Composable
-expect fun PagerBackground(
+fun PagerBackground(
     imageUri: String,
     buttonBgColorState: MutableState<Color>,
     screenSize: IntSize,
-)
+) {
+    val imageState = rememberAsyncImageState()
+    LaunchedEffect(Unit) {
+        snapshotFlow { imageState.result }.collect {
+            if (it is ImageResult.Success) {
+                val preferredSwatch = it.simplePalette?.run {
+                    listOfNotNull(
+                        darkVibrantSwatch,
+                        darkMutedSwatch,
+                        mutedSwatch,
+                        lightMutedSwatch,
+                        vibrantSwatch,
+                        lightVibrantSwatch
+                    ).firstOrNull()
+                }
+                if (preferredSwatch != null) {
+                    buttonBgColorState.value = Color(preferredSwatch.rgb).copy(0.6f)
+                }
+            }
+        }
+    }
+    val context = LocalPlatformContext.current
+    val request = ImageRequest(context, imageUri) {
+        resize(
+            width = screenSize.width / 4,
+            height = screenSize.height / 4,
+            precision = SMALLER_SIZE
+        )
+        addTransformations(
+            BlurTransformation(radius = 20, maskColor = 0x63000000)
+        )
+        disallowAnimatedImage()
+        crossfade(alwaysUse = true, durationMillis = 400)
+        resizeOnDraw()
+        components {
+            addDecodeInterceptor(PaletteDecodeInterceptor())
+        }
+    }
+    AsyncImage(
+        request = request,
+        state = imageState,
+        contentDescription = "Background",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
+}
 
 expect fun getTopMargin(context: PlatformContext): Int
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PagerTools(
     pageNumber: Int,
     pageCount: Int,
     showOriginImage: Boolean,
     buttonBgColorState: MutableState<Color>,
+    pagerState: PagerState,
     onSettingsClick: () -> Unit,
     onShowOriginClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val context = LocalPlatformContext.current
     val density = LocalDensity.current
@@ -182,30 +221,37 @@ private fun PagerTools(
     val buttonBgColor = buttonBgColorState.value
     val buttonTextColor = Color.White
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().padding(top = toolbarTopMarginDp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColorState.value)
+                        .padding(8.dp),
+                )
+            }
+        }
+
         Column(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = toolbarTopMarginDp)
                 .padding(20.dp), // margin,
         ) {
-            val buttonModifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = buttonBgColor,
-                    shape = RoundedCornerShape(50)
-                )
-                .padding(8.dp)
-            IconButton(
-                modifier = buttonModifier,
-                onClick = { onShowOriginClick.invoke() },
-            ) {
-                val image2IconPainter = if (showOriginImage)
-                    rememberIconImage2BaselinePainter() else rememberIconImage2OutlinePainter()
+            val image2IconPainter = if (showOriginImage)
+                rememberIconImage2BaselinePainter() else rememberIconImage2OutlinePainter()
+            IconButton(onClick = onShowOriginClick) {
                 Icon(
                     painter = image2IconPainter,
                     contentDescription = "show origin image",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp)
                 )
             }
 
@@ -232,16 +278,26 @@ private fun PagerTools(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            IconButton(
-                modifier = buttonModifier,
-                onClick = { onSettingsClick.invoke() },
-            ) {
+            IconButton(onClick = onSettingsClick) {
                 Icon(
                     painter = rememberIconSettingsPainter(),
                     contentDescription = "settings",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp)
                 )
             }
         }
+
+        PlatformPagerTools(buttonBgColorState, pagerState)
     }
 }
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+expect fun BoxScope.PlatformPagerTools(
+    buttonBgColorState: MutableState<Color>,
+    pagerState: PagerState
+)

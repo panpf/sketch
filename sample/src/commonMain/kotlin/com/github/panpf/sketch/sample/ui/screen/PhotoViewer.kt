@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -148,34 +147,29 @@ fun PhotoViewer(
         ) {
             val buttonBgColor = buttonBgColorState.value
             val buttonTextColor = Color.White
-            val buttonModifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = buttonBgColor,
-                    shape = RoundedCornerShape(50)
-                )
-                .padding(8.dp)
-            IconButton(
-                modifier = buttonModifier,
-                onClick = { onShareClick.invoke() },
-            ) {
+            IconButton(onClick = onShareClick) {
                 Icon(
                     painter = rememberIconSharePainter(),
                     contentDescription = "share",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp),
                 )
             }
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            IconButton(
-                modifier = buttonModifier,
-                onClick = { onSaveClick.invoke() },
-            ) {
+            IconButton(onClick = onSaveClick) {
                 Icon(
                     painter = rememberIconSavePainter(),
                     contentDescription = "save",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp),
                 )
             }
 
@@ -186,16 +180,13 @@ fun PhotoViewer(
                     zoomState.zoomable.getNextStepScale() > zoomState.zoomable.transform.scaleX
                 }
             }
-            IconButton(
-                modifier = buttonModifier,
-                onClick = {
-                    coroutineScope.launch {
-                        val zoomable = zoomState.zoomable
-                        val nextStepScale = zoomable.getNextStepScale()
-                        zoomable.scale(nextStepScale, animated = true)
-                    }
-                },
-            ) {
+            IconButton(onClick = {
+                coroutineScope.launch {
+                    val zoomable = zoomState.zoomable
+                    val nextStepScale = zoomable.getNextStepScale()
+                    zoomable.scale(nextStepScale, animated = true)
+                }
+            }) {
                 Icon(
                     painter = if (zoomIn) {
                         rememberIconZoomInPainter()
@@ -203,43 +194,49 @@ fun PhotoViewer(
                         rememberIconZoomOutPainter()
                     },
                     contentDescription = "zoom",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp),
                 )
             }
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            IconButton(
-                modifier = buttonModifier,
-                onClick = {
-                    coroutineScope.launch {
-                        val zoomable = zoomState.zoomable
-                        zoomable.rotate(zoomable.transform.rotation.roundToInt() + 90)
-                    }
-                },
-            ) {
+            IconButton(onClick = {
+                coroutineScope.launch {
+                    val zoomable = zoomState.zoomable
+                    zoomable.rotate(zoomable.transform.rotation.roundToInt() + 90)
+                }
+            }) {
                 Icon(
                     painter = rememberIconRotateRightPainter(),
                     contentDescription = "right rotate",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp),
                 )
             }
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            IconButton(
-                modifier = buttonModifier,
-                onClick = {
-                    val imageResult = imageState.result
-                    if (imageResult != null) {
-                        onInfoClick(imageResult)
-                    }
-                },
-            ) {
+            IconButton(onClick = {
+                val imageResult = imageState.result
+                if (imageResult != null) {
+                    onInfoClick(imageResult)
+                }
+            }) {
                 Icon(
                     painter = rememberIconInfoBaseLinePainter(),
                     contentDescription = "info",
-                    tint = buttonTextColor
+                    tint = buttonTextColor,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(color = buttonBgColor)
+                        .padding(8.dp),
                 )
             }
         }

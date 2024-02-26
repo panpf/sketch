@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.transform
 
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.BufferedImageImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.transform.TransformResult
-import com.github.panpf.sketch.transform.Transformation
+
+expect fun blurTransformation(
+    image: Image,
+    radius: Int,
+    hasAlphaBitmapBgColor: Int?,
+    maskColor: Int?
+): Image?
 
 /**
  * Bitmap blur transformation
  */
-// TODO Support multiple platforms
 class BlurTransformation constructor(
     /** Blur radius */
     @IntRange(from = 0, to = 100)
@@ -65,23 +67,9 @@ class BlurTransformation constructor(
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val inputBitmap = input.asOrNull<BufferedImageImage>()?.bufferedImage ?: return null
-        // Transparent pixels cannot be blurred
-        val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
-            inputBitmap.backgrounded(hasAlphaBitmapBgColor)
-        } else {
-            inputBitmap
-        }
-
-        val blurImage = compatAlphaBitmap
-            .apply { blur(radius) }
-        val maskImage = blurImage
-            .apply { if (maskColor != null) mask(maskColor) }
-        sketch.logger.d(MODULE) {
-            "transform. newBitmap. ${maskImage.toLogString()}. '${requestContext.logKey}'"
-        }
+        val blurredImage = blurTransformation(input, radius, hasAlphaBitmapBgColor, maskColor) ?: return null
         return TransformResult(
-            maskImage.asSketchImage(),
+            blurredImage,
             createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor),
         )
     }

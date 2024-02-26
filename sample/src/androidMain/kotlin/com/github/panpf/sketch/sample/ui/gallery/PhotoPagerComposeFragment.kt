@@ -69,7 +69,8 @@ class PhotoPagerComposeFragment : BaseComposeFragment() {
             initialPosition = args.initialPosition,
             onShareClick = { share(it) },
             onSaveClick = { save(it) },
-            onImageClick = { findNavController().popBackStack() },
+            onImageClick = {  },
+            onBackClick = { findNavController().popBackStack() },
         )
     }
 

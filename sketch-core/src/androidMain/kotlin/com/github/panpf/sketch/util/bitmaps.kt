@@ -105,6 +105,23 @@ internal fun Bitmap.mapping(mapping: ResizeMapping): Bitmap {
     return outBitmap
 }
 
+internal fun Bitmap.backgrounded(backgroundColor: Int): Bitmap {
+    val inputBitmap = this
+    val bitmap = Bitmap.createBitmap(
+        /* width = */ inputBitmap.width,
+        /* height = */ inputBitmap.height,
+        /* config = */ inputBitmap.safeConfig,
+    )
+    val canvas = Canvas(bitmap)
+    canvas.drawColor(backgroundColor)
+    canvas.drawBitmap(inputBitmap, 0f, 0f, null)
+    return bitmap
+}
+
+internal fun Bitmap.mask(color: Int) {
+    Canvas(this).drawColor(color)
+}
+
 internal fun Bitmap.fastGaussianBlur(radius: Int): Bitmap {
     val inBitmap = this
     val outBitmap: Bitmap? = if (inBitmap.isMutable) {
