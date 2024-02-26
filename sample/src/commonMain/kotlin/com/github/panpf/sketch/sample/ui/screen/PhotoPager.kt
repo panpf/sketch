@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.rememberAsyncImageState
@@ -172,25 +173,25 @@ fun PagerBackground(
             }
         }
     }
-    val context = LocalPlatformContext.current
-    val request = ImageRequest(context, imageUri) {
-        resize(
-            width = screenSize.width / 4,
-            height = screenSize.height / 4,
-            precision = SMALLER_SIZE
-        )
-        addTransformations(
-            BlurTransformation(radius = 20, maskColor = 0x63000000)
-        )
-        disallowAnimatedImage()
-        crossfade(alwaysUse = true, durationMillis = 400)
-        resizeOnDraw()
-        components {
-            addDecodeInterceptor(PaletteDecodeInterceptor())
-        }
-    }
     AsyncImage(
-        request = request,
+        request = ImageRequest(LocalPlatformContext.current, imageUri) {
+            resize(
+                width = screenSize.width / 4,
+                height = screenSize.height / 4,
+                precision = SMALLER_SIZE
+            )
+            addTransformations(
+                BlurTransformation(radius = 20, maskColor = 0x63000000)
+            )
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            disallowAnimatedImage()
+            crossfade(alwaysUse = true, durationMillis = 400)
+            resizeOnDraw()
+            components {
+                addDecodeInterceptor(PaletteDecodeInterceptor())
+            }
+        },
         state = imageState,
         contentDescription = "Background",
         contentScale = ContentScale.Crop,

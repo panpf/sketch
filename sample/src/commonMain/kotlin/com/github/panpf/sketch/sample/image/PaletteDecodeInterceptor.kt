@@ -11,7 +11,7 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
 
     override val key: String? = null
 
-    override val sortWeight: Int = 0
+    override val sortWeight: Int = 95
 
     @WorkerThread
     override suspend fun intercept(chain: Chain): Result<DecodeResult> {
