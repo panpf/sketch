@@ -75,7 +75,7 @@ fun Palette.toPropertyString(): String = buildString {
     ).forEach { (name, value) ->
         if (value != null) {
             if (this@buildString.isNotEmpty()) {
-                appendLine()
+                append(";")
             }
             append("${name}=${value.rgb},${value.population}")
         }
@@ -83,7 +83,7 @@ fun Palette.toPropertyString(): String = buildString {
 }
 
 fun Palette.Companion.fromPropertyString(propertyString: String): SimplePalette {
-    val swatchMap = propertyString.split("\n").associate { line ->
+    val swatchMap = propertyString.split(";").associate { line ->
         val (name, value) = line.split("=")
         val (rgb, population) = value.split(",")
         name to Palette.Swatch(

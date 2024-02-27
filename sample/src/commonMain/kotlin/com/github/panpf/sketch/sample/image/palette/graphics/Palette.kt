@@ -54,6 +54,9 @@ import kotlin.math.sqrt
  * ```
  * Palette p = Palette.from(bitmap).generate();
  * ```
+ *
+ * Copy from https://github.com/jordond/kmpalette/blob/main/androidx-palette/src/commonMain/kotlin/com/kmpalette/palette/graphics/Palette.kt
+ * https://developer.android.com/develop/ui/views/graphics/palette-colors
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 public class Palette internal constructor(
