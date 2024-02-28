@@ -89,3 +89,23 @@ actual fun rememberIconImage2OutlinePainter(): Painter {
 actual fun rememberIconExpandMorePainter(): Painter {
     return painterResource(R.drawable.ic_expand_more)
 }
+
+@Composable
+actual fun rememberIconDebugPainter(): Painter {
+    return painterResource(R.drawable.ic_debug)
+}
+
+@Composable
+actual fun rememberIconGiphyPainter(): Painter {
+    return painterResource(R.drawable.ic_giphy)
+}
+
+@Composable
+actual fun rememberIconPexelsPainter(): Painter {
+    return painterResource(R.drawable.ic_pexels)
+}
+
+@Composable
+actual fun rememberIconPhonePainter(): Painter {
+    return painterResource(R.drawable.ic_phone)
+}

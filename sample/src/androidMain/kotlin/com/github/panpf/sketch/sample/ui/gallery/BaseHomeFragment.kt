@@ -18,15 +18,14 @@ package com.github.panpf.sketch.sample.ui.gallery
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
-import androidx.navigation.fragment.findNavController
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
-import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.dialog.Page
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
@@ -70,6 +69,10 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
                     }
             }
         }
+
+        binding.composePageIconLayout.setOnClickListener {
+            appSettingsService.composePage.value = true
+        }
     }
 
     override fun onResume() {
@@ -101,10 +104,27 @@ abstract class BaseHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() 
                 lifecycle = viewLifecycleOwner.lifecycle,
                 templateFragmentList = fragments
             )
+            registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    when (position) {
+                        0 -> binding.navigation.selectedItemId = R.id.local
+                        1 -> binding.navigation.selectedItemId = R.id.pexels
+                        2 -> binding.navigation.selectedItemId = R.id.giphy
+                        3 -> binding.navigation.selectedItemId = R.id.test
+                    }
+                }
+            })
         }
 
-        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-            tab.text = titles[position]
-        }.attach()
+        binding.navigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.local -> binding.pager.setCurrentItem(0, false)
+                R.id.pexels -> binding.pager.setCurrentItem(1, false)
+                R.id.giphy -> binding.pager.setCurrentItem(2, false)
+                R.id.test -> binding.pager.setCurrentItem(3, false)
+            }
+            true
+        }
     }
 }

@@ -15,145 +15,80 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.NavMainDirections
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.screen.GiphyPhotoListScreenModel
-import com.github.panpf.sketch.sample.ui.screen.LocalPhotoListScreenModel
-import com.github.panpf.sketch.sample.ui.screen.MainMenu
-import com.github.panpf.sketch.sample.ui.screen.PexelsPhotoListScreenModel
-import com.github.panpf.sketch.sample.ui.screen.PhotoGrid
-import com.github.panpf.sketch.sample.ui.screen.PhotoTab
-import com.github.panpf.sketch.sketch
-import kotlinx.coroutines.launch
+import com.github.panpf.sketch.sample.ui.page.PhotoListPage
+import com.github.panpf.sketch.sample.ui.page.buildPhotoPagerParams
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class ComposeHomeFragment : BaseComposeFragment() {
 
-    private val photoTabs by lazy {
-        listOf(
-            PhotoTab(
-                title = "Local",
-                animatedPlaceholder = false,
-                photoPagingFlow = LocalPhotoListScreenModel(
-                    requireContext(),
-                    requireContext().sketch
-                ).pagingFlow
-            ),
-            PhotoTab(
-                title = "Pexels",
-                animatedPlaceholder = false,
-                photoPagingFlow = PexelsPhotoListScreenModel().pagingFlow
-            ),
-            PhotoTab(
-                title = "Giphy",
-                animatedPlaceholder = true,
-                photoPagingFlow = GiphyPhotoListScreenModel().pagingFlow
-            ),
-        )
-    }
-
-    @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun ComposeContent() {
-        val coroutineScope = rememberCoroutineScope()
-        val pagerState = rememberPagerState { photoTabs.size }
         Column {
             Box(modifier = Modifier.fillMaxWidth()) {
-                TopAppBar(title = {
-                    Column {
-                        Text(text = "Sketch3")
-                        Text(text = "Compose", fontSize = 15.sp)
-                    }
-                })
-                TabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .align(Alignment.CenterEnd),
-                    divider = {}
-                ) {
-                    photoTabs.forEachIndexed { index, page ->
-                        Tab(
-                            selected = index == pagerState.currentPage,
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            }
-                        ) {
-                            Text(text = page.title, Modifier.padding(vertical = 10.dp))
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text(text = "Sketch3")
+                            Text(text = "Compose", fontSize = 15.sp)
                         }
-                    }
-                }
-            }
-            Box(modifier = Modifier.fillMaxSize()) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
-                ) { pageIndex ->
-                    val page = photoTabs[pageIndex]
-                    PhotoGrid(
-                        photoPagingFlow = page.photoPagingFlow,
-                        animatedPlaceholder = page.animatedPlaceholder,
-                        gridCellsMinSize = 100.dp,
-                        onClick = { photos, _, index ->
-                            startPhotoPager(photos, index)
-                        },
+                    },
+                    windowInsets = WindowInsets(0, 0, 0, 0)
+                )
+
+                val appSettings = LocalContext.current.appSettingsService
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .height(50.dp)
+                        .clickable { appSettings.composePage.value = false }
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(id = com.github.panpf.sketch.sample.R.drawable.ic_android),
+                        contentDescription = "Android Page",
+                        modifier = Modifier.size(20.dp)
                     )
                 }
+            }
 
-                MainMenu(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(20.dp)
+            PhotoListPage { items: List<Photo>, position: Int ->
+                val params = buildPhotoPagerParams(items, position)
+                findNavController().navigate(
+                    NavMainDirections.actionPhotoPagerComposeFragment(
+                        imageDetailJsonArray = Json.encodeToString(params.imageList),
+                        totalCount = params.totalCount,
+                        startPosition = params.startPosition,
+                        initialPosition = params.initialPosition
+                    ),
                 )
             }
         }
-    }
-
-    private fun startPhotoPager(items: List<Photo>, position: Int) {
-        val totalCount = items.size
-        val startPosition = (position - 50).coerceAtLeast(0)
-        val endPosition = (position + 50).coerceAtMost(totalCount - 1)
-        val imageList = items.asSequence()
-            .filterIndexed { index, _ -> index in startPosition..endPosition }
-            .map {
-                ImageDetail(
-                    originUrl = it.originalUrl,
-                    mediumUrl = it.detailPreviewUrl,
-                    thumbnailUrl = it.listThumbnailUrl,
-                )
-            }.toList()
-        findNavController().navigate(
-            NavMainDirections.actionPhotoPagerComposeFragment(
-                imageDetailJsonArray = Json.encodeToString(imageList),
-                totalCount = totalCount,
-                startPosition = startPosition,
-                initialPosition = position
-            ),
-        )
     }
 }

@@ -11,9 +11,9 @@ import cafe.adriel.voyager.transitions.SlideTransition
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.screen.PhotoListScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
-import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.launch
@@ -40,7 +40,7 @@ fun main() = application {
         }
     ) {
         AppTheme {
-            Navigator(PhotoListScreen()) { navigator ->
+            Navigator(PhotoListScreen) { navigator ->
                 SlideTransition(navigator)
             }
         }

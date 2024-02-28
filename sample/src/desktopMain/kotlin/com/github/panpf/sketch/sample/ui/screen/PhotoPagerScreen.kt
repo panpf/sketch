@@ -15,17 +15,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.page.PhotoPagerParams
 import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScreen
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.launch
 
-class PhotoPagerScreen(
-    val imageList: List<ImageDetail>,
-    val totalCount: Int,
-    val startPosition: Int,
-    val initialPosition: Int,
-) : ToolbarScreen() {
+class PhotoPagerScreen(private val params: PhotoPagerParams) : ToolbarScreen() {
 
     @Composable
     override fun Content() {
@@ -45,10 +40,10 @@ class PhotoPagerScreen(
             val coroutineScope = rememberCoroutineScope()
             val navigator = LocalNavigator.current!!
             PhotoPager(
-                imageList = imageList,
-                totalCount = totalCount,
-                startPosition = startPosition,
-                initialPosition = initialPosition,
+                imageList = params.imageList,
+                totalCount = params.totalCount,
+                startPosition = params.startPosition,
+                initialPosition = params.initialPosition,
                 onShareClick = {
                     // TODO Realize sharing
                     coroutineScope.launch {

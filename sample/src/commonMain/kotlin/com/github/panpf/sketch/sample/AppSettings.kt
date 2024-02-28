@@ -158,6 +158,11 @@ class AppSettings(val context: PlatformContext) {
         )
     }
 
+    // Only for Android
+    val composePage: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow("composePage", false, dataStore)
+    }
+
     private val disabledMemoryCacheValue: CachePolicy
         get() = if (disabledMemoryCache.value) DISABLED else ENABLED
     private val disabledDownloadCacheValue: CachePolicy

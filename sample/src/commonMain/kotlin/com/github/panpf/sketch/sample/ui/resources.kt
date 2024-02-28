@@ -55,3 +55,15 @@ expect fun rememberIconImage2OutlinePainter(): Painter
 
 @Composable
 expect fun rememberIconExpandMorePainter(): Painter
+
+@Composable
+expect fun rememberIconDebugPainter(): Painter
+
+@Composable
+expect fun rememberIconGiphyPainter(): Painter
+
+@Composable
+expect fun rememberIconPexelsPainter(): Painter
+
+@Composable
+expect fun rememberIconPhonePainter(): Painter

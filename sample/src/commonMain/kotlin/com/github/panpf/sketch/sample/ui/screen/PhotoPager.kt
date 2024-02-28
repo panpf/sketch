@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -58,8 +59,8 @@ import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
+import com.github.panpf.sketch.sample.util.isEmpty
 import com.github.panpf.sketch.transform.BlurTransformation
-import kotlin.math.roundToInt
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -76,21 +77,17 @@ fun PhotoPager(
     var showSettingsDialog by remember { mutableStateOf(false) }
     var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             imageList.size
         }
-
-        val density = LocalDensity.current
-        val maxWidthPx = with(density) { maxWidth.toPx() }.roundToInt()
-        val maxHeightPx = with(density) { maxHeight.toPx() }.roundToInt()
 
         val uriString = imageList[pagerState.currentPage].let {
             it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl
         }
         val colorScheme = MaterialTheme.colorScheme
         val buttonBgColorState = remember { mutableStateOf(colorScheme.primary) }
-        PagerBackground(uriString, buttonBgColorState, IntSize(maxWidthPx, maxHeightPx))
+        PagerBackground(uriString, buttonBgColorState)
 
         HorizontalPager(
             state = pagerState,
@@ -151,7 +148,6 @@ fun PhotoPager(
 fun PagerBackground(
     imageUri: String,
     buttonBgColorState: MutableState<Color>,
-    screenSize: IntSize,
 ) {
     val imageState = rememberAsyncImageState()
     LaunchedEffect(Unit) {
@@ -173,30 +169,50 @@ fun PagerBackground(
             }
         }
     }
-    AsyncImage(
-        request = ImageRequest(LocalPlatformContext.current, imageUri) {
-            resize(
-                width = screenSize.width / 4,
-                height = screenSize.height / 4,
-                precision = SMALLER_SIZE
-            )
-            addTransformations(
-                BlurTransformation(radius = 20, maskColor = 0x63000000)
-            )
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            disallowAnimatedImage()
-            crossfade(alwaysUse = true, durationMillis = 400)
-            resizeOnDraw()
-            components {
-                addDecodeInterceptor(PaletteDecodeInterceptor())
+    var imageSize by remember { mutableStateOf(IntSize.Zero) }
+    Box(
+        modifier = Modifier.fillMaxSize().onSizeChanged {
+            imageSize = IntSize(it.width / 4, it.height / 4)
+        }
+    ) {
+        val context = LocalPlatformContext.current
+        val request by remember(imageUri) {
+            derivedStateOf {
+                if (imageSize.isEmpty()) {
+                    null
+                } else {
+                    ImageRequest(context, imageUri) {
+                        resize(
+                            width = imageSize.width,
+                            height = imageSize.height,
+                            precision = SMALLER_SIZE
+                        )
+                        addTransformations(
+                            BlurTransformation(radius = 20, maskColor = 0x63000000)
+                        )
+                        memoryCachePolicy(DISABLED)
+                        resultCachePolicy(DISABLED)
+                        disallowAnimatedImage()
+                        crossfade(alwaysUse = true, durationMillis = 400)
+                        resizeOnDraw()
+                        components {
+                            addDecodeInterceptor(PaletteDecodeInterceptor())
+                        }
+                    }
+                }
             }
-        },
-        state = imageState,
-        contentDescription = "Background",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize()
-    )
+        }
+        val request1 = request
+        if (request1 != null) {
+            AsyncImage(
+                request = request1,
+                state = imageState,
+                contentDescription = "Background",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
 }
 
 expect fun getTopMargin(context: PlatformContext): Int

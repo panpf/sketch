@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/view"
-        android:icon="@drawable/ic_android"
-        android:title="View" />
+        android:id="@+id/local"
+        android:icon="@drawable/ic_phone"
+        android:title="Local" />
     <item
-        android:id="@+id/compose"
-        android:icon="@drawable/ic_compose"
-        android:title="Compose" />
+        android:id="@+id/pexels"
+        android:icon="@drawable/ic_pexels"
+        android:title="Pexels" />
+    <item
+        android:id="@+id/giphy"
+        android:icon="@drawable/ic_giphy"
+        android:title="Giphy" />
     <item
         android:id="@+id/test"
-        android:icon="@drawable/ic_bug"
+        android:icon="@drawable/ic_debug"
         android:title="Test" />
 </menu>

@@ -18,12 +18,13 @@ import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.model.Link
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
-class TestHomeFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
+class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     private var pendingStartLink: Link? = null
     private val permissionLauncher =
@@ -33,16 +34,10 @@ class TestHomeFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
             requestLinkPermissionsResult(grantedMap, pendingStartLink)
         }
 
-    override fun getTopInsetsView(): View? {
-        return null
-    }
-
     override fun onViewCreated(
-        toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.subtitle = "Test"
         binding.recycler.apply {
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
                 itemSpanByItemFactory(GridSeparatorItemFactory::class to ItemSpan.fullSpan())

@@ -18,16 +18,13 @@ package com.github.panpf.sketch.sample.ui
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
-import com.github.panpf.assemblyadapter.pager.ArrayFragmentStatePagerAdapter
-import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.ui.gallery.ErrorStateFragment
 import com.github.panpf.sketch.sample.ui.gallery.ViewHomeFragment
-import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
+import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
@@ -39,50 +36,19 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
         binding: FragmentMainBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.pager.apply {
-            val composeFragment = if (Build.VERSION.SDK_INT >= 21) {
-                ComposeHomeFragment()
+        appSettingsService.composePage.collectWithLifecycle(viewLifecycleOwner) {
+            val fragment = if (it) {
+                if (Build.VERSION.SDK_INT >= 21) {
+                    ComposeHomeFragment()
+                } else {
+                    ErrorStateFragment.create("This feature requires Android 5.0 or later")
+                }
             } else {
-                ErrorStateFragment.create("This feature requires Android 5.0 or later")
+                ViewHomeFragment()
             }
-
-            adapter = ArrayFragmentStatePagerAdapter(
-                fragmentManager = childFragmentManager,
-                behavior = FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
-                templateFragmentList = listOf(
-                    ViewHomeFragment(),
-                    composeFragment,
-                    TestHomeFragment()
-                )
-            )
-            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                }
-
-                override fun onPageSelected(position: Int) {
-                    when (position) {
-                        0 -> binding.navigation.selectedItemId = R.id.view
-                        1 -> binding.navigation.selectedItemId = R.id.compose
-                        2 -> binding.navigation.selectedItemId = R.id.test
-                    }
-                }
-
-                override fun onPageScrollStateChanged(state: Int) {
-                }
-            })
-        }
-
-        binding.navigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.view -> binding.pager.setCurrentItem(0, false)
-                R.id.compose -> binding.pager.setCurrentItem(1, false)
-                R.id.test -> binding.pager.setCurrentItem(2, false)
-            }
-            true
+            childFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainer.id, fragment)
+                .commit()
         }
     }
 }

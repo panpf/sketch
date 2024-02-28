@@ -51,6 +51,7 @@ import com.github.panpf.sketch.sample.ui.dialog.Page
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
+import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -65,7 +66,8 @@ class ViewHomeFragment : BaseHomeFragment() {
     override val fragmentMap = mapOf(
         "Local" to LocalPhotoListViewFragment(),
         "Pexels" to PexelsPhotoListViewFragment(),
-        "Giphy" to GiphyPhotoListViewFragment()
+        "Giphy" to GiphyPhotoListViewFragment(),
+        "Test" to TestHomeFragment(),
     )
 
     override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {

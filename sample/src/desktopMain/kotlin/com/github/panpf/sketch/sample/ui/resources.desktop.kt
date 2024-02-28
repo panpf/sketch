@@ -88,3 +88,23 @@ actual fun rememberIconImage2OutlinePainter(): Painter {
 actual fun rememberIconExpandMorePainter(): Painter {
     return painterResource("ic_expand_more.xml")
 }
+
+@Composable
+actual fun rememberIconDebugPainter(): Painter {
+    return painterResource("ic_debug.xml")
+}
+
+@Composable
+actual fun rememberIconGiphyPainter(): Painter {
+    return painterResource("ic_giphy.xml")
+}
+
+@Composable
+actual fun rememberIconPexelsPainter(): Painter {
+    return painterResource("ic_pexels.xml")
+}
+
+@Composable
+actual fun rememberIconPhonePainter(): Painter {
+    return painterResource("ic_phone.xml")
+}
