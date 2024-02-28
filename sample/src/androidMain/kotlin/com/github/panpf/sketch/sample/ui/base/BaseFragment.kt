@@ -34,8 +34,12 @@ abstract class BaseFragment : Fragment() {
     protected open var statusBarTextStyle: StatusBarTextStyle? = null
     protected open var isPage: Boolean = true
 
+    private var resumedCount = 0
+    private var createdCount = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        createdCount++
         setTopInsets()
         if (isPage) {
             view.isClickable = true
@@ -63,6 +67,21 @@ abstract class BaseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupStatusBarStyle()
+
+        resumedCount++
+        if (resumedCount == 1 && createdCount == 1) {
+            onFirstResume()
+        }
+    }
+
+    protected open fun onFirstResume() {
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        createdCount--
+        resumedCount = 0
     }
 
     private fun setTopInsets() {

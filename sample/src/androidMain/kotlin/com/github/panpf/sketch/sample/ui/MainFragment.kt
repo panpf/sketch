@@ -19,21 +19,20 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.databinding.FragmentMainBinding
+import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.ui.gallery.ErrorStateFragment
-import com.github.panpf.sketch.sample.ui.gallery.ViewHomeFragment
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
-class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
+class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {
 
-    override fun getTopInsetsView(binding: FragmentMainBinding): View? {
+    override fun getTopInsetsView(binding: FragmentContainerBinding): View? {
         return binding.root
     }
 
     override fun onViewCreated(
-        binding: FragmentMainBinding,
+        binding: FragmentContainerBinding,
         savedInstanceState: Bundle?
     ) {
         appSettingsService.composePage.collectWithLifecycle(viewLifecycleOwner) {
@@ -44,7 +43,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                     ErrorStateFragment.create("This feature requires Android 5.0 or later")
                 }
             } else {
-                ViewHomeFragment()
+                ViewNavHostFragment()
             }
             childFragmentManager.beginTransaction()
                 .replace(binding.fragmentContainer.id, fragment)

@@ -27,11 +27,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
+import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
-import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
@@ -58,7 +58,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 setOnMenuItemClickListener {
                     this@LocalVideoListFragment.findNavController().navigate(
-                        MainFragmentDirections.actionSettingsDialogFragment(
+                        NavMainDirections.actionSettingsDialogFragment(
                             Page.LIST.name
                         )
                     )

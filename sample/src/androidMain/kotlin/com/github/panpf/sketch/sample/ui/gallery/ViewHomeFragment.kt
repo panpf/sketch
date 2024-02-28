@@ -30,6 +30,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.newAssemblyGridDividerItemDecoration
@@ -39,10 +41,10 @@ import com.github.panpf.assemblyadapter.recycler.newAssemblyStaggeredGridLayoutM
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
-import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
@@ -61,9 +63,9 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class ViewHomeFragment : BaseHomeFragment() {
+class ViewHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() {
 
-    override val fragmentMap = mapOf(
+    private val fragmentMap = mapOf(
         "Local" to LocalPhotoListViewFragment(),
         "Pexels" to PexelsPhotoListViewFragment(),
         "Giphy" to GiphyPhotoListViewFragment(),
@@ -71,11 +73,73 @@ class ViewHomeFragment : BaseHomeFragment() {
     )
 
     override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
-        super.onViewCreated(binding, savedInstanceState)
         binding.toolbar.subtitle = "View"
 
+        binding.playImage.apply {
+            appSettingsService.disallowAnimatedImageInList
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    val iconResId = if (it) R.drawable.ic_play else R.drawable.ic_pause
+                    setImageResource(iconResId)
+                }
+            setOnClickListener {
+                appSettingsService.disallowAnimatedImageInList.value =
+                    !appSettingsService.disallowAnimatedImageInList.value
+            }
+        }
+
+        binding.layoutImage.apply {
+            val appSettings = context.appSettings
+            appSettings.photoGridMode
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    val iconResId = if (it == PhotoGridMode.SQUARE)
+                        R.drawable.ic_layout_grid_staggered else R.drawable.ic_layout_grid
+                    setImageResource(iconResId)
+                }
+            setOnClickListener {
+                appSettings.photoGridMode.value =
+                    if (appSettings.photoGridMode.value == PhotoGridMode.SQUARE) {
+                        PhotoGridMode.STAGGERED
+                    } else {
+                        PhotoGridMode.SQUARE
+                    }
+            }
+        }
+
+        binding.composePageIconLayout.setOnClickListener {
+            appSettingsService.composePage.value = true
+        }
+
         binding.settingsImage.setOnClickListener {
-            findNavController().navigate(MainFragmentDirections.actionSettingsDialogFragment(Page.LIST.name))
+            findNavController().navigate(NavMainDirections.actionSettingsDialogFragment(Page.LIST.name))
+        }
+
+        binding.pager.apply {
+            adapter = ArrayFragmentStateAdapter(
+                fragmentManager = childFragmentManager,
+                lifecycle = viewLifecycleOwner.lifecycle,
+                templateFragmentList = fragmentMap.values.toList()
+            )
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    when (position) {
+                        0 -> binding.navigation.selectedItemId = R.id.local
+                        1 -> binding.navigation.selectedItemId = R.id.pexels
+                        2 -> binding.navigation.selectedItemId = R.id.giphy
+                        3 -> binding.navigation.selectedItemId = R.id.test
+                    }
+                }
+            })
+        }
+
+        binding.navigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.local -> binding.pager.setCurrentItem(0, false)
+                R.id.pexels -> binding.pager.setCurrentItem(1, false)
+                R.id.giphy -> binding.pager.setCurrentItem(2, false)
+                R.id.test -> binding.pager.setCurrentItem(3, false)
+            }
+            true
         }
     }
 

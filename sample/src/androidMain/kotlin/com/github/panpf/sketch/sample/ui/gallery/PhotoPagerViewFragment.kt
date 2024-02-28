@@ -30,12 +30,12 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
-import com.github.panpf.sketch.sample.ui.MainFragmentDirections
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
@@ -145,7 +145,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
 
         binding.settingsImage.setOnClickListener {
             findNavController().navigate(
-                MainFragmentDirections.actionSettingsDialogFragment(Page.ZOOM.name)
+                NavMainDirections.actionSettingsDialogFragment(Page.ZOOM.name)
             )
         }
 

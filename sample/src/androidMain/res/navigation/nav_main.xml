@@ -2,12 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_main"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/viewHomeFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.github.panpf.sketch.sample.ui.MainFragment"
-        android:label="MainFragment" />
+        android:id="@+id/viewHomeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.ViewHomeFragment"
+        android:label="ViewHomeFragment" />
 
     <fragment
         android:id="@+id/photoPagerComposeFragment"
