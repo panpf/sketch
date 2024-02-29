@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.screen
+package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
 
-class FetcherTestScreen : BaseScreen() {
+class TempTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
-        ToolbarScaffold(title = "FetcherTest") {
+        ToolbarScaffold(title = "TempTest") {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("In development...")
             }

@@ -18,6 +18,9 @@ package com.github.panpf.sketch.util
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PorterDuff.Mode.SRC_IN
+import android.graphics.PorterDuffXfermode
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.resize.internal.ResizeMapping
@@ -118,8 +121,36 @@ internal fun Bitmap.backgrounded(backgroundColor: Int): Bitmap {
     return bitmap
 }
 
-internal fun Bitmap.mask(color: Int) {
-    Canvas(this).drawColor(color)
+internal fun Bitmap.mask(maskColor: Int) {
+    require(isMutable) { "Bitmap is immutable" }
+    val inputBitmap = this
+    val canvas = Canvas(inputBitmap)
+    val paint = Paint()
+    paint.color = maskColor
+    paint.xfermode = null
+    val saveCount = if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        canvas.saveLayer(
+            /* left = */ 0f,
+            /* top = */ 0f,
+            /* right = */ inputBitmap.width.toFloat(),
+            /* bottom = */ inputBitmap.height.toFloat(),
+            /* paint = */ paint
+        )
+    } else {
+        @Suppress("DEPRECATION")
+        canvas.saveLayer(
+            /* left = */ 0f,
+            /* top = */ 0f,
+            /* right = */ inputBitmap.width.toFloat(),
+            /* bottom = */ inputBitmap.height.toFloat(),
+            /* paint = */ paint,
+            /* saveFlags = */ Canvas.ALL_SAVE_FLAG
+        )
+    }
+    canvas.drawBitmap(inputBitmap, 0f, 0f, null)
+    paint.xfermode = PorterDuffXfermode(SRC_IN)
+    canvas.drawRect(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat(), paint)
+    canvas.restoreToCount(saveCount)
 }
 
 internal fun Bitmap.blur(radius: Int): Bitmap {

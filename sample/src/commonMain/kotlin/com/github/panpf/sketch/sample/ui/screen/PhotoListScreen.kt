@@ -41,6 +41,7 @@ import com.github.panpf.sketch.sample.ui.rememberIconGiphyPainter
 import com.github.panpf.sketch.sample.ui.rememberIconPexelsPainter
 import com.github.panpf.sketch.sample.ui.rememberIconPhonePainter
 import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.test.TestPage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 

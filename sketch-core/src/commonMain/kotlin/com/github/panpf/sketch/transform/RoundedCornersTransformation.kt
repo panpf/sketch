@@ -15,22 +15,13 @@
  */
 package com.github.panpf.sketch.transform
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PorterDuff.Mode.SRC_IN
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
-import android.graphics.RectF
 import androidx.annotation.Px
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.safeConfig
+
+internal expect fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image?
 
 /**
  * A [Transformation] that crops the image to fit the target's dimensions and rounds the corners of
@@ -44,7 +35,6 @@ import com.github.panpf.sketch.util.safeConfig
  *
  * @param radiusArray Eight radii from all four corners.
  */
-// TODO Support multiple platforms
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
     /**
@@ -94,32 +84,10 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val inputBitmap = input.getBitmapOrNull() ?: return null
-        val config = inputBitmap.safeConfig
-        val newBitmap = Bitmap.createBitmap(
-            /* width = */ inputBitmap.width,
-            /* height = */ inputBitmap.height,
-            /* config = */ config,
-        )
-        val paint = Paint().apply {
-            isAntiAlias = true
-            color = -0x10000
-        }
-        val canvas = Canvas(newBitmap).apply {
-            drawARGB(0, 0, 0, 0)
-        }
-        val path = Path().apply {
-            val rect = RectF(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat())
-            addRoundRect(rect, radiusArray, Path.Direction.CW)
-        }
-        canvas.drawPath(path, paint)
-
-        paint.xfermode = PorterDuffXfermode(SRC_IN)
-        val rect = Rect(0, 0, inputBitmap.width, inputBitmap.height)
-        canvas.drawBitmap(inputBitmap, rect, rect, paint)
+        val outBitmap = roundedCornersTransformation(input, radiusArray) ?: return null
         return TransformResult(
-            newBitmap.asSketchImage(),
-            createRoundedCornersTransformed(radiusArray)
+            image = outBitmap,
+            transformed = createRoundedCornersTransformed(radiusArray)
         )
     }
 

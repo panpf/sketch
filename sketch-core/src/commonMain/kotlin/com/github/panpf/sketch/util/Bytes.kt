@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.util
 
+// TODO Use okio's Buffer instead
 class Bytes constructor(val bytes: ByteArray) {
 
     val size = bytes.size

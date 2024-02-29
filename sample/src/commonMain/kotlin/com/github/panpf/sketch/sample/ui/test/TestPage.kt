@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.screen
+package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

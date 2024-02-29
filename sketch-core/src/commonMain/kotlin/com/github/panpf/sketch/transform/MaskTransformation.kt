@@ -15,26 +15,17 @@
  */
 package com.github.panpf.sketch.transform
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff.Mode.SRC_IN
-import android.graphics.PorterDuffXfermode
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.safeConfig
+
+internal expect fun maskTransformation(image: Image, maskColor: Int): Image?
 
 /**
  * Bitmap mask transformation, which attaches a layer of color to the surface of the bitmap, usually used to darken the bitmap used as the background
  */
-// TODO Support multiple platforms
 class MaskTransformation(
     /** Overlay the blurred image with a layer of color, often useful when using images as a background */
     @ColorInt
@@ -51,55 +42,8 @@ class MaskTransformation(
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val inputBitmap = input.getBitmapOrNull() ?: return null
-
-        val maskBitmap: Bitmap
-        var isNewBitmap = false
-        if (inputBitmap.isMutable) {
-            maskBitmap = inputBitmap
-        } else {
-            maskBitmap = Bitmap.createBitmap(
-                /* width = */ inputBitmap.width,
-                /* height = */ inputBitmap.height,
-                /* config = */ inputBitmap.safeConfig,
-            )
-            isNewBitmap = true
-        }
-
-        val canvas = Canvas(maskBitmap)
-
-        if (isNewBitmap) {
-            canvas.drawBitmap(inputBitmap, 0f, 0f, null)
-        }
-
-        val paint = Paint()
-        paint.color = maskColor
-        paint.xfermode = null
-
-        val saveCount = if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            canvas.saveLayer(
-                0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat(), paint
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            canvas.saveLayer(
-                0f,
-                0f,
-                inputBitmap.width.toFloat(),
-                inputBitmap.height.toFloat(),
-                paint,
-                Canvas.ALL_SAVE_FLAG
-            )
-        }
-
-        canvas.drawBitmap(inputBitmap, 0f, 0f, null)
-
-        paint.xfermode = PorterDuffXfermode(SRC_IN)
-        canvas.drawRect(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat(), paint)
-
-        canvas.restoreToCount(saveCount)
-
-        return TransformResult(maskBitmap.asSketchImage(), createMaskTransformed(maskColor))
+        val outBitmap = maskTransformation(input, maskColor) ?: return null
+        return TransformResult(image = outBitmap, transformed = createMaskTransformed(maskColor))
     }
 
     override fun equals(other: Any?): Boolean {

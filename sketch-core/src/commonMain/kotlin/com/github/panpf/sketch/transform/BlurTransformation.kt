@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
-expect fun blurTransformation(
+internal expect fun blurTransformation(
     image: Image,
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
@@ -46,10 +46,6 @@ class BlurTransformation constructor(
     val maskColor: Int? = null,
 ) : Transformation {
 
-    companion object {
-        private const val MODULE = "BlurTransformation"
-    }
-
     init {
         require(radius in 1..100) {
             "Radius must range from 1 to 100: $radius"
@@ -67,10 +63,11 @@ class BlurTransformation constructor(
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val blurredImage = blurTransformation(input, radius, hasAlphaBitmapBgColor, maskColor) ?: return null
+        val blurredImage =
+            blurTransformation(input, radius, hasAlphaBitmapBgColor, maskColor) ?: return null
         return TransformResult(
-            blurredImage,
-            createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor),
+            image = blurredImage,
+            transformed = createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor),
         )
     }
 

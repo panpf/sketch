@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.screen
+package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import cafe.adriel.voyager.core.screen.Screen
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.painter.rememberIconPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState

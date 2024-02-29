@@ -15,24 +15,15 @@
  */
 package com.github.panpf.sketch.transform
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff.Mode.SRC_IN
-import android.graphics.PorterDuffXfermode
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.getBitmapOrNull
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.safeConfig
-import com.github.panpf.sketch.util.toAndroidRect
 import java.lang.Integer.min
+
+internal expect fun circleCropTransformation(image: Image, scale: Scale): Image?
 
 /**
  * A [Transformation] that crops an image using a centered circle as the mask.
@@ -42,8 +33,7 @@ import java.lang.Integer.min
  *
  * @param scale Specify which part of the original image to keep. If null, use ImageRequest.scaleDecider
  */
-// TODO Support multiple platforms
-class CircleCropTransformation constructor(val scale: Scale? = null) : Transformation {
+class CircleCropTransformation(val scale: Scale? = null) : Transformation {
 
     override val key: String = "CircleCropTransformation($scale)"
 
@@ -53,43 +43,13 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val inputBitmap = input.getBitmapOrNull() ?: return null
-        val newSize = min(inputBitmap.width, inputBitmap.height)
-        val scale = scale
-            ?: requestContext.request.scaleDecider.get(
-                imageSize = Size(inputBitmap.width, inputBitmap.height),
-                targetSize = Size(newSize, newSize)
-            )
-        val resizeMapping = calculateResizeMapping(
-            inputBitmap.width, inputBitmap.height, newSize, newSize, SAME_ASPECT_RATIO, scale
+        val newSize = min(input.width, input.height)
+        val scale = scale ?: requestContext.request.scaleDecider.get(
+            imageSize = Size(input.width, input.height),
+            targetSize = Size(newSize, newSize)
         )
-        val config = inputBitmap.safeConfig
-        val outBitmap = Bitmap.createBitmap(
-            /* width = */ resizeMapping.newWidth,
-            /* height = */ resizeMapping.newHeight,
-            /* config = */ config,
-        )
-        val paint = Paint().apply {
-            isAntiAlias = true
-            color = -0x10000
-        }
-        val canvas = Canvas(outBitmap).apply {
-            drawARGB(0, 0, 0, 0)
-        }
-        canvas.drawCircle(
-            resizeMapping.newWidth / 2f,
-            resizeMapping.newHeight / 2f,
-            min(resizeMapping.newWidth, resizeMapping.newHeight) / 2f,
-            paint
-        )
-        paint.xfermode = PorterDuffXfermode(SRC_IN)
-        canvas.drawBitmap(
-            /* bitmap = */ inputBitmap,
-            /* src = */ resizeMapping.srcRect.toAndroidRect(),
-            /* dst = */ resizeMapping.destRect.toAndroidRect(),
-            /* paint = */ paint
-        )
-        return TransformResult(outBitmap.asSketchImage(), createCircleCropTransformed(scale))
+        val outBitmap = circleCropTransformation(input, scale) ?: return null
+        return TransformResult(outBitmap, createCircleCropTransformed(scale))
     }
 
     override fun toString(): String = key

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.util.backgrounded
 import com.github.panpf.sketch.util.blur
 import com.github.panpf.sketch.util.mask
 
-actual fun blurTransformation(
+internal actual fun blurTransformation(
     image: Image,
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
