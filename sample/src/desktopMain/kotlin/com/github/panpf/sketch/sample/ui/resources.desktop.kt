@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import com.github.panpf.sketch.PlatformContext
 
 @Composable
 actual fun rememberIconImageOutlinePainter(): Painter {
@@ -110,6 +111,6 @@ actual fun rememberIconPhonePainter(): Painter {
 }
 
 @Composable
-actual fun rememberIconPlaceholderEclipseAnimatedPainter(): Painter {
-    return painterResource("ic_placeholder_eclipse_animated.xml")
+actual fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): Painter? {
+    return null
 }

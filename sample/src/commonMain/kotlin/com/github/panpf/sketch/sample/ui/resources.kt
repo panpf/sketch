@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import com.github.panpf.sketch.PlatformContext
 
 
 @Composable
@@ -69,4 +70,4 @@ expect fun rememberIconPexelsPainter(): Painter
 expect fun rememberIconPhonePainter(): Painter
 
 @Composable
-expect fun rememberIconPlaceholderEclipseAnimatedPainter(): Painter
+expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): Painter?
