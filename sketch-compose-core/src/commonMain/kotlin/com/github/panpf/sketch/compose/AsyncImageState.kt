@@ -159,7 +159,7 @@ class AsyncImageState internal constructor(
                     val contentScale = it[2] as ContentScale
                     val lastRequest = this@AsyncImageState.lastRequest
                     if (lastRequest != null && lastRequest.key == request.key && lastRequest != request) {
-                        throw IllegalArgumentException("ImageRequest equals error")
+                        throw IllegalArgumentException("ImageRequest error. Please ensure that the equals result is true when the keys are the same")
                     }
                     this@AsyncImageState.lastRequest = request
                     cancelLoadImageJob()
