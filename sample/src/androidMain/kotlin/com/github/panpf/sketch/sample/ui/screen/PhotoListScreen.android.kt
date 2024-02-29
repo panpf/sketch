@@ -43,9 +43,10 @@ actual fun PhotoListHeader() {
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
+                .padding(top = top)
                 .height(50.dp)
                 .clickable { appSettings.composePage.value = false }
-                .padding(top = top, start = 16.dp, end = 16.dp),
+                .padding(start = 16.dp, end = 16.dp),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
