@@ -56,27 +56,27 @@ fun rememberIconPainter(
 }
 
 @Composable
-fun rememberIconAnimatablePainter(
+fun rememberAnimatableIconPainter(
     icon: Painter,
     background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconPainter {
+): AnimatableIconPainter {
     return remember(icon, background, iconSize, iconTint) {
-        IconAnimatablePainter(icon, background, iconSize, iconTint)
+        AnimatableIconPainter(icon, background, iconSize, iconTint)
     }
 }
 
 @Composable
-fun rememberIconAnimatablePainter(
+fun rememberAnimatableIconPainter(
     icon: Painter,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconPainter {
+): AnimatableIconPainter {
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
-        IconPainter(icon, backgroundPainter, iconSize, iconTint)
+        AnimatableIconPainter(icon, backgroundPainter, iconSize, iconTint)
     }
 }
 
@@ -181,7 +181,7 @@ open class IconPainter constructor(
     }
 }
 
-class IconAnimatablePainter(
+class AnimatableIconPainter(
     icon: Painter,
     background: Painter? = null,
     iconSize: Size? = null,
@@ -232,6 +232,6 @@ class IconAnimatablePainter(
     }
 
     override fun toString(): String {
-        return "IconAnimatablePainter(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
+        return "AnimatableIconPainter(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
     }
 }
