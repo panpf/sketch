@@ -23,8 +23,7 @@ class ImageBitmapPainter(val imageBitmap: ImageBitmap) : Painter(), SketchPainte
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ImageBitmapPainter
+        if (other !is ImageBitmapPainter) return false
         return imageBitmap == other.imageBitmap
     }
 

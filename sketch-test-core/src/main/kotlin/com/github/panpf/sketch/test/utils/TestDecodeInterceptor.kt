@@ -34,8 +34,7 @@ class TestDecodeInterceptor(override val sortWeight: Int = 0) : DecodeIntercepto
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as TestDecodeInterceptor
+        if (other !is TestDecodeInterceptor) return false
         if (sortWeight != other.sortWeight) return false
         return true
     }

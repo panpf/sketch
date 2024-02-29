@@ -153,8 +153,7 @@ open class DrawablePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as DrawablePainter
+        if (other !is DrawablePainter) return false
         return drawable == other.drawable
     }
 
@@ -194,8 +193,7 @@ class DrawableAnimatablePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as DrawableAnimatablePainter
+        if (other !is DrawableAnimatablePainter) return false
         return drawable == other.drawable
     }
 

@@ -49,8 +49,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as OkHttpStack
+        if (other !is OkHttpStack) return false
         if (okHttpClient != other.okHttpClient) return false
         return true
     }

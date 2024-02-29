@@ -103,8 +103,7 @@ open class ResizePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ResizePainter
+        if (other !is ResizePainter) return false
         if (painter != other.painter) return false
         if (size != other.size) return false
         return scale == other.scale
@@ -151,8 +150,7 @@ class ResizeAnimatablePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ResizeAnimatablePainter
+        if (other !is ResizeAnimatablePainter) return false
         if (painter != other.painter) return false
         if (size != other.size) return false
         return scale == other.scale

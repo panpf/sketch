@@ -26,6 +26,7 @@ import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
@@ -49,7 +50,7 @@ import kotlin.math.roundToInt
  * Adds SVG support
  */
 fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
-    addDecoder(SvgDecoder.Factory())
+    addDecoder(Factory())
 }
 
 /**
@@ -192,8 +193,7 @@ class SvgDecoder constructor(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            other as Factory
+            if (other !is Factory) return false
             if (useViewBoundsAsIntrinsicSize != other.useViewBoundsAsIntrinsicSize) return false
             return true
         }

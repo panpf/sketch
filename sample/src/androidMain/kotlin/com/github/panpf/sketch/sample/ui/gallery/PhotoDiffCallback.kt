@@ -8,7 +8,7 @@ class PhotoDiffCallback : DiffUtil.ItemCallback<Photo>() {
 
     override fun areItemsTheSame(oldItem: Photo, newItem: Photo): Boolean {
         @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
-        return (oldItem!!).javaClass == (newItem!!).javaClass && oldItem.originalUrl == newItem.originalUrl
+        return (oldItem!!)::class == (newItem!!)::class && oldItem.originalUrl == newItem.originalUrl
     }
 
     @SuppressLint("DiffUtilEquals")

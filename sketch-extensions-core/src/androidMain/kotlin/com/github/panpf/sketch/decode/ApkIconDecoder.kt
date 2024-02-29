@@ -80,14 +80,16 @@ class ApkIconDecoder(
 
         override fun toString(): String = "ApkIconDecoder"
 
+        @Suppress("RedundantOverride")
         override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            return true
+            // If you add construction parameters to this class, you need to change it here
+            return super.equals(other)
         }
 
+        @Suppress("RedundantOverride")
         override fun hashCode(): Int {
-            return javaClass.hashCode()
+            // If you add construction parameters to this class, you need to change it here
+            return super.hashCode()
         }
     }
 
@@ -105,8 +107,7 @@ class ApkIconDecoder(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            other as ApkIconDrawableFetcher
+            if (other !is ApkIconDrawableFetcher) return false
             if (file != other.file) return false
             return true
         }

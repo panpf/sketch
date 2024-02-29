@@ -28,15 +28,17 @@ class TestDecodeInterceptor2 : DecodeInterceptor {
         throw UnsupportedOperationException()
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return true
-    }
+    @Suppress("RedundantOverride")
+        override fun equals(other: Any?): Boolean {
+            // If you add construction parameters to this class, you need to change it here
+            return super.equals(other)
+        }
 
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
-    }
+        @Suppress("RedundantOverride")
+        override fun hashCode(): Int {
+            // If you add construction parameters to this class, you need to change it here
+            return super.hashCode()
+        }
 
     override fun toString(): String {
         return "Test2DecodeInterceptor(sortWeight=$sortWeight)"

@@ -46,7 +46,7 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
             else -> {
                 dataSource.openSourceOrNull()?.let { GifInfoHandle(it.buffer().inputStream()) }
                     ?: dataSource.getFileOrNull()?.let { GifInfoHandle(it.toFile().path) }
-                    ?: throw Exception("Unsupported DataSource: ${dataSource.javaClass}")
+                    ?: throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
             }
         }
     }

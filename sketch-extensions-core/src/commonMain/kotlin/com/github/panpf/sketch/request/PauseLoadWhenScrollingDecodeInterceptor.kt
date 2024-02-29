@@ -66,8 +66,7 @@ class PauseLoadWhenScrollingDecodeInterceptor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as PauseLoadWhenScrollingDecodeInterceptor
+        if (other !is PauseLoadWhenScrollingDecodeInterceptor) return false
         if (sortWeight != other.sortWeight) return false
         return true
     }
