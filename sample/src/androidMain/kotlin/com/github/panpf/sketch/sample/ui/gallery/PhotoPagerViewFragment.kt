@@ -149,11 +149,15 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             )
         }
 
+        binding.backImage.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         viewModel.buttonBgColor.repeatCollectWithLifecycle(
             owner = viewLifecycleOwner,
             state = State.STARTED
         ) { color ->
-            listOf(binding.settingsImage, binding.originImage, binding.pageNumberText).forEach {
+            listOf(binding.backImage, binding.settingsImage, binding.originImage, binding.pageNumberText).forEach {
                 it.background.asOrThrow<GradientDrawable>().setColor(color)
             }
         }
