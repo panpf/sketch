@@ -104,7 +104,7 @@ fun PhotoGridItem(
         ImageRequest(context, photo.listThumbnailUrl) {
 //                if (animatedPlaceholder) {   // TODO
 //                    placeholder(
-//                        AnimatableIconStateImage(drawable.ic_placeholder_eclipse_animated) {
+//                        IconAnimatableStateImage(drawable.ic_placeholder_eclipse_animated) {
 //                            resColorBackground(color.placeholder_bg)
 //                        }
 //                    )

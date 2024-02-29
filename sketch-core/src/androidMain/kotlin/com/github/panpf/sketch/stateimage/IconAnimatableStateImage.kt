@@ -29,12 +29,12 @@ import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
 /**
- * Create an AnimatableIconStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
  */
-fun AnimatableIconStateImage(
+fun IconAnimatableStateImage(
     icon: DrawableFetcher,
     block: (IconStateImageBuilderScope.() -> Unit)? = null
-): AnimatableIconStateImage {
+): IconAnimatableStateImage {
     var iconSize: Size? = null
     var background: DrawableFetcher? = null
     if (block != null) {
@@ -42,31 +42,31 @@ fun AnimatableIconStateImage(
         iconSize = scope.iconSize
         background = scope.background
     }
-    return AnimatableIconStateImage(icon, iconSize, background)
+    return IconAnimatableStateImage(icon, iconSize, background)
 }
 
 /**
- * Create an AnimatableIconStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
  */
-fun AnimatableIconStateImage(
+fun IconAnimatableStateImage(
     icon: Drawable,
     block: (IconStateImageBuilderScope.() -> Unit)? = null
-): AnimatableIconStateImage = AnimatableIconStateImage(RealDrawable(icon), block)
+): IconAnimatableStateImage = IconAnimatableStateImage(RealDrawable(icon), block)
 
 /**
- * Create an AnimatableIconStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
  */
-fun AnimatableIconStateImage(
+fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
     block: (IconStateImageBuilderScope.() -> Unit)? = null
-): AnimatableIconStateImage = AnimatableIconStateImage(ResDrawable(icon), block)
+): IconAnimatableStateImage = IconAnimatableStateImage(ResDrawable(icon), block)
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
  *
  * Icons are centered and always the same size
  */
-class AnimatableIconStateImage internal constructor(
+class IconAnimatableStateImage internal constructor(
     private val icon: DrawableFetcher,
     private val iconSize: Size?,
     private val background: DrawableFetcher?,
@@ -97,7 +97,7 @@ class AnimatableIconStateImage internal constructor(
             val background = background?.getDrawable(request.context)
             IconAnimatableDrawable(icon, background, iconSize)
         } catch (e: Throwable) {
-            sketch.logger.w("AnimatableIconDrawable", "getDrawable error. ${e.message}")
+            sketch.logger.w("IconAnimatableDrawable", "getDrawable error. ${e.message}")
             e.printStackTrace()
             null
         }?.asSketchImage()
@@ -105,7 +105,7 @@ class AnimatableIconStateImage internal constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AnimatableIconStateImage) return false
+        if (other !is IconAnimatableStateImage) return false
         if (icon != other.icon) return false
         if (iconSize != other.iconSize) return false
         if (background != other.background) return false
@@ -120,6 +120,6 @@ class AnimatableIconStateImage internal constructor(
     }
 
     override fun toString(): String {
-        return "AnimatableIconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+        return "IconAnimatableStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
     }
 }

@@ -1,13 +1,5 @@
 package com.github.panpf.sketch.compose.stateimage
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.compose.painter.rememberAnimatableIconPainter
-import com.github.panpf.sketch.compose.painter.rememberIconPainter
-
 
 // TODO support drawable res
 //@Composable
@@ -43,33 +35,33 @@ import com.github.panpf.sketch.compose.painter.rememberIconPainter
 //}
 //
 //@Composable
-//fun rememberAnimatableIconPainterStateImage(
+//fun rememberIconAnimatablePainterStateImage(
 //    iconPath: String,
 //    backgroundPath: String? = null,
 //    iconSize: Size? = null,
 //    iconTint: Color? = null,
 //): PainterStateImage {
-//    val animatableIconPainter = rememberAnimatableIconPainter(
+//    val iconAnimatablePainter = rememberIconAnimatablePainter(
 //        iconPath = iconPath,
 //        backgroundPath = backgroundPath,
 //        iconSize = iconSize,
 //        iconTint = iconTint
 //    )
-//    return remember(animatableIconPainter) { PainterStateImage(animatableIconPainter) }
+//    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
 //}
 //
 //@Composable
-//fun rememberAnimatableIconPainterStateImage(
+//fun rememberIconAnimatablePainterStateImage(
 //    iconPath: String,
 //    background: Color? = null,
 //    iconSize: Size? = null,
 //    iconTint: Color? = null,
 //): PainterStateImage {
-//    val animatableIconPainter = rememberAnimatableIconPainter(
+//    val iconAnimatablePainter = rememberIconAnimatablePainter(
 //        iconPath = iconPath,
 //        background = background,
 //        iconSize = iconSize,
 //        iconTint = iconTint
 //    )
-//    return remember(animatableIconPainter) { PainterStateImage(animatableIconPainter) }
+//    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
 //}

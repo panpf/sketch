@@ -37,29 +37,29 @@ fun rememberIconPainter(
 }
 
 @Composable
-fun rememberAnimatableIconPainter(
+fun rememberIconAnimatablePainter(
     iconPath: String,
     backgroundPath: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): AnimatableIconPainter {
+): IconAnimatablePainter {
     val icon = painterResource(iconPath)
     val background = backgroundPath?.let { painterResource(it) }
     return remember(iconPath, backgroundPath, iconSize, iconTint) {
-        AnimatableIconPainter(icon, background, iconSize, iconTint)
+        IconAnimatablePainter(icon, background, iconSize, iconTint)
     }
 }
 
 @Composable
-fun rememberAnimatableIconPainter(
+fun rememberIconAnimatablePainter(
     iconPath: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): AnimatableIconPainter {
+): IconAnimatablePainter {
     val icon = painterResource(iconPath)
     return remember(iconPath, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
-        AnimatableIconPainter(icon, backgroundPainter, iconSize, iconTint)
+        IconAnimatablePainter(icon, backgroundPainter, iconSize, iconTint)
     }
 }

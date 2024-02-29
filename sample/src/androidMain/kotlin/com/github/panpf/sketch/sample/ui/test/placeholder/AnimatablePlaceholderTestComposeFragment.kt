@@ -41,7 +41,7 @@ import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
-import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
+import com.github.panpf.sketch.stateimage.IconAnimatableStateImage
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AnimatablePlaceholderTestComposeFragment : BaseToolbarComposeFragment() {
@@ -61,7 +61,7 @@ class AnimatablePlaceholderTestComposeFragment : BaseToolbarComposeFragment() {
                 resultCachePolicy(CachePolicy.DISABLED)
                 // TODO AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above api 29
                 placeholder(
-                    AnimatableIconStateImage(drawable.ic_placeholder_eclipse_animated) {
+                    IconAnimatableStateImage(drawable.ic_placeholder_eclipse_animated) {
                         resColorBackground(color.placeholder_bg)
                     }
                 )

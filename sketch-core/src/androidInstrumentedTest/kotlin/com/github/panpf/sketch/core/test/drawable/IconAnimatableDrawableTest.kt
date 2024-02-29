@@ -80,7 +80,7 @@ class IconAnimatableDrawableTest {
 //    fun testMutate() {
 //        val context = getTestContext()
 //
-//        AnimatableIconDrawable(
+//        IconAnimatableDrawable(
 //            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated),
 //            background = ColorDrawable(Color.GREEN)
 //        ).apply {
@@ -94,7 +94,7 @@ class IconAnimatableDrawableTest {
 //            }
 //        }
 //
-//        AnimatableIconDrawable(
+//        IconAnimatableDrawable(
 //            icon = TestNewMutateDrawable(context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)),
 //            background = ColorDrawable(Color.GREEN)
 //        ).apply {
@@ -108,7 +108,7 @@ class IconAnimatableDrawableTest {
 //            }
 //        }
 //
-//        AnimatableIconDrawable(
+//        IconAnimatableDrawable(
 //            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated),
 //            background = TestNewMutateDrawable(ColorDrawable(Color.GREEN))
 //        ).apply {
@@ -523,14 +523,14 @@ class IconAnimatableDrawableTest {
 //                    .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
 //            }
 //
-//        AnimatableIconDrawable(icon = iconDrawable, background = bgDrawable).apply {
+//        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
 //            Assert.assertEquals(
 //                Rect().apply { bgDrawable.getPadding(this) },
 //                Rect().apply { getPadding(this) }
 //            )
 //        }
 //
-//        AnimatableIconDrawable(icon = iconDrawable).apply {
+//        IconAnimatableDrawable(icon = iconDrawable).apply {
 //            Assert.assertTrue(Rect().apply { getPadding(this) }
 //                .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
 //        }
@@ -720,13 +720,13 @@ class IconAnimatableDrawableTest {
 //
 //        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
 //        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
-//        AnimatableIconDrawable(icon = iconDrawable, background = bgDrawable).apply {
+//        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
 //            Assert.assertTrue(isStateful)
 //            Assert.assertTrue(iconDrawable.isStateful)
 //            Assert.assertFalse(bgDrawable.isStateful)
 //        }
 //
-//        AnimatableIconDrawable(icon = iconDrawable).apply {
+//        IconAnimatableDrawable(icon = iconDrawable).apply {
 //            Assert.assertTrue(isStateful)
 //            Assert.assertTrue(iconDrawable.isStateful)
 //        }

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
+import com.github.panpf.sketch.stateimage.IconAnimatableStateImage
 
 class AnimatablePlaceholderTestViewFragment :
     BaseToolbarBindingFragment<FragmentTestAnimatablePlaceholderBinding>() {
@@ -52,7 +52,7 @@ class AnimatablePlaceholderTestViewFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
-                AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
                     resColorBackground(R.color.placeholder_bg)
                 }
             )
@@ -64,7 +64,7 @@ class AnimatablePlaceholderTestViewFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
-                AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
                     resColorBackground(R.color.placeholder_bg)
                 }
             )
@@ -76,7 +76,7 @@ class AnimatablePlaceholderTestViewFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
-                AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
                     resColorBackground(R.color.placeholder_bg)
                 }
             )

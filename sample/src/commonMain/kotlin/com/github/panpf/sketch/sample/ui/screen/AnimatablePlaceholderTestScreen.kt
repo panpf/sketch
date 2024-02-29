@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
-import com.github.panpf.sketch.compose.stateimage.rememberAnimatableIconPainterStateImage
+import com.github.panpf.sketch.compose.stateimage.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
@@ -45,7 +45,7 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                     }
                     val uriString = images[urlIndexState % images.size]
                     val colorScheme = MaterialTheme.colorScheme
-                    val placeholderStateImage = rememberAnimatableIconPainterStateImage(
+                    val placeholderStateImage = rememberIconAnimatablePainterStateImage(
                         icon = eclipseAnimatedPainter,
                         background = colorScheme.primaryContainer
                     )

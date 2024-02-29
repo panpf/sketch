@@ -31,7 +31,7 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
-import com.github.panpf.sketch.stateimage.AnimatableIconStateImage
+import com.github.panpf.sketch.stateimage.IconAnimatableStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
@@ -82,7 +82,7 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
             updateImageOptions {
                 if (animatedPlaceholder) {
                     placeholder(
-                        AnimatableIconStateImage(R.drawable.ic_placeholder_eclipse_animated) {
+                        IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
                             resColorBackground(R.color.placeholder_bg)
                         }
                     )

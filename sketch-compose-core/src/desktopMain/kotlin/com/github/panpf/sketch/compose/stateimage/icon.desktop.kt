@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import com.github.panpf.sketch.compose.painter.rememberAnimatableIconPainter
+import com.github.panpf.sketch.compose.painter.rememberIconAnimatablePainter
 import com.github.panpf.sketch.compose.painter.rememberIconPainter
 
 
@@ -41,33 +41,33 @@ fun rememberIconPainterStateImage(
 }
 
 @Composable
-fun rememberAnimatableIconPainterStateImage(
+fun rememberIconAnimatablePainterStateImage(
     iconPath: String,
     backgroundPath: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
-    val animatableIconPainter = rememberAnimatableIconPainter(
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
         iconPath = iconPath,
         backgroundPath = backgroundPath,
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(animatableIconPainter) { PainterStateImage(animatableIconPainter) }
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
 }
 
 @Composable
-fun rememberAnimatableIconPainterStateImage(
+fun rememberIconAnimatablePainterStateImage(
     iconPath: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
-    val animatableIconPainter = rememberAnimatableIconPainter(
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
         iconPath = iconPath,
         background = background,
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(animatableIconPainter) { PainterStateImage(animatableIconPainter) }
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
 }
