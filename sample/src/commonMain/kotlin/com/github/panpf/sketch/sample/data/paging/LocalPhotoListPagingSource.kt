@@ -41,7 +41,8 @@ expect suspend fun readImageInfoOrNull(
 ): ImageInfo?
 
 class LocalPhotoListPagingSource(
-    val context: PlatformContext, val sketch: Sketch
+    val context: PlatformContext,
+    val sketch: Sketch
 ) : PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat

@@ -10,35 +10,6 @@
         android:label="ViewHomeFragment" />
 
     <fragment
-        android:id="@+id/photoPagerComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerComposeFragment"
-        android:label="PhotoPagerComposeFragment">
-        <argument
-            android:name="imageDetailJsonArray"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="totalCount"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="startPosition"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
-            android:name="initialPosition"
-            app:argType="integer"
-            app:nullable="false" />
-    </fragment>
-    <action
-        android:id="@+id/action_photoPagerComposeFragment"
-        app:destination="@id/photoPagerComposeFragment"
-        app:enterAnim="@anim/nav_enter_from_bottom"
-        app:exitAnim="@anim/nav_exit_from_bottom"
-        app:popEnterAnim="@anim/nav_pop_enter_from_bottom"
-        app:popExitAnim="@anim/nav_pop_exit_from_bottom" />
-
-    <fragment
         android:id="@+id/photoPagerViewFragment"
         android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment"
         android:label="PhotoPagerViewFragment">
@@ -218,36 +189,12 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/insanityTestComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestComposeFragment"
-        android:label="InsanityTestComposeFragment" />
-    <action
-        android:id="@+id/action_insanityTestComposeFragment"
-        app:destination="@id/insanityTestComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
         android:id="@+id/progressIndicatorTestViewFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewFragment"
         android:label="ProgressIndicatorTestViewFragment" />
     <action
         android:id="@+id/action_progressIndicatorTestViewFragment"
         app:destination="@id/progressIndicatorTestViewFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/progressIndicatorTestComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestComposeFragment"
-        android:label="ProgressIndicatorTestFragment" />
-    <action
-        android:id="@+id/action_progressIndicatorTestComposeFragment"
-        app:destination="@id/progressIndicatorTestComposeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -266,36 +213,12 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/animatablePlaceholderTestComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.placeholder.AnimatablePlaceholderTestComposeFragment"
-        android:label="AnimatablePlaceholderTestComposeFragment" />
-    <action
-        android:id="@+id/action_animatablePlaceholderTestComposeFragment"
-        app:destination="@id/animatablePlaceholderTestComposeFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
         android:id="@+id/shareElementTestFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.shareelement.ShareElementTestFragment"
         android:label="ProgressIndicatorTestFragment" />
     <action
         android:id="@+id/action_shareElementTestFragment"
         app:destination="@id/shareElementTestFragment"
-        app:enterAnim="@anim/nav_enter"
-        app:exitAnim="@anim/nav_exit"
-        app:popEnterAnim="@anim/nav_pop_enter"
-        app:popExitAnim="@anim/nav_pop_exit" />
-
-    <fragment
-        android:id="@+id/tempTestComposeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.TempTestComposeFragment"
-        android:label="TempTestComposeFragment" />
-    <action
-        android:id="@+id/action_tempTestComposeFragment"
-        app:destination="@id/tempTestComposeFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

@@ -15,38 +15,53 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
-import androidx.compose.runtime.Composable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.platform.ComposeView
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
-import com.github.panpf.sketch.sample.ui.base.BaseComposeFragment
+import com.github.panpf.sketch.sample.ui.base.BaseFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.screen.PhotoListScreen
 import com.github.panpf.sketch.sample.ui.screen.PhotoPagerScreen
+import com.github.panpf.sketch.sample.ui.theme.AppTheme
 
-class ComposeHomeFragment : BaseComposeFragment() {
+class ComposeHomeFragment : BaseFragment() {
 
-    @Composable
-    override fun ComposeContent() {
-        var screenState by remember { mutableStateOf<Screen?>(null) }
-        LaunchedEffect(Unit) {
-            snapshotFlow { screenState }.collect {
-                statusBarTextStyle = if (it is PhotoPagerScreen) {
-                    StatusBarTextStyle.White
-                } else {
-                    StatusBarTextStyle.Black
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(inflater.context)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as ComposeView).setContent {
+            AppTheme {
+                var screenState by remember { mutableStateOf<Screen?>(null) }
+                LaunchedEffect(Unit) {
+                    snapshotFlow { screenState }.collect {
+                        statusBarTextStyle = if (it is PhotoPagerScreen) {
+                            StatusBarTextStyle.White
+                        } else {
+                            StatusBarTextStyle.Black
+                        }
+                    }
+                }
+                Navigator(PhotoListScreen) { navigator ->
+                    ScaleTransition(navigator = navigator)
+                    screenState = navigator.lastItem
                 }
             }
-        }
-        Navigator(PhotoListScreen) { navigator ->
-            ScaleTransition(navigator = navigator)
-            screenState = navigator.lastItem
         }
     }
 }

@@ -2,9 +2,7 @@ package com.github.panpf.sketch.sample.ui.test.progress
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.DirectlyComplete
-import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.Error
-import com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewModel.Model.Progress
+import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +21,8 @@ class ProgressIndicatorTestViewModel : ViewModel() {
     private val _runningState = MutableStateFlow(false)
     val runningState: StateFlow<Boolean> = _runningState
 
-    private val _modelState = MutableStateFlow(Progress)
-    val modelState: StateFlow<Model> = _modelState
+    private val _modelState = MutableStateFlow(ProgressIndicatorTestModel.Progress)
+    val modelState: StateFlow<ProgressIndicatorTestModel> = _modelState
 
     private val _hiddenWhenIndeterminateState = MutableStateFlow(false)
     val hiddenWhenIndeterminateState: StateFlow<Boolean> = _hiddenWhenIndeterminateState
@@ -35,11 +33,7 @@ class ProgressIndicatorTestViewModel : ViewModel() {
     private val _shortStepState = MutableStateFlow(false)
     val shortStepState: StateFlow<Boolean> = _shortStepState
 
-    enum class Model {
-        Progress, DirectlyComplete, Error
-    }
-
-    fun changeModel(model: Model) {
+    fun changeModel(model: ProgressIndicatorTestModel) {
         _modelState.value = model
     }
 
@@ -64,7 +58,7 @@ class ProgressIndicatorTestViewModel : ViewModel() {
             _runningState.value = true
             this.runningJob = viewModelScope.launch {
                 when (_modelState.value) {
-                    Progress -> {
+                    ProgressIndicatorTestModel.Progress -> {
                         var progress = 0f
                         val shortSteps = _shortStepState.value
                         do {
@@ -78,13 +72,13 @@ class ProgressIndicatorTestViewModel : ViewModel() {
                         } while (progress <= 1f && isActive)
                     }
 
-                    DirectlyComplete -> {
+                    ProgressIndicatorTestModel.DirectlyComplete -> {
                         _progressState.value = 0f
                         delay(2000)
                         _progressState.value = 1f
                     }
 
-                    Error -> {
+                    ProgressIndicatorTestModel.Error -> {
                         _progressState.value = 0f
                         delay(2000)
                         _progressState.value = -1f

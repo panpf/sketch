@@ -2,24 +2,19 @@ package com.github.panpf.sketch.sample.ui.test
 
 import android.Manifest.permission
 import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.AssemblyGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
-import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
 import com.github.panpf.tools4a.dimen.ktx.dp2px
@@ -91,49 +86,20 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
         ),
         Link(
-            title = "ProgressIndicator\n(View)",
+            title = "ProgressIndicator",
             navDirections = NavMainDirections.actionProgressIndicatorTestViewFragment()
         ),
         Link(
-            title = "ProgressIndicator\n(Compose)",
-            navDirections = NavMainDirections.actionProgressIndicatorTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-        Link(
-            title = "Display Insanity\n(View)",
+            title = "DisplayInsanity",
             navDirections = NavMainDirections.actionInsanityTestViewFragment()
         ),
         Link(
-            title = "Display Insanity\n(Compose)",
-            navDirections = NavMainDirections.actionInsanityTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-        Link(
-            title = "Animatable Placeholder\n(View)",
+            title = "AnimatablePlaceholder",
             navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
         ),
         Link(
-            title = "Animatable Placeholder\n(Compose)",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
-        ),
-        Link(
-            title = "Share Element\n(View)",
+            title = "ShareElement",
             navDirections = NavMainDirections.actionShareElementTestFragment(),
-        ),
-    ).let {
-        if (BuildConfig.DEBUG) {
-            it.plus(debugPageList())
-        } else {
-            it
-        }
-    }
-
-    private fun debugPageList(): List<Link> = listOf(
-        Link(
-            title = "Temp Test\n(Compose)",
-            navDirections = NavMainDirections.actionTempTestComposeFragment(),
-            minSdk = VERSION_CODES.LOLLIPOP
         ),
     )
 

@@ -49,7 +49,7 @@ class InsanityTestViewFragment : BaseToolbarBindingFragment<FragmentRecyclerRefr
         binding: FragmentRecyclerRefreshBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Insanity Test"
+        toolbar.title = "DisplayInsanityTest"
 
         binding.myRecycler.apply {
             layoutManager =

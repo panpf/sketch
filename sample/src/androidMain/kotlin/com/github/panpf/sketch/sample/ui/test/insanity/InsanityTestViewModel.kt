@@ -21,6 +21,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.github.panpf.sketch.sample.ui.screen.InsanityTestPagingSource
+import com.github.panpf.sketch.sketch
 
 class InsanityTestViewModel(application: Application) : AndroidViewModel(application) {
     val pagingFlow = Pager(
@@ -30,7 +32,7 @@ class InsanityTestViewModel(application: Application) : AndroidViewModel(applica
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            InsanityTestPagingSource(application)
+            InsanityTestPagingSource(application, application.sketch)
         }
     ).flow.cachedIn(viewModelScope)
 }

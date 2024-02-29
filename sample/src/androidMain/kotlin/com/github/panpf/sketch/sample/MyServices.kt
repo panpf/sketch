@@ -18,11 +18,13 @@ package com.github.panpf.sketch.sample
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.github.panpf.sketch.sample.util.ParamLazy
 
 val Context.appSettingsService: AppSettings
-    get() = appSettings
+    get() = safeContext.appSettings
 val Fragment.appSettingsService: AppSettings
-    get() = this.requireContext().appSettings
+    get() = this.requireContext().safeContext.appSettings
 val View.appSettingsService: AppSettings
-    get() = this.context.appSettings
+    get() = this.context.safeContext.appSettings
+
+val Context.safeContext: Context
+    get() = applicationContext

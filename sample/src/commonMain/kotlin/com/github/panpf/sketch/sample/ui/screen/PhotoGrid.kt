@@ -135,7 +135,7 @@ private fun PhotoSquareGrid(
         ) {
             items(
                 count = pagingItems.itemCount,
-                key = { pagingItems.peek(it)?.originalUrl ?: "" },
+                key = { pagingItems.peek(it).let { "${it?.originalUrl}:${it?.index}" } },
                 contentType = { 1 }
             ) { index ->
                 val item = pagingItems[index]
@@ -204,7 +204,7 @@ private fun PhotoStaggeredGrid(
         ) {
             items(
                 count = pagingItems.itemCount,
-                key = { pagingItems.peek(it)?.originalUrl ?: "" },
+                key = { pagingItems.peek(it).let { "${it?.originalUrl}:${it?.index}" } },
                 contentType = { 1 }
             ) { index ->
                 val item = pagingItems[index]

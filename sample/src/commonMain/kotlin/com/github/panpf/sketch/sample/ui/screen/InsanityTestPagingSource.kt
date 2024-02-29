@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.sample.ui.test.insanity
+package com.github.panpf.sketch.sample.ui.screen
 
-import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.data.paging.isIgnoreExifOrientation
+import com.github.panpf.sketch.sample.data.paging.readImageInfoOrNull
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4k.coroutines.withToIO
 
-class InsanityTestPagingSource(private val context: Context) :
+class InsanityTestPagingSource(private val context: PlatformContext, val sketch: Sketch) :
     PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
@@ -39,24 +37,27 @@ class InsanityTestPagingSource(private val context: Context) :
         val startPosition = params.key ?: 0
         val assetPhotos = if (startPosition == 0) readAssetPhotos() else emptyList()
         val photos = urisToPhotos(assetPhotos)
-        return LoadResult.Page(photos.filter { keySet.add(it.originalUrl) }, null, null)
+        return LoadResult.Page(
+            photos.filter { keySet.add(it.let { "${it.originalUrl}:${it.index}" }) },
+            null,
+            null
+        )
     }
 
-    private suspend fun readAssetPhotos(): List<String> = withToIO {
-        buildList {
-            repeat(100) {
-                addAll(AssetImages.numbers.map { it.uri })
-            }
+    private fun readAssetPhotos(): List<String> = buildList {
+        repeat(100) {
+            addAll(AssetImages.numbers.map { it.uri })
         }
     }
 
-    private suspend fun urisToPhotos(uris: List<String>): List<Photo> = withToIO {
+    private suspend fun urisToPhotos(uris: List<String>): List<Photo> =
         uris.mapIndexed { index, uri ->
-            val sketch = context.sketch
-            val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
-            val dataSource = fetcher.fetch().getOrThrow().dataSource
-            val imageInfo =
-                dataSource.readImageInfoWithBitmapFactoryOrNull(context.appSettingsService.ignoreExifOrientation.value)
+            val imageInfo = readImageInfoOrNull(
+                context = context,
+                sketch = sketch,
+                uri = uri,
+                ignoreExifOrientation = isIgnoreExifOrientation(context)
+            )
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
                 val imageSize = Size(imageInfo.width, imageInfo.height)
@@ -82,5 +83,5 @@ class InsanityTestPagingSource(private val context: Context) :
                 )
             }
         }
-    }
+
 }
