@@ -155,12 +155,12 @@ fun PagerBackground(
             if (it is ImageResult.Success) {
                 val preferredSwatch = it.simplePalette?.run {
                     listOfNotNull(
-                        darkVibrantSwatch,
                         darkMutedSwatch,
                         mutedSwatch,
                         lightMutedSwatch,
+                        darkVibrantSwatch,
                         vibrantSwatch,
-                        lightVibrantSwatch
+                        lightVibrantSwatch,
                     ).firstOrNull()
                 }
                 if (preferredSwatch != null) {

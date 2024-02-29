@@ -93,12 +93,12 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             if (it is LoadState.Success) {
                 val preferredSwatch = it.result.simplePalette?.run {
                     listOfNotNull(
-                        darkVibrantSwatch,
                         darkMutedSwatch,
                         mutedSwatch,
                         lightMutedSwatch,
+                        darkVibrantSwatch,
                         vibrantSwatch,
-                        lightVibrantSwatch
+                        lightVibrantSwatch,
                     ).firstOrNull()
                 }
                 if (preferredSwatch != null) {
