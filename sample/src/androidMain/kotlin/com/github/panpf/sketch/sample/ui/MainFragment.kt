@@ -27,10 +27,6 @@ import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
 class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {
 
-    override fun getTopInsetsView(binding: FragmentContainerBinding): View? {
-        return binding.root
-    }
-
     override fun onViewCreated(
         binding: FragmentContainerBinding,
         savedInstanceState: Bundle?

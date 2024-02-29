@@ -39,6 +39,9 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         savedInstanceState: Bundle?
     ) {
         binding.recycler.apply {
+            setPadding(0, 0, 0, 80.dp2px)
+            clipToPadding = false
+
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
                 itemSpanByItemFactory(GridSeparatorItemFactory::class to ItemSpan.fullSpan())
             }.build()

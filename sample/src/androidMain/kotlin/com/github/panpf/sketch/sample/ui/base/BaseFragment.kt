@@ -32,6 +32,12 @@ import com.github.panpf.tools4a.toast.ktx.showLongToast
 abstract class BaseFragment : Fragment() {
 
     protected open var statusBarTextStyle: StatusBarTextStyle? = null
+        set(value) {
+            field = value
+            if (isResumed) {
+                setupStatusBarStyle()
+            }
+        }
     protected open var isPage: Boolean = true
 
     private var resumedCount = 0

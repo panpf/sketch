@@ -129,7 +129,7 @@ private fun PhotoSquareGrid(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(gridCellsMinSize),
             state = gridState,
-            contentPadding = PaddingValues(4.dp),
+            contentPadding = PaddingValues(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 84.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -198,7 +198,7 @@ private fun PhotoStaggeredGrid(
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(minSize = gridCellsMinSize),
             state = gridState,
-            contentPadding = PaddingValues(4.dp),
+            contentPadding = PaddingValues(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 84.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalItemSpacing = 4.dp,
         ) {

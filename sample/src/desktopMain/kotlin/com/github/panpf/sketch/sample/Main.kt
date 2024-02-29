@@ -7,7 +7,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.SlideTransition
+import cafe.adriel.voyager.transitions.ScaleTransition
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
@@ -41,7 +41,7 @@ fun main() = application {
     ) {
         AppTheme {
             Navigator(PhotoListScreen) { navigator ->
-                SlideTransition(navigator)
+                ScaleTransition(navigator = navigator)
             }
         }
     }

@@ -15,15 +15,14 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.page.PhotoPagerParams
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScreen
+import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.launch
 
-class PhotoPagerScreen(private val params: PhotoPagerParams) : ToolbarScreen() {
+class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
 
     @Composable
-    override fun Content() {
+    override fun DrawContent() {
         Box(Modifier.fillMaxSize()) {
             val snackbarHostState = remember { SnackbarHostState() }
             val appSettings = LocalPlatformContext.current.appSettings

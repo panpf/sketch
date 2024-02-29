@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.page
+package com.github.panpf.sketch.sample.ui.screen
 
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo

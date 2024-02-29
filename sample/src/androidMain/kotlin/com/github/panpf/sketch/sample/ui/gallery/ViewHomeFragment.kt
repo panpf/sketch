@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
@@ -44,7 +45,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
-import com.github.panpf.sketch.sample.databinding.FragmentSamplesBinding
+import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
@@ -56,6 +57,7 @@ import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -63,7 +65,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class ViewHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() {
+class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
     private val fragmentMap = mapOf(
         "Local" to LocalPhotoListViewFragment(),
@@ -72,7 +74,11 @@ class ViewHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() {
         "Test" to TestHomeFragment(),
     )
 
-    override fun onViewCreated(binding: FragmentSamplesBinding, savedInstanceState: Bundle?) {
+    override fun getTopInsetsView(binding: FragmentViewHomeBinding): View {
+        return binding.toolbar
+    }
+
+    override fun onViewCreated(binding: FragmentViewHomeBinding, savedInstanceState: Bundle?) {
         binding.toolbar.subtitle = "View"
 
         binding.playImage.apply {
@@ -203,6 +209,9 @@ class ViewHomeFragment : BaseBindingFragment<FragmentSamplesBinding>() {
             savedInstanceState: Bundle?
         ) {
             binding.myRecycler.apply {
+                setPadding(0, 0, 0, 80.dp2px)
+                clipToPadding = false
+
                 appSettingsService.photoGridMode
                     .repeatCollectWithLifecycle(
                         viewLifecycleOwner,
