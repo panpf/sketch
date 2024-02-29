@@ -108,3 +108,8 @@ actual fun rememberIconPexelsPainter(): Painter {
 actual fun rememberIconPhonePainter(): Painter {
     return painterResource("ic_phone.xml")
 }
+
+@Composable
+actual fun rememberIconPlaceholderEclipseAnimatedPainter(): Painter {
+    return painterResource("ic_placeholder_eclipse_animated.xml")
+}

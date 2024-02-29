@@ -19,6 +19,7 @@
         android:paddingEnd="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
+        android:textColor="@color/md_theme_onPrimaryContainer"
         android:textSize="14sp"
         tools:text="AssemblyRecyclerAdapter" />
 </FrameLayout>

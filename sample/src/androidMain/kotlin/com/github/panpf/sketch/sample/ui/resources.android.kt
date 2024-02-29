@@ -109,3 +109,8 @@ actual fun rememberIconPexelsPainter(): Painter {
 actual fun rememberIconPhonePainter(): Painter {
     return painterResource(R.drawable.ic_phone)
 }
+
+@Composable
+actual fun rememberIconPlaceholderEclipseAnimatedPainter(): Painter {
+    return painterResource(R.drawable.ic_placeholder_eclipse_animated)
+}

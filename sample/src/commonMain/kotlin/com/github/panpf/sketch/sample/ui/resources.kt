@@ -67,3 +67,6 @@ expect fun rememberIconPexelsPainter(): Painter
 
 @Composable
 expect fun rememberIconPhonePainter(): Painter
+
+@Composable
+expect fun rememberIconPlaceholderEclipseAnimatedPainter(): Painter
