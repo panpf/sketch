@@ -21,6 +21,9 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
+/**
+ * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
+ */
 internal expect fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image?
 
 /**
@@ -33,7 +36,7 @@ internal expect fun roundedCornersTransformation(image: Image, radiusArray: Floa
  * If you're using Jetpack Compose, use `Modifier.clip(RoundedCornerShape(radius))` instead of this
  * transformation as it's more efficient.
  *
- * @param radiusArray Eight radii from all four corners.
+ * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
  */
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
@@ -47,13 +50,13 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         @Px topLeft: Float = 0f,
         @Px topRight: Float = 0f,
         @Px bottomLeft: Float = 0f,
-        @Px bottomRight: Float = 0f
+        @Px bottomRight: Float = 0f,
     ) : this(
         floatArrayOf(
             topLeft, topLeft,
             topRight, topRight,
+            bottomRight, bottomRight,
             bottomLeft, bottomLeft,
-            bottomRight, bottomRight
         )
     )
 
