@@ -147,7 +147,7 @@ class HurlStack private constructor(
         override val message: String? by lazy { connection.responseMessage }
 
         override val contentLength: Long by lazy {
-            connection.getHeaderField("content-length").toLongOrNull() ?: -1
+            getHeaderField("content-length")?.toLongOrNull() ?: -1
         }
 
         override val contentType: String? by lazy {

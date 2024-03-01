@@ -6,7 +6,10 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 #### sketch:
 
-* fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as dstSize
+* fix: Fix the bug that ResizeDrawable and ResizeAnimatableDrawable should use the size of bounds as
+  dstSize
+* fix: Fixed a bug where HurlStack made an error when encountering no Content-Length field in the
+  response, causing image loading to fail. [#193](https://github.com/panpf/sketch/issues/193)
 
 #### sketch-compose:
 

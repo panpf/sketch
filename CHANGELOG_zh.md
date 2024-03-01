@@ -7,6 +7,8 @@
 #### sketch:
 
 * fix: 修复 ResizeDrawable 和 ResizeAnimatableDrawable 应该使用 bounds 的尺寸作为 dstSize 的 bug
+* fix: 修复了 HurlStack 在响应中遇到无 Content-Length
+  字段时出错导致图像加载失败的错误 [#193](https://github.com/panpf/sketch/issues/193)
 
 #### sketch-compose:
 
