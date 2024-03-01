@@ -30,7 +30,6 @@ class ExifOrientationTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "ExifOrientationTest") {
             val exifImages = AssetImages.clockExifs
-//            val exifImages = listOf(AssetImages.clockExifRotate90)
             val pagerState = rememberPagerState(0) { exifImages.size }
             val coroutineScope = rememberCoroutineScope()
             Column(Modifier.fillMaxWidth()) {

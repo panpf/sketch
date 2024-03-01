@@ -206,3 +206,68 @@ fun BufferedImage.getPixels(region: Rect? = null): IntArray {
     )
     return pixels
 }
+
+//fun BufferedImage.roundedCornered(cornerRadius: Int): BufferedImage {
+//    val bi1 = this
+//    // 根据需要是否使用 BufferedImage.TYPE_INT_ARGB
+//    var image = BufferedImage(
+//        bi1.width, bi1.height,
+//        BufferedImage.TYPE_INT_ARGB
+//    )
+//    val shape = Double(
+//        0.0, 0.0, bi1.width.toDouble(), bi1
+//            .height.toDouble()
+//    )
+//    var g2 = image.createGraphics()
+//    image = g2.deviceConfiguration.createCompatibleImage(
+//        bi1.width,
+//        bi1.height,
+//        Transparency.TRANSLUCENT
+//    )
+//    g2 = image.createGraphics()
+//    g2.composite = AlphaComposite.Clear
+//    g2.fill(Rectangle(image.width, image.height))
+//    g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC, 1.0f)
+//    g2.clip = shape
+//    // 使用 setRenderingHint 设置抗锯齿
+//    g2 = image.createGraphics()
+//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+//    g2.fillRoundRect(0, 0, bi1.width, bi1.height, cornerRadius, cornerRadius)
+//    g2.composite = AlphaComposite.SrcIn
+//    g2.drawImage(bi1, 0, 0, bi1.width, bi1.height, null)
+//    g2.dispose()
+//    return image
+//}
+
+//fun BufferedImage.roundedCornered(cornerRadii: FloatArray): BufferedImage {
+//    require(cornerRadii.size == 8) { "Must provide 8 corner radii" }
+//
+//    val bi1 = this
+//    var image = BufferedImage(
+//        bi1.width, bi1.height,
+//        BufferedImage.TYPE_INT_ARGB
+//    )
+//    var g2 = image.createGraphics()
+//    image = g2.deviceConfiguration.createCompatibleImage(
+//        bi1.width,
+//        bi1.height,
+//        Transparency.TRANSLUCENT
+//    )
+//    g2 = image.createGraphics()
+//    g2.composite = AlphaComposite.Clear
+//    g2.fill(Rectangle(image.width, image.height))
+//    g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC, 1.0f)
+//
+//    val shape = Area()
+//    shape.add(Area(RoundRectangle2D.Double(0.0, 0.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[0].toDouble(), cornerRadii[1].toDouble())))
+//    shape.add(Area(RoundRectangle2D.Double(bi1.width / 2.0, 0.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[2].toDouble(), cornerRadii[3].toDouble())))
+//    shape.add(Area(RoundRectangle2D.Double(0.0, bi1.height / 2.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[4].toDouble(), cornerRadii[5].toDouble())))
+//    shape.add(Area(RoundRectangle2D.Double(bi1.width / 2.0, bi1.height / 2.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[6].toDouble(), cornerRadii[7].toDouble())))
+//
+//    g2.clip = shape
+//    g2 = image.createGraphics()
+//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+//    g2.drawImage(bi1, 0, 0, bi1.width, bi1.height, null)
+//    g2.dispose()
+//    return image
+//}
