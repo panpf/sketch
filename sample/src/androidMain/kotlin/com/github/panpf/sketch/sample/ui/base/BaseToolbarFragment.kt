@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
 
 abstract class BaseToolbarFragment : BaseFragment() {
@@ -44,6 +45,9 @@ abstract class BaseToolbarFragment : BaseFragment() {
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.toolbar!!.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
         onViewCreated(this.toolbar!!, savedInstanceState)
     }
 
