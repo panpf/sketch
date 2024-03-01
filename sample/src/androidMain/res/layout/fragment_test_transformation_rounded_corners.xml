@@ -22,17 +22,89 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/text_rounded_radius" />
+            android:text="Top Left Rounded Corners Radius" />
 
         <TextView
-            android:id="@+id/radiusText"
+            android:id="@+id/topLeftRadiusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="34" />
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/topLeftSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Top Right Rounded Corners Radius" />
+
+        <TextView
+            android:id="@+id/topRightRadiusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="34" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/topRightSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Bottom Left Rounded Corners Radius" />
+
+        <TextView
+            android:id="@+id/bottomLeftRadiusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="34" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/bottomLeftSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Bottom Right Rounded Corners Radius" />
+
+        <TextView
+            android:id="@+id/bottomRightRadiusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="34" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/bottomRightSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"

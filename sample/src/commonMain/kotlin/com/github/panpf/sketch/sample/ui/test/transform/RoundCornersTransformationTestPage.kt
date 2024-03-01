@@ -27,12 +27,23 @@ import kotlin.math.roundToInt
 @Composable
 fun RoundCornersTransformationTestPage() {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
-        var roundedCornersRadius by remember { mutableStateOf(30) }
+        var topLeftRoundedCornersRadius by remember { mutableStateOf(10) }
+        var topRightRoundedCornersRadius by remember { mutableStateOf(20) }
+        var bottomLeftRoundedCornersRadius by remember { mutableStateOf(40) }
+        var bottomRightRoundedCornersRadius by remember { mutableStateOf(80) }
+
         AsyncImage(
             request = ImageRequest(LocalPlatformContext.current, AssetImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                addTransformations(RoundedCornersTransformation(roundedCornersRadius.toFloat()))
+                addTransformations(
+                    RoundedCornersTransformation(
+                        topLeft = topLeftRoundedCornersRadius.toFloat(),
+                        topRight = topRightRoundedCornersRadius.toFloat(),
+                        bottomLeft = bottomLeftRoundedCornersRadius.toFloat(),
+                        bottomRight = bottomRightRoundedCornersRadius.toFloat(),
+                    )
+                )
             },
             contentDescription = "image",
             modifier = Modifier.fillMaxWidth().weight(1f)
@@ -40,13 +51,51 @@ fun RoundCornersTransformationTestPage() {
 
         Spacer(Modifier.size(16.dp))
         Row {
-            Text(text = "Rounded Corners Radius")
+            Text(text = "Top Left Rounded Corners Radius")
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = roundedCornersRadius.toString())
+            Text(text = topLeftRoundedCornersRadius.toString())
         }
         Slider(
-            value = (roundedCornersRadius / 100f),
-            onValueChange = { roundedCornersRadius = (it * 100).roundToInt().coerceIn(0, 100) }
+            value = (topLeftRoundedCornersRadius / 100f),
+            onValueChange = {
+                topLeftRoundedCornersRadius = (it * 100).roundToInt().coerceIn(0, 100)
+            }
+        )
+
+        Row {
+            Text(text = "Top Right Rounded Corners Radius")
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = topRightRoundedCornersRadius.toString())
+        }
+        Slider(
+            value = (topRightRoundedCornersRadius / 100f),
+            onValueChange = {
+                topRightRoundedCornersRadius = (it * 100).roundToInt().coerceIn(0, 100)
+            }
+        )
+
+        Row {
+            Text(text = "Bottom Left Rounded Corners Radius")
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = bottomLeftRoundedCornersRadius.toString())
+        }
+        Slider(
+            value = (bottomLeftRoundedCornersRadius / 100f),
+            onValueChange = {
+                bottomLeftRoundedCornersRadius = (it * 100).roundToInt().coerceIn(0, 100)
+            }
+        )
+
+        Row {
+            Text(text = "Bottom Right Rounded Corners Radius")
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = bottomRightRoundedCornersRadius.toString())
+        }
+        Slider(
+            value = (bottomRightRoundedCornersRadius / 100f),
+            onValueChange = {
+                bottomRightRoundedCornersRadius = (it * 100).roundToInt().coerceIn(0, 100)
+            }
         )
     }
 }

@@ -38,19 +38,13 @@ class RoundedCornersTransformationTestFragment :
         binding: FragmentTestTransformationRoundedCornersBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.myImage.displayImage(AssetImages.statics.first().uri) {
-                memoryCachePolicy(DISABLED)
-                resultCachePolicy(DISABLED)
-                addTransformations(RoundedCornersTransformation(it.toFloat()))
-            }
-
-            binding.radiusText.text = "$it"
+        viewModel.topLeftRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            updateImage(binding)
+            binding.topLeftRadiusText.text = "$it"
         }
-
-        binding.seekBar.apply {
+        binding.topLeftSeekBar.apply {
             max = 100
-            progress = viewModel.radiusData.value
+            progress = viewModel.topLeftRadiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -61,9 +55,96 @@ class RoundedCornersTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    viewModel.changeRadius(progress)
+                    viewModel.changeTopLeftRadius(progress)
                 }
             })
+        }
+
+        viewModel.topRightRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            updateImage(binding)
+            binding.topRightRadiusText.text = "$it"
+        }
+        binding.topRightSeekBar.apply {
+            max = 100
+            progress = viewModel.topRightRadiusData.value
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeTopRightRadius(progress)
+                }
+            })
+        }
+
+        viewModel.bottomLeftRadiusData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) {
+            updateImage(binding)
+            binding.bottomLeftRadiusText.text = "$it"
+        }
+        binding.bottomLeftSeekBar.apply {
+            max = 100
+            progress = viewModel.bottomLeftRadiusData.value
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeBottomLeftRadius(progress)
+                }
+            })
+        }
+
+        viewModel.bottomRightRadiusData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.STARTED
+        ) {
+            updateImage(binding)
+            binding.bottomRightRadiusText.text = "$it"
+        }
+        binding.bottomRightSeekBar.apply {
+            max = 100
+            progress = viewModel.bottomRightRadiusData.value
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeBottomRightRadius(progress)
+                }
+            })
+        }
+    }
+
+    private fun updateImage(binding: FragmentTestTransformationRoundedCornersBinding) {
+        binding.myImage.displayImage(AssetImages.statics.first().uri) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            addTransformations(
+                RoundedCornersTransformation(
+                    topLeft = viewModel.topLeftRadiusData.value.toFloat(),
+                    topRight = viewModel.topRightRadiusData.value.toFloat(),
+                    bottomLeft = viewModel.bottomLeftRadiusData.value.toFloat(),
+                    bottomRight = viewModel.bottomRightRadiusData.value.toFloat(),
+                )
+            )
         }
     }
 }
