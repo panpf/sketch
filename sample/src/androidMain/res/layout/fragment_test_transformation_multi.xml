@@ -3,28 +3,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <com.github.panpf.sketch.sample.ui.widget.MyImageView
         android:id="@+id/myImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/rotateButton"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp"
-        android:text="@string/button_rotate_45" />
+        android:layout_weight="1"
+        tools:src="@mipmap/ic_launcher" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rotate Degrees" />
+
+        <TextView
+            android:id="@+id/degreesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="34" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/degreesSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_blur_radius" />
+
+        <TextView
+            android:id="@+id/blurValueText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="34" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/blurSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="0dp"
@@ -33,18 +73,60 @@
             android:text="@string/text_rounded_radius" />
 
         <TextView
-            android:id="@+id/radiusText"
+            android:id="@+id/roundedCornersRadiusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="34" />
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/roundedCornersSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Mask Color" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/noneButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="NONE" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/redButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="4dp"
+            android:text="RED" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/greenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="4dp"
+            android:text="GREEN" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/blueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="4dp"
+            android:text="BLUE" />
+    </RadioGroup>
 </LinearLayout>

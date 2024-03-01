@@ -56,15 +56,13 @@ class TransformationTestScreen : BaseScreen() {
                     }
                 }
                 HorizontalPager(state = pagerState) {
-                    tabs.forEach {
-                        when (it) {
-                            "ROUNDED_CORNERS" -> RoundCornersTransformationTestPage()
-                            "CIRCLE" -> CircleTransformationTestPage()
-                            "ROTATE" -> RotateTransformationTestPage()
-                            "BLUR" -> BlurTransformationTestPage()
-                            "MASK" -> MaskTransformationTestPage()
-                            "MULTI" -> MultiTransformationTestPage()
-                        }
+                    when (tabs[it]) {
+                        "ROUNDED_CORNERS" -> RoundCornersTransformationTestPage()
+                        "CIRCLE" -> CircleTransformationTestPage()
+                        "ROTATE" -> RotateTransformationTestPage()
+                        "BLUR" -> BlurTransformationTestPage()
+                        "MASK" -> MaskTransformationTestPage()
+                        "MULTI" -> MultiTransformationTestPage()
                     }
                 }
             }

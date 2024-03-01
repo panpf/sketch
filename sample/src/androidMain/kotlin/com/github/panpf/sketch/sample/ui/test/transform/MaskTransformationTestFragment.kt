@@ -24,7 +24,6 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMaskBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 
 class MaskTransformationTestFragment :
@@ -41,10 +40,10 @@ class MaskTransformationTestFragment :
             binding.greenButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.GREEN
             binding.blueButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.BLUE
 
-            binding.myImage.displayImage(AssetImages.statics.first().uri) {
+            binding.myImage.displayImage(AssetImages.png.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                addTransformations(CircleCropTransformation(), MaskTransformation(it.colorInt))
+                addTransformations(MaskTransformation(it.colorInt))
             }
         }
 

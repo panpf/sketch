@@ -16,8 +16,10 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -26,23 +28,28 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMultiBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
+import com.github.panpf.sketch.transform.BlurTransformation
+import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 
 class MultiTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationMultiBinding>() {
 
-    private val rotateViewModel by viewModels<RotateTransformationTestViewModel>()
-    private val roundedCornersViewModel by viewModels<RoundedCornersTransformationTestViewModel>()
+    private val viewModel by viewModels<MultiTransformationTestViewModel>()
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(
         binding: FragmentTestTransformationMultiBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.seekBar.apply {
-            max = 100
-            progress = roundedCornersViewModel.radiusData.value
+        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            updateImage(binding)
+            binding.degreesText.text = "$it"
+        }
+        binding.degreesSeekBar.apply {
+            max = 360
+            progress = viewModel.rotateData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -53,40 +60,88 @@ class MultiTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    roundedCornersViewModel.changeRadius(progress)
+                    viewModel.changeRotate(progress.coerceAtLeast(0))
                 }
             })
         }
 
-        binding.rotateButton.setOnClickListener {
-            rotateViewModel.changeRotate(rotateViewModel.rotateData.value + 45)
+        viewModel.blurRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            updateImage(binding)
+            binding.blurValueText.text = "$it"
+        }
+        binding.blurSeekBar.apply {
+            max = 100
+            progress = viewModel.blurRadiusData.value
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeBlurRadius(progress.coerceAtLeast(1))
+                }
+            })
         }
 
-        rotateViewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.myImage.displayImage(AssetImages.statics.first().uri) {
-                memoryCachePolicy(DISABLED)
-                resultCachePolicy(DISABLED)
-                addTransformations(
-                    RoundedCornersTransformation(roundedCornersViewModel.radiusData.value.toFloat()),
-                    RotateTransformation(rotateViewModel.rotateData.value)
-                )
-            }
-        }
-
-        roundedCornersViewModel.radiusData.repeatCollectWithLifecycle(
+        viewModel.roundedCornersRadiusData.repeatCollectWithLifecycle(
             viewLifecycleOwner,
             State.STARTED
         ) {
-            binding.myImage.displayImage(AssetImages.statics.first().uri) {
-                memoryCachePolicy(DISABLED)
-                resultCachePolicy(DISABLED)
-                addTransformations(
-                    RoundedCornersTransformation(roundedCornersViewModel.radiusData.value.toFloat()),
-                    RotateTransformation(rotateViewModel.rotateData.value)
-                )
-            }
+            updateImage(binding)
+            binding.roundedCornersRadiusText.text = "$it"
+        }
+        binding.roundedCornersSeekBar.apply {
+            max = 100
+            progress = viewModel.roundedCornersRadiusData.value
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
 
-            binding.radiusText.text = "${it}/${binding.seekBar.max}"
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeRoundedCornersRadius(progress)
+                }
+            })
+        }
+
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            updateImage(binding)
+        }
+        binding.redButton.isChecked = true
+        binding.noneButton1.setOnClickListener {
+            viewModel.changeMaskColor(null)
+        }
+        binding.redButton.setOnClickListener {
+            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
+        }
+        binding.greenButton.setOnClickListener {
+            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
+        }
+        binding.blueButton.setOnClickListener {
+            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
+        }
+    }
+
+    private fun updateImage(binding: FragmentTestTransformationMultiBinding) {
+        binding.myImage.displayImage(AssetImages.statics.first().uri) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
+            addTransformations(
+                BlurTransformation(radius = viewModel.blurRadiusData.value),
+                RoundedCornersTransformation(viewModel.roundedCornersRadiusData.value.toFloat()),
+                MaskTransformation(
+                    maskColor = viewModel.maskColorData.value ?: Color.TRANSPARENT
+                ),
+                RotateTransformation(viewModel.rotateData.value),
+            )
         }
     }
 }

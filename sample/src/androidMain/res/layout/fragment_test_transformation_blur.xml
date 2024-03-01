@@ -3,20 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     android:orientation="vertical">
-
-    <com.github.panpf.sketch.sample.ui.widget.MyImageView
-        android:id="@+id/myImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+            android:id="@+id/myImage1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:src="@mipmap/ic_launcher" />
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+            android:id="@+id/myImage2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            tools:src="@mipmap/ic_launcher" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="0dp"
@@ -35,8 +48,6 @@
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp" />
 
@@ -44,23 +55,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Translucent Mask: " />
+        android:text="Mask Color" />
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/noneButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="NONE" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/redButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
             android:text="RED" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
@@ -68,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
             android:text="GREEN" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
@@ -76,15 +91,43 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
             android:text="BLUE" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Background Color" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/noneButton"
+            android:id="@+id/noneButton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="4dp"
             android:text="NONE" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/blackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="4dp"
+            android:text="BLACK" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/whiteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="4dp"
+            android:text="WHITE" />
     </RadioGroup>
 </LinearLayout>

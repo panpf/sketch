@@ -27,6 +27,8 @@ class BlurTransformationTestViewModel(application1: Application) :
     val radiusData: StateFlow<Int> = _radiusData
     private val _maskColorData = MutableStateFlow<Int?>(null)
     val maskColorData: StateFlow<Int?> = _maskColorData
+    private val _backgroundColorData = MutableStateFlow<Int?>(null)
+    val backgroundColorData: StateFlow<Int?> = _backgroundColorData
 
     fun changeRadius(radius: Int) {
         _radiusData.value = radius
@@ -34,5 +36,9 @@ class BlurTransformationTestViewModel(application1: Application) :
 
     fun changeMaskColor(color: Int?) {
         _maskColorData.value = color
+    }
+
+    fun changeBackgroundColor(color: Int?) {
+        _backgroundColorData.value = color
     }
 }

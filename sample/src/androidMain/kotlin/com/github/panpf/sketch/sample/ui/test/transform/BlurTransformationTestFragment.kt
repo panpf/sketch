@@ -39,12 +39,9 @@ class BlurTransformationTestFragment :
         savedInstanceState: Bundle?
     ) {
         viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            update(binding, it, viewModel.maskColorData.value)
-
-            binding.valueText.text =
-                "%d/%d".format(it, binding.seekBar.max)
+            updateImage(binding = binding)
+            binding.valueText.text = "$it"
         }
-
         binding.seekBar.apply {
             max = 100
             progress = viewModel.radiusData.value
@@ -62,38 +59,65 @@ class BlurTransformationTestFragment :
                 }
             })
         }
-        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            update(binding, viewModel.radiusData.value, it)
-        }
 
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            updateImage(binding = binding)
+        }
+        binding.noneButton1.isChecked = true
+        binding.noneButton1.setOnClickListener {
+            viewModel.changeMaskColor(null)
+        }
         binding.redButton.setOnClickListener {
             viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
         }
-
         binding.greenButton.setOnClickListener {
             viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
         }
-
         binding.blueButton.setOnClickListener {
             viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
         }
 
-        binding.noneButton.setOnClickListener {
-            viewModel.changeMaskColor(null)
+        viewModel.backgroundColorData
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                updateImage(binding = binding)
+            }
+        binding.noneButton2.isChecked = true
+        binding.noneButton2.setOnClickListener {
+            viewModel.changeBackgroundColor(null)
         }
-
-        binding.noneButton.isChecked = true
+        binding.blackButton.setOnClickListener {
+            viewModel.changeBackgroundColor(Color.BLACK)
+        }
+        binding.whiteButton.setOnClickListener {
+            viewModel.changeBackgroundColor(Color.WHITE)
+        }
     }
 
-    private fun update(
-        binding: FragmentTestTransformationBlurBinding,
-        radius: Int,
-        maskColor: Int?
-    ) {
-        binding.myImage.displayImage(AssetImages.statics.first().uri) {
+    private fun updateImage(binding: FragmentTestTransformationBlurBinding) {
+        val radius = viewModel.radiusData.value
+        val maskColor = viewModel.maskColorData.value
+        val backgroundColor = viewModel.backgroundColorData.value
+
+        binding.myImage1.displayImage(AssetImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            addTransformations(BlurTransformation(radius, maskColor = maskColor))
+            addTransformations(
+                BlurTransformation(
+                    radius = radius,
+                    maskColor = maskColor,
+                    hasAlphaBitmapBgColor = backgroundColor
+                )
+            )
+        }
+
+        binding.myImage2.displayImage(AssetImages.png.uri) {
+            addTransformations(
+                BlurTransformation(
+                    radius = radius,
+                    maskColor = maskColor,
+                    hasAlphaBitmapBgColor = backgroundColor
+                )
+            )
         }
     }
 }

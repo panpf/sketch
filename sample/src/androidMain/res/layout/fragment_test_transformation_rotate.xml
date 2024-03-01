@@ -2,20 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <com.github.panpf.sketch.sample.ui.widget.MyImageView
         android:id="@+id/myImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        tools:src="@mipmap/ic_launcher"/>
 
-    <Button
-        android:id="@+id/rotateButton"
-        android:layout_width="140dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp"
-        android:text="@string/button_rotate_45" />
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rotate Degrees" />
+
+        <TextView
+            android:id="@+id/degreesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="34" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/degreesSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
 </LinearLayout>

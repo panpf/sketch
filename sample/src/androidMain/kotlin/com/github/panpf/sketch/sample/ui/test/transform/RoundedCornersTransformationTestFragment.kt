@@ -45,7 +45,7 @@ class RoundedCornersTransformationTestFragment :
                 addTransformations(RoundedCornersTransformation(it.toFloat()))
             }
 
-            binding.radiusText.text = "${it}/${binding.seekBar.max}"
+            binding.radiusText.text = "$it"
         }
 
         binding.seekBar.apply {

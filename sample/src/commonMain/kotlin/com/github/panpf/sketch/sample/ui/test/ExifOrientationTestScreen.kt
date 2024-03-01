@@ -30,6 +30,7 @@ class ExifOrientationTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "ExifOrientationTest") {
             val exifImages = AssetImages.clockExifs
+//            val exifImages = listOf(AssetImages.clockExifRotate90)
             val pagerState = rememberPagerState(0) { exifImages.size }
             val coroutineScope = rememberCoroutineScope()
             Column(Modifier.fillMaxWidth()) {
@@ -52,9 +53,7 @@ class ExifOrientationTestScreen : BaseScreen() {
                     }
                 }
                 HorizontalPager(state = pagerState) {
-                    exifImages.forEach {
-                        ExifOrientationTest(it)
-                    }
+                    ExifOrientationTest(exifImages[it])
                 }
             }
         }
@@ -70,7 +69,6 @@ class ExifOrientationTestScreen : BaseScreen() {
             )
             AsyncImage(
                 request = ImageRequest(LocalPlatformContext.current, image.uri) {
-                    // TODO invalid
                     ignoreExifOrientation(true)
                 },
                 contentDescription = "Image",

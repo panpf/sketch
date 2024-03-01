@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.os.Bundle
+import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -23,6 +24,7 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRotateBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.preview.EmptyDrawableProgressPainter.progress
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
 
@@ -35,16 +37,32 @@ class RotateTransformationTestFragment :
         binding: FragmentTestTransformationRotateBinding,
         savedInstanceState: Bundle?
     ) {
-        binding.rotateButton.setOnClickListener {
-            viewModel.changeRotate(viewModel.rotateData.value + 45)
-        }
-
         viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
             binding.myImage.displayImage(AssetImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(it))
             }
+
+            binding.degreesText.text = "$it"
+        }
+
+        binding.degreesSeekBar.apply {
+            max = 360
+            progress = viewModel.rotateData.value
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onProgressChanged(
+                    seekBar: SeekBar, progress: Int, fromUser: Boolean
+                ) {
+                    viewModel.changeRotate(progress.coerceAtLeast(0))
+                }
+            })
         }
     }
 }
