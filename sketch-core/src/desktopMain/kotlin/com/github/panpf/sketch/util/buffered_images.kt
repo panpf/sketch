@@ -4,7 +4,13 @@ import com.github.panpf.sketch.resize.internal.ResizeMapping
 import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.Rectangle
+import java.awt.RenderingHints
+import java.awt.Transparency
 import java.awt.geom.AffineTransform
+import java.awt.geom.Area
+import java.awt.geom.Rectangle2D
+import java.awt.geom.RoundRectangle2D
 import java.awt.image.BufferedImage
 
 
@@ -207,67 +213,85 @@ fun BufferedImage.getPixels(region: Rect? = null): IntArray {
     return pixels
 }
 
-//fun BufferedImage.roundedCornered(cornerRadius: Int): BufferedImage {
-//    val bi1 = this
-//    // 根据需要是否使用 BufferedImage.TYPE_INT_ARGB
-//    var image = BufferedImage(
-//        bi1.width, bi1.height,
-//        BufferedImage.TYPE_INT_ARGB
-//    )
-//    val shape = Double(
-//        0.0, 0.0, bi1.width.toDouble(), bi1
-//            .height.toDouble()
-//    )
-//    var g2 = image.createGraphics()
-//    image = g2.deviceConfiguration.createCompatibleImage(
-//        bi1.width,
-//        bi1.height,
-//        Transparency.TRANSLUCENT
-//    )
-//    g2 = image.createGraphics()
-//    g2.composite = AlphaComposite.Clear
-//    g2.fill(Rectangle(image.width, image.height))
-//    g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC, 1.0f)
-//    g2.clip = shape
-//    // 使用 setRenderingHint 设置抗锯齿
-//    g2 = image.createGraphics()
-//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-//    g2.fillRoundRect(0, 0, bi1.width, bi1.height, cornerRadius, cornerRadius)
-//    g2.composite = AlphaComposite.SrcIn
-//    g2.drawImage(bi1, 0, 0, bi1.width, bi1.height, null)
-//    g2.dispose()
-//    return image
-//}
-
-//fun BufferedImage.roundedCornered(cornerRadii: FloatArray): BufferedImage {
-//    require(cornerRadii.size == 8) { "Must provide 8 corner radii" }
-//
-//    val bi1 = this
-//    var image = BufferedImage(
-//        bi1.width, bi1.height,
-//        BufferedImage.TYPE_INT_ARGB
-//    )
-//    var g2 = image.createGraphics()
-//    image = g2.deviceConfiguration.createCompatibleImage(
-//        bi1.width,
-//        bi1.height,
-//        Transparency.TRANSLUCENT
-//    )
-//    g2 = image.createGraphics()
-//    g2.composite = AlphaComposite.Clear
-//    g2.fill(Rectangle(image.width, image.height))
-//    g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC, 1.0f)
-//
-//    val shape = Area()
-//    shape.add(Area(RoundRectangle2D.Double(0.0, 0.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[0].toDouble(), cornerRadii[1].toDouble())))
-//    shape.add(Area(RoundRectangle2D.Double(bi1.width / 2.0, 0.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[2].toDouble(), cornerRadii[3].toDouble())))
-//    shape.add(Area(RoundRectangle2D.Double(0.0, bi1.height / 2.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[4].toDouble(), cornerRadii[5].toDouble())))
-//    shape.add(Area(RoundRectangle2D.Double(bi1.width / 2.0, bi1.height / 2.0, bi1.width / 2.0, bi1.height / 2.0, cornerRadii[6].toDouble(), cornerRadii[7].toDouble())))
-//
-//    g2.clip = shape
-//    g2 = image.createGraphics()
-//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-//    g2.drawImage(bi1, 0, 0, bi1.width, bi1.height, null)
-//    g2.dispose()
-//    return image
-//}
+fun BufferedImage.roundedCornered(cornerRadii: FloatArray): BufferedImage {
+    val sourceImage = this
+    var newImage = BufferedImage(
+        /* width = */ sourceImage.width,
+        /* height = */ sourceImage.height,
+        /* imageType = */ BufferedImage.TYPE_INT_ARGB
+    )
+    val shape = Rectangle2D.Double(
+        /* x = */ 0.0,
+        /* y = */ 0.0,
+        /* w = */ sourceImage.width.toDouble(),
+        /* h = */ sourceImage.height.toDouble()
+    )
+    var graphics = newImage.createGraphics()
+    newImage = graphics.deviceConfiguration.createCompatibleImage(
+        /* width = */ sourceImage.width,
+        /* height = */ sourceImage.height,
+        /* transparency = */ Transparency.TRANSLUCENT
+    )
+    graphics = newImage.createGraphics()
+    graphics.composite = AlphaComposite.Clear
+    graphics.fill(Rectangle(newImage.width, newImage.height))
+    graphics.composite = AlphaComposite.getInstance(AlphaComposite.SRC, 1.0f)
+    graphics.clip = shape
+    graphics = newImage.createGraphics()
+    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+    val roundedCornersShape = Area().apply {
+        add(
+            Area(
+                RoundRectangle2D.Double(
+                    /* x = */ 0.0,
+                    /* y = */ 0.0,
+                    /* w = */ sourceImage.width * 0.75,
+                    /* h = */ sourceImage.height * 0.75,
+                    /* arcw = */ cornerRadii[0].toDouble(),
+                    /* arch = */ cornerRadii[1].toDouble()
+                )
+            )
+        )
+        add(
+            Area(
+                RoundRectangle2D.Double(
+                    /* x = */ sourceImage.width * 0.25,
+                    /* y = */ 0.0,
+                    /* w = */ sourceImage.width * 0.75,
+                    /* h = */ sourceImage.height * 0.75,
+                    /* arcw = */ cornerRadii[2].toDouble(),
+                    /* arch = */ cornerRadii[3].toDouble()
+                )
+            )
+        )
+        add(
+            Area(
+                RoundRectangle2D.Double(
+                    /* x = */ sourceImage.width * 0.25,
+                    /* y = */ sourceImage.height * 0.25,
+                    /* w = */ sourceImage.width * 0.75,
+                    /* h = */ sourceImage.height * 0.75,
+                    /* arcw = */ cornerRadii[4].toDouble(),
+                    /* arch = */ cornerRadii[5].toDouble()
+                )
+            )
+        )
+        add(
+            Area(
+                RoundRectangle2D.Double(
+                    /* x = */ 0.0,
+                    /* y = */ sourceImage.height * 0.25,
+                    /* w = */ sourceImage.width * 0.75,
+                    /* h = */ sourceImage.height * 0.75,
+                    /* arcw = */ cornerRadii[6].toDouble(),
+                    /* arch = */ cornerRadii[7].toDouble()
+                )
+            )
+        )
+    }
+    graphics.fill(roundedCornersShape)
+    graphics.composite = AlphaComposite.SrcIn
+    graphics.drawImage(sourceImage, 0, 0, sourceImage.width, sourceImage.height, null)
+    graphics.dispose()
+    return newImage
+}
