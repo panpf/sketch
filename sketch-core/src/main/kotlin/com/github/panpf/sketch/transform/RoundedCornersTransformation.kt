@@ -40,7 +40,7 @@ import com.github.panpf.sketch.util.safeConfig
  * If you're using Jetpack Compose, use `Modifier.clip(RoundedCornerShape(radius))` instead of this
  * transformation as it's more efficient.
  *
- * @param radiusArray Eight radii from all four corners.
+ * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
  */
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
@@ -59,8 +59,8 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         floatArrayOf(
             topLeft, topLeft,
             topRight, topRight,
+            bottomRight, bottomRight,
             bottomLeft, bottomLeft,
-            bottomRight, bottomRight
         )
     )
 

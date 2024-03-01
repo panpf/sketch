@@ -10,6 +10,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   dstSize
 * fix: Fixed a bug where HurlStack made an error when encountering no Content-Length field in the
   response, causing image loading to fail. [#193](https://github.com/panpf/sketch/issues/193)
+* fix: Fixed the bug that the bottomLeft and bottomRight parameters of the (Float, Float, Float,
+  Float) constructor of RoundCornersTransformation are in the wrong order
 
 #### sketch-compose:
 
