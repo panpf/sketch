@@ -128,6 +128,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+                    appSettingsService.currentPageIndex.value = position
                     when (position) {
                         0 -> binding.navigation.selectedItemId = R.id.local
                         1 -> binding.navigation.selectedItemId = R.id.pexels
@@ -136,6 +137,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                     }
                 }
             })
+            setCurrentItem(appSettingsService.currentPageIndex.value.coerceIn(0, fragmentMap.size - 1), false)
         }
 
         binding.navigation.setOnItemSelectedListener {

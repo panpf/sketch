@@ -21,6 +21,7 @@ import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
+import com.github.panpf.sketch.sample.util.intSettingsStateFlow
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -161,6 +162,9 @@ class AppSettings(val context: PlatformContext) {
     // Only for Android
     val composePage: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow("composePage", false, dataStore)
+    }
+    val currentPageIndex: SettingsStateFlow<Int> by lazy {
+        intSettingsStateFlow("currentPageIndex", 0, dataStore)
     }
 
     private val disabledMemoryCacheValue: CachePolicy

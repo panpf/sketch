@@ -14,8 +14,10 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -32,6 +34,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.data.paging.GiphyPhotoListPagingSource
 import com.github.panpf.sketch.sample.data.paging.LocalPhotoListPagingSource
 import com.github.panpf.sketch.sample.data.paging.PexelsPhotoListPagingSource
@@ -61,6 +64,7 @@ object PhotoListScreen : BaseScreen() {
             val navigator = LocalNavigator.current!!
             val coroutineScope = rememberCoroutineScope()
             val context = LocalPlatformContext.current
+            val appSettings = context.appSettings
             val sketch = SingletonSketch.get(context)
             val localPhotoListScreenModel = rememberScreenModel {
                 LocalPhotoListScreenModel(context, sketch)
@@ -98,7 +102,15 @@ object PhotoListScreen : BaseScreen() {
             }
 
             Column {
-                val pagerState = rememberPagerState { photoTabs.size }
+                val pagerState = rememberPagerState(
+                    initialPage = appSettings.currentPageIndex.value.coerceIn(0, photoTabs.size - 1),
+                    pageCount = { photoTabs.size }
+                )
+                LaunchedEffect(Unit) {
+                    snapshotFlow { pagerState.currentPage }.collect { index ->
+                        appSettings.currentPageIndex.value = index
+                    }
+                }
                 Box(modifier = Modifier.fillMaxSize().weight(1f)) {
                     HorizontalPager(
                         state = pagerState,

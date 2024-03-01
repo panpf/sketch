@@ -48,6 +48,14 @@ fun booleanSettingsStateFlow(
     adapter = BooleanDataStoreAdapter(dataStore, key, initialize)
 )
 
+fun intSettingsStateFlow(
+    key: String,
+    initialize: Int,
+    dataStore: DataStore<Preferences>,
+): SettingsStateFlow<Int> = DataStoreSettingsStateFlowImpl(
+    adapter = IntDataStoreAdapter(dataStore, key, initialize)
+)
+
 fun <E : Enum<E>> enumSettingsStateFlow(
     key: String,
     initialize: E,
