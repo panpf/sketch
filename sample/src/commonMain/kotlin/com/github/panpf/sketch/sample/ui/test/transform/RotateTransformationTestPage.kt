@@ -42,7 +42,7 @@ fun RotateTransformationTestPage() {
 
         Spacer(Modifier.size(16.dp))
         Row {
-            Text(text = "Rotate Degrees")
+            Text(text = "Rotate Angle")
             Spacer(modifier = Modifier.weight(1f))
             Text(text = rotateDegrees.toString())
         }
