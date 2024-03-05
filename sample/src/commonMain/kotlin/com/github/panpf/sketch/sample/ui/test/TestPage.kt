@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,10 +69,9 @@ fun TestGridItem(item: TestItem) {
         modifier = Modifier
             .widthIn(100.dp, 1000.dp)
             .heightIn(100.dp, 1000.dp)
-            .background(colorScheme.primaryContainer, shape = RoundedCornerShape(20.dp))
-            .clickable {
-                navigator.push(item.screen)
-            }
+            .clip(RoundedCornerShape(20.dp))
+            .background(colorScheme.primaryContainer)
+            .clickable { navigator.push(item.screen) }
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {

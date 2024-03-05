@@ -51,7 +51,7 @@ import com.github.panpf.sketch.sample.ui.dialog.Page.LIST
 import com.github.panpf.sketch.sample.ui.dialog.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.rememberIconExpandMorePainter
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
-import com.github.panpf.sketch.sample.util.letIf
+import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Level.DEBUG
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -434,7 +434,7 @@ fun SwitchSetting(settingItem: SwitchSettingItem) {
                 .fillMaxWidth()
                 .heightIn(min = menuItemHeight)
                 .clickable { settingItem.state.value = !settingItem.state.value }
-                .letIf(settingItem.onLongClick != null) {
+                .ifLet(settingItem.onLongClick != null) {
                     it.pointerInput(settingItem) {
                         detectTapGestures(onLongPress = { settingItem.onLongClick?.invoke() })
                     }

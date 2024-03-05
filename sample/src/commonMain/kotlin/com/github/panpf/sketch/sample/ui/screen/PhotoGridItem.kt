@@ -30,7 +30,7 @@ import com.github.panpf.sketch.sample.ui.rememberIconErrorBaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import com.github.panpf.sketch.sample.util.letIf
+import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 
 
@@ -73,13 +73,13 @@ fun PhotoGridItem(
                 }
             )
         }
-        .letIf(showDataFromLogo) {
+        .ifLet(showDataFromLogo) {
             it.dataFromLogo(imageState)
         }
-        .letIf(showMimeTypeLogo) {
+        .ifLet(showMimeTypeLogo) {
             it.mimeTypeLogo(imageState, mimeTypeLogoMap, margin = 4.dp)
         }
-        .letIf(showProgressIndicator) {
+        .ifLet(showProgressIndicator) {
             it.progressIndicator(imageState, progressPainter)
         }
 
