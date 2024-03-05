@@ -15,10 +15,15 @@
  */
 package com.github.panpf.sketch.transform
 
+import com.github.panpf.sketch.BufferedImageImage
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.circleCropped
 
-internal actual fun circleCropTransformation(image: Image,  scale: Scale): Image? {
-    // TODO Support multiple platforms
-    return null
+internal actual fun circleCropTransformation(image: Image, scale: Scale): Image? {
+    val inputBufferedImage = image.asOrNull<BufferedImageImage>()?.bufferedImage ?: return null
+    val outBufferedImage = inputBufferedImage.circleCropped(scale)
+    return outBufferedImage.asSketchImage()
 }

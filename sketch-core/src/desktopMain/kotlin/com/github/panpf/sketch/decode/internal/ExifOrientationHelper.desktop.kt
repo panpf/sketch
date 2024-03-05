@@ -20,10 +20,8 @@ import com.github.panpf.sketch.BufferedImageImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ExifOrientation
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.rotate
-import java.awt.Graphics2D
+import com.github.panpf.sketch.util.rotated
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import kotlin.math.abs
@@ -55,13 +53,13 @@ class DesktopExifOrientationHelper constructor(
                 bufferedImage
             }
             bufferedImage3 = if (isRotated) {
-                rotateImage(bufferedImage2, rotationDegrees)
+                bufferedImage2.rotated(rotationDegrees)
             } else {
                 bufferedImage2
             }
         } else {
             bufferedImage2 = if (isRotated) {
-                rotateImage(bufferedImage, -rotationDegrees)
+                bufferedImage.rotated(-rotationDegrees)
             } else {
                 bufferedImage
             }
@@ -96,29 +94,5 @@ class DesktopExifOrientationHelper constructor(
         graphics.drawImage(source, 0, 0, null)
         graphics.dispose()
         return flipped
-    }
-
-    private fun rotateImage(source: BufferedImage, degree: Int): BufferedImage {
-        val sourceSize = Size(source.width, source.height)
-        val newSize = sourceSize.rotate(degree)
-        val type = source.colorModel.transparency
-        val newImage = BufferedImage(newSize.width, newSize.height, type)
-        val graphics: Graphics2D = newImage.createGraphics()
-//        graphics.setRenderingHint(
-//            RenderingHints.KEY_INTERPOLATION,
-//            RenderingHints.VALUE_INTERPOLATION_BILINEAR
-//        )
-        graphics.translate(
-            /* tx = */ (newSize.width - sourceSize.width) / 2.0,
-            /* ty = */ (newSize.height - sourceSize.height) / 2.0
-        )
-        graphics.rotate(
-            /* theta = */ Math.toRadians(degree.toDouble()),
-            /* x = */ (sourceSize.width / 2).toDouble(),
-            /* y = */ (sourceSize.height / 2).toDouble()
-        )
-        graphics.drawImage(source, 0, 0, null)
-        graphics.dispose()
-        return newImage
     }
 }

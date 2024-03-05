@@ -42,8 +42,9 @@ class MaskTransformation(
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val outBitmap = maskTransformation(input, maskColor) ?: return null
-        return TransformResult(image = outBitmap, transformed = createMaskTransformed(maskColor))
+        val out = maskTransformation(input, maskColor) ?: return null
+        val transformed = createMaskTransformed(maskColor)
+        return TransformResult(image = out, transformed = transformed)
     }
 
     override fun equals(other: Any?): Boolean {

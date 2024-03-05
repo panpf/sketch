@@ -21,6 +21,7 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.backgrounded
 import com.github.panpf.sketch.util.blur
+import com.github.panpf.sketch.util.getMutableCopy
 import com.github.panpf.sketch.util.mask
 
 internal actual fun blurTransformation(
@@ -36,8 +37,7 @@ internal actual fun blurTransformation(
     } else {
         inputBitmap
     }
-    val blurImage = compatAlphaBitmap.blur(radius)
-    val maskImage = blurImage
-        .apply { if (maskColor != null) mask(maskColor) }
+    val blurImage = compatAlphaBitmap.getMutableCopy().apply { blur(radius) }
+    val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
     return maskImage.asSketchImage()
 }

@@ -24,9 +24,7 @@ internal actual fun blurTransformation(
         inputBitmap
     }
 
-    val blurImage = compatAlphaBitmap
-        .apply { blur(radius) }
-    val maskImage = blurImage
-        .apply { if (maskColor != null) mask(maskColor) }
+    val blurImage = compatAlphaBitmap.apply { blur(radius) }
+    val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
     return maskImage.asSketchImage()
 }

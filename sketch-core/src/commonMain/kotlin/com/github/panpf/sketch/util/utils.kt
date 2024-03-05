@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(ExperimentalContracts::class)
+
 package com.github.panpf.sketch.util
 
 import androidx.annotation.WorkerThread
@@ -25,12 +27,42 @@ import kotlinx.coroutines.runBlocking
 import okio.IOException
 import okio.Path
 import okio.buffer
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind.EXACTLY_ONCE
+import kotlin.contracts.contract
 import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.round
 
 
 internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
+
+/**
+ * Calls the specified function [block] with `this` value as its receiver and returns `this` value.
+ *
+ * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#apply).
+ */
+inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
+    contract {
+        callsInPlace(block, EXACTLY_ONCE)
+    }
+    if (value) {
+        block()
+    }
+    return this
+}
+
+/**
+ * Calls the specified function [block] with `this` value as its argument and returns its result.
+ *
+ * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#let).
+ */
+inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
+    contract {
+        callsInPlace(block, EXACTLY_ONCE)
+    }
+    return if (value) block(this) else this
+}
 
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null

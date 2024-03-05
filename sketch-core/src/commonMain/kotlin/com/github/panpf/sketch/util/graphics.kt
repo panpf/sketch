@@ -1,5 +1,9 @@
 package com.github.panpf.sketch.util
 
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+
 fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
     val wm = width - 1
     val hm = height - 1
@@ -197,4 +201,35 @@ fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
         }
         x++
     }
+}
+
+fun calculateRotatedSize(size: Size, angle: Double): Size {
+    val radians = Math.toRadians(angle)
+    val affineTransform: (Point2D) -> Point2D = { corner ->
+        val x = corner.x * kotlin.math.cos(radians) - corner.y * kotlin.math.sin(radians)
+        val y = corner.x * kotlin.math.sin(radians) + corner.y * kotlin.math.cos(radians)
+        Point2D(x, y)
+    }
+
+    var minX = Double.MAX_VALUE
+    var minY = Double.MAX_VALUE
+    var maxX = Double.MIN_VALUE
+    var maxY = Double.MIN_VALUE
+    val corners = arrayOf(
+        Point2D(0.0, 0.0),
+        Point2D(size.width.toDouble(), 0.0),
+        Point2D(0.0, size.height.toDouble()),
+        Point2D(size.width.toDouble(), size.height.toDouble())
+    )
+    for (corner in corners) {
+        val result = affineTransform(corner)
+        minX = min(minX, result.x)
+        minY = min(minY, result.y)
+        maxX = max(maxX, result.x)
+        maxY = max(maxY, result.y)
+    }
+
+    val newWidth = abs(maxX - minX).toInt()
+    val newHeight = abs(maxY - minY).toInt()
+    return Size(width = newWidth, height = newHeight)
 }

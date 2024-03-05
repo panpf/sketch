@@ -87,11 +87,9 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val outBitmap = roundedCornersTransformation(input, radiusArray) ?: return null
-        return TransformResult(
-            image = outBitmap,
-            transformed = createRoundedCornersTransformed(radiusArray)
-        )
+        val out = roundedCornersTransformation(input, radiusArray) ?: return null
+        val transformed = createRoundedCornersTransformed(radiusArray)
+        return TransformResult(image = out, transformed = transformed)
     }
 
     override fun toString(): String = key

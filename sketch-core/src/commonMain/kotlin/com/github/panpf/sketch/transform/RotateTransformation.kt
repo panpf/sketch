@@ -35,8 +35,9 @@ class RotateTransformation(val degrees: Int) : Transformation {
         requestContext: RequestContext,
         input: Image
     ): TransformResult? {
-        val outBitmap = rotateTransformation(input, degrees) ?: return null
-        return TransformResult(outBitmap, createRotateTransformed(degrees))
+        val out = rotateTransformation(input, degrees) ?: return null
+        val transformed = createRotateTransformed(degrees)
+        return TransformResult(image = out, transformed = transformed)
     }
 
     override fun toString(): String = key

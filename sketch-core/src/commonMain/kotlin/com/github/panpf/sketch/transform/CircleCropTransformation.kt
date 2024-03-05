@@ -48,8 +48,9 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
             imageSize = Size(input.width, input.height),
             targetSize = Size(newSize, newSize)
         )
-        val outBitmap = circleCropTransformation(input, scale) ?: return null
-        return TransformResult(outBitmap, createCircleCropTransformed(scale))
+        val out = circleCropTransformation(input, scale) ?: return null
+        val transformed = createCircleCropTransformed(scale)
+        return TransformResult(image = out, transformed = transformed)
     }
 
     override fun toString(): String = key

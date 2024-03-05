@@ -15,44 +15,14 @@
  */
 package com.github.panpf.sketch.transform
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.RectF
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.safeConfig
+import com.github.panpf.sketch.util.rotated
 
 internal actual fun rotateTransformation(image: Image, degrees: Int): Image? {
     val inputBitmap = image.asOrNull<BitmapImage>()?.bitmap ?: return null
-    val matrix = Matrix()
-    matrix.setRotate(degrees.toFloat())
-    val newRect = RectF(
-        /* left = */ 0f,
-        /* top = */ 0f,
-        /* right = */ inputBitmap.width.toFloat(),
-        /* bottom = */ inputBitmap.height.toFloat()
-    )
-    matrix.mapRect(newRect)
-    val newWidth = newRect.width().toInt()
-    val newHeight = newRect.height().toInt()
-
-    // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-    var config = inputBitmap.safeConfig
-    if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
-        config = Bitmap.Config.ARGB_8888
-    }
-    val result = Bitmap.createBitmap(
-        /* width = */ newWidth,
-        /* height = */ newHeight,
-        /* config = */ config,
-    )
-    matrix.postTranslate(-newRect.left, -newRect.top)
-    val canvas = Canvas(result)
-    val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
-    canvas.drawBitmap(inputBitmap, matrix, paint)
-    return result.asSketchImage()
+    val outBitmap = inputBitmap.rotated(degrees)
+    return outBitmap.asSketchImage()
 }

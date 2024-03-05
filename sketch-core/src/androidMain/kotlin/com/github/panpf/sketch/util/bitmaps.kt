@@ -19,11 +19,17 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.ResizeMapping
+import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import kotlin.math.ceil
 
 internal val Bitmap.isImmutable: Boolean
@@ -42,6 +48,10 @@ internal val Bitmap.safeConfig: Bitmap.Config
 @Suppress("USELESS_ELVIS")
 internal val Bitmap.configOrNull: Bitmap.Config?
     get() = config ?: null
+
+internal fun Bitmap.getMutableCopy(): Bitmap {
+    return if (isMutable) this else copy(safeConfig, true)
+}
 
 internal fun Bitmap.toInfoString(): String =
     "Bitmap(width=${width}, height=${height}, config=$configOrNull)"
@@ -153,18 +163,130 @@ internal fun Bitmap.mask(maskColor: Int) {
     canvas.restoreToCount(saveCount)
 }
 
-internal fun Bitmap.blur(radius: Int): Bitmap {
-    val inBitmap = this
-    val outBitmap: Bitmap = if (inBitmap.isMutable) {
-        inBitmap
-    } else {
-        inBitmap.copy(inBitmap.safeConfig, true)
+internal fun Bitmap.blur(radius: Int) {
+    require(isMutable) { "Bitmap is immutable" }
+    val imageWidth = this.width
+    val imageHeight = this.height
+    val pixels = IntArray(imageWidth * imageHeight)
+    this.getPixels(
+        /* pixels = */ pixels,
+        /* offset = */ 0,
+        /* stride = */ imageWidth,
+        /* x = */ 0,
+        /* y = */ 0,
+        /* width = */ imageWidth,
+        /* height = */ imageHeight
+    )
+    fastGaussianBlur(pixels = pixels, width = imageWidth, height = imageHeight, radius = radius)
+    this.setPixels(
+        /* pixels = */ pixels,
+        /* offset = */ 0,
+        /* stride = */ imageWidth,
+        /* x = */ 0,
+        /* y = */ 0,
+        /* width = */ imageWidth,
+        /* height = */ imageHeight
+    )
+}
+
+/**
+ * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
+ */
+internal fun Bitmap.roundedCornered(radiusArray: FloatArray): Bitmap {
+    val inputBitmap = this
+    val config = inputBitmap.safeConfig
+    val newBitmap = Bitmap.createBitmap(
+        /* width = */ inputBitmap.width,
+        /* height = */ inputBitmap.height,
+        /* config = */ config,
+    )
+    val paint = Paint().apply {
+        isAntiAlias = true
+        color = -0x10000
     }
-    val width = outBitmap.width
-    val height = outBitmap.height
-    val pixels = IntArray(width * height)
-    outBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-    fastGaussianBlur(pixels = pixels, width = width, height = height, radius = radius)
-    outBitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+    val canvas = Canvas(newBitmap).apply {
+        drawARGB(0, 0, 0, 0)
+    }
+    val path = Path().apply {
+        val rect = RectF(
+            /* left = */ 0f,
+            /* top = */ 0f,
+            /* right = */ inputBitmap.width.toFloat(),
+            /* bottom = */ inputBitmap.height.toFloat()
+        )
+        addRoundRect(rect, radiusArray, Path.Direction.CW)
+    }
+    canvas.drawPath(path, paint)
+
+    paint.xfermode = PorterDuffXfermode(SRC_IN)
+    val rect = Rect(0, 0, inputBitmap.width, inputBitmap.height)
+    canvas.drawBitmap(inputBitmap, rect, rect, paint)
+    return newBitmap
+}
+
+internal fun Bitmap.circleCropped(scale: Scale): Bitmap {
+    val inputBitmap = this
+    val newSize = Integer.min(inputBitmap.width, inputBitmap.height)
+    val resizeMapping = calculateResizeMapping(
+        inputBitmap.width, inputBitmap.height, newSize, newSize, SAME_ASPECT_RATIO, scale
+    )
+    val config = inputBitmap.safeConfig
+    val outBitmap = Bitmap.createBitmap(
+        /* width = */ resizeMapping.newWidth,
+        /* height = */ resizeMapping.newHeight,
+        /* config = */ config,
+    )
+    val paint = Paint().apply {
+        isAntiAlias = true
+        color = -0x10000
+    }
+    val canvas = Canvas(outBitmap).apply {
+        drawARGB(0, 0, 0, 0)
+    }
+    canvas.drawCircle(
+        /* cx = */ resizeMapping.newWidth / 2f,
+        /* cy = */ resizeMapping.newHeight / 2f,
+        /* radius = */ Integer.min(resizeMapping.newWidth, resizeMapping.newHeight) / 2f,
+        /* paint = */ paint
+    )
+    paint.xfermode = PorterDuffXfermode(SRC_IN)
+    canvas.drawBitmap(
+        /* bitmap = */ inputBitmap,
+        /* src = */ resizeMapping.srcRect.toAndroidRect(),
+        /* dst = */ resizeMapping.destRect.toAndroidRect(),
+        /* paint = */ paint
+    )
+    return outBitmap
+}
+
+internal fun Bitmap.rotated(angle: Int): Bitmap {
+    val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
+    val inputBitmap = this
+    val matrix = Matrix()
+    matrix.setRotate(finalAngle.toFloat())
+    val newRect = RectF(
+        /* left = */ 0f,
+        /* top = */ 0f,
+        /* right = */ inputBitmap.width.toFloat(),
+        /* bottom = */ inputBitmap.height.toFloat()
+    )
+    matrix.mapRect(newRect)
+    val newWidth = newRect.width().toInt()
+    val newHeight = newRect.height().toInt()
+
+    // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
+    var config = inputBitmap.safeConfig
+    if (finalAngle % 90 != 0 && config != Bitmap.Config.ARGB_8888) {
+        config = Bitmap.Config.ARGB_8888
+    }
+    val outBitmap = Bitmap.createBitmap(
+        /* width = */ newWidth,
+        /* height = */ newHeight,
+        /* config = */ config,
+    )
+    matrix.postTranslate(-newRect.left, -newRect.top)
+    val canvas = Canvas(outBitmap)
+    val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
+    canvas.drawBitmap(inputBitmap, matrix, paint)
     return outBitmap
 }
