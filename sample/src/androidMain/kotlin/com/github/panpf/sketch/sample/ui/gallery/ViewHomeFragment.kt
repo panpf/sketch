@@ -16,16 +16,22 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -44,19 +50,24 @@ import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.data.paging.GiphyPhotoListPagingSource
+import com.github.panpf.sketch.sample.data.paging.LocalPhotoListPagingSource
+import com.github.panpf.sketch.sample.data.paging.PexelsPhotoListPagingSource
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
-import com.github.panpf.sketch.sample.ui.dialog.Page
 import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.ui.model.PhotoDiffCallback
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
+import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
+import com.github.panpf.sketch.sketch
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.coroutines.Job
@@ -194,6 +205,45 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
         override val photoPagingFlow: Flow<PagingData<Photo>>
             get() = giphyPhotoListViewModel.pagingFlow
+    }
+
+    class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
+        val pagingFlow = Pager(
+            config = PagingConfig(
+                pageSize = 60,
+                enablePlaceholders = false,
+            ),
+            initialKey = 0,
+            pagingSourceFactory = {
+                LocalPhotoListPagingSource(application, application.sketch)
+            }
+        ).flow.cachedIn(viewModelScope)
+    }
+
+    class PexelsPhotoListViewModel(application: Application) : AndroidViewModel(application) {
+        val pagingFlow = Pager(
+            config = PagingConfig(
+                pageSize = 60,
+                enablePlaceholders = false,
+            ),
+            initialKey = 0,
+            pagingSourceFactory = {
+                PexelsPhotoListPagingSource()
+            }
+        ).flow.cachedIn(viewModelScope)
+    }
+
+    class GiphyPhotoListViewModel(application: Application) : AndroidViewModel(application) {
+        val pagingFlow = Pager(
+            config = PagingConfig(
+                pageSize = 40,
+                enablePlaceholders = false,
+            ),
+            initialKey = 0,
+            pagingSourceFactory = {
+                GiphyPhotoListPagingSource()
+            }
+        ).flow.cachedIn(viewModelScope)
     }
 
     abstract class BasePhotoListViewFragment :

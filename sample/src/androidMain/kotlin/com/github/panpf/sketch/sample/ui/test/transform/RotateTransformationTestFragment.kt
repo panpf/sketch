@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
+import android.app.Application
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
@@ -24,9 +25,12 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRotateBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.preview.EmptyDrawableProgressPainter.progress
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RotateTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationRotateBinding>() {
@@ -63,6 +67,17 @@ class RotateTransformationTestFragment :
                     viewModel.changeRotate(progress.coerceAtLeast(0))
                 }
             })
+        }
+    }
+
+    class RotateTransformationTestViewModel(application1: Application) :
+        LifecycleAndroidViewModel(application1) {
+
+        private val _rotateData = MutableStateFlow(45)
+        val rotateData: StateFlow<Int> = _rotateData
+
+        fun changeRotate(rotate: Int) {
+            _rotateData.value = rotate
         }
     }
 }

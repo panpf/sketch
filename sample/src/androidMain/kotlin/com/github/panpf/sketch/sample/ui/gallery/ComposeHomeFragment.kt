@@ -31,8 +31,8 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
 import com.github.panpf.sketch.sample.ui.base.BaseFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
-import com.github.panpf.sketch.sample.ui.screen.PhotoListScreen
-import com.github.panpf.sketch.sample.ui.screen.PhotoPagerScreen
+import com.github.panpf.sketch.sample.ui.gallery.PhotoListScreen
+import com.github.panpf.sketch.sample.ui.gallery.PhotoPagerScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 
 class ComposeHomeFragment : BaseFragment() {

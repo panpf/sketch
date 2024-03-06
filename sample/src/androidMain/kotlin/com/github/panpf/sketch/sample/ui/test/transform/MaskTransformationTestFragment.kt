@@ -15,7 +15,10 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
+import android.app.Application
+import android.graphics.Color
 import android.os.Bundle
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -23,8 +26,12 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMaskBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.MaskTransformationTestFragment.MaskTransformationTestViewModel.MaskColor.RED
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.MaskTransformation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MaskTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationMaskBinding>() {
@@ -57,6 +64,23 @@ class MaskTransformationTestFragment :
 
         binding.blueButton.setOnClickListener {
             viewModel.changeMaskColor(MaskTransformationTestViewModel.MaskColor.BLUE)
+        }
+    }
+
+    class MaskTransformationTestViewModel(application1: Application) :
+        LifecycleAndroidViewModel(application1) {
+
+        private val _maskColorData = MutableStateFlow(RED)
+        val maskColorData: StateFlow<MaskColor> = _maskColorData
+
+        fun changeMaskColor(maskColor: MaskColor) {
+            _maskColorData.value = maskColor
+        }
+
+        enum class MaskColor(val colorInt: Int) {
+            RED(ColorUtils.setAlphaComponent(Color.RED, 128)),
+            GREEN(ColorUtils.setAlphaComponent(Color.GREEN, 128)),
+            BLUE(ColorUtils.setAlphaComponent(Color.BLUE, 128))
         }
     }
 }

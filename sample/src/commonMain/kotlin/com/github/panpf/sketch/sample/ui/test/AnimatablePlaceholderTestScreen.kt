@@ -27,8 +27,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.rememberIconPlaceholderEclipseAnimatedPainter
-import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 
 class AnimatablePlaceholderTestScreen : BaseScreen() {
 

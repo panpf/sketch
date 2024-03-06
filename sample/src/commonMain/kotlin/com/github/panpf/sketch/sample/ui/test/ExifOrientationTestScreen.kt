@@ -19,8 +19,8 @@ import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import kotlinx.coroutines.launch
 
 class ExifOrientationTestScreen : BaseScreen() {

@@ -19,9 +19,9 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.data.paging.isIgnoreExifOrientation
 import com.github.panpf.sketch.sample.data.paging.readImageInfoOrNull
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.screen.PhotoGrid
-import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.gallery.PhotoGrid
+import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.util.Size
 
 class DisplayInsanityTestScreen : BaseScreen() {
@@ -31,9 +31,7 @@ class DisplayInsanityTestScreen : BaseScreen() {
         ToolbarScaffold(title = "DisplayInsanityTest") {
             val context = LocalPlatformContext.current
             val sketch = SingletonSketch.get(context)
-            val viewModel = rememberScreenModel {
-                InsanityTestViewModel(context, sketch)
-            }
+            val viewModel = rememberScreenModel { InsanityTestScreenModel(context, sketch) }
             PhotoGrid(
                 photoPagingFlow = viewModel.pagingFlow,
                 animatedPlaceholder = false,
@@ -44,7 +42,7 @@ class DisplayInsanityTestScreen : BaseScreen() {
     }
 }
 
-class InsanityTestViewModel(context: PlatformContext, sketch: Sketch) : ScreenModel {
+class InsanityTestScreenModel(context: PlatformContext, sketch: Sketch) : ScreenModel {
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 80,

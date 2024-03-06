@@ -17,12 +17,11 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
-import com.github.panpf.sketch.sample.ui.gallery.ErrorStateFragment
+import com.github.panpf.sketch.sample.ui.common.ErrorStateFragment
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
 class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {

@@ -15,8 +15,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.test.transform.BlurTransformationTestPage
 import com.github.panpf.sketch.sample.ui.test.transform.CircleTransformationTestPage
 import com.github.panpf.sketch.sample.ui.test.transform.MaskTransformationTestPage

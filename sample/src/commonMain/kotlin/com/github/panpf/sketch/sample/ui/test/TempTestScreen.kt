@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 
 class TempTestScreen : BaseScreen() {
 

@@ -33,8 +33,11 @@ import com.github.panpf.sketch.compose.painter.rememberIconPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
 import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
-import com.github.panpf.sketch.sample.ui.screen.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.screen.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel.DirectlyComplete
+import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel.Error
+import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel.Progress
 import com.github.panpf.sketch.sample.ui.util.rememberThemeMaskProgressPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeRingProgressPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
@@ -182,13 +185,13 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable {
                             viewModel.changeModel(
-                                ProgressIndicatorTestModel.Progress
+                                Progress
                             )
                         }
                     ) {
                         RadioButton(
-                            selected = model == ProgressIndicatorTestModel.Progress,
-                            onClick = { viewModel.changeModel(ProgressIndicatorTestModel.Progress) },
+                            selected = model == Progress,
+                            onClick = { viewModel.changeModel(Progress) },
                         )
                         Text(text = "Progress", fontSize = 14.sp)
                     }
@@ -197,13 +200,13 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable {
                             viewModel.changeModel(
-                                ProgressIndicatorTestModel.DirectlyComplete
+                                DirectlyComplete
                             )
                         }
                     ) {
                         RadioButton(
-                            selected = model == ProgressIndicatorTestModel.DirectlyComplete,
-                            onClick = { viewModel.changeModel(ProgressIndicatorTestModel.DirectlyComplete) },
+                            selected = model == DirectlyComplete,
+                            onClick = { viewModel.changeModel(DirectlyComplete) },
                         )
                         Text(text = "FastComplete", fontSize = 14.sp)
                     }
@@ -212,13 +215,13 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable {
                             viewModel.changeModel(
-                                ProgressIndicatorTestModel.Error
+                                Error
                             )
                         }
                     ) {
                         RadioButton(
-                            selected = model == ProgressIndicatorTestModel.Error,
-                            onClick = { viewModel.changeModel(ProgressIndicatorTestModel.Error) },
+                            selected = model == Error,
+                            onClick = { viewModel.changeModel(Error) },
                         )
                         Text(text = "Error", fontSize = 14.sp)
                     }

@@ -15,11 +15,13 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -27,8 +29,11 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationCircleCropBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class CircleCropTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationCircleCropBinding>() {
@@ -67,6 +72,17 @@ class CircleCropTransformationTestFragment :
 
         binding.fillButton.setOnClickListener {
             viewModel.changeScale(FILL)
+        }
+    }
+
+    class CircleCropTransformationTestViewModel(application1: Application) :
+        LifecycleAndroidViewModel(application1) {
+
+        private val _scaleData = MutableStateFlow(CENTER_CROP)
+        val scaleData: StateFlow<Scale> = _scaleData
+
+        fun changeScale(scale: Scale) {
+            _scaleData.value = scale
         }
     }
 }

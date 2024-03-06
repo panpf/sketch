@@ -70,9 +70,9 @@
 
     <!-- Test -->
     <fragment
-        android:id="@+id/imageFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.ImageFragment"
-        android:label="ImageFragment">
+        android:id="@+id/fetcherTestImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.FetcherTestImageFragment"
+        android:label="FetcherTestImageFragment">
         <argument
             android:name="url"
             android:defaultValue="@null"
@@ -80,8 +80,8 @@
             app:nullable="true" />
     </fragment>
     <action
-        android:id="@+id/action_imageFragment"
-        app:destination="@id/imageFragment"
+        android:id="@+id/action_fetcherTestImageFragment"
+        app:destination="@id/fetcherTestImageFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"
@@ -101,7 +101,7 @@
 
     <fragment
         android:id="@+id/localVideoListFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.video.LocalVideoListFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.LocalVideoListFragment"
         android:label="LocalVideoListFragment" />
     <action
         android:id="@+id/action_localVideoListFragment"
@@ -113,7 +113,7 @@
 
     <fragment
         android:id="@+id/fetcherTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.fetcher.FetcherTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.FetcherTestFragment"
         android:label="FetcherTestFragment" />
     <action
         android:id="@+id/action_fetcherTestFragment"
@@ -125,7 +125,7 @@
 
     <fragment
         android:id="@+id/decoderTestPagerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.decoder.DecoderTestPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.DecoderTestFragment"
         android:label="DecoderTestPagerFragment" />
     <action
         android:id="@+id/action_decoderTestPagerFragment"
@@ -137,7 +137,7 @@
 
     <fragment
         android:id="@+id/decoderTestImageFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.decoder.DecoderTestImageFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.DecoderTestImageFragment"
         android:label="DecoderTestImageFragment">
         <argument
             android:name="position"
@@ -154,7 +154,7 @@
 
     <fragment
         android:id="@+id/transformationTestPagerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.transform.TransformationTestPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.TransformationTestFragment"
         android:label="TransformationTestPagerFragment" />
     <action
         android:id="@+id/action_transformationTestPagerFragment"
@@ -166,7 +166,7 @@
 
     <fragment
         android:id="@+id/exifOrientationTestPagerFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.exif.ExifOrientationTestPagerFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.ExifOrientationTestFragment"
         android:label="ExifOrientationTestPagerFragment" />
     <action
         android:id="@+id/action_exifOrientationTestPagerFragment"
@@ -178,7 +178,7 @@
 
     <fragment
         android:id="@+id/insanityTestViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.insanity.InsanityTestViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.DisplayInsanityTestFragment"
         android:label="InsanityTestViewFragment" />
     <action
         android:id="@+id/action_insanityTestViewFragment"
@@ -190,7 +190,7 @@
 
     <fragment
         android:id="@+id/progressIndicatorTestViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.progress.ProgressIndicatorTestViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestFragment"
         android:label="ProgressIndicatorTestViewFragment" />
     <action
         android:id="@+id/action_progressIndicatorTestViewFragment"
@@ -202,7 +202,7 @@
 
     <fragment
         android:id="@+id/animatablePlaceholderTestViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.placeholder.AnimatablePlaceholderTestViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.AnimatablePlaceholderTestFragment"
         android:label="ProgressIndicatorTestViewFragment" />
     <action
         android:id="@+id/action_animatablePlaceholderTestViewFragment"
@@ -214,7 +214,7 @@
 
     <fragment
         android:id="@+id/shareElementTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.shareelement.ShareElementTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.ShareElementTestFragment"
         android:label="ProgressIndicatorTestFragment" />
     <action
         android:id="@+id/action_shareElementTestFragment"

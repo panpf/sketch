@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.sample.ui.test.transform
 
+import android.app.Application
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
@@ -26,8 +27,11 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationBlurBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class BlurTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationBlurBinding>() {
@@ -118,6 +122,29 @@ class BlurTransformationTestFragment :
                     hasAlphaBitmapBgColor = backgroundColor
                 )
             )
+        }
+    }
+
+    class BlurTransformationTestViewModel(application1: Application) :
+        LifecycleAndroidViewModel(application1) {
+
+        private val _radiusData = MutableStateFlow(30)
+        val radiusData: StateFlow<Int> = _radiusData
+        private val _maskColorData = MutableStateFlow<Int?>(null)
+        val maskColorData: StateFlow<Int?> = _maskColorData
+        private val _backgroundColorData = MutableStateFlow<Int?>(null)
+        val backgroundColorData: StateFlow<Int?> = _backgroundColorData
+
+        fun changeRadius(radius: Int) {
+            _radiusData.value = radius
+        }
+
+        fun changeMaskColor(color: Int?) {
+            _maskColorData.value = color
+        }
+
+        fun changeBackgroundColor(color: Int?) {
+            _backgroundColorData.value = color
         }
     }
 }
