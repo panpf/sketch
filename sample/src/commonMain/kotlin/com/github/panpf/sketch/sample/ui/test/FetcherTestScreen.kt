@@ -100,8 +100,7 @@ class FetcherTestScreen : BaseScreen() {
 
         init {
             screenModelScope.launch {
-                val buildFetcherTestItems = buildFetcherTestItems(context)
-                _testItems.value = buildFetcherTestItems
+                _testItems.value = buildFetcherTestItems(context)
             }
         }
     }
