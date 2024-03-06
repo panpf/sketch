@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
+import android.widget.ImageView.ScaleType.CENTER_INSIDE
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.navArgs
@@ -26,6 +27,7 @@ class FetcherTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
     override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         binding.myImage.apply {
+            scaleType = CENTER_INSIDE
             showDataFromLogo()
             showProgressIndicator(createThemeSectorProgressDrawable(requireContext()))
             displayImage(args.url) {
