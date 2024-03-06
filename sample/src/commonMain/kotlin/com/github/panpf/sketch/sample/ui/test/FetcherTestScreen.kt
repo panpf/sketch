@@ -21,8 +21,10 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.compose.ability.dataFromLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.painter.rememberSectorProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
@@ -74,17 +76,17 @@ class FetcherTestScreen : BaseScreen() {
                         val imageState = rememberAsyncImageState()
                         val progressPainter = rememberSectorProgressPainter()
                         AsyncImage(
-                            request = ImageRequest(
-                                LocalPlatformContext.current,
-                                items[it].imageUri
-                            ) {
-                                ignoreExifOrientation(false)
+                            request = ImageRequest(context, items[it].imageUri) {
+                                memoryCachePolicy(DISABLED)
+                                resultCachePolicy(DISABLED)
+                                downloadCachePolicy(DISABLED)
                             },
                             contentDescription = "Image",
                             contentScale = ContentScale.Inside,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .progressIndicator(imageState, progressPainter)
+                                .dataFromLogo(imageState)
+                                .progressIndicator(imageState, progressPainter) // TODO invalid
                         )
                     }
                 }

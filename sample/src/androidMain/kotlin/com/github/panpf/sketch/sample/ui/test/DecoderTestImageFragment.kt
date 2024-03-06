@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import android.os.Build.VERSION
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
@@ -26,19 +25,18 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
     override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         viewModel.data
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
-                val item = list[args.position]
-
-                if (item.minAPI == null || VERSION.SDK_INT >= item.minAPI) {
+                val testItem = list[args.position]
+                if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
                     binding.myImage.apply {
                         showDataFromLogo()
                         showProgressIndicator(createThemeSectorProgressDrawable(requireContext()))
-                        displayImage(item.imageUri) {
+                        displayImage(testItem.imageUri) {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)
                             downloadCachePolicy(DISABLED)
-                            if (item.imageDecoder != null) {
+                            if (testItem.imageDecoder != null) {
                                 components {
-                                    addDecoder(item.imageDecoder)
+                                    addDecoder(testItem.imageDecoder)
                                 }
                             }
                         }
@@ -63,7 +61,7 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                     }
                 } else {
                     binding.smallState.error {
-                        message("This format requires API ${item.minAPI} or higher")
+                        message("This format requires API ${testItem.minAPI} or higher")
                     }
                 }
             }

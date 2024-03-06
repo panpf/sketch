@@ -1,62 +1,130 @@
 package com.github.panpf.sketch.sample.ui.test
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.compose.AsyncImage
+import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.compose.ability.dataFromLogo
+import com.github.panpf.sketch.compose.ability.progressIndicator
+import com.github.panpf.sketch.compose.painter.rememberSectorProgressPainter
+import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class DecoderTestScreen : BaseScreen() {
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun DrawContent() {
         ToolbarScaffold(title = "DecoderTest") {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("In development...")
+            val context = LocalPlatformContext.current
+            val screenModel = rememberScreenModel { DecoderTestScreenModel(context) }
+            val items by screenModel.testItems.collectAsState()
+            if (items.isNotEmpty()) {
+                val pagerState = rememberPagerState(0) { items.size }
+                val coroutineScope = rememberCoroutineScope()
+                Column(Modifier.fillMaxWidth()) {
+                    ScrollableTabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        edgePadding = 20.dp
+                    ) {
+                        items.forEachIndexed { index, item ->
+                            Tab(
+                                selected = index == pagerState.currentPage,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.scrollToPage(index)
+                                    }
+                                },
+                                content = {
+                                    Text(
+                                        text = item.name,
+                                        modifier = Modifier.padding(
+                                            vertical = 8.dp,
+                                            horizontal = 10.dp
+                                        )
+                                    )
+                                }
+                            )
+                        }
+                    }
+                    HorizontalPager(state = pagerState) {
+                        val imageState = rememberAsyncImageState()
+                        val progressPainter = rememberSectorProgressPainter()
+                        val testItem = items[it]
+                        if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
+                            AsyncImage(
+                                request = ImageRequest(context, testItem.imageUri) {
+                                    memoryCachePolicy(DISABLED)
+                                    resultCachePolicy(DISABLED)
+                                    downloadCachePolicy(DISABLED)
+                                    if (testItem.imageDecoder != null) {
+                                        components {
+                                            addDecoder(testItem.imageDecoder)
+                                        }
+                                    }
+                                },
+                                contentDescription = "Image",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .dataFromLogo(imageState)
+                                    .progressIndicator(imageState, progressPainter)
+                            )
+                        } else {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text("This format requires API ${testItem.minAPI} or higher")
+                            }
+                        }
+                    }
+                }
             }
-//            val images = remember {
-//                listOf(
-//                    AssetImages.jpeg,
-//                    AssetImages.png,
-//                    AssetImages.bmp,
-//                    AssetImages.heic,
-//                    AssetImages.svg,
-//                    AssetImages.webp,
-//                    AssetImages.animGif,
-//                )
-//            }
-//            val pagerState = rememberPagerState(0) { images.size }
-//            val coroutineScope = rememberCoroutineScope()
-//            Column(Modifier.fillMaxWidth()) {
-//                ScrollableTabRow(selectedTabIndex = pagerState.currentPage, edgePadding = 20.dp) {
-//                    images.forEachIndexed { index, image ->
-//                        Tab(
-//                            selected = index == pagerState.currentPage,
-//                            onClick = {
-//                                coroutineScope.launch {
-//                                    pagerState.scrollToPage(index)
-//                                }
-//                            },
-//                            content = {
-//                                Text(
-//                                    text = image.name,
-//                                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp)
-//                                )
-//                            }
-//                        )
-//                    }
-//                }
-//                HorizontalPager(state = pagerState) {
-//                    AsyncImage(
-//                        request = ImageRequest(LocalPlatformContext.current, images[it].uri),
-//                        contentDescription = "Image",
-//                        modifier = Modifier.padding(16.dp).weight(1f).fillMaxWidth()
-//                    )
-//                }
-//            }
+        }
+    }
+
+    class DecoderTestScreenModel(val context: PlatformContext) : ScreenModel {
+        private val _testItems = MutableStateFlow<List<DecoderTestItem>>(emptyList())
+        val testItems: StateFlow<List<DecoderTestItem>> = _testItems
+
+        init {
+            screenModelScope.launch {
+                _testItems.value = buildDecoderTestItems(context)
+            }
         }
     }
 }
+
+class DecoderTestItem(
+    val name: String,
+    val imageUri: String,
+    val minAPI: Int? = null,
+    val currentApi: Int? = null,
+    val imageDecoder: Decoder.Factory? = null
+)
+
+expect suspend fun buildDecoderTestItems(context: PlatformContext): List<DecoderTestItem>

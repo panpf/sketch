@@ -10,6 +10,6 @@ actual suspend fun buildFetcherTestItems(context: PlatformContext): List<Fetcher
         add(FetcherTestItem(title = "HTTPS", AssetImages.HTTPS))
         add(FetcherTestItem(title = "RESOURCES", newResourceUri("sample.jpeg")))
         add(FetcherTestItem(title = "BASE64", AssetImages.BASE64_IMAGE))
-        // TODO File
+        // TODO File, more...
     }
 }
