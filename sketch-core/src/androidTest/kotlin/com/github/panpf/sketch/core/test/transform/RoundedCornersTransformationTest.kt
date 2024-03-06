@@ -64,7 +64,7 @@ class RoundedCornersTransformationTest {
             bottomRight = 4f
         ).apply {
             Assert.assertEquals(
-                floatArrayOf(1f, 1f, 2f, 2f, 3f, 3f, 4f, 4f).toList(),
+                floatArrayOf(1f, 1f, 2f, 2f, 4f, 4f, 3f, 3f).toList(),
                 radiusArray.toList()
             )
         }
