@@ -14,7 +14,7 @@
         android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment"
         android:label="PhotoPagerViewFragment">
         <argument
-            android:name="imageDetailJsonArray"
+            android:name="photos"
             app:argType="string"
             app:nullable="false" />
         <argument
@@ -74,7 +74,7 @@
         android:name="com.github.panpf.sketch.sample.ui.test.FetcherTestImageFragment"
         android:label="FetcherTestImageFragment">
         <argument
-            android:name="url"
+            android:name="imageUri"
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />

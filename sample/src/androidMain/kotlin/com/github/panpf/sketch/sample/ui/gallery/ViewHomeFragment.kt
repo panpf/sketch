@@ -59,7 +59,6 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoDiffCallback
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
@@ -148,7 +147,12 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                     }
                 }
             })
-            setCurrentItem(appSettingsService.currentPageIndex.value.coerceIn(0, fragmentMap.size - 1), false)
+            setCurrentItem(
+                appSettingsService.currentPageIndex.value.coerceIn(
+                    0,
+                    fragmentMap.size - 1
+                ), false
+            )
         }
 
         binding.navigation.setOnItemSelectedListener {
@@ -412,16 +416,10 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             val imageList = items.asSequence()
                 .filterNotNull()
                 .filterIndexed { index, _ -> index in startPosition..endPosition }
-                .map {
-                    ImageDetail(
-                        originUrl = it.originalUrl,
-                        mediumUrl = it.detailPreviewUrl,
-                        thumbnailUrl = it.listThumbnailUrl,
-                    )
-                }.toList()
+                .toList()
             findNavController().navigate(
                 NavMainDirections.actionPhotoPagerViewFragment(
-                    imageDetailJsonArray = Json.encodeToString(imageList),
+                    photos = Json.encodeToString(imageList),
                     totalCount = totalCount,
                     startPosition = startPosition,
                     initialPosition = position

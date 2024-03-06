@@ -37,7 +37,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -226,16 +226,16 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             .navigate(PhotoInfoDialogFragment.createNavDirections(displayResult))
     }
 
-    class ItemFactory : FragmentItemFactory<ImageDetail>(ImageDetail::class) {
+    class ItemFactory : FragmentItemFactory<Photo>(Photo::class) {
 
         override fun createFragment(
             bindingAdapterPosition: Int,
             absoluteAdapterPosition: Int,
-            data: ImageDetail
+            data: Photo
         ): Fragment = PhotoViewerViewFragment().apply {
             arguments = PhotoViewerViewFragmentArgs(
                 itemIndex = bindingAdapterPosition,
-                originImageUri = data.originUrl,
+                originImageUri = data.originalUrl,
                 previewImageUri = data.mediumUrl,
                 thumbnailImageUrl = data.thumbnailUrl,
             ).toBundle()

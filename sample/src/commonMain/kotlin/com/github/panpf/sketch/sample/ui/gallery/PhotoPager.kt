@@ -52,7 +52,7 @@ import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
@@ -64,12 +64,12 @@ import com.github.panpf.sketch.transform.BlurTransformation
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun PhotoPager(
-    imageList: List<ImageDetail>,
+    photos: List<Photo>,
     initialPosition: Int,
     startPosition: Int,
     totalCount: Int,
-    onShareClick: (ImageDetail) -> Unit,
-    onSaveClick: (ImageDetail) -> Unit,
+    onShareClick: (Photo) -> Unit,
+    onSaveClick: (Photo) -> Unit,
     onImageClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -78,11 +78,11 @@ fun PhotoPager(
 
     Box(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
-            imageList.size
+            photos.size
         }
 
-        val uriString = imageList[pagerState.currentPage].let {
-            it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl
+        val uriString = photos[pagerState.currentPage].let {
+            it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl
         }
         val colorScheme = MaterialTheme.colorScheme
         val buttonBgColorState = remember { mutableStateOf(colorScheme.primary) }
@@ -94,7 +94,7 @@ fun PhotoPager(
             modifier = Modifier.fillMaxSize()
         ) { index ->
             PhotoViewer(
-                imageDetail = imageList[index],
+                photo = photos[index],
                 buttonBgColorState = buttonBgColorState,
                 onClick = onImageClick,
                 onLongClick = { imageResult ->
@@ -104,10 +104,10 @@ fun PhotoPager(
                     photoInfoImageResult = imageResult
                 },
                 onShareClick = {
-                    onShareClick.invoke(imageList[pagerState.currentPage])
+                    onShareClick.invoke(photos[pagerState.currentPage])
                 },
                 onSaveClick = {
-                    onSaveClick.invoke(imageList[pagerState.currentPage])
+                    onSaveClick.invoke(photos[pagerState.currentPage])
                 },
             )
         }

@@ -35,7 +35,6 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.sample.util.versionCodeCompat
 import com.google.android.material.tabs.TabLayoutMediator
@@ -58,9 +57,7 @@ class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
 
         viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { data ->
             val imageFromData = data ?: return@repeatCollectWithLifecycle
-            val images = imageFromData.map { it.imageUri }.map { s ->
-                ImageDetail(s, s, s)
-            }
+            val images = imageFromData.map { it.imageUri }
 
             binding.pager.adapter = AssemblyFragmentStateAdapter(
                 fragment = this,

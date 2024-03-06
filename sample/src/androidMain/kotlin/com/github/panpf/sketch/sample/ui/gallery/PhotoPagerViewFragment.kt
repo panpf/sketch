@@ -40,7 +40,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
 import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewFragment.ItemFactory
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -53,7 +53,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
 
     private val args by navArgs<PhotoPagerViewFragmentArgs>()
     private val imageList by lazy {
-        Json.decodeFromString<List<ImageDetail>>(args.imageDetailJsonArray)
+        Json.decodeFromString<List<Photo>>(args.photos)
     }
     private val viewModel by viewModels<PhotoPagerViewModel>()
 
@@ -75,7 +75,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     val imageUrl =
-                        imageList[position].let { it.thumbnailUrl ?: it.mediumUrl ?: it.originUrl }
+                        imageList[position].let { it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl }
                     loadBgImage(binding, imageUrl)
                 }
             })

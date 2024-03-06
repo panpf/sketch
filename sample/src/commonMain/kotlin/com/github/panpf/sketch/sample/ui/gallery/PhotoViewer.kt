@@ -29,7 +29,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.rememberIconInfoBaseLinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconRotateRightPainter
 import com.github.panpf.sketch.sample.ui.rememberIconSavePainter
@@ -51,7 +51,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PhotoViewer(
-    imageDetail: ImageDetail,
+    photo: Photo,
     buttonBgColorState: MutableState<Color>,
     onClick: () -> Unit,
     onLongClick: (ImageResult) -> Unit,
@@ -95,9 +95,9 @@ fun PhotoViewer(
     val imageUrl by remember {
         derivedStateOf {
             if (showOriginImage) {
-                imageDetail.originUrl
+                photo.originalUrl
             } else {
-                imageDetail.mediumUrl ?: imageDetail.originUrl
+                photo.mediumUrl ?: photo.originalUrl
             }
         }
     }
@@ -113,7 +113,7 @@ fun PhotoViewer(
     val request = remember(imageUrl, viewerSettings) {
         ImageRequest(context, imageUrl) {
             merge(appSettingsService.buildViewerImageOptions())
-            placeholder(ThumbnailMemoryCacheStateImage(imageDetail.thumbnailUrl))
+            placeholder(ThumbnailMemoryCacheStateImage(photo.thumbnailUrl))
             crossfade(fadeStart = false)
         }
     }

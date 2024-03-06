@@ -39,7 +39,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             val coroutineScope = rememberCoroutineScope()
             val navigator = LocalNavigator.current!!
             PhotoPager(
-                imageList = params.imageList,
+                photos = params.photos,
                 totalCount = params.totalCount,
                 startPosition = params.startPosition,
                 initialPosition = params.initialPosition,

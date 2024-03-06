@@ -13,11 +13,9 @@ import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.model.ImageDetail
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.SketchUtils.Companion
 
 class FetcherTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
@@ -30,7 +28,7 @@ class FetcherTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
             scaleType = CENTER_INSIDE
             showDataFromLogo()
             showProgressIndicator(createThemeSectorProgressDrawable(requireContext()))
-            displayImage(args.url) {
+            displayImage(args.imageUri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)
@@ -53,16 +51,14 @@ class FetcherTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
         }
     }
 
-    class ItemFactory : FragmentItemFactory<ImageDetail>(ImageDetail::class) {
+    class ItemFactory : FragmentItemFactory<String>(String::class) {
 
         override fun createFragment(
             bindingAdapterPosition: Int,
             absoluteAdapterPosition: Int,
-            data: ImageDetail
+            data: String
         ): Fragment = FetcherTestImageFragment().apply {
-            arguments = FetcherTestImageFragmentArgs(
-                data.mediumUrl,
-            ).toBundle()
+            arguments = FetcherTestImageFragmentArgs(data).toBundle()
         }
     }
 }
