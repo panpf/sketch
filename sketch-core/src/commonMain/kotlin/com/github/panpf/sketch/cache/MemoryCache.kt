@@ -89,41 +89,17 @@ interface MemoryCache {
 
     data class Options(val maxSize: Long)
 
-    interface Factory {
+    fun interface Factory {
         fun create(context: PlatformContext): MemoryCache
     }
 
-    class FixedFactory(val memoryCache: MemoryCache) : Factory {
-        override fun create(context: PlatformContext): MemoryCache {
-            return memoryCache
-        }
-    }
-
-    class OptionsFactory(val options: Options) : Factory {
-        override fun create(context: PlatformContext): MemoryCache {
-            return LruMemoryCache(maxSize = options.maxSize)
-        }
-    }
-
-    class LazyFactory(
-        val initializer: (PlatformContext) -> MemoryCache
+    class OptionsFactory(
+        private val lazyOptions: (PlatformContext) -> Options
     ) : Factory {
         override fun create(context: PlatformContext): MemoryCache {
-            return initializer(context)
-        }
-    }
-
-    class LazyOptionsFactory(
-        val initializer: LazyOptions
-    ) : Factory {
-        override fun create(context: PlatformContext): MemoryCache {
-            val options = initializer.get(context)
+            val options = lazyOptions(context)
             return LruMemoryCache(maxSize = options.maxSize)
         }
-    }
-
-    fun interface LazyOptions{
-        fun get(context: PlatformContext): Options
     }
 
     class DefaultFactory : Factory {

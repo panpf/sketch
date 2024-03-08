@@ -67,6 +67,7 @@ metadataExtractor = "2.18.0"
 okio = "3.7.0"
 cashapp-paging = "3.3.0-alpha02-0.4.0"
 voyager = "1.0.0"
+harawata-appdirs = "1.2.2"
 
 [libraries]
 # plugins
@@ -168,6 +169,7 @@ okio={ module = "com.squareup.okio:okio", version.ref = "okio" }
 cashapp-paging-common={ module = "app.cash.paging:paging-common", version.ref = "cashapp-paging" }
 #cashapp-paging-runtime={ module = "app.cash.paging:paging-runtime", version.ref = "cashapp-paging" }
 cashapp-paging-compose-common={ module = "app.cash.paging:paging-compose-common", version.ref = "cashapp-paging" }
+harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
 
 ktor-client-core={ module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-logging={ module = "io.ktor:ktor-client-logging", version.ref = "ktor" }

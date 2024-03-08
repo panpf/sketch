@@ -5,15 +5,18 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.request.ImageOptions
-import okio.FileSystem
+import net.harawata.appdirs.AppDirsFactory
+import okio.Path.Companion.toOkioPath
+import java.io.File
 
 actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
-    // TODO This is a temporary solution. It is not recommended to use the temporary directory
-    return PreferenceDataStoreFactory.createWithPath {
-        FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(
-            "dice.preferences_pb"
-        )
-    }
+    val configDir = AppDirsFactory.getInstance().getUserConfigDir(
+        /* appName = */ "com.github.panpf.sketch4.sample",
+        /* appVersion = */ null,
+        /* appAuthor = */ null,
+    )!!.let { File(it) }
+    val preferencesPath = configDir.resolve("dice.preferences_pb").toOkioPath()
+    return PreferenceDataStoreFactory.createWithPath { preferencesPath }
 }
 
 actual fun isDebugMode(): Boolean = false

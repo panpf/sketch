@@ -125,99 +125,80 @@ interface DiskCache : Closeable {
         fun abort()
     }
 
-    data class Options(
-        val directory: Path? = null,
-        val maxSize: Long? = null,
-        val appVersion: Int? = null,
-    ) {
-        init {
-            require(maxSize == null || maxSize > 0) {
-                "maxSize must be greater than 0"
-            }
-            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
-                "The value range for 'version' is 1 to ${Short.MAX_VALUE}"
-            }
-        }
-    }
-
-    interface Factory {
-        fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache
-    }
-
-    class FixedFactory(val diskCache: DiskCache) : Factory {
-        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
-            return diskCache
-        }
-    }
-
-    class OptionsFactory(
-        val type: Type,
-        val options: Options
-    ) : Factory {
-        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
-            val defaultOptions = defaultDiskCacheOptions(context, type)
-            return LruDiskCache(
-                context = context,
-                fileSystem = fileSystem,
-                maxSize = options.maxSize ?: defaultOptions.maxSize!!,
-                directory = options.directory ?: defaultOptions.directory!!,
-                appVersion = options.appVersion ?: 1,
-                internalVersion = type.internalVersion,
-            )
-        }
-    }
-
-    class LazyFactory(
-        val initializer: (PlatformContext) -> DiskCache
-    ) : Factory {
-        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
-            return initializer(context)
-        }
-    }
-
-    class LazyOptionsFactory(
-        val type: Type,
-        val initializer: LazyOptions
-    ) : Factory {
-        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
-            val options = initializer.get(context)
-            val defaultOptions = defaultDiskCacheOptions(context, type)
-            return LruDiskCache(
-                context = context,
-                fileSystem = fileSystem,
-                maxSize = options.maxSize ?: defaultOptions.maxSize!!,
-                directory = options.directory ?: defaultOptions.directory!!,
-                appVersion = options.appVersion ?: 1,
-                internalVersion = type.internalVersion,
-            )
-        }
-    }
-
-    fun interface LazyOptions {
-        fun get(context: PlatformContext): Options
-    }
-
-    class DefaultFactory(val type: Type) : Factory {
-        override fun create(context: PlatformContext, fileSystem: FileSystem): DiskCache {
-            val defaultOptions = defaultDiskCacheOptions(context, type)
-            return LruDiskCache(
-                context = context,
-                fileSystem = fileSystem,
-                maxSize = defaultOptions.maxSize!!,
-                directory = defaultOptions.directory!!,
-                appVersion = 1,
-                internalVersion = type.internalVersion,
-            )
-        }
-    }
-
     enum class Type(val dirName: String, val internalVersion: Int) {
         DOWNLOAD("download", 1),
         RESULT("result", 1),
     }
+
+    data class Options(
+        val appCacheDirectory: Path? = null,
+        val downloadMaxSize: Long? = null,
+        val resultMaxSize: Long? = null,
+        val downloadAppVersion: Int? = null,
+        val resultAppVersion: Int? = null,
+    ) {
+        init {
+            require(
+                downloadMaxSize == null || downloadMaxSize > 0
+                        || resultMaxSize == null || resultMaxSize > 0
+            ) {
+                "downloadMaxSize or resultMaxSize must be greater than 0"
+            }
+            require(
+                downloadAppVersion == null || downloadAppVersion in 1.rangeTo(Short.MAX_VALUE)
+                        || resultAppVersion == null || resultAppVersion in 1.rangeTo(Short.MAX_VALUE)
+            ) {
+                "downloadAppVersion or resultAppVersion must be in 1 to ${Short.MAX_VALUE} range"
+            }
+        }
+    }
+
+    fun interface Factory {
+        fun create(context: PlatformContext, fileSystem: FileSystem, type: Type): DiskCache
+    }
+
+    class OptionsFactory(
+        private val lazyOptions: ((PlatformContext) -> Options?)? = null
+    ) : Factory {
+        override fun create(
+            context: PlatformContext,
+            fileSystem: FileSystem,
+            type: Type
+        ): DiskCache {
+            val userOptions = lazyOptions?.invoke(context)
+            val platformDefaultOptions = platformDefaultDiskCacheOptions(context)
+            requireNotNull(platformDefaultOptions.downloadMaxSize) {
+                "The platform must provide a default downloadMaxSize"
+            }
+            requireNotNull(platformDefaultOptions.resultMaxSize) {
+                "The platform must provide a default resultMaxSize"
+            }
+            val appCacheDirectory = requireNotNull(
+                userOptions?.appCacheDirectory ?: platformDefaultOptions.appCacheDirectory
+            ) {
+                "You must actively configure appCacheDirectory for DiskCache on this platform. Please refer to the documentation https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md"
+            }
+            val directory = appCacheDirectory.resolve(DEFAULT_DIR_NAME).resolve(type.dirName)
+            val maxSize = if (type == Type.DOWNLOAD) {
+                userOptions?.downloadMaxSize ?: platformDefaultOptions.downloadMaxSize
+            } else {
+                userOptions?.resultMaxSize ?: platformDefaultOptions.resultMaxSize
+            }
+            val appVersion = if (type == Type.DOWNLOAD) {
+                userOptions?.downloadAppVersion ?: platformDefaultOptions.downloadAppVersion ?: 1
+            } else {
+                userOptions?.resultAppVersion ?: platformDefaultOptions.resultAppVersion ?: 1
+            }
+            return LruDiskCache(
+                context = context,
+                fileSystem = fileSystem,
+                maxSize = maxSize,
+                directory = directory,
+                appVersion = appVersion,
+                internalVersion = type.internalVersion,
+            )
+        }
+    }
 }
 
-expect fun defaultDiskCacheOptions(
-    context: PlatformContext,
-    type: DiskCache.Type,
-): Options
+expect fun platformDefaultDiskCacheOptions(context: PlatformContext): Options

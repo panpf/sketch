@@ -116,6 +116,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":sketch-okhttp"))
+                implementation(libs.harawata.appdirs)
             }
         }
     }

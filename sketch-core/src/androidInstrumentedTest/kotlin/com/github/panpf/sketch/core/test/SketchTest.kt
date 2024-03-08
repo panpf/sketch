@@ -136,7 +136,7 @@ class SketchTest {
                     downloadCache
                 )
             }
-            downloadCache(
+            diskCache(
                 LruDiskCache.ForDownloadBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
                     .build()
             )

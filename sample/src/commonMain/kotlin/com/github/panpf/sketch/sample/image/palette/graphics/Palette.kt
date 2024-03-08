@@ -225,7 +225,6 @@ public class Palette internal constructor(
     }
 
     public fun generate() {
-        // TODO(b/141959297): Suppressed during upgrade to AGP 3.6.
         // We need to make sure that the scored targets are generated first. This is so that
         // inherited targets have something to inherit from
         targets.forEach { target ->
