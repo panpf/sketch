@@ -26,11 +26,12 @@ import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.platform.InspectorInfo
 import com.github.panpf.sketch.compose.AsyncImageState
-import com.github.panpf.sketch.compose.internal.ignoreFirst
 import com.github.panpf.sketch.compose.painter.ProgressPainter
 import com.github.panpf.sketch.request.LoadState
+import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.name
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
@@ -71,11 +72,15 @@ internal class ProgressIndicatorNode(
 ) : Modifier.Node(), DrawModifierNode, CompositionLocalConsumerModifierNode {
 
     private var lastProgressCollectJob: Job? = null
-    private var lastLoadStateCollectJob: Job? = null
 
     override fun onAttach() {
         super.onAttach()
-        againCollectProgress()
+        recollectProgress()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        lastProgressCollectJob?.cancel()
     }
 
     override fun ContentDrawScope.draw() {
@@ -101,34 +106,31 @@ internal class ProgressIndicatorNode(
         this.state = state
         this.progressPainter = progressPainter
         if (isAttached) {
-            againCollectProgress()
+            recollectProgress()
         }
         invalidateDraw()
     }
 
-    private fun againCollectProgress() {
+    private fun recollectProgress() {
         lastProgressCollectJob?.cancel()
         lastProgressCollectJob = coroutineScope.launch {
-            snapshotFlow { state.progress }.collect {
-                if (state.loadState is LoadState.Started || state.loadState is LoadState.Success) {
-                    progressPainter.progress = it?.decimalProgress ?: -1f
-                } else {
-                    progressPainter.progress = -1f
-                }
-            }
-        }
+            combine(
+                flows = listOf(
+                    snapshotFlow { state.loadState },
+                    snapshotFlow { state.progress },
+                ),
+                transform = { it[0] as? LoadState to it[1] as Progress? }
+            ).collect {
+                val (loadState, progress) = it
+                when (loadState) {
+                    is LoadState.Started -> {
+                        progressPainter.progress = progress?.decimalProgress ?: 0f
+                    }
 
-        lastLoadStateCollectJob?.cancel()
-        lastLoadStateCollectJob = coroutineScope.launch {
-            snapshotFlow { state.loadState }.ignoreFirst().collect {
-                when (it) {
-                    is LoadState.Started -> progressPainter.progress = 0f
                     is LoadState.Success -> progressPainter.progress = 1f
                     is LoadState.Error -> progressPainter.progress = -1f
                     is LoadState.Canceled -> progressPainter.progress = -1f
-                    else -> {
-                        progressPainter.progress = -1f
-                    }
+                    else -> progressPainter.progress = -1f
                 }
             }
         }

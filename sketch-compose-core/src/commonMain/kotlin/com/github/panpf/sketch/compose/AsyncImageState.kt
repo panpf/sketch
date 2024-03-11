@@ -261,9 +261,7 @@ class AsyncImageState internal constructor(
             this@AsyncImageState.loadState = LoadState.Canceled(request)
         }
 
-        override fun onUpdateProgress(
-            request: ImageRequest, progress: Progress
-        ) {
+        override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
             this@AsyncImageState.progress = progress
         }
 
