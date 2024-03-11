@@ -237,7 +237,7 @@ class AsyncImageState internal constructor(
 
     internal fun isRemembered(): Boolean = rememberedCount > 0
 
-    override fun toString(): String = "AsyncImageState@${Integer.toHexString(hashCode())}"
+    override fun toString(): String = "AsyncImageState@${hashCode().toString(16)}"
 
     private inner class AsyncImageListener : Listener, ProgressListener {
 
@@ -266,7 +266,7 @@ class AsyncImageState internal constructor(
         }
 
         override fun toString(): String {
-            return "AsyncImageListener@${Integer.toHexString(hashCode())}"
+            return "AsyncImageListener@${hashCode().toString(16)}"
         }
     }
 

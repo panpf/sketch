@@ -337,7 +337,7 @@ fun isSrcRectError(throwable: Throwable): Boolean =
         false
     }
 
-fun Bitmap.toLogString(): String = "Bitmap(${width}x${height},$configOrNull)@${toHexString()}"
+fun Bitmap.toLogString(): String = "Bitmap@${toHexString()}(${width}x${height},$configOrNull)"
 
 fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {

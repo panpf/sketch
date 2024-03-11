@@ -33,8 +33,8 @@ class BufferedImageCacheTileBitmap constructor(
     }
 
     internal fun BufferedImage.toLogString(): String {
-        return "BufferedImage(${width.toFloat()}x${height.toFloat()}," +
-                "${colorModel.colorSpace.typeName})@${hashCode().toString(16)}"
+        return "BufferedImage@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()}," +
+                "${colorModel.colorSpace.typeName})"
     }
 
     internal val ColorSpace.typeName: String

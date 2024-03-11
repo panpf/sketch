@@ -1,7 +1,6 @@
 package com.github.panpf.zoomimage.sketch
 
 import android.graphics.Bitmap
-import com.github.panpf.zoomimage.sketch.internal.toHexString
 import com.github.panpf.zoomimage.subsampling.AndroidCacheTileBitmap
 
 
@@ -31,6 +30,8 @@ class SketchTileBitmap constructor(
     }
 
     override fun toString(): String {
-        return "SketchTileBitmap(size=${width}x$height,config=${bitmap.config},@${bitmap.toHexString()})"
+        return "SketchTileBitmap(size=${width}x$height,config=${bitmap.config},bitmap=@${
+            bitmap.hashCode().toString(16)
+        })"
     }
 }

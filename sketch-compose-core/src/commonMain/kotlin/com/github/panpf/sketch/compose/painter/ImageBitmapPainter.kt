@@ -10,7 +10,7 @@ import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 fun ImageBitmap.asPainter(): Painter = ImageBitmapPainter(this)
 
 fun ImageBitmap.toLogString(): String =
-    "ImageBitmap(${width.toFloat()}x${height.toFloat()},$config)@${hashCode().toString(16)}"
+    "ImageBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
 
 class ImageBitmapPainter(val imageBitmap: ImageBitmap) : Painter(), SketchPainter {
 
