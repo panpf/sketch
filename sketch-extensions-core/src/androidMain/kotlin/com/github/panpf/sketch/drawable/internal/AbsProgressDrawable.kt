@@ -17,9 +17,9 @@ package com.github.panpf.sketch.drawable.internal
 
 import android.graphics.Canvas
 import androidx.annotation.FloatRange
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.internal.format
 import kotlin.time.TimeSource
@@ -80,11 +80,11 @@ abstract class AbsProgressDrawable(
 
     override fun draw(canvas: Canvas) {
         if (hidden || (hiddenWhenIndeterminate && progress == 0f)) return
-        val stepAnimationStartTimeMark = stepAnimationStartTimeMark ?: return
 
         val stepAnimationDone: Boolean
         val drawProgress: Float
         if (stepAnimationRunning) {
+            val stepAnimationStartTimeMark = stepAnimationStartTimeMark!!
             val elapsedTime = stepAnimationStartTimeMark.elapsedNow().inWholeMilliseconds
             val stepProgress = (elapsedTime / stepAnimationDuration.toDouble()).coerceIn(0.0, 1.0)
             stepAnimationDone = stepProgress >= 1.0

@@ -120,8 +120,7 @@ internal class ProgressIndicatorNode(
                     snapshotFlow { state.progress },
                 ),
                 transform = { it[0] as? LoadState to it[1] as Progress? }
-            ).collect {
-                val (loadState, progress) = it
+            ).collect { (loadState, progress) ->
                 when (loadState) {
                     is LoadState.Started -> {
                         progressPainter.progress = progress?.decimalProgress ?: 0f

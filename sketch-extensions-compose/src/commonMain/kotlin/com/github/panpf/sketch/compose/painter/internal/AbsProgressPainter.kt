@@ -4,9 +4,9 @@ import androidx.annotation.FloatRange
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
+import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.compose.internal.format
 import com.github.panpf.sketch.compose.painter.ProgressPainter
 import kotlin.time.TimeSource
@@ -32,6 +32,7 @@ abstract class AbsProgressPainter(
             val oldValue = field
             val newValue = value.coerceIn(-1f, 1f).format(1)
             field = newValue
+            println("ProgressIndicatorModifier. progress: $oldValue -> $newValue")
             if (newValue != oldValue) {
                 hidden = false
                 if (oldValue <= 0f && newValue == 1f && hiddenWhenCompleted) {
@@ -69,11 +70,11 @@ abstract class AbsProgressPainter(
 
     override fun DrawScope.onDraw() {
         if (hidden || (hiddenWhenIndeterminate && progress == 0f)) return
-        val stepAnimationStartTimeMark = stepAnimationStartTimeMark ?: return
 
         val stepAnimationDone: Boolean
         val drawProgress: Float
         if (stepAnimationRunning) {
+            val stepAnimationStartTimeMark = stepAnimationStartTimeMark!!
             val elapsedTime = stepAnimationStartTimeMark.elapsedNow().inWholeMilliseconds
             val stepProgress = (elapsedTime / stepAnimationDuration.toDouble()).coerceIn(0.0, 1.0)
             stepAnimationDone = stepProgress >= 1.0

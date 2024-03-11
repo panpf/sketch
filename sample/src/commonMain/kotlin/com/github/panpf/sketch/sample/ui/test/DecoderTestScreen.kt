@@ -27,12 +27,12 @@ import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.ability.dataFromLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.painter.rememberSectorProgressPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -76,7 +76,7 @@ class DecoderTestScreen : BaseScreen() {
                     }
                     HorizontalPager(state = pagerState) {
                         val imageState = rememberAsyncImageState()
-                        val progressPainter = rememberSectorProgressPainter()
+                        val progressPainter = rememberThemeSectorProgressPainter()
                         val testItem = items[it]
                         if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
                             AsyncImage(
@@ -91,6 +91,7 @@ class DecoderTestScreen : BaseScreen() {
                                     }
                                 },
                                 contentDescription = "Image",
+                                state = imageState,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .dataFromLogo(imageState)
