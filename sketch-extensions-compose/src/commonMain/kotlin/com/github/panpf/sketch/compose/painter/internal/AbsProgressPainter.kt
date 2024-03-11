@@ -32,7 +32,6 @@ abstract class AbsProgressPainter(
             val oldValue = field
             val newValue = value.coerceIn(-1f, 1f).format(1)
             field = newValue
-            println("ProgressIndicatorModifier. progress: $oldValue -> $newValue")
             if (newValue != oldValue) {
                 hidden = false
                 if (oldValue <= 0f && newValue == 1f && hiddenWhenCompleted) {
