@@ -52,9 +52,10 @@ class AnimatablePlaceholderTestFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
-                IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
-                    resColorBackground(R.color.placeholder_bg)
-                }
+                IconAnimatableStateImage(
+                    icon = R.drawable.ic_placeholder_eclipse_animated,
+                    background = R.color.placeholder_bg
+                )
             )
             components {
                 addDecodeInterceptor(DelayDecodeInterceptor(3000))
@@ -64,9 +65,10 @@ class AnimatablePlaceholderTestFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
-                IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
-                    resColorBackground(R.color.placeholder_bg)
-                }
+                IconAnimatableStateImage(
+                    icon = R.drawable.ic_placeholder_eclipse_animated,
+                    background = R.color.placeholder_bg
+                )
             )
             components {
                 addDecodeInterceptor(DelayDecodeInterceptor(3000))
@@ -76,9 +78,10 @@ class AnimatablePlaceholderTestFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
-                IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
-                    resColorBackground(R.color.placeholder_bg)
-                }
+                IconAnimatableStateImage(
+                    icon = R.drawable.ic_placeholder_eclipse_animated,
+                    background = R.color.placeholder_bg
+                )
             )
             components {
                 addDecodeInterceptor(DelayDecodeInterceptor(3000))

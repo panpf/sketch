@@ -10,14 +10,14 @@ import com.github.panpf.sketch.compose.painter.rememberIconPainter
 
 @Composable
 fun rememberIconPainterStateImage(
-    iconPath: String,
-    backgroundPath: String? = null,
+    icon: String,
+    background: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val iconPainter = rememberIconPainter(
-        iconPath = iconPath,
-        backgroundPath = backgroundPath,
+        icon = icon,
+        background = background,
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -26,13 +26,13 @@ fun rememberIconPainterStateImage(
 
 @Composable
 fun rememberIconPainterStateImage(
-    iconPath: String,
+    icon: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val iconPainter = rememberIconPainter(
-        iconPath = iconPath,
+        icon = icon,
         background = background,
         iconSize = iconSize,
         iconTint = iconTint
@@ -42,14 +42,14 @@ fun rememberIconPainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
-    iconPath: String,
-    backgroundPath: String? = null,
+    icon: String,
+    background: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val iconAnimatablePainter = rememberIconAnimatablePainter(
-        iconPath = iconPath,
-        backgroundPath = backgroundPath,
+        icon = icon,
+        background = background,
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -58,13 +58,13 @@ fun rememberIconAnimatablePainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
-    iconPath: String,
+    icon: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
     val iconAnimatablePainter = rememberIconAnimatablePainter(
-        iconPath = iconPath,
+        icon = icon,
         background = background,
         iconSize = iconSize,
         iconTint = iconTint

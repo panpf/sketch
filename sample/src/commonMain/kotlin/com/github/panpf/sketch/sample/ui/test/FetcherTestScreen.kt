@@ -87,7 +87,7 @@ class FetcherTestScreen : BaseScreen() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .dataFromLogo(imageState)
-                                .progressIndicator(imageState, progressPainter) // TODO invalid
+                                .progressIndicator(imageState, progressPainter)
                         )
                     }
                 }

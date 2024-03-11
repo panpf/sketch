@@ -24,17 +24,17 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
-import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.stateimage.IconAnimatableStateImage
 import com.github.panpf.sketch.stateimage.IconStateImage
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
-import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
@@ -82,26 +82,30 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
             updateImageOptions {
                 if (animatedPlaceholder) {
                     placeholder(
-                        IconAnimatableStateImage(R.drawable.ic_placeholder_eclipse_animated) {
-                            resColorBackground(R.color.placeholder_bg)
-                        }
+                        IconAnimatableStateImage(
+                            icon = R.drawable.ic_placeholder_eclipse_animated,
+                            background = R.color.placeholder_bg
+                        )
                     )
                 } else {
                     placeholder(
-                        IconStateImage(R.drawable.ic_image_outline) {
-                            resColorBackground(R.color.placeholder_bg)
-                        }
+                        IconStateImage(
+                            icon = R.drawable.ic_image_outline,
+                            background = R.color.placeholder_bg,
+                        )
                     )
                 }
                 error(
-                    IconStateImage(R.drawable.ic_error_baseline) {
-                        resColorBackground(R.color.placeholder_bg)
-                    }
+                    defaultStateImage = IconStateImage(
+                        icon = R.drawable.ic_error_baseline,
+                        background = R.color.placeholder_bg
+                    )
                 ) {
                     saveCellularTrafficError(
-                        IconStateImage(R.drawable.ic_signal_cellular) {
-                            resColorBackground(R.color.placeholder_bg)
-                        }
+                        IconStateImage(
+                            icon = R.drawable.ic_signal_cellular,
+                            background = R.color.placeholder_bg
+                        )
                     )
                 }
                 crossfade()

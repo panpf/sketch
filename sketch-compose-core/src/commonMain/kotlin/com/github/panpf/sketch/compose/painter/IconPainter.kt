@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
 
+
 @Composable
 fun rememberIconPainter(
     icon: Painter,
@@ -38,7 +39,12 @@ fun rememberIconPainter(
     iconTint: Color? = null,
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
-        IconPainter(icon, background, iconSize, iconTint)
+        IconPainter(
+            icon = icon,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 
@@ -51,7 +57,12 @@ fun rememberIconPainter(
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
-        IconPainter(icon, backgroundPainter, iconSize, iconTint)
+        IconPainter(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 
@@ -63,7 +74,12 @@ fun rememberIconAnimatablePainter(
     iconTint: Color? = null,
 ): IconAnimatablePainter {
     return remember(icon, background, iconSize, iconTint) {
-        IconAnimatablePainter(icon, background, iconSize, iconTint)
+        IconAnimatablePainter(
+            icon = icon,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 
@@ -76,7 +92,12 @@ fun rememberIconAnimatablePainter(
 ): IconAnimatablePainter {
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
-        IconAnimatablePainter(icon, backgroundPainter, iconSize, iconTint)
+        IconAnimatablePainter(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 

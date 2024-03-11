@@ -10,56 +10,76 @@ import androidx.compose.ui.res.painterResource
 
 @Composable
 fun rememberIconPainter(
-    iconPath: String,
-    backgroundPath: String? = null,
+    icon: String,
+    background: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val icon = painterResource(iconPath)
-    val background = backgroundPath?.let { painterResource(it) }
-    return remember(iconPath, backgroundPath, iconSize, iconTint) {
-        IconPainter(icon, background, iconSize, iconTint)
+    val iconPainter = painterResource(icon)
+    val backgroundPainter = background?.let { painterResource(it) }
+    return remember(icon, background, iconSize, iconTint) {
+        IconPainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 
 @Composable
 fun rememberIconPainter(
-    iconPath: String,
+    icon: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val icon = painterResource(iconPath)
-    return remember(iconPath, background, iconSize, iconTint) {
+    val iconPainter = painterResource(icon)
+    return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
-        IconPainter(icon, backgroundPainter, iconSize, iconTint)
+        IconPainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 
 @Composable
 fun rememberIconAnimatablePainter(
-    iconPath: String,
-    backgroundPath: String? = null,
+    icon: String,
+    background: String? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val icon = painterResource(iconPath)
-    val background = backgroundPath?.let { painterResource(it) }
-    return remember(iconPath, backgroundPath, iconSize, iconTint) {
-        IconAnimatablePainter(icon, background, iconSize, iconTint)
+    val iconPainter = painterResource(icon)
+    val backgroundPainter = background?.let { painterResource(it) }
+    return remember(icon, background, iconSize, iconTint) {
+        IconAnimatablePainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }
 
 @Composable
 fun rememberIconAnimatablePainter(
-    iconPath: String,
+    icon: String,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val icon = painterResource(iconPath)
-    return remember(iconPath, background, iconSize, iconTint) {
+    val iconPainter = painterResource(icon)
+    return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
-        IconAnimatablePainter(icon, backgroundPainter, iconSize, iconTint)
+        IconAnimatablePainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
     }
 }

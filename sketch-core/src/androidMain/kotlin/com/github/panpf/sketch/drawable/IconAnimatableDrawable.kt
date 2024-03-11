@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
 import android.os.Build
 import android.os.Build.VERSION_CODES
+import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
 import com.github.panpf.sketch.drawable.internal.SketchDrawable
@@ -41,12 +42,13 @@ class IconAnimatableDrawable constructor(
     val icon: Drawable,
     val background: Drawable? = null,
     val iconSize: Size? = null,
-    // TODO iconTint
+    @ColorInt val iconTint: Int? = null
 ) : AnimatableDrawableWrapper(icon), Callback, SketchDrawable {
 
     init {
         background?.callback = this
         icon.callback = this
+        iconTint?.let { DrawableCompat.setTint(icon, it) }
     }
 
     override fun getIntrinsicWidth(): Int {
@@ -185,18 +187,15 @@ class IconAnimatableDrawable constructor(
     }
 
     override fun setTint(tint: Int) {
-        background?.let { DrawableCompat.setTint(it, tint) }
         DrawableCompat.setTint(icon, tint)
     }
 
     override fun setTintList(tint: ColorStateList?) {
-        background?.let { DrawableCompat.setTintList(it, tint) }
         DrawableCompat.setTintList(icon, tint)
     }
 
     override fun setTintMode(tintMode: Mode?) {
-        background?.let { DrawableCompat.setTintMode(it, tintMode!!) }
-        DrawableCompat.setTintMode(icon, tintMode!!)
+        DrawableCompat.setTintMode(icon, tintMode)
     }
 
     override fun setHotspot(x: Float, y: Float) {
@@ -223,20 +222,22 @@ class IconAnimatableDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconAnimatableDrawable) return false
+        if (other !is IconDrawable) return false
         if (icon != other.icon) return false
         if (background != other.background) return false
-        return iconSize == other.iconSize
+        if (iconSize != other.iconSize) return false
+        return iconTint == other.iconTint
     }
 
     override fun hashCode(): Int {
         var result = icon.hashCode()
         result = 31 * result + (background?.hashCode() ?: 0)
         result = 31 * result + (iconSize?.hashCode() ?: 0)
+        result = 31 * result + (iconTint?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "IconAnimatableDrawable(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize)"
+        return "IconAnimatableDrawable(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
     }
 }

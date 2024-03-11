@@ -39,8 +39,6 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.R.color
-import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.data.paging.LocalVideoListPagingSource
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
@@ -178,15 +176,24 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             item: BindingItem<VideoInfo, ListItemVideoBinding>
         ) {
             binding.thumbnailImage.updateImageOptions {
-                placeholder(IconStateImage(drawable.ic_image_outline) {
-                    resColorBackground(color.placeholder_bg)
-                })
-                error(IconStateImage(drawable.ic_error_baseline) {
-                    resColorBackground(color.placeholder_bg)
-                }) {
-                    saveCellularTrafficError(IconStateImage(drawable.im_save_cellular_traffic) {
-                        resColorBackground(color.placeholder_bg)
-                    })
+                placeholder(
+                    IconStateImage(
+                        icon = R.drawable.ic_image_outline,
+                        background = R.color.placeholder_bg
+                    )
+                )
+                error(
+                    IconStateImage(
+                        icon = R.drawable.ic_error_baseline,
+                        background = R.color.placeholder_bg
+                    )
+                ) {
+                    saveCellularTrafficError(
+                        IconStateImage(
+                            icon = R.drawable.im_save_cellular_traffic,
+                            background = R.color.placeholder_bg
+                        )
+                    )
                 }
                 crossfade()
                 videoFramePercent(0.5f)

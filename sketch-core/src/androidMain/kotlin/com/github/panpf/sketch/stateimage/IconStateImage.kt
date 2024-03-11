@@ -16,19 +16,17 @@
 package com.github.panpf.sketch.stateimage
 
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.util.ColorFetcherDrawable
 import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealColorDrawable
 import com.github.panpf.sketch.util.RealDrawable
-import com.github.panpf.sketch.util.ResColorDrawable
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
@@ -36,35 +34,91 @@ import com.github.panpf.sketch.util.Size
  * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
 fun IconStateImage(
-    icon: DrawableFetcher,
-    block: (IconStateImageBuilderScope.() -> Unit)? = null
-): IconStateImage {
-    var iconSize: Size? = null
-    var background: DrawableFetcher? = null
-    if (block != null) {
-        val scope = IconStateImageBuilderScope().apply(block)
-        iconSize = scope.iconSize
-        background = scope.background
-    }
-    return IconStateImage(icon, iconSize, background)
-}
+    icon: Drawable,
+    background: Drawable? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconStateImage = IconStateImage(
+    icon = RealDrawable(icon),
+    background = background?.let { RealDrawable(it) },
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
 
 /**
  * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
 fun IconStateImage(
     icon: Drawable,
-    block: (IconStateImageBuilderScope.() -> Unit)? = null
-): IconStateImage = IconStateImage(RealDrawable(icon), block)
-
+    background: Drawable? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconStateImage = IconStateImage(
+    icon = RealDrawable(icon),
+    background = background?.let { RealDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
 
 /**
  * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
 fun IconStateImage(
     @DrawableRes icon: Int,
-    block: (IconStateImageBuilderScope.() -> Unit)? = null
-): IconStateImage = IconStateImage(ResDrawable(icon), block)
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconStateImage = IconStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+/**
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconStateImage = IconStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
+/**
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconStateImage = IconStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+/**
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconStateImage = IconStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
@@ -73,33 +127,10 @@ fun IconStateImage(
  */
 class IconStateImage internal constructor(
     private val icon: DrawableFetcher,
-    private val iconSize: Size?,
     private val background: DrawableFetcher?,
+    private val iconSize: Size?,
+    private val iconTint: ColorFetcher?
 ) : StateImage {
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(icon: Drawable, bg: Drawable)
-            : this(RealDrawable(icon), null, RealDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(icon: Drawable, @DrawableRes bg: Int)
-            : this(RealDrawable(icon), null, ResDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(icon: Drawable, bg: ColorFetcher)
-            : this(RealDrawable(icon), null, bg.toDrawableFetcher())
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(@DrawableRes icon: Int, bg: Drawable)
-            : this(ResDrawable(icon), null, RealDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(@DrawableRes icon: Int, @DrawableRes bg: Int)
-            : this(ResDrawable(icon), null, ResDrawable(bg))
-
-    @Deprecated("Please use IconStateImage to create the function")
-    constructor(@DrawableRes icon: Int, bg: ColorFetcher)
-            : this(ResDrawable(icon), null, bg.toDrawableFetcher())
 
     override fun getImage(
         sketch: Sketch,
@@ -124,7 +155,13 @@ class IconStateImage internal constructor(
                 }
             }
             val background = background?.getDrawable(request.context)
-            IconDrawable(icon, background, iconSize)
+            val iconTintColor = iconTint?.getColor(request.context)
+            IconDrawable(
+                icon = icon,
+                background = background,
+                iconSize = iconSize,
+                iconTint = iconTintColor
+            )
         } catch (e: Throwable) {
             sketch.logger.w("IconStateImage", "getDrawable error. ${e.message}")
             e.printStackTrace()
@@ -150,39 +187,5 @@ class IconStateImage internal constructor(
 
     override fun toString(): String {
         return "IconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
-    }
-}
-
-class IconStateImageBuilderScope {
-
-    internal var iconSize: Size? = null
-    internal var background: DrawableFetcher? = null
-
-    fun iconSize(size: Size?) {
-        this.iconSize = size
-    }
-
-    fun iconSize(width: Int, height: Int) {
-        this.iconSize = Size(width = width, height = height)
-    }
-
-    fun iconSize(size: Int) {
-        this.iconSize = Size(width = size, height = size)
-    }
-
-    fun background(drawable: Drawable) {
-        this.background = RealDrawable(drawable)
-    }
-
-    fun resBackground(@DrawableRes resId: Int) {
-        this.background = ResDrawable(resId)
-    }
-
-    fun colorBackground(@ColorInt color: Int) {
-        this.background = RealColorDrawable(color)
-    }
-
-    fun resColorBackground(@ColorRes resId: Int) {
-        this.background = ResColorDrawable(resId)
     }
 }
