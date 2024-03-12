@@ -55,7 +55,6 @@ kotlin {
 }
 
 compose {
-    // TODO Migrate to zoomimage
     kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
 }
 
@@ -92,7 +91,6 @@ android {
     }
 
     composeOptions {
-        // TODO Migrate to zoomimage
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.jetbrains.compose.compiler.get()
     }
 }

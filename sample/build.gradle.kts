@@ -42,8 +42,8 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.androidx.activity.compose)
-                implementation(libs.androidx.compose.animation)
-                implementation(libs.androidx.compose.foundation)
+//                implementation(libs.androidx.compose.animation)
+//                implementation(libs.androidx.compose.foundation)
                 implementation(libs.androidx.lifecycle.viewmodel.compose)
 //                implementation(libs.androidx.paging.compose)
                 implementation(libs.androidx.appcompat)
@@ -201,7 +201,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.jetbrains.compose.compiler.get()
     }
 
     applicationVariants.all {
