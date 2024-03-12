@@ -70,7 +70,7 @@ class FFmpegVideoFrameDecoder(
                 }
 
                 else -> {
-                    dataSource.getFileOrNull()?.let { setDataSource(it.toFile().path)}
+                    dataSource.getFileOrNull()?.let { setDataSource(it.toFile().path) }
                         ?: throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
                 }
             }

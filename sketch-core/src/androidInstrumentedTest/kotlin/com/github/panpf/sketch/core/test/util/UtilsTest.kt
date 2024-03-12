@@ -32,7 +32,9 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.awaitStarted
+import com.github.panpf.sketch.util.computeSizeMultiplier
 import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.getDataSourceCacheFile
@@ -234,5 +236,23 @@ class UtilsTest {
     @Test
     fun testCalculateBounds(){
         // TODO Test calculateBounds
+    }
+
+    @Test
+    fun testComputeSizeMultiplier() {
+        Assert.assertEquals(0.2, computeSizeMultiplier(1000, 600, 200, 400, true), 0.1)
+        Assert.assertEquals(0.6, computeSizeMultiplier(1000, 600, 200, 400, false), 0.1)
+        Assert.assertEquals(0.3, computeSizeMultiplier(1000, 600, 400, 200, true), 0.1)
+        Assert.assertEquals(0.4, computeSizeMultiplier(1000, 600, 400, 200, false), 0.1)
+
+        Assert.assertEquals(0.6, computeSizeMultiplier(1000, 600, 2000, 400, true), 0.1)
+        Assert.assertEquals(2.0, computeSizeMultiplier(1000, 600, 2000, 400, false), 0.1)
+        Assert.assertEquals(0.4, computeSizeMultiplier(1000, 600, 400, 2000, true), 0.1)
+        Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 400, 2000, false), 0.1)
+
+        Assert.assertEquals(2.0, computeSizeMultiplier(1000, 600, 2000, 4000, true), 0.1)
+        Assert.assertEquals(6.6, computeSizeMultiplier(1000, 600, 2000, 4000, false), 0.1)
+        Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 4000, 2000, true), 0.1)
+        Assert.assertEquals(4.0, computeSizeMultiplier(1000, 600, 4000, 2000, false), 0.1)
     }
 }

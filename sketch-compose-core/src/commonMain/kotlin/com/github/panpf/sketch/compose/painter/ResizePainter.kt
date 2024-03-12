@@ -13,7 +13,7 @@ import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
-import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.util.computeSizeMultiplier
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import kotlin.math.roundToInt

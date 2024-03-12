@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.decode.internal
 
-import androidx.annotation.Px
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.datasource.DataFrom
@@ -15,8 +14,146 @@ import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredWorkThread
-import kotlin.math.max
-import kotlin.math.min
+
+
+/* ************************************** sampling ********************************************** */
+
+expect fun getMaxBitmapSize(targetSize: Size): Size
+
+/**
+ * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
+ */
+expect fun calculateSampledBitmapSize(
+    imageSize: Size,
+    sampleSize: Int,
+    mimeType: String? = null
+): Size
+
+/**
+ * Calculate the size of the sampled Bitmap, support for BitmapRegionDecoder
+ */
+expect fun calculateSampledBitmapSizeForRegion(
+    regionSize: Size,
+    sampleSize: Int,
+    mimeType: String? = null,
+    imageSize: Size? = null
+): Size
+
+
+/**
+ * Calculate the sample size, support for BitmapFactory or ImageDecoder
+ */
+fun calculateSampleSize(
+    imageSize: Size,
+    targetSize: Size,
+    smallerSizeMode: Boolean,
+    mimeType: String? = null,
+): Int {
+    var sampleSize = 1
+    var accepted = false
+    val maxBitmapSize = getMaxBitmapSize(targetSize)
+    while (!accepted) {
+        val sampledBitmapSize = calculateSampledBitmapSize(
+            imageSize = imageSize,
+            sampleSize = sampleSize,
+            mimeType = mimeType
+        )
+        accepted = checkSampledBitmapSize(
+            sampledBitmapSize = sampledBitmapSize,
+            targetSize = targetSize,
+            smallerSizeMode = smallerSizeMode,
+            maxBitmapSize = maxBitmapSize,
+        )
+        if (!accepted) {
+            sampleSize *= 2
+        }
+    }
+    return sampleSize
+}
+
+/**
+ * Calculate the sample size, support for BitmapFactory or ImageDecoder
+ */
+fun calculateSampleSize(
+    imageSize: Size,
+    targetSize: Size,
+    mimeType: String? = null
+): Int = calculateSampleSize(
+    imageSize = imageSize,
+    targetSize = targetSize,
+    smallerSizeMode = false,
+    mimeType = mimeType
+)
+
+/**
+ * Calculate the sample size, support for BitmapRegionDecoder
+ */
+fun calculateSampleSizeForRegion(
+    regionSize: Size,
+    targetSize: Size,
+    smallerSizeMode: Boolean,
+    mimeType: String? = null,
+    imageSize: Size? = null,
+): Int {
+    var sampleSize = 1
+    var accepted = false
+    val maxBitmapSize = getMaxBitmapSize(targetSize)
+    while (!accepted) {
+        val sampledBitmapSize = calculateSampledBitmapSizeForRegion(
+            regionSize = regionSize,
+            sampleSize = sampleSize,
+            mimeType = mimeType,
+            imageSize = imageSize
+        )
+        accepted = checkSampledBitmapSize(
+            sampledBitmapSize = sampledBitmapSize,
+            targetSize = targetSize,
+            smallerSizeMode = smallerSizeMode,
+            maxBitmapSize = maxBitmapSize,
+        )
+        if (!accepted) {
+            sampleSize *= 2
+        }
+    }
+    return sampleSize
+}
+
+/**
+ * Calculate the sample size, support for BitmapRegionDecoder
+ */
+fun calculateSampleSizeForRegion(
+    regionSize: Size,
+    targetSize: Size,
+    mimeType: String? = null,
+    imageSize: Size? = null
+): Int = calculateSampleSizeForRegion(
+    regionSize = regionSize,
+    targetSize = targetSize,
+    smallerSizeMode = false,
+    mimeType = mimeType,
+    imageSize = imageSize
+)
+
+fun checkSampledBitmapSize(
+    sampledBitmapSize: Size,
+    targetSize: Size,
+    smallerSizeMode: Boolean,
+    maxBitmapSize: Size? = null
+): Boolean {
+    var accept = if (smallerSizeMode) {
+        sampledBitmapSize.width <= targetSize.width && sampledBitmapSize.height <= targetSize.height
+    } else {
+        sampledBitmapSize.width * sampledBitmapSize.height <= targetSize.width * targetSize.height
+    }
+    if (accept && maxBitmapSize != null) {
+        accept =
+            sampledBitmapSize.width <= maxBitmapSize.width && sampledBitmapSize.height <= maxBitmapSize.height
+    }
+    return accept
+}
+
+
+/* **************************************** decode ********************************************* */
 
 @WorkerThread
 fun realDecode(
@@ -171,43 +308,6 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
         }
     } else {
         this
-    }
-}
-
-/**
- * Calculate the sample size, support for BitmapFactory or ImageDecoder
- */
-expect fun calculateSampleSize(
-    imageSize: Size,
-    targetSize: Size,
-    smallerSizeMode: Boolean,
-    mimeType: String? = null
-): Int
-
-/**
- * Calculate the sample size, support for BitmapRegionDecoder
- */
-expect fun calculateSampleSizeForRegion(
-    regionSize: Size,
-    targetSize: Size,
-    smallerSizeMode: Boolean,
-    mimeType: String? = null,
-    imageSize: Size? = null
-): Int
-
-fun computeSizeMultiplier(
-    @Px srcWidth: Int,
-    @Px srcHeight: Int,
-    @Px dstWidth: Int,
-    @Px dstHeight: Int,
-    fitScale: Boolean
-): Double {
-    val widthPercent = dstWidth / srcWidth.toDouble()
-    val heightPercent = dstHeight / srcHeight.toDouble()
-    return if (fitScale) {
-        min(widthPercent, heightPercent)
-    } else {
-        max(widthPercent, heightPercent)
     }
 }
 

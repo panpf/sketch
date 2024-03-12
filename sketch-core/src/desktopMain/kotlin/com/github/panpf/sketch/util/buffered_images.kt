@@ -9,11 +9,25 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.Shape
+import java.awt.color.ColorSpace
 import java.awt.geom.AffineTransform
 import java.awt.geom.Area
 import java.awt.geom.RoundRectangle2D
 import java.awt.image.BufferedImage
 import kotlin.math.min
+
+internal fun BufferedImage.toLogString(): String {
+    return "BufferedImage@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},${colorModel.colorSpace.typeName})"
+}
+
+private val ColorSpace.typeName: String
+    get() = when (type) {
+        ColorSpace.TYPE_CMYK -> "CMYK"
+        ColorSpace.TYPE_GRAY -> "GRAY"
+        ColorSpace.TYPE_RGB -> "RGB"
+        ColorSpace.TYPE_HLS -> "HLS"
+        else -> "Unknown"
+    }
 
 internal fun BufferedImage.copied(): BufferedImage {
     val newImage = BufferedImage(width, height, type)

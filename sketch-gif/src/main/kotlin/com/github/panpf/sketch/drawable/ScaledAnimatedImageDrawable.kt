@@ -45,7 +45,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
-import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
+import com.github.panpf.sketch.util.computeSizeMultiplier
 import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.util.requiredMainThread

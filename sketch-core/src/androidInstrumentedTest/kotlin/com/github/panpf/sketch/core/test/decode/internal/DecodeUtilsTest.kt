@@ -18,7 +18,6 @@ package com.github.panpf.sketch.core.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -41,18 +40,13 @@ import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.decode.internal.computeSizeMultiplier
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
-import com.github.panpf.sketch.decode.internal.isInBitmapError
-import com.github.panpf.sketch.decode.internal.isSrcRectError
 import com.github.panpf.sketch.decode.internal.isSupportInBitmap
 import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
-import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSize
-import com.github.panpf.sketch.decode.internal.limitedSampleSizeByMaxBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
@@ -862,112 +856,6 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testLimitedSampleSizeByMaxBitmapSize() {
-        val maxSize = OpenGLTextureHelper.maxSize ?: Canvas().maximumBitmapWidth
-        val targetSize = Size(10180, 1920)
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize - 1), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize - 1, maxSize - 1), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize, maxSize + 1), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSize(1, Size(maxSize + 1, maxSize + 1), targetSize)
-        )
-
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSize(-1, Size(maxSize + 1, maxSize + 1), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSize(0, Size(maxSize + 1, maxSize + 1), targetSize)
-        )
-    }
-
-    @Test
-    fun testLimitedSampleSizeByMaxBitmapSizeForRegion() {
-        val maxSize = OpenGLTextureHelper.maxSize ?: Canvas().maximumBitmapWidth
-        val targetSize = Size(10180, 1920)
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize - 1, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize, maxSize - 1), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize - 1, maxSize - 1), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize + 1, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize, maxSize + 1), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(1, Size(maxSize + 1, maxSize + 1), targetSize)
-        )
-
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(0, Size(maxSize, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            1,
-            limitedSampleSizeByMaxBitmapSizeForRegion(-1, Size(maxSize, maxSize), targetSize)
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(
-                -1,
-                Size(maxSize + 1, maxSize + 1),
-                targetSize
-            )
-        )
-        Assert.assertEquals(
-            2,
-            limitedSampleSizeByMaxBitmapSizeForRegion(0, Size(maxSize + 1, maxSize + 1), targetSize)
-        )
-    }
-
-    @Test
     fun testRealDecode() {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -1456,24 +1344,6 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testComputeSizeMultiplier() {
-        Assert.assertEquals(0.2, computeSizeMultiplier(1000, 600, 200, 400, true), 0.1)
-        Assert.assertEquals(0.6, computeSizeMultiplier(1000, 600, 200, 400, false), 0.1)
-        Assert.assertEquals(0.3, computeSizeMultiplier(1000, 600, 400, 200, true), 0.1)
-        Assert.assertEquals(0.4, computeSizeMultiplier(1000, 600, 400, 200, false), 0.1)
-
-        Assert.assertEquals(0.6, computeSizeMultiplier(1000, 600, 2000, 400, true), 0.1)
-        Assert.assertEquals(2.0, computeSizeMultiplier(1000, 600, 2000, 400, false), 0.1)
-        Assert.assertEquals(0.4, computeSizeMultiplier(1000, 600, 400, 2000, true), 0.1)
-        Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 400, 2000, false), 0.1)
-
-        Assert.assertEquals(2.0, computeSizeMultiplier(1000, 600, 2000, 4000, true), 0.1)
-        Assert.assertEquals(6.6, computeSizeMultiplier(1000, 600, 2000, 4000, false), 0.1)
-        Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 4000, 2000, true), 0.1)
-        Assert.assertEquals(4.0, computeSizeMultiplier(1000, 600, 4000, 2000, false), 0.1)
-    }
-
-    @Test
     fun testReadImageInfoWithBitmapFactory() {
         val (context, sketch) = getTestContextAndNewSketch()
 
@@ -1778,78 +1648,5 @@ class DecodeUtilsTest {
         Assert.assertTrue(ImageFormat.JPEG.supportBitmapRegionDecoder())
         Assert.assertTrue(ImageFormat.PNG.supportBitmapRegionDecoder())
         Assert.assertTrue(ImageFormat.WEBP.supportBitmapRegionDecoder())
-    }
-
-    @Test
-    fun testIsInBitmapError() {
-        Assert.assertTrue(
-            isInBitmapError(IllegalArgumentException("Problem decoding into existing bitmap"))
-        )
-        Assert.assertTrue(
-            isInBitmapError(IllegalArgumentException("bitmap"))
-        )
-
-        Assert.assertFalse(
-            isInBitmapError(IllegalArgumentException("Problem decoding"))
-        )
-        Assert.assertFalse(
-            isInBitmapError(IllegalStateException("Problem decoding into existing bitmap"))
-        )
-    }
-
-    @Test
-    fun testIsSrcRectError() {
-        Assert.assertTrue(
-            isSrcRectError(IllegalArgumentException("rectangle is outside the image srcRect"))
-        )
-        Assert.assertTrue(
-            isSrcRectError(IllegalArgumentException("srcRect"))
-        )
-
-        Assert.assertFalse(
-            isSrcRectError(IllegalStateException("rectangle is outside the image srcRect"))
-        )
-        Assert.assertFalse(
-            isSrcRectError(IllegalArgumentException(""))
-        )
-    }
-
-    @Test
-    fun testIsSupportInBitmap() {
-        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmap("image/jpeg", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/jpeg", 2))
-
-        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmap("image/png", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/png", 2))
-
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/gif", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 21, isSupportInBitmap("image/gif", 2))
-
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/webp", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/webp", 2))
-
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/bmp", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 19, isSupportInBitmap("image/bmp", 2))
-
-        Assert.assertEquals(false, isSupportInBitmap("image/heic", 1))
-        Assert.assertEquals(false, isSupportInBitmap("image/heic", 2))
-
-        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmap("image/heif", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmap("image/heif", 2))
-
-        Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmap("image/svg", 1))
-        Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmap("image/svg", 2))
-    }
-
-    @Test
-    fun testIsSupportInBitmapForRegion() {
-        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmapForRegion("image/jpeg"))
-        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmapForRegion("image/png"))
-        Assert.assertEquals(false, isSupportInBitmapForRegion("image/gif"))
-        Assert.assertEquals(VERSION.SDK_INT >= 16, isSupportInBitmapForRegion("image/webp"))
-        Assert.assertEquals(false, isSupportInBitmapForRegion("image/bmp"))
-        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heic"))
-        Assert.assertEquals(VERSION.SDK_INT >= 28, isSupportInBitmapForRegion("image/heif"))
-        Assert.assertEquals(VERSION.SDK_INT >= 32, isSupportInBitmapForRegion("image/svg"))
     }
 }

@@ -23,7 +23,6 @@ import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.BitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.decode.internal.toLogString
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
@@ -34,6 +33,7 @@ import com.github.panpf.sketch.util.height
 import com.github.panpf.sketch.util.isImmutable
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.scale
+import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.width
 
 fun Bitmap.asSketchImage(

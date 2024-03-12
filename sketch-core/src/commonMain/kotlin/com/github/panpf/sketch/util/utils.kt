@@ -17,6 +17,7 @@
 
 package com.github.panpf.sketch.util
 
+import androidx.annotation.Px
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataSource
@@ -31,6 +32,8 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
 import kotlin.math.log10
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -252,4 +255,18 @@ internal fun ceilRoundPow2(number: Int): Int {
     return if (n < 0) 1 else if (n >= 1073741824) 1073741824 else n + 1
 }
 
-internal expect fun getMimeTypeFromExtension(extension: String): String?
+fun computeSizeMultiplier(
+    @Px srcWidth: Int,
+    @Px srcHeight: Int,
+    @Px dstWidth: Int,
+    @Px dstHeight: Int,
+    fitScale: Boolean
+): Double {
+    val widthPercent = dstWidth / srcWidth.toDouble()
+    val heightPercent = dstHeight / srcHeight.toDouble()
+    return if (fitScale) {
+        min(widthPercent, heightPercent)
+    } else {
+        max(widthPercent, heightPercent)
+    }
+}

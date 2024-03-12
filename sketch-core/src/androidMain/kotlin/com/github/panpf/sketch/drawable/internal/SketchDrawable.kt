@@ -18,7 +18,6 @@ package com.github.panpf.sketch.drawable.internal
 /**
  * Mark this Drawable as coming from Sketch, and it implements equals(), hashCode(), toString() methods
  */
-// TODO Migrate back to 3.x
 interface SketchDrawable {
 
     override fun equals(other: Any?): Boolean

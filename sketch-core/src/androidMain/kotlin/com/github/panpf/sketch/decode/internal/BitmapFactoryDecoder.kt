@@ -28,6 +28,7 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toAndroidRect
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * Decode image files using BitmapFactory

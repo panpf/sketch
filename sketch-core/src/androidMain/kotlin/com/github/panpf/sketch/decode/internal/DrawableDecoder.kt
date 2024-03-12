@@ -31,6 +31,7 @@ import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toNewBitmap
 import kotlin.math.min
 import kotlin.math.roundToInt

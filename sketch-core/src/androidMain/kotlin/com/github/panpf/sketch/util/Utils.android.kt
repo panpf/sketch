@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Looper
 import android.os.Process
-import android.webkit.MimeTypeMap
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.resize.Scale
 import java.io.File
@@ -164,8 +163,4 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
             )
         }
     }
-}
-
-internal actual fun getMimeTypeFromExtension(extension: String): String? {
-    return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 }

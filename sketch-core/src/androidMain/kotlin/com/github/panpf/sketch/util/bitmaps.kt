@@ -58,6 +58,8 @@ internal fun Bitmap.toInfoString(): String =
 
 internal fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$configOrNull)"
 
+internal fun Bitmap.toLogString(): String = "Bitmap@${toHexString()}(${width}x${height},$configOrNull)"
+
 /**
  * Gets the number of bytes occupied by a single pixel in a specified configuration
  */

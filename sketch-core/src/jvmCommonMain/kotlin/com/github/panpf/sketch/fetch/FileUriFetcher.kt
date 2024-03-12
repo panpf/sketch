@@ -20,7 +20,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.getMimeTypeFromExtension
+import com.github.panpf.sketch.util.MimeTypeMap
 import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -67,7 +67,7 @@ class FileUriFetcher(
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val mimeType = getMimeTypeFromExtension(file.extension)
+        val mimeType = MimeTypeMap.getMimeTypeFromExtension(file.extension)
         FetchResult(FileDataSource(sketch, request, file), mimeType)
     }
 
