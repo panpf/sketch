@@ -298,7 +298,7 @@ internal fun BufferedImage.circleCropped(scale: Scale): BufferedImage {
         resizeHeight = newImage.height,
         precision = EXACTLY,
         scale = scale,
-    )
+    )!!
     graphics.drawImage(
         /* img = */ sourceImage,
         /* dx1 = */ 0,

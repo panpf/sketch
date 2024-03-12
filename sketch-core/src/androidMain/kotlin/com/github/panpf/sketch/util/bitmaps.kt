@@ -230,8 +230,13 @@ internal fun Bitmap.circleCropped(scale: Scale): Bitmap {
     val inputBitmap = this
     val newSize = Integer.min(inputBitmap.width, inputBitmap.height)
     val resizeMapping = calculateResizeMapping(
-        inputBitmap.width, inputBitmap.height, newSize, newSize, SAME_ASPECT_RATIO, scale
-    )
+        imageWidth = inputBitmap.width,
+        imageHeight = inputBitmap.height,
+        resizeWidth = newSize,
+        resizeHeight = newSize,
+        precision = SAME_ASPECT_RATIO,
+        scale = scale
+    )!!
     val config = inputBitmap.safeConfig
     val outBitmap = Bitmap.createBitmap(
         /* width = */ resizeMapping.newWidth,

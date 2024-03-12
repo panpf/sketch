@@ -53,6 +53,9 @@ open class DefaultLongImageDecider constructor(
      * otherwise it is considered as a long image when it reaches [notSameDirectionMultiple] times
      */
     override fun isLongImage(imageSize: Size, targetSize: Size): Boolean {
+        if (imageSize.isEmpty || targetSize.isEmpty) {
+            return false
+        }
         val imageAspectRatio = imageSize.width.toFloat().div(imageSize.height).format(2)
         val targetAspectRatio = targetSize.width.toFloat().div(targetSize.height).format(2)
         val sameDirection = imageAspectRatio == 1.0f

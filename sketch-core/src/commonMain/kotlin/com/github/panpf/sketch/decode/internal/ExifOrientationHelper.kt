@@ -131,11 +131,10 @@ interface ExifOrientationHelper {
 }
 
 fun ExifOrientationHelper.addToResize(resize: Resize, imageSize: Size): Resize {
-    val newSize = applyToSize(Size(resize.width, resize.height), reverse = true)
+    val newSize = applyToSize(resize.size, reverse = true)
     val newScale = applyToScale(resize.scale, imageSize, reverse = true)
     return Resize(
-        width = newSize.width,
-        height = newSize.height,
+        size = newSize,
         precision = resize.precision,
         scale = newScale,
     )

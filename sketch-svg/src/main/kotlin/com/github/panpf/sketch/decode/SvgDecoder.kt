@@ -42,6 +42,7 @@ import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.isNotEmpty
 import okio.buffer
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -118,7 +119,11 @@ class SvgDecoder constructor(
                 transformedList = listOf(createInSampledTransformed(inSampleSize))
             }
         } else {
-            val scale: Float = min(size.width / imageWidth, size.height / imageHeight)
+            val scale: Float = if (size.isNotEmpty) {
+                min(size.width / imageWidth, size.height / imageHeight)
+            } else {
+                1f
+            }
             dstWidth = (imageWidth * scale).roundToInt()
             dstHeight = (imageHeight * scale).roundToInt()
             if (scale != 1f) {

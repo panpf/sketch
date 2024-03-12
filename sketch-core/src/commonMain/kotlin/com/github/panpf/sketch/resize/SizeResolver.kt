@@ -29,7 +29,7 @@ expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
- * 
+ *
  * @see com.github.panpf.sketch.request.ImageRequest.Builder.size
  */
 interface SizeResolver {
@@ -55,12 +55,11 @@ data class FixedSizeResolver constructor(private val size: Size) : SizeResolver 
     override fun toString(): String = "FixedSizeResolver($size)"
 }
 
-// TODO Decoder support origin
 data object OriginSizeResolver : SizeResolver {
 
     override val key: String by lazy { "Origin" }
 
-    override suspend fun size(): Size = Size(-1, -1)
+    override suspend fun size(): Size = Size(0, 0)
 
     override fun toString(): String = "OriginSizeResolver"
 }

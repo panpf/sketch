@@ -113,7 +113,7 @@ open class AnimatedImageDecoderDecoder(
                 )
                 inSampleSize = calculateSampleSize(
                     imageSize = Size(info.size.width, info.size.height),
-                    targetSize = Size(size.width, size.height),
+                    targetSize = size,
                     smallerSizeMode = precision.isSmallerSizeMode()
                 )
                 decoder.setTargetSampleSize(inSampleSize)

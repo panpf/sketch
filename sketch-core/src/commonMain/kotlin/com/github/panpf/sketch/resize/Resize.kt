@@ -15,14 +15,14 @@
  */
 package com.github.panpf.sketch.resize
 
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 
 /**
  * Define how to resize the image
  */
 data class Resize constructor(
-    val width: Int,
-    val height: Int,
+    val size: Size,
     val precision: Precision,
     /**
      * Which part of the original picture should be kept when the original topic needs to be cropped.
@@ -30,6 +30,9 @@ data class Resize constructor(
      */
     val scale: Scale,
 ) {
+
+    constructor(width: Int, height: Int, precision: Precision, scale: Scale)
+            : this(Size(width, height), precision, scale)
 
     constructor(width: Int, height: Int)
             : this(width, height, Precision.LESS_PIXELS, Scale.CENTER_CROP)
@@ -41,26 +44,30 @@ data class Resize constructor(
             : this(width, height, Precision.LESS_PIXELS, scale)
 
     val key: String by lazy {
-        "Resize(${width}x$height,${precision},${scale})"
+        "Resize(${size},${precision},${scale})"
     }
 
     /**
      * Calculate the precision according to the original image, and then decide whether to crop the image according to the precision
      */
-    fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
-        when (precision) {
-            Precision.EXACTLY -> imageWidth != width || imageHeight != height
+    fun shouldClip(imageSize: Size): Boolean {
+        if (size.isEmpty || imageSize.isEmpty) {
+            return false
+        }
+        return when (precision) {
+            Precision.EXACTLY -> imageSize != size
             Precision.SAME_ASPECT_RATIO -> {
-                val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
-                val resizeAspectRatio = width.toFloat().div(height).format(1)
+                val imageAspectRatio = imageSize.width.toFloat().div(imageSize.height).format(1)
+                val resizeAspectRatio = size.width.toFloat().div(size.height).format(1)
                 imageAspectRatio != resizeAspectRatio
             }
 
             Precision.LESS_PIXELS -> false
             Precision.SMALLER_SIZE -> false
         }
+    }
 
     override fun toString(): String {
-        return "Resize(width=${width}, height=$height, precision=${precision}, scale=${scale})"
+        return "Resize(size=${size}, precision=${precision}, scale=${scale})"
     }
 }

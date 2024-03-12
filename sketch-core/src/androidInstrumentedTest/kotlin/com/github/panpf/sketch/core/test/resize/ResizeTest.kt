@@ -22,6 +22,7 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,29 +33,29 @@ class ResizeTest {
     @Test
     fun testConstructor() {
         Resize(100, 30, SAME_ASPECT_RATIO, END_CROP).apply {
-            Assert.assertEquals(100, width)
-            Assert.assertEquals(30, height)
+            Assert.assertEquals(100, size.width)
+            Assert.assertEquals(30, size.height)
             Assert.assertEquals(SAME_ASPECT_RATIO, precision)
             Assert.assertEquals(END_CROP, scale)
         }
 
         Resize(100, 30).apply {
-            Assert.assertEquals(100, width)
-            Assert.assertEquals(30, height)
+            Assert.assertEquals(100, size.width)
+            Assert.assertEquals(30, size.height)
             Assert.assertEquals(LESS_PIXELS, precision)
             Assert.assertEquals(CENTER_CROP, scale)
         }
 
         Resize(100, 30, SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(100, width)
-            Assert.assertEquals(30, height)
+            Assert.assertEquals(100, size.width)
+            Assert.assertEquals(30, size.height)
             Assert.assertEquals(SAME_ASPECT_RATIO, precision)
             Assert.assertEquals(CENTER_CROP, scale)
         }
 
         Resize(100, 30, END_CROP).apply {
-            Assert.assertEquals(100, width)
-            Assert.assertEquals(30, height)
+            Assert.assertEquals(100, size.width)
+            Assert.assertEquals(30, size.height)
             Assert.assertEquals(LESS_PIXELS, precision)
             Assert.assertEquals(END_CROP, scale)
         }
@@ -118,4 +119,10 @@ class ResizeTest {
             Assert.assertTrue(shouldClip(150, 150))
         }
     }
+
+    /**
+     * Calculate the precision according to the original image, and then decide whether to crop the image according to the precision
+     */
+    private fun Resize.shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
+        shouldClip(Size(imageWidth, imageHeight))
 }

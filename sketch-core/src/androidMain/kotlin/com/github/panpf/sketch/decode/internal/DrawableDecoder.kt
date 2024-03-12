@@ -17,20 +17,21 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DrawableDataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toNewBitmap
 import kotlin.math.min
@@ -81,10 +82,11 @@ open class DrawableDecoder constructor(
                 }
                 calculateSampledBitmapSize(imageSize, inSampleSize, mimeType)
             } else {
-                val scale: Float = min(
-                    size.width / imageWidth.toFloat(),
-                    size.height / imageHeight.toFloat()
-                )
+                val scale: Float = if (size.isNotEmpty) {
+                    min(size.width / imageWidth.toFloat(), size.height / imageHeight.toFloat())
+                } else {
+                    1f
+                }
                 if (scale != 1f) {
                     transformedList = listOf(createScaledTransformed(scale))
                 }

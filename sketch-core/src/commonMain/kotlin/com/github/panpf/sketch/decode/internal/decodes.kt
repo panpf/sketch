@@ -11,6 +11,7 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredWorkThread
@@ -49,6 +50,9 @@ fun calculateSampleSize(
     smallerSizeMode: Boolean,
     mimeType: String? = null,
 ): Int {
+    if (imageSize.isEmpty || targetSize.isEmpty) {
+        return 1
+    }
     var sampleSize = 1
     var accepted = false
     val maxBitmapSize = getMaxBitmapSize(targetSize)
@@ -95,6 +99,9 @@ fun calculateSampleSizeForRegion(
     mimeType: String? = null,
     imageSize: Size? = null,
 ): Int {
+    if (regionSize.isEmpty || targetSize.isEmpty) {
+        return 1
+    }
     var sampleSize = 1
     var accepted = false
     val maxBitmapSize = getMaxBitmapSize(targetSize)
@@ -169,33 +176,28 @@ fun realDecode(
     val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val imageSize = Size(imageInfo.width, imageInfo.height)
     val appliedImageSize = exifOrientationHelper?.applyToSize(imageSize) ?: imageSize
+    val precision = request.precisionDecider.get(imageSize = appliedImageSize, targetSize = size)
+    val scale = request.scaleDecider.get(imageSize = appliedImageSize, targetSize = size)
     val resize = Resize(
         width = size.width,
         height = size.height,
-        precision = request.precisionDecider.get(
-            imageSize = appliedImageSize,
-            targetSize = size,
-        ),
-        scale = request.scaleDecider.get(
-            imageSize = appliedImageSize,
-            targetSize = size,
-        )
+        precision = precision,
+        scale = scale
     )
     val addedResize = exifOrientationHelper?.addToResize(resize, appliedImageSize) ?: resize
     val transformedList = mutableListOf<String>()
+    val resizeMapping = calculateResizeMapping(
+        imageSize = imageInfo.size,
+        resizeSize = addedResize.size,
+        precision = addedResize.precision,
+        scale = addedResize.scale,
+    )
     val bitmap = if (
-        addedResize.shouldClip(imageInfo.width, imageInfo.height)
+        addedResize.shouldClip(imageInfo.size)
         && addedResize.precision != LESS_PIXELS
         && decodeRegion != null
+        && resizeMapping != null
     ) {
-        val resizeMapping = calculateResizeMapping(
-            imageWidth = imageInfo.width,
-            imageHeight = imageInfo.height,
-            resizeWidth = addedResize.width,
-            resizeHeight = addedResize.height,
-            precision = addedResize.precision,
-            scale = addedResize.scale,
-        )
         val sampleSize = calculateSampleSizeForRegion(
             regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
             targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
@@ -209,15 +211,12 @@ fun realDecode(
         transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect))
         decodeRegion(resizeMapping.srcRect, sampleSize)
     } else {
-        val sampleSize = run {
-            val targetSize = Size(addedResize.width, addedResize.height)
-            calculateSampleSize(
-                imageSize = imageSize,
-                targetSize = targetSize,
-                smallerSizeMode = addedResize.precision.isSmallerSizeMode(),
-                mimeType = imageInfo.mimeType
-            )
-        }
+        val sampleSize = calculateSampleSize(
+            imageSize = imageSize,
+            targetSize = addedResize.size,
+            smallerSizeMode = addedResize.precision.isSmallerSizeMode(),
+            mimeType = imageInfo.mimeType
+        )
         if (sampleSize > 1) {
             transformedList.add(0, createInSampledTransformed(sampleSize))
         }
@@ -263,6 +262,9 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     val imageTransformer = image.transformer() ?: return this
     val request = requestContext.request
     val size = requestContext.size!!
+    if (size.isEmpty) {
+        return this
+    }
     val resize = Resize(
         width = size.width,
         height = size.height,
@@ -277,8 +279,8 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     )
     val newImage = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
-            imageSize = Size(image.width, image.height),
-            targetSize = Size(resize.width, resize.height),
+            imageSize = image.size,
+            targetSize = resize.size,
             smallerSizeMode = resize.precision.isSmallerSizeMode()
         )
         if (sampleSize != 1) {
@@ -286,16 +288,18 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
         } else {
             null
         }
-    } else if (resize.shouldClip(image.width, image.height)) {
+    } else if (resize.shouldClip(image.size)) {
         val mapping = calculateResizeMapping(
-            imageWidth = image.width,
-            imageHeight = image.height,
-            resizeWidth = resize.width,
-            resizeHeight = resize.height,
+            imageSize = image.size,
+            resizeSize = resize.size,
             precision = resize.precision,
             scale = resize.scale,
         )
-        imageTransformer.mapping(image, mapping)
+        if (mapping != null) {
+            imageTransformer.mapping(image, mapping)
+        } else {
+            null
+        }
     } else {
         null
     }

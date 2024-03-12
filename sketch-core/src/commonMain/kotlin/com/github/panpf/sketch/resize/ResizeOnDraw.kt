@@ -6,7 +6,7 @@ import com.github.panpf.sketch.util.Size
 
 fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
     val resizeOnDrawHelper = request.resizeOnDrawHelper
-    if (resizeOnDrawHelper == null || size == null) return this
+    if (resizeOnDrawHelper == null || size == null || size.isEmpty) return this
     return resizeOnDrawHelper.resize(request, size, this)
 }
 

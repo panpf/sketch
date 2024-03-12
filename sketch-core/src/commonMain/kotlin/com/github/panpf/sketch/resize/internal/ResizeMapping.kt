@@ -37,25 +37,14 @@ data class ResizeMapping constructor(
 }
 
 fun calculateResizeMapping(
-    imageWidth: Int,
-    imageHeight: Int,
-    resizeWidth: Int,
-    resizeHeight: Int,
-    precision: Precision,
-    scale: Scale,
-): ResizeMapping = calculateResizeMapping(
-    imageSize = Size(width = imageWidth, height = imageHeight),
-    resizeSize = Size(width = resizeWidth, height = resizeHeight),
-    precision = precision,
-    scale = scale
-)
-
-fun calculateResizeMapping(
     imageSize: Size,
     resizeSize: Size,
     precision: Precision,
     scale: Scale,
-): ResizeMapping {
+): ResizeMapping? {
+    if (imageSize.isEmpty || resizeSize.isEmpty) {
+        return null
+    }
     val imageWidth: Int = imageSize.width
     val imageHeight: Int = imageSize.height
     val resizeWidth: Int = resizeSize.width
@@ -163,3 +152,17 @@ fun calculateResizeMapping(
         return ResizeMapping(srcRect, destRect)
     }
 }
+
+fun calculateResizeMapping(
+    imageWidth: Int,
+    imageHeight: Int,
+    resizeWidth: Int,
+    resizeHeight: Int,
+    precision: Precision,
+    scale: Scale,
+): ResizeMapping? = calculateResizeMapping(
+    imageSize = Size(width = imageWidth, height = imageHeight),
+    resizeSize = Size(width = resizeWidth, height = resizeHeight),
+    precision = precision,
+    scale = scale
+)
