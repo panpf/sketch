@@ -43,7 +43,7 @@ class ProgressListenersTest {
         Assert.assertEquals(listOf<String>(), list.flatMap { it.callbackActionList })
 
         val listeners = ProgressListeners(*list.toTypedArray())
-        Assert.assertEquals(list, listeners.progressListenerList)
+        Assert.assertEquals(list, listeners.list)
 
         runBlocking(Dispatchers.Main) {
             listeners.onUpdateProgress(request, Progress(100, 10))

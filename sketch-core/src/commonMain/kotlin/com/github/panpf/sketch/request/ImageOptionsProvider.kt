@@ -16,10 +16,9 @@
 package com.github.panpf.sketch.request
 
 interface ImageOptionsProvider {
-    var displayImageOptions: ImageOptions?
+    var imageOptions: ImageOptions?
 }
 
 fun ImageOptionsProvider.updateImageOptions(configBlock: (ImageOptions.Builder.() -> Unit)) {
-    displayImageOptions =
-        displayImageOptions?.newOptions(configBlock) ?: ImageOptions(configBlock)
+    imageOptions = imageOptions?.newOptions(configBlock) ?: ImageOptions(configBlock)
 }

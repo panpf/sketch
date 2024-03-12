@@ -47,7 +47,7 @@ class ListenersTest {
         Assert.assertEquals(listOf<String>(), list.flatMap { it.callbackActionList })
 
         val listeners = Listeners(*list.toTypedArray())
-        Assert.assertEquals(list, listeners.listenerList)
+        Assert.assertEquals(list, listeners.list)
 
         runBlocking(Dispatchers.Main) {
             listeners.onStart(request)

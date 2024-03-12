@@ -69,7 +69,7 @@ interface ViewTarget<T : View> : Target {
     var drawable: Drawable?
 
     override fun getImageOptions(): ImageOptions? =
-        view?.asOrNull<ImageOptionsProvider>()?.displayImageOptions
+        view?.asOrNull<ImageOptionsProvider>()?.imageOptions
 
     override fun getSizeResolver(): SizeResolver? =
         view?.let { ViewSizeResolver(it) }

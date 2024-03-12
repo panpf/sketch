@@ -19,28 +19,31 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
-class ProgressListeners(val list: List<ProgressListener>) : ProgressListener {
-
-    constructor(vararg listeners: ProgressListener) : this(listeners.toList())
+class PairProgressListener(
+    val first: ProgressListener?,
+    val second: ProgressListener?,
+) : ProgressListener {
 
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
-        list.forEach {
-            it.onUpdateProgress(request, progress)
-        }
+        first?.onUpdateProgress(request, progress)
+        second?.onUpdateProgress(request, progress)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ProgressListeners) return false
-        if (list != other.list) return false
+        if (other !is PairProgressListener) return false
+        if (first != other.first) return false
+        if (second != other.second) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return list.hashCode()
+        var result = first?.hashCode() ?: 0
+        result = 31 * result + (second?.hashCode() ?: 0)
+        return result
     }
 
     override fun toString(): String {
-        return "ProgressListeners($list)"
+        return "ProgressListeners(first=$first, second=$second)"
     }
 }

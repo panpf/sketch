@@ -25,5 +25,5 @@ class TestOptionsImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ImageView(context, attrs), ImageOptionsProvider {
 
-    override var displayImageOptions: ImageOptions? = null
+    override var imageOptions: ImageOptions? = null
 }

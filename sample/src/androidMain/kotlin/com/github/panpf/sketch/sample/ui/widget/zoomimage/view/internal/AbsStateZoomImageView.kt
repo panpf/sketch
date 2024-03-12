@@ -24,6 +24,8 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.RequestState
 import com.github.panpf.sketch.request.internal.Listeners
+import com.github.panpf.sketch.request.internal.PairListener
+import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
 
 open class AbsStateZoomImageView @JvmOverloads constructor(
@@ -32,10 +34,9 @@ open class AbsStateZoomImageView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : AbsAbilityZoomImageView(context, attrs, defStyle), ImageOptionsProvider {
 
-    override var displayImageOptions: ImageOptions? = null
-    private var displayListenerList: MutableList<Listener>? =
-        null
-    private var displayProgressListenerList: MutableList<ProgressListener>? = null
+    override var imageOptions: ImageOptions? = null
+    private var listeners: Listeners? = null
+    private var progressListeners: ProgressListeners? = null
 
     override val requestState = RequestState()
 
@@ -45,50 +46,50 @@ open class AbsStateZoomImageView @JvmOverloads constructor(
     }
 
     override fun getListener(): Listener? {
-        val myListeners = displayListenerList?.takeIf { it.isNotEmpty() }
+        val myListener = listeners
         val superListener = super.getListener()
-        if (myListeners == null && superListener == null) {
-            return null
+        return if (myListener != null && superListener != null) {
+            PairListener(first = myListener, second = superListener)
+        } else {
+            myListener ?: superListener
         }
-
-        val listenerList = (myListeners?.toMutableList() ?: mutableListOf()).apply {
-            if (superListener != null) add(superListener)
-        }.toList()
-        // TODO Change to Listeners(myListeners, superListener) to avoid frequent assembly of lists
-        return Listeners(listenerList)
     }
 
     override fun getProgressListener(): ProgressListener? {
-        val myProgressListeners = displayProgressListenerList?.takeIf { it.isNotEmpty() }
+        val myProgressListener = progressListeners
         val superProgressListener = super.getProgressListener()
-        if (myProgressListeners == null && superProgressListener == null) {
-            return null
+        return if (myProgressListener != null && superProgressListener != null) {
+            PairProgressListener(first = myProgressListener, second = superProgressListener)
+        } else {
+            myProgressListener ?: superProgressListener
         }
-
-        val progressListenerList = (myProgressListeners?.toMutableList() ?: mutableListOf()).apply {
-            if (superProgressListener != null) add(superProgressListener)
-        }.toList()
-        return ProgressListeners(progressListenerList)
     }
 
     fun registerListener(listener: Listener) {
-        this.displayListenerList = (this.displayListenerList ?: mutableListOf()).apply {
-            add(listener)
-        }
+        listeners = (listeners?.list?.toMutableList() ?: mutableListOf())
+            .apply { add(listener) }
+            .takeIf { it.isNotEmpty() }
+            ?.let { Listeners(it.toList()) }
     }
 
     fun unregisterListener(listener: Listener) {
-        this.displayListenerList?.remove(listener)
+        listeners = listeners?.list?.toMutableList()
+            ?.apply { remove(listener) }
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { Listeners(it.toList()) }
     }
 
     fun registerProgressListener(listener: ProgressListener) {
-        this.displayProgressListenerList =
-            (this.displayProgressListenerList ?: mutableListOf()).apply {
-                add(listener)
-            }
+        progressListeners = (progressListeners?.list?.toMutableList() ?: mutableListOf())
+            .apply { add(listener) }
+            .takeIf { it.isNotEmpty() }
+            ?.let { ProgressListeners(it.toList()) }
     }
 
     fun unregisterProgressListener(listener: ProgressListener) {
-        this.displayProgressListenerList?.remove(listener)
+        progressListeners = progressListeners?.list?.toMutableList()
+            ?.apply { remove(listener) }
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { ProgressListeners(it.toList()) }
     }
 }

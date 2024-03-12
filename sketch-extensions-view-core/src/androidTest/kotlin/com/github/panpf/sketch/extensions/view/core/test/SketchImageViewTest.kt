@@ -59,7 +59,7 @@ class SketchImageViewTest {
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_default, null, false) as SketchImageView).apply {
-            Assert.assertNull(displayImageOptions)
+            Assert.assertNull(imageOptions)
         }
 
         (LayoutInflater.from(context)
@@ -78,15 +78,15 @@ class SketchImageViewTest {
                 resize(354, 2789, SAME_ASPECT_RATIO, FILL)
                 resultCachePolicy(READ_ONLY)
                 transformations(RoundedCornersTransformation(200f))
-            }, displayImageOptions)
+            }, imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_state, null, false) as SketchImageView).apply {
-            Assert.assertNotNull(displayImageOptions!!.placeholder)
-            Assert.assertNotNull(displayImageOptions!!.uriEmpty)
-            Assert.assertNotNull(displayImageOptions!!.error)
-            Assert.assertNotNull((displayImageOptions!!.error as ErrorStateImage).stateList.find { it.first is UriEmptyCondition })
+            Assert.assertNotNull(imageOptions!!.placeholder)
+            Assert.assertNotNull(imageOptions!!.uriEmpty)
+            Assert.assertNotNull(imageOptions!!.error)
+            Assert.assertNotNull((imageOptions!!.error as ErrorStateImage).stateList.find { it.first is UriEmptyCondition })
         }
 
         (LayoutInflater.from(context)
@@ -99,28 +99,28 @@ class SketchImageViewTest {
                         maskColor = Color.parseColor("#00FF00")
                     )
                 )
-            }, displayImageOptions)
+            }, imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_rotate, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 transformations(RotateTransformation(444))
-            }, displayImageOptions)
+            }, imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_circle, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 transformations(CircleCropTransformation(END_CROP))
-            }, displayImageOptions)
+            }, imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_mask, null, false) as SketchImageView).apply {
             Assert.assertEquals(ImageOptions {
                 transformations(MaskTransformation(Color.parseColor("#00FF00")))
-            }, displayImageOptions)
+            }, imageOptions)
         }
     }
 
@@ -133,7 +133,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -145,7 +145,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -154,7 +154,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -163,7 +163,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -180,7 +180,7 @@ class SketchImageViewTest {
                     listener2,
                     viewAbilityListener
                 ),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -189,7 +189,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener2, viewAbilityListener),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -198,7 +198,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, viewAbilityListener),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
 
@@ -207,7 +207,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is Listeners)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as Listeners).listenerList
+                (this as Listeners).list
             )
         }
     }
@@ -225,13 +225,13 @@ class SketchImageViewTest {
         sketchImageView.registerProgressListener(listener1)
         sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(listOf(listener1), (this as ProgressListeners).progressListenerList)
+            Assert.assertEquals(listOf(listener1), (this as ProgressListeners).list)
         }
 
         sketchImageView.unregisterProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(listOf(listener1), (this as ProgressListeners).progressListenerList)
+            Assert.assertEquals(listOf(listener1), (this as ProgressListeners).list)
         }
 
         sketchImageView.registerProgressListener(listener2)
@@ -239,7 +239,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
                 listOf(listener1, listener2),
-                (this as ProgressListeners).progressListenerList
+                (this as ProgressListeners).list
             )
         }
 
@@ -251,7 +251,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
                 listOf(listener1, listener2, viewAbilityProgressListener),
-                (this as ProgressListeners).progressListenerList
+                (this as ProgressListeners).list
             )
         }
 
@@ -260,7 +260,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
                 listOf(listener2, viewAbilityProgressListener),
-                (this as ProgressListeners).progressListenerList
+                (this as ProgressListeners).list
             )
         }
 
@@ -269,7 +269,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is ProgressListeners)
             Assert.assertEquals(
                 listOf(viewAbilityProgressListener),
-                (this as ProgressListeners).progressListenerList
+                (this as ProgressListeners).list
             )
         }
 

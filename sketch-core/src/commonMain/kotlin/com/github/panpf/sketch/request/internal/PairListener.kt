@@ -19,46 +19,46 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
-class Listeners constructor(val list: List<Listener>) : Listener {
-
-    constructor(vararg listeners: Listener) : this(listeners.toList())
+class PairListener constructor(
+    val first: Listener?,
+    val second: Listener?
+) : Listener {
 
     override fun onStart(request: ImageRequest) {
-        list.forEach {
-            it.onStart(request)
-        }
+        first?.onStart(request)
+        second?.onStart(request)
     }
 
     override fun onCancel(request: ImageRequest) {
-        list.forEach {
-            it.onCancel(request)
-        }
+        first?.onCancel(request)
+        second?.onCancel(request)
     }
 
     override fun onError(request: ImageRequest, error: ImageResult.Error) {
-        list.forEach {
-            it.onError(request, error)
-        }
+        first?.onError(request, error)
+        second?.onError(request, error)
     }
 
     override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
-        list.forEach {
-            it.onSuccess(request, result)
-        }
+        first?.onSuccess(request, result)
+        second?.onSuccess(request, result)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Listeners) return false
-        if (list != other.list) return false
+        if (other !is PairListener) return false
+        if (first != other.first) return false
+        if (second != other.second) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return list.hashCode()
+        var result = first?.hashCode() ?: 0
+        result = 31 * result + (second?.hashCode() ?: 0)
+        return result
     }
 
     override fun toString(): String {
-        return "Listeners($list)"
+        return "Listeners(first=$first, second=$second)"
     }
 }
