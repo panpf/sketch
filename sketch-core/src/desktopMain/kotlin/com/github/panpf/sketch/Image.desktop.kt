@@ -36,10 +36,10 @@ actual interface Image {
     actual val height: Int
 
     /** Returns the minimum number of bytes that can be used to store this bitmap's pixels. */
-    actual val byteCount: Int
+    actual val byteCount: Long
 
     /** Returns the size of the allocated memory used to store this bitmap's pixels.. */
-    actual val allocationByteCount: Int
+    actual val allocationByteCount: Long
 
     /**
      * True if the image can be shared between multiple [Target]s at the same time.
@@ -71,9 +71,9 @@ data class BufferedImageImage(
 
     override val height: Int = bufferedImage.height
 
-    override val byteCount: Int = width * height * (bufferedImage.colorModel.pixelSize / 8)
+    override val byteCount: Long = width * height * (bufferedImage.colorModel.pixelSize / 8L)
 
-    override val allocationByteCount: Int = byteCount
+    override val allocationByteCount: Long = byteCount
 
     override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? {
         return null

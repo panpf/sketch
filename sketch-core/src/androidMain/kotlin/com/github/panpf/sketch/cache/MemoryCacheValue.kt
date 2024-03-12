@@ -22,7 +22,7 @@ class BitmapImageValue(
     override val extras: Map<String, Any?> = emptyMap(),
 ) : MemoryCache.Value {
 
-    override val size: Int = image.byteCount
+    override val size: Long = image.byteCount
 
     override fun checkValid(): Boolean {
         return image.checkValid()

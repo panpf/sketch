@@ -31,10 +31,10 @@ expect interface Image {
     val height: Int
 
     /** Returns the minimum number of bytes that can be used to store this bitmap's pixels. */
-    val byteCount: Int
+    val byteCount: Long
 
     /** Returns the size of the allocated memory used to store this bitmap's pixels.. */
-    val allocationByteCount: Int
+    val allocationByteCount: Long
 
     /**
      * True if the image can be shared between multiple [Target]s at the same time.
@@ -81,6 +81,6 @@ open class ImageWrapper(val image: Image) : Image by image {
 }
 
 interface ByteCountProvider {
-    val byteCount: Int
-    val allocationByteCount: Int
+    val byteCount: Long
+    val allocationByteCount: Long
 }

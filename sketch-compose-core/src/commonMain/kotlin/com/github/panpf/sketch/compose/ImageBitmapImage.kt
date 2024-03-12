@@ -21,9 +21,9 @@ data class ImageBitmapImage(
 
     override val height: Int = imageBitmap.height
 
-    override val byteCount: Int = 4 * width * height  // TODO check
+    override val byteCount: Long = 4L * width * height
 
-    override val allocationByteCount: Int = 4 * width * height
+    override val allocationByteCount: Long = 4L * width * height
 
     override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value =
         ImageBitmapValue(this, extras)
@@ -50,7 +50,7 @@ class ImageBitmapValue(
 
     override val image: Image = imageBitmapImage
 
-    override val size: Int = imageBitmapImage.byteCount
+    override val size: Long = imageBitmapImage.byteCount
 
     override fun checkValid(): Boolean = imageBitmapImage.checkValid()
 }

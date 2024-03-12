@@ -223,7 +223,7 @@ open class LruCache<K, V>(maxSize: Long) {
         return null
     }
 
-    private fun safeSizeOf(key: K, value: V): Int {
+    private fun safeSizeOf(key: K, value: V): Long {
         val result = sizeOf(key, value)
         check(result >= 0) { "Negative size: $key=$value" }
         return result
@@ -237,8 +237,8 @@ open class LruCache<K, V>(maxSize: Long) {
      *
      * An entry's size must not change while it is in the cache.
      */
-    protected open fun sizeOf(key: K, value: V): Int {
-        return 1
+    protected open fun sizeOf(key: K, value: V): Long {
+        return 1L
     }
 
     /**

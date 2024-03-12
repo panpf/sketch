@@ -38,9 +38,9 @@ data class PainterImage(val painter: Painter, override val shareable: Boolean = 
     override val height: Int =
         painter.intrinsicSize.takeIf { it.isSpecified }?.height?.roundToInt() ?: -1
 
-    override val byteCount: Int = 4 * width * height  // TODO check
+    override val byteCount: Long = 4L * width * height
 
-    override val allocationByteCount: Int = 4 * width * height
+    override val allocationByteCount: Long = 4L * width * height
 
     override fun cacheValue(
         requestContext: RequestContext,

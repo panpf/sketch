@@ -81,10 +81,10 @@ actual interface Image {
     actual val height: Int
 
     /** Returns the minimum number of bytes that can be used to store this bitmap's pixels. */
-    actual val byteCount: Int
+    actual val byteCount: Long
 
     /** Returns the size of the allocated memory used to store this bitmap's pixels.. */
-    actual val allocationByteCount: Int
+    actual val allocationByteCount: Long
 
     /**
      * True if the image can be shared between multiple [Target]s at the same time.
@@ -118,9 +118,9 @@ data class BitmapImage internal constructor(
 
     override val height: Int = bitmap.height
 
-    override val byteCount: Int = bitmap.byteCount
+    override val byteCount: Long = bitmap.byteCount.toLong()
 
-    override val allocationByteCount: Int = bitmap.allocationByteCountCompat
+    override val allocationByteCount: Long = bitmap.allocationByteCountCompat.toLong()
 
     override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value =
         BitmapImageValue(this, extras)
@@ -179,16 +179,16 @@ data class DrawableImage internal constructor(
 
     override val height: Int = drawable.intrinsicHeight
 
-    override val byteCount: Int = when (drawable) {
+    override val byteCount: Long = when (drawable) {
         is ByteCountProvider -> drawable.byteCount
-        is BitmapDrawable -> drawable.bitmap.byteCount
-        else -> 4 * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
+        is BitmapDrawable -> drawable.bitmap.byteCount.toLong()
+        else -> 4L * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
     }
 
-    override val allocationByteCount: Int = when (drawable) {
+    override val allocationByteCount: Long = when (drawable) {
         is ByteCountProvider -> drawable.allocationByteCount
-        is BitmapDrawable -> drawable.bitmap.allocationByteCountCompat
-        else -> 4 * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
+        is BitmapDrawable -> drawable.bitmap.allocationByteCountCompat.toLong()
+        else -> 4L * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
     }
 
     override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? =

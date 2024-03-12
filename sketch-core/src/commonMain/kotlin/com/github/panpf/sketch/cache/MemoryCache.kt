@@ -80,7 +80,7 @@ interface MemoryCache {
 
         val image: Image
 
-        val size: Int
+        val size: Long
 
         val extras: Map<String, Any?>
 

@@ -36,9 +36,9 @@ class LruMemoryCache constructor(
 
     private val cache: LruCache<String, Value> =
         object : LruCache<String, Value>(maxSize) {
-            override fun sizeOf(key: String, value: Value): Int {
+            override fun sizeOf(key: String, value: Value): Long {
                 val valueSize = value.size
-                return if (valueSize == 0) 1 else valueSize
+                return if (valueSize == 0L) 1L else valueSize
             }
         }
 
