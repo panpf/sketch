@@ -20,7 +20,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapFactory.Options
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.getBitmapOrThrow
@@ -28,9 +27,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ExifOrientationTestFileHelper(
+class ExifOrientationTestFileHelper constructor(
     private val context: Context,
-    private val sketch: Sketch,
     private val assetFileName: String,
     private val inSampleSize: Int = 1
 ) {
@@ -40,13 +38,14 @@ class ExifOrientationTestFileHelper(
         "exif_files" + "/" + File(assetFileName).nameWithoutExtension + "_${inSampleSize}"
     )
     private val configs = arrayOf(
-        Config("ROTATE_90", ExifInterface.ORIENTATION_ROTATE_90, cacheDir),
-        Config("TRANSVERSE", ExifInterface.ORIENTATION_TRANSVERSE, cacheDir),
-        Config("ROTATE_180", ExifInterface.ORIENTATION_ROTATE_180, cacheDir),
-        Config("FLIP_VER", ExifInterface.ORIENTATION_FLIP_VERTICAL, cacheDir),
-        Config("ROTATE_270", ExifInterface.ORIENTATION_ROTATE_270, cacheDir),
-        Config("TRANSPOSE", ExifInterface.ORIENTATION_TRANSPOSE, cacheDir),
-        Config("FLIP_HOR", ExifInterface.ORIENTATION_FLIP_HORIZONTAL, cacheDir),
+        Config("rotate_90", ExifInterface.ORIENTATION_ROTATE_90, cacheDir),
+        Config("transverse", ExifInterface.ORIENTATION_TRANSVERSE, cacheDir),
+        Config("rotate_180", ExifInterface.ORIENTATION_ROTATE_180, cacheDir),
+        Config("flip_vertical", ExifInterface.ORIENTATION_FLIP_VERTICAL, cacheDir),
+        Config("rotate_270", ExifInterface.ORIENTATION_ROTATE_270, cacheDir),
+        Config("transpose", ExifInterface.ORIENTATION_TRANSPOSE, cacheDir),
+        Config("flip_horizontal", ExifInterface.ORIENTATION_FLIP_HORIZONTAL, cacheDir),
+        Config("normal", ExifInterface.ORIENTATION_NORMAL, cacheDir),
     )
 
     fun files(): List<TestFile> {
@@ -69,7 +68,6 @@ class ExifOrientationTestFileHelper(
                     )
                 }
             }
-            originBitmap.recycle()
         }
 
         return configs.map {
@@ -82,16 +80,15 @@ class ExifOrientationTestFileHelper(
         sourceBitmap: Bitmap,
         orientation: Int
     ) {
-        // TODO The generated bitmap has bugs and needs to be fixed
         val newBitmap = ExifOrientationHelper(orientation)
             ?.applyToImage(image = sourceBitmap.asSketchImage(), reverse = true)
             ?.getBitmapOrThrow()
+            ?: sourceBitmap
         file.parentFile?.mkdirs()
         file.createNewFile()
         FileOutputStream(file).use {
-            (newBitmap ?: sourceBitmap).compress(Bitmap.CompressFormat.JPEG, 100, it)
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
         }
-        newBitmap?.recycle()
 
         val exifInterface: ExifInterface
         try {

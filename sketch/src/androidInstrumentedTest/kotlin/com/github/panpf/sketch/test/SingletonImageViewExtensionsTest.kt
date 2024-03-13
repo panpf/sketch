@@ -25,7 +25,6 @@ import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.test.ktx.getActivitySync
@@ -139,7 +138,6 @@ class SingletonImageViewExtensionsTest {
         Assert.assertNull(imageView.drawable)
         val file = ExifOrientationTestFileHelper(
             context = context,
-            sketch = context.sketch,
             assetFileName = AssetImages.clockHor.fileName,
             inSampleSize = 2
         ).files()

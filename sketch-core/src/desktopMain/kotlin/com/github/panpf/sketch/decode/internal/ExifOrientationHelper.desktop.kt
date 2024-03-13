@@ -42,10 +42,13 @@ class DesktopExifOrientationHelper constructor(
         val bufferedImage = image.asOrNull<BufferedImageImage>()?.bufferedImage ?: return null
         val rotationDegrees = getRotationDegrees()
         val isFlipped = isFlipped()
+        val isRotated = abs(rotationDegrees % 360) != 0
+        if (!isFlipped && !isRotated) {
+            return null
+        }
 
         val bufferedImage2: BufferedImage
         val bufferedImage3: BufferedImage
-        val isRotated = abs(rotationDegrees % 360) != 0
         if (!reverse) {
             bufferedImage2 = if (isFlipped) {
                 flipImage(bufferedImage, vertical = false)

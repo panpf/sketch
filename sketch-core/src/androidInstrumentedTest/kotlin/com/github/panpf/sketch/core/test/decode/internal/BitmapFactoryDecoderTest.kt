@@ -107,7 +107,6 @@ class BitmapFactoryDecoderTest {
         // exif
         ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.clockHor.fileName
         ).files()
             .forEach { testFile ->
@@ -618,7 +617,6 @@ class BitmapFactoryDecoderTest {
 
         val testFile = ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.jpeg.fileName
         ).files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
@@ -848,7 +846,6 @@ class BitmapFactoryDecoderTest {
 
         val testFile = ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.jpeg.fileName
         ).files()
             .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!

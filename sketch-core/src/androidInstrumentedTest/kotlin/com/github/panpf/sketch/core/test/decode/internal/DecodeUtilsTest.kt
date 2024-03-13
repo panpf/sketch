@@ -45,8 +45,6 @@ import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
-import com.github.panpf.sketch.decode.internal.isSupportInBitmap
-import com.github.panpf.sketch.decode.internal.isSupportInBitmapForRegion
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
@@ -63,7 +61,6 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -860,7 +857,7 @@ class DecodeUtilsTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val hasExifFile =
-            ExifOrientationTestFileHelper(context, context.sketch, AssetImages.jpeg.fileName)
+            ExifOrientationTestFileHelper(context, AssetImages.jpeg.fileName)
                 .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
 
         val result1 = ImageRequest(context, hasExifFile.file.path) {
@@ -1213,7 +1210,7 @@ class DecodeUtilsTest {
         val request = ImageRequest(context, AssetImages.jpeg.uri)
 
         val hasExifFile =
-            ExifOrientationTestFileHelper(context, context.sketch, AssetImages.jpeg.fileName)
+            ExifOrientationTestFileHelper(context, AssetImages.jpeg.fileName)
                 .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
         val bitmap = BitmapFactory.decodeFile(hasExifFile.file.path)
 
@@ -1393,7 +1390,6 @@ class DecodeUtilsTest {
 
         ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
@@ -1454,7 +1450,6 @@ class DecodeUtilsTest {
 
         ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
@@ -1516,7 +1511,6 @@ class DecodeUtilsTest {
 
         ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.clockHor.fileName
         ).files()
             .forEach {

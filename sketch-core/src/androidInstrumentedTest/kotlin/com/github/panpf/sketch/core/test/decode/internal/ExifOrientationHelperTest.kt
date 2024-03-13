@@ -37,7 +37,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
@@ -83,7 +82,6 @@ class ExifOrientationHelperTest {
 
         ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
@@ -142,7 +140,6 @@ class ExifOrientationHelperTest {
 
         ExifOrientationTestFileHelper(
             context,
-            context.sketch,
             AssetImages.clockHor.fileName
         ).files()
             .forEach {
