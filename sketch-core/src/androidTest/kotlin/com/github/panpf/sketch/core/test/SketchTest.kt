@@ -48,7 +48,6 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.LoadResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.DelayTransformation
@@ -195,7 +194,6 @@ class SketchTest {
                         addBitmapDecoder(DrawableBitmapDecoder.Factory())
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
@@ -226,7 +224,6 @@ class SketchTest {
                         addBitmapDecoder(DrawableBitmapDecoder.Factory())
                         addBitmapDecoder(DefaultBitmapDecoder.Factory())
                         addDrawableDecoder(DefaultDrawableDecoder.Factory())
-                        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addBitmapDecodeInterceptor(BitmapResultCacheDecodeInterceptor())
@@ -269,7 +266,6 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(
-                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
@@ -283,7 +279,6 @@ class SketchTest {
                 Assert.assertEquals(
                     listOf(
                         TestRequestInterceptor(),
-                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
@@ -291,7 +286,6 @@ class SketchTest {
                 )
                 Assert.assertNotEquals(
                     listOf(
-                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),

@@ -2,6 +2,10 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+# new
+
+* fix: Fix the bug that the resizeSize of GlobalImageOptions does not take effect
+
 # v3.3.1
 
 #### sketch:

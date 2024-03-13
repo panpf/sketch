@@ -2,6 +2,10 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+* fix: 修复 GlobalImageOptions resizeSize 不生效的 bug 
+
 # v3.3.1
 
 #### sketch:

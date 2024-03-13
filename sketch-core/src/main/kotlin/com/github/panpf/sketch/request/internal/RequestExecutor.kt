@@ -60,12 +60,15 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(sketch: Sketch, request: ImageRequest, enqueue: Boolean): ImageResult {
+    suspend fun execute(sketch: Sketch, initialRequest: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        val requestDelegate = requestDelegate(sketch, initialRequest, coroutineContext.job)
         requestDelegate.assertActive()
+
+        val request = applyGlobalOptions(sketch, initialRequest)
+
         var requestContext: RequestContext? = null
         var firstRequestKey: String? = null
 
@@ -165,6 +168,22 @@ class RequestExecutor {
         } finally {
             requestContext?.completeCountDrawable("RequestCompleted")
             requestDelegate.finish()
+        }
+    }
+
+    private fun applyGlobalOptions(sketch: Sketch, request: ImageRequest): ImageRequest {
+        val defaultImageOptions = request.defaultOptions
+        val globalImageOptions = sketch.globalImageOptions
+        return if (globalImageOptions != null) {
+            val newDefaultOptions =
+                if (defaultImageOptions != null && defaultImageOptions !== globalImageOptions) {
+                    defaultImageOptions.merged(globalImageOptions)
+                } else {
+                    globalImageOptions
+                }
+            request.newBuilder().default(newDefaultOptions).build()
+        } else {
+            request
         }
     }
 
