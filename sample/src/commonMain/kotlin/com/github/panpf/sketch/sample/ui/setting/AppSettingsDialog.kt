@@ -433,10 +433,12 @@ fun SwitchSetting(settingItem: SwitchSettingItem) {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = menuItemHeight)
-                .clickable { settingItem.state.value = !settingItem.state.value }
                 .ifLet(settingItem.onLongClick != null) {
                     it.pointerInput(settingItem) {
-                        detectTapGestures(onLongPress = { settingItem.onLongClick?.invoke() })
+                        detectTapGestures(
+                            onTap = { settingItem.state.value = !settingItem.state.value },
+                            onLongPress = { settingItem.onLongClick?.invoke() },
+                        )
                     }
                 }
                 .padding(horizontal = 20.dp, vertical = 12.dp),
