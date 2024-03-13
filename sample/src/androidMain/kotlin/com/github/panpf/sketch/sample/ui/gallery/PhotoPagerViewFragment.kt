@@ -37,9 +37,6 @@ import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
-import com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewFragment.ItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -57,7 +54,10 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
     }
     private val viewModel by viewModels<PhotoPagerViewModel>()
 
-    override var statusBarTextStyle: StatusBarTextStyle? = White
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lightStatusAndNavigationBar = false
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(
@@ -67,15 +67,15 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
         binding.pager.apply {
             adapter = AssemblyFragmentStateAdapter(
                 this@PhotoPagerViewFragment,
-                listOf(ItemFactory()),
+                listOf(PhotoViewerViewFragment.ItemFactory()),
                 imageList
             )
 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    val imageUrl =
-                        imageList[position].let { it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl }
+                    val imageUrl = imageList[position]
+                        .let { it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl }
                     loadBgImage(binding, imageUrl)
                 }
             })
@@ -157,14 +157,19 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             owner = viewLifecycleOwner,
             state = State.STARTED
         ) { color ->
-            listOf(binding.backImage, binding.settingsImage, binding.originImage, binding.pageNumberText).forEach {
+            listOf(
+                binding.backImage,
+                binding.settingsImage,
+                binding.originImage,
+                binding.pageNumberText
+            ).forEach {
                 it.background.asOrThrow<GradientDrawable>().setColor(color)
             }
         }
     }
 
-    override fun getTopInsetsView(binding: FragmentImagePagerBinding): View {
-        return binding.toolsLayout
+    override fun getStatusBarInsetsView(binding: FragmentImagePagerBinding): View {
+        return binding.statusBarInsetsLayout
     }
 
     private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {

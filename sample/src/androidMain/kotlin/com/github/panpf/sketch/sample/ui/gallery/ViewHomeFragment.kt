@@ -84,8 +84,8 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
         "Test" to TestHomeFragment(),
     )
 
-    override fun getTopInsetsView(binding: FragmentViewHomeBinding): View {
-        return binding.toolbar
+    override fun getStatusBarInsetsView(binding: FragmentViewHomeBinding): View {
+        return binding.root
     }
 
     override fun onViewCreated(binding: FragmentViewHomeBinding, savedInstanceState: Bundle?) {

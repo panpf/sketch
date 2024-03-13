@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -143,6 +145,7 @@ fun PhotoViewer(
         Row(
             Modifier
                 .align(Alignment.BottomCenter)
+                .windowInsetsPadding(NavigationBarDefaults.windowInsets)
                 .padding(vertical = 30.dp),
         ) {
             val buttonBgColor = buttonBgColorState.value

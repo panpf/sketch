@@ -17,6 +17,8 @@ package com.github.panpf.sketch.sample.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import com.github.panpf.sketch.sample.databinding.ActivityMainBinding
 import com.github.panpf.sketch.sample.service.NotificationService
@@ -27,7 +29,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
-        EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window, /* edgeToEdgeEnabled = */ true)
+        EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window,/* edgeToEdgeEnabled = */ true)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            window.statusBarColor = Color.parseColor("#60000000")
+        }
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+            window.navigationBarColor = Color.TRANSPARENT
+        }
     }
 
     override fun onFirstResume() {

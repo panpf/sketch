@@ -16,13 +16,14 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
@@ -34,8 +35,6 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle.White
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
@@ -61,9 +60,16 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
-    override var statusBarTextStyle: StatusBarTextStyle? = White
-    override var isPage = false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        screenMode = false
+    }
 
+    override fun getNavigationBarInsetsView(binding: FragmentImageViewerBinding): View? {
+        return binding.navigationBarInsetsLayout
+    }
+
+    @SuppressLint("RestrictedApi")
     override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.zoomImage.apply {
             appSettingsService.scrollBarEnabled

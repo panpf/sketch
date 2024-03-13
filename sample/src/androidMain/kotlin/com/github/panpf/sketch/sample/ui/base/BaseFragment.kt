@@ -15,37 +15,45 @@
  */
 package com.github.panpf.sketch.sample.ui.base
 
-import android.graphics.Color
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.view.WindowCompat
-import androidx.core.view.updateLayoutParams
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.github.panpf.sketch.sample.ui.theme.getWindowBackgroundColor
-import com.github.panpf.sketch.sample.ui.theme.isNightMode
-import com.github.panpf.tools4a.display.ktx.getStatusBarHeight
 import com.github.panpf.tools4a.toast.ktx.showLongToast
+import com.google.android.material.internal.EdgeToEdgeUtils
+import com.google.android.material.internal.ViewUtils
 
 abstract class BaseFragment : Fragment() {
 
-    protected open var statusBarTextStyle: StatusBarTextStyle? = null
+    private var resumeCount = 0
+
+    var screenMode: Boolean = true
         set(value) {
+            require(view == null) { "Please set screenMode before onCreateView" }
             field = value
-            if (isResumed) {
-                setupStatusBarStyle()
+        }
+
+    var lightStatusAndNavigationBar: Boolean? = null
+        set(value) {
+            if (value != field) {
+                field = value
+                if (isResumed) {
+                    setupLightStatusAndNavigationBar()
+                }
             }
         }
-    protected open var isPage: Boolean = true
-
-    private var resumeCount = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTopInsets()
-        if (isPage) {
+        setupScreenMode(view)
+        setupWindowInsets()
+    }
+
+    private fun setupScreenMode(view: View) {
+        if (screenMode) {
             view.isClickable = true
             if (view.background == null) {
                 view.setBackgroundColor(view.context.getWindowBackgroundColor())
@@ -53,7 +61,63 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    open fun getTopInsetsView(): View? = null
+    @SuppressLint("RestrictedApi")
+    private fun setupWindowInsets() {
+        val statusBarInsetsView = getStatusBarInsetsView()
+        if (statusBarInsetsView != null) {
+            ViewUtils.doOnApplyWindowInsets(statusBarInsetsView) { _, insets, initialPadding ->
+                initialPadding.top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                initialPadding.applyToView(statusBarInsetsView)
+                insets
+            }
+        }
+
+        val navigationBarInsetsLayout = getNavigationBarInsetsView()
+        if (navigationBarInsetsLayout != null) {
+            ViewUtils.doOnApplyWindowInsets(navigationBarInsetsLayout) { _, insets, initialPadding ->
+                initialPadding.bottom =
+                    insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                initialPadding.applyToView(navigationBarInsetsLayout)
+                insets
+            }
+        }
+    }
+
+    open fun getStatusBarInsetsView(): View? = null
+
+    open fun getNavigationBarInsetsView(): View? = null
+
+    @SuppressLint("RestrictedApi")
+    private fun setupLightStatusAndNavigationBar() {
+        if (screenMode) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                EdgeToEdgeUtils.setLightStatusBar(
+                    /* window = */ requireActivity().window,
+                    /* isLight = */ lightStatusAndNavigationBar != false
+                )
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                EdgeToEdgeUtils.setLightNavigationBar(
+                    /* window = */ requireActivity().window,
+                    /* isLight = */ lightStatusAndNavigationBar != false
+                )
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupLightStatusAndNavigationBar()
+
+        resumeCount++
+        if (resumeCount == 1) {
+            onFirstResume()
+        }
+    }
+
+    protected open fun onFirstResume() {
+
+    }
 
     fun handleActionResult(result: ActionResult): Boolean =
         when (result) {
@@ -67,53 +131,4 @@ abstract class BaseFragment : Fragment() {
                 false
             }
         }
-
-    override fun onResume() {
-        super.onResume()
-        setupStatusBarStyle()
-
-        resumeCount++
-        if (resumeCount == 1) {
-            onFirstResume()
-        }
-    }
-
-    protected open fun onFirstResume() {
-
-    }
-
-    private fun setTopInsets() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getTopInsetsView()?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin += requireContext().getStatusBarHeight()
-            }
-        }
-    }
-
-    private fun setupStatusBarStyle() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
-        val window = requireActivity().window
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.statusBarColor = Color.TRANSPARENT
-                val insetsController =
-                    WindowCompat.getInsetsController(window, requireView())
-                val statusBarTextStyle =
-                    statusBarTextStyle
-                        ?: if (requireContext().isNightMode()) StatusBarTextStyle.White else StatusBarTextStyle.Black
-                window.decorView.apply {
-                    insetsController.isAppearanceLightStatusBars =
-                        statusBarTextStyle == StatusBarTextStyle.Black
-                }
-            } else {
-                window.statusBarColor = Color.parseColor("#60000000")
-            }
-        } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        }
-    }
 }

@@ -82,7 +82,6 @@ class FetcherTestScreen : BaseScreen() {
                                 downloadCachePolicy(DISABLED)
                             },
                             contentDescription = "Image",
-                            contentScale = ContentScale.Inside,
                             state = imageState,
                             modifier = Modifier
                                 .fillMaxSize()

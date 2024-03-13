@@ -25,14 +25,14 @@ import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
 
 abstract class BaseToolbarFragment : BaseFragment() {
 
-    protected var toolbar: Toolbar? = null
+    protected var toolbarPageBinding: FragmentToolbarPageBinding? = null
 
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentToolbarPageBinding.inflate(inflater, container, false).apply {
-        this@BaseToolbarFragment.toolbar = toolbar
+        this@BaseToolbarFragment.toolbarPageBinding = this
         val view = createView(toolbar, inflater, content)
         content.addView(view)
     }.root
@@ -45,10 +45,10 @@ abstract class BaseToolbarFragment : BaseFragment() {
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.toolbar!!.setNavigationOnClickListener {
+        this.toolbarPageBinding!!.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-        onViewCreated(this.toolbar!!, savedInstanceState)
+        onViewCreated(toolbarPageBinding!!.toolbar, savedInstanceState)
     }
 
     protected open fun onViewCreated(
@@ -58,12 +58,12 @@ abstract class BaseToolbarFragment : BaseFragment() {
 
     }
 
-    override fun getTopInsetsView(): View? {
-        return toolbar!!
+    override fun getStatusBarInsetsView(): View? {
+        return toolbarPageBinding!!.root
     }
 
     override fun onDestroyView() {
-        this.toolbar = null
+        this.toolbarPageBinding = null
         super.onDestroyView()
     }
 }

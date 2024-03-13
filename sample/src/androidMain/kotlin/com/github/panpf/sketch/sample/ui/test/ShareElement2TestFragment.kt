@@ -40,8 +40,8 @@ class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2B
         }
     }
 
-    override fun getTopInsetsView(binding: FragmentTestShareElement2Binding): View {
-        return binding.zoomImage
+    override fun getStatusBarInsetsView(binding: FragmentTestShareElement2Binding): View {
+        return binding.root
     }
 
     override fun onViewCreated(

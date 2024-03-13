@@ -50,11 +50,7 @@ class ComposeHomeFragment : BaseFragment() {
                 var screenState by remember { mutableStateOf<Screen?>(null) }
                 LaunchedEffect(Unit) {
                     snapshotFlow { screenState }.collect {
-                        statusBarTextStyle = if (it is PhotoPagerScreen) {
-                            StatusBarTextStyle.White
-                        } else {
-                            StatusBarTextStyle.Black
-                        }
+                        lightStatusAndNavigationBar = it !is PhotoPagerScreen
                     }
                 }
                 Navigator(PhotoListScreen) { navigator ->

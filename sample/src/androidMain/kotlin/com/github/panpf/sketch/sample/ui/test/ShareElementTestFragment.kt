@@ -28,8 +28,8 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class ShareElementTestFragment : BaseBindingFragment<FragmentTestShareElementBinding>() {
 
-    override fun getTopInsetsView(binding: FragmentTestShareElementBinding): View {
-        return binding.myImage
+    override fun getStatusBarInsetsView(binding: FragmentTestShareElementBinding): View {
+        return binding.root
     }
 
     override fun onViewCreated(
