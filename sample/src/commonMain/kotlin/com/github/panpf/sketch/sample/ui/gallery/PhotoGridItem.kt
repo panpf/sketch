@@ -116,6 +116,7 @@ fun PhotoGridItem(
             }
             crossfade()
             resizeOnDraw()
+            sizeMultiplier(2f)  // To get a clearer thumbnail
             merge(appSettingsService.buildListImageOptions())
         }
     }

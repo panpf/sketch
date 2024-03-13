@@ -19,6 +19,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.times
 
 class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {
 
@@ -54,7 +55,7 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
             _requestList.add(request)
             _request = request
             if (lastRequest.sizeResolver != request.sizeResolver) {
-                size = request.sizeResolver.size()
+                size = request.sizeResolver.size() * (request.sizeMultiplier ?: 1f)
             }
             _cacheKey = null
         }

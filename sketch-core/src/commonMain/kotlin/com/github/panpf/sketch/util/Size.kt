@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.util
 
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 open class Size(val width: Int, val height: Int) {
 
@@ -68,6 +69,30 @@ open class Size(val width: Int, val height: Int) {
 
 val Size.isNotEmpty: Boolean
     get() = !isEmpty
+
+/**
+ * Multiplication operator.
+ *
+ * Returns a [Size] whose dimensions are the dimensions of the left-hand-side
+ * operand (a [Size]) multiplied by the scalar right-hand-side operand (a
+ * [Float]).
+ */
+operator fun Size.times(operand: Float) = Size(
+    width = (width * operand).roundToInt(),
+    height = (height * operand).roundToInt()
+)
+
+/**
+ * Division operator.
+ *
+ * Returns a [Size] whose dimensions are the dimensions of the left-hand-side
+ * operand (a [Size]) divided by the scalar right-hand-side operand (a
+ * [Float]).
+ */
+operator fun Size.div(operand: Float) = Size(
+    width = (width / operand).roundToInt(),
+    height = (height / operand).roundToInt()
+)
 
 fun Size.isSameAspectRatio(other: Size, delta: Float = 0f): Boolean {
     val selfScale = this.width / this.height.toFloat()

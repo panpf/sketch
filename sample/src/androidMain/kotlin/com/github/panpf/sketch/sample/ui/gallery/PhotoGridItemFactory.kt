@@ -110,6 +110,7 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
                 }
                 crossfade()
                 resizeOnDraw()
+                sizeMultiplier(2f)  // To get a clearer thumbnail
             }
         }
     }

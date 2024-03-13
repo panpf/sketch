@@ -135,6 +135,11 @@ interface ImageRequest {
     val sizeResolver: SizeResolver
 
     /**
+     * val finalSize = sizeResolver.size() * sizeMultiplier
+     */
+    val sizeMultiplier: Float?
+
+    /**
      * Decide what Precision to use with [sizeResolver] to calculate the size of the final Bitmap
      */
     val precisionDecider: PrecisionDecider
@@ -526,6 +531,14 @@ interface ImageRequest {
         }
 
         /**
+         * val finalSize = sizeResolver.size() * sizeMultiplier
+         */
+        // TODO test
+        fun sizeMultiplier(multiplier: Float?): Builder = apply {
+            definedOptionsBuilder.sizeMultiplier(multiplier)
+        }
+
+        /**
          * Set the resize precision
          */
         fun precision(precisionDecider: PrecisionDecider?): Builder = apply {
@@ -770,6 +783,7 @@ interface ImageRequest {
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
             val sizeResolver = finalOptions.sizeResolver
                 ?: resolveSizeResolver()
+            val sizeMultiplier = finalOptions.sizeMultiplier
             val precisionDecider = finalOptions.precisionDecider
                 ?: PrecisionDecider(Precision.LESS_PIXELS)
             val scaleDecider = finalOptions.scaleDecider ?: ScaleDecider(resolveScale())
@@ -800,6 +814,7 @@ interface ImageRequest {
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
                 sizeResolver = sizeResolver,
+                sizeMultiplier = sizeMultiplier,
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
@@ -877,6 +892,7 @@ interface ImageRequest {
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy,
         override val sizeResolver: SizeResolver,
+        override val sizeMultiplier: Float?,
         override val precisionDecider: PrecisionDecider,
         override val scaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,

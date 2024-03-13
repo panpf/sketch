@@ -19,6 +19,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: MemoryCache.Value is changed to an interface, and its implementation classes include BitmapValue and CountBitmapValue
 * change: BitmapDecoder and DrawableDecoder are now merged into Decoder
 * change: SizeResolver now inherits from the Key interface
+* new: Add sizeMultiplier attribute to obtain clearer thumbnails
 
 #### sketch-compose:
 

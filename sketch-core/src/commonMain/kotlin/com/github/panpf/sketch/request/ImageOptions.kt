@@ -98,6 +98,11 @@ interface ImageOptions {
     val sizeResolver: SizeResolver?
 
     /**
+     * val finalSize = sizeResolver.size() * sizeMultiplier
+     */
+    val sizeMultiplier: Float?
+
+    /**
      * Decide what Precision to use with [sizeResolver] to calculate the size of the final Bitmap
      */
     val precisionDecider: PrecisionDecider?
@@ -214,6 +219,7 @@ interface ImageOptions {
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
                 && sizeResolver == null
+                && sizeMultiplier == null
                 && precisionDecider == null
                 && scaleDecider == null
                 && transformations == null
@@ -237,6 +243,7 @@ interface ImageOptions {
         private var downloadCachePolicy: CachePolicy? = null
 
         private var sizeResolver: SizeResolver? = null
+        private var sizeMultiplier: Float? = null
         private var precisionDecider: PrecisionDecider? = null
         private var scaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
@@ -263,6 +270,7 @@ interface ImageOptions {
             this.downloadCachePolicy = request.downloadCachePolicy
 
             this.sizeResolver = request.sizeResolver
+            this.sizeMultiplier = request.sizeMultiplier
             this.precisionDecider = request.precisionDecider
             this.scaleDecider = request.scaleDecider
             this.transformations = request.transformations?.toMutableList()
@@ -435,6 +443,14 @@ interface ImageOptions {
          */
         fun size(@Px width: Int, @Px height: Int): Builder =
             size(FixedSizeResolver(width, height))
+
+        /**
+         * val finalSize = sizeResolver.size() * sizeMultiplier
+         */
+        // TODO test
+        fun sizeMultiplier(multiplier: Float?): Builder = apply {
+            this.sizeMultiplier = multiplier
+        }
 
         /**
          * Set the resize precision, default is [Precision.LESS_PIXELS]
@@ -698,6 +714,9 @@ interface ImageOptions {
             if (this.sizeResolver == null) {
                 this.sizeResolver = options.sizeResolver
             }
+            if (this.sizeMultiplier == null) {
+                this.sizeMultiplier = options.sizeMultiplier
+            }
             if (this.precisionDecider == null) {
                 this.precisionDecider = options.precisionDecider
             }
@@ -753,6 +772,7 @@ interface ImageOptions {
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
                 sizeResolver = sizeResolver,
+                sizeMultiplier = sizeMultiplier,
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
@@ -788,6 +808,7 @@ interface ImageOptions {
         override val downloadCachePolicy: CachePolicy?,
 
         override val sizeResolver: SizeResolver?,
+        override val sizeMultiplier: Float?,
         override val precisionDecider: PrecisionDecider?,
         override val scaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
@@ -811,6 +832,7 @@ interface ImageOptions {
             if (httpHeaders != other.httpHeaders) return false
             if (downloadCachePolicy != other.downloadCachePolicy) return false
             if (sizeResolver != other.sizeResolver) return false
+            if (sizeMultiplier != other.sizeMultiplier) return false
             if (precisionDecider != other.precisionDecider) return false
             if (scaleDecider != other.scaleDecider) return false
             if (transformations != other.transformations) return false
@@ -833,6 +855,7 @@ interface ImageOptions {
             result = 31 * result + (httpHeaders?.hashCode() ?: 0)
             result = 31 * result + (downloadCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (sizeResolver?.hashCode() ?: 0)
+            result = 31 * result + (sizeMultiplier?.hashCode() ?: 0)
             result = 31 * result + (precisionDecider?.hashCode() ?: 0)
             result = 31 * result + (scaleDecider?.hashCode() ?: 0)
             result = 31 * result + (transformations?.hashCode() ?: 0)
@@ -857,6 +880,7 @@ interface ImageOptions {
                 append("httpHeaders=$httpHeaders, ")
                 append("downloadCachePolicy=$downloadCachePolicy, ")
                 append("sizeResolver=$sizeResolver, ")
+                append("sizeMultiplier=$sizeMultiplier, ")
                 append("precisionDecider=$precisionDecider, ")
                 append("scaleDecider=$scaleDecider, ")
                 append("transformations=$transformations, ")

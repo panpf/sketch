@@ -18,6 +18,7 @@
 * change: MemoryCache.Value 改为接口，它的实现类有 BitmapValue 和 CountBitmapValue
 * change: BitmapDecoder 和 DrawableDecoder 现在合并成 Decoder
 * change: SizeResolver 现在继承自 Key 接口
+* new: 增加 sizeMultiplier 属性，用于获取更清晰的缩略图
 
 #### sketch-compose:
 

@@ -63,7 +63,7 @@ class RequestExecutor {
             }
 
             // resolve resize size
-            val size = request.sizeResolver.size()
+            val size = request.sizeResolver.size() * (request.sizeMultiplier ?: 1f)
             requestContext.size = size
 
             onStart(requestContext)

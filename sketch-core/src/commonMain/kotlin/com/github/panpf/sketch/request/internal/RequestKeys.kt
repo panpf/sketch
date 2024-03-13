@@ -26,6 +26,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
     .appendSize()
+    .appendSizeMultiplier()
     .appendPrecision()
     .appendScale()
     .appendTransformations()
@@ -128,6 +129,13 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
             appendQueryParameter("_size", size.toString())
         } else {
             appendQueryParameter("_size", request.sizeResolver.key)
+        }
+    }
+
+    fun appendSizeMultiplier(): ImageRequestKeyBuilder = apply {
+        val sizeMultiplier = request.sizeMultiplier
+        if (sizeMultiplier != null) {
+            appendQueryParameter("_sizeMultiplier", sizeMultiplier.toString())
         }
     }
 
