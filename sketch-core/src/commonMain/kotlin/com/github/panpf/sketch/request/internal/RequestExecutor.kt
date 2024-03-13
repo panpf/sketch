@@ -29,6 +29,7 @@ import com.github.panpf.sketch.target.awaitStarted
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
 import kotlin.coroutines.coroutineContext
@@ -41,12 +42,14 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(sketch: Sketch, request: ImageRequest, enqueue: Boolean): ImageResult {
+    suspend fun execute(sketch: Sketch, initialRequest: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        val requestDelegate = requestDelegate(sketch, initialRequest, coroutineContext.job)
         requestDelegate.assertActive()
+
+        val request = applyGlobalOptions(sketch, initialRequest)
         val requestContext = RequestContext(sketch, request)
 
         try {
@@ -95,6 +98,22 @@ class RequestExecutor {
         } finally {
             requestDelegate.finish()
             requestContext.completed()
+        }
+    }
+
+    private fun applyGlobalOptions(sketch: Sketch, request: ImageRequest): ImageRequest {
+        val defaultImageOptions = request.defaultOptions
+        val globalImageOptions = sketch.globalImageOptions
+        return if (globalImageOptions != null) {
+            val newDefaultOptions =
+                if (defaultImageOptions != null && defaultImageOptions !== globalImageOptions) {
+                    defaultImageOptions.merged(globalImageOptions)
+                } else {
+                    globalImageOptions
+                }
+            request.newBuilder().default(newDefaultOptions).build()
+        } else {
+            request
         }
     }
 

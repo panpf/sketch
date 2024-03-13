@@ -23,6 +23,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
+import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.util.defaultMemoryCacheBytes
 import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
@@ -42,7 +43,6 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.GlobalImageOptionsRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.utils.DelayTransformation
@@ -187,7 +187,6 @@ class SketchTest {
                         addFetcher(Base64UriFetcher.Factory())
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
-                        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
@@ -214,7 +213,6 @@ class SketchTest {
                         addFetcher(Base64UriFetcher.Factory())
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
-                        addRequestInterceptor(GlobalImageOptionsRequestInterceptor())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
@@ -254,7 +252,6 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     listOf(
-                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
@@ -268,7 +265,6 @@ class SketchTest {
                 Assert.assertEquals(
                     listOf(
                         TestRequestInterceptor(),
-                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
@@ -276,7 +272,6 @@ class SketchTest {
                 )
                 Assert.assertNotEquals(
                     listOf(
-                        GlobalImageOptionsRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
