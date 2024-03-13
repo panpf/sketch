@@ -17,4 +17,20 @@ package com.github.panpf.sketch.sample.ui.base
 
 import androidx.appcompat.app.AppCompatActivity
 
-abstract class BaseActivity : AppCompatActivity()
+abstract class BaseActivity : AppCompatActivity() {
+
+    private var resumeCount = 0
+
+    override fun onResume() {
+        super.onResume()
+
+        resumeCount++
+        if (resumeCount == 1) {
+            onFirstResume()
+        }
+    }
+
+    protected open fun onFirstResume() {
+
+    }
+}

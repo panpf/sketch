@@ -15,19 +15,25 @@
  */
 package com.github.panpf.sketch.sample.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import com.github.panpf.sketch.sample.databinding.ActivityMainBinding
 import com.github.panpf.sketch.sample.service.NotificationService
 import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
-import kotlinx.coroutines.launch
+import com.google.android.material.internal.EdgeToEdgeUtils
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
-        lifecycleScope.launch {
-            startService(Intent(this@MainActivity, NotificationService::class.java))
-        }
+        EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window, /* edgeToEdgeEnabled = */ true)
+    }
+
+    override fun onFirstResume() {
+        super.onFirstResume()
+        // It can only be executed here, not in onCreate.
+        // Because when the app is started when the phone is locked, the app is in the background state in the onCreate method, so the app will crash when the service is started.
+        startService(Intent(this@MainActivity, NotificationService::class.java))
     }
 }
