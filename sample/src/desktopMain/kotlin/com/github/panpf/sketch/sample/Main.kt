@@ -22,6 +22,8 @@ import net.harawata.appdirs.AppDirsFactory
 import okio.Path.Companion.toOkioPath
 import java.io.File
 
+const val appId = "com.github.panpf.sketch4.sample"
+
 fun main() {
     initialSketch()
     application {
@@ -50,7 +52,7 @@ private fun initialSketch() {
     SingletonSketch.setSafe {
         Sketch.Builder(PlatformContext.INSTANCE).apply {
             val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
-                /* appName = */ "com.github.panpf.sketch4.sample",
+                /* appName = */ appId,
                 /* appVersion = */ null,
                 /* appAuthor = */ null,
             )!!.let { File(it) }

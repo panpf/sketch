@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,20 +19,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import kotlin.math.roundToInt
 
 @Composable
 fun CircleTransformationTestPage() {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         var scale by remember { mutableStateOf(Scale.CENTER_CROP) }
-        AsyncImage(
+        MyAsyncImage(
             request = ImageRequest(LocalPlatformContext.current, AssetImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

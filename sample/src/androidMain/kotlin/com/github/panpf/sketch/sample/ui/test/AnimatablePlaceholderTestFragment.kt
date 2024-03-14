@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
+import android.view.View
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
@@ -29,6 +30,10 @@ class AnimatablePlaceholderTestFragment :
     BaseToolbarBindingFragment<FragmentTestAnimatablePlaceholderBinding>() {
 
     private var urlIndex = 0
+
+    override fun getNavigationBarInsetsView(binding: FragmentTestAnimatablePlaceholderBinding): View {
+        return binding.root
+    }
 
     override fun onViewCreated(
         toolbar: androidx.appcompat.widget.Toolbar,

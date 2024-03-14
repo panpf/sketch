@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,15 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.stateimage.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
-import com.github.panpf.sketch.sample.ui.rememberIconPlaceholderEclipseAnimatedPainter
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
+import com.github.panpf.sketch.sample.ui.rememberIconPlaceholderEclipseAnimatedPainter
 
 class AnimatablePlaceholderTestScreen : BaseScreen() {
 
@@ -38,7 +40,10 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
             val context = LocalPlatformContext.current
             val eclipseAnimatedPainter = rememberIconPlaceholderEclipseAnimatedPainter(context)
             if (eclipseAnimatedPainter != null) {
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                        .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+                ) {
                     var urlIndexState by remember { mutableStateOf(0) }
                     val images = remember {
                         arrayOf(AssetImages.jpeg.uri, AssetImages.webp.uri, AssetImages.bmp.uri)
@@ -59,7 +64,7 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                         }
                     }
                     Spacer(modifier = Modifier.size(20.dp))
-                    AsyncImage(
+                    MyAsyncImage(
                         request = request,
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
@@ -69,7 +74,7 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                             .align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.size(16.dp))
-                    AsyncImage(
+                    MyAsyncImage(
                         request = request,
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
@@ -79,7 +84,7 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                             .align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.size(16.dp))
-                    AsyncImage(
+                    MyAsyncImage(
                         request = request,
                         contentDescription = "",
                         contentScale = ContentScale.Crop,

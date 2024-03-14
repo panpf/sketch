@@ -17,10 +17,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import kotlin.math.roundToInt
 
@@ -32,7 +32,7 @@ fun RoundCornersTransformationTestPage() {
         var bottomLeftRoundedCornersRadius by remember { mutableStateOf(40) }
         var bottomRightRoundedCornersRadius by remember { mutableStateOf(80) }
 
-        AsyncImage(
+        MyAsyncImage(
             request = ImageRequest(LocalPlatformContext.current, AssetImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

@@ -8,7 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -41,8 +43,9 @@ fun PhotoGridItem(
     animatedPlaceholder: Boolean = false,
     staggeredGridMode: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit,
-    onLongClick: (photo: Photo, index: Int, displayResult: ImageResult) -> Unit,
 ) {
+    var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
+
     val context = LocalPlatformContext.current
     val imageState = rememberAsyncImageState()
     val mimeTypeLogoMap = rememberMimeTypeLogoMap()
@@ -68,7 +71,7 @@ fun PhotoGridItem(
                 onLongPress = {
                     val imageResult = imageState.result
                     if (imageResult != null) {
-                        onLongClick(photo, index, imageResult)
+                        photoInfoImageResult = imageResult
                     }
                 }
             )
@@ -152,6 +155,12 @@ fun PhotoGridItem(
                 contentScale = ContentScale.Crop,
                 contentDescription = "photo"
             )
+        }
+    }
+
+    if (photoInfoImageResult != null) {
+        PhotoInfoDialog(photoInfoImageResult) {
+            photoInfoImageResult = null
         }
     }
 }

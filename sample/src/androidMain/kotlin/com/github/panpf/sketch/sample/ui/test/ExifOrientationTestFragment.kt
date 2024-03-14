@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.decode.ExifOrientation
@@ -25,6 +26,10 @@ import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
+
+    override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
+        return binding.root
+    }
 
     override fun onViewCreated(
         toolbar: Toolbar,

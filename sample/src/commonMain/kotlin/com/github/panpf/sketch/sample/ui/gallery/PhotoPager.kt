@@ -74,7 +74,6 @@ fun PhotoPager(
     onBackClick: () -> Unit,
 ) {
     var showSettingsDialog by remember { mutableStateOf(false) }
-    var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
@@ -97,12 +96,6 @@ fun PhotoPager(
                 photo = photos[index],
                 buttonBgColorState = buttonBgColorState,
                 onClick = onImageClick,
-                onLongClick = { imageResult ->
-                    photoInfoImageResult = imageResult
-                },
-                onInfoClick = { imageResult ->
-                    photoInfoImageResult = imageResult
-                },
                 onShareClick = {
                     onShareClick.invoke(photos[pagerState.currentPage])
                 },
@@ -131,11 +124,6 @@ fun PhotoPager(
         )
     }
 
-    if (photoInfoImageResult != null) {
-        PhotoInfoDialog(photoInfoImageResult) {
-            photoInfoImageResult = null
-        }
-    }
     if (showSettingsDialog) {
         AppSettingsDialog(page = ZOOM) {
             showSettingsDialog = false

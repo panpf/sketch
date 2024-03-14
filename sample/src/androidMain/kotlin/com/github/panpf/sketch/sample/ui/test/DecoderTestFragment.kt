@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
@@ -55,6 +56,10 @@ import kotlinx.coroutines.withContext
 class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
     private val viewModel by viewModels<DecoderTestViewModel>()
+
+    override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
+        return binding.root
+    }
 
     override fun onViewCreated(
         toolbar: Toolbar,

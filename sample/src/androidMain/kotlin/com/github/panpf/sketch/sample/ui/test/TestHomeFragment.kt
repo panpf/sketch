@@ -60,13 +60,20 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
     private fun pageList(): List<Any> = listOf(
         Link(
-            title = "Local Videos",
-            navDirections = NavMainDirections.actionLocalVideoListFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+            title = "AnimatablePlaceholder",
+            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
         ),
         Link(
-            title = "RemoteViews",
-            navDirections = NavMainDirections.actionRemoteViewsFragment()
+            title = "DisplayInsanity",
+            navDirections = NavMainDirections.actionInsanityTestViewFragment()
+        ),
+        Link(
+            title = "Decoder",
+            navDirections = NavMainDirections.actionDecoderTestPagerFragment()
+        ),
+        Link(
+            title = "ExifOrientation",
+            navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
         ),
         Link(
             title = "Fetcher",
@@ -74,32 +81,25 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
         Link(
-            title = "Decoder",
-            navDirections = NavMainDirections.actionDecoderTestPagerFragment()
-        ),
-        Link(
-            title = "Transformation",
-            navDirections = NavMainDirections.actionTransformationTestPagerFragment()
-        ),
-        Link(
-            title = "ExifOrientation",
-            navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
+            title = "Local Videos",
+            navDirections = NavMainDirections.actionLocalVideoListFragment(),
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
         Link(
             title = "ProgressIndicator",
             navDirections = NavMainDirections.actionProgressIndicatorTestViewFragment()
         ),
         Link(
-            title = "DisplayInsanity",
-            navDirections = NavMainDirections.actionInsanityTestViewFragment()
-        ),
-        Link(
-            title = "AnimatablePlaceholder",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
+            title = "RemoteViews",
+            navDirections = NavMainDirections.actionRemoteViewsFragment()
         ),
         Link(
             title = "ShareElement",
             navDirections = NavMainDirections.actionShareElementTestFragment(),
+        ),
+        Link(
+            title = "Transformation",
+            navDirections = NavMainDirections.actionTransformationTestPagerFragment()
         ),
     )
 

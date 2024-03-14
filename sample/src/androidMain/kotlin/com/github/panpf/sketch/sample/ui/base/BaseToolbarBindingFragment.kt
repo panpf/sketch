@@ -48,6 +48,18 @@ abstract class BaseToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseTool
 
     }
 
+    final override fun getStatusBarInsetsView(): View? {
+        return getStatusBarInsetsView(binding!!) ?: super.getStatusBarInsetsView()
+    }
+
+    open fun getStatusBarInsetsView(binding: VIEW_BINDING): View? = null
+
+    final override fun getNavigationBarInsetsView(): View? {
+        return getNavigationBarInsetsView(binding!!) ?: super.getNavigationBarInsetsView()
+    }
+
+    open fun getNavigationBarInsetsView(binding: VIEW_BINDING): View? = null
+
     override fun onDestroyView() {
         this.binding = null
         super.onDestroyView()

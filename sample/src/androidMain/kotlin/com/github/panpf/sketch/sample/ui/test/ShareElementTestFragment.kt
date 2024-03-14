@@ -22,6 +22,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.commit
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.databinding.FragmentTestShareElementBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -30,6 +31,10 @@ class ShareElementTestFragment : BaseBindingFragment<FragmentTestShareElementBin
 
     override fun getStatusBarInsetsView(binding: FragmentTestShareElementBinding): View {
         return binding.root
+    }
+
+    override fun getNavigationBarInsetsView(binding: FragmentTestShareElementBinding): View {
+        return binding.navigationBarInsetsLayout
     }
 
     override fun onViewCreated(

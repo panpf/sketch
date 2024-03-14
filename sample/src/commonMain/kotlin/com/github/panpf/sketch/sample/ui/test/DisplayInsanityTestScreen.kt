@@ -1,6 +1,9 @@
 package com.github.panpf.sketch.sample.ui.test
 
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -18,10 +21,10 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.data.paging.isIgnoreExifOrientation
 import com.github.panpf.sketch.sample.data.paging.readImageInfoOrNull
-import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.gallery.PhotoGrid
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.gallery.PhotoGrid
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.util.Size
 
 class DisplayInsanityTestScreen : BaseScreen() {
@@ -33,6 +36,8 @@ class DisplayInsanityTestScreen : BaseScreen() {
             val sketch = SingletonSketch.get(context)
             val viewModel = rememberScreenModel { InsanityTestScreenModel(context, sketch) }
             PhotoGrid(
+                modifier = Modifier
+                    .windowInsetsPadding(NavigationBarDefaults.windowInsets),
                 photoPagingFlow = viewModel.pagingFlow,
                 animatedPlaceholder = false,
                 gridCellsMinSize = 100.dp,

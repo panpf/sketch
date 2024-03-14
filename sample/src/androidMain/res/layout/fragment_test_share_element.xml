@@ -3,10 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.panpf.sketch.sample.ui.widget.MyImageView
-        android:id="@+id/myImage"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/app_name" />
+    <FrameLayout
+        android:id="@+id/navigationBarInsetsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+            android:id="@+id/myImage"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/app_name" />
+    </FrameLayout>
 </FrameLayout>

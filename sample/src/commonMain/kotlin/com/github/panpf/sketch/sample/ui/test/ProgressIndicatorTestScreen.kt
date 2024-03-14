@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,6 +60,7 @@ class ProgressIndicatorTestScreen : BaseScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .windowInsetsPadding(NavigationBarDefaults.windowInsets)
                     .padding(vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

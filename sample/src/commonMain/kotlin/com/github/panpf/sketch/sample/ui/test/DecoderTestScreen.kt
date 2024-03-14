@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -23,7 +25,6 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.ability.dataFromLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
@@ -32,6 +33,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,7 +51,10 @@ class DecoderTestScreen : BaseScreen() {
             if (items.isNotEmpty()) {
                 val pagerState = rememberPagerState(0) { items.size }
                 val coroutineScope = rememberCoroutineScope()
-                Column(Modifier.fillMaxWidth()) {
+                Column(
+                    Modifier.fillMaxWidth()
+                        .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+                ) {
                     ScrollableTabRow(
                         selectedTabIndex = pagerState.currentPage,
                         edgePadding = 20.dp
@@ -79,8 +84,9 @@ class DecoderTestScreen : BaseScreen() {
                         val progressPainter = rememberThemeSectorProgressPainter()
                         val testItem = items[it]
                         if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
-                            AsyncImage(
-                                request = ImageRequest(context, testItem.imageUri) {
+                            val imageUri = testItem.imageUri
+                            MyAsyncImage(
+                                request = ImageRequest(context, imageUri) {
                                     memoryCachePolicy(DISABLED)
                                     resultCachePolicy(DISABLED)
                                     downloadCachePolicy(DISABLED)

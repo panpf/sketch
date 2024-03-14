@@ -17,8 +17,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,10 +58,8 @@ fun PhotoViewer(
     photo: Photo,
     buttonBgColorState: MutableState<Color>,
     onClick: () -> Unit,
-    onLongClick: (ImageResult) -> Unit,
     onShareClick: () -> Unit,
     onSaveClick: () -> Unit,
-    onInfoClick: (ImageResult) -> Unit,
 ) {
     val context = LocalPlatformContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -120,6 +120,7 @@ fun PhotoViewer(
         }
     }
 
+    var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
     Box(modifier = Modifier.fillMaxSize()) {
         SketchZoomAsyncImage(
             request = request,
@@ -137,7 +138,7 @@ fun PhotoViewer(
             onLongPress = {
                 val imageResult = imageState.result
                 if (imageResult != null) {
-                    onLongClick(imageResult)
+                    photoInfoImageResult = imageResult
                 }
             }
         )
@@ -229,7 +230,7 @@ fun PhotoViewer(
             IconButton(onClick = {
                 val imageResult = imageState.result
                 if (imageResult != null) {
-                    onInfoClick(imageResult)
+                    photoInfoImageResult = imageResult
                 }
             }) {
                 Icon(
@@ -248,5 +249,11 @@ fun PhotoViewer(
             modifier = Modifier.align(Alignment.Center),
             imageState = imageState
         )
+    }
+
+    if (photoInfoImageResult != null) {
+        PhotoInfoDialog(photoInfoImageResult) {
+            photoInfoImageResult = null
+        }
     }
 }

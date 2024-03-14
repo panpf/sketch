@@ -44,6 +44,10 @@ class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2B
         return binding.root
     }
 
+    override fun getNavigationBarInsetsView(binding: FragmentTestShareElement2Binding): View {
+        return binding.navigationBarInsetsLayout
+    }
+
     override fun onViewCreated(
         binding: FragmentTestShareElement2Binding,
         savedInstanceState: Bundle?

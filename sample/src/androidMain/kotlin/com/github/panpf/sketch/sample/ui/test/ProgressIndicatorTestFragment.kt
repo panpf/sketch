@@ -1,13 +1,11 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.transition.TransitionInflater
 import com.github.panpf.sketch.ability.ProgressIndicatorAbility
 import com.github.panpf.sketch.ability.ViewAbilityContainer
 import com.github.panpf.sketch.ability.removeProgressIndicator
@@ -16,7 +14,6 @@ import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.R.color
 import com.github.panpf.sketch.sample.R.drawable
-import com.github.panpf.sketch.sample.R.transition
 import com.github.panpf.sketch.sample.databinding.FragmentTestProgressIndicatorBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
@@ -39,12 +36,8 @@ class ProgressIndicatorTestFragment :
 
     private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            sharedElementEnterTransition = TransitionInflater.from(requireContext())
-                .inflateTransition(transition.my_move)
-        }
+    override fun getNavigationBarInsetsView(binding: FragmentTestProgressIndicatorBinding): View {
+        return binding.root
     }
 
     override fun onViewCreated(

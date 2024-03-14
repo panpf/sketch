@@ -4,15 +4,16 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
@@ -36,7 +37,10 @@ class TransformationTestScreen : BaseScreen() {
             }
             val pagerState = rememberPagerState(0) { tabs.size }
             val coroutineScope = rememberCoroutineScope()
-            Column(Modifier.fillMaxWidth()) {
+            Column(
+                Modifier.fillMaxWidth()
+                    .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+            ) {
                 ScrollableTabRow(selectedTabIndex = pagerState.currentPage, edgePadding = 20.dp) {
                     tabs.forEachIndexed { index, title ->
                         Tab(

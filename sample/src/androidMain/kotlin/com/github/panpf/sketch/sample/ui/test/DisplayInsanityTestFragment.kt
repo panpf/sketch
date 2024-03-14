@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.test
 import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.AndroidViewModel
@@ -49,6 +50,10 @@ import com.github.panpf.sketch.sketch
 class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
 
     private val localPhotoListViewModel by viewModels<InsanityTestViewModel>()
+
+    override fun getNavigationBarInsetsView(binding: FragmentRecyclerRefreshBinding): View {
+        return binding.root
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(

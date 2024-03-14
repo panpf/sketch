@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import kotlin.math.roundToInt
 
@@ -37,7 +37,7 @@ fun BlurTransformationTestPage() {
         var maskColorName by remember { mutableStateOf("NONE") }
         var backgroundColorName by remember { mutableStateOf("NONE") }
         Row(Modifier.fillMaxWidth().weight(1f)) {
-            AsyncImage(
+            MyAsyncImage(
                 request = ImageRequest(LocalPlatformContext.current, AssetImages.jpeg.uri) {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
@@ -63,8 +63,9 @@ fun BlurTransformationTestPage() {
                 contentDescription = "image",
                 modifier = Modifier.fillMaxHeight().weight(1f)
             )
+
             Spacer(Modifier.size(16.dp))
-            AsyncImage(
+            MyAsyncImage(
                 request = ImageRequest(LocalPlatformContext.current, AssetImages.png.uri) {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)

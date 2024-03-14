@@ -3,13 +3,10 @@ package com.github.panpf.sketch.sample.ui.test.transform
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -25,10 +22,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -42,7 +40,7 @@ fun MultiTransformationTestPage() {
         var roundedCornersRadius by remember { mutableStateOf(30) }
         var maskColorName by remember { mutableStateOf("RED") }
         var rotateDegrees by remember { mutableStateOf(45) }
-        AsyncImage(
+        MyAsyncImage(
             request = ImageRequest(LocalPlatformContext.current, AssetImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

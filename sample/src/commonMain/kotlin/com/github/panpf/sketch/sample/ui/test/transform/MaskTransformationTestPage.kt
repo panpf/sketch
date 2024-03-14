@@ -21,17 +21,17 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.MaskTransformation
 
 @Composable
 fun MaskTransformationTestPage() {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         var maskColorName by remember { mutableStateOf("RED") }
-        AsyncImage(
+        MyAsyncImage(
             request = ImageRequest(LocalPlatformContext.current, AssetImages.png.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

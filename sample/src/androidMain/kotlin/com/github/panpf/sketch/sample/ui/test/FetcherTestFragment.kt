@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore.Images.Media
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
@@ -47,6 +48,10 @@ import kotlinx.coroutines.withContext
 class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
     private val viewModel by viewModels<FetcherTestViewModel>()
+
+    override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
+        return binding.root
+    }
 
     override fun onViewCreated(
         toolbar: Toolbar,

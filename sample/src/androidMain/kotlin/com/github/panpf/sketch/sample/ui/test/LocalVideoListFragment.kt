@@ -22,6 +22,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.AndroidViewModel
@@ -59,6 +60,10 @@ import java.io.File
 class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
 
     private val videoListViewModel by viewModels<LocalVideoListViewModel>()
+
+    override fun getNavigationBarInsetsView(binding: FragmentRecyclerRefreshBinding): View {
+        return binding.root
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(
