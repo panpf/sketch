@@ -1965,4 +1965,14 @@ class ImageRequestTest {
             Assert.assertEquals(this, this.newRequest())
         }
     }
+
+    @Test
+    fun testMergeComponents(){
+        // TODO test mergeComponents
+    }
+
+    @Test
+    fun testSizeMultiplier(){
+        // TODO test sizeMultiplier
+    }
 }

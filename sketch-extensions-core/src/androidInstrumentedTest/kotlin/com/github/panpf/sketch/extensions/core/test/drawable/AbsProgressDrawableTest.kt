@@ -9,6 +9,6 @@ class AbsProgressDrawableTest {
 
     @Test
     fun test() {
-        // TODO test
+        // TODO test AbsProgressDrawable
     }
 }

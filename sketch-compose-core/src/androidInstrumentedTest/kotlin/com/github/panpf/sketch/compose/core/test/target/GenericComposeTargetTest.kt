@@ -6,6 +6,6 @@ class GenericComposeTargetTest {
 
     @Test
     fun test() {
-        // TODO test
+        // TODO test GenericComposeTarget
     }
 }

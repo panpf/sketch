@@ -447,7 +447,6 @@ interface ImageOptions {
         /**
          * val finalSize = sizeResolver.size() * sizeMultiplier
          */
-        // TODO test
         fun sizeMultiplier(multiplier: Float?): Builder = apply {
             this.sizeMultiplier = multiplier
         }
@@ -677,7 +676,6 @@ interface ImageOptions {
         /**
          * Merge the [ComponentRegistry]
          */
-        // TODO test
         fun mergeComponents(components: ComponentRegistry?): Builder = apply {
             this.componentRegistry = this.componentRegistry.merged(components)
         }
@@ -685,7 +683,6 @@ interface ImageOptions {
         /**
          * Merge the [ComponentRegistry]
          */
-        // TODO test
         fun mergeComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
             mergeComponents(ComponentRegistry.Builder().apply(configBlock).build())
 

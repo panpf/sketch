@@ -110,8 +110,6 @@ private fun initialSketch() {
 }
 
 private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
-    // TODO Realize saving
-//    MyEvents.toastFlow.emit("Save feature is under development")
     val fetcher = withContext(Dispatchers.IO) {
         sketch.components.newFetcherOrThrow(ImageRequest(sketch.context, imageUri))
     }

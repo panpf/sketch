@@ -1658,4 +1658,14 @@ class ImageOptionsTest {
             }
         }
     }
+
+    @Test
+    fun testMergeComponents(){
+        // TODO test mergeComponents
+    }
+
+    @Test
+    fun testSizeMultiplier(){
+        // TODO test sizeMultiplier
+    }
 }
