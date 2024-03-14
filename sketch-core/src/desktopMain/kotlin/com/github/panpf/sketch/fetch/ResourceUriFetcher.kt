@@ -7,6 +7,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.ResourceLoader
 import com.github.panpf.sketch.util.getDataSourceCacheFile
 import com.github.panpf.sketch.util.ifOrNull
@@ -33,7 +34,8 @@ class ResourceUriFetcher(
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        return Result.success(FetchResult(ResourceDataSource(sketch, request, resourceName), null))
+        val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourceName)
+        return Result.success(FetchResult(ResourceDataSource(sketch, request, resourceName), mimeType))
     }
 
     class Factory : Fetcher.Factory {
