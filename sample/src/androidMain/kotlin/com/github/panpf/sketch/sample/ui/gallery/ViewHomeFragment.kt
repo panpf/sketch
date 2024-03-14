@@ -410,9 +410,8 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                 .adapter!!.asOrThrow<ConcatAdapter>()
                 .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
                 .currentList
-            val totalCount = items.size
-            val startPosition = (position - 50).coerceAtLeast(0)
-            val endPosition = (position + 50).coerceAtMost(totalCount - 1)
+            val startPosition = (position - 100).coerceAtLeast(0)
+            val endPosition = (position + 100).coerceAtMost(items.size - 1)
             val imageList = items.asSequence()
                 .filterNotNull()
                 .filterIndexed { index, _ -> index in startPosition..endPosition }
@@ -420,7 +419,6 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             findNavController().navigate(
                 NavMainDirections.actionPhotoPagerViewFragment(
                     photos = Json.encodeToString(imageList),
-                    totalCount = totalCount,
                     startPosition = startPosition,
                     initialPosition = position
                 ),

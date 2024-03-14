@@ -49,7 +49,7 @@ import kotlinx.serialization.json.Json
 class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
     private val args by navArgs<PhotoPagerViewFragmentArgs>()
-    private val imageList by lazy {
+    private val photoList by lazy {
         Json.decodeFromString<List<Photo>>(args.photos)
     }
     private val viewModel by viewModels<PhotoPagerViewModel>()
@@ -66,15 +66,15 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
     ) {
         binding.pager.apply {
             adapter = AssemblyFragmentStateAdapter(
-                this@PhotoPagerViewFragment,
-                listOf(PhotoViewerViewFragment.ItemFactory()),
-                imageList
+                fragment = this@PhotoPagerViewFragment,
+                itemFactoryList = listOf(PhotoViewerViewFragment.ItemFactory()),
+                initDataList = photoList
             )
 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    val imageUrl = imageList[position]
+                    val imageUrl = photoList[position]
                         .let { it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl }
                     loadBgImage(binding, imageUrl)
                 }
@@ -113,7 +113,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
                 text = context.resources.getString(
                     R.string.pager_number_ver,
                     pageNumber.coerceAtMost(999),
-                    args.totalCount.coerceAtMost(999)
+                    (args.startPosition + photoList.size).coerceAtMost(999)
                 )
             }
             binding.pager.registerOnPageChangeCallback(object :

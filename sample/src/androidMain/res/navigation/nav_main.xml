@@ -18,10 +18,6 @@
             app:argType="string"
             app:nullable="false" />
         <argument
-            android:name="totalCount"
-            app:argType="integer"
-            app:nullable="false" />
-        <argument
             android:name="startPosition"
             app:argType="integer"
             app:nullable="false" />

@@ -13,9 +13,8 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
         Box(Modifier.fillMaxSize()) {
             PhotoPager(
                 photos = params.photos,
-                totalCount = params.totalCount,
-                startPosition = params.startPosition,
                 initialPosition = params.initialPosition,
+                startPosition = params.startPosition,
             )
         }
     }

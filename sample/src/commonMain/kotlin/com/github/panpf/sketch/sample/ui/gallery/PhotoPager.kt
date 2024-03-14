@@ -71,7 +71,6 @@ fun PhotoPager(
     photos: List<Photo>,
     initialPosition: Int,
     startPosition: Int,
-    totalCount: Int,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
@@ -98,7 +97,7 @@ fun PhotoPager(
 
         PagerTools(
             pageNumber = startPosition + pagerState.currentPage + 1,
-            pageCount = totalCount,
+            pageCount = startPosition + photos.size,
             buttonBgColorState = buttonBgColorState,
             pagerState = pagerState,
         )

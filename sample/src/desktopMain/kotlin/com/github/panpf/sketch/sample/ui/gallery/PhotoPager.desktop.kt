@@ -44,7 +44,6 @@ actual fun BoxScope.PlatformPagerTools(
         MyEvents.keyEvent.collect { keyEvent ->
             if (keyEvent.type == KeyEventType.KeyUp && !keyEvent.isMetaPressed) {
                 when (keyEvent.key) {
-                    // TODO There is a bug here
                     Key.PageUp, Key.DirectionLeft -> {
                         val previousPageIndex =
                             (pagerState.currentPage - 1).let { if (it < 0) pagerState.pageCount + it else it }
