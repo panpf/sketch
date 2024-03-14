@@ -18,20 +18,19 @@ package com.github.panpf.sketch.util
 import android.content.ComponentCallbacks2
 import android.content.res.Configuration
 import android.net.ConnectivityManager.NetworkCallback
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import kotlinx.atomicfu.atomic
 import java.lang.ref.WeakReference
 
-internal actual fun SystemCallbacks(): SystemCallbacks = AndroidSystemCallbacks()
+internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks =
+    AndroidSystemCallbacks(sketch)
 
 /**
  * Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status
  */
-class AndroidSystemCallbacks : SystemCallbacks {
+class AndroidSystemCallbacks(sketch: Sketch) : SystemCallbacks {
 
-    private var context: PlatformContext? = null
-    private var sketchReference: WeakReference<Sketch>? = null
+    private val sketchReference = WeakReference(sketch)
     private var networkObserver: NetworkObserver? = null
     private val _isShutdown = atomic(false)
     private val componentCallbacks2 = object : ComponentCallbacks2 {
@@ -39,16 +38,15 @@ class AndroidSystemCallbacks : SystemCallbacks {
         }
 
         override fun onLowMemory() {
-            val sketch = sketchReference?.get() ?: return
-            sketch.memoryCache.clear()
+            sketchReference.get()?.memoryCache?.clear()
         }
 
         override fun onTrimMemory(level: Int) {
-            val sketch = sketchReference?.get() ?: return
+            val sketch1 = sketchReference.get() ?: return
             if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-                sketch.memoryCache.trim(0L)
+                sketch1.memoryCache.trim(0L)
             } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
-                sketch.memoryCache.trim(sketch.memoryCache.size / 2)
+                sketch1.memoryCache.trim(sketch1.memoryCache.size / 2)
             }
         }
     }
@@ -58,16 +56,16 @@ class AndroidSystemCallbacks : SystemCallbacks {
     override val isCellularNetworkConnected: Boolean
         get() = networkObserver?.isCellularNetworkConnected != false
 
-    override fun register(sketch: Sketch) {
-        this.context = sketch.context
-        this.sketchReference = WeakReference(sketch)
+    override fun register() {
+        val sketch = sketchReference.get() ?: return
         this.networkObserver = NetworkObserver(sketch.context)
         sketch.context.registerComponentCallbacks(componentCallbacks2)
     }
 
     override fun shutdown() {
         if (_isShutdown.getAndSet(true)) return
-        context?.unregisterComponentCallbacks(componentCallbacks2)
+        val sketch = sketchReference.get() ?: return
+        sketch.context.unregisterComponentCallbacks(componentCallbacks2)
         networkObserver?.shutdown()
     }
 }

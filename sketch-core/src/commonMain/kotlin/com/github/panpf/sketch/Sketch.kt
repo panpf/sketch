@@ -108,7 +108,7 @@ class Sketch private constructor(options: Options) {
     val components: Components
 
     /** Monitor network connection and system status */
-    val systemCallbacks = SystemCallbacks()
+    val systemCallbacks = SystemCallbacks(this)
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -129,15 +129,15 @@ class Sketch private constructor(options: Options) {
             ?: ComponentRegistry.Builder().build()
         components = Components(this, componentRegistry)
 
-        systemCallbacks.register(this)
+        systemCallbacks.register()
 
         logger.d("Configuration") {
             buildString {
                 append("\n").append("logger: $logger")
                 append("\n").append("httpStack: $httpStack")
                 append("\n").append("memoryCache: $memoryCache")
-                append("\n").append("downloadCache: $downloadCache")
                 append("\n").append("resultCache: $resultCache")
+                append("\n").append("downloadCache: $downloadCache")
                 append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList}")
                 append("\n").append("decoders: ${componentRegistry.decoderFactoryList}")
                 append("\n").append("requestInterceptors: ${componentRegistry.requestInterceptorList}")

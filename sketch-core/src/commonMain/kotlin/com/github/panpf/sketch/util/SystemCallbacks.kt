@@ -17,7 +17,7 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Sketch
 
-internal expect fun SystemCallbacks(): SystemCallbacks
+internal expect fun SystemCallbacks(sketch: Sketch): SystemCallbacks
 
 /**
  * Monitor network connection and system status
@@ -28,7 +28,7 @@ interface SystemCallbacks {
 
     val isCellularNetworkConnected: Boolean
 
-    fun register(sketch: Sketch)
+    fun register()
 
     fun shutdown()
 }
