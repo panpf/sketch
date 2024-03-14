@@ -15,10 +15,12 @@
  */
 package com.github.panpf.sketch.sample.ui.gallery
 
+import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,16 +28,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.lifecycleScope
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
+import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.base.BaseFragment
-import com.github.panpf.sketch.sample.ui.base.StatusBarTextStyle
-import com.github.panpf.sketch.sample.ui.gallery.PhotoListScreen
-import com.github.panpf.sketch.sample.ui.gallery.PhotoPagerScreen
+import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
+import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
+import com.github.panpf.sketch.sample.util.registerForActivityResult
+import kotlinx.coroutines.launch
 
 class ComposeHomeFragment : BaseFragment() {
+
+    private val photoActionViewModel by parentViewModels<PhotoActionViewModel>()
+    private val requestPermissionResult =
+        registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,5 +68,38 @@ class ComposeHomeFragment : BaseFragment() {
                 }
             }
         }
+        val context = view.context
+        viewLifecycleOwner.lifecycleScope.launch {
+            MyEvents.toastFlow.collect {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            MyEvents.savePhotoFlow.collect {
+                save(it)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            MyEvents.sharePhotoFlow.collect {
+                share(it)
+            }
+        }
+    }
+
+    private fun share(imageUri: String) {
+        lifecycleScope.launch {
+            handleActionResult(photoActionViewModel.share(imageUri))
+        }
+    }
+
+    private fun save(imageUri: String) {
+        val input = WithDataActivityResultContracts.RequestPermission.Input(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        ) {
+            lifecycleScope.launch {
+                handleActionResult(photoActionViewModel.save(imageUri))
+            }
+        }
+        requestPermissionResult.launch(input)
     }
 }

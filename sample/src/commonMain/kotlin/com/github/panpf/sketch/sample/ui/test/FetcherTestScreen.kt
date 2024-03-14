@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -30,6 +32,7 @@ import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,22 +80,29 @@ class FetcherTestScreen : BaseScreen() {
                         }
                     }
                     HorizontalPager(state = pagerState) {
-                        val imageUri = items[it].imageUri
-                        val imageState = rememberAsyncImageState()
-                        val progressPainter = rememberThemeSectorProgressPainter()
-                        MyAsyncImage(
-                            request = ImageRequest(context, imageUri) {
-                                memoryCachePolicy(DISABLED)
-                                resultCachePolicy(DISABLED)
-                                downloadCachePolicy(DISABLED)
-                            },
-                            contentDescription = "Image",
-                            state = imageState,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .dataFromLogo(imageState)
-                                .progressIndicator(imageState, progressPainter)
-                        )
+                        Box(Modifier.fillMaxSize()) {
+                            val imageUri = items[it].imageUri
+                            val imageState = rememberAsyncImageState()
+                            val progressPainter = rememberThemeSectorProgressPainter()
+                            MyAsyncImage(
+                                request = ImageRequest(context, imageUri) {
+                                    memoryCachePolicy(DISABLED)
+                                    resultCachePolicy(DISABLED)
+                                    downloadCachePolicy(DISABLED)
+                                },
+                                contentDescription = "Image",
+                                state = imageState,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .dataFromLogo(imageState)
+                                    .progressIndicator(imageState, progressPainter)
+                            )
+
+                            LoadState(
+                                modifier = Modifier.align(Alignment.Center),
+                                imageState = imageState
+                            )
+                        }
                     }
                 }
             }

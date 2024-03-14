@@ -33,6 +33,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,25 +85,32 @@ class DecoderTestScreen : BaseScreen() {
                         val progressPainter = rememberThemeSectorProgressPainter()
                         val testItem = items[it]
                         if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
-                            val imageUri = testItem.imageUri
-                            MyAsyncImage(
-                                request = ImageRequest(context, imageUri) {
-                                    memoryCachePolicy(DISABLED)
-                                    resultCachePolicy(DISABLED)
-                                    downloadCachePolicy(DISABLED)
-                                    if (testItem.imageDecoder != null) {
-                                        components {
-                                            addDecoder(testItem.imageDecoder)
+                            Box(Modifier.fillMaxSize()) {
+                                val imageUri = testItem.imageUri
+                                MyAsyncImage(
+                                    request = ImageRequest(context, imageUri) {
+                                        memoryCachePolicy(DISABLED)
+                                        resultCachePolicy(DISABLED)
+                                        downloadCachePolicy(DISABLED)
+                                        if (testItem.imageDecoder != null) {
+                                            components {
+                                                addDecoder(testItem.imageDecoder)
+                                            }
                                         }
-                                    }
-                                },
-                                contentDescription = "Image",
-                                state = imageState,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .dataFromLogo(imageState)
-                                    .progressIndicator(imageState, progressPainter)
-                            )
+                                    },
+                                    contentDescription = "Image",
+                                    state = imageState,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .dataFromLogo(imageState)
+                                        .progressIndicator(imageState, progressPainter)
+                                )
+
+                                LoadState(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    imageState = imageState
+                                )
+                            }
                         } else {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                 Text("This format requires API ${testItem.minAPI} or higher")

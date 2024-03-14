@@ -16,25 +16,11 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.app.Application
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
-import android.os.Environment
 import androidx.core.graphics.ColorUtils
-import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.ui.base.ActionResult
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
-import com.github.panpf.sketch.sketch
-import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
-import com.github.panpf.tools4j.security.ktx.getMD5Digest
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.withContext
-import okio.buffer
-import okio.sink
-import java.io.File
 
 class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(application) {
 
@@ -44,99 +30,5 @@ class PhotoPagerViewModel(application: Application) : LifecycleAndroidViewModel(
 
     fun setButtonBgColor(color: Int) {
         _buttonBgColor.value = ColorUtils.setAlphaComponent(color, 160)
-    }
-
-    suspend fun share(imageUri: String): ActionResult {
-        val application = application1
-        val fetchResult = withContext(Dispatchers.IO) {
-            val fetcher = application1.sketch.components
-                .newFetcherOrThrow(ImageRequest(application1, imageUri))
-            fetcher.fetch()
-        }.let {
-            it.getOrNull()
-                ?: return ActionResult.error("Failed to save picture: ${it.exceptionOrNull()!!.message}")
-        }
-
-        val fileExtension = fetchResult.mimeType
-            ?.let { readFileExtensionFromMimeType(it) } ?: "jpeg"
-        val imageFile =
-            File(application.getExternalFilesDir("share"), "share_temp.$fileExtension").apply {
-                delete()
-            }
-
-        try {
-            withContext(Dispatchers.IO) {
-                fetchResult.dataSource.openSource().use { input ->
-                    imageFile.outputStream().sink().buffer().use { output ->
-                        output.writeAll(input)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ActionResult.error("Failed to save picture: ${e.message}")
-        }
-
-        application.startActivity(Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_STREAM, application.getShareFileUri(imageFile))
-            type = fetchResult.mimeType ?: "image/*"
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        })
-        return ActionResult.success()
-    }
-
-    @Suppress("DEPRECATION")
-    suspend fun save(imageUri: String): ActionResult {
-        val application = application1
-        val fetcher = withContext(Dispatchers.IO) {
-            application.sketch.components.newFetcherOrThrow(ImageRequest(application, imageUri))
-        }
-        if (fetcher is FileUriFetcher) {
-            return ActionResult.error("Local files do not need to be saved")
-        }
-
-        val fetchResult = withContext(Dispatchers.IO) {
-            fetcher.fetch()
-        }.let {
-            it.getOrNull()
-                ?: return ActionResult.error("Failed to save picture: ${it.exceptionOrNull()!!.message}")
-        }
-
-        val picturesDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val outDir = File(picturesDir, "sketch3").apply { mkdirs() }
-        val fileExtension = fetchResult.mimeType
-            ?.let { readFileExtensionFromMimeType(it) } ?: "jpeg"
-        val imageFile = File(outDir, "${imageUri.getMD5Digest()}.$fileExtension")
-        val result = withContext(Dispatchers.IO) {
-            runCatching {
-                fetchResult.dataSource.openSource().use { input ->
-                    imageFile.outputStream().sink().buffer().use { output ->
-                        output.writeAll(input)
-                    }
-                }
-            }
-        }
-        return if (result.isSuccess) {
-            val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(imageFile))
-            application.sendBroadcast(intent)
-            ActionResult.success("Saved to the '${imageFile.parentFile?.path}' directory")
-        } else {
-            val exception = result.exceptionOrNull()
-            ActionResult.error("Failed to save picture: ${exception?.message}")
-        }
-    }
-
-    private fun readFileExtensionFromMimeType(mimeType: String): String? {
-        val lastIndexOf = mimeType.lastIndexOf("/").takeIf { it >= 0 } ?: return null
-        return mimeType.substring(lastIndexOf + 1).takeIf { "" != it.trim { it1 -> it1 <= ' ' } }
-            ?.let {
-                if (it == "svg+xml") {
-                    "svg"
-                } else {
-                    it
-                }
-            }
     }
 }

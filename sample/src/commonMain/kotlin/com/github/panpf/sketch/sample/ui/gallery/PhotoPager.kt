@@ -28,6 +28,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.AsyncImage
@@ -52,6 +54,7 @@ import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
+import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
 import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
@@ -60,6 +63,7 @@ import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.isEmpty
 import com.github.panpf.sketch.transform.BlurTransformation
+import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -68,13 +72,7 @@ fun PhotoPager(
     initialPosition: Int,
     startPosition: Int,
     totalCount: Int,
-    onShareClick: (Photo) -> Unit,
-    onSaveClick: (Photo) -> Unit,
-    onImageClick: () -> Unit,
-    onBackClick: () -> Unit,
 ) {
-    var showSettingsDialog by remember { mutableStateOf(false) }
-
     Box(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = initialPosition - startPosition) {
             photos.size
@@ -95,39 +93,15 @@ fun PhotoPager(
             PhotoViewer(
                 photo = photos[index],
                 buttonBgColorState = buttonBgColorState,
-                onClick = onImageClick,
-                onShareClick = {
-                    onShareClick.invoke(photos[pagerState.currentPage])
-                },
-                onSaveClick = {
-                    onSaveClick.invoke(photos[pagerState.currentPage])
-                },
             )
         }
 
-        val appSettings = LocalPlatformContext.current.appSettings
-        val showOriginImage by LocalPlatformContext.current.appSettings.showOriginImage.collectAsState()
         PagerTools(
             pageNumber = startPosition + pagerState.currentPage + 1,
             pageCount = totalCount,
-            showOriginImage = showOriginImage,
             buttonBgColorState = buttonBgColorState,
             pagerState = pagerState,
-            onSettingsClick = {
-                showSettingsDialog = true
-            },
-            onShowOriginClick = {
-                val newValue = !appSettings.showOriginImage.value
-                appSettings.showOriginImage.value = newValue
-            },
-            onBackClick = onBackClick,
         )
-    }
-
-    if (showSettingsDialog) {
-        AppSettingsDialog(page = ZOOM) {
-            showSettingsDialog = false
-        }
     }
 }
 
@@ -209,13 +183,10 @@ expect fun getTopMargin(context: PlatformContext): Int
 private fun PagerTools(
     pageNumber: Int,
     pageCount: Int,
-    showOriginImage: Boolean,
     buttonBgColorState: MutableState<Color>,
     pagerState: PagerState,
-    onSettingsClick: () -> Unit,
-    onShowOriginClick: () -> Unit,
-    onBackClick: () -> Unit,
 ) {
+    var showSettingsDialog by remember { mutableStateOf(false) }
     val context = LocalPlatformContext.current
     val density = LocalDensity.current
     val toolbarTopMarginDp = remember {
@@ -224,10 +195,11 @@ private fun PagerTools(
     }
     val buttonBgColor = buttonBgColorState.value
     val buttonTextColor = Color.White
+    val navigator = LocalNavigator.current!!
 
     Box(modifier = Modifier.fillMaxSize().padding(top = toolbarTopMarginDp)) {
         Column(modifier = Modifier.padding(20.dp)) {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = { navigator.pop() }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
@@ -245,9 +217,22 @@ private fun PagerTools(
                 .align(Alignment.TopEnd)
                 .padding(20.dp), // margin,
         ) {
+            val appSettings = LocalPlatformContext.current.appSettings
+            val showOriginImage by appSettings.showOriginImage.collectAsState()
             val image2IconPainter = if (showOriginImage)
                 rememberIconImage2BaselinePainter() else rememberIconImage2OutlinePainter()
-            IconButton(onClick = onShowOriginClick) {
+            val coroutineScope = rememberCoroutineScope()
+            IconButton(onClick = {
+                val newValue = !appSettings.showOriginImage.value
+                appSettings.showOriginImage.value = newValue
+                coroutineScope.launch {
+                    if (newValue) {
+                        MyEvents.toastFlow.emit("Now show original image")
+                    } else {
+                        MyEvents.toastFlow.emit("Now show thumbnails image")
+                    }
+                }
+            }) {
                 Icon(
                     painter = image2IconPainter,
                     contentDescription = "show origin image",
@@ -282,7 +267,7 @@ private fun PagerTools(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            IconButton(onClick = onSettingsClick) {
+            IconButton(onClick = { showSettingsDialog = true }) {
                 Icon(
                     painter = rememberIconSettingsPainter(),
                     contentDescription = "settings",
@@ -296,6 +281,12 @@ private fun PagerTools(
         }
 
         PlatformPagerTools(buttonBgColorState, pagerState)
+
+        if (showSettingsDialog) {
+            AppSettingsDialog(page = ZOOM) {
+                showSettingsDialog = false
+            }
+        }
     }
 }
 

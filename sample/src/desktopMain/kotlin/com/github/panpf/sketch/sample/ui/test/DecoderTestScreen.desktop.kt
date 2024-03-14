@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.resources.AssetImages
 
 actual suspend fun buildDecoderTestItems(context: PlatformContext): List<DecoderTestItem> {
@@ -10,6 +9,6 @@ actual suspend fun buildDecoderTestItems(context: PlatformContext): List<Decoder
         add(DecoderTestItem(name = "PNG", imageUri = AssetImages.png.uri))
         add(DecoderTestItem(name = "BMP", imageUri = AssetImages.bmp.uri))
         add(DecoderTestItem(name = "GIF", imageUri = AssetImages.animGif.uri))
-        // TODO more...
+        add(DecoderTestItem(name = "SVG", imageUri = AssetImages.svg.uri))
     }
 }

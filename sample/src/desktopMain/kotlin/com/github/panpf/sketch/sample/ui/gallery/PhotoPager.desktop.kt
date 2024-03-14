@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons.Filled
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -46,6 +44,7 @@ actual fun BoxScope.PlatformPagerTools(
         MyEvents.keyEvent.collect { keyEvent ->
             if (keyEvent.type == KeyEventType.KeyUp && !keyEvent.isMetaPressed) {
                 when (keyEvent.key) {
+                    // TODO There is a bug here
                     Key.PageUp, Key.DirectionLeft -> {
                         val previousPageIndex =
                             (pagerState.currentPage - 1).let { if (it < 0) pagerState.pageCount + it else it }
@@ -53,8 +52,7 @@ actual fun BoxScope.PlatformPagerTools(
                     }
 
                     Key.PageDown, Key.DirectionRight -> {
-                        val nextPageIndex =
-                            (pagerState.currentPage - 1).let { if (it < 0) pagerState.pageCount + it else it }
+                        val nextPageIndex = (pagerState.currentPage + 1) % pagerState.pageCount
                         pagerState.animateScrollToPage(nextPageIndex)
                     }
                 }

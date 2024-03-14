@@ -56,7 +56,8 @@ import kotlin.math.roundToInt
 class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<PhotoViewerViewFragmentArgs>()
-    private val pagerViewModel by parentViewModels<PhotoPagerViewModel>()
+    private val photoPagerViewModel by parentViewModels<PhotoPagerViewModel>()
+    private val photoActionViewModel by parentViewModels<PhotoActionViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
@@ -159,7 +160,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             startImageInfoDialog(binding.zoomImage)
         }
 
-        pagerViewModel.buttonBgColor.repeatCollectWithLifecycle(
+        photoPagerViewModel.buttonBgColor.repeatCollectWithLifecycle(
             owner = viewLifecycleOwner,
             state = State.STARTED
         ) { color ->
@@ -210,7 +211,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
     private fun share() {
         val imageUri = getImageUrl()
         lifecycleScope.launch {
-            handleActionResult(pagerViewModel.share(imageUri))
+            handleActionResult(photoActionViewModel.share(imageUri))
         }
     }
 
@@ -220,7 +221,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
         ) {
             lifecycleScope.launch {
-                handleActionResult(pagerViewModel.save(imageUri))
+                handleActionResult(photoActionViewModel.save(imageUri))
             }
         }
         requestPermissionResult.launch(input)

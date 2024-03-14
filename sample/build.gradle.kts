@@ -98,7 +98,6 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.uiTooling)
                 implementation(compose.uiTooling.replace("ui-tooling", "ui-util"))
-                implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.contentNegotiation)
                 implementation(libs.ktor.serialization.kotlinxJson)
                 implementation(libs.cashapp.paging.compose.common)

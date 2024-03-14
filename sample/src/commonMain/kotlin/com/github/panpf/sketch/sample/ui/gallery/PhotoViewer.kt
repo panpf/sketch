@@ -32,6 +32,7 @@ import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.rememberIconInfoBaseLinePainter
@@ -57,20 +58,17 @@ import kotlin.math.roundToInt
 fun PhotoViewer(
     photo: Photo,
     buttonBgColorState: MutableState<Color>,
-    onClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onSaveClick: () -> Unit,
 ) {
     val context = LocalPlatformContext.current
     val coroutineScope = rememberCoroutineScope()
-    val appSettingsService = context.appSettings
+    val appSettings = context.appSettings
     val imageState = rememberAsyncImageState()
-    val showOriginImage by appSettingsService.showOriginImage.collectAsState()
-    val scrollBarEnabled by appSettingsService.scrollBarEnabled.collectAsState()
-    val readModeEnabled by appSettingsService.readModeEnabled.collectAsState()
-    val showTileBounds by appSettingsService.showTileBounds.collectAsState()
-    val contentScaleName by appSettingsService.contentScale.collectAsState()
-    val alignmentName by appSettingsService.alignment.collectAsState()
+    val showOriginImage by appSettings.showOriginImage.collectAsState()
+    val scrollBarEnabled by appSettings.scrollBarEnabled.collectAsState()
+    val readModeEnabled by appSettings.readModeEnabled.collectAsState()
+    val showTileBounds by appSettings.showTileBounds.collectAsState()
+    val contentScaleName by appSettings.contentScale.collectAsState()
+    val alignmentName by appSettings.alignment.collectAsState()
     val contentScale by remember {
         derivedStateOf {
             ContentScaleCompat.valueOf(contentScaleName).toPlatform()
@@ -94,7 +92,7 @@ fun PhotoViewer(
             zoomable.readMode = readMode
         }
     }
-    val imageUrl by remember {
+    val imageUri by remember {
         derivedStateOf {
             if (showOriginImage) {
                 photo.originalUrl
@@ -111,10 +109,10 @@ fun PhotoViewer(
 
     val progressPainter = rememberThemeSectorProgressPainter()
 
-    val viewerSettings by appSettingsService.viewersCombinedFlow.collectAsState(Unit)
-    val request = remember(imageUrl, viewerSettings) {
-        ImageRequest(context, imageUrl) {
-            merge(appSettingsService.buildViewerImageOptions())
+    val viewerSettings by appSettings.viewersCombinedFlow.collectAsState(Unit)
+    val request = remember(imageUri, viewerSettings) {
+        ImageRequest(context, imageUri) {
+            merge(appSettings.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(photo.thumbnailUrl))
             crossfade(fadeStart = false)
         }
@@ -134,7 +132,6 @@ fun PhotoViewer(
             alignment = alignment,
             state = zoomState,
             scrollBar = scrollBar,
-            onTap = { onClick.invoke() },
             onLongPress = {
                 val imageResult = imageState.result
                 if (imageResult != null) {
@@ -151,7 +148,11 @@ fun PhotoViewer(
         ) {
             val buttonBgColor = buttonBgColorState.value
             val buttonTextColor = Color.White
-            IconButton(onClick = onShareClick) {
+            IconButton(onClick = {
+                coroutineScope.launch {
+                    MyEvents.sharePhotoFlow.emit(imageUri)
+                }
+            }) {
                 Icon(
                     painter = rememberIconSharePainter(),
                     contentDescription = "share",
@@ -165,7 +166,11 @@ fun PhotoViewer(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            IconButton(onClick = onSaveClick) {
+            IconButton(onClick = {
+                coroutineScope.launch {
+                    MyEvents.savePhotoFlow.emit(imageUri)
+                }
+            }) {
                 Icon(
                     painter = rememberIconSavePainter(),
                     contentDescription = "save",
