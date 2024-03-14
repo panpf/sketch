@@ -16,31 +16,37 @@
 package com.github.panpf.sketch.util
 
 object MimeTypeMap {
-    fun getMimeTypeFromUrl(url: String): String? {
-        if (url.isBlank()) {
-            return null
-        }
 
-        val extension = url
+    fun getExtensionFromUrl(url: String): String? {
+        if (url.isBlank()) return null
+        return url
             .substringBeforeLast('#') // Strip the fragment.
             .substringBeforeLast('?') // Strip the query.
             .substringAfterLast('/') // Get the last path segment.
             .substringAfterLast('.', missingDelimiterValue = "") // Get the file extension.
+            .trim()
+            .takeIf { it.isNotEmpty() }
+    }
 
+    fun getMimeTypeFromUrl(url: String): String? {
+        val extension = getExtensionFromUrl(url) ?: return null
         return getMimeTypeFromExtension(extension)
     }
 
     fun getMimeTypeFromExtension(extension: String): String? {
-        if (extension.isBlank()) {
-            return null
-        }
-
         val lowerExtension = extension.lowercase()
-        return extensionFromMimeTypeMap(lowerExtension) ?: mimeTypeData[lowerExtension]
+        return platformExtensionToMimeTypeMap(lowerExtension) ?: mimeTypeData[lowerExtension]
+    }
+
+    fun getExtensionFromMimeType(mimeType: String): String? {
+        val lowerMimeType = mimeType.lowercase()
+        return platformExtensionToMimeTypeMap(lowerMimeType)
+            ?: mimeTypeData.entries.find { it.value == lowerMimeType }?.key
     }
 }
 
-internal expect fun extensionFromMimeTypeMap(extension: String): String?
+internal expect fun platformExtensionToMimeTypeMap(extension: String): String?
+internal expect fun platformMimeTypeToExtensionMap(mimeType: String): String?
 
 // https://mimetype.io/all-types
 private val mimeTypeData = buildMap {
