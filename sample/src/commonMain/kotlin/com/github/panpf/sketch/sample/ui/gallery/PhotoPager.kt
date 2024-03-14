@@ -215,6 +215,7 @@ private fun PagerTools(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(20.dp), // margin,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val appSettings = LocalPlatformContext.current.appSettings
             val showOriginImage by appSettings.showOriginImage.collectAsState()
@@ -252,7 +253,7 @@ private fun PagerTools(
                         color = buttonBgColor,
                         shape = RoundedCornerShape(50)
                     )
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                    .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
