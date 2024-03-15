@@ -22,6 +22,7 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.MyEvents
@@ -105,6 +106,7 @@ private fun initialSketch() {
             )!!.let { File(it) }
             diskCache(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
             components {
+                supportSvg()
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
             }
             logger(Logger(appSettings.logLevel.value))

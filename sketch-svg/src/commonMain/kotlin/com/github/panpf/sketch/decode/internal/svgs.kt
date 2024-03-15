@@ -15,7 +15,9 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import android.graphics.Bitmap
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Bytes
 
 private val SVG_TAG = "<svg ".toByteArray()
@@ -24,5 +26,10 @@ private val LEFT_ANGLE_BRACKET = "<".toByteArray()
 fun Bytes.isSvg(): Boolean =
     rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1
 
-internal fun Bitmap.toLogString(): String =
-    "Bitmap@${hashCode().toString(16)}(${width}x${height},$config)"
+expect suspend fun decodeSvg(
+    requestContext: RequestContext,
+    dataSource: DataSource,
+    useViewBoundsAsIntrinsicSize: Boolean,
+    backgroundColor: Int?,
+    css: String?,
+): DecodeResult

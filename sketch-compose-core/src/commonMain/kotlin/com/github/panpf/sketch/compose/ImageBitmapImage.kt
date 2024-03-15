@@ -12,6 +12,7 @@ fun ImageBitmap.asSketchImage(shareable: Boolean = true): Image {
     return ImageBitmapImage(this, shareable)
 }
 
+// TODO Renamed ComposeBitmapImage, JvmBitmapImage, AndroidBitmapImage, SkiaBitmapImage
 data class ImageBitmapImage(
     val imageBitmap: ImageBitmap,
     override val shareable: Boolean = true

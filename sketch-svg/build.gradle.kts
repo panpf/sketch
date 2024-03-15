@@ -1,6 +1,64 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.multiplatform")
+}
+
+kotlin {
+    applyMyHierarchyTemplate()
+
+    androidTarget {
+        publishLibraryVariants("release")
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    jvm("desktop") {
+        compilations.configureEach {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        named("androidMain") {
+            dependencies {
+                api(libs.androidsvg)
+            }
+        }
+        named("androidInstrumentedTest") {
+            dependencies {
+                implementation(project(":sketch-test"))
+            }
+        }
+
+        named("commonMain") {
+            dependencies {
+                api(project(":sketch-core"))
+                api(libs.skiko)
+            }
+        }
+        named("commonTest") {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.junit)
+                implementation(libs.panpf.tools4j.test)
+            }
+        }
+
+        named("desktopMain") {
+            dependencies {
+            }
+        }
+
+        named("desktopTest") {
+            dependencies {
+            }
+        }
+    }
 }
 
 android {
@@ -30,14 +88,4 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
-dependencies {
-    api(project(":sketch-core"))
-    api(libs.androidsvg)
-    androidTestImplementation(project(":sketch-test"))
 }

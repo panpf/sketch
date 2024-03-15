@@ -35,7 +35,6 @@ kotlin {
                 implementation(project(":sketch-gif-movie"))
                 implementation(project(":sketch-gif-koral"))
                 implementation(project(":sketch-okhttp"))
-                implementation(project(":sketch-svg"))
                 implementation(project(":sketch-video"))
                 implementation(project(":sketch-video-ffmpeg"))
 
@@ -90,6 +89,7 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(project(":sketch-compose"))
+                implementation(project(":sketch-svg"))
                 implementation(project(":sketch-resources"))
                 implementation(project(":sketch-extensions-compose"))
                 implementation(compose.material)
