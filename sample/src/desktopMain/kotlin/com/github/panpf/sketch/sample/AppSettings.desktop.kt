@@ -19,7 +19,7 @@ actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
     return PreferenceDataStoreFactory.createWithPath { preferencesPath }
 }
 
-actual fun isDebugMode(): Boolean = false
+actual fun isDebugMode(): Boolean = true
 
 actual fun ImageOptions.Builder.platformBuildImageOptions(appSettings: AppSettings) {
 

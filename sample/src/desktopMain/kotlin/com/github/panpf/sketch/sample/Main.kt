@@ -31,6 +31,7 @@ import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.harawata.appdirs.AppDirsFactory
@@ -93,6 +94,8 @@ fun main() {
 }
 
 private fun initialSketch() {
+    val context = PlatformContext.INSTANCE
+    val appSettings = context.appSettings
     SingletonSketch.setSafe {
         Sketch.Builder(PlatformContext.INSTANCE).apply {
             val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
@@ -104,8 +107,14 @@ private fun initialSketch() {
             components {
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
             }
-            logger(Logger(Logger.Level.DEBUG))
-        }.build()
+            logger(Logger(appSettings.logLevel.value))
+        }.build().apply {
+            GlobalScope.launch {
+                appSettings.logLevel.collect {
+                    logger.level = it
+                }
+            }
+        }
     }
 }
 
