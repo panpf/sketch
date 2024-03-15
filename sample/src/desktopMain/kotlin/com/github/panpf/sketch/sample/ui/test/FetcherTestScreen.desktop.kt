@@ -31,10 +31,11 @@ private suspend fun getFileUriTestFile(image: AssetImages.Image): File =
             /* appVersion = */ null,
             /* appAuthor = */ null,
         )
-        val imageFile = File(appDataDir, image.fileName)
+        val resourceImage = image as AssetImages.ResourceImage
+        val imageFile = File(appDataDir, resourceImage.fileName)
         if (!imageFile.exists()) {
             imageFile.parentFile.mkdirs()
-            ResourceLoader.Default.load(image.fileName).use { input ->
+            ResourceLoader.Default.load(resourceImage.fileName).use { input ->
                 imageFile.outputStream().use { output ->
                     input.copyTo(output)
                 }
