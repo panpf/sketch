@@ -3,6 +3,7 @@ package com.github.panpf.sketch.compose.request
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.github.panpf.sketch.JvmBitmapImage
+import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.compose.ComposeBitmap
 import com.github.panpf.sketch.compose.asSketchImage
 import com.github.panpf.sketch.request.ImageData
@@ -29,10 +30,10 @@ class ConvertToComposeBitmapRequestInterceptor : RequestInterceptor {
                 }
                 val newImage = composeBitmap.asSketchImage()
                 return Result.success(imageData.copy(image = newImage))
-//            } else if (image is SkiaBitmapImage) {
-//                val composeBitmap: ComposeBitmap = image.bitmap.asComposeImageBitmap()
-//                val newImage = composeBitmap.asSketchImage()
-//                return Result.success(imageData.copy(image = newImage))
+            } else if (image is SkiaBitmapImage) {
+                val composeBitmap: ComposeBitmap = image.bitmap.asComposeImageBitmap()
+                val newImage = composeBitmap.asSketchImage()
+                return Result.success(imageData.copy(image = newImage))
             }
         }
         return result

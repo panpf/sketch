@@ -53,7 +53,7 @@ kotlin {
                 compileOnly(libs.composeStableMarker)
                 api(libs.okio)
                 api(libs.ktor.client.core)
-//                api(libs.skiko)
+                api(libs.skiko)
             }
         }
         named("commonTest") {

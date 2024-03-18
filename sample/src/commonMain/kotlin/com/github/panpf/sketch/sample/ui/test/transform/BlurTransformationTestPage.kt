@@ -66,7 +66,7 @@ fun BlurTransformationTestPage() {
 
             Spacer(Modifier.size(16.dp))
             MyAsyncImage(
-                request = ImageRequest(LocalPlatformContext.current, AssetImages.png.uri) {
+                request = ImageRequest(LocalPlatformContext.current, AssetImages.svg.uri) {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
                     val maskColor = when (maskColorName) {

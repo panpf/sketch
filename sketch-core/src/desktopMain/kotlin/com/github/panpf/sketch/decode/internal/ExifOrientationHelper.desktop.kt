@@ -16,13 +16,14 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.JvmBitmapImage
+import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ExifOrientation
-import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.flipped
 import com.github.panpf.sketch.util.rotated
-import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import kotlin.math.abs
 
@@ -39,63 +40,76 @@ class DesktopExifOrientationHelper constructor(
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
-        val bufferedImage = image.asOrNull<JvmBitmapImage>()?.bitmap ?: return null
         val rotationDegrees = getRotationDegrees()
         val isFlipped = isFlipped()
         val isRotated = abs(rotationDegrees % 360) != 0
         if (!isFlipped && !isRotated) {
             return null
         }
+        return when (image) {
+            is JvmBitmapImage -> {
+                val bufferedImage = image.bitmap
+                val bufferedImage2: BufferedImage
+                val bufferedImage3: BufferedImage
+                if (!reverse) {
+                    bufferedImage2 = if (isFlipped) {
+                        bufferedImage.flipped(horizontal = true)
+                    } else {
+                        bufferedImage
+                    }
+                    bufferedImage3 = if (isRotated) {
+                        bufferedImage2.rotated(rotationDegrees)
+                    } else {
+                        bufferedImage2
+                    }
+                } else {
+                    bufferedImage2 = if (isRotated) {
+                        bufferedImage.rotated(-rotationDegrees)
+                    } else {
+                        bufferedImage
+                    }
+                    bufferedImage3 = if (isFlipped) {
+                        bufferedImage2.flipped(horizontal = true)
+                    } else {
+                        bufferedImage2
+                    }
+                }
+                bufferedImage3.asSketchImage()
+            }
 
-        val bufferedImage2: BufferedImage
-        val bufferedImage3: BufferedImage
-        if (!reverse) {
-            bufferedImage2 = if (isFlipped) {
-                flipImage(bufferedImage, vertical = false)
-            } else {
-                bufferedImage
+            is SkiaBitmapImage -> {
+                val bufferedImage = image.bitmap
+                val bufferedImage2: SkiaBitmap
+                val bufferedImage3: SkiaBitmap
+                if (!reverse) {
+                    bufferedImage2 = if (isFlipped) {
+                        bufferedImage.flipped(horizontal = true)
+                    } else {
+                        bufferedImage
+                    }
+                    bufferedImage3 = if (isRotated) {
+                        bufferedImage2.rotated(rotationDegrees)
+                    } else {
+                        bufferedImage2
+                    }
+                } else {
+                    bufferedImage2 = if (isRotated) {
+                        bufferedImage.rotated(-rotationDegrees)
+                    } else {
+                        bufferedImage
+                    }
+                    bufferedImage3 = if (isFlipped) {
+                        bufferedImage2.flipped(horizontal = true)
+                    } else {
+                        bufferedImage2
+                    }
+                }
+                bufferedImage3.asSketchImage()
             }
-            bufferedImage3 = if (isRotated) {
-                bufferedImage2.rotated(rotationDegrees)
-            } else {
-                bufferedImage2
-            }
-        } else {
-            bufferedImage2 = if (isRotated) {
-                bufferedImage.rotated(-rotationDegrees)
-            } else {
-                bufferedImage
-            }
-            bufferedImage3 = if (isFlipped) {
-                flipImage(bufferedImage2, vertical = false)
-            } else {
-                bufferedImage2
+
+            else -> {
+                null
             }
         }
-        return bufferedImage3.asSketchImage()
-    }
-
-    private fun flipImage(
-        source: BufferedImage,
-        @Suppress("SameParameterValue") vertical: Boolean = false
-    ): BufferedImage {
-        val flipped = BufferedImage(source.width, source.height, source.type)
-        val graphics = flipped.createGraphics()
-        val transform = if (!vertical) {
-            AffineTransform.getTranslateInstance(source.width.toDouble(), 0.0)
-        } else {
-            AffineTransform.getTranslateInstance(0.0, source.height.toDouble())
-        }.apply {
-            val flip = if (!vertical) {
-                AffineTransform.getScaleInstance(-1.0, 1.0)
-            } else {
-                AffineTransform.getScaleInstance(1.0, -1.0)
-            }
-            concatenate(flip)
-        }
-        graphics.transform = transform
-        graphics.drawImage(source, 0, 0, null)
-        graphics.dispose()
-        return flipped
     }
 }

@@ -16,7 +16,6 @@ import org.jetbrains.skia.Rect
 import org.jetbrains.skia.svg.SVGDOM
 import org.jetbrains.skia.svg.SVGLength
 import org.jetbrains.skia.svg.SVGLengthUnit
-import org.jetbrains.skiko.toBufferedImage
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -113,13 +112,11 @@ actual suspend fun decodeSvg(
         val paint = Paint().apply { color = backgroundColor }
         canvas.drawRect(rect, paint)
     }
-    // TODO css
+    // TODO SVGDOM not support css
     svg.render(canvas)
 
-    val toBufferedImage = bitmap.toBufferedImage()
-//    val toBufferedImage = bitmap.asSketchImage()  // TODO
     return DecodeResult(
-        image = toBufferedImage.asSketchImage(),
+        image = bitmap.asSketchImage(),
         imageInfo = imageInfo,
         dataFrom = dataSource.dataFrom,
         transformedList = transformedList,

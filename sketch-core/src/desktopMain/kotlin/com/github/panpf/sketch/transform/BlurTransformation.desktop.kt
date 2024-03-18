@@ -1,9 +1,9 @@
 package com.github.panpf.sketch.transform
 
-import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.JvmBitmapImage
+import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.backgrounded
 import com.github.panpf.sketch.util.blur
 import com.github.panpf.sketch.util.hasAlpha
@@ -15,16 +15,34 @@ internal actual fun blurTransformation(
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
     maskColor: Int?
-): Image? {
-    val inputBitmap = image.asOrNull<JvmBitmapImage>()?.bitmap ?: return null
-    // Transparent pixels cannot be blurred
-    val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
-        inputBitmap.backgrounded(hasAlphaBitmapBgColor)
-    } else {
-        inputBitmap
+): Image? = when (image) {
+    is JvmBitmapImage -> {
+        val inputBitmap = image.bitmap
+        // Transparent pixels cannot be blurred
+        val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
+            inputBitmap.backgrounded(hasAlphaBitmapBgColor)
+        } else {
+            inputBitmap
+        }
+        val blurImage = compatAlphaBitmap.apply { blur(radius) }
+        val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
+        maskImage.asSketchImage()
     }
 
-    val blurImage = compatAlphaBitmap.apply { blur(radius) }
-    val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
-    return maskImage.asSketchImage()
+    is SkiaBitmapImage -> {
+        val inputBitmap = image.bitmap
+        // Transparent pixels cannot be blurred
+        val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
+            inputBitmap.backgrounded(hasAlphaBitmapBgColor)
+        } else {
+            inputBitmap
+        }
+        val blurImage = compatAlphaBitmap.apply { blur(radius) }
+        val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
+        maskImage.asSketchImage()
+    }
+
+    else -> {
+        null
+    }
 }

@@ -15,14 +15,28 @@
  */
 package com.github.panpf.sketch.transform
 
-import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.JvmBitmap
+import com.github.panpf.sketch.JvmBitmapImage
+import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.rotated
 
-internal actual fun rotateTransformation(image: Image, degrees: Int): Image? {
-    val inputBufferedImage = image.asOrNull<JvmBitmapImage>()?.bitmap ?: return null
-    val outBufferedImage = inputBufferedImage.rotated(degrees)
-    return outBufferedImage.asSketchImage()
+internal actual fun rotateTransformation(image: Image, degrees: Int): Image? = when (image) {
+    is JvmBitmapImage -> {
+        val inputBitmap: JvmBitmap = image.bitmap
+        val outBitmap: JvmBitmap = inputBitmap.rotated(degrees)
+        outBitmap.asSketchImage()
+    }
+
+    is SkiaBitmapImage -> {
+        val inputBitmap: SkiaBitmap = image.bitmap
+        val outBitmap: SkiaBitmap = inputBitmap.rotated(degrees)
+        outBitmap.asSketchImage()
+    }
+
+    else -> {
+        null
+    }
 }

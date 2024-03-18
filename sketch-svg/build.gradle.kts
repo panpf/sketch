@@ -38,7 +38,6 @@ kotlin {
         named("commonMain") {
             dependencies {
                 api(project(":sketch-core"))
-                api(libs.skiko)
             }
         }
         named("commonTest") {

@@ -2,12 +2,14 @@ package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.JvmBitmapImage
+import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.decodeImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import okio.BufferedSink
+import org.jetbrains.skiko.toBufferedImage
 import javax.imageio.ImageIO
 
 actual fun createImageSerializer(): ImageSerializer? = DesktopImageSerializer()
@@ -15,16 +17,23 @@ actual fun createImageSerializer(): ImageSerializer? = DesktopImageSerializer()
 class DesktopImageSerializer : ImageSerializer {
 
     override fun supportImage(image: Image): Boolean {
-//        return image is JvmBitmapImage || image is SkiaBitmapImage
-        return image is JvmBitmapImage
+        return image is JvmBitmapImage || image is SkiaBitmapImage
     }
 
     override fun compress(image: Image, sink: BufferedSink) {
-        if (image is JvmBitmapImage) {
-            ImageIO.write(image.bitmap, "png", sink.outputStream())
-//        } else if (image is SkiaBitmapImage) {
-//            val bufferedImage = image.bitmap.toBufferedImage()
-//            ImageIO.write(bufferedImage, "png", sink.outputStream())
+        when (image) {
+            is JvmBitmapImage -> {
+                ImageIO.write(image.bitmap, "png", sink.outputStream())
+            }
+
+            is SkiaBitmapImage -> {
+                val bufferedImage = image.bitmap.toBufferedImage()
+                ImageIO.write(bufferedImage, "png", sink.outputStream())
+            }
+
+            else -> {
+                throw IllegalArgumentException("Unsupported image type: ${image::class.qualifiedName}")
+            }
         }
     }
 

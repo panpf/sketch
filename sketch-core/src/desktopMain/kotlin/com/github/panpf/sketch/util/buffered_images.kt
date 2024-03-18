@@ -182,7 +182,7 @@ internal fun BufferedImage.rotated(angle: Int): BufferedImage {
     return newImage
 }
 
-internal fun BufferedImage.flipped(horizontal: Boolean): BufferedImage {
+internal fun BufferedImage.flipped(horizontal: Boolean = true): BufferedImage {
     val source = this
     val flipped = BufferedImage(source.width, source.height, source.type)
     val graphics = flipped.createGraphics()
@@ -203,10 +203,6 @@ internal fun BufferedImage.flipped(horizontal: Boolean): BufferedImage {
     graphics.dispose()
     return flipped
 }
-
-internal fun BufferedImage.horizontalFlipped(): BufferedImage = flipped(horizontal = true)
-
-internal fun BufferedImage.verticalFlipped(): BufferedImage = flipped(horizontal = false)
 
 internal fun BufferedImage.backgrounded(color: Int): BufferedImage {
     val source = this
