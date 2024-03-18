@@ -19,7 +19,6 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
-import com.github.panpf.sketch.decode.internal.decodeSvg
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -32,6 +31,14 @@ import com.github.panpf.sketch.request.svgCss
 fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
     addDecoder(Factory())
 }
+
+expect suspend fun decodeSvg(
+    requestContext: RequestContext,
+    dataSource: DataSource,
+    useViewBoundsAsIntrinsicSize: Boolean,
+    backgroundColor: Int?,
+    css: String?,
+): DecodeResult
 
 /**
  * Decode svg file and convert to Bitmap

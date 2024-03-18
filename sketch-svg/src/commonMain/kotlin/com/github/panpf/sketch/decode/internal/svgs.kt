@@ -25,11 +25,3 @@ private val LEFT_ANGLE_BRACKET = "<".toByteArray()
 
 fun Bytes.isSvg(): Boolean =
     rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1
-
-expect suspend fun decodeSvg(
-    requestContext: RequestContext,
-    dataSource: DataSource,
-    useViewBoundsAsIntrinsicSize: Boolean,
-    backgroundColor: Int?,
-    css: String?,
-): DecodeResult
