@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.BufferedImageImage
+import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ExifOrientation
@@ -39,7 +39,7 @@ class DesktopExifOrientationHelper constructor(
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
-        val bufferedImage = image.asOrNull<BufferedImageImage>()?.bufferedImage ?: return null
+        val bufferedImage = image.asOrNull<JvmBitmapImage>()?.bitmap ?: return null
         val rotationDegrees = getRotationDegrees()
         val isFlipped = isFlipped()
         val isRotated = abs(rotationDegrees % 360) != 0

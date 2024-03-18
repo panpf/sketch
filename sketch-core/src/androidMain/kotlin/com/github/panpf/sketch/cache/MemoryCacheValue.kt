@@ -15,10 +15,10 @@
  */
 package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.AndroidBitmapImage
 
-class BitmapImageValue(
-    override val image: BitmapImage,
+class AndroidBitmapImageValue(
+    override val image: AndroidBitmapImage,
     override val extras: Map<String, Any?> = emptyMap(),
 ) : MemoryCache.Value {
 
@@ -30,7 +30,7 @@ class BitmapImageValue(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is BitmapImageValue) return false
+        if (other !is AndroidBitmapImageValue) return false
         if (image != other.image) return false
         return extras == other.extras
     }
@@ -42,6 +42,6 @@ class BitmapImageValue(
     }
 
     override fun toString(): String {
-        return "BitmapImageValue(image=${image}, extras=$extras)"
+        return "AndroidBitmapImageValue(image=${image}, extras=$extras)"
     }
 }

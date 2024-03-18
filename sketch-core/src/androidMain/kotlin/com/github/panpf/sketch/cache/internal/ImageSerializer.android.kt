@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.cache.internal
 
 import android.graphics.Bitmap.CompressFormat
-import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
@@ -14,17 +14,17 @@ import okio.BufferedSink
 
 
 actual fun createImageSerializer(): ImageSerializer? {
-    return BitmapImageImageSerializer()
+    return AndroidImageSerializer()
 }
 
-class BitmapImageImageSerializer : ImageSerializer {
+class AndroidImageSerializer : ImageSerializer {
 
     override fun supportImage(image: Image): Boolean {
-        return image is BitmapImage
+        return image is AndroidBitmapImage
     }
 
     override fun compress(image: Image, sink: BufferedSink) {
-        image as BitmapImage
+        image as AndroidBitmapImage
         image.bitmap.compress(CompressFormat.PNG, 100, sink.outputStream())
     }
 

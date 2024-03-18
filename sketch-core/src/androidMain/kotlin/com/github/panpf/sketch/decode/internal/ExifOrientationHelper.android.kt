@@ -22,7 +22,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
@@ -63,7 +63,7 @@ class AndroidExifOrientationHelper constructor(
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
-        val inBitmap = image.asOrNull<BitmapImage>()?.bitmap ?: return null
+        val inBitmap = image.asOrNull<AndroidBitmapImage>()?.bitmap ?: return null
         val rotationDegrees = getRotationDegrees().let {
             if (reverse) it * -1 else it
         }

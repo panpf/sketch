@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.compose
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
@@ -30,7 +31,11 @@ fun Painter.asSketchImage(shareable: Boolean = false): Image {
     return PainterImage(this, shareable)
 }
 
-data class PainterImage(val painter: Painter, override val shareable: Boolean = false) : Image {
+@Stable
+data class PainterImage(
+    val painter: Painter,
+    override val shareable: Boolean = false
+) : Image {
 
     override val width: Int =
         painter.intrinsicSize.takeIf { it.isSpecified }?.width?.roundToInt() ?: -1
@@ -51,8 +56,8 @@ data class PainterImage(val painter: Painter, override val shareable: Boolean = 
 
     override fun transformer(): ImageTransformer? = null
 
+    override fun getPixels(): IntArray? = null
+
     override fun toString(): String =
         "PainterImage(painter=${painter.toLogString()}, shareable=$shareable)"
-
-    override fun getPixels(): IntArray? = null
 }

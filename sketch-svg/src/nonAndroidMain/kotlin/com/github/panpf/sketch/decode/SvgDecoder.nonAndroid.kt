@@ -116,9 +116,8 @@ actual suspend fun decodeSvg(
     // TODO css
     svg.render(canvas)
 
-    // TODO Create and use SkiaBitmapImage
     val toBufferedImage = bitmap.toBufferedImage()
-//        val toBufferedImage = bitmap.asComposeImageBitmap()
+//    val toBufferedImage = bitmap.asSketchImage()  // TODO
     return DecodeResult(
         image = toBufferedImage.asSketchImage(),
         imageInfo = imageInfo,

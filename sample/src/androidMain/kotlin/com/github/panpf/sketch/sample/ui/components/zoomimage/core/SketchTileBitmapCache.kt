@@ -18,8 +18,7 @@ package com.github.panpf.zoomimage.sketch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.cache.BitmapImageValue
-import com.github.panpf.zoomimage.sketch.SketchTileBitmap
+import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
 import com.github.panpf.zoomimage.subsampling.CacheTileBitmap
 import com.github.panpf.zoomimage.subsampling.TileBitmap
@@ -31,7 +30,7 @@ class SketchTileBitmapCache constructor(
 ) : TileBitmapCache {
 
     override fun get(key: String): CacheTileBitmap? {
-        val bitmap = (sketch.memoryCache[key] as? BitmapImageValue)
+        val bitmap = (sketch.memoryCache[key] as? AndroidBitmapImageValue)
             ?.image?.bitmap ?: return null
         return SketchTileBitmap(key = key, bitmap = bitmap, caller = caller)
     }
@@ -44,7 +43,7 @@ class SketchTileBitmapCache constructor(
         disallowReuseBitmap: Boolean
     ): CacheTileBitmap? {
         val bitmap = (tileBitmap as AndroidTileBitmap).bitmap ?: return null
-        val newCacheValue = BitmapImageValue(bitmap.asSketchImage())
+        val newCacheValue = AndroidBitmapImageValue(bitmap.asSketchImage())
         if (!sketch.memoryCache.put(key, newCacheValue)) {
             return null
         }

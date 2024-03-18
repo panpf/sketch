@@ -21,8 +21,11 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.Size
 
+val Image.size: Size
+    get() = Size(width, height)
+
 @Stable
-expect interface Image {
+interface Image {
 
     /** The width of the image in pixels. */
     val width: Int
@@ -59,25 +62,6 @@ interface ImageTransformer {
     fun scale(image: Image, scaleFactor: Float): Image
 
     fun mapping(image: Image, mapping: ResizeMapping): Image
-}
-
-val Image.size: Size
-    get() = Size(width, height)
-
-
-fun Image.findLeafImage(): Image = if (this is ImageWrapper) image.findLeafImage() else this
-
-open class ImageWrapper(val image: Image) : Image by image {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ImageWrapper) return false
-        return image == other.image
-    }
-
-    override fun hashCode(): Int = image.hashCode()
-
-    override fun toString(): String = "ImageWrapper(image=$image)"
 }
 
 interface ByteCountProvider {

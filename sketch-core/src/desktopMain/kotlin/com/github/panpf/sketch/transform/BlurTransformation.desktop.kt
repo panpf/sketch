@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.transform
 
-import com.github.panpf.sketch.BufferedImageImage
+import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.asOrNull
@@ -16,7 +16,7 @@ internal actual fun blurTransformation(
     hasAlphaBitmapBgColor: Int?,
     maskColor: Int?
 ): Image? {
-    val inputBitmap = image.asOrNull<BufferedImageImage>()?.bufferedImage ?: return null
+    val inputBitmap = image.asOrNull<JvmBitmapImage>()?.bitmap ?: return null
     // Transparent pixels cannot be blurred
     val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
         inputBitmap.backgrounded(hasAlphaBitmapBgColor)

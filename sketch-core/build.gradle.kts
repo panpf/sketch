@@ -52,7 +52,8 @@ kotlin {
                 api(libs.kotlinx.coroutines.core)
                 compileOnly(libs.composeStableMarker)
                 api(libs.okio)
-                implementation(libs.ktor.client.core)
+                api(libs.ktor.client.core)
+//                api(libs.skiko)
             }
         }
         named("commonTest") {

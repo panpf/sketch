@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.compose
 
-import com.github.panpf.sketch.compose.request.AwtImage2ComposeImageRequestInterceptor
+import com.github.panpf.sketch.compose.request.ConvertToComposeBitmapRequestInterceptor
 import com.github.panpf.sketch.compose.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.compose.transition.ComposeCrossfadeTransition
 import com.github.panpf.sketch.request.ImageRequest
@@ -28,6 +28,6 @@ actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
     }
 
     builder.mergeComponents {
-        addRequestInterceptor(AwtImage2ComposeImageRequestInterceptor())
+        addRequestInterceptor(ConvertToComposeBitmapRequestInterceptor())
     }
 }

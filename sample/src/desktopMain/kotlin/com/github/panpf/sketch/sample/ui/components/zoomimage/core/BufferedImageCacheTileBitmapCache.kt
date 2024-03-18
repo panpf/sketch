@@ -29,7 +29,7 @@ class BufferedImageCacheTileBitmapCache constructor(
 
     override fun get(key: String): CacheTileBitmap? {
         val bufferedImage = (sketch.memoryCache[key] as? BufferedImageValue)
-            ?.image?.bufferedImage ?: return null
+            ?.image?.bitmap ?: return null
         return BufferedImageCacheTileBitmap(key, bufferedImage)
     }
 

@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.transform
 
-import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.asOrNull
@@ -30,7 +30,7 @@ internal actual fun blurTransformation(
     hasAlphaBitmapBgColor: Int?,
     maskColor: Int?
 ): Image? {
-    val inputBitmap = image.asOrNull<BitmapImage>()?.bitmap ?: return null
+    val inputBitmap = image.asOrNull<AndroidBitmapImage>()?.bitmap ?: return null
     // Transparent pixels cannot be blurred
     val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
         inputBitmap.backgrounded(hasAlphaBitmapBgColor)
