@@ -47,9 +47,9 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.ui.rememberIconExpandMorePainter
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
-import com.github.panpf.sketch.sample.ui.rememberIconExpandMorePainter
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
 import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.util.Logger.Level
