@@ -41,7 +41,7 @@ actual suspend fun decodeSvg(
         svgHeight = svg.root?.height?.value ?: 0f
     }
     if (svgWidth <= 0f || svgHeight <= 0f) {
-        throw ImageInvalidException("Invalid svg image, width or height is less than or equal to 0")
+        throw ImageInvalidException("Invalid svg image size, size=${svgWidth}x${svgHeight}")
     }
     val imageInfo = ImageInfo(
         width = svgWidth.roundToInt(),
@@ -112,7 +112,7 @@ actual suspend fun decodeSvg(
         val paint = Paint().apply { color = backgroundColor }
         canvas.drawRect(rect, paint)
     }
-    // TODO SVGDOM not support css
+    // TODO SVGDOM not support css. https://github.com/JetBrains/compose-multiplatform/issues/1217
     svg.render(canvas)
 
     return DecodeResult(

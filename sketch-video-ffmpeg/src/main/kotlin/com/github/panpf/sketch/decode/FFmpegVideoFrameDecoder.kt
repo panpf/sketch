@@ -28,7 +28,6 @@ import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.decode.internal.realDecode
-import com.github.panpf.sketch.decode.internal.toLogString
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMicros
@@ -158,15 +157,14 @@ class FFmpegVideoFrameDecoder(
         }
         val bitmap =
             mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
-                ?: throw DecodeException(
-                    "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d."
-                        .format(
-                            frameMicros, optionToName(option), dstWidth, dstHeight,
-                            imageInfo.width, imageInfo.height
-                        )
-                )
-        requestContext.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
+        if (bitmap == null) {
+            throw DecodeException(
+                "Failed to getScaledFrameAtTime. " +
+                        "frameMicros=${frameMicros}, " +
+                        "option=${optionToName(option)}, " +
+                        "dst=${dstWidth}x${dstHeight}, " +
+                        "image=${imageInfo.width}x${imageInfo.height}."
+            )
         }
         return bitmap
     }

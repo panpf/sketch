@@ -20,7 +20,7 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.getPixels
+import com.github.panpf.sketch.util.readPixels
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
@@ -48,7 +48,7 @@ data class JvmBitmapImage(
 
     override fun transformer(): ImageTransformer = JvmBitmapTransformer()
 
-    override fun getPixels(): IntArray = bitmap.getPixels()
+    override fun getPixels(): IntArray = bitmap.readPixels()
 
     override fun toString(): String =
         "JvmBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"

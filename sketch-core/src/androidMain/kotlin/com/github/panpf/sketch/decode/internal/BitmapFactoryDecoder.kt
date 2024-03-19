@@ -75,17 +75,6 @@ open class BitmapFactoryDecoder(
         } catch (throwable: Throwable) {
             throw DecodeException("Bitmap decode error: $throwable", throwable)
         }
-        if (bitmap.width <= 0 || bitmap.height <= 0) {
-            requestContext.logger.e(MODULE) {
-                "realDecodeFull. Invalid image. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
-            }
-            bitmap.recycle()
-            throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
-        } else {
-            requestContext.logger.d(MODULE) {
-                "realDecodeFull. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
-            }
-        }
         return bitmap
     }
 
@@ -100,17 +89,6 @@ open class BitmapFactoryDecoder(
                 ?: throw ImageInvalidException("Invalid image. region decode return null")
         } catch (throwable: Throwable) {
             throw DecodeException("Bitmap region decode error", throwable)
-        }
-        if (bitmap.width <= 0 || bitmap.height <= 0) {
-            requestContext.logger.e(MODULE) {
-                "realDecodeRegion. Invalid image. ${bitmap.toLogString()}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
-            }
-            bitmap.recycle()
-            throw ImageInvalidException("Invalid image. size=${bitmap.width}x${bitmap.height}")
-        } else {
-            requestContext.logger.d(MODULE) {
-                "realDecodeRegion. successful. ${bitmap.toLogString()}. ${imageInfo}. ${srcRect}. '${requestContext.logKey}'"
-            }
         }
         return bitmap
     }

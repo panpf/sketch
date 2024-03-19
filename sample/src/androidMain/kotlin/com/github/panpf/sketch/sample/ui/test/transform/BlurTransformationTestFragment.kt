@@ -115,6 +115,8 @@ class BlurTransformationTestFragment :
         }
 
         binding.myImage2.displayImage(AssetImages.png.uri) {
+            memoryCachePolicy(DISABLED)
+            resultCachePolicy(DISABLED)
             addTransformations(
                 BlurTransformation(
                     radius = radius,

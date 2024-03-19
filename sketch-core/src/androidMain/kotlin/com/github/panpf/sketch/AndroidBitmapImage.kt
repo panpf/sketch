@@ -16,9 +16,7 @@
 package com.github.panpf.sketch
 
 import android.content.res.Resources
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
@@ -29,7 +27,7 @@ import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.isImmutable
 import com.github.panpf.sketch.util.mapping
-import com.github.panpf.sketch.util.scale
+import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
 
 fun AndroidBitmap.asSketchImage(
@@ -84,7 +82,7 @@ class BitmapImageTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {
         val inputBitmap = image.asOrThrow<AndroidBitmapImage>().bitmap
-        val outBitmap = inputBitmap.scale(scaleFactor)
+        val outBitmap = inputBitmap.scaled(scaleFactor)
         return outBitmap.asSketchImage()
     }
 

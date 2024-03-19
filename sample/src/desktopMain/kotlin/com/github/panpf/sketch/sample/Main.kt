@@ -108,6 +108,7 @@ private fun initialSketch() {
             components {
                 supportSvg()
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
+//                addDecoder(SkiaDecoder.Factory())
             }
             logger(Logger(appSettings.logLevel.value))
         }.build().apply {

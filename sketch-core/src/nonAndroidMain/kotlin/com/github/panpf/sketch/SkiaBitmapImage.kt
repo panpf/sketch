@@ -6,9 +6,9 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.mapping
+import com.github.panpf.sketch.util.readIntPixels
 import com.github.panpf.sketch.util.scaled
-
-// TODO SkiaBitmapExifOrientationHelper
+import com.github.panpf.sketch.util.toLogString
 
 fun SkiaBitmap.asSketchImage(): SkiaBitmapImage = SkiaBitmapImage(this)
 

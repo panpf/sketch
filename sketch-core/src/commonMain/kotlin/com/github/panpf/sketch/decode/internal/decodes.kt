@@ -6,6 +6,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -192,7 +193,7 @@ fun realDecode(
         precision = addedResize.precision,
         scale = addedResize.scale,
     )
-    val bitmap = if (
+    val image = if (
         addedResize.shouldClip(imageInfo.size)
         && addedResize.precision != LESS_PIXELS
         && decodeRegion != null
@@ -222,8 +223,11 @@ fun realDecode(
         }
         decodeFull(sampleSize)
     }
+    if (image.width <= 0 || image.height <= 0) {
+        throw ImageInvalidException("Invalid image size. size=${image.width}x${image.height}")
+    }
     return DecodeResult(
-        image = bitmap,
+        image = image,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
         transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList(),

@@ -58,9 +58,7 @@ open class DrawableDecoder constructor(
         val imageWidth = drawable.intrinsicWidth
         val imageHeight = drawable.intrinsicHeight
         if (imageWidth <= 0 || imageHeight <= 0) {
-            throw ImageInvalidException(
-                "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0"
-            )
+            throw ImageInvalidException("Invalid drawable intrinsicSize, intrinsicSize=${imageWidth}x${imageHeight}")
         }
         val size = requestContext.size!!
         var transformedList: List<String>? = null
@@ -106,9 +104,6 @@ open class DrawableDecoder constructor(
             mimeType = mimeType ?: "image/png",
             exifOrientation = ExifOrientation.UNDEFINED
         )
-        requestContext.logger.d(MODULE) {
-            "decode. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
-        }
         DecodeResult(
             image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
             imageInfo = imageInfo,

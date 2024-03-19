@@ -62,10 +62,6 @@ class VideoFrameDecoder(
     private val mimeType: String,
 ) : Decoder {
 
-    companion object {
-        const val MODULE = "VideoFrameDecoder"
-    }
-
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
@@ -202,9 +198,6 @@ class VideoFrameDecoder(
                         )
                     )
             }
-        }
-        requestContext.sketch.logger.d(MODULE) {
-            "realDecodeFull. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
         }
         return bitmap
     }

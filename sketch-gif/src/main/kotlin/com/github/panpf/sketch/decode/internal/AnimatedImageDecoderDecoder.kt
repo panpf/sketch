@@ -26,6 +26,7 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ExifOrientation
@@ -130,7 +131,7 @@ open class AnimatedImageDecoderDecoder(
         }
 
         if (drawable !is AnimatedImageDrawable) {
-            throw Exception("This image is not a animated image, please modify your DrawableDecoder.Factory.create() method to match the image accurately")
+            throw DecodeException("This image is not a animated image, please modify your DrawableDecoder.Factory.create() method to match the image accurately")
         }
 
         val transformedList: List<String>? =

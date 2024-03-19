@@ -13,7 +13,6 @@ import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
-import com.github.panpf.sketch.decode.internal.toLogString
 import com.github.panpf.sketch.decode.internal.toSoftware
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -44,7 +43,7 @@ actual suspend fun decodeSvg(
         svgHeight = svg.documentHeight
     }
     if (svgWidth <= 0f || svgHeight <= 0f) {
-        throw ImageInvalidException("Invalid svg image, width or height is less than or equal to 0")
+        throw ImageInvalidException("Invalid svg image size, size=${svgWidth}x${svgHeight}")
     }
     val imageInfo = ImageInfo(
         width = svgWidth.roundToInt(),
@@ -104,9 +103,6 @@ actual suspend fun decodeSvg(
     backgroundColor?.let { canvas.drawColor(it) }
     val renderOptions = css?.let { RenderOptions().css(it) }
     svg.renderToCanvas(canvas, renderOptions)
-    requestContext.sketch.logger.d(SvgDecoder.MODULE) {
-        "decode. successful. ${bitmap.toLogString()}. ${imageInfo}. '${requestContext.logKey}'"
-    }
 
     return DecodeResult(
         image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
