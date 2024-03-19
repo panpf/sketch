@@ -133,7 +133,7 @@ class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerR
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            appSettingsService.ignoreExifOrientation.ignoreFirst()
+            appSettingsService.exifOrientation.ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.findPagingAdapter()?.refresh()
                 }

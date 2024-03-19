@@ -30,7 +30,6 @@ import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
-import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -73,10 +72,10 @@ class SettingsViewModel(application1: Application, val page: Page) :
             appSettingsService.inPreferQualityOverSpeed.ignoreFirst(),
             appSettingsService.bitmapQuality.ignoreFirst(),
             if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.ignoreFirst() else null,
-            appSettingsService.ignoreExifOrientation.ignoreFirst(),
-            appSettingsService.disabledMemoryCache.ignoreFirst(),
-            appSettingsService.disabledResultCache.ignoreFirst(),
-            appSettingsService.disabledDownloadCache.ignoreFirst(),
+            appSettingsService.exifOrientation.ignoreFirst(),
+            appSettingsService.memoryCache.ignoreFirst(),
+            appSettingsService.resultCache.ignoreFirst(),
+            appSettingsService.downloadCache.ignoreFirst(),
             appSettingsService.showDataFromLogoInList.ignoreFirst(),
             appSettingsService.showTileBounds.ignoreFirst(),
             appSettingsService.logLevel.ignoreFirst(),
@@ -291,8 +290,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Exif Orientation",
                 desc = null,
-                data = appSettingsService.ignoreExifOrientation,
-                reverse = true
+                data = appSettingsService.exifOrientation,
             )
         )
     }
@@ -315,8 +313,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettingsService.disabledMemoryCache,
-                reverse = true,
+                data = appSettingsService.memoryCache,
                 onLongClick = {
                     sketch.memoryCache.clear()
                     updateList()
@@ -339,8 +336,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettingsService.disabledResultCache,
-                reverse = true,
+                data = appSettingsService.resultCache,
                 onLongClick = {
                     sketch.resultCache.clear()
                     updateList()
@@ -363,8 +359,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettingsService.disabledDownloadCache,
-                reverse = true,
+                data = appSettingsService.downloadCache,
                 onLongClick = {
                     sketch.downloadCache.clear()
                     updateList()

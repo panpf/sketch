@@ -57,10 +57,6 @@ actual suspend fun readPhotosFromPhotoAlbum(
     }
 }
 
-actual fun isIgnoreExifOrientation(context: PlatformContext): Boolean {
-    return context.appSettingsService.ignoreExifOrientation.value
-}
-
 actual suspend fun readImageInfoOrNull(
     context: PlatformContext,
     sketch: Sketch,

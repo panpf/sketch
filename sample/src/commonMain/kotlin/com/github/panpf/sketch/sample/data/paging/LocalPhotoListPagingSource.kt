@@ -23,6 +23,7 @@ import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 expect suspend fun readPhotosFromPhotoAlbum(
@@ -30,8 +31,6 @@ expect suspend fun readPhotosFromPhotoAlbum(
     startPosition: Int,
     pageSize: Int
 ): List<String>
-
-expect fun isIgnoreExifOrientation(context: PlatformContext): Boolean
 
 expect suspend fun readImageInfoOrNull(
     context: PlatformContext,
@@ -90,7 +89,7 @@ class LocalPhotoListPagingSource(
             context = context,
             sketch = sketch,
             uri = uri,
-            ignoreExifOrientation = isIgnoreExifOrientation(context)
+            ignoreExifOrientation = !context.appSettings.exifOrientation.value
         )?.let {
             val exifOrientationHelper = ExifOrientationHelper(it.exifOrientation)
             val newSize = exifOrientationHelper?.applyToSize(it.size) ?: it.size

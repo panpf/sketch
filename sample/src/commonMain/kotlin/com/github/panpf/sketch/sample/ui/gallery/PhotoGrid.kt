@@ -53,7 +53,7 @@ fun PhotoGrid(
     val context = LocalPlatformContext.current
     val appSettingsService = context.appSettings
     LaunchedEffect(Unit) {
-        appSettingsService.ignoreExifOrientation.ignoreFirst().collect {
+        appSettingsService.exifOrientation.ignoreFirst().collect {
             // PhotoPagingSource needs to calculate the width and height of the image based on exif information, so it needs to be refreshed
             pagingItems.refresh()
         }
