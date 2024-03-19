@@ -260,18 +260,18 @@ expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
 
 private fun makeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
+        SwitchSettingItem(
+            title = "Exif Orientation",
+            desc = null,
+            state = appSettings.exifOrientation,
+        )
+    )
+    add(
         DropdownSettingItem(
             title = "Bitmap Quality",
             desc = null,
             values = listOf("Default", "LOW", "HIGH"),
             state = appSettings.bitmapQuality,
-        )
-    )
-    add(
-        SwitchSettingItem(
-            title = "Ignore Exif Orientation",
-            desc = null,
-            state = appSettings.ignoreExifOrientation,
         )
     )
 }
@@ -285,7 +285,7 @@ private fun makeCacheMenuList(
 
     add(
         SwitchSettingItem(
-            title = "Disabled Memory Cache",
+            title = "Memory Cache",
             desc = "%s/%s（Long Click Clean）".format(
                 sketch.memoryCache.size.formatFileSize(
                     0,
@@ -298,7 +298,7 @@ private fun makeCacheMenuList(
                     compact = true
                 )
             ),
-            state = appSettings.disabledMemoryCache,
+            state = appSettings.memoryCache,
             onLongClick = {
                 sketch.memoryCache.clear()
                 recreateSettingItems.value = recreateSettingItems.value + 1
@@ -308,7 +308,7 @@ private fun makeCacheMenuList(
 
     add(
         SwitchSettingItem(
-            title = "Disabled Result Cache",
+            title = "Result Cache",
             desc = "%s/%s（Long Click Clean）".format(
                 sketch.resultCache.size.formatFileSize(
                     0,
@@ -321,7 +321,7 @@ private fun makeCacheMenuList(
                     compact = true
                 )
             ),
-            state = appSettings.disabledResultCache,
+            state = appSettings.resultCache,
             onLongClick = {
                 sketch.resultCache.clear()
                 recreateSettingItems.value = recreateSettingItems.value + 1
@@ -331,7 +331,7 @@ private fun makeCacheMenuList(
 
     add(
         SwitchSettingItem(
-            title = "Disabled Download Cache",
+            title = "Download Cache",
             desc = "%s/%s（Long Click Clean）".format(
                 sketch.downloadCache.size.formatFileSize(
                     0,
@@ -344,7 +344,7 @@ private fun makeCacheMenuList(
                     compact = true
                 )
             ),
-            state = appSettings.disabledDownloadCache,
+            state = appSettings.downloadCache,
             onLongClick = {
                 sketch.downloadCache.clear()
                 recreateSettingItems.value = recreateSettingItems.value + 1

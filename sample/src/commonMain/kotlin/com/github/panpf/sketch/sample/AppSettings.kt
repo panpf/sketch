@@ -81,14 +81,14 @@ class AppSettings(val context: PlatformContext) {
         booleanSettingsStateFlow("inPreferQualityOverSpeed", false, dataStore)
     }
 
-    val disabledMemoryCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("disabledBitmapMemoryCache", false, dataStore)
+    val memoryCache: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow("memoryCache", true, dataStore)
     }
-    val disabledResultCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("disabledBitmapResultCache", false, dataStore)
+    val resultCache: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow("resultCache", true, dataStore)
     }
-    val disabledDownloadCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("disabledDownloadCache", false, dataStore)
+    val downloadCache: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow("downloadCache", true, dataStore)
     }
 
     val precision by lazy {
@@ -114,8 +114,8 @@ class AppSettings(val context: PlatformContext) {
         )
     }
 
-    val ignoreExifOrientation: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("ignoreExifOrientation", false, dataStore)
+    val exifOrientation: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow("exifOrientation", true, dataStore)
     }
     val saveCellularTrafficInList: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow("saveCellularTrafficInList", false, dataStore)
@@ -167,12 +167,12 @@ class AppSettings(val context: PlatformContext) {
         intSettingsStateFlow("currentPageIndex", 0, dataStore)
     }
 
-    private val disabledMemoryCacheValue: CachePolicy
-        get() = if (disabledMemoryCache.value) DISABLED else ENABLED
-    private val disabledDownloadCacheValue: CachePolicy
-        get() = if (disabledDownloadCache.value) DISABLED else ENABLED
-    private val disabledResultCacheValue: CachePolicy
-        get() = if (disabledResultCache.value) DISABLED else ENABLED
+    private val memoryCacheValue: CachePolicy
+        get() = if (memoryCache.value) ENABLED else DISABLED
+    private val downloadCacheValue: CachePolicy
+        get() = if (downloadCache.value) ENABLED else DISABLED
+    private val resultCacheValue: CachePolicy
+        get() = if (resultCache.value) ENABLED else DISABLED
     private val precisionValue: PrecisionDecider
         get() = when (precision.value) {
             "LongImageClipMode" -> LongImageClipPrecisionDecider(longImage = SAME_ASPECT_RATIO)
@@ -193,16 +193,16 @@ class AppSettings(val context: PlatformContext) {
         colorSpace,
         inPreferQualityOverSpeed,
 
-        disabledMemoryCache,
-        disabledResultCache,
-        disabledDownloadCache,
+        memoryCache,
+        resultCache,
+        downloadCache,
 
         precision,
         scale,
         longImageScale,
         otherImageScale,
 
-        ignoreExifOrientation,
+        exifOrientation,
         saveCellularTrafficInList,
         disallowAnimatedImageInList,
     )
@@ -214,11 +214,11 @@ class AppSettings(val context: PlatformContext) {
         colorSpace,
         inPreferQualityOverSpeed,
 
-        disabledMemoryCache,
-        disabledResultCache,
-        disabledDownloadCache,
+        memoryCache,
+        resultCache,
+        downloadCache,
 
-        ignoreExifOrientation,
+        exifOrientation,
     )
     val viewersCombinedFlow: Flow<Any> =
         combine(viewerFlows) { it.joinToString() }
@@ -228,14 +228,14 @@ class AppSettings(val context: PlatformContext) {
 
         platformBuildImageOptions(this@AppSettings)
 
-        memoryCachePolicy(disabledMemoryCacheValue)
-        resultCachePolicy(disabledResultCacheValue)
-        downloadCachePolicy(disabledDownloadCacheValue)
+        memoryCachePolicy(memoryCacheValue)
+        resultCachePolicy(resultCacheValue)
+        downloadCachePolicy(downloadCacheValue)
 
         precision(precisionValue)
         scale(scaleValue)
 
-        ignoreExifOrientation(ignoreExifOrientation.value)
+        ignoreExifOrientation(!exifOrientation.value)
         saveCellularTraffic(saveCellularTrafficInList.value)
         disallowAnimatedImage(disallowAnimatedImageInList.value)
     }
@@ -243,11 +243,11 @@ class AppSettings(val context: PlatformContext) {
     fun buildViewerImageOptions(): ImageOptions = ImageOptions {
         platformBuildImageOptions(this@AppSettings)
 
-        memoryCachePolicy(disabledMemoryCacheValue)
-        resultCachePolicy(disabledResultCacheValue)
-        downloadCachePolicy(disabledDownloadCacheValue)
+        memoryCachePolicy(memoryCacheValue)
+        resultCachePolicy(resultCacheValue)
+        downloadCachePolicy(downloadCacheValue)
 
-        ignoreExifOrientation(ignoreExifOrientation.value)
+        ignoreExifOrientation(!exifOrientation.value)
     }
 }
 

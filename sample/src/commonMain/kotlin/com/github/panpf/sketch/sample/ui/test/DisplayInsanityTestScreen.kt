@@ -19,7 +19,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.data.paging.isIgnoreExifOrientation
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.data.paging.readImageInfoOrNull
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
@@ -90,7 +90,7 @@ class DisplayInsanityTestPagingSource(private val context: PlatformContext, val 
                 context = context,
                 sketch = sketch,
                 uri = uri,
-                ignoreExifOrientation = isIgnoreExifOrientation(context)
+                ignoreExifOrientation = !context.appSettings.exifOrientation.value
             )
             if (imageInfo != null) {
                 val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
