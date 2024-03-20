@@ -32,8 +32,8 @@ kotlin {
         named("androidMain") {
             dependencies {
                 implementation(project(":sketch-extensions"))
-                implementation(project(":sketch-gif-movie"))
-                implementation(project(":sketch-gif-koral"))
+                implementation(project(":sketch-animated"))
+                implementation(project(":sketch-animated-koralgif"))
                 implementation(project(":sketch-okhttp"))
                 implementation(project(":sketch-video"))
                 implementation(project(":sketch-video-ffmpeg"))
@@ -115,7 +115,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":sketch-okhttp"))
-                implementation(project(":sketch-gif"))
+                implementation(project(":sketch-animated"))
                 implementation(libs.harawata.appdirs)
             }
         }
