@@ -23,7 +23,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
-import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
