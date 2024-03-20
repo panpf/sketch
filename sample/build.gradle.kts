@@ -115,6 +115,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(project(":sketch-okhttp"))
+                implementation(project(":sketch-gif"))
                 implementation(libs.harawata.appdirs)
             }
         }

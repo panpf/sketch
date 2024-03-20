@@ -30,11 +30,6 @@
  */
 package com.github.panpf.sketch.request
 
-import android.graphics.drawable.AnimatedImageDrawable
-import android.graphics.drawable.Drawable
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.transform.AnimatedTransformation
-
 /** Pass this to [repeatCount] to repeat infinitely. */
 const val ANIMATION_REPEAT_INFINITE = -1
 const val ANIMATION_REPEAT_COUNT_KEY = "sketch#animation_repeat_count"
@@ -43,9 +38,7 @@ const val ANIMATION_END_CALLBACK_KEY = "sketch#animation_end_callback"
 const val ANIMATED_TRANSFORMATION_KEY = "sketch#animated_transformation"
 
 /**
- * Set the number of times to repeat the animation if the result is an animated [Drawable].
- *
- * @see AnimatedImageDrawable.setRepeatCount
+ * Set Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
  */
 fun ImageRequest.Builder.repeatCount(repeatCount: Int): ImageRequest.Builder {
     require(repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
@@ -53,15 +46,13 @@ fun ImageRequest.Builder.repeatCount(repeatCount: Int): ImageRequest.Builder {
 }
 
 /**
- * Get the number of times to repeat the animation if the result is an animated [Drawable].
+ * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
  */
 val ImageRequest.repeatCount: Int?
     get() = parameters?.value(ANIMATION_REPEAT_COUNT_KEY)
 
 /**
- * Set the number of times to repeat the animation if the result is an animated [Drawable].
- *
- * @see AnimatedImageDrawable.setRepeatCount
+ * Set Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
  */
 fun ImageOptions.Builder.repeatCount(repeatCount: Int): ImageOptions.Builder {
     require(repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
@@ -69,106 +60,61 @@ fun ImageOptions.Builder.repeatCount(repeatCount: Int): ImageOptions.Builder {
 }
 
 /**
- * Get the number of times to repeat the animation if the result is an animated [Drawable].
+ * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
  */
 val ImageOptions.repeatCount: Int?
     get() = parameters?.value(ANIMATION_REPEAT_COUNT_KEY)
 
 
 /**
- * Set the callback to be invoked at the start of the animation if the result is an animated [Drawable].
+ * Set the callback to be invoked at the start of the animation if the result is an animated Image.
  */
 fun ImageRequest.Builder.onAnimationStart(callback: (() -> Unit)?): ImageRequest.Builder {
     return setParameter(ANIMATION_START_CALLBACK_KEY, callback, null)
 }
 
 /**
- * Get the callback to be invoked at the start of the animation if the result is an animated [Drawable].
+ * Get the callback to be invoked at the start of the animation if the result is an animated Image.
  */
 val ImageRequest.animationStartCallback: (() -> Unit)?
     get() = parameters?.value(ANIMATION_START_CALLBACK_KEY)
 
 /**
- * Set the callback to be invoked at the start of the animation if the result is an animated [Drawable].
+ * Set the callback to be invoked at the start of the animation if the result is an animated Image.
  */
 fun ImageOptions.Builder.onAnimationStart(callback: (() -> Unit)?): ImageOptions.Builder {
     return setParameter(ANIMATION_START_CALLBACK_KEY, callback, null)
 }
 
 /**
- * Get the callback to be invoked at the start of the animation if the result is an animated [Drawable].
+ * Get the callback to be invoked at the start of the animation if the result is an animated Image.
  */
 val ImageOptions.animationStartCallback: (() -> Unit)?
     get() = parameters?.value(ANIMATION_START_CALLBACK_KEY)
 
 
 /**
- * Set the callback to be invoked at the end of the animation if the result is an animated [Drawable].
+ * Set the callback to be invoked at the end of the animation if the result is an animated Image.
  */
 fun ImageRequest.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageRequest.Builder {
     return setParameter(ANIMATION_END_CALLBACK_KEY, callback, null)
 }
 
 /**
- * Get the callback to be invoked at the end of the animation if the result is an animated [Drawable].
+ * Get the callback to be invoked at the end of the animation if the result is an animated Image.
  */
 val ImageRequest.animationEndCallback: (() -> Unit)?
     get() = parameters?.value(ANIMATION_END_CALLBACK_KEY)
 
 /**
- * Set the callback to be invoked at the end of the animation if the result is an animated [Drawable].
+ * Set the callback to be invoked at the end of the animation if the result is an animated Image.
  */
 fun ImageOptions.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageOptions.Builder {
     return setParameter(ANIMATION_END_CALLBACK_KEY, callback, null)
 }
 
 /**
- * Get the callback to be invoked at the end of the animation if the result is an animated [Drawable].
+ * Get the callback to be invoked at the end of the animation if the result is an animated Image.
  */
 val ImageOptions.animationEndCallback: (() -> Unit)?
     get() = parameters?.value(ANIMATION_END_CALLBACK_KEY)
-
-
-/**
- * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- *
- * Default: `null`
- */
-fun ImageRequest.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): ImageRequest.Builder {
-    return setParameter(ANIMATED_TRANSFORMATION_KEY, animatedTransformation, null)
-}
-
-/**
- * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- */
-val ImageRequest.animatedTransformation: AnimatedTransformation?
-    get() = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
-
-/**
- * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- *
- * Default: `null`
- */
-fun ImageOptions.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): ImageOptions.Builder {
-    return setParameter(ANIMATED_TRANSFORMATION_KEY, animatedTransformation, null)
-}
-
-/**
- * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- */
-val ImageOptions.animatedTransformation: AnimatedTransformation?
-    get() = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
-
-
-fun animatable2CompatCallbackOf(
-    onStart: (() -> Unit)?,
-    onEnd: (() -> Unit)?
-): Animatable2Compat.AnimationCallback = object : Animatable2Compat.AnimationCallback() {
-    override fun onAnimationStart(drawable: Drawable?) {
-        onStart?.invoke()
-    }
-
-    override fun onAnimationEnd(drawable: Drawable?) {
-        onEnd?.invoke()
-    }
-}

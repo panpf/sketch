@@ -8,6 +8,8 @@ group = property("GROUP").toString()
 version = property("versionName").toString()
 
 kotlin {
+    applyMyHierarchyTemplate()
+
     androidTarget {
         publishLibraryVariants("release")
         compilations.configureEach {
@@ -28,7 +30,6 @@ kotlin {
     sourceSets {
         named("androidMain") {
             dependencies {
-//                api(libs.google.accompanist.drawablepainter)
             }
         }
         named("androidInstrumentedTest") {

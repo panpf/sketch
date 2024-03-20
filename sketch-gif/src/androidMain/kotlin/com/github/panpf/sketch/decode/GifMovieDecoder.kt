@@ -120,8 +120,7 @@ class GifMovieDecoder(
                 && !requestContext.request.disallowAnimatedImage
             ) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                val isGif =
-                    if (imageFormat == null) fetchResult.headerBytes.isGif() else imageFormat == ImageFormat.GIF
+                val isGif = imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()
                 if (isGif) {
                     return GifMovieDecoder(requestContext, dataSource)
                 }

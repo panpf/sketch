@@ -22,6 +22,9 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
+import com.github.panpf.sketch.decode.SkiaDecoder
+import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
@@ -108,7 +111,8 @@ private fun initialSketch() {
             components {
                 supportSvg()
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
-//                addDecoder(SkiaDecoder.Factory())
+                addDecoder(GifAnimatedSkiaDecoder.Factory())
+                addDecoder(WebpAnimatedSkiaDecoder.Factory())
             }
             logger(Logger(appSettings.logLevel.value))
         }.build().apply {
