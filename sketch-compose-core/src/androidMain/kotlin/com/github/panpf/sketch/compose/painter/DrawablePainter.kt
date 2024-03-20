@@ -168,7 +168,7 @@ open class DrawablePainter(
 
 class DrawableAnimatablePainter(
     drawable: Drawable
-) : DrawablePainter(drawable), AnimatablePainter {
+) : DrawablePainter(drawable), com.github.panpf.sketch.compose.painter.Animatable {
 
     private val animatable: Animatable
 

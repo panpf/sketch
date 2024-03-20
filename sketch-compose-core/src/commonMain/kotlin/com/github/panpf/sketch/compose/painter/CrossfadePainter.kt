@@ -63,7 +63,7 @@ class CrossfadePainter(
     private val durationMillis: Int,
     private val fadeStart: Boolean,
     private val preferExactIntrinsicSize: Boolean,
-) : Painter(), RememberObserver, AnimatablePainter, SketchPainter {
+) : Painter(), RememberObserver, Animatable, SketchPainter {
 
     companion object {
         private const val STATE_START = 0
@@ -218,8 +218,8 @@ class CrossfadePainter(
     override fun isRunning() = state == STATE_RUNNING
 
     override fun start() {
-        (start as? AnimatablePainter)?.start()
-        (end as? AnimatablePainter)?.start()
+        (start as? Animatable)?.start()
+        (end as? Animatable)?.start()
 
         if (state != STATE_START) {
             return
@@ -232,8 +232,8 @@ class CrossfadePainter(
     }
 
     override fun stop() {
-        (start as? AnimatablePainter)?.stop()
-        (end as? AnimatablePainter)?.stop()
+        (start as? Animatable)?.stop()
+        (end as? Animatable)?.stop()
 
         if (state != STATE_DONE) {
             markDone()
@@ -242,7 +242,7 @@ class CrossfadePainter(
 
     private fun markDone() {
         state = STATE_DONE
-        (start as? AnimatablePainter)?.stop()
+        (start as? Animatable)?.stop()
         (start as? RememberObserver)?.onForgotten()
         start = null
     }

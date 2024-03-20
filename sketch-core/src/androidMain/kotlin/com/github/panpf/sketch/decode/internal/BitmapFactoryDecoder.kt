@@ -38,10 +38,6 @@ open class BitmapFactoryDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
-    companion object {
-        const val MODULE = "BitmapFactoryDecoder"
-    }
-
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request

@@ -166,15 +166,15 @@ open class IconPainter constructor(
     override fun onRemembered() {
         (icon as? RememberObserver)?.onRemembered()
         (background as? RememberObserver)?.onRemembered()
-        (icon as? AnimatablePainter)?.start()
-        (background as? AnimatablePainter)?.start()
+        (icon as? Animatable)?.start()
+        (background as? Animatable)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (icon as? AnimatablePainter)?.stop()
-        (background as? AnimatablePainter)?.stop()
+        (icon as? Animatable)?.stop()
+        (background as? Animatable)?.stop()
         (icon as? RememberObserver)?.onForgotten()
         (background as? RememberObserver)?.onForgotten()
     }
@@ -206,17 +206,17 @@ class IconAnimatablePainter(
     background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
+) : IconPainter(icon, background, iconSize, iconTint), Animatable {
 
-    private val animatableIcon: AnimatablePainter?
-    private val animatableBackground: AnimatablePainter?
+    private val animatableIcon: Animatable?
+    private val animatableBackground: Animatable?
 
     init {
-        require(icon is AnimatablePainter || background is AnimatablePainter) {
+        require(icon is Animatable || background is Animatable) {
             "painter must be AnimatablePainter"
         }
-        animatableIcon = icon as? AnimatablePainter
-        animatableBackground = background as? AnimatablePainter
+        animatableIcon = icon as? Animatable
+        animatableBackground = background as? Animatable
     }
 
     override fun start() {

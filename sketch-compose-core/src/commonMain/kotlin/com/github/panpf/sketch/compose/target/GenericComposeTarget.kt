@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.compose.asPainter
 import com.github.panpf.sketch.compose.internal.asOrNull
-import com.github.panpf.sketch.compose.painter.AnimatablePainter
+import com.github.panpf.sketch.compose.painter.Animatable
 import com.github.panpf.sketch.compose.transition.TransitionComposeTarget
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.AttachObserver
@@ -85,16 +85,16 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     private fun updatePainter(newPainter: Painter?) {
         val oldPainter = painter
         if (newPainter !== oldPainter) {
-            oldPainter.asOrNull<AnimatablePainter>()?.stop()
+            oldPainter.asOrNull<Animatable>()?.stop()
             painter = newPainter
             updateAnimation()
         }
     }
 
-    /** Start/stop the current [AnimatablePainter]'s animation based on the current lifecycle state. */
+    /** Start/stop the current [Animatable]'s animation based on the current lifecycle state. */
     @Suppress("MemberVisibilityCanBePrivate")
     protected fun updateAnimation() {
-        val animatable = this.painter.asOrNull<AnimatablePainter>() ?: return
+        val animatable = this.painter.asOrNull<Animatable>() ?: return
         if (isStarted && isAttached) animatable.start() else animatable.stop()
     }
 }

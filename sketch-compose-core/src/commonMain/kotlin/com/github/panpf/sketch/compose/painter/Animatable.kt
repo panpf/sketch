@@ -3,7 +3,7 @@ package com.github.panpf.sketch.compose.painter
 /**
  * Interface that painters supporting animations should implement.
  */
-interface AnimatablePainter {
+interface Animatable {
     /**
      * Starts the drawable's animation.
      */

@@ -26,7 +26,7 @@ fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CR
 }
 
 fun Painter.resize(size: Size, scale: Scale): ResizePainter {
-    return if (this is AnimatablePainter) {
+    return if (this is Animatable) {
         ResizeAnimatablePainter(this, size, scale)
     } else {
         ResizePainter(this, size, scale)
@@ -46,13 +46,13 @@ open class ResizePainter(
 
     override fun onRemembered() {
         (painter as? RememberObserver)?.onRemembered()
-        (painter as? AnimatablePainter)?.start()
+        (painter as? Animatable)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (painter as? AnimatablePainter)?.stop()
+        (painter as? Animatable)?.stop()
         (painter as? RememberObserver)?.onForgotten()
     }
 
@@ -125,12 +125,12 @@ class ResizeAnimatablePainter(
     painter: Painter,
     size: Size,
     scale: Scale
-) : ResizePainter(painter, size, scale), AnimatablePainter {
+) : ResizePainter(painter, size, scale), Animatable {
 
-    private val animatable: AnimatablePainter
+    private val animatable: Animatable
 
     init {
-        require(painter is AnimatablePainter) {
+        require(painter is Animatable) {
             "painter must be AnimatablePainter"
         }
         animatable = painter

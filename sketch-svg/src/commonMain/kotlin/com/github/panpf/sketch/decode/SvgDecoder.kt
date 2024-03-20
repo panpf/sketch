@@ -52,7 +52,6 @@ class SvgDecoder constructor(
 ) : Decoder {
 
     companion object {
-        const val MODULE = "SvgDecoder"
         const val MIME_TYPE = "image/svg+xml"
     }
 

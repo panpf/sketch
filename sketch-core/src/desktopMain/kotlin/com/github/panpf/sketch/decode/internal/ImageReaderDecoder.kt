@@ -20,12 +20,6 @@ class ImageReaderDecoder(
         val imageInfo =
             dataSource.readImageInfoWithImageReaderOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = checkSupportSubsamplingByMimeType(imageInfo.mimeType)
-//        val inputStream = dataSource.openSource().buffer().inputStream()
-//        val imageStream = ImageIO.createImageInputStream(inputStream)
-//        val imageReader = ImageIO.getImageReaders(imageStream).next().apply {
-//            input = imageStream
-//        }
-//        imageReader.defaultReadParam
         realDecode(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,

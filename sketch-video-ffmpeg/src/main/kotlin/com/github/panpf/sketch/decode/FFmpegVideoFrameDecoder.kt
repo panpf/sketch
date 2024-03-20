@@ -56,10 +56,6 @@ class FFmpegVideoFrameDecoder(
     private val mimeType: String,
 ) : Decoder {
 
-    companion object {
-        const val MODULE = "FFmpegVideoFrameDecoder"
-    }
-
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val mediaMetadataRetriever = FFmpegMediaMetadataRetriever().apply {

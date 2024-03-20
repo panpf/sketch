@@ -46,10 +46,6 @@ open class DrawableDecoder constructor(
     private val mimeType: String?
 ) : Decoder {
 
-    companion object {
-        const val MODULE = "DrawableDecoder"
-    }
-
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
