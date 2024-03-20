@@ -7,12 +7,13 @@ import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.decode
 import com.github.panpf.sketch.decode.internal.decodeRegion
-import com.github.panpf.sketch.decode.internal.detectImageMimeType
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Rect
 import okio.buffer
+import org.jetbrains.skia.Codec
+import org.jetbrains.skia.Data
 import org.jetbrains.skia.Image
 
 class SkiaDecoder(
@@ -23,11 +24,13 @@ class SkiaDecoder(
     override suspend fun decode(): Result<DecodeResult> = runCatching {
         // TODO https://github.com/JetBrains/skiko/issues/741
         val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
+        val codec = Codec.makeFromData(Data.makeFromBytes(bytes))
+        val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
         val image = Image.makeFromEncoded(bytes)
         val imageInfo = ImageInfo(
             width = image.width,
             height = image.height,
-            mimeType = detectImageMimeType(bytes) ?: "",
+            mimeType = mimeType,
             // TODO Image will parse exif and does not support closing
             exifOrientation = ExifOrientation.UNDEFINED
         )
