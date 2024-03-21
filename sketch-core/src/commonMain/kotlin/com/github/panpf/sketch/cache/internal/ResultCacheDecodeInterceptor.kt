@@ -32,10 +32,6 @@ import okio.buffer
 
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
-    companion object {
-        const val MODULE = "ResultCacheDecodeInterceptor"
-    }
-
     override val key: String? = null
 
     override val sortWeight: Int = 80
@@ -111,8 +107,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
         result.onFailure {
             it.printStackTrace()
-            sketch.logger.w(MODULE) {
-                "read result cache error. $it. '${requestContext.logKey}'"
+            sketch.logger.w {
+                "ResultCacheDecodeInterceptor. read result cache error. $it. '${requestContext.logKey}'"
             }
             resultCache.remove(cacheKey)
         }

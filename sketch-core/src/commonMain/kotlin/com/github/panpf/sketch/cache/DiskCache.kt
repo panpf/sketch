@@ -32,8 +32,6 @@ interface DiskCache : Closeable {
         const val DEFAULT_DIR_NAME = "sketch4"
     }
 
-    var logger: Logger?
-
     val fileSystem: FileSystem
 
     /**

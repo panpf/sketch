@@ -24,8 +24,8 @@ import com.github.panpf.sketch.datasource.ByteArrayDataSource
 import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.datasource.DataFrom.NETWORK
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
-import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
+import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
@@ -144,8 +144,8 @@ open class HttpUriFetcher(
                 }.onFailure {
                     it.printStackTrace()
                     downloadCache.remove(cacheKey)
-                    sketch.logger.w("HttpUriFetcher") {
-                        "Read contentType disk cache failed, removed cache file. " +
+                    sketch.logger.w {
+                        "HttpUriFetcher. Read contentType disk cache failed, removed cache file. " +
                                 "message='${it.message}', " +
                                 "cacheKey=$cacheKey. " +
                                 "'${request.uriString}'"
@@ -240,16 +240,6 @@ open class HttpUriFetcher(
         val result = FetchResult(dataSource, mimeType)
         return Result.success(result)
     }
-
-//    private suspend fun <R> lockDownloadCache(block: suspend () -> R): R {
-//        val lock: Mutex = sketch.downloadCache.editLock(downloadCacheLockKey)
-//        lock.lock()
-//        try {
-//            return block()
-//        } finally {
-//            lock.unlock()
-//        }
-//    }
 
     class Factory : Fetcher.Factory {
 

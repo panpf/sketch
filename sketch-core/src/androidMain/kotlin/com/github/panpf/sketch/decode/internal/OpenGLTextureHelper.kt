@@ -24,7 +24,6 @@ import android.opengl.GLES20
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.Log
-import com.github.panpf.sketch.util.Logger
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 
@@ -46,7 +45,7 @@ object OpenGLTextureHelper {
         val displayMetrics = Resources.getSystem().displayMetrics
         val displaySize = "${displayMetrics.widthPixels}x${displayMetrics.heightPixels}"
         Log.d(
-            Logger.TAG,
+            "Sketch",
             "OpenGLTextureHelper. OpenGL texture maxSize=$finalMaxSize, " +
                     "originMaxSize=$originMaxSize, " +
                     "allowedSize=${allowedSize.contentToString()}, " +

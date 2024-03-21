@@ -38,15 +38,30 @@ class AndroidSystemCallbacks(sketch: Sketch) : SystemCallbacks {
         }
 
         override fun onLowMemory() {
-            sketchReference.get()?.memoryCache?.clear()
+            val sketch1 = sketchReference.get() ?: return
+            val memoryCache = sketch1.memoryCache
+            val oldSize = memoryCache.size
+            memoryCache.clear()
+            sketch1.logger.d {
+                "AndroidSystemCallbacks. onLowMemory. clean memory cache. clearedSize=${oldSize.formatFileSize()}"
+            }
         }
 
         override fun onTrimMemory(level: Int) {
             val sketch1 = sketchReference.get() ?: return
+            val memoryCache = sketch1.memoryCache
+            val oldSize = memoryCache.size
             if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
-                sketch1.memoryCache.trim(0L)
+                memoryCache.trim(0L)
             } else if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
-                sketch1.memoryCache.trim(sketch1.memoryCache.size / 2)
+                memoryCache.trim(memoryCache.size / 2)
+            }
+            sketch1.logger.d {
+                val nowSize = memoryCache.size
+                val clearedSize = oldSize - nowSize
+                "AndroidSystemCallbacks. onTrimMemory. trim memory cache. " +
+                        "clearedSize=${clearedSize.formatFileSize()}, " +
+                        "nowSize=${nowSize.formatFileSize()}"
             }
         }
     }

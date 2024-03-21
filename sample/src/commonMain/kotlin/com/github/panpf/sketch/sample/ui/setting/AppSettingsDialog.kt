@@ -51,9 +51,7 @@ import com.github.panpf.sketch.sample.ui.rememberIconExpandMorePainter
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
-import com.github.panpf.sketch.sample.util.ifLet
-import com.github.panpf.sketch.util.Logger.Level
-import com.github.panpf.sketch.util.Logger.Level.DEBUG
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.name
@@ -349,8 +347,9 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
     add(
         DropdownSettingItem(
             title = "Logger Level",
-            desc = if (appSettings.logLevel.value <= DEBUG) "DEBUG and below will reduce UI fluency" else null,
-            values = Level.values().asList(),
+            desc = if (Logger.level(appSettings.logLevel.value) <= Logger.DEBUG)
+                "DEBUG and below will reduce UI fluency" else null,
+            values = Logger.levels.map { Logger.levelName(it) },
             state = appSettings.logLevel,
         )
     )

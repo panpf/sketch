@@ -46,7 +46,7 @@ class DrawableStateImage : StateImage {
         return try {
             drawableFetcher.getDrawable(request.context)
         } catch (e: Throwable) {
-            sketch.logger.w("DrawableStateImage", "getDrawable error. ${e.message}")
+            sketch.logger.w("DrawableStateImage. getDrawable error. ${e.message}")
             e.printStackTrace()
             null
         }?.asSketchImage()

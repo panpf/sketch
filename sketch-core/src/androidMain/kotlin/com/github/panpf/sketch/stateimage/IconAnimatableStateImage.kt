@@ -163,7 +163,7 @@ class IconAnimatableStateImage internal constructor(
                 iconTint = iconTintColor
             )
         } catch (e: Throwable) {
-            sketch.logger.w("IconAnimatableDrawable", "getDrawable error. ${e.message}")
+            sketch.logger.w("IconAnimatableDrawable. getDrawable error. ${e.message}")
             e.printStackTrace()
             null
         }?.asSketchImage()

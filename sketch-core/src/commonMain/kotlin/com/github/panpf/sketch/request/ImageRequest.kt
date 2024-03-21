@@ -159,6 +159,7 @@ interface ImageRequest {
      *
      * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
      */
+    // TODO Android only or delete, because this attribute is meaningless on Skia platforms
     val ignoreExifOrientation: Boolean
 
     /**

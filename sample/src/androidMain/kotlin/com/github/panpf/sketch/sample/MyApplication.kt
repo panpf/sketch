@@ -27,9 +27,7 @@ import com.github.panpf.sketch.decode.supportAnimatedWebp
 import com.github.panpf.sketch.decode.supportApkIcon
 import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.decode.supportKoralGif
-import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.decode.supportSvg
-import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
@@ -45,7 +43,7 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(appSettingsService.logLevel.value))   // for Sketch init log
+        logger(Logger(level = Logger.level(appSettingsService.logLevel.value)))   // for Sketch init log
         httpStack(OkHttpStack.Builder().apply {
             if (VERSION.SDK_INT <= 19) {
                 enabledTlsProtocols("TLSv1.1", "TLSv1.2")
@@ -74,7 +72,7 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
 //            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
 //                supportVideoFrame()
 //            } else {
-                supportFFmpegVideoFrame()
+            supportFFmpegVideoFrame()
 //            }
 
             // gif
@@ -97,7 +95,7 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
     }.build().apply {
         coroutineScope.launch {
             appSettingsService.logLevel.collect {
-                logger.level = it
+                logger.level = Logger.level(it)
             }
         }
     }

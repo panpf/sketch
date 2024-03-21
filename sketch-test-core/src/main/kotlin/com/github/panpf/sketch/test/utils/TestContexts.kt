@@ -20,9 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.Logger.Level.VERBOSE
 import okio.Path.Companion.toOkioPath
-import java.io.File
 
 fun getTestContext(): Context {
     return InstrumentationRegistry.getInstrumentation().context
@@ -31,10 +29,9 @@ fun getTestContext(): Context {
 fun newSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
     val context = InstrumentationRegistry.getInstrumentation().context
     return Sketch.Builder(context).apply {
-        logger(Logger(VERBOSE))
+        logger(Logger(level = Logger.VERBOSE))
         val directory = context.newTestDiskCacheDirectory()
-        diskCache(DiskCache.Options(appCacheDirectory = File(directory, "download").toOkioPath()))
-        resultCache(DiskCache.Options(appCacheDirectory = File(directory, "result").toOkioPath()))
+        diskCache(DiskCache.Options(appCacheDirectory = directory.toOkioPath()))
         block.invoke(this, context)
     }.build()
 }

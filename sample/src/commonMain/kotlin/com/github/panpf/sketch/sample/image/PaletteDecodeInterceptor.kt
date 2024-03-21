@@ -27,7 +27,7 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
         val propertyString = palette.toPropertyString()
         @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
         if (propertyString == null) {
-            chain.sketch.logger.e("PaletteDecodeInterceptor", "palette is empty")
+            chain.sketch.logger.e("PaletteDecodeInterceptor. palette is empty")
             return result
         }
         val newDecodeResult = decodeResult.newResult {

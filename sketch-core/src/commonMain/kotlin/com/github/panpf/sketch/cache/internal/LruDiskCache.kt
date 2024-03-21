@@ -17,12 +17,10 @@
 
 package com.github.panpf.sketch.cache.internal
 
-import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
@@ -50,7 +48,6 @@ class LruDiskCache constructor(
 ) : DiskCache {
 
     companion object {
-        private const val MODULE = "LruDiskCache"
         private const val ENTRY_DATA = 0
         private const val ENTRY_METADATA = 1
     }
@@ -73,8 +70,6 @@ class LruDiskCache constructor(
             checkValueCount = 1,    // metadata not required
         )
     }
-
-    override var logger: Logger? = null
 
     override val size: Long get() = cache.size()
 
@@ -99,14 +94,10 @@ class LruDiskCache constructor(
     }
 
     override fun clear() {
-        val oldSize = size
         runCatching {
             cache.evictAll()
         }.onFailure {
             it.printStackTrace()
-        }
-        logger?.d(MODULE) {
-            "clear. clearedSize=${oldSize.formatFileSize()}"
         }
     }
 
@@ -132,7 +123,7 @@ class LruDiskCache constructor(
     }
 
     override fun toString(): String = buildString {
-        append("$MODULE(")
+        append("LruDiskCache(")
         append("maxSize=${maxSize.formatFileSize()},")
         append("appVersion=${appVersion},")
         append("internalVersion=${internalVersion},")

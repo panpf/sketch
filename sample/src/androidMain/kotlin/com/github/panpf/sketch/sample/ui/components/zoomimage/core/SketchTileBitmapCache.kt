@@ -44,7 +44,7 @@ class SketchTileBitmapCache constructor(
     ): CacheTileBitmap? {
         val bitmap = (tileBitmap as AndroidTileBitmap).bitmap ?: return null
         val newCacheValue = AndroidBitmapImageValue(bitmap.asSketchImage())
-        if (!sketch.memoryCache.put(key, newCacheValue)) {
+        if (sketch.memoryCache.put(key, newCacheValue) != 0) {
             return null
         }
         return SketchTileBitmap(key, bitmap, caller)

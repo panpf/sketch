@@ -1,219 +1,405 @@
-/*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.github.panpf.sketch.util
 
-expect fun logProxy(): Logger.Proxy
+import androidx.annotation.IntDef
 
-// TODO Reference ZoomImage refactoring
-class Logger constructor(
-    level: Level = Level.INFO,
-    private val proxy: Proxy = logProxy()
+expect fun platformLogPipeline(): Logger.Pipeline
+
+/**
+ * Used to print log
+ */
+class Logger(
+    /**
+     * The tag of the log
+     */
+    val tag: String = "Sketch",
+
+    /**
+     * The module name of the log
+     */
+    val module: String? = null,
+
+    /**
+     * Initial Level
+     */
+    @Level
+    level: Int? = null,
+
+    /**
+     * Specifies the output pipeline of the log
+     */
+    private val pipeline: Pipeline = platformLogPipeline(),
+
+    /**
+     * The root logger, in order for all derived loggers to use the same level and pipeline
+     */
+    private val rootLogger: Logger? = null,
 ) {
 
-    companion object {
-        const val TAG = "Sketch"
-    }
-
-    private val threadNameLocal by lazy { ThreadLocal<String>() }
-
-    var level: Level = level
+    /**
+     * The level of the log. The level of the root logger will be modified directly
+     */
+    var level: Int = rootLogger?.level ?: level ?: INFO
+        get() = rootLogger?.level ?: field
         set(value) {
-            if (value != field) {
+            val rootLogger = rootLogger
+            if (rootLogger != null) {
+                rootLogger.level = value
+                if (field != value) {
+                    field = value
+                }
+            } else if (field != value) {
                 val oldLevel = field
                 field = value
-                val newLevel = value.name
-                proxy.w(TAG, "Logger. setLevel. $oldLevel -> $newLevel", null)
+                val oldLevelName = levelName(oldLevel)
+                val newLevelName = levelName(value)
+                pipeline.log(
+                    level = WARN,
+                    tag = tag,
+                    msg = "Logger@${this.toHexString()}. setLevel. $oldLevelName -> $newLevelName",
+                    tr = null
+                )
             }
         }
 
-    var showThreadName = false
-        set(value) {
-            if (value != field) {
-                field = value
-                proxy.w(TAG, "Logger. showThreadName. $value", null)
-            }
-        }
+    /**
+     * To create a new logger based on the current logger, you can only modify the values of module and showThreadName
+     */
+    fun newLogger(module: String? = this.module): Logger = Logger(
+        tag = tag,
+        module = module,
+        level = level,
+        pipeline = pipeline,
+        rootLogger = rootLogger ?: this
+    )
 
-    fun isLoggable(level: Level): Boolean {
-        return level >= this.level
-    }
 
-
-    fun v(module: String, lazyMessage: () -> String) {
-        if (isLoggable(Level.VERBOSE)) {
-            proxy.v(TAG, joinModuleAndMsg(module, lazyMessage()), null)
-        }
-    }
-
-    fun v(module: String, throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(Level.VERBOSE)) {
-            proxy.v(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+    /**
+     * Print a log with the VERBOSE level
+     */
+    fun v(msg: String) {
+        if (isLoggable(VERBOSE)) {
+            pipeline.log(VERBOSE, tag, assembleMessage(msg), null)
         }
     }
 
-
-    fun d(module: String, lazyMessage: () -> String) {
-        if (isLoggable(Level.DEBUG)) {
-            proxy.d(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+    /**
+     * Print a log with the VERBOSE level
+     */
+    fun v(lazyMessage: () -> String) {
+        if (isLoggable(VERBOSE)) {
+            pipeline.log(VERBOSE, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
-    fun d(module: String, throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(Level.DEBUG)) {
-            proxy.d(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+    /**
+     * Print a log with the VERBOSE level
+     */
+    fun v(throwable: Throwable?, msg: String) {
+        if (isLoggable(VERBOSE)) {
+            pipeline.log(VERBOSE, tag, assembleMessage(msg), throwable)
         }
     }
 
-
-    fun i(module: String, lazyMessage: () -> String) {
-        if (isLoggable(Level.INFO)) {
-            proxy.i(TAG, joinModuleAndMsg(module, lazyMessage()), null)
-        }
-    }
-
-    fun i(module: String, throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(Level.INFO)) {
-            proxy.i(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+    /**
+     * Print a log with the VERBOSE level
+     */
+    fun v(throwable: Throwable?, lazyMessage: () -> String) {
+        if (isLoggable(VERBOSE)) {
+            pipeline.log(VERBOSE, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
 
-    fun w(module: String, msg: String) {
-        if (isLoggable(Level.WARNING)) {
-            proxy.w(TAG, joinModuleAndMsg(module, msg), null)
+    /**
+     * Print a log with the DEBUG level
+     */
+    fun d(msg: String) {
+        if (isLoggable(DEBUG)) {
+            pipeline.log(DEBUG, tag, assembleMessage(msg), null)
         }
     }
 
-    fun w(module: String, throwable: Throwable?, msg: String) {
-        if (isLoggable(Level.WARNING)) {
-            proxy.w(TAG, joinModuleAndMsg(module, msg), throwable)
+    /**
+     * Print a log with the DEBUG level
+     */
+    fun d(lazyMessage: () -> String) {
+        if (isLoggable(DEBUG)) {
+            pipeline.log(DEBUG, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
-    fun w(module: String, lazyMessage: () -> String) {
-        if (isLoggable(Level.WARNING)) {
-            proxy.w(TAG, joinModuleAndMsg(module, lazyMessage()), null)
+    /**
+     * Print a log with the DEBUG level
+     */
+    fun d(throwable: Throwable?, msg: String) {
+        if (isLoggable(DEBUG)) {
+            pipeline.log(DEBUG, tag, assembleMessage(msg), throwable)
         }
     }
 
-    fun w(module: String, throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(Level.WARNING)) {
-            proxy.w(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
-        }
-    }
-
-
-    fun e(module: String, msg: String) {
-        if (isLoggable(Level.ERROR)) {
-            proxy.e(TAG, joinModuleAndMsg(module, msg), null)
-        }
-    }
-
-    fun e(module: String, throwable: Throwable?, msg: String) {
-        if (isLoggable(Level.ERROR)) {
-            proxy.e(TAG, joinModuleAndMsg(module, msg), throwable)
-        }
-    }
-
-    fun e(module: String, lazyMessage: () -> String) {
-        if (isLoggable(Level.ERROR)) {
-            proxy.e(TAG, joinModuleAndMsg(module, lazyMessage()), null)
-        }
-    }
-
-    fun e(module: String, throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(Level.ERROR)) {
-            proxy.e(TAG, joinModuleAndMsg(module, lazyMessage()), throwable)
+    /**
+     * Print a log with the DEBUG level
+     */
+    fun d(throwable: Throwable?, lazyMessage: () -> String) {
+        if (isLoggable(DEBUG)) {
+            pipeline.log(DEBUG, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
 
+    /**
+     * Print a log with the INFO level
+     */
+    fun i(msg: String) {
+        if (isLoggable(INFO)) {
+            pipeline.log(INFO, tag, assembleMessage(msg), null)
+        }
+    }
+
+    /**
+     * Print a log with the INFO level
+     */
+    fun i(lazyMessage: () -> String) {
+        if (isLoggable(INFO)) {
+            pipeline.log(INFO, tag, assembleMessage(lazyMessage()), null)
+        }
+    }
+
+    /**
+     * Print a log with the INFO level
+     */
+    fun i(throwable: Throwable?, msg: String) {
+        if (isLoggable(INFO)) {
+            pipeline.log(INFO, tag, assembleMessage(msg), throwable)
+        }
+    }
+
+    /**
+     * Print a log with the INFO level
+     */
+    fun i(throwable: Throwable?, lazyMessage: () -> String) {
+        if (isLoggable(INFO)) {
+            pipeline.log(INFO, tag, assembleMessage(lazyMessage()), throwable)
+        }
+    }
+
+
+    /**
+     * Print a log with the WARN level
+     */
+    fun w(msg: String) {
+        if (isLoggable(WARN)) {
+            pipeline.log(WARN, tag, assembleMessage(msg), null)
+        }
+    }
+
+    /**
+     * Print a log with the WARN level
+     */
+    fun w(lazyMessage: () -> String) {
+        if (isLoggable(WARN)) {
+            pipeline.log(WARN, tag, assembleMessage(lazyMessage()), null)
+        }
+    }
+
+    /**
+     * Print a log with the WARN level
+     */
+    fun w(throwable: Throwable?, msg: String) {
+        if (isLoggable(WARN)) {
+            pipeline.log(WARN, tag, assembleMessage(msg), throwable)
+        }
+    }
+
+    /**
+     * Print a log with the WARN level
+     */
+    fun w(throwable: Throwable?, lazyMessage: () -> String) {
+        if (isLoggable(WARN)) {
+            pipeline.log(WARN, tag, assembleMessage(lazyMessage()), throwable)
+        }
+    }
+
+
+    /**
+     * Print a log with the ERROR level
+     */
+    fun e(msg: String) {
+        if (isLoggable(ERROR)) {
+            pipeline.log(ERROR, tag, assembleMessage(msg), null)
+        }
+    }
+
+    /**
+     * Print a log with the ERROR level
+     */
+    fun e(lazyMessage: () -> String) {
+        if (isLoggable(ERROR)) {
+            pipeline.log(ERROR, tag, assembleMessage(lazyMessage()), null)
+        }
+    }
+
+    /**
+     * Print a log with the ERROR level
+     */
+    fun e(throwable: Throwable?, msg: String) {
+        if (isLoggable(ERROR)) {
+            pipeline.log(ERROR, tag, assembleMessage(msg), throwable)
+        }
+    }
+
+    /**
+     * Print a log with the ERROR level
+     */
+    fun e(throwable: Throwable?, lazyMessage: () -> String) {
+        if (isLoggable(ERROR)) {
+            pipeline.log(ERROR, tag, assembleMessage(lazyMessage()), throwable)
+        }
+    }
+
+
+    /**
+     * Print a log with the specified level
+     */
+    fun log(@Level level: Int, msg: String) {
+        if (isLoggable(level)) {
+            pipeline.log(level, tag, assembleMessage(msg), null)
+        }
+    }
+
+    /**
+     * Print a log with the specified level
+     */
+    fun log(@Level level: Int, lazyMessage: () -> String) {
+        if (isLoggable(level)) {
+            pipeline.log(level, tag, assembleMessage(lazyMessage()), null)
+        }
+    }
+
+    /**
+     * Print a log with the specified level
+     */
+    fun log(@Level level: Int, throwable: Throwable?, msg: String) {
+        if (isLoggable(level)) {
+            pipeline.log(level, tag, assembleMessage(msg), throwable)
+        }
+    }
+
+    /**
+     * Print a log with the specified level
+     */
+    fun log(@Level level: Int, throwable: Throwable?, lazyMessage: () -> String) {
+        if (isLoggable(level)) {
+            pipeline.log(level, tag, assembleMessage(lazyMessage()), throwable)
+        }
+    }
+
+    fun isLoggable(level: Int): Boolean {
+        val logger = rootLogger ?: this
+        return level >= logger.level
+    }
+
+
+    /**
+     * Flush the log pipeline
+     */
     fun flush() {
-        proxy.flush()
+        val logger = rootLogger ?: this
+        logger.pipeline.flush()
     }
 
-    private fun getThreadName(): String? {
-        val threadName = threadNameLocal.get()
-        return if (threadName == null) {
-            val name = Thread.currentThread().name.let {
-                // kotlin coroutine thread name 'DefaultDispatcher-worker-1' change to 'worker1'
-                if (it.startsWith("DefaultDispatcher-worker-")) {
-                    "worker${it.substring("DefaultDispatcher-worker-".length)}"
-                } else if (it.startsWith("Thread-")) {
-                    "Thread${it.substring("Thread-".length)}"
-                } else {
-                    it
-                }
-            }
-            threadNameLocal.set(name)
-            name
-        } else {
-            threadName
-        }
-    }
-
-    private fun joinModuleAndMsg(module: String?, msg: String): String = buildString {
-        if (showThreadName) {
-            append(getThreadName())
-            if (isNotEmpty()) append(" - ")
-        }
-
-        if (module?.isNotEmpty() == true) {
-            append(module)
-            if (isNotEmpty()) append(". ")
-        }
-
-        append(msg)
-    }
-
-    override fun toString(): String =
-        "Logger(level=$level,proxy=$proxy,showThreadName=$showThreadName)"
+    private fun assembleMessage(msg: String): String =
+        if (module?.isNotEmpty() == true) "$module. $msg" else msg
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Logger) return false
-        if (level != other.level) return false
-        if (proxy != other.proxy) return false
-        if (showThreadName != showThreadName) return false
+        if (javaClass != other?.javaClass) return false
+        other as Logger
+        if (tag != other.tag) return false
+        if (module != other.module) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = level.hashCode()
-        result = 31 * result + proxy.hashCode()
-        result = 31 * result + showThreadName.hashCode()
+        var result = tag.hashCode()
+        result = 31 * result + (module?.hashCode() ?: 0)
         return result
     }
 
-
-    enum class Level {
-        VERBOSE,
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR,
-        NONE,
+    override fun toString(): String {
+        return "Logger(tag='$tag', module=$module, level=${levelName(level)}, pipeline=$pipeline)"
     }
 
-    interface Proxy {
-        fun v(tag: String, msg: String, tr: Throwable?)
-        fun d(tag: String, msg: String, tr: Throwable?)
-        fun i(tag: String, msg: String, tr: Throwable?)
-        fun w(tag: String, msg: String, tr: Throwable?)
-        fun e(tag: String, msg: String, tr: Throwable?)
+    @Retention(AnnotationRetention.SOURCE)
+    @IntDef(VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT)
+    @Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FIELD)
+    annotation class Level
+
+    companion object {
+        /**
+         * Priority constant for the println method; use Log.v.
+         */
+        const val VERBOSE = 2
+
+        /**
+         * Priority constant for the println method; use Log.d.
+         */
+        const val DEBUG = 3
+
+        /**
+         * Priority constant for the println method; use Log.i.
+         */
+        const val INFO = 4
+
+        /**
+         * Priority constant for the println method; use Log.w.
+         */
+        const val WARN = 5
+
+        /**
+         * Priority constant for the println method; use Log.e.
+         */
+        const val ERROR = 6
+
+        /**
+         * Priority constant for the println method.
+         */
+        const val ASSERT = 7
+
+        /**
+         * Get the name of the level
+         */
+        fun levelName(level: Int): String = when (level) {
+            VERBOSE -> "VERBOSE"
+            DEBUG -> "DEBUG"
+            INFO -> "INFO"
+            WARN -> "WARN"
+            ERROR -> "ERROR"
+            ASSERT -> "ASSERT"
+            else -> "UNKNOWN"
+        }
+
+        /**
+         * Get the level of the name
+         */
+        fun level(levelName: String): Int = when (levelName) {
+            "VERBOSE" -> VERBOSE
+            "DEBUG" -> DEBUG
+            "INFO" -> INFO
+            "WARN" -> WARN
+            "ERROR" -> ERROR
+            "ASSERT" -> ASSERT
+            else -> throw IllegalArgumentException("Unknown level name: $levelName")
+        }
+
+        val levels = arrayOf(VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT)
+    }
+
+    /**
+     * The pipeline of the log
+     */
+    interface Pipeline {
+        fun log(level: Int, tag: String, msg: String, tr: Throwable?)
         fun flush()
     }
 }

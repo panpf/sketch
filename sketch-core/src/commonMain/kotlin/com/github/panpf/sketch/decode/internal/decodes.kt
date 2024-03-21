@@ -236,7 +236,7 @@ fun realDecode(
 }
 
 @WorkerThread
-fun DecodeResult.appliedExifOrientation(requestContext: RequestContext): DecodeResult {
+fun DecodeResult.appliedExifOrientation(@Suppress("UNUSED_PARAMETER") requestContext: RequestContext): DecodeResult {
     requiredWorkThread()
     if (transformedList?.getExifOrientationTransformed() != null
         || imageInfo.exifOrientation == ExifOrientation.UNDEFINED
@@ -249,9 +249,6 @@ fun DecodeResult.appliedExifOrientation(requestContext: RequestContext): DecodeR
     val newSize = exifOrientationHelper.applyToSize(
         Size(imageInfo.width, imageInfo.height)
     )
-    requestContext.sketch.logger.d("appliedExifOrientation") {
-        "appliedExifOrientation. successful. ${newImage}. ${imageInfo}. '${requestContext.logKey}'"
-    }
     return newResult(
         image = newImage,
         imageInfo = imageInfo.copy(size = newSize)
@@ -308,9 +305,6 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
         null
     }
     return if (newImage != null) {
-        requestContext.sketch.logger.d("appliedResize") {
-            "appliedResize. successful. ${newImage}. ${imageInfo}. '${requestContext.logKey}'"
-        }
         newResult(image = newImage) {
             addTransformed(createResizeTransformed(resize))
         }

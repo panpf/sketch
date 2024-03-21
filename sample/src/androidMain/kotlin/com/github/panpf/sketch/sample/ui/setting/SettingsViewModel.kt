@@ -34,7 +34,7 @@ import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sketch
-import com.github.panpf.sketch.util.Logger.Level
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
@@ -372,11 +372,11 @@ class SettingsViewModel(application1: Application, val page: Page) :
         add(
             MultiSelectMenu(
                 title = "Logger Level",
-                desc = if (application1.sketch.logger.level <= Level.DEBUG) "DEBUG and below will reduce UI fluency" else "",
-                values = Level.values().map { it.name },
-                getValue = { application1.sketch.logger.level.name },
+                desc = if (application1.sketch.logger.level <= Logger.DEBUG) "DEBUG and below will reduce UI fluency" else "",
+                values = Logger.levels.map { Logger.levelName(it) },
+                getValue = { Logger.levelName(application1.sketch.logger.level) },
                 onSelect = { _, value ->
-                    appSettingsService.logLevel.value = Level.valueOf(value)
+                    appSettingsService.logLevel.value = value
                 }
             )
         )

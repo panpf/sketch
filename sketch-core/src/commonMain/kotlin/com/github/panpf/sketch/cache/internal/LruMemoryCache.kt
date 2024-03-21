@@ -15,10 +15,8 @@
  */
 package com.github.panpf.sketch.cache.internal
 
-import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import kotlin.math.roundToLong
 
@@ -42,59 +40,42 @@ class LruMemoryCache constructor(
             }
         }
 
-    override var logger: Logger? = null
     override val size: Long
         get() = cache.size()
 
-    override fun put(key: String, value: Value): Boolean {
-        if (!value.checkValid()) {
-            logger?.w(MODULE, "put. invalid. $value. $key")
-            return false
-        }
+    private fun validateValue(value: Value) {
+        require(value.checkValid()) { "Invalid value: $value" }
+    }
+
+    override fun put(key: String, value: Value): Int {
+        validateValue(value)
         if (cache[key] != null) {
-            logger?.w(MODULE, "put. exist. $value. $key")
-            return false
+            return -1
         }
         val valueSize = value.size
         if (valueSize > valueLimitedSize) {
-            logger?.w(MODULE) {
-                "put. value size exceeds limited. valueSize=${valueSize.formatFileSize()}, $value. $key"
-            }
-            return false
+            return -2
         }
         cache.put(key, value)
-        return true
+        return 0
     }
 
     override fun remove(key: String): Value? = cache.remove(key)
 
     override fun get(key: String): Value? {
         val value = cache[key] ?: return null
-        if (!value.checkValid()) {
-            logger?.w(MODULE, "get. invalid. $value. $key")
-            return null
-        }
+        validateValue(value)
         return value
     }
 
     override fun exist(key: String): Boolean {
         val value = cache[key] ?: return false
-        if (!value.checkValid()) {
-            logger?.w(MODULE, "exist. invalid. $value. $key")
-            return false
-        }
+        validateValue(value)
         return true
     }
 
     override fun trim(targetSize: Long) {
-        val oldSize = size
         cache.trimToSize(targetSize)
-        logger?.d(MODULE) {
-            val releasedSize = oldSize - size
-            "trim. targetSize=${targetSize.formatFileSize()}, " +
-                    "releasedSize=${releasedSize.formatFileSize()}, " +
-                    "size=${size.formatFileSize()}"
-        }
     }
 
     override fun keys(): Set<String> {
@@ -102,11 +83,7 @@ class LruMemoryCache constructor(
     }
 
     override fun clear() {
-        val oldSize = size
         cache.evictAll()
-        logger?.d(MODULE) {
-            "clear. clearedSize=${oldSize.formatFileSize()}"
-        }
     }
 
     override fun toString(): String =

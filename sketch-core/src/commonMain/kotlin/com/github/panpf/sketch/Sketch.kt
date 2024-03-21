@@ -40,8 +40,8 @@ import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.SystemCallbacks
+import com.github.panpf.sketch.util.Logger
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -69,7 +69,7 @@ import okio.FileSystem
 class Sketch private constructor(options: Options) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
-            logger.e("scope", throwable, "exception")
+            logger.e(throwable, "CoroutineScope. An uncaught exception")
         }
     )
     private val requestExecutor = RequestExecutor()
@@ -119,10 +119,6 @@ class Sketch private constructor(options: Options) {
     val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
 
     init {
-        memoryCache.logger = logger
-        downloadCache.logger = logger
-        resultCache.logger = logger
-
         val componentRegistry = options.componentRegistry
             .merged(platformComponents())
             .merged(defaultComponents())
@@ -131,17 +127,18 @@ class Sketch private constructor(options: Options) {
 
         systemCallbacks.register()
 
-        logger.d("Configuration") {
+        logger.d {
             buildString {
-                append("\n").append("logger: $logger")
-                append("\n").append("httpStack: $httpStack")
-                append("\n").append("memoryCache: $memoryCache")
-                append("\n").append("resultCache: $resultCache")
-                append("\n").append("downloadCache: $downloadCache")
-                append("\n").append("fetchers: ${componentRegistry.fetcherFactoryList}")
-                append("\n").append("decoders: ${componentRegistry.decoderFactoryList}")
-                append("\n").append("requestInterceptors: ${componentRegistry.requestInterceptorList}")
-                append("\n").append("decodeInterceptors: ${componentRegistry.decodeInterceptorList}")
+                append("Configuration. ")
+                appendLine().append("logger: $logger")
+                appendLine().append("httpStack: $httpStack")
+                appendLine().append("memoryCache: $memoryCache")
+                appendLine().append("resultCache: $resultCache")
+                appendLine().append("downloadCache: $downloadCache")
+                appendLine().append("fetchers: ${componentRegistry.fetcherFactoryList}")
+                appendLine().append("decoders: ${componentRegistry.decoderFactoryList}")
+                appendLine().append("requestInterceptors: ${componentRegistry.requestInterceptorList}")
+                appendLine().append("decodeInterceptors: ${componentRegistry.decodeInterceptorList}")
             }
         }
     }

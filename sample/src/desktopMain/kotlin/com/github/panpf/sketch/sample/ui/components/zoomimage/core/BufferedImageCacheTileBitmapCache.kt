@@ -42,7 +42,7 @@ class BufferedImageCacheTileBitmapCache constructor(
     ): CacheTileBitmap? {
         val bufferedImage = (tileBitmap as? DesktopTileBitmap)?.bufferedImage ?: return null
         val newCacheValue = BufferedImageValue(bufferedImage.asSketchImage())
-        if (!sketch.memoryCache.put(key, newCacheValue)) {
+        if (sketch.memoryCache.put(key, newCacheValue) != 0) {
             return null
         }
         return BufferedImageCacheTileBitmap(key, bufferedImage)

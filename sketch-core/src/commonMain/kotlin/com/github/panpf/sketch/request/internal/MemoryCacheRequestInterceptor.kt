@@ -84,15 +84,14 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 extras = imageData.extras,
             )
         ) ?: return false
-        val saveSuccess =
+        val saveState =
             requestContext.sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
-        if (!saveSuccess) {
+        if (saveState != 0) {
             requestContext.sketch.logger.w(
-                "MemoryCacheRequestInterceptor",
-                "Memory cache save failed. ${imageData.image}. ${requestContext.request.key}"
+                "MemoryCacheRequestInterceptor. Memory cache save failed. state is $saveState. ${imageData.image}. ${requestContext.request.key}"
             )
         }
-        return saveSuccess
+        return saveState == 0
     }
 
     override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"

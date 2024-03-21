@@ -37,8 +37,7 @@ import kotlin.coroutines.coroutineContext
 class RequestExecutor {
 
     companion object {
-        const val MODULE = "RequestExecutor"
-        private const val uriEmptyMessage = "Request uri is empty or blank"
+        private const val URI_EMPTY_MESSAGE = "Request uri is empty or blank"
     }
 
     @MainThread
@@ -71,7 +70,7 @@ class RequestExecutor {
             // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
             val uriString = request.uriString
             if (uriString.isEmpty() || uriString.isBlank()) {
-                throw UriInvalidException(uriEmptyMessage)
+                throw UriInvalidException(URI_EMPTY_MESSAGE)
             }
 
             val result = RequestInterceptorChain(
@@ -121,8 +120,8 @@ class RequestExecutor {
     private fun onStart(requestContext: RequestContext) {
         val request = requestContext.request
         request.listener?.onStart(request)
-        requestContext.sketch.logger.d(MODULE) {
-            "Request started. '${requestContext.initialRequest.key}'"
+        requestContext.sketch.logger.d {
+            "RequestExecutor. Request started. '${requestContext.initialRequest.key}'"
         }
     }
 
@@ -149,13 +148,13 @@ class RequestExecutor {
             }
         }
         lastRequest.listener?.onSuccess(lastRequest, result)
-        requestContext.sketch.logger.d(MODULE) {
+        requestContext.sketch.logger.d {
             val resultString = "image=${result.image}, " +
                     "imageInfo=${result.imageInfo}, " +
                     "dataFrom=${result.dataFrom}, " +
                     "transformedList=${result.transformedList}, " +
                     "extras=${result.extras}"
-            "Request Successful. Result($resultString). '${requestContext.logKey}'"
+            "RequestExecutor. Request Successful. Result($resultString). '${requestContext.logKey}'"
         }
         return result
     }
@@ -184,11 +183,11 @@ class RequestExecutor {
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
-        val logMessage = "Request failed. '${throwable1.message}'. '${requestContext.logKey}'"
+        val logMessage = "RequestExecutor. Request failed. '${throwable1.message}'. '${requestContext.logKey}'"
         when (throwable1) {
-            is DepthException -> sketch.logger.d(MODULE) { logMessage }
-            is SketchException -> sketch.logger.e(MODULE, logMessage)
-            else -> sketch.logger.e(MODULE, throwable1, logMessage)
+            is DepthException -> sketch.logger.d { logMessage }
+            is SketchException -> sketch.logger.e(logMessage)
+            else -> sketch.logger.e(throwable1, logMessage)
         }
         return errorResult
     }
@@ -196,8 +195,8 @@ class RequestExecutor {
     @MainThread
     private fun doCancel(requestContext: RequestContext) {
         val lastRequest = requestContext.request
-        requestContext.sketch.logger.d(MODULE) {
-            "Request canceled. '${requestContext.logKey}'"
+        requestContext.sketch.logger.d {
+            "RequestExecutor. Request canceled. '${requestContext.logKey}'"
         }
         lastRequest.listener?.onCancel(lastRequest)
     }
@@ -234,7 +233,7 @@ class RequestExecutor {
         throwable: Throwable
     ): Image? {
         val stateImage =
-            if (throwable is UriInvalidException && throwable.message == uriEmptyMessage) {
+            if (throwable is UriInvalidException && throwable.message == URI_EMPTY_MESSAGE) {
                 request.uriEmpty
             } else {
                 request.error

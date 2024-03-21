@@ -3,7 +3,6 @@ package com.github.panpf.sketch.cache.internal
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.formatFileSize
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -24,8 +23,6 @@ class EmptyDiskCache(
     // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
     private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
-
-    override var logger: Logger? = null
 
     override val size: Long = 0L
 

@@ -2,34 +2,26 @@ package com.github.panpf.sketch.util
 
 import android.util.Log
 
-actual fun logProxy(): Logger.Proxy = AndroidLogProxy()
+actual fun platformLogPipeline(): Logger.Pipeline = AndroidLogPipeline()
 
-class AndroidLogProxy : Logger.Proxy {
-    override fun v(tag: String, msg: String, tr: Throwable?) {
-        Log.v(tag, msg, tr)
-    }
+class AndroidLogPipeline : Logger.Pipeline {
 
-    override fun d(tag: String, msg: String, tr: Throwable?) {
-        Log.d(tag, msg, tr)
-    }
-
-    override fun i(tag: String, msg: String, tr: Throwable?) {
-        Log.i(tag, msg, tr)
-    }
-
-    override fun w(tag: String, msg: String, tr: Throwable?) {
-        Log.w(tag, msg, tr)
-    }
-
-    override fun e(tag: String, msg: String, tr: Throwable?) {
-        Log.e(tag, msg, tr)
+    override fun log(level: Int, tag: String, msg: String, tr: Throwable?) {
+        when (level) {
+            Logger.VERBOSE -> Log.v(tag, msg, tr)
+            Logger.DEBUG -> Log.d(tag, msg, tr)
+            Logger.INFO -> Log.i(tag, msg, tr)
+            Logger.WARN -> Log.w(tag, msg, tr)
+            Logger.ERROR -> Log.e(tag, msg, tr)
+            Logger.ASSERT -> Log.wtf(tag, msg, tr)
+        }
     }
 
     override fun flush() {
 
     }
 
-    override fun toString(): String = "AndroidLogProxy"
+    override fun toString(): String = "AndroidLogPipeline"
 
     @Suppress("RedundantOverride")
     override fun equals(other: Any?): Boolean {

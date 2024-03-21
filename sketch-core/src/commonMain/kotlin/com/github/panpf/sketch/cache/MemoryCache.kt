@@ -18,7 +18,6 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.defaultMemoryCacheSizePercent
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong
@@ -27,8 +26,6 @@ import kotlin.math.roundToLong
  * Memory cache for bitmap
  */
 interface MemoryCache {
-
-    var logger: Logger?
 
     /**
      * Maximum allowed sum of the size of the all cache
@@ -42,8 +39,10 @@ interface MemoryCache {
 
     /**
      * Caches [value] for [key]
+     *
+     * @return 0: Success; -1: Exists; -2: Exceeds single cache size limit
      */
-    fun put(key: String, value: Value): Boolean
+    fun put(key: String, value: Value): Int
 
     /**
      * Deletes the cache of the [key]

@@ -150,11 +150,10 @@ class AppSettings(val context: PlatformContext) {
      * other
      */
     val logLevel by lazy {
-        val defaultState = if (isDebugMode()) Logger.Level.DEBUG else Logger.Level.INFO
-        enumSettingsStateFlow(
-            key = "logLevel",
+        val defaultState = Logger.levelName(if (isDebugMode()) Logger.DEBUG else Logger.INFO)
+        stringSettingsStateFlow(
+            key = "newNewLogLevel",
             initialize = defaultState,
-            convert = { Logger.Level.valueOf(it) },
             dataStore = dataStore
         )
     }

@@ -17,8 +17,8 @@ package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.times
 
 class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {

@@ -31,8 +31,8 @@ import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.gallery.PhotoListScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -113,11 +113,11 @@ private fun initialSketch() {
                 addDecoder(GifAnimatedSkiaDecoder.Factory())
                 addDecoder(WebpAnimatedSkiaDecoder.Factory())
             }
-            logger(Logger(appSettings.logLevel.value))
+            logger(Logger(level = Logger.level(appSettings.logLevel.value)))
         }.build().apply {
             GlobalScope.launch {
                 appSettings.logLevel.collect {
-                    logger.level = it
+                    logger.level = Logger.level(it)
                 }
             }
         }
