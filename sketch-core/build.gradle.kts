@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.multiplatform")
