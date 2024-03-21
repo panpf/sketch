@@ -24,8 +24,14 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
             e.printStackTrace()
             return result
         }
+        val propertyString = palette.toPropertyString()
+        @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+        if (propertyString == null) {
+            chain.sketch.logger.e("PaletteDecodeInterceptor", "palette is empty")
+            return result
+        }
         val newDecodeResult = decodeResult.newResult {
-            addExtras("simple_palette", palette.toPropertyString())
+            addExtras("simple_palette", propertyString)
         }
         return Result.success(newDecodeResult)
     }
@@ -46,26 +52,30 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
 }
 
 val DecodeResult.simplePalette: SimplePalette?
-    get() = extras?.get("simple_palette")?.let {
-        try {
-            Palette.fromPropertyString(it)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    get() = extras?.get("simple_palette")
+        ?.trim()?.takeIf { it.isNotEmpty() }
+        ?.let {
+            try {
+                Palette.fromPropertyString(it)
+            } catch (e: Exception) {
+                Exception("SimplePalette fromPropertyString error: $it", e).printStackTrace()
+                null
+            }
         }
-    }
 
 val ImageResult.Success.simplePalette: SimplePalette?
-    get() = extras?.get("simple_palette")?.let {
-        try {
-            Palette.fromPropertyString(it)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    get() = extras?.get("simple_palette")
+        ?.trim()?.takeIf { it.isNotEmpty() }
+        ?.let {
+            try {
+                Palette.fromPropertyString(it)
+            } catch (e: Exception) {
+                Exception("SimplePalette fromPropertyString error: $it", e).printStackTrace()
+                null
+            }
         }
-    }
 
-fun Palette.toPropertyString(): String = buildString {
+fun Palette.toPropertyString(): String? = buildString {
     listOf(
         "dominantSwatch" to dominantSwatch,
         "vibrantSwatch" to vibrantSwatch,
@@ -82,7 +92,7 @@ fun Palette.toPropertyString(): String = buildString {
             append("${name}=${value.rgb},${value.population}")
         }
     }
-}
+}.trim().takeIf { it.isNotEmpty() }
 
 fun Palette.Companion.fromPropertyString(propertyString: String): SimplePalette {
     val swatchMap = propertyString.split(";").associate { line ->

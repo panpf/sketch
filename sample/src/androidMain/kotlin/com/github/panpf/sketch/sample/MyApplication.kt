@@ -71,16 +71,16 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
             supportSvg()
 
             // video
-            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-                supportVideoFrame()
-            } else {
+//            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+//                supportVideoFrame()
+//            } else {
                 supportFFmpegVideoFrame()
-            }
+//            }
 
             // gif
             when {
                 VERSION.SDK_INT >= VERSION_CODES.P -> supportAnimatedGif()
-                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> supportMovieGif()
+//                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> supportMovieGif()
                 else -> supportKoralGif()
             }
 

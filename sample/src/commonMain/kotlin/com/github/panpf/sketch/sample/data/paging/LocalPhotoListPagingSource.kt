@@ -50,6 +50,7 @@ class LocalPhotoListPagingSource(
             .plus(AssetImages.anims)
             .plus(AssetImages.longQMSHT)
             .plus(AssetImages.clockExifs)
+            .plus(AssetImages.mp4)
             .map { it.uri }
     }
 
