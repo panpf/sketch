@@ -266,14 +266,6 @@ private fun makeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = bu
             state = appSettings.exifOrientation,
         )
     )
-    add(
-        DropdownSettingItem(
-            title = "Bitmap Quality",
-            desc = null,
-            values = listOf("Default", "LOW", "HIGH"),
-            state = appSettings.bitmapQuality,
-        )
-    )
 }
 
 private fun makeCacheMenuList(
@@ -433,13 +425,11 @@ fun SwitchSetting(settingItem: SwitchSettingItem) {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = menuItemHeight)
-                .ifLet(settingItem.onLongClick != null) {
-                    it.pointerInput(settingItem) {
-                        detectTapGestures(
-                            onTap = { settingItem.state.value = !settingItem.state.value },
-                            onLongPress = { settingItem.onLongClick?.invoke() },
-                        )
-                    }
+                .pointerInput(settingItem) {
+                    detectTapGestures(
+                        onTap = { settingItem.state.value = !settingItem.state.value },
+                        onLongPress = { settingItem.onLongClick?.invoke() },
+                    )
                 }
                 .padding(horizontal = 20.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically

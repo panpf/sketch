@@ -188,10 +188,10 @@ class AppSettings(val context: PlatformContext) {
             else -> ScaleDecider(Scale.valueOf(value = scale.value))
         }
 
-    private val listFlows = listOf(
-        bitmapQuality,
-        colorSpace,
-        inPreferQualityOverSpeed,
+    private val listSettingFlows = listOf(
+        bitmapQuality,  // Only for Android
+        colorSpace,  // Only for Android
+        inPreferQualityOverSpeed,  // Only for Android
 
         memoryCache,
         resultCache,
@@ -207,12 +207,12 @@ class AppSettings(val context: PlatformContext) {
         disallowAnimatedImageInList,
     )
 
-    val listsCombinedFlow: Flow<Any> = combine(listFlows) { it.joinToString() }
+    val listsCombinedFlow: Flow<Any> = combine(listSettingFlows) { it.joinToString() }
 
-    private val viewerFlows = listOf(
-        bitmapQuality,
-        colorSpace,
-        inPreferQualityOverSpeed,
+    private val viewerSettingFlows = listOf(
+        bitmapQuality,  // Only for Android
+        colorSpace,  // Only for Android
+        inPreferQualityOverSpeed,  // Only for Android
 
         memoryCache,
         resultCache,
@@ -221,7 +221,7 @@ class AppSettings(val context: PlatformContext) {
         exifOrientation,
     )
     val viewersCombinedFlow: Flow<Any> =
-        combine(viewerFlows) { it.joinToString() }
+        combine(viewerSettingFlows) { it.joinToString() }
 
     fun buildListImageOptions(): ImageOptions = ImageOptions {
         pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)

@@ -17,6 +17,14 @@ actual fun getSettingsDialogHeight(): Dp {
 }
 
 actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+    add(
+        DropdownSettingItem(
+            title = "Bitmap Quality",
+            desc = null,
+            values = listOf("Default", "LOW", "HIGH"),
+            state = appSettings.bitmapQuality,
+        )
+    )
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         // Cannot use Named.entries, crashes on versions lower than O
         val items = listOf("Default").plus(Named.values().map { it.name })
