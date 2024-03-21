@@ -30,7 +30,6 @@ import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.decode.internal.realDecode
-import com.github.panpf.sketch.decode.internal.toLogString
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.videoFrameMicros
@@ -79,16 +78,18 @@ class VideoFrameDecoder(
         }
         try {
             val imageInfo = readImageInfo(mediaMetadataRetriever)
-            realDecode(
+            val decodeResult = realDecode(
                 requestContext = requestContext,
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
-                decodeFull = {
-                    realDecodeFull(mediaMetadataRetriever, imageInfo, it).asSketchImage()
+                decodeFull = { sampleSize ->
+                    realDecodeFull(mediaMetadataRetriever, imageInfo, sampleSize).asSketchImage()
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(requestContext)
-                .appliedResize(requestContext)
+            )
+            val exifResult = decodeResult.appliedExifOrientation(requestContext)
+            val resizedResult = exifResult.appliedResize(requestContext)
+            resizedResult
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mediaMetadataRetriever.close()

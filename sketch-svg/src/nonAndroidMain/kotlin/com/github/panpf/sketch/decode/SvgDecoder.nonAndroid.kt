@@ -43,64 +43,25 @@ actual suspend fun decodeSvg(
     if (svgWidth <= 0f || svgHeight <= 0f) {
         throw ImageInvalidException("Invalid svg image size, size=${svgWidth}x${svgHeight}")
     }
-    val imageInfo = ImageInfo(
-        width = svgWidth.roundToInt(),
-        height = svgHeight.roundToInt(),
-        mimeType = MIME_TYPE,
-        exifOrientation = ExifOrientation.UNDEFINED
-    )
-
-    val bitmapWidth: Int
-    val bitmapHeight: Int
-    val size = requestContext.size!!
-    var transformedList: List<String>? = null
-//    val request = requestContext.request
-//        if (request.sizeResolver is DisplaySizeResolver) {
-//            val imageSize = Size(imageInfo.width, imageInfo.height)
-//            val precision = request.precisionDecider.get(
-//                imageSize = imageSize,
-//                targetSize = size,
-//            )
-//            val inSampleSize = calculateSampleSize(
-//                imageSize = imageSize,
-//                targetSize = size,
-//                smallerSizeMode = precision.isSmallerSizeMode(),
-//                mimeType = null
-//            )
-//            bitmapWidth = (svgWidth / inSampleSize).roundToInt()
-//            bitmapHeight = (svgHeight / inSampleSize).roundToInt()
-//            if (inSampleSize > 1) {
-//                transformedList = listOf(createInSampledTransformed(inSampleSize))
-//            }
-//        } else {
-    // TODO Rethink size calculation
-    val scale: Float = if (size.isNotEmpty) {
-        min(size.width / svgWidth, size.height / svgHeight)
-    } else {
-        1f
-    }
-    bitmapWidth = (svgWidth * scale).roundToInt()
-    bitmapHeight = (svgHeight * scale).roundToInt()
-    if (scale != 1f) {
-        transformedList = listOf(createScaledTransformed(scale))
-    }
-//        }
 
     // Set the SVG's view box to enable scaling if it is not set.
     if (viewBox == null && svgWidth > 0f && svgHeight > 0f) {
         svg.root?.viewBox = Rect.makeWH(svgWidth, svgHeight)
     }
-
     svg.root?.width = SVGLength(
         value = 100f,
         unit = SVGLengthUnit.PERCENTAGE,
     )
-
     svg.root?.height = SVGLength(
         value = 100f,
         unit = SVGLengthUnit.PERCENTAGE,
     )
 
+    val targetSize = requestContext.size!!
+    val targetScale: Float = if (targetSize.isNotEmpty)
+        min(targetSize.width / svgWidth, targetSize.height / svgHeight) else 1f
+    val bitmapWidth: Int = (svgWidth * targetScale).roundToInt()
+    val bitmapHeight: Int = (svgHeight * targetScale).roundToInt()
     svg.setContainerSize(bitmapWidth.toFloat(), bitmapHeight.toFloat())
 
     val bitmap = Bitmap().apply {
@@ -115,11 +76,23 @@ actual suspend fun decodeSvg(
     // TODO SVGDOM not support css. https://github.com/JetBrains/compose-multiplatform/issues/1217
     svg.render(canvas)
 
-    return DecodeResult(
+    val imageInfo = ImageInfo(
+        width = svgWidth.roundToInt(),
+        height = svgHeight.roundToInt(),
+        mimeType = MIME_TYPE,
+        exifOrientation = ExifOrientation.UNDEFINED
+    )
+    val transformedList: List<String>? = if (targetScale != 1f)
+        listOf(createScaledTransformed(targetScale)) else null
+    val decodeResult = DecodeResult(
         image = bitmap.asSketchImage(),
         imageInfo = imageInfo,
         dataFrom = dataSource.dataFrom,
         transformedList = transformedList,
         extras = null
-    ).appliedResize(requestContext)
+    )
+
+    @Suppress("UnnecessaryVariable", "RedundantSuppression")
+    val resizedResult = decodeResult.appliedResize(requestContext)
+    return resizedResult
 }

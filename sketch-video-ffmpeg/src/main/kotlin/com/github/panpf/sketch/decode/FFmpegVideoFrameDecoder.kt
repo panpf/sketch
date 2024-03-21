@@ -72,7 +72,7 @@ class FFmpegVideoFrameDecoder(
         }
         try {
             val imageInfo = readImageInfo(mediaMetadataRetriever)
-            realDecode(
+            val decodeResult = realDecode(
                 requestContext = requestContext,
                 dataFrom = dataSource.dataFrom,
                 imageInfo = imageInfo,
@@ -80,8 +80,10 @@ class FFmpegVideoFrameDecoder(
                     realDecodeFull(mediaMetadataRetriever, imageInfo, it).asSketchImage()
                 },
                 decodeRegion = null
-            ).appliedExifOrientation(requestContext)
-                .appliedResize(requestContext)
+            )
+            val exifResult = decodeResult.appliedExifOrientation(requestContext)
+            val resizedResult = exifResult.appliedResize(requestContext)
+            resizedResult
         } finally {
             mediaMetadataRetriever.release()
         }

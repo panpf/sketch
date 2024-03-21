@@ -100,13 +100,15 @@ open class DrawableDecoder constructor(
             mimeType = mimeType ?: "image/png",
             exifOrientation = ExifOrientation.UNDEFINED
         )
-        DecodeResult(
+        val decodeResult = DecodeResult(
             image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
             imageInfo = imageInfo,
             dataFrom = LOCAL,
             transformedList = transformedList,
             extras = null
-        ).appliedResize(requestContext)
+        )
+        val resizedResult = decodeResult.appliedResize(requestContext)
+        resizedResult
     }
 
     class Factory : Decoder.Factory {

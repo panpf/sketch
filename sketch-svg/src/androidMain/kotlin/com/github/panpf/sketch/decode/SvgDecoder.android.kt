@@ -9,15 +9,10 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.appliedResize
-import com.github.panpf.sketch.decode.internal.calculateSampleSize
-import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
-import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.decode.internal.toSoftware
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isNotEmpty
 import okio.buffer
 import kotlin.math.min
@@ -45,47 +40,6 @@ actual suspend fun decodeSvg(
     if (svgWidth <= 0f || svgHeight <= 0f) {
         throw ImageInvalidException("Invalid svg image size, size=${svgWidth}x${svgHeight}")
     }
-    val imageInfo = ImageInfo(
-        width = svgWidth.roundToInt(),
-        height = svgHeight.roundToInt(),
-        mimeType = SvgDecoder.MIME_TYPE,
-        exifOrientation = ExifOrientation.UNDEFINED
-    )
-
-    val bitmapWidth: Int
-    val bitmapHeight: Int
-    val size = requestContext.size!!
-    val request = requestContext.request
-    var transformedList: List<String>? = null
-    if (request.sizeResolver is DisplaySizeResolver) {
-        val imageSize = Size(imageInfo.width, imageInfo.height)
-        val precision = request.precisionDecider.get(
-            imageSize = imageSize,
-            targetSize = size,
-        )
-        val inSampleSize = calculateSampleSize(
-            imageSize = imageSize,
-            targetSize = size,
-            smallerSizeMode = precision.isSmallerSizeMode(),
-            mimeType = null
-        )
-        bitmapWidth = (svgWidth / inSampleSize).roundToInt()
-        bitmapHeight = (svgHeight / inSampleSize).roundToInt()
-        if (inSampleSize > 1) {
-            transformedList = listOf(createInSampledTransformed(inSampleSize))
-        }
-    } else {
-        val scale: Float = if (size.isNotEmpty) {
-            min(size.width / svgWidth, size.height / svgHeight)
-        } else {
-            1f
-        }
-        bitmapWidth = (svgWidth * scale).roundToInt()
-        bitmapHeight = (svgHeight * scale).roundToInt()
-        if (scale != 1f) {
-            transformedList = listOf(createScaledTransformed(scale))
-        }
-    }
 
     // Set the SVG's view box to enable scaling if it is not set.
     if (viewBox == null && svgWidth > 0f && svgHeight > 0f) {
@@ -94,21 +48,40 @@ actual suspend fun decodeSvg(
     svg.setDocumentWidth("100%")
     svg.setDocumentHeight("100%")
 
+    val targetSize = requestContext.size!!
+    val targetScale: Float = if (targetSize.isNotEmpty)
+        min(targetSize.width / svgWidth, targetSize.height / svgHeight) else 1f
+    val bitmapWidth: Int = (svgWidth * targetScale).roundToInt()
+    val bitmapHeight: Int = (svgHeight * targetScale).roundToInt()
+    val request = requestContext.request
+    val bitmapConfig = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware()
     val bitmap = Bitmap.createBitmap(
         /* width = */ bitmapWidth,
         /* height = */ bitmapHeight,
-        /* config = */ request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware(),
+        /* config = */ bitmapConfig,
     )
     val canvas = Canvas(bitmap)
     backgroundColor?.let { canvas.drawColor(it) }
     val renderOptions = css?.let { RenderOptions().css(it) }
     svg.renderToCanvas(canvas, renderOptions)
 
-    return DecodeResult(
+    val imageInfo = ImageInfo(
+        width = svgWidth.roundToInt(),
+        height = svgHeight.roundToInt(),
+        mimeType = SvgDecoder.MIME_TYPE,
+        exifOrientation = ExifOrientation.UNDEFINED
+    )
+    val transformedList: List<String>? = if (targetScale != 1f)
+        listOf(createScaledTransformed(targetScale)) else null
+    val decodeResult = DecodeResult(
         image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
         imageInfo = imageInfo,
         dataFrom = dataSource.dataFrom,
         transformedList = transformedList,
         extras = null
-    ).appliedResize(requestContext)
+    )
+
+    @Suppress("UnnecessaryVariable", "RedundantSuppression")
+    val resizedResult = decodeResult.appliedResize(requestContext)
+    return resizedResult
 }

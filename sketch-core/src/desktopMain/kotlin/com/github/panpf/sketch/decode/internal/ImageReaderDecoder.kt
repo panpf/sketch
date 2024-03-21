@@ -20,7 +20,7 @@ class ImageReaderDecoder(
         val imageInfo =
             dataSource.readImageInfoWithImageReaderOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = checkSupportSubsamplingByMimeType(imageInfo.mimeType)
-        realDecode(
+        val decodeResult = realDecode(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
@@ -30,8 +30,10 @@ class ImageReaderDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, sampleSize ->
                 realDecodeRegion(srcRect, sampleSize).asSketchImage()
             } else null
-        ).appliedExifOrientation(requestContext)
-            .appliedResize(requestContext)
+        )
+        val exifResult = decodeResult.appliedExifOrientation(requestContext)
+        val resizedResult = exifResult.appliedResize(requestContext)
+        resizedResult
     }
 
     private fun realDecodeFull(sampleSize: Int): BufferedImage {

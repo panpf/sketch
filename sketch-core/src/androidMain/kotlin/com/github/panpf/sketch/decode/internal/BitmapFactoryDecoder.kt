@@ -45,7 +45,7 @@ open class BitmapFactoryDecoder(
             dataSource.readImageInfoWithBitmapFactoryOrThrow(request.ignoreExifOrientation)
         val canDecodeRegion = ImageFormat.parseMimeType(imageInfo.mimeType)
             ?.supportBitmapRegionDecoder() == true
-        realDecode(
+        val decodeResult = realDecode(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
@@ -55,8 +55,10 @@ open class BitmapFactoryDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, sampleSize ->
                 realDecodeRegion(imageInfo, srcRect.toAndroidRect(), sampleSize).asSketchImage()
             } else null
-        ).appliedExifOrientation(requestContext)
-            .appliedResize(requestContext)
+        )
+        val exifResult = decodeResult.appliedExifOrientation(requestContext)
+        val resizedResult = exifResult.appliedResize(requestContext)
+        resizedResult
     }
 
     private fun realDecodeFull(imageInfo: ImageInfo, sampleSize: Int): Bitmap {

@@ -31,11 +31,10 @@ class SkiaDecoder(
             width = image.width,
             height = image.height,
             mimeType = mimeType,
-            // TODO Image will parse exif and does not support closing
             exifOrientation = ExifOrientation.UNDEFINED
         )
         val canDecodeRegion = true
-        realDecode(
+        val decodeResult = realDecode(
             requestContext = requestContext,
             dataFrom = dataSource.dataFrom,
             imageInfo = imageInfo,
@@ -45,23 +44,22 @@ class SkiaDecoder(
             decodeRegion = if (canDecodeRegion) { srcRect, sampleSize ->
                 realDecodeRegion(image, srcRect, sampleSize).asSketchImage()
             } else null
-        ).appliedExifOrientation(requestContext)
-            .appliedResize(requestContext)
+        )
+        // TODO Skia Image will parse exif and does not support closing
+//        val exifResult = decodeResult.appliedExifOrientation(requestContext)
+//        val resizedResult = exifResult.appliedResize(requestContext)
+        val resizedResult = decodeResult.appliedResize(requestContext)
+        resizedResult
     }
 
-    private fun realDecodeFull(image: Image, sampleSize: Int): SkiaBitmap {
-        // TODO bitmapConfig
-        return image.decode(sampleSize)
-    }
+    private fun realDecodeFull(image: Image, sampleSize: Int): SkiaBitmap =
+        image.decode(sampleSize)
 
     private fun realDecodeRegion(
         image: Image,
         srcRect: Rect,
         sampleSize: Int
-    ): SkiaBitmap {
-        // TODO bitmapConfig
-        return image.decodeRegion(srcRect, sampleSize)
-    }
+    ): SkiaBitmap = image.decodeRegion(srcRect, sampleSize)
 
     class Factory : Decoder.Factory {
 

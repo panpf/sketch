@@ -105,7 +105,7 @@ fun PhotoGridItem(
     )
     val request = remember(photo.listThumbnailUrl, listSettings) {
         ImageRequest(context, photo.listThumbnailUrl) {
-//                if (animatedPlaceholder) {   // TODO
+//                if (animatedPlaceholder) {   // TODO animatedPlaceholder
 //                    placeholder(
 //                        IconAnimatableStateImage(drawable.ic_placeholder_eclipse_animated) {
 //                            resColorBackground(color.placeholder_bg)
