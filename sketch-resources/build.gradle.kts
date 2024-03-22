@@ -4,6 +4,8 @@ plugins {
 }
 
 kotlin {
+    applyMyHierarchyTemplate()
+
     androidTarget {
         publishLibraryVariants("release")
         compilations.configureEach {
@@ -21,6 +23,10 @@ kotlin {
         }
     }
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     sourceSets {
         named("commonMain") {
             dependencies {
@@ -29,6 +35,9 @@ kotlin {
         }
         named("desktopMain") {
             resources.srcDirs("src/images")
+        }
+        named("iosMain") {
+            resources.srcDirs("src/images") // TODO check if this is correct
         }
     }
 }
