@@ -4,7 +4,6 @@ import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
-import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 
 internal actual fun platformComponents(): ComponentRegistry {
@@ -12,7 +11,7 @@ internal actual fun platformComponents(): ComponentRegistry {
         addFetcher(ContentUriFetcher.Factory())
         addFetcher(ResourceUriFetcher.Factory())
         addFetcher(AssetUriFetcher.Factory())
-        addFetcher(FileUriFetcher.Factory())
+//        addFetcher(FileUriFetcher.Factory())
 
         addDecoder(DrawableDecoder.Factory())
         addDecoder(BitmapFactoryDecoder.Factory())

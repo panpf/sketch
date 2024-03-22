@@ -66,7 +66,7 @@ object MimeTypeMap {
         put("jfif", "image/jpeg")
         put("jfif-tbnl", "image/jpeg")
         put("jif", "image/jpeg")
-        put("jpe", "image/pjpeg")
+        put("jpe", "image/pjpeg")   // TODO Image/jpeg is covered here
         put("jpeg", "image/pjpeg")
         put("jpg", "image/pjpeg")
         put("pjpg", "image/pjpeg")
