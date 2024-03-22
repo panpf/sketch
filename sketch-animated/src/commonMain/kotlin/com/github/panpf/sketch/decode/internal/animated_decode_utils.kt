@@ -16,23 +16,24 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.util.Bytes
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.experimental.and
 
 // https://developers.google.com/speed/webp/docs/riff_container
-private val WEBP_HEADER_RIFF = "RIFF".toByteArray()
-private val WEBP_HEADER_WEBP = "WEBP".toByteArray()
-private val WEBP_HEADER_VP8X = "VP8X".toByteArray()
-private val WEBP_HEADER_ANIM = "ANIM".toByteArray()
+private val WEBP_HEADER_RIFF = "RIFF".encodeUtf8().toByteArray()
+private val WEBP_HEADER_WEBP = "WEBP".encodeUtf8().toByteArray()
+private val WEBP_HEADER_VP8X = "VP8X".encodeUtf8().toByteArray()
+private val WEBP_HEADER_ANIM = "ANIM".encodeUtf8().toByteArray()
 
 // https://nokiatech.github.io/heif/technical.html
-private val HEIF_HEADER_FTYP = "ftyp".toByteArray()
-private val HEIF_HEADER_MSF1 = "msf1".toByteArray()
-private val HEIF_HEADER_HEVC = "hevc".toByteArray()
-private val HEIF_HEADER_HEVX = "hevx".toByteArray()
+private val HEIF_HEADER_FTYP = "ftyp".encodeUtf8().toByteArray()
+private val HEIF_HEADER_MSF1 = "msf1".encodeUtf8().toByteArray()
+private val HEIF_HEADER_HEVC = "hevc".encodeUtf8().toByteArray()
+private val HEIF_HEADER_HEVX = "hevx".encodeUtf8().toByteArray()
 
 // https://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
-private val GIF_HEADER_87A = "GIF87a".toByteArray()
-private val GIF_HEADER_89A = "GIF89a".toByteArray()
+private val GIF_HEADER_87A = "GIF87a".encodeUtf8().toByteArray()
+private val GIF_HEADER_89A = "GIF89a".encodeUtf8().toByteArray()
 
 /**
  * Return 'true' if the [Bytes] contains a WebP image.
