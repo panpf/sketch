@@ -5,6 +5,8 @@ plugins {
 }
 
 kotlin {
+    applyMyHierarchyTemplate()
+
     androidTarget {
         publishLibraryVariants("release")
         compilations.configureEach {
@@ -21,6 +23,10 @@ kotlin {
             }
         }
     }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         named("androidMain") {

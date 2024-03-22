@@ -17,6 +17,7 @@ package com.github.panpf.sketch
 
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
+import kotlin.jvm.JvmStatic
 
 object SingletonSketch {
 
@@ -25,7 +26,6 @@ object SingletonSketch {
     /**
      * Get the singleton [Sketch].
      */
-    @JvmStatic
     fun get(context: PlatformContext): Sketch {
         return (reference.value as? Sketch) ?: initialSketch(context)
     }
@@ -64,7 +64,6 @@ object SingletonSketch {
     /**
      * Set the singleton [Sketch] and overwrite any previously set value.
      */
-    @JvmStatic
     fun setUnsafe(sketch: Sketch) {
         val value = reference.value
         if (value === sketch) {
@@ -123,7 +122,6 @@ object SingletonSketch {
      * This method is useful for testing and its use is discouraged in production code.
      */
     @JvmStatic
-    @Synchronized
     fun reset() {
         val value = reference.value
         if (value is Sketch) {
@@ -151,7 +149,7 @@ object SingletonSketch {
     }
 
     /**
-     * A factory for creating [Sketch] instances. Usually used to configure [Sketch] singletons, you need to implement this interface in your [Application]
+     * A factory for creating [Sketch] instances. Usually used to configure [Sketch] singletons, you need to implement this interface in your Application
      */
     fun interface Factory {
         fun createSketch(context: PlatformContext): Sketch
