@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.decode.internal
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DecodeResult

@@ -25,6 +25,10 @@ import com.github.panpf.sketch.PlatformContext
 private const val STANDARD_MEMORY_MULTIPLIER = 0.33
 private const val LOW_MEMORY_MULTIPLIER = 0.25
 
+/** Return the global application context. */
+internal actual val PlatformContext.application: PlatformContext
+    get() = applicationContext
+
 /**
  * Return the default percent of the application's total memory to use for the memory cache.
  */

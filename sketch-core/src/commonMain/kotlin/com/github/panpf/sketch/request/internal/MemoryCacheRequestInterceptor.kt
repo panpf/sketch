@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.MainThread
+import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo

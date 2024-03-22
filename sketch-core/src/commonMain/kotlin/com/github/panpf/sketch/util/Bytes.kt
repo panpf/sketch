@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.util
 
+// TODO Use ByteArray directly instead
 class Bytes constructor(val bytes: ByteArray) {
 
     val size = bytes.size

@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.annotation.AnyThread
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.target.TargetLifecycle
 
@@ -28,7 +27,6 @@ import com.github.panpf.sketch.target.TargetLifecycle
  *
  * @return A [Disposable] which can be used to cancel or check the status of the request.
  */
-@AnyThread
 fun ImageRequest.enqueue(): Disposable {
     return SingletonSketch.get(context).enqueue(this)
 }

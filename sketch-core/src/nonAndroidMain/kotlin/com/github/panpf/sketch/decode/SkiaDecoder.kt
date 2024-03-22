@@ -3,7 +3,6 @@ package com.github.panpf.sketch.decode
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.appliedExifOrientation
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.decode
 import com.github.panpf.sketch.decode.internal.decodeRegion
@@ -12,6 +11,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Rect
 import okio.buffer
+import okio.use
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.Image

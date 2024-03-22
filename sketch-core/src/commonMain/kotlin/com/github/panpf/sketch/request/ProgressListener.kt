@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.annotation.MainThread
+import com.github.panpf.sketch.annotation.MainThread
 
 /**
  * Download progress callback for [ImageRequest]

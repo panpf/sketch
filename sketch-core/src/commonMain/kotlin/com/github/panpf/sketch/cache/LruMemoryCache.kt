@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache.internal
+package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
+import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
 import kotlin.math.roundToLong
 
@@ -41,7 +41,7 @@ class LruMemoryCache constructor(
         }
 
     override val size: Long
-        get() = cache.size()
+        get() = cache.size
 
     private fun validateValue(value: Value) {
         require(value.checkValid()) { "Invalid value: $value" }
@@ -79,11 +79,11 @@ class LruMemoryCache constructor(
     }
 
     override fun keys(): Set<String> {
-        return cache.keys()
+        return cache.keys
     }
 
     override fun clear() {
-        cache.evictAll()
+        cache.clear()
     }
 
     override fun toString(): String =

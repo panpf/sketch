@@ -15,12 +15,14 @@
  */
 @file:Suppress("UnnecessaryVariable")
 
-package com.github.panpf.sketch.cache.internal
+package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
+import com.github.panpf.sketch.cache.internal.DiskLruCache
+import com.github.panpf.sketch.cache.internal.KeyMapperCache
+import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.ioCoroutineDispatcher

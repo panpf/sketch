@@ -24,7 +24,7 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.circleCropped
 
-internal actual fun circleCropTransformation(image: Image, scale: Scale): Image? = when (image) {
+internal actual fun circleCropTransformation(image: Image, scale: Scale): Image = when (image) {
     is JvmBitmapImage -> {
         val inputBitmap: JvmBitmap = image.bitmap
         val outBitmap: JvmBitmap = inputBitmap.circleCropped(scale)
@@ -38,6 +38,6 @@ internal actual fun circleCropTransformation(image: Image, scale: Scale): Image?
     }
 
     else -> {
-        null
+        throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class.qualifiedName}")
     }
 }

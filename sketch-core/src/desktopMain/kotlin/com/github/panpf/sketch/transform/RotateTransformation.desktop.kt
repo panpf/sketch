@@ -23,7 +23,7 @@ import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.rotated
 
-internal actual fun rotateTransformation(image: Image, degrees: Int): Image? = when (image) {
+internal actual fun rotateTransformation(image: Image, degrees: Int): Image = when (image) {
     is JvmBitmapImage -> {
         val inputBitmap: JvmBitmap = image.bitmap
         val outBitmap: JvmBitmap = inputBitmap.rotated(degrees)
@@ -37,6 +37,6 @@ internal actual fun rotateTransformation(image: Image, degrees: Int): Image? = w
     }
 
     else -> {
-        null
+        throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class.qualifiedName}")
     }
 }

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.decode.internal
 
-import androidx.annotation.WorkerThread
 import com.drew.imaging.ImageMetadataReader
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
@@ -16,42 +16,6 @@ import javax.imageio.ImageReadParam
 import javax.imageio.ImageReader
 import javax.imageio.stream.ImageInputStream
 import kotlin.math.ceil
-
-
-/* ************************************** sampling ********************************************** */
-
-actual fun getMaxBitmapSize(targetSize: Size): Size {
-    return Size(targetSize.width * 2, targetSize.height * 2)
-}
-
-/**
- * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
- */
-actual fun calculateSampledBitmapSize(
-    imageSize: Size,
-    sampleSize: Int,
-    mimeType: String?
-): Size {
-    val widthValue = imageSize.width / sampleSize.toDouble()
-    val heightValue = imageSize.height / sampleSize.toDouble()
-    val width: Int = ceil(widthValue).toInt()
-    val height: Int = ceil(heightValue).toInt()
-    return Size(width, height)
-}
-
-/**
- * Calculate the size of the sampled Bitmap, support for BitmapRegionDecoder
- */
-actual fun calculateSampledBitmapSizeForRegion(
-    regionSize: Size,
-    sampleSize: Int,
-    mimeType: String?,
-    imageSize: Size?
-): Size = calculateSampledBitmapSize(
-    imageSize = regionSize,
-    sampleSize = sampleSize,
-    mimeType = mimeType
-)
 
 
 /* **************************************** decode ********************************************* */

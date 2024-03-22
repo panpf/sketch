@@ -43,7 +43,7 @@ interface Disposable {
 
 class ReusableDisposable(
     val requestManager: RequestManager,
-    @Volatile override var job: Deferred<ImageResult>
+    override var job: Deferred<ImageResult>
 ) : Disposable {
 
     override val isDisposed: Boolean

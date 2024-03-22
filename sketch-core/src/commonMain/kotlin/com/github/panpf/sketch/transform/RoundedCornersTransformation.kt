@@ -15,8 +15,7 @@
  */
 package com.github.panpf.sketch.transform
 
-import androidx.annotation.Px
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -24,7 +23,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 /**
  * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
  */
-internal expect fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image?
+internal expect fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image
 
 /**
  * A [Transformation] that crops the image to fit the target's dimensions and rounds the corners of
@@ -47,10 +46,10 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
      * @param bottomRight The radius for the bottom right corner.
      */
     constructor(
-        @Px topLeft: Float = 0f,
-        @Px topRight: Float = 0f,
-        @Px bottomLeft: Float = 0f,
-        @Px bottomRight: Float = 0f,
+        topLeft: Float = 0f,
+        topRight: Float = 0f,
+        bottomLeft: Float = 0f,
+        bottomRight: Float = 0f,
     ) : this(
         floatArrayOf(
             topLeft, topLeft,
@@ -60,7 +59,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         )
     )
 
-    constructor(@Px allRadius: Float) : this(
+    constructor(allRadius: Float) : this(
         floatArrayOf(
             allRadius, allRadius,
             allRadius, allRadius,
@@ -86,8 +85,8 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         sketch: Sketch,
         requestContext: RequestContext,
         input: Image
-    ): TransformResult? {
-        val out = roundedCornersTransformation(input, radiusArray) ?: return null
+    ): TransformResult {
+        val out = roundedCornersTransformation(input, radiusArray)
         val transformed = createRoundedCornersTransformed(radiusArray)
         return TransformResult(image = out, transformed = transformed)
     }

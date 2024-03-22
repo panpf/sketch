@@ -15,11 +15,11 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaBitmapImage
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.util.flipped
@@ -48,67 +48,67 @@ class DesktopExifOrientationHelper constructor(
         }
         return when (image) {
             is JvmBitmapImage -> {
-                val bufferedImage = image.bitmap
-                val bufferedImage2: BufferedImage
-                val bufferedImage3: BufferedImage
+                val inBitmap = image.bitmap
+                val flippedBitmap: BufferedImage
+                val rotatedBitmap: BufferedImage
                 if (!reverse) {
-                    bufferedImage2 = if (isFlipped) {
-                        bufferedImage.flipped(horizontal = true)
+                    flippedBitmap = if (isFlipped) {
+                        inBitmap.flipped(horizontal = true)
                     } else {
-                        bufferedImage
+                        inBitmap
                     }
-                    bufferedImage3 = if (isRotated) {
-                        bufferedImage2.rotated(rotationDegrees)
+                    rotatedBitmap = if (isRotated) {
+                        flippedBitmap.rotated(rotationDegrees)
                     } else {
-                        bufferedImage2
+                        flippedBitmap
                     }
                 } else {
-                    bufferedImage2 = if (isRotated) {
-                        bufferedImage.rotated(-rotationDegrees)
+                    flippedBitmap = if (isRotated) {
+                        inBitmap.rotated(-rotationDegrees)
                     } else {
-                        bufferedImage
+                        inBitmap
                     }
-                    bufferedImage3 = if (isFlipped) {
-                        bufferedImage2.flipped(horizontal = true)
+                    rotatedBitmap = if (isFlipped) {
+                        flippedBitmap.flipped(horizontal = true)
                     } else {
-                        bufferedImage2
+                        flippedBitmap
                     }
                 }
-                bufferedImage3.asSketchImage()
+                rotatedBitmap.asSketchImage()
             }
 
             is SkiaBitmapImage -> {
-                val bufferedImage = image.bitmap
-                val bufferedImage2: SkiaBitmap
-                val bufferedImage3: SkiaBitmap
+                val inBitmap = image.bitmap
+                val flippedBitmap: SkiaBitmap
+                val rotatedBitmap: SkiaBitmap
                 if (!reverse) {
-                    bufferedImage2 = if (isFlipped) {
-                        bufferedImage.flipped(horizontal = true)
+                    flippedBitmap = if (isFlipped) {
+                        inBitmap.flipped(horizontal = true)
                     } else {
-                        bufferedImage
+                        inBitmap
                     }
-                    bufferedImage3 = if (isRotated) {
-                        bufferedImage2.rotated(rotationDegrees)
+                    rotatedBitmap = if (isRotated) {
+                        flippedBitmap.rotated(rotationDegrees)
                     } else {
-                        bufferedImage2
+                        flippedBitmap
                     }
                 } else {
-                    bufferedImage2 = if (isRotated) {
-                        bufferedImage.rotated(-rotationDegrees)
+                    flippedBitmap = if (isRotated) {
+                        inBitmap.rotated(-rotationDegrees)
                     } else {
-                        bufferedImage
+                        inBitmap
                     }
-                    bufferedImage3 = if (isFlipped) {
-                        bufferedImage2.flipped(horizontal = true)
+                    rotatedBitmap = if (isFlipped) {
+                        flippedBitmap.flipped(horizontal = true)
                     } else {
-                        bufferedImage2
+                        flippedBitmap
                     }
                 }
-                bufferedImage3.asSketchImage()
+                rotatedBitmap.asSketchImage()
             }
 
             else -> {
-                null
+                throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class.qualifiedName}")
             }
         }
     }

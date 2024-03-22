@@ -1,13 +1,15 @@
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ReusableDisposable
 import com.github.panpf.sketch.util.getCompletedOrNull
 import com.github.panpf.sketch.util.isMainThread
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +49,8 @@ interface RequestManager {
 
 open class BaseRequestManager : RequestManager {
 
+    private val lock = SynchronizedObject()
+
     // The disposable for the current request attached to this view.
     private var currentDisposable: ReusableDisposable? = null
 
@@ -64,34 +68,32 @@ open class BaseRequestManager : RequestManager {
         callbackAttachedState()
     }
 
-    @Synchronized
     override fun isDisposed(disposable: Disposable): Boolean {
-        return disposable !== currentDisposable
+        return synchronized(lock) { disposable !== currentDisposable }
     }
 
-    @Synchronized
-    override fun getDisposable(job: Deferred<ImageResult>): ReusableDisposable {
-        // If this is a restarted request, update the current disposable and return it.
-        val disposable = currentDisposable
-        if (disposable != null && isMainThread() && isRestart) {
-            isRestart = false
-            disposable.job = job
-            return disposable
+    override fun getDisposable(job: Deferred<ImageResult>): ReusableDisposable =
+        synchronized(lock) {
+            // If this is a restarted request, update the current disposable and return it.
+            val disposable = currentDisposable
+            if (disposable != null && isMainThread() && isRestart) {
+                isRestart = false
+                disposable.job = job
+                return disposable
+            }
+
+            // Cancel any pending clears since they were for the previous request.
+            pendingClear?.cancel()
+            pendingClear = null
+
+            // Create a new disposable as this is a new request.
+            return ReusableDisposable(this@BaseRequestManager, job).also {
+                currentDisposable = it
+            }
         }
 
-        // Cancel any pending clears since they were for the previous request.
-        pendingClear?.cancel()
-        pendingClear = null
-
-        // Create a new disposable as this is a new request.
-        return ReusableDisposable(this@BaseRequestManager, job).also {
-            currentDisposable = it
-        }
-    }
-
-    @Synchronized
     @OptIn(DelicateCoroutinesApi::class)
-    override fun dispose() {
+    override fun dispose() = synchronized(lock) {
         pendingClear?.cancel()
         pendingClear = GlobalScope.launch(Dispatchers.Main.immediate) {
             setRequest(null)
@@ -99,14 +101,12 @@ open class BaseRequestManager : RequestManager {
         currentDisposable = null
     }
 
-    @Synchronized
-    override fun getResult(): ImageResult? {
+    override fun getResult(): ImageResult? = synchronized(lock) {
         return currentDisposable?.job?.getCompletedOrNull()
     }
 
-    @Synchronized
-    override fun restart() {
-        val requestDelegate = currentRequestDelegate ?: return
+    override fun restart() = synchronized(lock) {
+        val requestDelegate = currentRequestDelegate ?: return@synchronized
 
         // As this is called from the main thread, isRestart will
         // be cleared synchronously as part of request.restart().
@@ -114,13 +114,11 @@ open class BaseRequestManager : RequestManager {
         requestDelegate.sketch.enqueue(requestDelegate.initialRequest)
     }
 
-    @Synchronized
-    override fun getRequest(): ImageRequest? {
+    override fun getRequest(): ImageRequest? = synchronized(lock) {
         return currentRequestDelegate?.initialRequest
     }
 
-    @Synchronized
-    override fun getSketch(): Sketch? {
+    override fun getSketch(): Sketch? = synchronized(lock) {
         return currentRequestDelegate?.sketch
     }
 

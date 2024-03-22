@@ -12,7 +12,6 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.tools4k.coroutines.withToIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

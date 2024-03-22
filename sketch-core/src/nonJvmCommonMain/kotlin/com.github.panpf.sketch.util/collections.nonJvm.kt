@@ -1,4 +1,4 @@
-package coil3.util
+package com.github.panpf.sketch.util
 
 internal actual fun <K : Any, V : Any> LruMutableMap(
     initialCapacity: Int,
@@ -45,72 +45,3 @@ private class LruMutableMap<K : Any, V : Any>(
         }
     }
 }
-
-//internal actual fun <K, V> Map<K, V>.toImmutableMap() = when {
-//    isEmpty() -> emptyMap()
-//    this is ImmutableMap -> this
-//    else -> ImmutableMap(LinkedHashMap(this))
-//}
-//
-//private class ImmutableMap<K, V>(
-//    private val delegate: Map<K, V>,
-//) : Map<K, V> by delegate {
-//
-//    override val entries: Set<Map.Entry<K, V>>
-//        get() = delegate.entries.mapTo(mutableSetOf(), ::ImmutableEntry)
-//
-//    override fun equals(other: Any?) = delegate == other
-//    override fun hashCode() = delegate.hashCode()
-//    override fun toString() = delegate.toString()
-//
-//    private class ImmutableEntry<K, V>(
-//        private val delegate: Map.Entry<K, V>,
-//    ) : Map.Entry<K, V> by delegate {
-//        override fun equals(other: Any?) = delegate == other
-//        override fun hashCode() = delegate.hashCode()
-//        override fun toString() = delegate.toString()
-//    }
-//}
-//
-//internal actual fun <T> List<T>.toImmutableList() = when {
-//    isEmpty() -> emptyList()
-//    this is ImmutableList -> this
-//    else -> ImmutableList(ArrayList(this))
-//}
-//
-//private class ImmutableList<T>(
-//    private val delegate: List<T>,
-//) : List<T> by delegate {
-//
-//    override fun iterator(): Iterator<T> {
-//        return ImmutableIterator(delegate.iterator())
-//    }
-//
-//    override fun listIterator(): ListIterator<T> {
-//        return ImmutableListIterator(delegate.listIterator())
-//    }
-//
-//    override fun listIterator(index: Int): ListIterator<T> {
-//        return ImmutableListIterator(delegate.listIterator(index))
-//    }
-//
-//    override fun equals(other: Any?) = delegate == other
-//    override fun hashCode() = delegate.hashCode()
-//    override fun toString() = delegate.toString()
-//
-//    private class ImmutableIterator<T>(
-//        private val delegate: Iterator<T>,
-//    ) : Iterator<T> by delegate {
-//        override fun equals(other: Any?) = delegate == other
-//        override fun hashCode() = delegate.hashCode()
-//        override fun toString() = delegate.toString()
-//    }
-//
-//    private class ImmutableListIterator<T>(
-//        private val delegate: ListIterator<T>,
-//    ) : ListIterator<T> by delegate {
-//        override fun equals(other: Any?) = delegate == other
-//        override fun hashCode() = delegate.hashCode()
-//        override fun toString() = delegate.toString()
-//    }
-//}

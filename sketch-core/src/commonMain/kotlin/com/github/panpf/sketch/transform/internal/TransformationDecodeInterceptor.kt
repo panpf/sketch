@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.transform.internal
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 

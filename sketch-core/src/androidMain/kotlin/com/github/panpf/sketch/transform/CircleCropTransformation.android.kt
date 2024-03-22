@@ -19,11 +19,13 @@ import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.circleCropped
 
-internal actual fun circleCropTransformation(image: Image, scale: Scale): Image? {
-    val inputBitmap = image.asOrNull<AndroidBitmapImage>()?.bitmap ?: return null
+internal actual fun circleCropTransformation(image: Image, scale: Scale): Image {
+    require(image is AndroidBitmapImage) {
+        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+    }
+    val inputBitmap = image.bitmap
     val outBitmap = inputBitmap.circleCropped(scale)
     return outBitmap.asSketchImage()
 }

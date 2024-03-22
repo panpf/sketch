@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.annotation.Px
 import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
@@ -502,8 +501,8 @@ interface ImageRequest {
          * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
          */
         fun resize(
-            @Px width: Int,
-            @Px height: Int,
+            width: Int,
+            height: Int,
             precision: Precision? = null,
             scale: Scale? = null
         ): Builder = apply {
@@ -527,7 +526,7 @@ interface ImageRequest {
         /**
          * Set the resize size
          */
-        fun size(@Px width: Int, @Px height: Int): Builder = apply {
+        fun size(width: Int, height: Int): Builder = apply {
             definedOptionsBuilder.size(width, height)
         }
 

@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.MainThread
+import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.DepthException

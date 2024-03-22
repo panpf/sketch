@@ -17,11 +17,11 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.DiskCache.Options
-import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.util.Logger
 import okio.Closeable
 import okio.FileSystem
 import okio.Path
+
+expect fun platformDefaultDiskCacheOptions(context: PlatformContext): Options
 
 /**
  * Disk cache for bitmap or uri data
@@ -198,5 +198,3 @@ interface DiskCache : Closeable {
         }
     }
 }
-
-expect fun platformDefaultDiskCacheOptions(context: PlatformContext): Options

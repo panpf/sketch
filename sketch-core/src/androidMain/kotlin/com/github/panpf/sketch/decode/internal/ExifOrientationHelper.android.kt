@@ -28,6 +28,7 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.safeConfig
 import okio.buffer
 import java.io.IOException
@@ -63,7 +64,8 @@ class AndroidExifOrientationHelper constructor(
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
-        val inBitmap = image.asOrNull<AndroidBitmapImage>()?.bitmap ?: return null
+        require(image is AndroidBitmapImage) { "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}" }
+        val inBitmap = image.bitmap
         val rotationDegrees = getRotationDegrees().let {
             if (reverse) it * -1 else it
         }

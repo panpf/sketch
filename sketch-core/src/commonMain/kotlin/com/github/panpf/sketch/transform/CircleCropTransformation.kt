@@ -15,15 +15,15 @@
  */
 package com.github.panpf.sketch.transform
 
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
-import java.lang.Integer.min
+import kotlin.math.min
 
-internal expect fun circleCropTransformation(image: Image, scale: Scale): Image?
+internal expect fun circleCropTransformation(image: Image, scale: Scale): Image
 
 /**
  * A [Transformation] that crops an image using a centered circle as the mask.
@@ -48,7 +48,7 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
             imageSize = Size(input.width, input.height),
             targetSize = Size(newSize, newSize)
         )
-        val out = circleCropTransformation(input, scale) ?: return null
+        val out = circleCropTransformation(input, scale)
         val transformed = createCircleCropTransformed(scale)
         return TransformResult(image = out, transformed = transformed)
     }

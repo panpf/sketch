@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.ImageRequest
 import java.io.IOException

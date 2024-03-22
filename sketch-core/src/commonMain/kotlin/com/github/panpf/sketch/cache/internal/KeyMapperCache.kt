@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.cache.internal
 
+import com.github.panpf.sketch.util.LruCache
+
 class KeyMapperCache(val maxSize: Long = 100L, val mapper: (key: String) -> String) {
 
     private val cache = LruCache<String, String>(maxSize)

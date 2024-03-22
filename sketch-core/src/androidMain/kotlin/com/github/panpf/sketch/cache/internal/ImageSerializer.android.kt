@@ -13,9 +13,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import okio.BufferedSink
 
 
-actual fun createImageSerializer(): ImageSerializer? {
-    return AndroidImageSerializer()
-}
+actual fun createImageSerializer(): ImageSerializer? = AndroidImageSerializer()
 
 class AndroidImageSerializer : ImageSerializer {
 

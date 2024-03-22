@@ -17,8 +17,8 @@
 
 package com.github.panpf.sketch.cache.internal
 
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.datasource.DiskCacheDataSource
@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.closeQuietly
 import com.github.panpf.sketch.util.ifOrNull
 import okio.buffer
+import okio.use
 
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
@@ -59,19 +60,6 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             chain.proceed()
         }
     }
-
-//    private suspend fun <R> DiskCache.lockResultCache(
-//        requestContext: RequestContext,
-//        block: suspend () -> R
-//    ): R {
-//        val lock: Mutex = withLock(requestContext.cacheKey, block)
-//        lock.lock()
-//        try {
-//            return block()
-//        } finally {
-//            lock.unlock()
-//        }
-//    }
 
     @WorkerThread
     private fun readCache(

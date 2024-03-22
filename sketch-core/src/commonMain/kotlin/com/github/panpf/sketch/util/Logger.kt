@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.util
 
-import androidx.annotation.IntDef
+import com.github.panpf.sketch.annotation.IntDef
 
 expect fun platformLogPipeline(): Logger.Pipeline
 
@@ -313,8 +313,7 @@ class Logger(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as Logger
+        if (other !is Logger) return false
         if (tag != other.tag) return false
         if (module != other.module) return false
         return true

@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -55,7 +54,6 @@ class SaveCellularTrafficRequestInterceptor constructor(
             sketch.systemCallbacks.isCellularNetworkConnected
         }
 
-    @MainThread
     override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request
         val finalRequest = when {

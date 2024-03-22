@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.util
 
-import androidx.annotation.CheckResult
+import kotlin.math.max
+import kotlin.math.min
 
 class Rect {
     var left = 0
@@ -82,7 +83,6 @@ class Rect {
     /**
      * Return a string representation of the rectangle in a compact form.
      */
-    @JvmOverloads
     fun toShortString(sb: StringBuilder = StringBuilder(32)): String {
         sb.setLength(0)
         sb.append('[')
@@ -374,7 +374,6 @@ class Rect {
      * (and this rectangle is then set to that intersection) else
      * return false and do not change this rectangle.
      */
-    @CheckResult
     fun intersect(left: Int, top: Int, right: Int, bottom: Int): Boolean {
         if (this.left < right && left < this.right && this.top < bottom && top < this.bottom) {
             if (this.left < left) this.left = left
@@ -397,7 +396,6 @@ class Rect {
      * (and this rectangle is then set to that intersection) else
      * return false and do not change this rectangle.
      */
-    @CheckResult
     fun intersect(r: Rect): Boolean {
         return intersect(r.left, r.top, r.right, r.bottom)
     }
@@ -409,10 +407,10 @@ class Rect {
      * @hide
      */
     fun intersectUnchecked(other: Rect) {
-        left = Math.max(left, other.left)
-        top = Math.max(top, other.top)
-        right = Math.min(right, other.right)
-        bottom = Math.min(bottom, other.bottom)
+        left = max(left, other.left)
+        top = max(top, other.top)
+        right = min(right, other.right)
+        bottom = min(bottom, other.bottom)
     }
 
     /**
@@ -427,13 +425,12 @@ class Rect {
      * this rectangle to that intersection. If they do not, return
      * false and do not change this rectangle.
      */
-    @CheckResult
     fun setIntersect(a: Rect, b: Rect): Boolean {
         if (a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom) {
-            left = Math.max(a.left, b.left)
-            top = Math.max(a.top, b.top)
-            right = Math.min(a.right, b.right)
-            bottom = Math.min(a.bottom, b.bottom)
+            left = max(a.left, b.left)
+            top = max(a.top, b.top)
+            right = min(a.right, b.right)
+            bottom = min(a.bottom, b.bottom)
             return true
         }
         return false

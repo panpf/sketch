@@ -24,6 +24,13 @@ kotlin {
         }
     }
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+//    macosX64()
+//    macosArm64()
+
     sourceSets {
         named("androidMain") {
             dependencies {
@@ -39,14 +46,14 @@ kotlin {
         }
         named("androidInstrumentedTest") {
             dependencies {
-                implementation(project(":sketch-test"))
+//                implementation(project(":sketch-test"))
             }
         }
 
         named("commonMain") {
             dependencies {
 //                api(libs.kotlin.stdlib.jdk8)
-                api(libs.androidx.annotation)
+//                api(libs.androidx.annotation)
                 api(libs.kotlinx.coroutines.core)
                 compileOnly(libs.composeStableMarker)
                 api(libs.okio)
@@ -56,9 +63,9 @@ kotlin {
         }
         named("commonTest") {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.junit)
-                implementation(libs.panpf.tools4j.test)
+//                implementation(kotlin("test"))
+//                implementation(libs.junit)
+//                implementation(libs.panpf.tools4j.test)
             }
         }
 

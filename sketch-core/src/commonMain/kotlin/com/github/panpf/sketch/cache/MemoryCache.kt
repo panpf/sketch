@@ -17,7 +17,6 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.util.defaultMemoryCacheSizePercent
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong

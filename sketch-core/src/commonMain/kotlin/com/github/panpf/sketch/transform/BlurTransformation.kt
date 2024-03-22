@@ -15,9 +15,8 @@
  */
 package com.github.panpf.sketch.transform
 
-import androidx.annotation.ColorInt
-import androidx.annotation.IntRange
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.IntRange
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -27,7 +26,7 @@ internal expect fun blurTransformation(
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
     maskColor: Int?
-): Image?
+): Image
 
 /**
  * Bitmap blur transformation
@@ -38,11 +37,9 @@ class BlurTransformation constructor(
     val radius: Int = 15,
 
     /** If the Bitmap has transparent pixels, it will force the Bitmap to add an opaque background color and then blur it */
-    @ColorInt
     val hasAlphaBitmapBgColor: Int? = 0xFF000000L.toInt(),
 
     /** Overlay the blurred image with a layer of color, often useful when using images as a background */
-    @ColorInt
     val maskColor: Int? = null,
 ) : Transformation {
 
@@ -62,8 +59,8 @@ class BlurTransformation constructor(
         sketch: Sketch,
         requestContext: RequestContext,
         input: Image
-    ): TransformResult? {
-        val out = blurTransformation(input, radius, hasAlphaBitmapBgColor, maskColor) ?: return null
+    ): TransformResult {
+        val out = blurTransformation(input, radius, hasAlphaBitmapBgColor, maskColor)
         val transformed = createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor)
         return TransformResult(image = out, transformed = transformed)
     }

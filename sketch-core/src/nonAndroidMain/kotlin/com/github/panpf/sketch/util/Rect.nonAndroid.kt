@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.util
 
 typealias SkiaRect = org.jetbrains.skia.Rect
-typealias SketchRect = com.github.panpf.sketch.util.Rect
+typealias SketchRect = Rect
 
 fun SketchRect.toSkiaRect(): SkiaRect = SkiaRect(
     left = left.toFloat(),

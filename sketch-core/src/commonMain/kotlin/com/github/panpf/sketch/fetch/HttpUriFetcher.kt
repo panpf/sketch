@@ -17,7 +17,7 @@
 
 package com.github.panpf.sketch.fetch
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.datasource.ByteArrayDataSource
@@ -39,6 +39,7 @@ import okio.Buffer
 import okio.IOException
 import okio.Path
 import okio.buffer
+import okio.use
 
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpg' uri
@@ -90,7 +91,7 @@ open class HttpUriFetcher(
         return withContext(sketch.networkTaskDispatcher) {
             // intercept cancel
             if (!isActive) {
-                return@withContext Result.failure(CancellationException())
+                return@withContext Result.failure(CancellationException("Canceled"))
             }
 
             // open connection
@@ -102,7 +103,7 @@ open class HttpUriFetcher(
 
             // intercept cancel
             if (!isActive) {
-                return@withContext Result.failure(CancellationException())
+                return@withContext Result.failure(CancellationException("Canceled"))
             }
 
             // check code

@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.decode
 
-import androidx.annotation.IntDef
+import com.github.panpf.sketch.annotation.IntDef
 import com.github.panpf.sketch.decode.ExifOrientation.Companion.FLIP_HORIZONTAL
 import com.github.panpf.sketch.decode.ExifOrientation.Companion.FLIP_VERTICAL
 import com.github.panpf.sketch.decode.ExifOrientation.Companion.NORMAL
@@ -64,7 +64,7 @@ annotation class ExifOrientation {
         // flipped about top-right <--> bottom-left axis
         const val TRANSVERSE = 7
         const val ROTATE_270 = 8 // rotate 270 to right it
-        
+
         fun name(exifOrientation: Int): String =
             when (exifOrientation) {
                 ROTATE_90 -> "ROTATE_90"

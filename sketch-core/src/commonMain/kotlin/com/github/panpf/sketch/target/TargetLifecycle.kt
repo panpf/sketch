@@ -1,8 +1,9 @@
 package com.github.panpf.sketch.target
 
-import androidx.annotation.MainThread
+import com.github.panpf.sketch.annotation.MainThread
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.jvm.JvmStatic
 
 abstract class TargetLifecycle {
 
@@ -55,8 +56,8 @@ abstract class TargetLifecycle {
         ON_ANY;
 
         /**
-         * Returns the new [Lifecycle.State] of a [Lifecycle] that just reported
-         * this [Lifecycle.Event].
+         * Returns the new [TargetLifecycle.State] of a [TargetLifecycle] that just reported
+         * this [TargetLifecycle.Event].
          *
          * Throws [IllegalArgumentException] if called on [.ON_ANY], as it is a special
          * value used by [OnLifecycleEvent] and not a real lifecycle event.
@@ -77,8 +78,8 @@ abstract class TargetLifecycle {
 
         public companion object {
             /**
-             * Returns the [Lifecycle.Event] that will be reported by a [Lifecycle]
-             * leaving the specified [Lifecycle.State] to a lower state, or `null`
+             * Returns the [TargetLifecycle.Event] that will be reported by a [TargetLifecycle]
+             * leaving the specified [TargetLifecycle.State] to a lower state, or `null`
              * if there is no valid event that can move down from the given state.
              *
              * @param state the higher state that the returned event will transition down from
@@ -95,8 +96,8 @@ abstract class TargetLifecycle {
             }
 
             /**
-             * Returns the [Lifecycle.Event] that will be reported by a [Lifecycle]
-             * entering the specified [Lifecycle.State] from a higher state, or `null`
+             * Returns the [TargetLifecycle.Event] that will be reported by a [TargetLifecycle]
+             * entering the specified [TargetLifecycle.State] from a higher state, or `null`
              * if there is no valid event that can move down to the given state.
              *
              * @param state the lower state that the returned event will transition down to
@@ -113,8 +114,8 @@ abstract class TargetLifecycle {
             }
 
             /**
-             * Returns the [Lifecycle.Event] that will be reported by a [Lifecycle]
-             * leaving the specified [Lifecycle.State] to a higher state, or `null`
+             * Returns the [TargetLifecycle.Event] that will be reported by a [TargetLifecycle]
+             * leaving the specified [TargetLifecycle.State] to a higher state, or `null`
              * if there is no valid event that can move up from the given state.
              *
              * @param state the lower state that the returned event will transition up from
@@ -131,8 +132,8 @@ abstract class TargetLifecycle {
             }
 
             /**
-             * Returns the [Lifecycle.Event] that will be reported by a [Lifecycle]
-             * entering the specified [Lifecycle.State] from a lower state, or `null`
+             * Returns the [TargetLifecycle.Event] that will be reported by a [TargetLifecycle]
+             * entering the specified [TargetLifecycle.State] from a lower state, or `null`
              * if there is no valid event that can move up to the given state.
              *
              * @param state the higher state that the returned event will transition up to
@@ -151,12 +152,12 @@ abstract class TargetLifecycle {
     }
 
     /**
-     * Lifecycle states. You can consider the states as the nodes in a graph and
+     * TargetLifecycle states. You can consider the states as the nodes in a graph and
      * [Event]s as the edges between these nodes.
      */
     public enum class State {
         /**
-         * Destroyed state for a LifecycleOwner. After this event, this Lifecycle will not dispatch
+         * Destroyed state for a LifecycleOwner. After this event, this TargetLifecycle will not dispatch
          * any more events. For instance, for an [android.app.Activity], this state is reached
          * **right before** Activity's [onDestroy][android.app.Activity.onDestroy] call.
          */

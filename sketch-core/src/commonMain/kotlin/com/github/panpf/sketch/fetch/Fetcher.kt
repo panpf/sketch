@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.fetch
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.Decoder

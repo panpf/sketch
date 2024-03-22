@@ -5,7 +5,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.readImageInfoWithImageReaderOrThrow
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.appSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

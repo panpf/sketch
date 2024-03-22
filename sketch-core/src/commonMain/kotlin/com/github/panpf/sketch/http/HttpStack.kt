@@ -15,10 +15,11 @@
  */
 package com.github.panpf.sketch.http
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageRequest
 import okio.Closeable
 import okio.IOException
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Responsible for sending HTTP requests and returning responses
@@ -30,7 +31,7 @@ interface HttpStack {
     }
 
     @WorkerThread
-    @Throws(IOException::class)
+    @Throws(IOException::class, CancellationException::class)
     suspend fun getResponse(request: ImageRequest, url: String): Response
 
     interface Response {
@@ -46,7 +47,7 @@ interface HttpStack {
 
         fun getHeaderField(name: String): String?
 
-        @Throws(IOException::class)
+        @Throws(IOException::class, CancellationException::class)
         suspend fun content(): Content
     }
 

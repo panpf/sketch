@@ -8,7 +8,7 @@ import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.mask
 
-internal actual fun maskTransformation(image: Image, maskColor: Int): Image? = when (image) {
+internal actual fun maskTransformation(image: Image, maskColor: Int): Image = when (image) {
     is JvmBitmapImage -> {
         val inputBitmap: JvmBitmap = image.bitmap
         val outBitmap: JvmBitmap = inputBitmap.apply { mask(maskColor) }
@@ -22,6 +22,6 @@ internal actual fun maskTransformation(image: Image, maskColor: Int): Image? = w
     }
 
     else -> {
-        null
+        throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class.qualifiedName}")
     }
 }

@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.compose.painter.internal
 
-import androidx.annotation.FloatRange
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -108,5 +107,8 @@ abstract class AbsProgressPainter(
         }
     }
 
-    abstract fun DrawScope.drawProgress(@FloatRange(from = 0.0, to = 1.0) drawProgress: Float)
+    /**
+     * @param drawProgress The progress to draw, ranging from 0 to 1
+     */
+    abstract fun DrawScope.drawProgress(drawProgress: Float)
 }

@@ -19,6 +19,7 @@ import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.util.Bytes
 import okio.buffer
+import okio.use
 
 fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
     DefaultFetchResult(dataSource, mimeType)

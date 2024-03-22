@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:OptIn(ExperimentalContracts::class)
-
 package com.github.panpf.sketch.util
 
-import androidx.annotation.Px
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
@@ -28,14 +25,15 @@ import kotlinx.coroutines.runBlocking
 import okio.IOException
 import okio.Path
 import okio.buffer
+import okio.use
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
-import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.roundToLong
 
 
 internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
@@ -45,6 +43,7 @@ internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (valu
  *
  * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#apply).
  */
+@OptIn(ExperimentalContracts::class)
 inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
     contract {
         callsInPlace(block, EXACTLY_ONCE)
@@ -60,6 +59,7 @@ inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
  *
  * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#let).
  */
+@OptIn(ExperimentalContracts::class)
 inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
     contract {
         callsInPlace(block, EXACTLY_ONCE)
@@ -98,7 +98,7 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
     }
 }
 
-internal fun Any.toHexString(): String = Integer.toHexString(this.hashCode())
+internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
 internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
@@ -110,77 +110,44 @@ internal fun Float.format(newScale: Int): Float {
 }
 
 /**
- * Returns the formatted file length that can be displayed, up to EB
- *
- * @receiver              File size
- * @param decimalPlacesLength   Keep a few decimal places
- * @param decimalPlacesFillZero Use 0 instead when the number of decimal places is insufficient
- * @param compact               If true, returns 150KB, otherwise returns 150 KB
- * @return For example: 300 B, 150.25 KB, 500.46 MB, 300 GB
+ * Returns the this size in human-readable format.
  */
-internal fun Long.formatFileSize(
-    decimalPlacesLength: Int = 2,
-    decimalPlacesFillZero: Boolean = false,
-    compact: Boolean = true,
-): String {
-    val units = arrayOf("B", "KB", "MB", "GB", "TB", "PB", "EB")
-    if (this <= 0) {
-        return if (compact) "0B" else "0 B"
-    }
-    val formatString = buildString {
-        append("%.")
-        append(decimalPlacesLength)
-        append(if (decimalPlacesFillZero) "0f" else "f")
-        if (compact) {
-            append("%s")
-        } else {
-            append(" %s")
+internal fun Long.formatFileSize(decimals: Int = 1): String {
+    val bytes = this
+    return when {
+        bytes < 1024 -> {
+            "$bytes B"
+        }
+
+        bytes < 1_048_576 -> {
+            "${(bytes / 1_024f).formatWithDecimals(decimals)} KB"
+        }
+
+        bytes < 1.07374182E9f -> {
+            "${(bytes / 1_048_576f).formatWithDecimals(decimals)} MB"
+        }
+
+        bytes < 1.09951163E12f -> {
+            "${(bytes / 1.07374182E9f).formatWithDecimals(decimals)} GB"
+        }
+
+        else -> {
+            "${(bytes / 1.09951163E12f).formatWithDecimals(decimals)} TB"
         }
     }
-    val digitGroups = (log10(this.toDouble()) / log10(1024.0)).toInt()
-    val value = this / 1024.0.pow(digitGroups.toDouble())
-    return formatString.format(value, units[digitGroups])
+}
 
-//    // Multiplied by 999 to avoid 1000 KB, 1000 MB
-//    // Why is appendSuffix required to be true when calling the format method, because DecimalFormat encounters '#.##EB' and throws an exception 'IllegalArgumentException: Malformed exponential pattern "#.##EB"'
-//    @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
-//    val finalFileSize = Math.max(this, 0)
-//    return if (finalFileSize <= 999) {
-//        finalFileSize.toString() + if (compact) "B" else " B"
-//    } else {
-//        val value: Double
-//        val suffix: String
-//        if (finalFileSize <= 1024L * 999) {
-//            value = (finalFileSize / 1024f).toDouble()
-//            suffix = if (compact) "KB" else " KB"
-//        } else if (finalFileSize <= 1024L * 1024 * 999) {
-//            value = (finalFileSize / 1024f / 1024f).toDouble()
-//            suffix = if (compact) "MB" else " MB"
-//        } else if (finalFileSize <= 1024L * 1024 * 1024 * 999) {
-//            value = (finalFileSize / 1024f / 1024f / 1024f).toDouble()
-//            suffix = if (compact) "GB" else " GB"
-//        } else if (finalFileSize <= 1024L * 1024 * 1024 * 1024 * 999) {
-//            value = (finalFileSize / 1024f / 1024f / 1024f / 1024f).toDouble()
-//            suffix = if (compact) "TB" else " TB"
-//        } else if (finalFileSize <= 1024L * 1024 * 1024 * 1024 * 1024 * 999) {
-//            value = (finalFileSize / 1024f / 1024f / 1024f / 1024f / 1024f).toDouble()
-//            suffix = if (compact) "PB" else " PB"
-//        } else {
-//            value = (finalFileSize / 1024f / 1024f / 1024f / 1024f / 1024f / 1024f).toDouble()
-//            suffix = if (compact) "EB" else " EB"
-//        }
-//        val buffString = StringBuilder()
-//        buffString.append("#")
-//        if (decimalPlacesLength > 0) {
-//            buffString.append(".")
-//            for (w in 0 until decimalPlacesLength) {
-//                buffString.append(if (decimalPlacesFillZero) "0" else "#")
-//            }
-//        }
-//        val format = DecimalFormat(buffString.toString())
-//        format.roundingMode = RoundingMode.HALF_UP
-//        format.format(value).toString() + suffix
-//    }
+private fun Float.formatWithDecimals(decimals: Int): String {
+    val multiplier = 10.0.pow(decimals)
+    val numberAsString = (this * multiplier).roundToLong().toString()
+    val decimalIndex = numberAsString.length - decimals - 1
+    val mainRes = numberAsString.substring(0..decimalIndex)
+    val fractionRes = numberAsString.substring(decimalIndex + 1)
+    return if (fractionRes.isEmpty()) {
+        mainRes
+    } else {
+        "$mainRes.$fractionRes"
+    }
 }
 
 internal fun Int.formatFileSize(): String = toLong().formatFileSize()
@@ -256,10 +223,10 @@ internal fun ceilRoundPow2(number: Int): Int {
 }
 
 fun computeSizeMultiplier(
-    @Px srcWidth: Int,
-    @Px srcHeight: Int,
-    @Px dstWidth: Int,
-    @Px dstHeight: Int,
+    srcWidth: Int,
+    srcHeight: Int,
+    dstWidth: Int,
+    dstHeight: Int,
     fitScale: Boolean
 ): Double {
     val widthPercent = dstWidth / srcWidth.toDouble()

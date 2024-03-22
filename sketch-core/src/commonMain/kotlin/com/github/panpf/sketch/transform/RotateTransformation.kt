@@ -15,12 +15,12 @@
  */
 package com.github.panpf.sketch.transform
 
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
-internal expect fun rotateTransformation(image: Image, degrees: Int): Image?
+internal expect fun rotateTransformation(image: Image, degrees: Int): Image
 
 /**
  * Bitmap Rotation Transformation
@@ -34,8 +34,8 @@ class RotateTransformation(val degrees: Int) : Transformation {
         sketch: Sketch,
         requestContext: RequestContext,
         input: Image
-    ): TransformResult? {
-        val out = rotateTransformation(input, degrees) ?: return null
+    ): TransformResult {
+        val out = rotateTransformation(input, degrees)
         val transformed = createRotateTransformed(degrees)
         return TransformResult(image = out, transformed = transformed)
     }

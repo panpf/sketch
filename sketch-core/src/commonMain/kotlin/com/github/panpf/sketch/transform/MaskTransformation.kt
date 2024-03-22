@@ -15,20 +15,18 @@
  */
 package com.github.panpf.sketch.transform
 
-import androidx.annotation.ColorInt
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.RequestContext
 
-internal expect fun maskTransformation(image: Image, maskColor: Int): Image?
+internal expect fun maskTransformation(image: Image, maskColor: Int): Image
 
 /**
  * Bitmap mask transformation, which attaches a layer of color to the surface of the bitmap, usually used to darken the bitmap used as the background
  */
 class MaskTransformation(
     /** Overlay the blurred image with a layer of color, often useful when using images as a background */
-    @ColorInt
     val maskColor: Int
 ) : Transformation {
 
@@ -41,8 +39,8 @@ class MaskTransformation(
         sketch: Sketch,
         requestContext: RequestContext,
         input: Image
-    ): TransformResult? {
-        val out = maskTransformation(input, maskColor) ?: return null
+    ): TransformResult {
+        val out = maskTransformation(input, maskColor)
         val transformed = createMaskTransformed(maskColor)
         return TransformResult(image = out, transformed = transformed)
     }
@@ -59,8 +57,7 @@ class MaskTransformation(
     }
 }
 
-fun createMaskTransformed(@ColorInt maskColor: Int) =
-    "MaskTransformed(${maskColor})"
+fun createMaskTransformed(maskColor: Int) = "MaskTransformed(${maskColor})"
 
 fun isMaskTransformed(transformed: String): Boolean =
     transformed.startsWith("MaskTransformed(")

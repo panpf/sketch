@@ -5,6 +5,8 @@ import okio.FileSystem
 import okio.IOException
 import okio.Path
 
+internal expect fun defaultFileSystem(): FileSystem
+
 /** Create a new empty file. */
 internal fun FileSystem.createFile(file: Path, mustCreate: Boolean = false) {
     if (mustCreate) {

@@ -24,8 +24,11 @@ import com.github.panpf.sketch.util.roundedCornered
 /**
  * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
  */
-internal actual fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image? {
-    val inputBitmap = image.asOrNull<AndroidBitmapImage>()?.bitmap ?: return null
+internal actual fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image {
+    require(image is AndroidBitmapImage) {
+        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+    }
+    val inputBitmap = image.bitmap
     val outBitmap = inputBitmap.roundedCornered(radiusArray)
     return outBitmap.asSketchImage()
 }

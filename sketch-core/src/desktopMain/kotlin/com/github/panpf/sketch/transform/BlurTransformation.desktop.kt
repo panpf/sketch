@@ -15,7 +15,7 @@ internal actual fun blurTransformation(
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
     maskColor: Int?
-): Image? = when (image) {
+): Image = when (image) {
     is JvmBitmapImage -> {
         val inputBitmap = image.bitmap
         // Transparent pixels cannot be blurred
@@ -43,6 +43,6 @@ internal actual fun blurTransformation(
     }
 
     else -> {
-        null
+        throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class.qualifiedName}")
     }
 }

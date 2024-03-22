@@ -1,33 +1,23 @@
 package com.github.panpf.sketch.util
 
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
+actual fun platformLogPipeline(): Logger.Pipeline = StdLogPipeline()
 
-actual fun platformLogPipeline(): Logger.Pipeline = JvmLogPipeline()
-
-class JvmLogPipeline : Logger.Pipeline {
+class StdLogPipeline : Logger.Pipeline {
 
     override fun log(level: Int, tag: String, msg: String, tr: Throwable?) {
         if (tr != null) {
-            val trString = stackTraceToString(tr)
+            val trString = tr.stackTraceToString()
             println("${Logger.levelName(level)}. $tag. $msg. $trString")
         } else {
             println("${Logger.levelName(level)}. $tag. $msg")
         }
     }
 
-    private fun stackTraceToString(throwable: Throwable): String {
-        val arrayOutputStream = ByteArrayOutputStream()
-        val printWriter = PrintStream(arrayOutputStream)
-        throwable.printStackTrace(printWriter)
-        return String(arrayOutputStream.toByteArray())
-    }
-
     override fun flush() {
 
     }
 
-    override fun toString(): String = "JvmLogPipeline"
+    override fun toString(): String = "StdLogPipeline"
 
     @Suppress("RedundantOverride")
     override fun equals(other: Any?): Boolean {

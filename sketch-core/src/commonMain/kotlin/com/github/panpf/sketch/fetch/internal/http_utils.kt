@@ -20,23 +20,25 @@ import com.github.panpf.sketch.http.HttpStack.Content
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.util.MimeTypeMap
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import okio.BufferedSink
 import okio.IOException
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.TimeSource
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 @Throws(IOException::class, CancellationException::class)
 internal suspend fun BufferedSink.writeAllWithProgress(
     request: ImageRequest,
     content: Content,
     contentLength: Long,
-    bufferSize: Int = DEFAULT_BUFFER_SIZE,
+    bufferSize: Int = 1024 * 8,
 ): Long = coroutineScope {
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
     var bytes = content.read(buffer)
-    var lastNotifyTime = 0L
+    var lastTimeMark: ValueTimeMark? = null
     val progressListenerDelegate = request.progressListener?.let {
         ProgressListenerDelegate(this@coroutineScope, it)
     }
@@ -45,9 +47,11 @@ internal suspend fun BufferedSink.writeAllWithProgress(
         this@writeAllWithProgress.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
-            val currentTime = System.currentTimeMillis()
-            if ((currentTime - lastNotifyTime) > 300) {
-                lastNotifyTime = currentTime
+            if (lastTimeMark == null) {
+                lastTimeMark = TimeSource.Monotonic.markNow()
+            }
+            if (lastTimeMark.elapsedNow().inWholeMilliseconds > 300) {
+                lastTimeMark = TimeSource.Monotonic.markNow()
                 val currentBytesCopied = bytesCopied
                 lastUpdateProgressBytesCopied = currentBytesCopied
                 progressListenerDelegate.onUpdateProgress(
@@ -58,7 +62,7 @@ internal suspend fun BufferedSink.writeAllWithProgress(
         bytes = content.read(buffer)
     }
     if (!isActive) {
-        throw CancellationException()
+        throw CancellationException("Canceled")
     }
     if (progressListenerDelegate != null
         && contentLength > 0

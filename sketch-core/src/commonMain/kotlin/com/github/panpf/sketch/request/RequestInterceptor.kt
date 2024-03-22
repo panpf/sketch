@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.annotation.MainThread
+import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor

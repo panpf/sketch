@@ -17,12 +17,15 @@ package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.times
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 
 class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {
 
+    private val lock = SynchronizedObject()
     private val completedListenerList = mutableSetOf<CompletedListener>()
     private val _requestList = mutableListOf(initialRequest)
     private var _request: ImageRequest = initialRequest
@@ -40,12 +43,12 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
     val logKey: String = initialRequest.key
 
     /** Used to cache bitmaps in memory and on disk */
-    @get:Synchronized
     val cacheKey: String
-        get() = _cacheKey
-            ?: request.newCacheKey(size!!).apply {
+        get() = synchronized(lock) {
+            _cacheKey ?: request.newCacheKey(size!!).apply {
                 _cacheKey = this
             }
+        }
 
     var size: Size? = null
 

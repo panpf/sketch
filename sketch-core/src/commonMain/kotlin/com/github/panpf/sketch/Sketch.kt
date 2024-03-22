@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch
 
-import androidx.annotation.AnyThread
 import androidx.compose.runtime.Stable
+import com.github.panpf.sketch.annotation.AnyThread
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -42,12 +42,15 @@ import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.application
+import com.github.panpf.sketch.util.defaultFileSystem
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -76,7 +79,7 @@ class Sketch private constructor(options: Options) {
     private val isShutdown = atomic(false)
 
     /** Application Context */
-    val context: PlatformContext = options.context
+    val context: PlatformContext = options.context.application
 
     /** Output log */
     val logger: Logger = options.logger
@@ -85,16 +88,16 @@ class Sketch private constructor(options: Options) {
     val fileSystem: FileSystem = options.fileSystem
 
     /** Memory cache of previously loaded images */
-    val memoryCache: MemoryCache by lazy { options.memoryCacheFactory.create(options.context) }
+    val memoryCache: MemoryCache by lazy { options.memoryCacheFactory.create(context) }
 
     /** Disk caching of http downloads images */
     val downloadCache: DiskCache by lazy {
-        options.diskCacheFactory.create(options.context, fileSystem, DiskCache.Type.DOWNLOAD)
+        options.diskCacheFactory.create(context, fileSystem, DiskCache.Type.DOWNLOAD)
     }
 
     /** Disk caching of transformed images */
     val resultCache: DiskCache by lazy {
-        options.diskCacheFactory.create(options.context, fileSystem, DiskCache.Type.RESULT)
+        options.diskCacheFactory.create(context, fileSystem, DiskCache.Type.RESULT)
     }
 
     /** Execute HTTP request */
@@ -321,7 +324,7 @@ class Sketch private constructor(options: Options) {
             val options = Options(
                 context = context,
                 logger = this.logger ?: Logger(),
-                fileSystem = fileSystem ?: FileSystem.SYSTEM,
+                fileSystem = fileSystem ?: defaultFileSystem(),
                 memoryCacheFactory = memoryCacheFactory ?: MemoryCache.DefaultFactory(),
                 diskCacheFactory = diskCacheFactory ?: DiskCache.OptionsFactory(),
                 httpStack = httpStack ?: KtorStack(),

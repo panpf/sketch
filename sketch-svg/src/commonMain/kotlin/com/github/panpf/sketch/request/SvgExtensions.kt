@@ -15,15 +15,13 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.annotation.ColorInt
-
 private const val SVG_BACKGROUND_COLOR_KEY = "sketch#svg_background_color"
 private const val SVG_CSS_KEY = "sketch#svg_css"
 
 /**
  * Set the background color of the SVG image, the default is transparent
  */
-fun ImageRequest.Builder.svgBackgroundColor(@ColorInt color: Int): ImageRequest.Builder = apply {
+fun ImageRequest.Builder.svgBackgroundColor(color: Int): ImageRequest.Builder = apply {
     setParameter(SVG_BACKGROUND_COLOR_KEY, color)
 }
 
@@ -36,7 +34,7 @@ val ImageRequest.svgBackgroundColor: Int?
 /**
  * Set the background color of the SVG image, the default is transparent
  */
-fun ImageOptions.Builder.svgBackgroundColor(@ColorInt color: Int) = apply {
+fun ImageOptions.Builder.svgBackgroundColor(color: Int) = apply {
     setParameter(SVG_BACKGROUND_COLOR_KEY, color)
 }
 

@@ -2,6 +2,9 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.PlatformContext
 
+/** Return the global application context. */
+internal actual val PlatformContext.application: PlatformContext
+    get() = this
 
 internal actual fun PlatformContext.defaultMemoryCacheSizePercent(): Double {
     return 0.15

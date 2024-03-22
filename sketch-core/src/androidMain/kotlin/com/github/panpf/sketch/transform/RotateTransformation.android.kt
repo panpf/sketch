@@ -21,8 +21,11 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.rotated
 
-internal actual fun rotateTransformation(image: Image, degrees: Int): Image? {
-    val inputBitmap = image.asOrNull<AndroidBitmapImage>()?.bitmap ?: return null
+internal actual fun rotateTransformation(image: Image, degrees: Int): Image {
+    require(image is AndroidBitmapImage) {
+        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+    }
+    val inputBitmap = image.bitmap
     val outBitmap = inputBitmap.rotated(degrees)
     return outBitmap.asSketchImage()
 }

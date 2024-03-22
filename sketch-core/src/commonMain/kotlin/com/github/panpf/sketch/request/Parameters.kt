@@ -33,6 +33,7 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.Parameters.Entry
+import kotlin.jvm.JvmField
 
 /**
  * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
@@ -44,7 +45,7 @@ class Parameters private constructor(
     constructor() : this(emptyMap())
 
     /** Returns the number of parameters in this object. */
-    val size: Int @JvmName("size") get() = entries.size
+    val size: Int get() = entries.size
 
     val key: String? by lazy {
         val keys = entries

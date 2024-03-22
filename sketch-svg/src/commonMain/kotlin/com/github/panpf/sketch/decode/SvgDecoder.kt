@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.decode
 
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
@@ -55,7 +54,6 @@ class SvgDecoder constructor(
         const val MIME_TYPE = "image/svg+xml"
     }
 
-    @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         decodeSvg(
             requestContext = requestContext,

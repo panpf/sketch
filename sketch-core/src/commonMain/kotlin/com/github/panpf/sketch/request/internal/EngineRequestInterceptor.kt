@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import androidx.annotation.MainThread
+import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
