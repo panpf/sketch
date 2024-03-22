@@ -26,6 +26,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
+import com.github.panpf.sketch.fetch.PathUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.request.Disposable
@@ -341,6 +342,7 @@ internal expect fun platformComponents(): ComponentRegistry
 internal fun defaultComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(HttpUriFetcher.Factory())
+        addFetcher(PathUriFetcher.Factory())
         addFetcher(Base64UriFetcher.Factory())
 
         addRequestInterceptor(MemoryCacheRequestInterceptor())

@@ -49,8 +49,7 @@ class FileUriFetcher(
 
         fun parseFilePathFromFileUri(uriString: String): String? {
             val startFlag = "$SCHEME://"
-            val start = uriString.substring(0, startFlag.length)
-            return if (startFlag.equals(start, ignoreCase = true)) {
+            return if (uriString.startsWith(startFlag, ignoreCase = true)) {
                 val subStartIndex = startFlag.length
                 val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
                     ?: uriString.indexOf("#").takeIf { it != -1 }

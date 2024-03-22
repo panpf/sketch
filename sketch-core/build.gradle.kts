@@ -59,6 +59,7 @@ kotlin {
                 api(libs.okio)
                 api(libs.ktor.client.core)
                 api(libs.skiko)
+                api(libs.urlencoder)
             }
         }
         named("commonTest") {

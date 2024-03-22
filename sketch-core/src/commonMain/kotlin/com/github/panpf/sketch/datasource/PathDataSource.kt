@@ -16,32 +16,32 @@
 package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import okio.IOException
 import okio.Path
 import okio.Source
 
 /**
- * Provides access to the image data.
+ * Provides access to local file image data
  */
-interface DataSource {
+class PathDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    private val path: Path
+) : DataSource {
 
-    val sketch: Sketch
+    override val dataFrom: DataFrom
+        get() = LOCAL
 
-    val request: ImageRequest
-
-    val dataFrom: DataFrom
-
+    @WorkerThread
     @Throws(IOException::class)
-    fun openSource(): Source = openSourceOrNull() ?: throw IOException("Not supported Source")
+    override fun openSourceOrNull(): Source = sketch.fileSystem.source(path)
 
+    @WorkerThread
     @Throws(IOException::class)
-    fun openSourceOrNull(): Source?
+    override fun getFileOrNull(): Path = path
 
-    @Throws(IOException::class)
-    fun getFile(): Path = getFileOrNull() ?: throw IOException("Not supported File")
-
-    // TODO rename to getPathOrNull
-    @Throws(IOException::class)
-    fun getFileOrNull(): Path?
+    override fun toString(): String = "FileDataSource('${path}')"
 }
