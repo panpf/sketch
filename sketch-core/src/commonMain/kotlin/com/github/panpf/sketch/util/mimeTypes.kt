@@ -40,12 +40,13 @@ object MimeTypeMap {
 
     fun getExtensionFromMimeType(mimeType: String): String? {
         val lowerMimeType = mimeType.lowercase()
-        return platformExtensionToMimeTypeMap(lowerMimeType)
+        return platformMimeTypeToExtensionMap(lowerMimeType)
             ?: mimeTypeData.entries.find { it.value == lowerMimeType }?.key
     }
 }
 
 internal expect fun platformExtensionToMimeTypeMap(extension: String): String?
+
 internal expect fun platformMimeTypeToExtensionMap(mimeType: String): String?
 
 // https://mimetype.io/all-types
