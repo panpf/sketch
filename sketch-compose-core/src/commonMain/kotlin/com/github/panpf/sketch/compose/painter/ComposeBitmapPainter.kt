@@ -1,18 +1,18 @@
 package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.compose.ComposeBitmap
 import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 
-fun ImageBitmap.asPainter(): Painter = ImageBitmapPainter(this)
+fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
 
-fun ImageBitmap.toLogString(): String =
-    "ImageBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
+fun ComposeBitmap.toLogString(): String =
+    "ComposeBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
 
-class ImageBitmapPainter(val imageBitmap: ImageBitmap) : Painter(), SketchPainter {
+class ComposeBitmapPainter(val imageBitmap: ComposeBitmap) : Painter(), SketchPainter {
 
     override val intrinsicSize = Size(imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
 
@@ -23,7 +23,7 @@ class ImageBitmapPainter(val imageBitmap: ImageBitmap) : Painter(), SketchPainte
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ImageBitmapPainter) return false
+        if (other !is ComposeBitmapPainter) return false
         return imageBitmap == other.imageBitmap
     }
 
@@ -32,6 +32,6 @@ class ImageBitmapPainter(val imageBitmap: ImageBitmap) : Painter(), SketchPainte
     }
 
     override fun toString(): String {
-        return "ImageBitmapPainter(imageBitmap=${imageBitmap.toLogString()})"
+        return "ComposeBitmapPainter(imageBitmap=${imageBitmap.toLogString()})"
     }
 }

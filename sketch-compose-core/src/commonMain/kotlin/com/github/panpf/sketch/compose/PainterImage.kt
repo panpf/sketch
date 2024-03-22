@@ -25,8 +25,6 @@ import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
 import kotlin.math.roundToInt
 
-expect fun Image.asPainter(): Painter
-
 fun Painter.asSketchImage(shareable: Boolean = false): Image {
     return PainterImage(this, shareable)
 }

@@ -6,8 +6,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle
 
-//actual val LocalTargetLifecycle: ProvidableCompositionLocal<TargetLifecycle> = ProvidableCompositionLocal{ LocalLifecycleOwner}
-
 @Composable
 internal actual fun resolveTargetLifecycle(): TargetLifecycle? {
     val lifecycle = LocalLifecycleOwner.current.lifecycle

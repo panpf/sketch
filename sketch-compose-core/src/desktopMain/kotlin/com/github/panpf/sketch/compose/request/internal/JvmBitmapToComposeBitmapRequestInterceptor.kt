@@ -1,9 +1,7 @@
-package com.github.panpf.sketch.compose.request
+package com.github.panpf.sketch.compose.request.internal
 
-import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.github.panpf.sketch.JvmBitmapImage
-import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.compose.ComposeBitmap
 import com.github.panpf.sketch.compose.asSketchImage
 import com.github.panpf.sketch.request.ImageData
@@ -12,7 +10,7 @@ import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ConvertToComposeBitmapRequestInterceptor : RequestInterceptor {
+class JvmBitmapToComposeBitmapRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
 
@@ -30,17 +28,13 @@ class ConvertToComposeBitmapRequestInterceptor : RequestInterceptor {
                 }
                 val newImage = composeBitmap.asSketchImage()
                 return Result.success(imageData.copy(image = newImage))
-            } else if (image is SkiaBitmapImage) {
-                val composeBitmap: ComposeBitmap = image.bitmap.asComposeImageBitmap()
-                val newImage = composeBitmap.asSketchImage()
-                return Result.success(imageData.copy(image = newImage))
             }
         }
         return result
     }
 
     override fun toString(): String =
-        "ConvertToComposeBitmapRequestInterceptor(sortWeight=$sortWeight)"
+        "JvmBitmapToComposeBitmapRequestInterceptor(sortWeight=$sortWeight)"
 
     @Suppress("RedundantOverride")
     override fun equals(other: Any?): Boolean {

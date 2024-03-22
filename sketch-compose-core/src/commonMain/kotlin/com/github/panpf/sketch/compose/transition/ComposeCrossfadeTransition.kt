@@ -18,15 +18,16 @@ package com.github.panpf.sketch.compose.transition
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.asPainter
 import com.github.panpf.sketch.compose.asSketchImage
-import com.github.panpf.sketch.compose.painter.CrossfadePainter
 import com.github.panpf.sketch.compose.internal.asOrNull
+import com.github.panpf.sketch.compose.painter.CrossfadePainter
 import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
+import kotlin.jvm.JvmOverloads
 
-class ComposeCrossfadeTransition @JvmOverloads constructor(
+class ComposeCrossfadeTransition constructor(
     private val requestContext: RequestContext,
     private val target: TransitionComposeTarget,
     private val result: ImageResult,

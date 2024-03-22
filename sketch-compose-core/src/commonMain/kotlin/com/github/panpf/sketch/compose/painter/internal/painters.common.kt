@@ -14,10 +14,10 @@ fun Painter.toLogString(): String = when (this) {
     is ColorPainter -> "ColorPainter(${color})"
     is BrushPainter -> "BrushPainter(${brush})"
     is VectorPainter -> "VectorPainter(${toSizeString()})"
-    else -> platformToLongString() ?: toString()
+    else -> platformToLogString() ?: toString()
 }
 
-expect fun Painter.platformToLongString(): String?
+expect fun Painter.platformToLogString(): String?
 
 internal fun Painter.toSizeString(): String =
     if (intrinsicSize.isSpecified) "$intrinsicSize" else "unspecified"

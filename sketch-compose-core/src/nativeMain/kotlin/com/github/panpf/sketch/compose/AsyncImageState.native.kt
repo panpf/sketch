@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.compose
 
-import com.github.panpf.sketch.compose.request.internal.JvmBitmapToComposeBitmapRequestInterceptor
 import com.github.panpf.sketch.compose.request.internal.SkiaBitmapToComposeBitmapRequestInterceptor
 import com.github.panpf.sketch.compose.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.compose.transition.ComposeCrossfadeTransition
@@ -30,7 +29,6 @@ actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
     }
 
     builder.mergeComponents {
-        addRequestInterceptor(JvmBitmapToComposeBitmapRequestInterceptor())
         addRequestInterceptor(SkiaBitmapToComposeBitmapRequestInterceptor())
     }
 }
