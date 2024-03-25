@@ -48,7 +48,7 @@ kotlin {
         named("commonTest") {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(libs.junit)
+//                implementation(libs.junit)
 //                implementation(libs.panpf.tools4j.test)
             }
         }

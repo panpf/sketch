@@ -28,6 +28,10 @@ kotlin {
         }
     }
 
+//    iosX64()
+//    iosArm64()
+//    iosSimulatorArm64()
+
     sourceSets {
         named("androidMain") {
             dependencies {
@@ -79,6 +83,7 @@ kotlin {
                 implementation(libs.panpf.zoomimage.view)
                 implementation(libs.tinypinyin)
                 implementation(libs.okhttp3.logging)
+                implementation(libs.panpf.zoomimage.compose)
             }
         }
         named("androidInstrumentedTest") {
@@ -94,10 +99,7 @@ kotlin {
                 implementation(project(":sketch-extensions-compose"))
                 implementation(compose.material)
                 implementation(compose.material3)
-                implementation(compose.runtime)
-                implementation(compose.ui)
                 implementation(compose.uiTooling)
-                implementation(compose.uiTooling.replace("ui-tooling", "ui-util"))
                 implementation(libs.ktor.client.contentNegotiation)
                 implementation(libs.ktor.serialization.kotlinxJson)
                 implementation(libs.cashapp.paging.compose.common)
@@ -108,7 +110,6 @@ kotlin {
                 implementation(libs.voyager.transitions)
                 implementation(libs.androidx.datastore.core.okio)
                 implementation(libs.androidx.datastore.preferences.core)
-                implementation(libs.panpf.zoomimage.compose)
             }
         }
         named("desktopMain") {
@@ -117,6 +118,7 @@ kotlin {
                 implementation(project(":sketch-okhttp"))
                 implementation(project(":sketch-animated"))
                 implementation(libs.harawata.appdirs)
+                implementation(libs.panpf.zoomimage.compose)
             }
         }
     }
@@ -124,10 +126,10 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "com.github.panpf.sketch.sample.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = property("GROUP").toString()
+            packageName = "com.github.panpf.sketch4.sample"
             packageVersion = property("versionName").toString().let {
                 if (it.contains("-")) {
                     it.substring(0, it.indexOf("-"))
