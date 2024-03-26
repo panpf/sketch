@@ -15,7 +15,8 @@
  */
 package com.github.panpf.sketch.resources
 
+import com.github.panpf.sketch.fetch.newResourceUri
+
 actual fun nameToUri(name: String): String {
-    // TODO Add Fetcher available for ios
-    return name // TODO check if this is correct
+    return newResourceUri(name)
 }

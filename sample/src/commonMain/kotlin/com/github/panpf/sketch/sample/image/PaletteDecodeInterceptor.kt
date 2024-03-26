@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.image
 
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DecodeResult
@@ -13,7 +12,6 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
 
     override val sortWeight: Int = 95
 
-    @WorkerThread
     override suspend fun intercept(chain: Chain): Result<DecodeResult> {
         val result = chain.proceed()
         val decodeResult = result.getOrNull() ?: return result

@@ -10,6 +10,8 @@ plugins {
 }
 
 kotlin {
+    applyMyHierarchyTemplate()
+
     androidTarget {
         compilations.configureEach {
             kotlinOptions {
@@ -28,17 +30,22 @@ kotlin {
         }
     }
 
-//    iosX64()
-//    iosArm64()
-//    iosSimulatorArm64()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
 
     sourceSets {
         named("androidMain") {
             dependencies {
                 implementation(project(":sketch-extensions"))
-                implementation(project(":sketch-animated"))
                 implementation(project(":sketch-animated-koralgif"))
-                implementation(project(":sketch-okhttp"))
                 implementation(project(":sketch-video"))
                 implementation(project(":sketch-video-ffmpeg"))
 
@@ -83,7 +90,7 @@ kotlin {
                 implementation(libs.panpf.zoomimage.view)
                 implementation(libs.tinypinyin)
                 implementation(libs.okhttp3.logging)
-                implementation(libs.panpf.zoomimage.compose)
+                implementation(compose.preview)
             }
         }
         named("androidInstrumentedTest") {
@@ -95,11 +102,14 @@ kotlin {
             dependencies {
                 implementation(project(":sketch-compose"))
                 implementation(project(":sketch-svg"))
+                implementation(project(":sketch-animated"))
                 implementation(project(":sketch-resources"))
                 implementation(project(":sketch-extensions-compose"))
                 implementation(compose.material)
                 implementation(compose.material3)
-                implementation(compose.uiTooling)
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.uiTooling.replace("ui-tooling", "ui-util"))
                 implementation(libs.ktor.client.contentNegotiation)
                 implementation(libs.ktor.serialization.kotlinxJson)
                 implementation(libs.cashapp.paging.compose.common)
@@ -115,11 +125,20 @@ kotlin {
         named("desktopMain") {
             dependencies {
                 implementation(compose.desktop.currentOs)
-                implementation(project(":sketch-okhttp"))
-                implementation(project(":sketch-animated"))
                 implementation(libs.harawata.appdirs)
                 implementation(libs.panpf.zoomimage.compose)
+                implementation(compose.preview)
             }
+        }
+        named("jvmCommonMain") {
+            dependencies {
+                implementation(project(":sketch-okhttp"))
+                implementation(libs.panpf.zoomimage.compose)
+            }
+        }
+        named("iosMain") {
+            // This was originally supposed to be configured in the sketch-resources module, but it was invalid after being configured there. It can only be configured here temporarily. This may be a bug of kmp.
+            resources.srcDirs("../sketch-resources/src/images")
         }
     }
 }

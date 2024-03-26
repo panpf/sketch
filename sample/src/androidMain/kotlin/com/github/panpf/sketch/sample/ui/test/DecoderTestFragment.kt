@@ -96,107 +96,108 @@ class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
 }
 
 @SuppressLint("NewApi")
-actual suspend fun buildDecoderTestItems(context: PlatformContext): List<DecoderTestItem> =
-    buildList {
-        add(DecoderTestItem(name = "JPEG", imageUri = AssetImages.jpeg.uri))
-        add(DecoderTestItem(name = "PNG", imageUri = AssetImages.png.uri))
-        add(DecoderTestItem(name = "WEBP", imageUri = AssetImages.webp.uri))
-        add(DecoderTestItem(name = "BMP", imageUri = AssetImages.bmp.uri))
-        add(
-            DecoderTestItem(
-                name = "SVG",
-                imageUri = AssetImages.svg.uri,
-                imageDecoder = Factory()
-            )
+actual suspend fun buildDecoderTestItems(
+    context: PlatformContext
+): List<DecoderTestItem> = buildList {
+    add(DecoderTestItem(name = "JPEG", imageUri = AssetImages.jpeg.uri))
+    add(DecoderTestItem(name = "PNG", imageUri = AssetImages.png.uri))
+    add(DecoderTestItem(name = "WEBP", imageUri = AssetImages.webp.uri))
+    add(DecoderTestItem(name = "BMP", imageUri = AssetImages.bmp.uri))
+    add(
+        DecoderTestItem(
+            name = "SVG",
+            imageUri = AssetImages.svg.uri,
+            imageDecoder = Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "HEIC",
-                imageUri = AssetImages.heic.uri,
-                minAPI = VERSION_CODES.P,
-                currentApi = VERSION.SDK_INT,
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "HEIC",
+            imageUri = AssetImages.heic.uri,
+            minAPI = VERSION_CODES.P,
+            currentApi = VERSION.SDK_INT,
         )
-        add(
-            DecoderTestItem(
-                name = "GIF_KORAL",
-                imageUri = AssetImages.animGif.uri,
-                imageDecoder = GifDrawableDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "GIF_KORAL",
+            imageUri = AssetImages.animGif.uri,
+            imageDecoder = GifDrawableDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "GIF_MOVIE",
-                imageUri = AssetImages.animGif.uri,
-                minAPI = VERSION_CODES.KITKAT,
-                currentApi = VERSION.SDK_INT,
-                imageDecoder = GifMovieDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "GIF_MOVIE",
+            imageUri = AssetImages.animGif.uri,
+            minAPI = VERSION_CODES.KITKAT,
+            currentApi = VERSION.SDK_INT,
+            imageDecoder = GifMovieDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "GIF_ANIMATED",
-                imageUri = AssetImages.animGif.uri,
-                minAPI = VERSION_CODES.P,
-                currentApi = VERSION.SDK_INT,
-                imageDecoder = GifAnimatedDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "GIF_ANIMATED",
+            imageUri = AssetImages.animGif.uri,
+            minAPI = VERSION_CODES.P,
+            currentApi = VERSION.SDK_INT,
+            imageDecoder = GifAnimatedDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "WEBP_ANIMATED",
-                imageUri = AssetImages.animWebp.uri,
-                minAPI = VERSION_CODES.P,
-                currentApi = VERSION.SDK_INT,
-                imageDecoder = WebpAnimatedDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "WEBP_ANIMATED",
+            imageUri = AssetImages.animWebp.uri,
+            minAPI = VERSION_CODES.P,
+            currentApi = VERSION.SDK_INT,
+            imageDecoder = WebpAnimatedDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "HEIF_ANIMATED",
-                imageUri = AssetImages.animHeif.uri,
-                minAPI = VERSION_CODES.P,
-                currentApi = VERSION.SDK_INT,
-                imageDecoder = HeifAnimatedDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "HEIF_ANIMATED",
+            imageUri = AssetImages.animHeif.uri,
+            minAPI = VERSION_CODES.P,
+            currentApi = VERSION.SDK_INT,
+            imageDecoder = HeifAnimatedDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "MP4_FFMPEG",
-                imageUri = AssetImages.mp4.uri,
-                imageDecoder = FFmpegVideoFrameDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "MP4_FFMPEG",
+            imageUri = AssetImages.mp4.uri,
+            imageDecoder = FFmpegVideoFrameDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "MP4_BUILTIN",
-                imageUri = AssetImages.mp4.uri,
-                minAPI = VERSION_CODES.O_MR1,
-                currentApi = VERSION.SDK_INT,
-                imageDecoder = VideoFrameDecoder.Factory()
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "MP4_BUILTIN",
+            imageUri = AssetImages.mp4.uri,
+            minAPI = VERSION_CODES.O_MR1,
+            currentApi = VERSION.SDK_INT,
+            imageDecoder = VideoFrameDecoder.Factory()
         )
-        add(
-            DecoderTestItem(
-                name = "XML",
-                imageUri = newResourceUri(drawable.bg_circle_accent),
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "XML",
+            imageUri = newResourceUri(drawable.bg_circle_accent),
         )
-        add(
-            DecoderTestItem(
-                name = "VECTOR",
-                imageUri = newResourceUri(drawable.ic_play),
-            )
+    )
+    add(
+        DecoderTestItem(
+            name = "VECTOR",
+            imageUri = newResourceUri(drawable.ic_play),
         )
-        val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
-        add(
-            DecoderTestItem(
-                name = "APK_ICON",
-                imageUri = headerUserPackageInfo.applicationInfo.publicSourceDir,
-                imageDecoder = ApkIconDecoder.Factory()
-            )
+    )
+    val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
+    add(
+        DecoderTestItem(
+            name = "APK_ICON",
+            imageUri = headerUserPackageInfo.applicationInfo.publicSourceDir,
+            imageDecoder = ApkIconDecoder.Factory()
         )
-    }
+    )
+}
 
 private suspend fun loadUserAppPackageInfo(
     context: PlatformContext,

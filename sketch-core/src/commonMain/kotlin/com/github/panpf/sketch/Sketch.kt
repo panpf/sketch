@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch
 
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.annotation.AnyThread
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
@@ -26,7 +25,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.fetch.PathUriFetcher
+import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.request.Disposable
@@ -69,7 +68,7 @@ import okio.FileSystem
  * Sketch is designed to be sharable and works best when the same instance is used throughout the
  * application via the built-in extension function `Context.sketch`
  */
-@Stable
+//@Stable // TODO
 class Sketch private constructor(options: Options) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
@@ -342,7 +341,7 @@ internal expect fun platformComponents(): ComponentRegistry
 internal fun defaultComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(HttpUriFetcher.Factory())
-        addFetcher(PathUriFetcher.Factory())
+        addFetcher(FileUriFetcher.Factory())
         addFetcher(Base64UriFetcher.Factory())
 
         addRequestInterceptor(MemoryCacheRequestInterceptor())

@@ -1,11 +1,18 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.decode.ExifOrientation
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchRect
 import com.github.panpf.sketch.util.toSkiaRect
+import okio.buffer
+import okio.use
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.Codec
+import org.jetbrains.skia.Data
 import org.jetbrains.skia.Image
 import org.jetbrains.skia.Rect
 import kotlin.math.ceil
@@ -73,4 +80,17 @@ internal fun Image.decodeRegion(srcRect: SketchRect, sampleSize: Int): SkiaBitma
         dst = Rect.makeWH(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
     )
     return bitmap
+}
+
+fun DataSource.readImageInfo(): ImageInfo {
+    val bytes = openSource().buffer().use { it.readByteArray() }
+    val image = Image.makeFromEncoded(bytes)
+    val codec = Codec.makeFromData(Data.makeFromBytes(bytes))
+    val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
+    return ImageInfo(
+        width = image.width,
+        height = image.height,
+        mimeType = mimeType,
+        exifOrientation = ExifOrientation.UNDEFINED
+    )
 }

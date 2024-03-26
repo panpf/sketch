@@ -35,10 +35,8 @@ interface HttpStack {
     suspend fun getResponse(request: ImageRequest, url: String): Response
 
     interface Response {
-        @get:Throws(IOException::class)
         val code: Int
 
-        @get:Throws(IOException::class)
         val message: String?
 
         val contentLength: Long

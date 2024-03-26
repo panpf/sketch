@@ -17,7 +17,6 @@ package com.github.panpf.sketch
 
 import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -46,7 +45,6 @@ fun Image.getBitmapOrNull(): AndroidBitmap? = when (this) {
 fun Image.getBitmapOrThrow(): AndroidBitmap = getBitmapOrNull()
     ?: throw IllegalArgumentException("Unable to get Bitmap from Image '$this'")
 
-@Stable
 data class AndroidBitmapImage internal constructor(
     val bitmap: AndroidBitmap,
     override val shareable: Boolean = !bitmap.isMutable,

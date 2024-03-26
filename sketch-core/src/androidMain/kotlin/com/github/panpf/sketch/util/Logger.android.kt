@@ -8,12 +8,12 @@ class AndroidLogPipeline : Logger.Pipeline {
 
     override fun log(level: Int, tag: String, msg: String, tr: Throwable?) {
         when (level) {
-            Logger.VERBOSE -> Log.v(tag, msg, tr)
-            Logger.DEBUG -> Log.d(tag, msg, tr)
-            Logger.INFO -> Log.i(tag, msg, tr)
-            Logger.WARN -> Log.w(tag, msg, tr)
-            Logger.ERROR -> Log.e(tag, msg, tr)
-            Logger.ASSERT -> Log.wtf(tag, msg, tr)
+            Logger.Verbose -> Log.v(tag, msg, tr)
+            Logger.Debug -> Log.d(tag, msg, tr)
+            Logger.Info -> Log.i(tag, msg, tr)
+            Logger.Warn -> Log.w(tag, msg, tr)
+            Logger.Error -> Log.e(tag, msg, tr)
+            Logger.Assert -> Log.wtf(tag, msg, tr)
         }
     }
 

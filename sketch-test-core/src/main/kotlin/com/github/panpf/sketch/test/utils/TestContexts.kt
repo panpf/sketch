@@ -29,7 +29,7 @@ fun getTestContext(): Context {
 fun newSketch(block: Sketch.Builder.(context: Context) -> Unit): Sketch {
     val context = InstrumentationRegistry.getInstrumentation().context
     return Sketch.Builder(context).apply {
-        logger(Logger(level = Logger.VERBOSE))
+        logger(Logger(level = Logger.Verbose))
         val directory = context.newTestDiskCacheDirectory()
         diskCache(DiskCache.Options(appCacheDirectory = directory.toOkioPath()))
         block.invoke(this, context)

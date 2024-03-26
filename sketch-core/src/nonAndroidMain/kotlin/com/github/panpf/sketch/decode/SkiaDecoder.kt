@@ -24,9 +24,9 @@ class SkiaDecoder(
     override suspend fun decode(): Result<DecodeResult> = runCatching {
         // TODO https://github.com/JetBrains/skiko/issues/741
         val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
+        val image = Image.makeFromEncoded(bytes)
         val codec = Codec.makeFromData(Data.makeFromBytes(bytes))
         val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
-        val image = Image.makeFromEncoded(bytes)
         val imageInfo = ImageInfo(
             width = image.width,
             height = image.height,

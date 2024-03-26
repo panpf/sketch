@@ -18,6 +18,7 @@ import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow

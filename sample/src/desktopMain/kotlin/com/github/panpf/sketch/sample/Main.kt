@@ -100,7 +100,7 @@ private fun initialSketch() {
     val context = PlatformContext.INSTANCE
     val appSettings = context.appSettings
     SingletonSketch.setSafe {
-        Sketch.Builder(PlatformContext.INSTANCE).apply {
+        Sketch.Builder(context).apply {
             val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
                 /* appName = */ appId,
                 /* appVersion = */ null,
@@ -108,8 +108,8 @@ private fun initialSketch() {
             )!!.let { File(it) }
             diskCache(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
             components {
-                supportSvg()
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
+                supportSvg()
                 addDecoder(GifAnimatedSkiaDecoder.Factory())
                 addDecoder(WebpAnimatedSkiaDecoder.Factory())
             }
@@ -147,7 +147,7 @@ private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
     val imageFile = File(outDir, "${imageUri.encodeUtf8().sha256().hex()}.$fileExtension")
     val result = withContext(Dispatchers.IO) {
         runCatching {
-            fetchResult.dataSource.openSource().use { input ->
+            fetchResult.dataSource.openSource().buffer().use { input ->
                 imageFile.outputStream().sink().buffer().use { output ->
                     output.writeAll(input)
                 }

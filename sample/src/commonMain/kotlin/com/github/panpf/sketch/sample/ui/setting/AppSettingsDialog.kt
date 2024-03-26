@@ -52,9 +52,6 @@ import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.zoomimage.zoom.AlignmentCompat
-import com.github.panpf.zoomimage.zoom.ContentScaleCompat
-import com.github.panpf.zoomimage.zoom.name
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -193,66 +190,7 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
     )
 }
 
-private fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    val contentScales = listOf(
-        ContentScaleCompat.Fit,
-        ContentScaleCompat.Crop,
-        ContentScaleCompat.Inside,
-        ContentScaleCompat.FillWidth,
-        ContentScaleCompat.FillHeight,
-        ContentScaleCompat.FillBounds,
-        ContentScaleCompat.None,
-    )
-    add(
-        DropdownSettingItem(
-            title = "Content Scale",
-            desc = null,
-            values = contentScales.map { it.name },
-            state = appSettings.contentScale,
-        )
-    )
-
-    val alignments = listOf(
-        AlignmentCompat.TopStart,
-        AlignmentCompat.TopCenter,
-        AlignmentCompat.TopEnd,
-        AlignmentCompat.CenterStart,
-        AlignmentCompat.Center,
-        AlignmentCompat.CenterEnd,
-        AlignmentCompat.BottomStart,
-        AlignmentCompat.BottomCenter,
-        AlignmentCompat.BottomEnd,
-    )
-    add(
-        DropdownSettingItem(
-            title = "Alignment",
-            desc = null,
-            values = alignments.map { it.name },
-            state = appSettings.alignment,
-        )
-    )
-    add(
-        SwitchSettingItem(
-            title = "Scroll Bar",
-            desc = null,
-            state = appSettings.scrollBarEnabled,
-        )
-    )
-    add(
-        SwitchSettingItem(
-            title = "Read Mode",
-            state = appSettings.readModeEnabled,
-            desc = "Long images are displayed in full screen by default"
-        )
-    )
-    add(
-        SwitchSettingItem(
-            title = "Show Tile Bounds",
-            desc = "Overlay the state and area of the tile on the View",
-            state = appSettings.showTileBounds,
-        )
-    )
-}
+expect fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem>
 
 expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem>
 
@@ -276,18 +214,7 @@ private fun makeCacheMenuList(
     add(
         SwitchSettingItem(
             title = "Memory Cache",
-            desc = "%s/%s（Long Click Clean）".format(
-                sketch.memoryCache.size.formatFileSize(
-                    0,
-                    decimalPlacesFillZero = false,
-                    compact = true
-                ),
-                sketch.memoryCache.maxSize.formatFileSize(
-                    0,
-                    decimalPlacesFillZero = false,
-                    compact = true
-                )
-            ),
+            desc = "${sketch.memoryCache.size.formatFileSize(0)}/${sketch.memoryCache.maxSize.formatFileSize(0)}（Long Click Clean）",
             state = appSettings.memoryCache,
             onLongClick = {
                 sketch.memoryCache.clear()
@@ -299,18 +226,7 @@ private fun makeCacheMenuList(
     add(
         SwitchSettingItem(
             title = "Result Cache",
-            desc = "%s/%s（Long Click Clean）".format(
-                sketch.resultCache.size.formatFileSize(
-                    0,
-                    decimalPlacesFillZero = false,
-                    compact = true
-                ),
-                sketch.resultCache.maxSize.formatFileSize(
-                    0,
-                    decimalPlacesFillZero = false,
-                    compact = true
-                )
-            ),
+            desc = "${sketch.resultCache.size.formatFileSize(0)}/${sketch.resultCache.maxSize.formatFileSize(0)}（Long Click Clean）",
             state = appSettings.resultCache,
             onLongClick = {
                 sketch.resultCache.clear()
@@ -322,18 +238,7 @@ private fun makeCacheMenuList(
     add(
         SwitchSettingItem(
             title = "Download Cache",
-            desc = "%s/%s（Long Click Clean）".format(
-                sketch.downloadCache.size.formatFileSize(
-                    0,
-                    decimalPlacesFillZero = false,
-                    compact = true
-                ),
-                sketch.downloadCache.maxSize.formatFileSize(
-                    0,
-                    decimalPlacesFillZero = false,
-                    compact = true
-                )
-            ),
+            desc = "${sketch.downloadCache.size.formatFileSize(0)}/${sketch.downloadCache.maxSize.formatFileSize(0)}（Long Click Clean）",
             state = appSettings.downloadCache,
             onLongClick = {
                 sketch.downloadCache.clear()
@@ -347,7 +252,7 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
     add(
         DropdownSettingItem(
             title = "Logger Level",
-            desc = if (Logger.level(appSettings.logLevel.value) <= Logger.DEBUG)
+            desc = if (Logger.level(appSettings.logLevel.value) <= Logger.Debug)
                 "DEBUG and below will reduce UI fluency" else null,
             values = Logger.levels.map { Logger.levelName(it) },
             state = appSettings.logLevel,

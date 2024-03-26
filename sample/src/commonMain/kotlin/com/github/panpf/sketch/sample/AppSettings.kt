@@ -24,9 +24,6 @@ import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
 import com.github.panpf.sketch.sample.util.intSettingsStateFlow
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.zoomimage.zoom.AlignmentCompat
-import com.github.panpf.zoomimage.zoom.ContentScaleCompat
-import com.github.panpf.zoomimage.zoom.name
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -128,10 +125,10 @@ class AppSettings(val context: PlatformContext) {
      * detail
      */
     val contentScale: SettingsStateFlow<String> by lazy {
-        stringSettingsStateFlow("contentScale", ContentScaleCompat.Fit.name, dataStore)
+        stringSettingsStateFlow("contentScale", "Fit", dataStore)
     }
     val alignment: SettingsStateFlow<String> by lazy {
-        stringSettingsStateFlow("alignment", AlignmentCompat.Center.name, dataStore)
+        stringSettingsStateFlow("alignment", "Center", dataStore)
     }
     val scrollBarEnabled: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow("scrollBarEnabled", true, dataStore)
@@ -150,7 +147,7 @@ class AppSettings(val context: PlatformContext) {
      * other
      */
     val logLevel by lazy {
-        val defaultState = Logger.levelName(if (isDebugMode()) Logger.DEBUG else Logger.INFO)
+        val defaultState = Logger.levelName(if (isDebugMode()) Logger.Debug else Logger.Info)
         stringSettingsStateFlow(
             key = "newNewLogLevel",
             initialize = defaultState,

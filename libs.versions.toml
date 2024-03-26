@@ -176,6 +176,7 @@ ktor-client-logging={ module = "io.ktor:ktor-client-logging", version.ref = "kto
 ktor-client-contentNegotiation={ module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-java={ module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 ktor-client-android={ module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-ios={ module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
 ktor-serialization-kotlinxJson={ module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }

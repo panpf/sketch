@@ -1,12 +1,10 @@
 package com.github.panpf.sketch
 
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
 
-@Stable
 data class SkiaAnimatedImage(
     val codec: Codec,
     val repeatCount: Int? = null,

@@ -15,19 +15,17 @@
  */
 package com.github.panpf.sketch
 
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.readPixels
 import com.github.panpf.sketch.util.mapping
+import com.github.panpf.sketch.util.readPixels
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
 
 fun JvmBitmap.asSketchImage(): JvmBitmapImage = JvmBitmapImage(this)
 
-@Stable
 data class JvmBitmapImage(
     val bitmap: JvmBitmap,
     override val shareable: Boolean = true

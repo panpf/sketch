@@ -37,7 +37,8 @@ kotlin {
             resources.srcDirs("src/images")
         }
         named("iosMain") {
-            resources.srcDirs("src/images") // TODO check if this is correct
+        // Invalid, it still cannot be used in the sample, and can only be configured in the sample temporarily. This may be a bug of kmp.
+//            resources.srcDirs("src/images")
         }
     }
 }

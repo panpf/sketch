@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 
-expect val gridCells: Int
-
 @Composable
 fun TestPage() {
     val testItems = remember {
@@ -43,7 +41,7 @@ fun TestPage() {
     }
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
-        columns = GridCells.Fixed(gridCells),
+        columns = GridCells.Adaptive(150.dp),
         state = gridState,
         contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),

@@ -8,6 +8,7 @@ import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.isNotEmpty
 import okio.buffer
+import okio.use
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Data

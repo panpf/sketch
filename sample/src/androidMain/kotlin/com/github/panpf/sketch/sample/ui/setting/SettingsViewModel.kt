@@ -372,7 +372,7 @@ class SettingsViewModel(application1: Application, val page: Page) :
         add(
             MultiSelectMenu(
                 title = "Logger Level",
-                desc = if (application1.sketch.logger.level <= Logger.DEBUG) "DEBUG and below will reduce UI fluency" else "",
+                desc = if (application1.sketch.logger.level <= Logger.Debug) "DEBUG and below will reduce UI fluency" else "",
                 values = Logger.levels.map { Logger.levelName(it) },
                 getValue = { Logger.levelName(application1.sketch.logger.level) },
                 onSelect = { _, value ->

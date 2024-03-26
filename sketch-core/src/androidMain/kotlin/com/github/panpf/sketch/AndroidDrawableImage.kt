@@ -3,7 +3,6 @@ package com.github.panpf.sketch
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -30,7 +29,6 @@ fun Image.asDrawableOrThrow(): Drawable = when (this) {
     else -> throw IllegalArgumentException("'$this' can't be converted to Drawable")
 }
 
-@Stable
 data class AndroidDrawableImage internal constructor(
     val drawable: Drawable,
     override val shareable: Boolean = drawable !is Animatable

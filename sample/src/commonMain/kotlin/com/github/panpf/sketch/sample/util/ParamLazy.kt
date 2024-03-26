@@ -15,21 +15,20 @@
  */
 package com.github.panpf.sketch.sample.util
 
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
+
 class ParamLazy<P, R>(private val callback: Callback<P, R>) {
 
-    @Volatile
     private var instance: R? = null
+    private val lock = SynchronizedObject()
 
     fun get(p: P): R {
-        synchronized(this) {
-            val tempInstance = instance
-            if (tempInstance != null) return tempInstance
-            synchronized(this) {
-                val tempInstance2 = instance
-                if (tempInstance2 != null) return tempInstance2
-                val newInstance = callback.createInstantiate(p)
-                instance = newInstance
-                return newInstance
+        return synchronized(lock) {
+            instance ?: synchronized(lock) {
+                instance ?: callback.createInstantiate(p).apply {
+                    instance = this
+                }
             }
         }
     }

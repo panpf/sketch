@@ -25,7 +25,7 @@ import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sketch
 import com.github.panpf.zoomimage.internal.AbsStateZoomImageView
-import com.github.panpf.zoomimage.sketch.SketchImageSource
+import com.github.panpf.sketch.sample.ui.components.zoomimage.core.SketchImageSource
 import com.github.panpf.zoomimage.subsampling.ImageSource
 
 /**

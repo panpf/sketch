@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.request
 
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
@@ -59,7 +58,7 @@ fun ImageRequest(
 /**
  * An immutable image request that contains all the required parameters,
  */
-@Stable
+//@Stable // TODO
 interface ImageRequest {
 
     /**

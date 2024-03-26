@@ -55,7 +55,7 @@ kotlin {
 //                api(libs.kotlin.stdlib.jdk8)
 //                api(libs.androidx.annotation)
                 api(libs.kotlinx.coroutines.core)
-                compileOnly(libs.composeStableMarker)
+//                compileOnly(libs.composeStableMarker)
                 api(libs.okio)
                 api(libs.ktor.client.core)
                 api(libs.skiko)
@@ -75,6 +75,12 @@ kotlin {
                 api(libs.kotlinx.coroutines.swing)
                 api(libs.metadataExtractor)
                 implementation(libs.ktor.client.java)
+            }
+        }
+
+        named("iosMain") {
+            dependencies {
+                implementation(libs.ktor.client.ios)
             }
         }
 

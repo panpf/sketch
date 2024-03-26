@@ -38,7 +38,7 @@ class Logger(
     /**
      * The level of the log. The level of the root logger will be modified directly
      */
-    var level: Int = rootLogger?.level ?: level ?: INFO
+    var level: Int = rootLogger?.level ?: level ?: Info
         get() = rootLogger?.level ?: field
         set(value) {
             val rootLogger = rootLogger
@@ -53,7 +53,7 @@ class Logger(
                 val oldLevelName = levelName(oldLevel)
                 val newLevelName = levelName(value)
                 pipeline.log(
-                    level = WARN,
+                    level = Warn,
                     tag = tag,
                     msg = "Logger@${this.toHexString()}. setLevel. $oldLevelName -> $newLevelName",
                     tr = null
@@ -77,8 +77,8 @@ class Logger(
      * Print a log with the VERBOSE level
      */
     fun v(msg: String) {
-        if (isLoggable(VERBOSE)) {
-            pipeline.log(VERBOSE, tag, assembleMessage(msg), null)
+        if (isLoggable(Verbose)) {
+            pipeline.log(Verbose, tag, assembleMessage(msg), null)
         }
     }
 
@@ -86,8 +86,8 @@ class Logger(
      * Print a log with the VERBOSE level
      */
     fun v(lazyMessage: () -> String) {
-        if (isLoggable(VERBOSE)) {
-            pipeline.log(VERBOSE, tag, assembleMessage(lazyMessage()), null)
+        if (isLoggable(Verbose)) {
+            pipeline.log(Verbose, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
@@ -95,8 +95,8 @@ class Logger(
      * Print a log with the VERBOSE level
      */
     fun v(throwable: Throwable?, msg: String) {
-        if (isLoggable(VERBOSE)) {
-            pipeline.log(VERBOSE, tag, assembleMessage(msg), throwable)
+        if (isLoggable(Verbose)) {
+            pipeline.log(Verbose, tag, assembleMessage(msg), throwable)
         }
     }
 
@@ -104,8 +104,8 @@ class Logger(
      * Print a log with the VERBOSE level
      */
     fun v(throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(VERBOSE)) {
-            pipeline.log(VERBOSE, tag, assembleMessage(lazyMessage()), throwable)
+        if (isLoggable(Verbose)) {
+            pipeline.log(Verbose, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
@@ -114,8 +114,8 @@ class Logger(
      * Print a log with the DEBUG level
      */
     fun d(msg: String) {
-        if (isLoggable(DEBUG)) {
-            pipeline.log(DEBUG, tag, assembleMessage(msg), null)
+        if (isLoggable(Debug)) {
+            pipeline.log(Debug, tag, assembleMessage(msg), null)
         }
     }
 
@@ -123,8 +123,8 @@ class Logger(
      * Print a log with the DEBUG level
      */
     fun d(lazyMessage: () -> String) {
-        if (isLoggable(DEBUG)) {
-            pipeline.log(DEBUG, tag, assembleMessage(lazyMessage()), null)
+        if (isLoggable(Debug)) {
+            pipeline.log(Debug, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
@@ -132,8 +132,8 @@ class Logger(
      * Print a log with the DEBUG level
      */
     fun d(throwable: Throwable?, msg: String) {
-        if (isLoggable(DEBUG)) {
-            pipeline.log(DEBUG, tag, assembleMessage(msg), throwable)
+        if (isLoggable(Debug)) {
+            pipeline.log(Debug, tag, assembleMessage(msg), throwable)
         }
     }
 
@@ -141,8 +141,8 @@ class Logger(
      * Print a log with the DEBUG level
      */
     fun d(throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(DEBUG)) {
-            pipeline.log(DEBUG, tag, assembleMessage(lazyMessage()), throwable)
+        if (isLoggable(Debug)) {
+            pipeline.log(Debug, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
@@ -151,8 +151,8 @@ class Logger(
      * Print a log with the INFO level
      */
     fun i(msg: String) {
-        if (isLoggable(INFO)) {
-            pipeline.log(INFO, tag, assembleMessage(msg), null)
+        if (isLoggable(Info)) {
+            pipeline.log(Info, tag, assembleMessage(msg), null)
         }
     }
 
@@ -160,8 +160,8 @@ class Logger(
      * Print a log with the INFO level
      */
     fun i(lazyMessage: () -> String) {
-        if (isLoggable(INFO)) {
-            pipeline.log(INFO, tag, assembleMessage(lazyMessage()), null)
+        if (isLoggable(Info)) {
+            pipeline.log(Info, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
@@ -169,8 +169,8 @@ class Logger(
      * Print a log with the INFO level
      */
     fun i(throwable: Throwable?, msg: String) {
-        if (isLoggable(INFO)) {
-            pipeline.log(INFO, tag, assembleMessage(msg), throwable)
+        if (isLoggable(Info)) {
+            pipeline.log(Info, tag, assembleMessage(msg), throwable)
         }
     }
 
@@ -178,8 +178,8 @@ class Logger(
      * Print a log with the INFO level
      */
     fun i(throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(INFO)) {
-            pipeline.log(INFO, tag, assembleMessage(lazyMessage()), throwable)
+        if (isLoggable(Info)) {
+            pipeline.log(Info, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
@@ -188,8 +188,8 @@ class Logger(
      * Print a log with the WARN level
      */
     fun w(msg: String) {
-        if (isLoggable(WARN)) {
-            pipeline.log(WARN, tag, assembleMessage(msg), null)
+        if (isLoggable(Warn)) {
+            pipeline.log(Warn, tag, assembleMessage(msg), null)
         }
     }
 
@@ -197,8 +197,8 @@ class Logger(
      * Print a log with the WARN level
      */
     fun w(lazyMessage: () -> String) {
-        if (isLoggable(WARN)) {
-            pipeline.log(WARN, tag, assembleMessage(lazyMessage()), null)
+        if (isLoggable(Warn)) {
+            pipeline.log(Warn, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
@@ -206,8 +206,8 @@ class Logger(
      * Print a log with the WARN level
      */
     fun w(throwable: Throwable?, msg: String) {
-        if (isLoggable(WARN)) {
-            pipeline.log(WARN, tag, assembleMessage(msg), throwable)
+        if (isLoggable(Warn)) {
+            pipeline.log(Warn, tag, assembleMessage(msg), throwable)
         }
     }
 
@@ -215,8 +215,8 @@ class Logger(
      * Print a log with the WARN level
      */
     fun w(throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(WARN)) {
-            pipeline.log(WARN, tag, assembleMessage(lazyMessage()), throwable)
+        if (isLoggable(Warn)) {
+            pipeline.log(Warn, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
@@ -225,8 +225,8 @@ class Logger(
      * Print a log with the ERROR level
      */
     fun e(msg: String) {
-        if (isLoggable(ERROR)) {
-            pipeline.log(ERROR, tag, assembleMessage(msg), null)
+        if (isLoggable(Error)) {
+            pipeline.log(Error, tag, assembleMessage(msg), null)
         }
     }
 
@@ -234,8 +234,8 @@ class Logger(
      * Print a log with the ERROR level
      */
     fun e(lazyMessage: () -> String) {
-        if (isLoggable(ERROR)) {
-            pipeline.log(ERROR, tag, assembleMessage(lazyMessage()), null)
+        if (isLoggable(Error)) {
+            pipeline.log(Error, tag, assembleMessage(lazyMessage()), null)
         }
     }
 
@@ -243,8 +243,8 @@ class Logger(
      * Print a log with the ERROR level
      */
     fun e(throwable: Throwable?, msg: String) {
-        if (isLoggable(ERROR)) {
-            pipeline.log(ERROR, tag, assembleMessage(msg), throwable)
+        if (isLoggable(Error)) {
+            pipeline.log(Error, tag, assembleMessage(msg), throwable)
         }
     }
 
@@ -252,8 +252,8 @@ class Logger(
      * Print a log with the ERROR level
      */
     fun e(throwable: Throwable?, lazyMessage: () -> String) {
-        if (isLoggable(ERROR)) {
-            pipeline.log(ERROR, tag, assembleMessage(lazyMessage()), throwable)
+        if (isLoggable(Error)) {
+            pipeline.log(Error, tag, assembleMessage(lazyMessage()), throwable)
         }
     }
 
@@ -330,51 +330,53 @@ class Logger(
     }
 
     @Retention(AnnotationRetention.SOURCE)
-    @IntDef(VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT)
+    @IntDef(Verbose, Debug, Info, Warn, Error, Assert)
     @Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FIELD)
     annotation class Level
 
+    @Suppress("ConstPropertyName")
     companion object {
         /**
          * Priority constant for the println method; use Log.v.
          */
-        const val VERBOSE = 2
+        const val Verbose = 2
 
         /**
          * Priority constant for the println method; use Log.d.
          */
-        const val DEBUG = 3
+        // The name cannot be in all uppercase 'DEBUG'. This will cause the ComposeApp.h file to fail to compile in Kotlin/Native.
+        const val Debug = 3
 
         /**
          * Priority constant for the println method; use Log.i.
          */
-        const val INFO = 4
+        const val Info = 4
 
         /**
          * Priority constant for the println method; use Log.w.
          */
-        const val WARN = 5
+        const val Warn = 5
 
         /**
          * Priority constant for the println method; use Log.e.
          */
-        const val ERROR = 6
+        const val Error = 6
 
         /**
          * Priority constant for the println method.
          */
-        const val ASSERT = 7
+        const val Assert = 7
 
         /**
          * Get the name of the level
          */
         fun levelName(level: Int): String = when (level) {
-            VERBOSE -> "VERBOSE"
-            DEBUG -> "DEBUG"
-            INFO -> "INFO"
-            WARN -> "WARN"
-            ERROR -> "ERROR"
-            ASSERT -> "ASSERT"
+            Verbose -> "VERBOSE"
+            Debug -> "DEBUG"
+            Info -> "INFO"
+            Warn -> "WARN"
+            Error -> "ERROR"
+            Assert -> "ASSERT"
             else -> "UNKNOWN"
         }
 
@@ -382,16 +384,16 @@ class Logger(
          * Get the level of the name
          */
         fun level(levelName: String): Int = when (levelName) {
-            "VERBOSE" -> VERBOSE
-            "DEBUG" -> DEBUG
-            "INFO" -> INFO
-            "WARN" -> WARN
-            "ERROR" -> ERROR
-            "ASSERT" -> ASSERT
+            "VERBOSE" -> Verbose
+            "DEBUG" -> Debug
+            "INFO" -> Info
+            "WARN" -> Warn
+            "ERROR" -> Error
+            "ASSERT" -> Assert
             else -> throw IllegalArgumentException("Unknown level name: $levelName")
         }
 
-        val levels = arrayOf(VERBOSE, DEBUG, INFO, WARN, ERROR, ASSERT)
+        val levels = arrayOf(Verbose, Debug, Info, Warn, Error, Assert)
     }
 
     /**
