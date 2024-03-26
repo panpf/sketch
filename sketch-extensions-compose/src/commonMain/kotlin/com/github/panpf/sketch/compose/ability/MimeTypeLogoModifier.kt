@@ -17,7 +17,6 @@ package com.github.panpf.sketch.compose.ability
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.isSpecified
-import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
@@ -28,6 +27,7 @@ import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.ability.getMimeTypeFromImageResult
 import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.name
@@ -82,12 +82,12 @@ internal class MimeTypeLogoNode(
     override fun ContentDrawScope.draw() {
         drawContent()
 
-        val result = state.result
-        if (result is ImageResult.Success) {
-            val mimeType = result.imageInfo.mimeType
+        val mimeType = getMimeTypeFromImageResult(state.result, state.request?.uriString)
+        if (mimeType != null) {
             val painter = mimeTypeIconMap[mimeType]
             if (painter != null) {
-                val painterSize = painter.intrinsicSize.takeIf { it.isSpecified && !it.isEmpty() } ?: size
+                val painterSize =
+                    painter.intrinsicSize.takeIf { it.isSpecified && !it.isEmpty() } ?: size
                 translate(
                     left = size.width - painterSize.width - margin.toPx(),
                     top = size.height - painterSize.height - margin.toPx()

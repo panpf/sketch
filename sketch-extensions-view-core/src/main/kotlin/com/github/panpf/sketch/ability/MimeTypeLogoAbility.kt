@@ -124,8 +124,7 @@ class MimeTypeLogoAbility(
         host.container.getDrawable() ?: return false
         val view = host.view
         val result = host.container.requestState.resultState.value
-        if (result !is ImageResult.Success) return false
-        val mimeType = result.imageInfo.mimeType
+        val mimeType = getMimeTypeFromImageResult(result) ?: return false
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return false
         val logoDrawable = mimeTypeLogo.getDrawable(host.context)
         logoDrawable.setBounds(
