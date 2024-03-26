@@ -110,6 +110,7 @@ class MimeTypeLogoAbility(
         val host = host ?: return
         val view = host.view
         val lastDrawable = host.container.getDrawable()?.findLeafSketchDrawable() ?: return
+        // TODO sync from 4.0. improve: Now the mimeType logo can also be displayed when the image fails to load.
         val mimeType = lastDrawable.imageInfo.mimeType
         val mimeTypeLogo = mimeTypeIconMap[mimeType] ?: return
         if (mimeTypeLogo.hiddenWhenAnimatable && lastDrawable is Animatable) return
