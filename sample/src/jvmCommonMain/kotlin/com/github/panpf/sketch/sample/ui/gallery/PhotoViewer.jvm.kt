@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.background
@@ -35,12 +37,6 @@ import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.rememberIconInfoBaseLinePainter
-import com.github.panpf.sketch.sample.ui.rememberIconRotateRightPainter
-import com.github.panpf.sketch.sample.ui.rememberIconSavePainter
-import com.github.panpf.sketch.sample.ui.rememberIconSharePainter
-import com.github.panpf.sketch.sample.ui.rememberIconZoomInPainter
-import com.github.panpf.sketch.sample.ui.rememberIconZoomOutPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
@@ -52,6 +48,15 @@ import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_info_baseline
+import sketch_4.`0`.sample.generated.resources.ic_rotate_right
+import sketch_4.`0`.sample.generated.resources.ic_save
+import sketch_4.`0`.sample.generated.resources.ic_share
+import sketch_4.`0`.sample.generated.resources.ic_zoom_in
+import sketch_4.`0`.sample.generated.resources.ic_zoom_out
 import kotlin.math.roundToInt
 
 @Composable
@@ -154,7 +159,7 @@ actual fun PhotoViewer(
                 }
             }) {
                 Icon(
-                    painter = rememberIconSharePainter(),
+                    painter = painterResource(drawable.ic_share),
                     contentDescription = "share",
                     tint = buttonTextColor,
                     modifier = Modifier
@@ -172,7 +177,7 @@ actual fun PhotoViewer(
                 }
             }) {
                 Icon(
-                    painter = rememberIconSavePainter(),
+                    painter = painterResource(drawable.ic_save),
                     contentDescription = "save",
                     tint = buttonTextColor,
                     modifier = Modifier
@@ -198,9 +203,9 @@ actual fun PhotoViewer(
             }) {
                 Icon(
                     painter = if (zoomIn) {
-                        rememberIconZoomInPainter()
+                        painterResource(drawable.ic_zoom_in)
                     } else {
-                        rememberIconZoomOutPainter()
+                        painterResource(drawable.ic_zoom_out)
                     },
                     contentDescription = "zoom",
                     tint = buttonTextColor,
@@ -220,7 +225,7 @@ actual fun PhotoViewer(
                 }
             }) {
                 Icon(
-                    painter = rememberIconRotateRightPainter(),
+                    painter = painterResource(drawable.ic_rotate_right),
                     contentDescription = "right rotate",
                     tint = buttonTextColor,
                     modifier = Modifier
@@ -239,7 +244,7 @@ actual fun PhotoViewer(
                 }
             }) {
                 Icon(
-                    painter = rememberIconInfoBaseLinePainter(),
+                    painter = painterResource(drawable.ic_info_baseline),
                     contentDescription = "info",
                     tint = buttonTextColor,
                     modifier = Modifier

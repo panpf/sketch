@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.Image
@@ -28,19 +30,23 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.rememberIconErrorBaselinePainter
-import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_error_baseline
+import sketch_4.`0`.sample.generated.resources.ic_image_outline
+import sketch_4.`0`.sample.generated.resources.ic_signal_cellular
 
 
 @Composable
 fun PhotoGridItem(
     index: Int,
     photo: Photo,
-    animatedPlaceholder: Boolean = false,
+    @Suppress("UNUSED_PARAMETER") animatedPlaceholder: Boolean = false,
     staggeredGridMode: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit,
 ) {
@@ -89,17 +95,17 @@ fun PhotoGridItem(
     val listSettings by appSettingsService.listsCombinedFlow.collectAsState(Unit)
     val colorScheme = MaterialTheme.colorScheme
     val placeholderStateImage = rememberIconPainterStateImage(
-        icon = rememberIconImageOutlinePainter(),
+        icon = painterResource(drawable.ic_image_outline),
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )
     val errorStateImage = rememberIconPainterStateImage(
-        icon = rememberIconErrorBaselinePainter(),
+        icon = painterResource(drawable.ic_error_baseline),
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )
     val saveCellularTrafficStateImage = rememberIconPainterStateImage(
-        icon = rememberIconErrorBaselinePainter(),
+        icon = painterResource(drawable.ic_signal_cellular),
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )

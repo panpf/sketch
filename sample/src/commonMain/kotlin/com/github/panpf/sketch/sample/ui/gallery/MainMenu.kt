@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.background
@@ -19,13 +21,16 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
-import com.github.panpf.sketch.sample.ui.rememberIconLayoutGridPainter
-import com.github.panpf.sketch.sample.ui.rememberIconLayoutGridStaggeredPainter
-import com.github.panpf.sketch.sample.ui.rememberIconPausePainter
-import com.github.panpf.sketch.sample.ui.rememberIconPlayPainter
-import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_layout_grid
+import sketch_4.`0`.sample.generated.resources.ic_layout_grid_staggered
+import sketch_4.`0`.sample.generated.resources.ic_pause
+import sketch_4.`0`.sample.generated.resources.ic_play
+import sketch_4.`0`.sample.generated.resources.ic_settings
 
 @Composable
 fun MainMenu(modifier: Modifier = Modifier) {
@@ -42,14 +47,14 @@ fun MainMenu(modifier: Modifier = Modifier) {
         val disallowAnimatedImageInList by appSettings.disallowAnimatedImageInList.collectAsState()
         val photoListLayoutMode by appSettings.photoGridMode.collectAsState()
         val playIcon = if (disallowAnimatedImageInList) {
-            rememberIconPlayPainter()
+            painterResource(drawable.ic_play)
         } else {
-            rememberIconPausePainter()
+            painterResource(drawable.ic_pause)
         }
         val photoGridModeIcon = if (photoListLayoutMode == PhotoGridMode.SQUARE) {
-            rememberIconLayoutGridStaggeredPainter()
+            painterResource(drawable.ic_layout_grid_staggered)
         } else {
-            rememberIconLayoutGridPainter()
+            painterResource(drawable.ic_layout_grid)
         }
         Icon(
             painter = playIcon,
@@ -74,7 +79,7 @@ fun MainMenu(modifier: Modifier = Modifier) {
         )
         var showSettingsDialog by remember { mutableStateOf(false) }
         Icon(
-            painter = rememberIconSettingsPainter(),
+            painter = painterResource(drawable.ic_settings),
             contentDescription = null,
             modifier = modifier1.clickable {
                 showSettingsDialog = !showSettingsDialog

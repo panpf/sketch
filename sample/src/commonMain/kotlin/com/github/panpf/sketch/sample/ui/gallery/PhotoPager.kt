@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -56,14 +58,17 @@ import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.rememberIconImage2BaselinePainter
-import com.github.panpf.sketch.sample.ui.rememberIconImage2OutlinePainter
-import com.github.panpf.sketch.sample.ui.rememberIconSettingsPainter
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.isEmpty
 import com.github.panpf.sketch.transform.BlurTransformation
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_image2_baseline
+import sketch_4.`0`.sample.generated.resources.ic_image2_outline
+import sketch_4.`0`.sample.generated.resources.ic_settings
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -220,7 +225,7 @@ private fun PagerTools(
             val appSettings = LocalPlatformContext.current.appSettings
             val showOriginImage by appSettings.showOriginImage.collectAsState()
             val image2IconPainter = if (showOriginImage)
-                rememberIconImage2BaselinePainter() else rememberIconImage2OutlinePainter()
+                painterResource(drawable.ic_image2_baseline) else painterResource(drawable.ic_image2_outline)
             val coroutineScope = rememberCoroutineScope()
             IconButton(onClick = {
                 val newValue = !appSettings.showOriginImage.value
@@ -269,7 +274,7 @@ private fun PagerTools(
 
             IconButton(onClick = { showSettingsDialog = true }) {
                 Icon(
-                    painter = rememberIconSettingsPainter(),
+                    painter = painterResource(drawable.ic_settings),
                     contentDescription = "settings",
                     tint = buttonTextColor,
                     modifier = Modifier

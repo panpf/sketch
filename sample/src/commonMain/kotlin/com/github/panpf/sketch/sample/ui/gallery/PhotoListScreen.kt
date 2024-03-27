@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -38,15 +40,18 @@ import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.data.paging.GiphyPhotoListPagingSource
 import com.github.panpf.sketch.sample.data.paging.LocalPhotoListPagingSource
 import com.github.panpf.sketch.sample.data.paging.PexelsPhotoListPagingSource
-import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.rememberIconDebugPainter
-import com.github.panpf.sketch.sample.ui.rememberIconGiphyPainter
-import com.github.panpf.sketch.sample.ui.rememberIconPexelsPainter
-import com.github.panpf.sketch.sample.ui.rememberIconPhonePainter
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.test.TestPage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_debug
+import sketch_4.`0`.sample.generated.resources.ic_giphy
+import sketch_4.`0`.sample.generated.resources.ic_pexels
+import sketch_4.`0`.sample.generated.resources.ic_phone
 
 expect val gridCellsMinSize: Dp
 
@@ -103,7 +108,10 @@ object PhotoListScreen : BaseScreen() {
 
             Column {
                 val pagerState = rememberPagerState(
-                    initialPage = appSettings.currentPageIndex.value.coerceIn(0, photoTabs.size - 1),
+                    initialPage = appSettings.currentPageIndex.value.coerceIn(
+                        0,
+                        photoTabs.size - 1
+                    ),
                     pageCount = { photoTabs.size }
                 )
                 LaunchedEffect(Unit) {
@@ -139,7 +147,7 @@ object PhotoListScreen : BaseScreen() {
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                rememberIconPhonePainter(),
+                                painterResource(drawable.ic_phone),
                                 contentDescription = "Phone",
                                 Modifier.size(24.dp)
                             )
@@ -151,7 +159,7 @@ object PhotoListScreen : BaseScreen() {
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                rememberIconPexelsPainter(),
+                                painterResource(drawable.ic_pexels),
                                 contentDescription = "Pexels",
                                 Modifier.size(24.dp)
                             )
@@ -163,7 +171,7 @@ object PhotoListScreen : BaseScreen() {
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                rememberIconGiphyPainter(),
+                                painterResource(drawable.ic_giphy),
                                 contentDescription = "Giphy",
                                 Modifier.size(24.dp)
                             )
@@ -175,7 +183,7 @@ object PhotoListScreen : BaseScreen() {
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                rememberIconDebugPainter(),
+                                painterResource(drawable.ic_debug),
                                 contentDescription = "Test",
                                 Modifier.size(24.dp)
                             )

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.setting
 
 import androidx.compose.foundation.background
@@ -47,7 +49,6 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.rememberIconExpandMorePainter
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
@@ -55,6 +56,10 @@ import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_expand_more
 
 @Composable
 expect fun getSettingsDialogHeight(): Dp
@@ -410,7 +415,7 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                 Text(text = value.toString(), fontSize = 10.sp)
                 Icons.Filled.MoreVert
                 Icon(
-                    painter = rememberIconExpandMorePainter(),
+                    painter = painterResource(drawable.ic_expand_more),
                     contentDescription = "more"
                 )
             }

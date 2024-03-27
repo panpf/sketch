@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.Image
@@ -34,7 +36,6 @@ import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.painter.rememberIconPainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
 import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
-import com.github.panpf.sketch.sample.ui.rememberIconImageOutlinePainter
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel.DirectlyComplete
@@ -49,6 +50,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_image_outline
 import kotlin.random.Random
 
 
@@ -67,7 +72,7 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                 val viewModel = rememberScreenModel {
                     ProgressIndicatorTestScreenModel()
                 }
-                val icImage = rememberIconImageOutlinePainter()
+                val icImage = painterResource(drawable.ic_image_outline)
                 val colorScheme = MaterialTheme.colorScheme
                 val placeholderPainter = rememberIconPainter(
                     icon = icImage,

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package com.github.panpf.sketch.sample.ui.common.list
 
 import androidx.compose.foundation.background
@@ -16,7 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.compose.AsyncImageState
 import com.github.panpf.sketch.request.LoadState
-import com.github.panpf.sketch.sample.ui.rememberIconErrorBaselinePainter
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_4.`0`.sample.generated.resources.Res.drawable
+import sketch_4.`0`.sample.generated.resources.ic_error_baseline
 
 @Composable
 fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {
@@ -29,7 +34,7 @@ fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                painter = rememberIconErrorBaselinePainter(),
+                painter = painterResource(drawable.ic_error_baseline),
                 contentDescription = "icon",
                 tint = Color.White
             )
