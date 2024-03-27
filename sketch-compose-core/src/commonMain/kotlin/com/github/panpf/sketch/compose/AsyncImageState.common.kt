@@ -32,6 +32,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.PainterState.Empty
 import com.github.panpf.sketch.compose.PainterState.Loading
+import com.github.panpf.sketch.compose.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
 import com.github.panpf.sketch.compose.internal.toScale
@@ -212,6 +213,9 @@ class AsyncImageState internal constructor(
         val coroutineScope = coroutineScope ?: return
         val fullRequest = request.newRequest {
             target(target)
+            mergeComponents {
+                addFetcher(ComposeResourceUriFetcher.Factory())
+            }
             updateRequestBuilder(request, this)
         }
         loadImageJob = coroutineScope.launch {

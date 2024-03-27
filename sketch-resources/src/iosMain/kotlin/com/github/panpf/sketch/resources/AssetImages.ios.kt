@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.resources
 
-import com.github.panpf.sketch.fetch.newResourceUri
+import com.github.panpf.sketch.fetch.newKotlinResourceUri
 
 actual fun nameToUri(name: String): String {
-    return newResourceUri(name)
+    return newKotlinResourceUri(name)
 }

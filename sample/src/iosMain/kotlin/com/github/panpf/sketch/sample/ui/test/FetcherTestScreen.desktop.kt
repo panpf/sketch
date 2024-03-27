@@ -2,7 +2,7 @@ package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.fetch.newFileUri
-import com.github.panpf.sketch.fetch.newResourceUri
+import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.resources.AssetImages.ResourceImage
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,8 @@ actual suspend fun buildFetcherTestItems(context: PlatformContext): List<Fetcher
         add(FetcherTestItem(title = "HTTPS", AssetImages.HTTPS))
         add(FetcherTestItem(title = "File", newFileUri(fileUriTestFile)))
         add(FetcherTestItem(title = "File2", fileUriTestFile2.toString()))
-        add(FetcherTestItem(title = "RESOURCES", newResourceUri("sample.jpeg")))
+        add(FetcherTestItem(title = "RESOURCES", newKotlinResourceUri("sample.jpeg")))
+        // TODO ComposeResourceUriFetcher
         add(FetcherTestItem(title = "BASE64", AssetImages.BASE64_IMAGE))
     }
 }

@@ -8,7 +8,7 @@ import okio.Path.Companion.toPath
 import okio.Source
 import platform.Foundation.NSBundle
 
-class ResourceDataSource(
+class KotlinResourceDataSource(
     override val sketch: Sketch,
     override val request: ImageRequest,
     val resourceName: String,
@@ -20,7 +20,6 @@ class ResourceDataSource(
     override fun openSourceOrNull(): Source {
         val resourcePath = NSBundle.mainBundle.resourcePath!!.toPath()
         val filePath = resourcePath.resolve("compose-resources").resolve(resourceName)
-        println("filePath: $filePath")
         return sketch.fileSystem.source(filePath)
     }
 
@@ -29,5 +28,5 @@ class ResourceDataSource(
         return resourcePath.resolve("compose-resources").resolve(resourceName)
     }
 
-    override fun toString(): String = "ResourceDataSource($resourceName)"
+    override fun toString(): String = "KotlinResourceDataSource($resourceName)"
 }

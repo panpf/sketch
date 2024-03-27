@@ -47,6 +47,7 @@ kotlin {
                 api(project(":sketch-core"))
                 api(compose.foundation)
                 api(compose.ui)
+                api(compose.components.resources)
             }
         }
         named("commonTest") {

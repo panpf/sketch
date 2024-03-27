@@ -2,44 +2,45 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
-import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.datasource.KotlinResourceDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.toUri
 
 /**
- * Sample: 'jvm.resource://test.png'
+ * Sample: 'kotlin.resource://test.png'
  */
-fun newResourceUri(resourceName: String): String = "$SCHEME://$resourceName"
+fun newKotlinResourceUri(resourceName: String): String =
+    "${KotlinResourceUriFetcher.SCHEME}://$resourceName"
 
-class ResourceUriFetcher(
+class KotlinResourceUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
     val resourceName: String,
 ) : Fetcher {
 
     companion object {
-        const val SCHEME = "jvm.resource"
+        const val SCHEME = "kotlin.resource"
     }
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourceName)
-        return Result.success(FetchResult(ResourceDataSource(sketch, request, resourceName), mimeType))
+        val dataSource = KotlinResourceDataSource(sketch, request, resourceName)
+        return Result.success(FetchResult(dataSource, mimeType))
     }
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
+        override fun create(sketch: Sketch, request: ImageRequest): KotlinResourceUriFetcher? {
             val uri = request.uriString.toUri()
             return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
-                ResourceUriFetcher(sketch, request, uri.authority.orEmpty())
+                KotlinResourceUriFetcher(sketch, request, uri.authority.orEmpty())
             }
         }
 
-        override fun toString(): String = "ResourceUriFetcher"
+        override fun toString(): String = "KotlinResourceUriFetcher"
 
         @Suppress("RedundantOverride")
         override fun equals(other: Any?): Boolean {

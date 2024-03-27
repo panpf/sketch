@@ -4,14 +4,14 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.ResourceLoader
+import com.github.panpf.sketch.util.ClassLoaderResourceLoader
 import com.github.panpf.sketch.util.getDataSourceCacheFile
 import okio.Path
 import okio.Source
 import okio.source
 import java.io.IOException
 
-class ResourceDataSource(
+class KotlinResourceDataSource(
     override val sketch: Sketch,
     override val request: ImageRequest,
     val resourceName: String,
@@ -22,7 +22,8 @@ class ResourceDataSource(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = ResourceLoader.Default.load(resourceName).source()
+    override fun openSourceOrNull(): Source =
+        ClassLoaderResourceLoader.Default.load(resourceName).source()
 
     @WorkerThread
     @Throws(IOException::class)

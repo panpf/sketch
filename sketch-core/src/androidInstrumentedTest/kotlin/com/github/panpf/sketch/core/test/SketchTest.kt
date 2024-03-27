@@ -25,7 +25,6 @@ import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.util.defaultMemoryCacheBytes
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor

@@ -114,6 +114,7 @@ actual suspend fun buildFetcherTestItems(context: PlatformContext): List<Fetcher
         )
         add(FetcherTestItem(title = "APP_ICON", appIconUri))
         add(FetcherTestItem(title = "BASE64", AssetImages.BASE64_IMAGE))
+        // TODO ComposeResourceUriFetcher
     }
 }
 
