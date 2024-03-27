@@ -78,18 +78,17 @@ fun main() {
                         }
                     }
                 }
+            }
 
-                val context = LocalPlatformContext.current
-                val sketch = SingletonSketch.get(context)
-                LaunchedEffect(Unit) {
-                    MyEvents.savePhotoFlow.collect {
-                        savePhoto(sketch, it)
-                    }
+            val context = LocalPlatformContext.current
+            LaunchedEffect(Unit) {
+                MyEvents.savePhotoFlow.collect {
+                    savePhoto(SingletonSketch.get(context), it)
                 }
-                LaunchedEffect(Unit) {
-                    MyEvents.sharePhotoFlow.collect {
-                        sharePhoto(sketch, it)
-                    }
+            }
+            LaunchedEffect(Unit) {
+                MyEvents.sharePhotoFlow.collect {
+                    sharePhoto(SingletonSketch.get(context), it)
                 }
             }
         }
@@ -115,6 +114,7 @@ private fun initialSketch() {
             }
             logger(Logger(level = Logger.level(appSettings.logLevel.value)))
         }.build().apply {
+            @Suppress("OPT_IN_USAGE")
             GlobalScope.launch {
                 appSettings.logLevel.collect {
                     logger.level = Logger.level(it)
