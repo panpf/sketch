@@ -84,6 +84,10 @@ internal inline fun <R> Any.asOrThrow(): R {
 }
 
 internal expect fun isMainThread(): Boolean
+// TODO Replaced with coroutine versions because they must be executed in the Main dispatcher
+//fun CoroutineContext.isMainThread(): Boolean {
+//    return !Dispatchers.Main.isDispatchNeeded(this)
+//}
 
 internal expect fun requiredMainThread()
 

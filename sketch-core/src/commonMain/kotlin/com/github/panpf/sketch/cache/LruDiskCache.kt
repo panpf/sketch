@@ -22,10 +22,13 @@ import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.cache.internal.DiskLruCache
 import com.github.panpf.sketch.cache.internal.KeyMapperCache
+import com.github.panpf.sketch.cache.internal.withLock
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.ByteString.Companion.encodeUtf8
@@ -58,7 +61,9 @@ class LruDiskCache constructor(
 
     // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
+    private val mutexMapLock = SynchronizedObject()
     private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
+    private val keyMapperCacheLock = SynchronizedObject()
 
     private val cache: DiskLruCache by lazy {
         val unionVersion = intMerged(appVersion, internalVersion)
@@ -76,21 +81,27 @@ class LruDiskCache constructor(
     override val size: Long get() = cache.size()
 
     override fun openSnapshot(key: String): Snapshot? {
-        val encodedKey = keyMapperCache.mapKey(key)
+        val encodedKey = keyMapperCache.withLock(keyMapperCacheLock) {
+            mapKey(key)
+        }
         val snapshot = cache[encodedKey]
         if (snapshot == null) return null   // for debug
         return MySnapshot(snapshot)
     }
 
     override fun openEditor(key: String): Editor? {
-        val encodedKey = keyMapperCache.mapKey(key)
+        val encodedKey = keyMapperCache.withLock(keyMapperCacheLock) {
+            mapKey(key)
+        }
         val editor = cache.edit(encodedKey)
         if (editor == null) return null   // for debug
         return MyEditor(editor)
     }
 
     override fun remove(key: String): Boolean {
-        val encodedKey = keyMapperCache.mapKey(key)
+        val encodedKey = keyMapperCache.withLock(keyMapperCacheLock) {
+            mapKey(key)
+        }
         val removed = cache.remove(encodedKey)   // for debug
         return removed
     }
@@ -104,9 +115,13 @@ class LruDiskCache constructor(
     }
 
     override suspend fun <R> withLock(key: String, action: suspend DiskCache.() -> R): R {
-        val encodedKey = keyMapperCache.mapKey(key)
-        val lock = mutexMap[encodedKey] ?: Mutex().apply {
-            this@LruDiskCache.mutexMap.put(encodedKey, this)
+        val encodedKey = keyMapperCache.withLock(keyMapperCacheLock) {
+            mapKey(key)
+        }
+        val lock = synchronized(mutexMapLock) {
+            mutexMap[encodedKey] ?: Mutex().apply {
+                this@LruDiskCache.mutexMap.put(encodedKey, this)
+            }
         }
         return lock.withLock {
             action(this@LruDiskCache)

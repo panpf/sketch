@@ -25,6 +25,9 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
+/**
+ * Although LruMemoryCache is thread-unsafe, Sketch requests are executed in the main thread, so there is no need to do thread-safety processing here.
+ */
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null

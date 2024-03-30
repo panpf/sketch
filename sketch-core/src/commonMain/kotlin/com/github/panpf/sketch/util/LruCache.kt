@@ -18,6 +18,8 @@ package com.github.panpf.sketch.util
 /**
  * A least recently used cache that evicts the eldest entry when the cache's current size
  * exceeds its max size.
+ *
+ * LruCache is not thread-safe. If you need to use it in multiple threads, please handle the thread-safety issues yourself.
  */
 internal open class LruCache<K : Any, V : Any>(
     val maxSize: Long,

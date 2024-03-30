@@ -22,6 +22,8 @@ import kotlin.math.roundToLong
 
 /**
  * A bitmap memory cache that manages the cache according to a least-used rule
+ *
+ * LruMemoryCache is not thread-safe. If you need to use it in multiple threads, please handle the thread-safety issues yourself.
  */
 class LruMemoryCache constructor(
     override val maxSize: Long,
@@ -32,13 +34,12 @@ class LruMemoryCache constructor(
         private const val MODULE = "LruMemoryCache"
     }
 
-    private val cache: LruCache<String, Value> =
-        object : LruCache<String, Value>(maxSize) {
-            override fun sizeOf(key: String, value: Value): Long {
-                val valueSize = value.size
-                return if (valueSize == 0L) 1L else valueSize
-            }
+    private val cache = object : LruCache<String, Value>(maxSize) {
+        override fun sizeOf(key: String, value: Value): Long {
+            val valueSize = value.size
+            return if (valueSize == 0L) 1L else valueSize
         }
+    }
 
     override val size: Long
         get() = cache.size

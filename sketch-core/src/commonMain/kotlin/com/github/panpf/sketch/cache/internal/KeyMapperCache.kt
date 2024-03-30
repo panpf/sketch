@@ -16,7 +16,12 @@
 package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.util.LruCache
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 
+/**
+ * KeyMapperCache is not thread-safe. If you need to use it in multiple threads, please handle the thread-safety issues yourself.
+ */
 class KeyMapperCache(val maxSize: Long = 100L, val mapper: (key: String) -> String) {
 
     private val cache = LruCache<String, String>(maxSize)
@@ -25,4 +30,11 @@ class KeyMapperCache(val maxSize: Long = 100L, val mapper: (key: String) -> Stri
         cache[key] ?: mapper(key).apply {
             cache.put(key, this)
         }
+}
+
+internal fun <R> KeyMapperCache.withLock(
+    lock: SynchronizedObject,
+    block: KeyMapperCache.() -> R
+): R = synchronized(lock) {
+    block()
 }
