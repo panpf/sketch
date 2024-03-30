@@ -50,13 +50,13 @@ import com.github.panpf.zoomimage.zoom.valueOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_4.`0`.sample.generated.resources.Res.drawable
-import sketch_4.`0`.sample.generated.resources.ic_info_baseline
-import sketch_4.`0`.sample.generated.resources.ic_rotate_right
-import sketch_4.`0`.sample.generated.resources.ic_save
-import sketch_4.`0`.sample.generated.resources.ic_share
-import sketch_4.`0`.sample.generated.resources.ic_zoom_in
-import sketch_4.`0`.sample.generated.resources.ic_zoom_out
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_info_baseline
+import sketch.sample.generated.resources.ic_rotate_right
+import sketch.sample.generated.resources.ic_save
+import sketch.sample.generated.resources.ic_share
+import sketch.sample.generated.resources.ic_zoom_in
+import sketch.sample.generated.resources.ic_zoom_out
 import kotlin.math.roundToInt
 
 @Composable

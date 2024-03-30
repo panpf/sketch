@@ -36,10 +36,10 @@ import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_4.`0`.sample.generated.resources.Res.drawable
-import sketch_4.`0`.sample.generated.resources.ic_error_baseline
-import sketch_4.`0`.sample.generated.resources.ic_image_outline
-import sketch_4.`0`.sample.generated.resources.ic_signal_cellular
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_error_baseline
+import sketch.sample.generated.resources.ic_image_outline
+import sketch.sample.generated.resources.ic_signal_cellular
 
 
 @Composable

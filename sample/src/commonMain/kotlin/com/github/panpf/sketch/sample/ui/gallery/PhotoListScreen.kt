@@ -47,11 +47,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_4.`0`.sample.generated.resources.Res.drawable
-import sketch_4.`0`.sample.generated.resources.ic_debug
-import sketch_4.`0`.sample.generated.resources.ic_giphy
-import sketch_4.`0`.sample.generated.resources.ic_pexels
-import sketch_4.`0`.sample.generated.resources.ic_phone
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_debug
+import sketch.sample.generated.resources.ic_giphy
+import sketch.sample.generated.resources.ic_pexels
+import sketch.sample.generated.resources.ic_phone
 
 expect val gridCellsMinSize: Dp
 

@@ -58,8 +58,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_4.`0`.sample.generated.resources.Res.drawable
-import sketch_4.`0`.sample.generated.resources.ic_expand_more
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_expand_more
 
 @Composable
 expect fun getSettingsDialogHeight(): Dp

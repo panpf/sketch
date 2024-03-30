@@ -25,12 +25,12 @@ import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_4.`0`.sample.generated.resources.Res.drawable
-import sketch_4.`0`.sample.generated.resources.ic_layout_grid
-import sketch_4.`0`.sample.generated.resources.ic_layout_grid_staggered
-import sketch_4.`0`.sample.generated.resources.ic_pause
-import sketch_4.`0`.sample.generated.resources.ic_play
-import sketch_4.`0`.sample.generated.resources.ic_settings
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_layout_grid
+import sketch.sample.generated.resources.ic_layout_grid_staggered
+import sketch.sample.generated.resources.ic_pause
+import sketch.sample.generated.resources.ic_play
+import sketch.sample.generated.resources.ic_settings
 
 @Composable
 fun MainMenu(modifier: Modifier = Modifier) {
