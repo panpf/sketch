@@ -3,7 +3,7 @@ package com.github.panpf.sketch.sample.data.paging
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.readImageInfoWithImageReaderOrThrow
+import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,7 +44,7 @@ actual suspend fun readImageInfoOrNull(
     runCatching {
         val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
         val dataSource = fetcher.fetch().getOrThrow().dataSource
-        dataSource.readImageInfoWithImageReaderOrThrow(ignoreExifOrientation)
+        dataSource.readImageInfo()
     }.apply {
         if (isFailure) {
             exceptionOrNull()?.printStackTrace()

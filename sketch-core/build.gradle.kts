@@ -73,7 +73,7 @@ kotlin {
         named("desktopMain") {
             dependencies {
                 api(libs.kotlinx.coroutines.swing)
-                api(libs.metadataExtractor)
+//                api(libs.metadataExtractor)
                 implementation(libs.ktor.client.java)
             }
         }

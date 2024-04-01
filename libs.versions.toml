@@ -61,7 +61,7 @@ okhttp3 = "3.12.0"   # 3.12.0 是最后一个支持 Android 5.0 以下的版本
 tinypinyin = "2.0.3"
 mavenpublish = "0.28.0"
 #composeStableMarker = "1.0.3"
-metadataExtractor = "2.18.0"
+#metadataExtractor = "2.18.0"
 okio = "3.9.0"
 cashapp-paging = "3.3.0-alpha02-0.5.1"
 voyager = "1.0.0"
@@ -164,7 +164,7 @@ okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version
 #retrofit2-kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2-kotlinxSerializationConverter" }
 tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
 #composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
-metadataExtractor={ module = "com.drewnoakes:metadata-extractor", version.ref = "metadataExtractor" }
+#metadataExtractor={ module = "com.drewnoakes:metadata-extractor", version.ref = "metadataExtractor" }
 okio={ module = "com.squareup.okio:okio", version.ref = "okio" }
 #cashapp-paging-common={ module = "app.cash.paging:paging-common", version.ref = "cashapp-paging" }
 #cashapp-paging-runtime={ module = "app.cash.paging:paging-runtime", version.ref = "cashapp-paging" }
