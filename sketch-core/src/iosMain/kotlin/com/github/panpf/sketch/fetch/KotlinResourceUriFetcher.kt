@@ -36,7 +36,8 @@ class KotlinResourceUriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): KotlinResourceUriFetcher? {
             val uri = request.uriString.toUri()
             return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
-                KotlinResourceUriFetcher(sketch, request, uri.authority.orEmpty())
+                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
+                KotlinResourceUriFetcher(sketch, request, resourcePath)
             }
         }
 

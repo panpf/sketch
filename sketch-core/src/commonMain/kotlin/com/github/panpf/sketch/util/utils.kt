@@ -189,7 +189,7 @@ internal fun getDataSourceCacheFile(
             val editor = resultCache.openEditor(resultCacheKey)
                 ?: throw IOException("Disk cache cannot be used")
             try {
-                dataSource.openSource().use { source ->
+                dataSource.openSource().buffer().use { source ->
                     resultCache.fileSystem.sink(editor.data).buffer().use { sink ->
                         sink.writeAll(source)
                     }

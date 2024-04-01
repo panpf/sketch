@@ -5,6 +5,7 @@ import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.FileDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.toUri
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import okio.Path
 import okio.Path.Companion.toPath
@@ -32,16 +33,10 @@ class FileUriFetcher(
         const val SCHEME = "file"
 
         fun parseFilePathFromFileUri(uriString: String): String? {
-            val startFlag = "$SCHEME://"
-            return if (uriString.startsWith(startFlag, ignoreCase = true)) {
-                val subStartIndex = startFlag.length
-                val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
-                    ?: uriString.indexOf("#").takeIf { it != -1 }
-                    ?: uriString.length
-                val filePath = uriString.substring(subStartIndex, subEndIndex)
-                UrlEncoderUtil.decode(filePath)
-            } else if (uriString.startsWith("/")) {
-                uriString
+            val uri = uriString.toUri()
+            return if (SCHEME.equals(uri.scheme, ignoreCase = true) || uriString.startsWith("/")) {
+                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
+                UrlEncoderUtil.decode(resourcePath)
             } else {
                 null
             }

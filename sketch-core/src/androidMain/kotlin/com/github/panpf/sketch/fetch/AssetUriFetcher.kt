@@ -49,18 +49,15 @@ class AssetUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? =
-            if (SCHEME.equals(request.uriString.toUri().scheme, ignoreCase = true)) {
-                val uriString = request.uriString
-                val subStartIndex = SCHEME.length + 3
-                val subEndIndex = uriString.indexOf("?").takeIf { it != -1 }
-                    ?: uriString.indexOf("#").takeIf { it != -1 }
-                    ?: uriString.length
-                val assetFileName = uriString.substring(subStartIndex, subEndIndex)
-                AssetUriFetcher(sketch, request, assetFileName)
+        override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {
+            val uri = request.uriString.toUri()
+            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
+                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
+                AssetUriFetcher(sketch, request, resourcePath)
             } else {
                 null
             }
+        }
 
         override fun toString(): String = "AssetUriFetcher"
 

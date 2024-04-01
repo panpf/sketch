@@ -40,7 +40,8 @@ class ComposeResourceUriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): ComposeResourceUriFetcher? {
             val uri = request.uriString.toUri()
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
-                ComposeResourceUriFetcher(sketch, request, uri.authority.orEmpty())
+                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
+                ComposeResourceUriFetcher(sketch, request, resourcePath)
             } else {
                 null
             }
