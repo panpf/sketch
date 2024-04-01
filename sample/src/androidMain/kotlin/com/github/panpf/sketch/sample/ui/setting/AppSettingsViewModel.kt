@@ -44,13 +44,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(application1: Application, val page: Page) :
+class AppSettingsViewModel(application1: Application, val page: Page) :
     LifecycleAndroidViewModel(application1) {
 
     class Factory(val application: Application, val page: Page) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
             @Suppress("UNCHECKED_CAST")
-            return SettingsViewModel(application, page) as T
+            return AppSettingsViewModel(application, page) as T
         }
     }
 

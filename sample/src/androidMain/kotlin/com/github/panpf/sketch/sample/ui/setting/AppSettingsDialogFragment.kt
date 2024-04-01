@@ -24,14 +24,13 @@ import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
-import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
-class SettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding>() {
+class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding>() {
 
-    private val args by navArgs<SettingsDialogFragmentArgs>()
-    private val viewModel by viewModels<SettingsViewModel> {
-        SettingsViewModel.Factory(requireActivity().application, Page.valueOf(args.page))
+    private val args by navArgs<AppSettingsDialogFragmentArgs>()
+    private val viewModel by viewModels<AppSettingsViewModel> {
+        AppSettingsViewModel.Factory(requireActivity().application, Page.valueOf(args.page))
     }
 
     init {
@@ -44,8 +43,7 @@ class SettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding
             adapter = AssemblyRecyclerAdapter<Any>(
                 listOf(
                     SwitchMenuItemFactory(compactModel = true),
-                    InfoMenuItemFactory(compactModel = true),
-                    MultiSelectMenuItemFactory(compactModel = true),
+                    DropdownMenuItemFactory(compactModel = true),
                     ListSeparatorItemFactory(),
                 )
             ).apply {

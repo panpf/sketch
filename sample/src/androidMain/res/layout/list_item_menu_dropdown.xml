@@ -11,11 +11,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_weight="1"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/descText"
-        app:layout_constraintEnd_toStartOf="@id/descText"
+        app:layout_constraintEnd_toStartOf="@id/infoText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -34,11 +34,14 @@
         app:layout_constraintTop_toBottomOf="@id/titleText"
         tools:text="This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description This is a description" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/infoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:textSize="14sp"
+        app:drawableEndCompat="@drawable/ic_expand_more"
+        app:drawableRightCompat="@drawable/ic_expand_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

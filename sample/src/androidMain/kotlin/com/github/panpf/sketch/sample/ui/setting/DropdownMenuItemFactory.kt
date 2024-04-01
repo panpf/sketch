@@ -20,17 +20,17 @@ import android.util.TypedValue
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.github.panpf.activity.monitor.ActivityMonitor
-import com.github.panpf.sketch.sample.databinding.ListItemMenuMultiSelectBinding
+import com.github.panpf.sketch.sample.databinding.ListItemMenuDropdownBinding
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
-class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
-    BaseBindingItemFactory<MultiSelectMenu, ListItemMenuMultiSelectBinding>(MultiSelectMenu::class) {
+class DropdownMenuItemFactory(private val compactModel: Boolean = false) :
+    BaseBindingItemFactory<MultiSelectMenu, ListItemMenuDropdownBinding>(MultiSelectMenu::class) {
 
     override fun initItem(
         context: Context,
-        binding: ListItemMenuMultiSelectBinding,
-        item: BindingItem<MultiSelectMenu, ListItemMenuMultiSelectBinding>
+        binding: ListItemMenuDropdownBinding,
+        item: BindingItem<MultiSelectMenu, ListItemMenuDropdownBinding>
     ) {
         binding.root.setOnClickListener {
             val data = item.dataOrThrow
@@ -48,8 +48,8 @@ class MultiSelectMenuItemFactory(private val compactModel: Boolean = false) :
 
     override fun bindItemData(
         context: Context,
-        binding: ListItemMenuMultiSelectBinding,
-        item: BindingItem<MultiSelectMenu, ListItemMenuMultiSelectBinding>,
+        binding: ListItemMenuDropdownBinding,
+        item: BindingItem<MultiSelectMenu, ListItemMenuDropdownBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: MultiSelectMenu

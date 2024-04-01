@@ -17,6 +17,7 @@ package com.github.panpf.sketch.sample.ui.util
 
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.graphics.drawable.Drawable
@@ -35,4 +36,8 @@ internal fun Resources.getDrawableCompat(@DrawableRes id: Int, theme: Theme? = n
 internal fun Context.getDrawableCompat(@DrawableRes resId: Int): Drawable {
     val drawable = AppCompatResources.getDrawable(this, resId)
     return checkNotNull(drawable) { "Invalid resource ID: $resId" }
+}
+
+internal fun Context.isDarkTheme(): Boolean {
+    return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 }

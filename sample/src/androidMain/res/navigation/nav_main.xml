@@ -268,7 +268,7 @@
 
     <dialog
         android:id="@+id/settingsDialogFragment"
-        android:name="com.github.panpf.sketch.sample.ui.setting.SettingsDialogFragment"
+        android:name="com.github.panpf.sketch.sample.ui.setting.AppSettingsDialogFragment"
         android:label="SettingsDialogFragment">
         <argument
             android:name="page"
