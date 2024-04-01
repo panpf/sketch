@@ -16,34 +16,21 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.app.Application
-import android.content.ContentUris
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore.Images.Media
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.fetch.newAppIconUri
-import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.sample.util.versionCodeCompat
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
@@ -85,98 +72,8 @@ class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
 
         init {
             viewModelScope.launch {
-                _data.value = buildFetcherTestItems(application1)
+                _data.value = buildFetcherTestItems(application1, fromCompose = false)
             }
-        }
-    }
-}
-
-actual suspend fun buildFetcherTestItems(context: PlatformContext): List<FetcherTestItem> {
-    val localFirstPhotoPath = loadLocalFirstPhotoPath(context)
-    val localSecondPhotoUri = loadLocalSecondPhotoUri(context)
-    val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
-    return buildList {
-        add(FetcherTestItem(title = "HTTP", AssetImages.HTTP))
-        add(FetcherTestItem(title = "HTTPS", AssetImages.HTTPS))
-        if (localSecondPhotoUri != null) {
-            add(FetcherTestItem(title = "CONTENT", localSecondPhotoUri.toString()))
-        }
-        if (localFirstPhotoPath != null) {
-            add(FetcherTestItem(title = "FILE", localFirstPhotoPath))
-        }
-        add(FetcherTestItem(title = "ASSET", AssetImages.statics.first().uri))
-        val resourceImageUri = newResourceUri(com.github.panpf.sketch.sample.R.mipmap.ic_launcher)
-        add(FetcherTestItem(title = "RES_ID", resourceImageUri))
-        add(FetcherTestItem(title = "RES_NAME", newResourceUri("drawable", "bg_circle_accent")))
-        val appIconUri = newAppIconUri(
-            headerUserPackageInfo.packageName,
-            headerUserPackageInfo.versionCodeCompat
-        )
-        add(FetcherTestItem(title = "APP_ICON", appIconUri))
-        add(FetcherTestItem(title = "BASE64", AssetImages.BASE64_IMAGE))
-        // TODO ComposeResourceUriFetcher
-    }
-}
-
-private suspend fun loadUserAppPackageInfo(
-    context: PlatformContext,
-    fromHeader: Boolean
-): PackageInfo {
-    return withContext(Dispatchers.IO) {
-        val packageList =
-            context.packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
-        (if (fromHeader) {
-            packageList.find {
-                it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0
-            }
-        } else {
-            packageList.findLast {
-                it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0
-            }
-        } ?: context.packageManager.getPackageInfo(context.packageName, 0))
-    }
-}
-
-private suspend fun loadLocalFirstPhotoPath(context: PlatformContext): String? {
-    return withContext(Dispatchers.IO) {
-        val cursor = context.contentResolver.query(
-            Media.EXTERNAL_CONTENT_URI,
-            arrayOf(Media.DATA),
-            null,
-            null,
-            Media.DATE_TAKEN + " DESC" + " limit " + 0 + "," + 1
-        )
-        var imagePath: String? = null
-        cursor?.use {
-            if (cursor.moveToNext()) {
-                imagePath =
-                    cursor.getString(cursor.getColumnIndexOrThrow(Media.DATA))
-            }
-        }
-        imagePath
-    }
-}
-
-private suspend fun loadLocalSecondPhotoUri(context: PlatformContext): Uri? {
-    return withContext(Dispatchers.IO) {
-        val cursor = context.contentResolver.query(
-            Media.EXTERNAL_CONTENT_URI,
-            arrayOf(Media._ID),
-            null,
-            null,
-            Media.DATE_TAKEN + " DESC" + " limit " + 1 + "," + 1
-        )
-        var imageId: Long? = null
-        cursor?.use {
-            if (cursor.moveToNext()) {
-                imageId =
-                    cursor.getLong(cursor.getColumnIndexOrThrow(Media._ID))
-            }
-        }
-        if (imageId != null) {
-            ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, imageId!!)
-        } else {
-            null
         }
     }
 }

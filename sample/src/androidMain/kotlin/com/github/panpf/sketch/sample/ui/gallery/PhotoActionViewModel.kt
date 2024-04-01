@@ -56,7 +56,7 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
 
         try {
             withContext(Dispatchers.IO) {
-                fetchResult.dataSource.openSource().use { input ->
+                fetchResult.dataSource.openSource().buffer().use { input ->
                     imageFile.outputStream().sink().buffer().use { output ->
                         output.writeAll(input)
                     }
@@ -102,7 +102,7 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
         val imageFile = File(outDir, "${imageUri.encodeUtf8().sha256().hex()}.$fileExtension")
         val result = withContext(Dispatchers.IO) {
             runCatching {
-                fetchResult.dataSource.openSource().use { input ->
+                fetchResult.dataSource.openSource().buffer().use { input ->
                     imageFile.outputStream().sink().buffer().use { output ->
                         output.writeAll(input)
                     }

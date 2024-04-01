@@ -39,6 +39,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+class FetcherTestItem(val title: String, val imageUri: String)
+
+expect suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: Boolean = true): List<FetcherTestItem>
+
 class FetcherTestScreen : BaseScreen() {
 
     @Composable
@@ -120,7 +124,3 @@ class FetcherTestScreen : BaseScreen() {
         }
     }
 }
-
-class FetcherTestItem(val title: String, val imageUri: String)
-
-expect suspend fun buildFetcherTestItems(context: PlatformContext): List<FetcherTestItem>
