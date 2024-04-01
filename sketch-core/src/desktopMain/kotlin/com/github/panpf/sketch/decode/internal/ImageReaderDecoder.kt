@@ -37,7 +37,6 @@
 //    }
 //
 //    private fun realDecodeFull(sampleSize: Int): BufferedImage {
-//        // TODO bitmapConfig
 //        return dataSource.decodeImage {
 //            setSourceSubsampling(
 //                /* sourceXSubsampling = */ sampleSize,
@@ -52,7 +51,6 @@
 //        srcRect: Rect,
 //        sampleSize: Int
 //    ): BufferedImage {
-//        // TODO bitmapConfig
 //        return dataSource.decodeImage {
 //            sourceRegion = Rectangle(
 //                /* x = */ srcRect.left,

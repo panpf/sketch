@@ -24,6 +24,7 @@ class SkiaDecoder(
     override suspend fun decode(): Result<DecodeResult> = runCatching {
         // TODO https://github.com/JetBrains/skiko/issues/741
         val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
+        // Skia Image.makeFromEncoded(bytes) will parse exif orientation and does not support closing
         val image = Image.makeFromEncoded(bytes)
         val codec = Codec.makeFromData(Data.makeFromBytes(bytes))
         val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
@@ -45,9 +46,6 @@ class SkiaDecoder(
                 realDecodeRegion(image, srcRect, sampleSize).asSketchImage()
             } else null
         )
-        // TODO Skia Image will parse exif and does not support closing
-//        val exifResult = decodeResult.appliedExifOrientation(requestContext)
-//        val resizedResult = exifResult.appliedResize(requestContext)
         val resizedResult = decodeResult.appliedResize(requestContext)
         resizedResult
     }

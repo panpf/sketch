@@ -41,7 +41,6 @@ interface DataSource {
     @Throws(IOException::class)
     fun getFile(): Path = getFileOrNull() ?: throw IOException("Not supported File")
 
-    // TODO rename to getPathOrNull
     @Throws(IOException::class)
     fun getFileOrNull(): Path?
 }

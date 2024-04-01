@@ -22,6 +22,7 @@ import kotlin.jvm.JvmStatic
 object SingletonSketch {
 
     private val reference = atomic<Any?>(null)
+    private val defaultCreated = atomic(false)
 
     /**
      * Get the singleton [Sketch].
@@ -46,7 +47,7 @@ object SingletonSketch {
     fun setSafe(factory: Factory) {
         val value = reference.value
         if (value is Sketch) {
-            if (value.isDefault) {
+            if (defaultCreated.value) {
                 error(
                     """The default Sketch has already been created. This indicates that
                     'setSafe' is being called after the first 'get' call. Ensure that 'setSafe' is
@@ -58,6 +59,7 @@ object SingletonSketch {
             return
         }
 
+        defaultCreated.value = false
         reference.compareAndSet(value, factory)
     }
 
@@ -72,6 +74,7 @@ object SingletonSketch {
         if (value is Sketch) {
             value.shutdown()
         }
+        defaultCreated.value = false
         reference.value = sketch
     }
 
@@ -87,34 +90,9 @@ object SingletonSketch {
         if (value is Sketch) {
             value.shutdown()
         }
+        defaultCreated.value = false
         reference.value = factory
     }
-
-//    /**
-//     * Set the singleton [Sketch].
-//     * Prefer using `setSketch(SketchFactory)` to create the [Sketch] lazily.
-//     */
-//    @JvmStatic
-//    @Synchronized
-//    fun setSketch(sketch: Sketch) {
-//        this.sketch?.shutdown()
-//        this.sketch = sketch
-//        this.factory = null
-//    }
-//
-//    /**
-//     * Set the [Factory] that will be used to create the singleton [Sketch].
-//     * The [factory] is guaranteed to be called at most once.
-//     *
-//     * NOTE: [factory] will take precedence over an [Application] that implements [Factory].
-//     */
-//    @JvmStatic
-//    @Synchronized
-//    fun setSketch(factory: Factory) {
-//        this.sketch?.shutdown()
-//        this.sketch = null
-//        this.factory = factory
-//    }
 
     /**
      * Clear the [Sketch] and [Factory] held by this class.
@@ -127,6 +105,7 @@ object SingletonSketch {
         if (value is Sketch) {
             value.shutdown()
         }
+        defaultCreated.value = false
         reference.value = null
     }
 
@@ -141,7 +120,9 @@ object SingletonSketch {
                 else -> {
                     ((value as? Factory)?.createSketch(context)
                         ?: context.applicationSketchFactory()?.createSketch(context)
-                        ?: DefaultSketchFactory.createSketch(context))
+                        ?: (DefaultSketchFactory.createSketch(context)).apply {
+                            defaultCreated.value = true
+                        })
                         .also { imageLoader = it }
                 }
             }
@@ -159,12 +140,5 @@ object SingletonSketch {
 internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory?
 
 private val DefaultSketchFactory = SingletonSketch.Factory { context ->
-    Sketch.Builder(context)
-        // Add a marker value so we know this was created by the default singleton image loader.
-//        .apply { extras[DefaultSingletonImageLoaderKey] = Unit } // TODO
-        .build()
+    Sketch.Builder(context).build()
 }
-
-private val Sketch.isDefault: Boolean
-    //    get() = defaults.extras[DefaultSingletonImageLoaderKey] != null // TODO
-    get() = false
