@@ -4,30 +4,9 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
+addAllMultiplatformTargets()
+
 kotlin {
-    applyMyHierarchyTemplate()
-
-    androidTarget {
-        publishLibraryVariants("release")
-        compilations.configureEach {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
-
-    jvm("desktop") {
-        compilations.configureEach {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
     sourceSets {
         named("androidMain") {
             dependencies {
