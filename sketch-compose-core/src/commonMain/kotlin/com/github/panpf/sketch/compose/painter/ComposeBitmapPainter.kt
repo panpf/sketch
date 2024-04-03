@@ -12,26 +12,26 @@ fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
 fun ComposeBitmap.toLogString(): String =
     "ComposeBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
 
-class ComposeBitmapPainter(val imageBitmap: ComposeBitmap) : Painter(), SketchPainter {
+class ComposeBitmapPainter(val bitmap: ComposeBitmap) : Painter(), SketchPainter {
 
-    override val intrinsicSize = Size(imageBitmap.width.toFloat(), imageBitmap.height.toFloat())
+    override val intrinsicSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat())
 
     override fun DrawScope.onDraw() {
         val intSize = IntSize(size.width.toInt(), size.height.toInt())
-        drawImage(imageBitmap, dstSize = intSize)
+        drawImage(bitmap, dstSize = intSize)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ComposeBitmapPainter) return false
-        return imageBitmap == other.imageBitmap
+        return bitmap == other.bitmap
     }
 
     override fun hashCode(): Int {
-        return imageBitmap.hashCode()
+        return bitmap.hashCode()
     }
 
     override fun toString(): String {
-        return "ComposeBitmapPainter(imageBitmap=${imageBitmap.toLogString()})"
+        return "ComposeBitmapPainter(bitmap=${bitmap.toLogString()})"
     }
 }
