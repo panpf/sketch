@@ -8,23 +8,23 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        named("androidMain") {
+        androidMain {
             dependencies {
                 api(libs.google.accompanist.drawablepainter)
             }
         }
-        named("androidInstrumentedTest") {
+        androidInstrumentedTest {
             dependencies {
                 implementation(project(":internal:test-utils-core"))
             }
         }
 
-        named("commonMain") {
+        commonMain {
             dependencies {
                 api(project(":sketch-core"))
             }
         }
-        named("commonTest") {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation(libs.junit)

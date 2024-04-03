@@ -11,23 +11,23 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        named("androidMain") {
+        androidMain {
             dependencies {
             }
         }
-//        named("androidInstrumentedTest") {
+//        androidInstrumentedTest {
 //            dependencies {
 //                implementation(project(":internal:test-utils"))
 //            }
 //        }
 
-        named("commonMain") {
+        commonMain {
             dependencies {
                 api(project(":sketch"))
                 api(project(":sketch-compose-core"))
             }
         }
-        named("commonTest") {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation(libs.junit)

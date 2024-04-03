@@ -11,14 +11,14 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        named("commonMain") {
+        commonMain {
             dependencies {
                 api(project(":sketch-compose-core"))
                 api(project(":sketch-extensions-core"))
                 api(compose.foundation)
             }
         }
-        named("commonTest") {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation(libs.junit)

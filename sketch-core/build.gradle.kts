@@ -8,7 +8,7 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        named("androidMain") {
+        androidMain {
             dependencies {
                 api(libs.kotlinx.coroutines.android)
                 api(libs.androidx.exifinterface)
@@ -20,13 +20,13 @@ kotlin {
                 implementation(libs.ktor.client.android)
             }
         }
-        named("androidInstrumentedTest") {
+        androidInstrumentedTest {
             dependencies {
 //                implementation(project(":internal:test-utils"))
             }
         }
 
-        named("commonMain") {
+        commonMain {
             dependencies {
 //                api(libs.kotlin.stdlib.jdk8)
 //                api(libs.androidx.annotation)
@@ -38,7 +38,7 @@ kotlin {
                 api(libs.urlencoder)
             }
         }
-        named("commonTest") {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation(libs.junit)
@@ -46,22 +46,21 @@ kotlin {
             }
         }
 
-        named("desktopMain") {
+        desktopMain {
             dependencies {
                 api(libs.kotlinx.coroutines.swing)
 //                api(libs.metadataExtractor)
                 implementation(libs.ktor.client.java)
             }
         }
-
-        named("iosMain") {
+        desktopTest {
             dependencies {
-                implementation(libs.ktor.client.ios)
             }
         }
 
-        named("desktopTest") {
+        iosMain {
             dependencies {
+                implementation(libs.ktor.client.ios)
             }
         }
     }

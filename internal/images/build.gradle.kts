@@ -7,7 +7,7 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        named("commonMain") {
+        commonMain {
             dependencies {
                 api(project(":sketch-core"))
             }

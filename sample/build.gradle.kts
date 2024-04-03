@@ -43,7 +43,7 @@ kotlin {
     }
 
     sourceSets {
-        named("androidMain") {
+        androidMain {
             dependencies {
                 implementation(project(":sketch-extensions"))
                 implementation(project(":sketch-animated-koralgif"))
@@ -94,12 +94,12 @@ kotlin {
                 implementation(compose.preview)
             }
         }
-        named("androidInstrumentedTest") {
+        androidInstrumentedTest {
             dependencies {
                 implementation(project(":internal:test-utils"))
             }
         }
-        named("commonMain") {
+        commonMain {
             dependencies {
                 implementation(project(":sketch-compose"))
                 implementation(project(":sketch-svg"))
@@ -124,7 +124,7 @@ kotlin {
                 implementation(libs.androidx.datastore.preferences.core)
             }
         }
-        named("desktopMain") {
+        desktopMain {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.harawata.appdirs)
@@ -132,13 +132,15 @@ kotlin {
                 implementation(compose.preview)
             }
         }
-        named("jvmCommonMain") {
+
+        jvmCommonMain {
             dependencies {
                 implementation(project(":sketch-okhttp"))
                 implementation(libs.panpf.zoomimage.compose)
             }
         }
-        named("iosMain") {
+
+        iosMain {
             // It will not be transferred automatically and needs to be actively configured.. This may be a bug of kmp.
             resources.srcDirs("../internal/images/src/commonMain/resources")
         }

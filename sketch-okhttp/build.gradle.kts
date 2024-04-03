@@ -7,18 +7,19 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        named("jvmCommonMain") {
+        jvmCommonMain {
             dependencies {
                 api(project(":sketch-core"))
                 api(libs.okhttp3)
             }
         }
-        named("androidInstrumentedTest") {
+
+        androidInstrumentedTest {
             dependencies {
                 implementation(project(":internal:test-utils"))
             }
         }
-        named("desktopTest") {
+        desktopTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.junit)
