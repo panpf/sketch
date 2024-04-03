@@ -66,38 +66,12 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.github.panpf.sketch.core"
-    compileSdk = property("compileSdk").toString().toInt()
-
-    defaultConfig {
-        minSdk = property("minSdk").toString().toInt()
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
-        buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
-    }
-
+androidLibrary(nameSpace = "com.github.panpf.sketch.core") {
     buildFeatures {
         buildConfig = true
     }
-
-    buildTypes {
-        debug {
-            enableUnitTestCoverage = true
-            enableAndroidTestCoverage = true
-        }
-    }
-
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        targetSdk = property("targetSdk").toString().toInt()
-    }
-
-    // Set both the Java and Kotlin compilers to target Java 8.
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+    defaultConfig {
+        buildConfigField("String", "VERSION_NAME", "\"${project.versionName}\"")
+        buildConfigField("int", "VERSION_CODE", project.versionCode.toString())
     }
 }

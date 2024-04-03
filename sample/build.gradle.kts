@@ -168,21 +168,10 @@ compose {
     kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
 }
 
-android {
-    namespace = "com.github.panpf.sketch.sample"
-    compileSdk = property("compileSdk").toString().toInt()
-
-    defaultConfig {
-        applicationId = "com.github.panpf.sketch3.sample"
-
-        minSdk = property("minSdk").toString().toInt()
-        targetSdk = property("targetSdk").toString().toInt()
-        versionCode = property("versionCode").toString().toInt()
-        versionName = property("versionName").toString()
-
-        vectorDrawables.useSupportLibrary = true
-    }
-
+androidApplication(
+    nameSpace = "com.github.panpf.sketch.sample",
+    applicationId = "com.github.panpf.sketch3.sample"
+) {
     signingConfigs {
         create("sample") {
             storeFile = project.file("sample.keystore")
@@ -216,18 +205,12 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
-        compose = true
+//        compose = true
     }
 
-    // Set both the Java and Kotlin compilers to target Java 8.
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.jetbrains.compose.compiler.get()
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = libs.versions.jetbrains.compose.compiler.get()
+//    }
 
     applicationVariants.all {
         val variant = this
