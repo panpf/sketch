@@ -51,6 +51,6 @@ include(":sketch-viewability")
  * Private
  */
 include(":sample")
-include(":sketch-resources")
-include(":sketch-test-core")
-include(":sketch-test")
+include(":internal:images")
+include(":internal:test-utils")
+include(":internal:test-utils-core")

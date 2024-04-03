@@ -22,7 +22,7 @@ import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.decode.internal.isHeif
 import com.github.panpf.sketch.decode.internal.isWebP
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.util.Bytes
 import org.junit.Assert
 import org.junit.Test

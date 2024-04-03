@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext

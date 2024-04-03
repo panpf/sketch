@@ -20,7 +20,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.request.execute
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -34,13 +34,13 @@ class SingletonRequestExtensionsTest {
     fun testExecuteAndEnqueue() {
         val context = getTestContext()
 
-        ImageRequest(context, AssetImages.jpeg.uri).let { request ->
+        ImageRequest(context, MyImages.jpeg.uri).let { request ->
             runBlocking { request.execute() }
         }.apply {
             Assert.assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri).let { request ->
+        ImageRequest(context, MyImages.jpeg.uri).let { request ->
             runBlocking { request.enqueue().job.await() }
         }.apply {
             Assert.assertTrue(this is ImageResult.Success)

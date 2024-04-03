@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.disposeDisplay
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.test.singleton.displayImage
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.tools4a.test.ktx.getActivitySync

@@ -28,7 +28,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -98,27 +98,27 @@ class SvgDecoderTest {
 
         // normal
         val factory = SvgDecoder.Factory(false)
-        ImageRequest(context, AssetImages.svg.uri).let {
+        ImageRequest(context, MyImages.svg.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.svg.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.svg.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // data error
-        ImageRequest(context, AssetImages.png.uri).let {
+        ImageRequest(context, MyImages.png.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.png.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.png.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // mimeType error
-        ImageRequest(context, AssetImages.svg.uri).let {
+        ImageRequest(context, MyImages.svg.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.svg.fileName), "image/svg")
+                FetchResult(AssetDataSource(sketch, it, MyImages.svg.fileName), "image/svg")
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
@@ -154,7 +154,7 @@ class SvgDecoderTest {
 
         val factory = SvgDecoder.Factory()
 
-        ImageRequest(context, AssetImages.svg.uri).run {
+        ImageRequest(context, MyImages.svg.uri).run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
@@ -173,7 +173,7 @@ class SvgDecoderTest {
             Assert.assertNull(transformedList)
         }
 
-        ImageRequest(context, AssetImages.svg.uri) {
+        ImageRequest(context, MyImages.svg.uri) {
             bitmapConfig(RGB_565)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
@@ -194,7 +194,7 @@ class SvgDecoderTest {
             Assert.assertNull(transformedList)
         }
 
-        ImageRequest(context, AssetImages.svg.uri) {
+        ImageRequest(context, MyImages.svg.uri) {
             resize(600, 600, LESS_PIXELS)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
@@ -215,7 +215,7 @@ class SvgDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
         }
 
-        ImageRequest(context, AssetImages.svg.uri) {
+        ImageRequest(context, MyImages.svg.uri) {
             resize(1500, 1800, LESS_PIXELS)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
@@ -236,7 +236,7 @@ class SvgDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
         }
 
-        ImageRequest(context, AssetImages.png.uri).run {
+        ImageRequest(context, MyImages.png.uri).run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {

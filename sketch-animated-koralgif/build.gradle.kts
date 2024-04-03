@@ -39,5 +39,5 @@ android {
 dependencies {
     api(project(":sketch-animated"))
     api(libs.androidgifdrawable)
-    androidTestImplementation(project(":sketch-test"))
+    androidTestImplementation(project(":internal:test-utils"))
 }

@@ -24,7 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.displayAssetImage
 import com.github.panpf.sketch.displayImage
 import com.github.panpf.sketch.displayResourceImage
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.test.ktx.getActivitySync
@@ -48,7 +48,7 @@ class SingletonImageViewExtensionsTest {
 
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(AssetImages.jpeg.uri).job.join()
+            imageView.displayImage(MyImages.jpeg.uri).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
 
@@ -57,7 +57,7 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayImage(Uri.parse(AssetImages.png.uri)).job.join()
+            imageView.displayImage(Uri.parse(MyImages.png.uri)).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -120,7 +120,7 @@ class SingletonImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.displayAssetImage(AssetImages.animGif.fileName).job.join()
+            imageView.displayAssetImage(MyImages.animGif.fileName).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -138,7 +138,7 @@ class SingletonImageViewExtensionsTest {
         Assert.assertNull(imageView.drawable)
         val file = ExifOrientationTestFileHelper(
             context = context,
-            assetFileName = AssetImages.clockHor.fileName,
+            assetFileName = MyImages.clockHor.fileName,
             inSampleSize = 2
         ).files()
             .first().file

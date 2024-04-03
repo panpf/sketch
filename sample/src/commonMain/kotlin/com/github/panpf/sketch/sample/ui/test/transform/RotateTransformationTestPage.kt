@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.RotateTransformation
 import kotlin.math.roundToInt
@@ -29,7 +29,7 @@ fun RotateTransformationTestPage() {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         var rotateDegrees by remember { mutableStateOf(45) }
         MyAsyncImage(
-            request = ImageRequest(LocalPlatformContext.current, AssetImages.jpeg.uri) {
+            request = ImageRequest(LocalPlatformContext.current, MyImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(rotateDegrees))

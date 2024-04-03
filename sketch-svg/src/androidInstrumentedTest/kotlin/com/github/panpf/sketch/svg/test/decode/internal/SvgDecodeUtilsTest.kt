@@ -6,7 +6,7 @@ import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.sketch
 import org.junit.Assert
 import org.junit.Test
@@ -21,15 +21,15 @@ class SvgDecodeUtilsTest {
         val sketch = context.sketch
 
         // normal
-        val request = ImageRequest(context, AssetImages.svg.uri)
+        val request = ImageRequest(context, MyImages.svg.uri)
         val fetchResult =
-            FetchResult(AssetDataSource(sketch, request, AssetImages.svg.fileName), null)
+            FetchResult(AssetDataSource(sketch, request, MyImages.svg.fileName), null)
         Assert.assertTrue(fetchResult.headerBytes.isSvg())
 
         // error
-        val request1 = ImageRequest(context, AssetImages.png.uri)
+        val request1 = ImageRequest(context, MyImages.png.uri)
         val fetchResult1 =
-            FetchResult(AssetDataSource(sketch, request1, AssetImages.png.fileName), null)
+            FetchResult(AssetDataSource(sketch, request1, MyImages.png.fileName), null)
         Assert.assertFalse(fetchResult1.headerBytes.isSvg())
     }
 }

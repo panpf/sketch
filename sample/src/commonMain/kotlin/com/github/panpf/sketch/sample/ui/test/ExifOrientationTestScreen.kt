@@ -19,8 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.images.MyImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
@@ -32,7 +33,7 @@ class ExifOrientationTestScreen : BaseScreen() {
     @Composable
     override fun DrawContent() {
         ToolbarScaffold(title = "ExifOrientationTest") {
-            val exifImages = AssetImages.clockExifs
+            val exifImages = MyImages.clockExifs
             val pagerState = rememberPagerState(0) { exifImages.size }
             val coroutineScope = rememberCoroutineScope()
             Column(
@@ -66,7 +67,7 @@ class ExifOrientationTestScreen : BaseScreen() {
     }
 
     @Composable
-    private fun ExifOrientationTest(image: AssetImages.Image) {
+    private fun ExifOrientationTest(image: MyImage) {
         Column(Modifier.fillMaxSize()) {
             Text(
                 text = "Ignore Exif Orientation",

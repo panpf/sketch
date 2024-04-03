@@ -21,8 +21,7 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.commit
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestShareElementBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -45,7 +44,7 @@ class ShareElementTestFragment : BaseBindingFragment<FragmentTestShareElementBin
             ViewCompat.setTransitionName(this, "transition_app_icon")
             Log.i("ShareElementTest", "$id. displayImage")
             postponeEnterTransition(100, MILLISECONDS)
-            displayImage(AssetImages.jpeg.uri) {
+            displayImage(MyImages.jpeg.uri) {
                 listener(
                     onSuccess = { _, _ ->
                         startPostponedEnterTransition()

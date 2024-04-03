@@ -6,7 +6,9 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.compose.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImage
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.MyResourceImage
 import com.github.panpf.sketch.sample.appId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,28 +16,28 @@ import net.harawata.appdirs.AppDirsFactory
 import java.io.File
 
 actual suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: Boolean): List<FetcherTestItem> {
-    val fileUriTestFile = getFileUriTestFile(AssetImages.jpeg)
-    val fileUriTestFile2 = getFileUriTestFile(AssetImages.bmp)
+    val fileUriTestFile = getFileUriTestFile(MyImages.jpeg)
+    val fileUriTestFile2 = getFileUriTestFile(MyImages.bmp)
     return buildList {
-        add(FetcherTestItem(title = "HTTP", AssetImages.HTTP))
-        add(FetcherTestItem(title = "HTTPS", AssetImages.HTTPS))
+        add(FetcherTestItem(title = "HTTP", MyImages.HTTP))
+        add(FetcherTestItem(title = "HTTPS", MyImages.HTTPS))
         add(FetcherTestItem(title = "FILE_URI", newFileUri(fileUriTestFile)))
         add(FetcherTestItem(title = "FILE_PATH", fileUriTestFile2.toString()))
         add(FetcherTestItem(title = "RES_KOTLIN", newKotlinResourceUri("sample.jpeg")))
         add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri("files/liuyifei.jpg")))
-        add(FetcherTestItem(title = "BASE64", AssetImages.BASE64_IMAGE))
+        add(FetcherTestItem(title = "BASE64", MyImages.BASE64_IMAGE))
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-private suspend fun getFileUriTestFile(image: AssetImages.Image): File =
+private suspend fun getFileUriTestFile(image: MyImage): File =
     withContext(Dispatchers.IO) {
         val appDataDir = AppDirsFactory.getInstance().getUserDataDir(
             /* appName = */ appId,
             /* appVersion = */ null,
             /* appAuthor = */ null,
         )
-        val resourceImage = image as AssetImages.ResourceImage
+        val resourceImage = image as MyResourceImage
         val imageFile = File(appDataDir, resourceImage.fileName)
         if (!imageFile.exists()) {
             imageFile.parentFile.mkdirs()

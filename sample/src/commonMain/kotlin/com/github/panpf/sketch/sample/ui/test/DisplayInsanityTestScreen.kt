@@ -18,7 +18,7 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.data.paging.readImageInfoOrNull
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
@@ -80,7 +80,7 @@ class DisplayInsanityTestPagingSource(private val context: PlatformContext, val 
 
     private fun readAssetPhotos(): List<String> = buildList {
         repeat(100) {
-            addAll(AssetImages.numbers.map { it.uri })
+            addAll(MyImages.numbers.map { it.uri })
         }
     }
 

@@ -26,7 +26,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationCircleCropBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
@@ -50,7 +50,7 @@ class CircleCropTransformationTestFragment :
             binding.endButton.isChecked = it == END_CROP
             binding.fillButton.isChecked = it == FILL
 
-            binding.myImage.displayImage(AssetImages.statics.first().uri) {
+            binding.myImage.displayImage(MyImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 scale(it)

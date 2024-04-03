@@ -19,7 +19,7 @@ import android.os.Bundle
 import android.view.View
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.displayImage
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
@@ -51,7 +51,7 @@ class AnimatablePlaceholderTestFragment :
     }
 
     private fun displayImage(binding: FragmentTestAnimatablePlaceholderBinding) {
-        val images = arrayOf(AssetImages.jpeg.uri, AssetImages.webp.uri, AssetImages.bmp.uri)
+        val images = arrayOf(MyImages.jpeg.uri, MyImages.webp.uri, MyImages.bmp.uri)
         val urlString = images[urlIndex % images.size]
         binding.myImage1.displayImage(urlString) {
             memoryCachePolicy(DISABLED)

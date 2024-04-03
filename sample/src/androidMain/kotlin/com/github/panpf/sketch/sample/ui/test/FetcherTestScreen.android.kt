@@ -9,8 +9,9 @@ import com.github.panpf.sketch.compose.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.resources.AssetImages
-import com.github.panpf.sketch.resources.AssetImages.ResourceImage
+import com.github.panpf.sketch.images.MyImage
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.MyResourceImage
 import com.github.panpf.sketch.sample.R.mipmap
 import com.github.panpf.sketch.sample.util.versionCodeCompat
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
@@ -27,17 +28,17 @@ actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
 ): List<FetcherTestItem> {
-    val testFile = getPhotoFromFiles(context, AssetImages.jpeg)
-    val testFile2 = getPhotoFromFiles(context, AssetImages.bmp)
-    val testFile3 = getPhotoFromFiles(context, AssetImages.png).toFile()
+    val testFile = getPhotoFromFiles(context, MyImages.jpeg)
+    val testFile2 = getPhotoFromFiles(context, MyImages.bmp)
+    val testFile3 = getPhotoFromFiles(context, MyImages.png).toFile()
     val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
     return buildList {
-        add(FetcherTestItem(title = "HTTP", AssetImages.HTTP))
-        add(FetcherTestItem(title = "HTTPS", AssetImages.HTTPS))
+        add(FetcherTestItem(title = "HTTP", MyImages.HTTP))
+        add(FetcherTestItem(title = "HTTPS", MyImages.HTTPS))
         add(FetcherTestItem(title = "CONTENT", context.getShareFileUri(testFile3).toString()))
         add(FetcherTestItem(title = "FILE_URI", newFileUri(testFile)))
         add(FetcherTestItem(title = "FILE_PATH", testFile2.toString()))
-        add(FetcherTestItem(title = "ASSET", AssetImages.statics.first().uri))
+        add(FetcherTestItem(title = "ASSET", MyImages.statics.first().uri))
         add(FetcherTestItem(title = "RES_ID", newResourceUri(mipmap.ic_launcher)))
         add(FetcherTestItem(title = "RES_NAME", newResourceUri("drawable", "bg_circle_accent")))
         if (fromCompose) {
@@ -51,7 +52,7 @@ actual suspend fun buildFetcherTestItems(
                 )
             )
         )
-        add(FetcherTestItem(title = "BASE64", AssetImages.BASE64_IMAGE))
+        add(FetcherTestItem(title = "BASE64", MyImages.BASE64_IMAGE))
     }
 }
 
@@ -74,10 +75,10 @@ private suspend fun loadUserAppPackageInfo(
     }
 }
 
-private suspend fun getPhotoFromFiles(context: Context, image: AssetImages.Image): Path =
+private suspend fun getPhotoFromFiles(context: Context, image: MyImage): Path =
     withContext(Dispatchers.IO) {
         val appDataDir = (context.getExternalFilesDir(null) ?: context.filesDir).toOkioPath()
-        val resourceImage = image as ResourceImage
+        val resourceImage = image as MyResourceImage
         val imageFile = appDataDir.resolve(resourceImage.fileName)
         val fileSystem = FileSystem.SYSTEM
         if (!fileSystem.exists(imageFile)) {

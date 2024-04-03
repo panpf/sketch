@@ -96,7 +96,7 @@ kotlin {
         }
         named("androidInstrumentedTest") {
             dependencies {
-                implementation(project(":sketch-test"))
+                implementation(project(":internal:test-utils"))
             }
         }
         named("commonMain") {
@@ -104,7 +104,7 @@ kotlin {
                 implementation(project(":sketch-compose"))
                 implementation(project(":sketch-svg"))
                 implementation(project(":sketch-animated"))
-                implementation(project(":sketch-resources"))
+                implementation(project(":internal:images"))
                 implementation(project(":sketch-extensions-compose"))
                 implementation(compose.material)
                 implementation(compose.material3)
@@ -139,8 +139,8 @@ kotlin {
             }
         }
         named("iosMain") {
-            // This was originally supposed to be configured in the sketch-resources module, but it was invalid after being configured there. It can only be configured here temporarily. This may be a bug of kmp.
-            resources.srcDirs("../sketch-resources/src/images")
+            // It will not be transferred automatically and needs to be actively configured.. This may be a bug of kmp.
+            resources.srcDirs("../internal/images/src/commonMain/resources")
         }
     }
 }

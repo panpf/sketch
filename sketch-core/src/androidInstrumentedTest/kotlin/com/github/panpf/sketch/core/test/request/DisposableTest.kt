@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.async

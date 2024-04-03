@@ -30,7 +30,7 @@ import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.datasource.AssetDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.awaitStarted
@@ -38,7 +38,6 @@ import com.github.panpf.sketch.util.computeSizeMultiplier
 import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.getDataSourceCacheFile
-import com.github.panpf.sketch.util.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.intSplit

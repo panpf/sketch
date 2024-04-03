@@ -20,7 +20,7 @@ import android.content.Intent
 import android.os.IBinder
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.execute
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -41,7 +41,7 @@ class NotificationService : Service() {
         // Test whether result LruDiskCache:67 can use different cache folders under multi-process
         @Suppress("OPT_IN_USAGE")
         GlobalScope.launch(Dispatchers.Main) {
-            ImageRequest(this@NotificationService, AssetImages.statics.first().uri) {
+            ImageRequest(this@NotificationService, MyImages.statics.first().uri) {
                 resize(200, 200)
             }.execute()
 

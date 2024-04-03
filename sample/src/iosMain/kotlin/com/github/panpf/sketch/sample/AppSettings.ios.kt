@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.resources.AssetImages
 import okio.Path.Companion.toPath
 import platform.Foundation.NSPreferencePanesDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.Photo
 
@@ -46,11 +46,11 @@ class LocalPhotoListPagingSource(
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
     private val builtInPhotos: List<String> by lazy {
-        AssetImages.statics
-            .plus(AssetImages.anims)
-            .plus(AssetImages.longQMSHT)
-            .plus(AssetImages.clockExifs)
-            .plus(AssetImages.mp4)
+        MyImages.statics
+            .plus(MyImages.anims)
+            .plus(MyImages.longQMSHT)
+            .plus(MyImages.clockExifs)
+            .plus(MyImages.mp4)
             .map { it.uri }
     }
 

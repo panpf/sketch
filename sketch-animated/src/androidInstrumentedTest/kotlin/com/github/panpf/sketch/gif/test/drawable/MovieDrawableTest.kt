@@ -20,7 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
@@ -42,7 +42,7 @@ class MovieDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val callbackList = mutableListOf<String>()
-        val movie = context.assets.open(AssetImages.animGif.fileName).use { Movie.decodeStream(it) }
+        val movie = context.assets.open(MyImages.animGif.fileName).use { Movie.decodeStream(it) }
         val movieDrawable = MovieDrawable(movie).apply {
             clearAnimationCallbacks()
             val callback = object : AnimationCallback() {
@@ -102,7 +102,7 @@ class MovieDrawableTest {
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val movie = context.assets.open(AssetImages.animGif.fileName).use { Movie.decodeStream(it) }
+        val movie = context.assets.open(MyImages.animGif.fileName).use { Movie.decodeStream(it) }
         val movieDrawable = MovieDrawable(movie)
 
         MyTestFragment::class.launchFragmentInContainer().getFragmentSync().apply {
@@ -124,9 +124,9 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = context.assets.open(AssetImages.animGif.fileName).use { Movie.decodeStream(it) }
+        val movie = context.assets.open(MyImages.animGif.fileName).use { Movie.decodeStream(it) }
         val movie2 =
-            context.assets.open(AssetImages.animGif.fileName).use { Movie.decodeStream(it) }
+            context.assets.open(MyImages.animGif.fileName).use { Movie.decodeStream(it) }
         val element1 = MovieDrawable(movie, ARGB_8888)
         val element11 = MovieDrawable(movie, ARGB_8888)
         val element2 = MovieDrawable(movie2, ARGB_8888)
@@ -160,7 +160,7 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = context.assets.open(AssetImages.animGif.fileName).use { Movie.decodeStream(it) }
+        val movie = context.assets.open(MyImages.animGif.fileName).use { Movie.decodeStream(it) }
         Assert.assertEquals(
             "MovieDrawable(movie=Movie(480x480)@${Integer.toHexString(movie.hashCode())},config=ARGB_8888)",
             MovieDrawable(movie, ARGB_8888).toString()

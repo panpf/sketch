@@ -40,5 +40,5 @@ dependencies {
     api(project(":sketch-extensions-core"))
     api(project(":sketch-viewability"))
     api(libs.androidx.recyclerview)
-    androidTestImplementation(project(":sketch-test"))
+    androidTestImplementation(project(":internal:test-utils"))
 }

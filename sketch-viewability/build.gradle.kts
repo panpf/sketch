@@ -39,5 +39,5 @@ android {
 dependencies {
     api(project(":sketch-core"))
     api(libs.androidx.appcompat)
-    androidTestImplementation(project(":sketch-test"))
+    androidTestImplementation(project(":internal:test-utils"))
 }

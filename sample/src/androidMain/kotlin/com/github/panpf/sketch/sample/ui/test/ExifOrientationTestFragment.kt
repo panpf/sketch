@@ -20,7 +20,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.decode.ExifOrientation
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -38,7 +38,7 @@ class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentTabPagerB
     ) {
         toolbar.title = "ExifOrientation"
 
-        val list = AssetImages.clockExifs
+        val list = MyImages.clockExifs
         val titles = list.map { ExifOrientation.name(it.exifOrientation) }
         val fragments = list.map { ExifOrientationTestImageFragment.create(it.uri) }
 

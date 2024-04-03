@@ -33,7 +33,7 @@ import com.github.panpf.sketch.getDrawableOrThrow
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -102,10 +102,10 @@ class WebpAnimatedDecoderTest {
         Assert.assertEquals("WebpAnimatedDecoder", factory.toString())
 
         // normal
-        ImageRequest(context, AssetImages.animWebp.uri).let {
+        ImageRequest(context, MyImages.animWebp.uri).let {
             val fetchResult =
                 FetchResult(
-                    AssetDataSource(sketch, it, AssetImages.animWebp.fileName),
+                    AssetDataSource(sketch, it, MyImages.animWebp.fileName),
                     "image/webp"
                 )
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
@@ -113,46 +113,46 @@ class WebpAnimatedDecoderTest {
             Assert.assertNotNull(this)
         }
 
-        ImageRequest(context, AssetImages.animWebp.uri).let {
+        ImageRequest(context, MyImages.animWebp.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.animWebp.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.animWebp.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // disallowAnimatedImage true
-        ImageRequest(context, AssetImages.animWebp.uri) {
+        ImageRequest(context, MyImages.animWebp.uri) {
             disallowAnimatedImage()
         }.let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.animWebp.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.animWebp.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // data error
-        ImageRequest(context, AssetImages.png.uri).let {
+        ImageRequest(context, MyImages.png.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.png.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.png.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).let {
+        ImageRequest(context, MyImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.animGif.fileName), "image/webp")
+                FetchResult(AssetDataSource(sketch, it, MyImages.animGif.fileName), "image/webp")
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // mimeType error
-        ImageRequest(context, AssetImages.animWebp.uri).let {
+        ImageRequest(context, MyImages.animWebp.uri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, AssetImages.animWebp.fileName),
+                AssetDataSource(sketch, it, MyImages.animWebp.fileName),
                 "image/jpeg",
             )
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
@@ -169,7 +169,7 @@ class WebpAnimatedDecoderTest {
         val sketch = context.sketch
         val factory = WebpAnimatedDecoder.Factory()
 
-        val request = ImageRequest(context, AssetImages.animWebp.uri) {
+        val request = ImageRequest(context, MyImages.animWebp.uri) {
             colorSpace(ColorSpace.get(ColorSpace.Named.SRGB))
             onAnimationEnd { }
             onAnimationStart { }
@@ -187,7 +187,7 @@ class WebpAnimatedDecoderTest {
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
             }
 
-        val request1 = ImageRequest(context, AssetImages.animWebp.uri) {
+        val request1 = ImageRequest(context, MyImages.animWebp.uri) {
             repeatCount(3)
             size(300, 300)
         }

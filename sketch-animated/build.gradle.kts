@@ -34,7 +34,7 @@ kotlin {
         }
         named("androidInstrumentedTest") {
             dependencies {
-                implementation(project(":sketch-test"))
+                implementation(project(":internal:test-utils"))
             }
         }
 

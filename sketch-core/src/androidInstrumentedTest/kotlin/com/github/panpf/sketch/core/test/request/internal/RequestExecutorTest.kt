@@ -28,7 +28,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
-import com.github.panpf.sketch.resources.AssetImages
+import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
