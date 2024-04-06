@@ -38,7 +38,7 @@ internal suspend fun BufferedSink.writeAllWithProgress(
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
     var bytes = content.read(buffer)
-    var lastTimeMark: ValueTimeMark? = null
+    var lastTimeMark: ValueTimeMark = TimeSource.Monotonic.markNow()
     val progressListenerDelegate = request.progressListener?.let {
         ProgressListenerDelegate(this@coroutineScope, it)
     }
@@ -47,10 +47,8 @@ internal suspend fun BufferedSink.writeAllWithProgress(
         this@writeAllWithProgress.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
-            if (lastTimeMark == null) {
-                lastTimeMark = TimeSource.Monotonic.markNow()
-            }
-            if (lastTimeMark.elapsedNow().inWholeMilliseconds > 300) {
+            val inWholeMilliseconds = lastTimeMark.elapsedNow().inWholeMilliseconds
+            if (inWholeMilliseconds >= 300) {
                 lastTimeMark = TimeSource.Monotonic.markNow()
                 val currentBytesCopied = bytesCopied
                 lastUpdateProgressBytesCopied = currentBytesCopied
