@@ -108,7 +108,9 @@ actual fun PhotoViewer(
     }
     val scrollBar by remember {
         derivedStateOf {
-            if (scrollBarEnabled) ScrollBarSpec.Default else null
+            if (scrollBarEnabled) ScrollBarSpec.Default.copy(
+                color = buttonBgColorState.value.copy(alpha = 0.5f)
+            ) else null
         }
     }
 

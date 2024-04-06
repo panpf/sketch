@@ -57,6 +57,7 @@ actual fun PhotoViewer(
             crossfade(fadeStart = false)
         }
     }
+    // TODO ZoomAsyncImage
     AsyncImage(
         request = request,
         sketch = SingletonSketch.get(context),

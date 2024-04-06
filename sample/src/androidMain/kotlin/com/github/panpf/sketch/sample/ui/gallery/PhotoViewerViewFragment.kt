@@ -50,6 +50,7 @@ import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -73,9 +74,12 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
     @SuppressLint("RestrictedApi")
     override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.zoomImage.apply {
-            appSettingsService.scrollBarEnabled
+            listOf(appSettingsService.scrollBarEnabled, photoPagerViewModel.buttonBgColor)
+                .merge()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    scrollBar = if (it) ScrollBarSpec.Default else null
+                    scrollBar = if (appSettingsService.scrollBarEnabled.value) ScrollBarSpec.Default.copy(
+                        color = photoPagerViewModel.buttonBgColor.value
+                    ) else null
                 }
             zoomable.apply {
                 appSettingsService.readModeEnabled
