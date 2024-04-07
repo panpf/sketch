@@ -98,6 +98,7 @@ class SkiaAnimatedImagePainter(
         repeatIndex = 0
         // When decoding webp animations, readPixels takes a long time, so use the IO thread to decode to avoid getting stuck in the UI thread.
         coroutineScope?.launch(Dispatchers.IO) {
+            // TODO Reading frame data in Dispatchers.IO will cause screen confusion on the ios platform.
             decodeFlow.collectLatest { frame ->
                 codec.readPixels(skiaBitmap, frame)
                 invalidateSelf()
