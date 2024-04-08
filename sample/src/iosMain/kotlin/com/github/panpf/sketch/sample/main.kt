@@ -20,7 +20,7 @@ import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.sample.ui.MyEvents
-import com.github.panpf.sketch.sample.ui.gallery.PhotoListScreen
+import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.GlobalScope
@@ -32,7 +32,7 @@ fun MainViewController(): UIViewController {
     return ComposeUIViewController {
         AppTheme {
             Box(Modifier.fillMaxSize()) {
-                Navigator(PhotoListScreen) { navigator ->
+                Navigator(HomeScreen) { navigator ->
                     ScaleTransition(navigator = navigator)
                 }
 

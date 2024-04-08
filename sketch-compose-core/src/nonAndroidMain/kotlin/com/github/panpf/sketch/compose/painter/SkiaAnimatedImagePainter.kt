@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -87,7 +87,7 @@ class SkiaAnimatedImagePainter(
         if (codec.frameCount == 0) return
 
         if (codec.frameCount == 1) {
-            coroutineScope?.launch(Dispatchers.IO) {
+            coroutineScope?.launch(ioCoroutineDispatcher()) {
                 codec.readPixels(skiaBitmap, 0)
                 invalidateSelf()
             }
@@ -97,7 +97,7 @@ class SkiaAnimatedImagePainter(
         running = true
         repeatIndex = 0
         // When decoding webp animations, readPixels takes a long time, so use the IO thread to decode to avoid getting stuck in the UI thread.
-        coroutineScope?.launch(Dispatchers.IO) {
+        coroutineScope?.launch(ioCoroutineDispatcher()) {
             // TODO Reading frame data in Dispatchers.IO will cause screen confusion on the ios platform.
             decodeFlow.collectLatest { frame ->
                 codec.readPixels(skiaBitmap, frame)

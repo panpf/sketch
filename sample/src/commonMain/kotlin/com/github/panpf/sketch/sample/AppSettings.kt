@@ -1,7 +1,5 @@
 package com.github.panpf.sketch.sample
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -32,20 +30,16 @@ private val appSettingsServiceLazy = ParamLazy<PlatformContext, AppSettings> { A
 val PlatformContext.appSettings: AppSettings
     get() = appSettingsServiceLazy.get(this)
 
-expect fun createDataStore(context: PlatformContext): DataStore<Preferences>
-
 expect fun isDebugMode(): Boolean
 
 class AppSettings(val context: PlatformContext) {
 
-    private val dataStore = createDataStore(context)
-
     val photoGridMode: SettingsStateFlow<PhotoGridMode> by lazy {
         enumSettingsStateFlow(
+            context = context,
             key = "photoGridMode",
             initialize = PhotoGridMode.SQUARE,
             convert = { PhotoGridMode.valueOf(it) },
-            dataStore = dataStore
         )
     }
 
@@ -53,94 +47,94 @@ class AppSettings(val context: PlatformContext) {
      * list config
      */
     val showMimeTypeLogoInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("showMimeTypeLogoInList", true, dataStore)
+        booleanSettingsStateFlow(context,"showMimeTypeLogoInList", true,)
     }
     val showProgressIndicatorInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("showProgressIndicatorInList", true, dataStore)
+        booleanSettingsStateFlow(context,"showProgressIndicatorInList", true,)
     }
     val showDataFromLogoInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("showDataFromLogoInList", true, dataStore)
+        booleanSettingsStateFlow(context,"showDataFromLogoInList", true,)
     }
     val pauseLoadWhenScrollInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("pauseLoadWhenScrollInList", false, dataStore)
+        booleanSettingsStateFlow(context,"pauseLoadWhenScrollInList", false,)
     }
 
     /*
      * image load
      */
     val bitmapQuality by lazy {
-        stringSettingsStateFlow("bitmapQuality", "Default", dataStore)
+        stringSettingsStateFlow(context,"bitmapQuality", "Default",)
     }
     val colorSpace by lazy {
-        stringSettingsStateFlow("colorSpace", "Default", dataStore)
+        stringSettingsStateFlow(context,"colorSpace", "Default",)
     }
     val inPreferQualityOverSpeed: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("inPreferQualityOverSpeed", false, dataStore)
+        booleanSettingsStateFlow(context,"inPreferQualityOverSpeed", false,)
     }
 
     val memoryCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("memoryCache", true, dataStore)
+        booleanSettingsStateFlow(context,"memoryCache", true,)
     }
     val resultCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("resultCache", true, dataStore)
+        booleanSettingsStateFlow(context,"resultCache", true,)
     }
     val downloadCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("downloadCache", true, dataStore)
+        booleanSettingsStateFlow(context,"downloadCache", true,)
     }
 
     val precision by lazy {
-        stringSettingsStateFlow("precision", "LongImageClipMode", dataStore)
+        stringSettingsStateFlow(context,"precision", "LongImageClipMode",)
     }
     val scale by lazy {
-        stringSettingsStateFlow("scale", "LongImageMode", dataStore)
+        stringSettingsStateFlow(context,"scale", "LongImageMode",)
     }
     val longImageScale: SettingsStateFlow<Scale> by lazy {
         enumSettingsStateFlow(
+            context = context,
             key = "longImageScale",
             initialize = Scale.START_CROP,
             convert = { Scale.valueOf(it) },
-            dataStore = dataStore
         )
     }
     val otherImageScale: SettingsStateFlow<Scale> by lazy {
         enumSettingsStateFlow(
+            context = context,
             key = "otherImageScale",
             initialize = Scale.CENTER_CROP,
             convert = { Scale.valueOf(it) },
-            dataStore = dataStore
         )
     }
 
     val exifOrientation: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("exifOrientation", true, dataStore)
+        booleanSettingsStateFlow(context,"exifOrientation", true,)
     }
     val saveCellularTrafficInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("saveCellularTrafficInList", false, dataStore)
+        booleanSettingsStateFlow(context,"saveCellularTrafficInList", false,)
     }
     val disallowAnimatedImageInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("disallowAnimatedImageInList", false, dataStore)
+        booleanSettingsStateFlow(context,"disallowAnimatedImageInList", false,)
     }
 
     /*
      * detail
      */
     val contentScale: SettingsStateFlow<String> by lazy {
-        stringSettingsStateFlow("contentScale", "Fit", dataStore)
+        stringSettingsStateFlow(context,"contentScale", "Fit",)
     }
     val alignment: SettingsStateFlow<String> by lazy {
-        stringSettingsStateFlow("alignment", "Center", dataStore)
+        stringSettingsStateFlow(context,"alignment", "Center",)
     }
     val scrollBarEnabled: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("scrollBarEnabled", true, dataStore)
+        booleanSettingsStateFlow(context,"scrollBarEnabled", true,)
     }
     val readModeEnabled: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("readModeEnabled", true, dataStore)
+        booleanSettingsStateFlow(context,"readModeEnabled", true,)
     }
     val showTileBounds: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("showTileBounds", false, dataStore)
+        booleanSettingsStateFlow(context,"showTileBounds", false,)
     }
     val showOriginImage: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("showOriginImage", false, dataStore)
+        booleanSettingsStateFlow(context,"showOriginImage", false,)
     }
 
     /*
@@ -148,19 +142,15 @@ class AppSettings(val context: PlatformContext) {
      */
     val logLevel by lazy {
         val defaultState = Logger.levelName(if (isDebugMode()) Logger.Debug else Logger.Info)
-        stringSettingsStateFlow(
-            key = "newNewLogLevel",
-            initialize = defaultState,
-            dataStore = dataStore
-        )
+        stringSettingsStateFlow(context, "newNewLogLevel", defaultState)
     }
 
     // Only for Android
     val composePage: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow("composePage", false, dataStore)
+        booleanSettingsStateFlow(context,"composePage", false,)
     }
     val currentPageIndex: SettingsStateFlow<Int> by lazy {
-        intSettingsStateFlow("currentPageIndex", 0, dataStore)
+        intSettingsStateFlow(context,"currentPageIndex", 0,)
     }
 
     private val memoryCacheValue: CachePolicy

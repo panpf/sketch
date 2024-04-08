@@ -15,12 +15,6 @@ import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import okio.Path.Companion.toOkioPath
 
-actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
-    return PreferenceDataStoreFactory.createWithPath {
-        context.filesDir.resolve("dice.preferences_pb").toOkioPath()
-    }
-}
-
 actual fun isDebugMode(): Boolean = BuildConfig.DEBUG
 
 

@@ -28,7 +28,7 @@ import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.MyEvents
-import com.github.panpf.sketch.sample.ui.gallery.PhotoListScreen
+import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.util.MimeTypeMap
@@ -63,7 +63,7 @@ fun main() {
         ) {
             AppTheme {
                 Box(Modifier.fillMaxSize()) {
-                    Navigator(PhotoListScreen) { navigator ->
+                    Navigator(HomeScreen) { navigator ->
                         ScaleTransition(navigator = navigator)
                     }
 

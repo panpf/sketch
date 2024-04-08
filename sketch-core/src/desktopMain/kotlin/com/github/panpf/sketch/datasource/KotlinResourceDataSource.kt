@@ -5,7 +5,6 @@ import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ClassLoaderResourceLoader
-import com.github.panpf.sketch.util.getDataSourceCacheFile
 import okio.Path
 import okio.Source
 import okio.source
@@ -27,7 +26,7 @@ class KotlinResourceDataSource(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path = getDataSourceCacheFile(sketch, request, this)
+    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
 
     override fun toString(): String = "ResourceDataSource($resourceName)"
 }

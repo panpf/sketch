@@ -3,11 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.view") {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.view")
 
 dependencies {
     api(project(":sketch"))

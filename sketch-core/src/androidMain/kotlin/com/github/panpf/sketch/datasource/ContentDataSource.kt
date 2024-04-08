@@ -21,7 +21,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.getDataSourceCacheFile
 import okio.Path
 import okio.Path.Companion.toOkioPath
 import okio.Source
@@ -48,7 +47,7 @@ class ContentDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path =
+    override fun getFileOrNull(): Path? =
         if (contentUri.scheme.equals("file", ignoreCase = true)) {
             val filePath = FileUriFetcher.parseFilePathFromFileUri(contentUri.toString())!!
             File(filePath).toOkioPath()

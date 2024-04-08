@@ -3,11 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.viewability") {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+androidLibrary(nameSpace = "com.github.panpf.sketch.viewability")
 
 dependencies {
     api(project(":sketch-core"))

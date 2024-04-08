@@ -49,7 +49,7 @@ class ComposeHomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         (view as ComposeView).setContent {
             AppTheme {
-                Navigator(PhotoListScreen) { navigator ->
+                Navigator(HomeScreen) { navigator ->
                     ScaleTransition(navigator = navigator)
                     lightStatusAndNavigationBar = navigator.lastItem !is PhotoPagerScreen
                 }

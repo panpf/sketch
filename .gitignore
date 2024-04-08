@@ -34,3 +34,10 @@ captures/
 *.hprof
 
 *.jks
+
+kotlin-js-store/yarn.lock
+sample/webpack.config.d/
+
+# The files in this folder are automatically copied from the internal:images module, so there is no need to submit them.
+# For details, see the configuration in sample/build.gradle.kts
+sample/src/jsCommonMain/compose_resources/

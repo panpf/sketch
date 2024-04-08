@@ -16,10 +16,13 @@
 package com.github.panpf.sketch.datasource
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageRequest
 import okio.IOException
 import okio.Path
 import okio.Source
+import okio.buffer
+import okio.use
 
 /**
  * Provides access to the image data.
@@ -44,3 +47,10 @@ interface DataSource {
     @Throws(IOException::class)
     fun getFileOrNull(): Path?
 }
+
+@WorkerThread
+internal expect fun getDataSourceCacheFile(
+    sketch: Sketch,
+    request: ImageRequest,
+    dataSource: DataSource,
+): Path?

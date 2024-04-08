@@ -13,23 +13,9 @@ plugins {
 kotlin {
     applyMyHierarchyTemplate()
 
-    androidTarget {
-        compilations.configureEach {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
+    androidTarget()
 
-    jvm("desktop") {
-//        jvmToolchain(17)
-//        withJava()
-        compilations.configureEach {
-            kotlinOptions {
-                jvmTarget = "11"
-            }
-        }
-    }
+    jvm("desktop")
 
     listOf(
         iosX64(),
@@ -40,6 +26,16 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
+    }
+
+    js {
+        moduleName = "composeApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+            }
+        }
+        binaries.executable()
     }
 
     sourceSets {
@@ -66,7 +62,7 @@ kotlin {
                 implementation(libs.androidx.navigation.fragment)
                 implementation(libs.androidx.navigation.ui)
 //                implementation(libs.androidx.paging.common)
-                implementation(libs.androidx.paging.runtime)
+//                implementation(libs.androidx.paging.runtime)
                 implementation(libs.androidx.recyclerview)
                 implementation(libs.androidx.swiperefreshlayout)
 
@@ -114,14 +110,11 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(libs.ktor.client.contentNegotiation)
                 implementation(libs.ktor.serialization.kotlinxJson)
-                implementation(libs.cashapp.paging.compose.common)
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.screenModel)
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.voyager.tabNavigator)
                 implementation(libs.voyager.transitions)
-                implementation(libs.androidx.datastore.core.okio)
-                implementation(libs.androidx.datastore.preferences.core)
             }
         }
         desktopMain {
@@ -144,6 +137,18 @@ kotlin {
             // It will not be transferred automatically and needs to be actively configured.. This may be a bug of kmp.
             resources.srcDirs("../internal/images/src/commonMain/resources")
         }
+
+        nonJsCommonMain {
+            dependencies {
+                implementation(libs.cashapp.paging.compose.common)
+                implementation(libs.androidx.datastore.core.okio)
+                implementation(libs.androidx.datastore.preferences.core)
+            }
+        }
+
+        jsCommonMain {
+
+        }
     }
 }
 
@@ -162,10 +167,6 @@ compose.desktop {
             }
         }
     }
-}
-
-compose {
-    kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
 }
 
 androidApplication(
@@ -226,4 +227,39 @@ androidApplication(
     dependencies {
         debugImplementation(libs.leakcanary)
     }
+}
+
+// https://youtrack.jetbrains.com/issue/KT-56025
+afterEvaluate {
+    tasks {
+        val configureJs: Task.() -> Unit = {
+            dependsOn(named("jsDevelopmentExecutableCompileSync"))
+            dependsOn(named("jsProductionExecutableCompileSync"))
+            dependsOn(named("jsTestTestDevelopmentExecutableCompileSync"))
+
+//            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
+//            dependsOn(named("wasmJsProductionExecutableCompileSync"))
+//            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
+        }
+        named("jsBrowserProductionWebpack").configure(configureJs)
+//        named("wasmJsBrowserProductionExecutableDistributeResources").configure(configureJs)
+    }
+}
+
+//tasks.register<Copy>("copyResources") {
+//    from(project(":internal:images").file("src/commonMain/resources"))
+//    into(project(":sample").file("build/processedResources/js/main/files"))
+//}
+//
+//tasks.named("jsProcessResources") {
+//    finalizedBy("copyResources")
+//}
+
+tasks.register<Copy>("copyResources") {
+    from(project(":internal:images").file("src/commonMain/resources"))
+    into(project(":sample").file("src/jsCommonMain/compose_resources/files"))
+}
+
+tasks.named("jsProcessResources") {
+    dependsOn("copyResources")
 }

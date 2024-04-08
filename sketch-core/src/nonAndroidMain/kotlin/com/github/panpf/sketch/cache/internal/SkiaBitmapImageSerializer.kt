@@ -32,7 +32,7 @@ class SkiaBitmapImageSerializer : ImageSerializer {
             }
 
             else -> {
-                throw IllegalArgumentException("Unsupported image type: ${image::class.qualifiedName}")
+                throw IllegalArgumentException("Unsupported image type: ${image::class}")
             }
         }
     }

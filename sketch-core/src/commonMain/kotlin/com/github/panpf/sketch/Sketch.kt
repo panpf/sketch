@@ -44,13 +44,13 @@ import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.defaultFileSystem
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
@@ -115,11 +115,11 @@ class Sketch private constructor(options: Options) {
 
     /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val networkTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
+    val networkTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().limitedParallelism(10)
 
     /* Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val decodeTaskDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(4)
+    val decodeTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().limitedParallelism(4)
 
     init {
         val componentRegistry = options.componentRegistry

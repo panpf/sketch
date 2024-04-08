@@ -3,11 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.video.ffmpeg") {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+androidLibrary(nameSpace = "com.github.panpf.sketch.video.ffmpeg")
 
 dependencies {
     api(project(":sketch-core"))

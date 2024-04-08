@@ -5,7 +5,7 @@ import okio.Path.Companion.toOkioPath
 
 actual fun platformDefaultDiskCacheOptions(
     context: PlatformContext,
-): DiskCache.Options {
+): DiskCache.Options? {
     val appCacheDirectory = context.externalCacheDir ?: context.cacheDir
     return DiskCache.Options(
         appCacheDirectory = appCacheDirectory.toOkioPath(),

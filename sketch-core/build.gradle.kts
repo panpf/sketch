@@ -63,6 +63,12 @@ kotlin {
                 implementation(libs.ktor.client.ios)
             }
         }
+
+//        jsMain {
+//            dependencies {
+//                api(libs.ktor.client.js)
+//            }
+//        }
     }
 }
 

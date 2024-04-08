@@ -28,8 +28,4 @@ kotlin {
     }
 }
 
-compose {
-    kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
-}
-
 androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.compose")

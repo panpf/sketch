@@ -17,11 +17,16 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.DiskCache.Options
+import com.github.panpf.sketch.cache.internal.EmptyDiskCache
 import okio.Closeable
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.toPath
 
-expect fun platformDefaultDiskCacheOptions(context: PlatformContext): Options
+/**
+ * @return The default disk cache options for this platform, null means disk caching is not supported
+ */
+expect fun platformDefaultDiskCacheOptions(context: PlatformContext): Options?
 
 /**
  * Disk cache for bitmap or uri data
@@ -163,14 +168,15 @@ interface DiskCache : Closeable {
             fileSystem: FileSystem,
             type: Type
         ): DiskCache {
-            val userOptions = lazyOptions?.invoke(context)
             val platformDefaultOptions = platformDefaultDiskCacheOptions(context)
+                ?: return EmptyDiskCache(fileSystem, 0L, "".toPath())
             requireNotNull(platformDefaultOptions.downloadMaxSize) {
                 "The platform must provide a default downloadMaxSize"
             }
             requireNotNull(platformDefaultOptions.resultMaxSize) {
                 "The platform must provide a default resultMaxSize"
             }
+            val userOptions = lazyOptions?.invoke(context)
             val appCacheDirectory = requireNotNull(
                 userOptions?.appCacheDirectory ?: platformDefaultOptions.appCacheDirectory
             ) {

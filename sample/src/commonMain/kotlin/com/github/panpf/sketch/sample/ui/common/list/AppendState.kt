@@ -11,32 +11,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.LoadState
+
+enum class AppendState {
+    LOADING,
+    ERROR,
+    END,
+}
 
 @Composable
-fun AppendState(loadState: LoadState, onClick: () -> Unit) {
+fun AppendState(state: AppendState, onClick: () -> Unit) {
     val message: String
     var click: (() -> Unit)? = null
-    when (loadState) {
-        is LoadState.Loading -> {
+    when(state) {
+        AppendState.LOADING -> {
             message = "LOADING..."
         }
 
-        is LoadState.Error -> {
+        AppendState.ERROR -> {
             message = "LOAD ERROR"
             click = onClick
         }
 
-        is LoadState.NotLoading -> {
-            message = if (loadState.endOfPaginationReached) {
-                "THE END"
-            } else {
-                "LOADING..."
-            }
-        }
-
-        else -> {
-            message = "Unknown"
+        AppendState.END -> {
+            message = "THE END"
         }
     }
     Box(modifier = Modifier

@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.target.TargetLifecycle
+import kotlin.js.JsName
 
 /**
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
@@ -9,6 +10,7 @@ import com.github.panpf.sketch.target.TargetLifecycle
  */
 fun interface LifecycleResolver {
 
+    @JsName("getLifecycle")
     suspend fun lifecycle(): TargetLifecycle
 }
 

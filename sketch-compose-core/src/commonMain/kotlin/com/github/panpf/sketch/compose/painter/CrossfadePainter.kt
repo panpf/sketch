@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.util.computeSizeMultiplier
+import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.time.TimeSource
@@ -57,8 +58,8 @@ import kotlin.time.TimeSource
  */
 @Stable
 class CrossfadePainter(
-    var start: Painter?,
-    val end: Painter?,
+    @JsName("startPainter") var start: Painter?,
+    @JsName("endPainter") val end: Painter?,
     private val fitScale: Boolean = true,
     private val durationMillis: Int,
     private val fadeStart: Boolean,

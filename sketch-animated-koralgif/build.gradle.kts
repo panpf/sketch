@@ -3,11 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.animated.koralgif") {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+androidLibrary(nameSpace = "com.github.panpf.sketch.animated.koralgif")
 
 dependencies {
     api(project(":sketch-animated"))

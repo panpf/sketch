@@ -17,7 +17,9 @@ package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
+import kotlin.js.JsName
 
+@JsName("newLongImageDecider")
 fun LongImageDecider(): LongImageDecider {
     return DefaultLongImageDecider()
 }

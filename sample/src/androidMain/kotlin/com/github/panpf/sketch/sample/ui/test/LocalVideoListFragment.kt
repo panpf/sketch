@@ -41,7 +41,6 @@ import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.data.paging.LocalVideoListPagingSource
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.databinding.ListItemVideoBinding
 import com.github.panpf.sketch.sample.model.VideoInfo

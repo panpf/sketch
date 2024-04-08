@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.sample.AppSettings
@@ -12,5 +11,3 @@ actual fun getSettingsDialogHeight(): Dp {
 }
 
 actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
-
-actual fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
