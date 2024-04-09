@@ -162,6 +162,7 @@ private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 private suspend fun sharePhoto(sketch: Sketch, imageUri: String) {
     MyEvents.toastFlow.emit("Desktop platform does not support sharing photo")
 }

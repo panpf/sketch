@@ -60,7 +60,7 @@ import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
-import com.github.panpf.sketch.sample.util.isEmpty
+import com.github.panpf.sketch.sample.ui.util.isEmpty
 import com.github.panpf.sketch.transform.BlurTransformation
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi

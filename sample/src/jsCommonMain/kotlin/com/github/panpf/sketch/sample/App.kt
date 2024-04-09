@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
+import com.github.panpf.sketch.SingletonSketch
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
@@ -37,4 +40,26 @@ fun App() {
             }
         }
     }
+
+    val context = LocalPlatformContext.current
+    LaunchedEffect(Unit) {
+        MyEvents.savePhotoFlow.collect {
+            savePhoto(SingletonSketch.get(context), it)
+        }
+    }
+    LaunchedEffect(Unit) {
+        MyEvents.sharePhotoFlow.collect {
+            sharePhoto(SingletonSketch.get(context), it)
+        }
+    }
+}
+
+@Suppress("UNUSED_PARAMETER")
+private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
+    MyEvents.toastFlow.emit("JS platform does not support save photo")
+}
+
+@Suppress("UNUSED_PARAMETER")
+private suspend fun sharePhoto(sketch: Sketch, imageUri: String) {
+    MyEvents.toastFlow.emit("JS platform does not support sharing photo")
 }
