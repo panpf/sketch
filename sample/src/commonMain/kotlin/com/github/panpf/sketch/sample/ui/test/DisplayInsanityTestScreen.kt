@@ -14,30 +14,30 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItem
 import com.github.panpf.sketch.sample.ui.model.Photo
 
+fun buildDisplayInsanityTestPhotos(): List<Photo> = buildList {
+    var index = 0
+    repeat(100) {
+        MyImages.numbers.forEach { image ->
+            val photo = Photo(
+                originalUrl = image.uri,
+                mediumUrl = null,
+                thumbnailUrl = null,
+                width = image.size.width,
+                height = image.size.height,
+                exifOrientation = image.exifOrientation,
+                index = index++,
+            )
+            add(photo)
+        }
+    }
+}
+
 class DisplayInsanityTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
         ToolbarScaffold(title = "DisplayInsanityTest") {
-            val photos = remember {
-                buildList {
-                    var index = 0
-                    repeat(100) {
-                        MyImages.numbers.forEach { image ->
-                            val photo = Photo(
-                                originalUrl = image.uri,
-                                mediumUrl = null,
-                                thumbnailUrl = null,
-                                width = image.size.width,
-                                height = image.size.height,
-                                exifOrientation = image.exifOrientation,
-                                index = index++,
-                            )
-                            add(photo)
-                        }
-                    }
-                }
-            }
+            val photos = remember { buildDisplayInsanityTestPhotos() }
             val gridState = rememberLazyGridState()
             LazyVerticalGrid(
                 columns = Adaptive(100.dp),

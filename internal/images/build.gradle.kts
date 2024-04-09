@@ -12,10 +12,16 @@ kotlin {
                 api(project(":sketch-core"))
             }
         }
+        desktopMain {
+            resources.srcDirs("files")
+        }
+        iosMain {
+            resources.srcDirs("files")
+        }
     }
 }
 
 androidLibrary(nameSpace = "com.github.panpf.sketch.images") {
-    // The files in the commonMain.resources folder will not be packaged into aar, so you need to configure it in the androidMain.resources folder.
-    sourceSets["main"].assets.srcDirs("src/commonMain/resources")
+    // Android does not support resources folders, so you can only use assets folders
+    sourceSets["main"].assets.srcDirs("files")
 }

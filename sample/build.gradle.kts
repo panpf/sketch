@@ -135,7 +135,7 @@ kotlin {
 
         iosMain {
             // It will not be transferred automatically and needs to be actively configured.. This may be a bug of kmp.
-            resources.srcDirs("../internal/images/src/commonMain/resources")
+            resources.srcDirs("../internal/images/files")
         }
 
         nonJsCommonMain {
@@ -246,20 +246,12 @@ afterEvaluate {
     }
 }
 
-//tasks.register<Copy>("copyResources") {
-//    from(project(":internal:images").file("src/commonMain/resources"))
-//    into(project(":sample").file("build/processedResources/js/main/files"))
-//}
-//
-//tasks.named("jsProcessResources") {
-//    finalizedBy("copyResources")
-//}
-
+// https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-images-resources.html
+// The current 1.6.1 version only supports the use of compose resources in the commonMain source set of the Feiku module. The files of the images module can only be added to the js module in this way.
 tasks.register<Copy>("copyResources") {
-    from(project(":internal:images").file("src/commonMain/resources"))
-    into(project(":sample").file("src/jsCommonMain/compose_resources/files"))
+    from(project(":internal:images").file("files"))
+    into(project(":sample").file("build/processedResources/js/main/files"))
 }
-
 tasks.named("jsProcessResources") {
     dependsOn("copyResources")
 }
