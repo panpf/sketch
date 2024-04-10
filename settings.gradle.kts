@@ -17,6 +17,7 @@ dependencyResolutionManagement {
         mavenCentral()
         google()
         maven { setUrl("https://www.jitpack.io") }
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor wasm
 //        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
 //        mavenLocal()
     }

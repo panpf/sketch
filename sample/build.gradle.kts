@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -9,6 +10,8 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlinx-atomicfu")
 }
+
+//applyKtorWasmWorkaround(libs.versions.ktor.wasm.get())
 
 kotlin {
     applyMyHierarchyTemplate()
@@ -36,6 +39,24 @@ kotlin {
             }
         }
         binaries.executable()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "composeApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+//                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+//                    static = (static ?: mutableListOf()).apply {
+//                        // Serve sources to debug inside browser
+//                        add(project.projectDir.path)
+//                    }
+//                }
+            }
+        }
+        binaries.executable()
+        applyBinaryen()
     }
 
     sourceSets {
@@ -138,16 +159,12 @@ kotlin {
             resources.srcDirs("../internal/images/files")
         }
 
-        nonJsCommonMain {
+         nonJsCommonMain {
             dependencies {
                 implementation(libs.cashapp.paging.compose.common)
                 implementation(libs.androidx.datastore.core.okio)
                 implementation(libs.androidx.datastore.preferences.core)
             }
-        }
-
-        jsCommonMain {
-
         }
     }
 }
@@ -236,22 +253,35 @@ afterEvaluate {
             dependsOn(named("jsDevelopmentExecutableCompileSync"))
             dependsOn(named("jsProductionExecutableCompileSync"))
             dependsOn(named("jsTestTestDevelopmentExecutableCompileSync"))
-
-//            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
-//            dependsOn(named("wasmJsProductionExecutableCompileSync"))
-//            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
         }
         named("jsBrowserProductionWebpack").configure(configureJs)
-//        named("wasmJsBrowserProductionExecutableDistributeResources").configure(configureJs)
+    }
+}
+// https://youtrack.jetbrains.com/issue/KT-56025
+afterEvaluate {
+    tasks {
+        val configureWasmJs: Task.() -> Unit = {
+            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(named("wasmJsProductionExecutableCompileSync"))
+            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
+        }
+        named("wasmJsBrowserProductionExecutableDistributeResources").configure(configureWasmJs)
     }
 }
 
 // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-images-resources.html
 // The current 1.6.1 version only supports the use of compose resources in the commonMain source set of the Feiku module. The files of the images module can only be added to the js module in this way.
-tasks.register<Copy>("copyResources") {
+tasks.register<Copy>("copyImagesToJsProcessedResources") {
     from(project(":internal:images").file("files"))
     into(project(":sample").file("build/processedResources/js/main/files"))
 }
 tasks.named("jsProcessResources") {
-    dependsOn("copyResources")
+    dependsOn("copyImagesToJsProcessedResources")
+}
+tasks.register<Copy>("copyImagesToWasmJsProcessedResources") {
+    from(project(":internal:images").file("files"))
+    into(project(":sample").file("build/processedResources/wasmJs/main/files"))
+}
+tasks.named("wasmJsProcessResources") {
+    dependsOn("copyImagesToWasmJsProcessedResources")
 }

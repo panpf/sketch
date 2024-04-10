@@ -19,10 +19,9 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.maven
-import org.gradle.kotlin.dsl.repositories
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 enum class MultiplatformTargets {
     Android,
@@ -72,24 +71,24 @@ fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = nu
                 }
             }
 
-//            if(targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
-//            @OptIn(ExperimentalWasmDsl::class)
-//            wasmJs {
-//                // TODO: Fix wasm tests.
-//                browser {
-//                    testTask {
-//                        enabled = false
-//                    }
-//                }
-//                nodejs {
-//                    testTask {
-//                        enabled = false
-//                    }
-//                }
-//                binaries.executable()
-//                binaries.library()
-//            }
-//            }
+            if (targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
+                @OptIn(ExperimentalWasmDsl::class)
+                wasmJs {
+                    // TODO: Fix wasm tests.
+                    browser {
+                        testTask {
+                            enabled = false
+                        }
+                    }
+                    nodejs {
+                        testTask {
+                            enabled = false
+                        }
+                    }
+                    binaries.executable()
+                    binaries.library()
+                }
+            }
 
             if (targets == null || targets.contains(MultiplatformTargets.IosX64)) {
                 iosX64()
@@ -109,12 +108,13 @@ fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = nu
             }
         }
 
-        if (targets == null || targets.contains(MultiplatformTargets.Js) || targets.contains(MultiplatformTargets.WasmJs)) {
+        if (targets == null || targets.contains(MultiplatformTargets.Js)) {
             applyKotlinJsImplicitDependencyWorkaround()
         }
-//        if(targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
-//        createSkikoWasmJsRuntimeDependency()
-//        }
+        if (targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
+            applyKotlinWasmJsImplicitDependencyWorkaround()
+            createSkikoWasmJsRuntimeDependency()
+        }
     }
 }
 
@@ -167,47 +167,52 @@ fun Project.applyKotlinJsImplicitDependencyWorkaround() {
         named("jsBrowserProductionWebpack").configure(configureJs)
         named("jsBrowserProductionLibraryPrepare").configure(configureJs)
         named("jsNodeProductionLibraryPrepare").configure(configureJs)
-
-//        val configureWasmJs: Task.() -> Unit = {
-//            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
-//            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
-//            dependsOn(named("wasmJsProductionLibraryCompileSync"))
-//            dependsOn(named("wasmJsProductionExecutableCompileSync"))
-//            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
-//
-//            dependsOn(getByPath(":sketch:wasmJsDevelopmentLibraryCompileSync"))
-//            dependsOn(getByPath(":sketch:wasmJsDevelopmentExecutableCompileSync"))
-//            dependsOn(getByPath(":sketch:wasmJsProductionLibraryCompileSync"))
-//            dependsOn(getByPath(":sketch:wasmJsProductionExecutableCompileSync"))
-//            dependsOn(getByPath(":sketch:wasmJsTestTestDevelopmentExecutableCompileSync"))
-//        }
-//        named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
-//        named("wasmJsBrowserProductionLibraryPrepare").configure(configureWasmJs)
-//        named("wasmJsNodeProductionLibraryPrepare").configure(configureWasmJs)
-//        named("wasmJsBrowserProductionExecutableDistributeResources").configure {
-//            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
-//            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
-//            dependsOn(named("wasmJsProductionLibraryCompileSync"))
-//            dependsOn(named("wasmJsProductionExecutableCompileSync"))
-//            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
-//        }
     }
 }
 
-// https://youtrack.jetbrains.com/issue/KTOR-5587
-fun Project.applyKtorWasmWorkaround(version: String) {
-    repositories {
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-    }
-    configurations.all {
-        if (name.startsWith("wasmJs")) {
-            resolutionStrategy.eachDependency {
-                if (requested.group.startsWith("io.ktor") &&
-                    requested.name.startsWith("ktor-client-")
-                ) {
-                    useVersion(version)
-                }
-            }
+// https://youtrack.jetbrains.com/issue/KT-56025
+fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
+    tasks.invoke {
+        val configureWasmJs: Task.() -> Unit = {
+            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
+            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(named("wasmJsProductionLibraryCompileSync"))
+            dependsOn(named("wasmJsProductionExecutableCompileSync"))
+            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
+
+            dependsOn(getByPath(":sketch:wasmJsDevelopmentLibraryCompileSync"))
+            dependsOn(getByPath(":sketch:wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch:wasmJsProductionLibraryCompileSync"))
+            dependsOn(getByPath(":sketch:wasmJsProductionExecutableCompileSync"))
+            dependsOn(getByPath(":sketch:wasmJsTestTestDevelopmentExecutableCompileSync"))
+        }
+        named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
+        named("wasmJsBrowserProductionLibraryPrepare").configure(configureWasmJs)
+        named("wasmJsNodeProductionLibraryPrepare").configure(configureWasmJs)
+        named("wasmJsBrowserProductionExecutableDistributeResources").configure {
+            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
+            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(named("wasmJsProductionLibraryCompileSync"))
+            dependsOn(named("wasmJsProductionExecutableCompileSync"))
+            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
         }
     }
 }
+
+//// https://youtrack.jetbrains.com/issue/KTOR-5587
+//fun Project.applyKtorWasmWorkaround(version: String) {
+////    repositories {
+////        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
+////    }
+//    configurations.all {
+//        if (name.startsWith("wasmJs")) {
+//            resolutionStrategy.eachDependency {
+//                if (requested.group.startsWith("io.ktor") &&
+//                    requested.name.startsWith("ktor-client-")
+//                ) {
+//                    useVersion(version)
+//                }
+//            }
+//        }
+//    }
+//}

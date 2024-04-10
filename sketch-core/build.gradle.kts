@@ -5,6 +5,7 @@ plugins {
 }
 
 addAllMultiplatformTargets()
+//applyKtorWasmWorkaround(libs.versions.ktor.wasm.get())
 
 kotlin {
     sourceSets {
@@ -17,7 +18,7 @@ kotlin {
                 api(libs.androidx.core)
                 api(libs.androidx.exifinterface)
                 api(libs.androidx.lifecycle.runtime)
-                implementation(libs.ktor.client.android)
+                api(libs.ktor.client.android)
             }
         }
         androidInstrumentedTest {
@@ -35,7 +36,7 @@ kotlin {
                 api(libs.okio)
                 api(libs.ktor.client.core)
                 api(libs.skiko)
-                api(libs.urlencoder)
+//                api(libs.urlencoder)
             }
         }
         commonTest {
@@ -50,7 +51,7 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.coroutines.swing)
 //                api(libs.metadataExtractor)
-                implementation(libs.ktor.client.java)
+                api(libs.ktor.client.java)
             }
         }
         desktopTest {
@@ -60,15 +61,15 @@ kotlin {
 
         iosMain {
             dependencies {
-                implementation(libs.ktor.client.ios)
+                api(libs.ktor.client.ios)
             }
         }
 
-//        jsMain {
-//            dependencies {
-//                api(libs.ktor.client.js)
-//            }
-//        }
+        jsCommonMain {
+            dependencies {
+                api(libs.ktor.client.js)
+            }
+        }
     }
 }
 
