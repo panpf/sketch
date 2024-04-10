@@ -5,7 +5,6 @@ plugins {
 }
 
 addAllMultiplatformTargets()
-//applyKtorWasmWorkaround(libs.versions.ktor.wasm.get())
 
 kotlin {
     sourceSets {
@@ -65,9 +64,16 @@ kotlin {
             }
         }
 
-        jsCommonMain {
+        jsMain {
             dependencies {
                 api(libs.ktor.client.js)
+            }
+        }
+
+        wasmJsMain {
+            dependencies {
+                api(libs.ktor.client.core.wasm)
+                api(libs.ktor.client.wasmJs)
             }
         }
     }

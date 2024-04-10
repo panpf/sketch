@@ -148,6 +148,12 @@ val NamedDomainObjectContainer<KotlinSourceSet>.jsCommonMain: NamedDomainObjectP
 val NamedDomainObjectContainer<KotlinSourceSet>.nonJsCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonJsCommonMain")
 
+val NamedDomainObjectContainer<KotlinSourceSet>.wasmJsMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("wasmJsMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonWasmJsMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonWasmJsMain")
+
 // https://youtrack.jetbrains.com/issue/KT-56025
 fun Project.applyKotlinJsImplicitDependencyWorkaround() {
     tasks.invoke {
@@ -198,21 +204,3 @@ fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
         }
     }
 }
-
-//// https://youtrack.jetbrains.com/issue/KTOR-5587
-//fun Project.applyKtorWasmWorkaround(version: String) {
-////    repositories {
-////        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-////    }
-//    configurations.all {
-//        if (name.startsWith("wasmJs")) {
-//            resolutionStrategy.eachDependency {
-//                if (requested.group.startsWith("io.ktor") &&
-//                    requested.name.startsWith("ktor-client-")
-//                ) {
-//                    useVersion(version)
-//                }
-//            }
-//        }
-//    }
-//}

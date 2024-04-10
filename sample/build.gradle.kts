@@ -11,8 +11,6 @@ plugins {
     id("kotlinx-atomicfu")
 }
 
-//applyKtorWasmWorkaround(libs.versions.ktor.wasm.get())
-
 kotlin {
     applyMyHierarchyTemplate()
 
@@ -164,6 +162,13 @@ kotlin {
                 implementation(libs.cashapp.paging.compose.common)
                 implementation(libs.androidx.datastore.core.okio)
                 implementation(libs.androidx.datastore.preferences.core)
+            }
+        }
+
+        wasmJsMain {
+            dependencies {
+                implementation(libs.ktor.client.contentNegotiation.wasm)
+                implementation(libs.ktor.serialization.kotlinxJson.wasm)
             }
         }
     }

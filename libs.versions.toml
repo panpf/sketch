@@ -6,8 +6,9 @@ kotlinx-coroutines = "1.8.0"
 kotlinx-serialization-json = "1.6.3"
 # sync with kotlin version
 kotlinx-atomicfu = "0.23.2"
+ktor = "2.3.9"
 # TODO 3.0.0-wasm2 only started to support wasm
-ktor = "3.0.0-wasm2"
+ktor-wasm = "3.0.0-wasm2"
 # sync with compose version
 skiko = "0.7.97"
 
@@ -173,13 +174,17 @@ cashapp-paging-compose-common={ module = "app.cash.paging:paging-compose-common"
 harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
 
 ktor-client-core={ module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-core-wasm={ module = "io.ktor:ktor-client-core", version.ref = "ktor-wasm" }
 #ktor-client-logging={ module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-ktor-client-contentNegotiation={ module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-java={ module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 ktor-client-android={ module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-ios={ module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
 ktor-client-js={ module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+ktor-client-wasmJs={ module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor-wasm" }
+ktor-client-contentNegotiation={ module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinxJson={ module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-contentNegotiation-wasm={ module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-wasm" }
+ktor-serialization-kotlinxJson-wasm={ module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-wasm" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
