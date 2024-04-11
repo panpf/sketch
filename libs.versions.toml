@@ -22,7 +22,7 @@ androidgifdrawable = "1.2.15"
 androidsvg = "1.4"
 appdirs = "1.2.2"
 cashapp-paging = "3.3.0-alpha02-0.5.1"
-composeStableMarker = "1.0.3"
+#composeStableMarker = "1.0.3"
 ffmpegMediaMetadataRetriever = "1.0.16"
 google-material = "1.11.0"
 
