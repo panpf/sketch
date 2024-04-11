@@ -32,7 +32,7 @@ actual fun HomeHeader() {
         TopAppBar(
             title = {
                 Column {
-                    Text(text = "Sketch3")
+                    Text(text = "Sketch4")
                     Text(text = "Compose", fontSize = 15.sp)
                 }
             },

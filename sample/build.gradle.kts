@@ -161,7 +161,7 @@ compose.desktop {
 
 androidApplication(
     nameSpace = "com.github.panpf.sketch.sample",
-    applicationId = "com.github.panpf.sketch3.sample"
+    applicationId = "com.github.panpf.sketch4.sample"
 ) {
     signingConfigs {
         create("sample") {

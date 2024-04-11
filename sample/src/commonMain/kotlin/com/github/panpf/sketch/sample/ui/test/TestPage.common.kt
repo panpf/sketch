@@ -5,13 +5,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import com.github.panpf.sketch.sample.ui.components.AutoLinkText
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import sketch_root.sample.generated.resources.Res
+import sketch_root.sample.generated.resources.ic_github
+
+expect val testItemGridCells: Int
 
 @Composable
 fun TestPage() {
@@ -41,7 +57,8 @@ fun TestPage() {
     }
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
+        modifier = Modifier.fillMaxSize(),
+        columns = GridCells.Fixed(testItemGridCells),
         state = gridState,
         contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -50,9 +67,16 @@ fun TestPage() {
         items(
             count = testItems.size,
             key = { testItems[it].title },
-            contentType = { 1 }
+            contentType = { 1 },
         ) { index ->
             TestGridItem(testItems[index])
+        }
+        item(
+            key = "ProjectInfo",
+            span = { GridItemSpan(this.maxLineSpan) },
+            contentType = 2
+        ) {
+            ProjectInfoItem()
         }
     }
 }
@@ -79,5 +103,26 @@ fun TestGridItem(item: TestItem) {
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
         )
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun ProjectInfoItem() {
+    val colorScheme = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(colorScheme.primaryContainer)
+            .padding(16.dp),
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.ic_github),
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(Modifier.size(10.dp))
+        AutoLinkText(text = "https://github.com/panpf/sketch")
     }
 }

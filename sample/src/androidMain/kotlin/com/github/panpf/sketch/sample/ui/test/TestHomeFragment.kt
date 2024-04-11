@@ -16,6 +16,7 @@ import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
+import com.github.panpf.sketch.sample.ui.common.link.ProjectInfoItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
@@ -38,14 +39,18 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             clipToPadding = false
 
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
-                itemSpanByItemFactory(GridSeparatorItemFactory::class to ItemSpan.fullSpan())
+                itemSpanByItemFactory(
+                    ProjectInfoItemFactory::class to ItemSpan.fullSpan(),
+                    GridSeparatorItemFactory::class to ItemSpan.fullSpan(),
+                )
             }.build()
             adapter = AssemblyRecyclerAdapter(
                 itemFactoryList = listOf(
                     LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
                         startLink(data)
                     },
-                    GridSeparatorItemFactory()
+                    ProjectInfoItemFactory(),
+                    GridSeparatorItemFactory(),
                 ),
                 initDataList = pageList()
             )
@@ -101,6 +106,7 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             title = "Transformation",
             navDirections = NavMainDirections.actionTransformationTestPagerFragment()
         ),
+        "ProjectInfo"
     )
 
     private fun startLink(data: Link) {

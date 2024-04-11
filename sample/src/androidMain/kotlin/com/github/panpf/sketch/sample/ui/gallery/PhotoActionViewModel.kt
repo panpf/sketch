@@ -95,7 +95,7 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
 
         val picturesDir =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val outDir = File(picturesDir, "sketch3").apply { mkdirs() }
+        val outDir = File(picturesDir, "sketch").apply { mkdirs() }
         val fileExtension = MimeTypeMap.getExtensionFromUrl(imageUri)
             ?: MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
             ?: "jpeg"

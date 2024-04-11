@@ -51,7 +51,7 @@ fun main() {
     application {
         val coroutineScope = rememberCoroutineScope()
         Window(
-            title = "Sketch3",
+            title = "Sketch4",
             onCloseRequest = ::exitApplication,
             state = rememberWindowState(size = DpSize(1000.dp, 800.dp)),
             onKeyEvent = {

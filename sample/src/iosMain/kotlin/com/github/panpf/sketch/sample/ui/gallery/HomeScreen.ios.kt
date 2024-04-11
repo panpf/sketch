@@ -19,7 +19,7 @@ actual fun HomeHeader() {
     Box(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
             title = {
-                Text(text = "Sketch3")
+                Text(text = "Sketch4")
             },
         )
     }

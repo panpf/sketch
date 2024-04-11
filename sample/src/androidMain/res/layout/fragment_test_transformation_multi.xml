@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/text_blur_radius" />
+            android:text="Blur Radius" />
 
         <TextView
             android:id="@+id/blurValueText"
@@ -70,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/text_rounded_radius" />
+            android:text="Rounded Corners Radius" />
 
         <TextView
             android:id="@+id/roundedCornersRadiusText"
