@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalResourceApi::class)
+@file:OptIn(ExperimentalResourceApi::class, ExperimentalResourceApi::class)
 
 package com.github.panpf.sketch.sample.ui.gallery
 
@@ -36,10 +36,10 @@ import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.stateimage.saveCellularTrafficError
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_error_baseline
-import sketch.sample.generated.resources.ic_image_outline
-import sketch.sample.generated.resources.ic_signal_cellular
+import sketch_root.sample.generated.resources.Res.drawable
+import sketch_root.sample.generated.resources.ic_error_baseline
+import sketch_root.sample.generated.resources.ic_image_outline
+import sketch_root.sample.generated.resources.ic_signal_cellular
 
 
 @Composable

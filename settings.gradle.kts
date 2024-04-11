@@ -1,3 +1,7 @@
+// After turning on TYPESAFE_PROJECT_ACCESSORS, the root directory name and sketch module name cannot be the same.
+rootProject.name = "sketch-root"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
 //        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
@@ -17,7 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
         google()
         maven { setUrl("https://www.jitpack.io") }
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor wasm
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.3.0-wasm2
 //        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
 //        mavenLocal()
     }

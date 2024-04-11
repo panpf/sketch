@@ -4,26 +4,19 @@ plugins {
     id("com.android.library")
 }
 
-group = property("GROUP").toString()
-version = property("versionName").toString()
-
 addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                api(project(":sketch-compose-core"))
-                api(project(":sketch-extensions-core"))
-                api(compose.foundation)
-            }
+        commonMain.dependencies {
+            api(projects.sketchComposeCore)
+            api(projects.sketchExtensionsCore)
+            api(compose.foundation)
         }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
+        commonTest.dependencies {
+            implementation(kotlin("test"))
 //                implementation(libs.junit)
 //                implementation(libs.panpf.tools4j.test)
-            }
         }
     }
 }

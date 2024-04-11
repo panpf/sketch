@@ -43,7 +43,7 @@ class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBind
             adapter = AssemblyRecyclerAdapter<Any>(
                 listOf(
                     SwitchMenuItemFactory(compactModel = true),
-                    DropdownMenuItemFactory(compactModel = true),
+                    DropdownMenuItemFactory(requireActivity(), compactModel = true),
                     ListSeparatorItemFactory(),
                 )
             ).apply {

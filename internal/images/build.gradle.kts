@@ -7,10 +7,8 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                api(project(":sketch-core"))
-            }
+        commonMain.dependencies {
+            api(projects.sketchCore)
         }
         desktopMain {
             resources.srcDirs("files")

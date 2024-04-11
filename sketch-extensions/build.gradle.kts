@@ -6,5 +6,5 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.extensions")
 
 dependencies {
-    api(project(":sketch-extensions-view"))
+    api(projects.sketchExtensionsView)
 }

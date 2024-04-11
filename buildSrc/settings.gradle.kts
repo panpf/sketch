@@ -1,5 +1,3 @@
-rootProject.name = "sketch4"
-
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {

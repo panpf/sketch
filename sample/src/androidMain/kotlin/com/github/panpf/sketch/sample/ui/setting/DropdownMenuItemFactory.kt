@@ -15,16 +15,19 @@
  */
 package com.github.panpf.sketch.sample.ui.setting
 
+import android.app.Activity
 import android.content.Context
 import android.util.TypedValue
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import com.github.panpf.activity.monitor.ActivityMonitor
 import com.github.panpf.sketch.sample.databinding.ListItemMenuDropdownBinding
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
-class DropdownMenuItemFactory(private val compactModel: Boolean = false) :
+class DropdownMenuItemFactory(
+    private val activity: Activity,
+    private val compactModel: Boolean = false
+) :
     BaseBindingItemFactory<MultiSelectMenu, ListItemMenuDropdownBinding>(MultiSelectMenu::class) {
 
     override fun initItem(
@@ -61,7 +64,6 @@ class DropdownMenuItemFactory(private val compactModel: Boolean = false) :
     }
 
     private fun showDialog(data: MultiSelectMenu, after: () -> Unit) {
-        val activity = ActivityMonitor.getLastResumedActivity() ?: return
         AlertDialog.Builder(activity).apply {
             setItems(data.values.toTypedArray()) { _, which ->
                 data.onSelect(which, data.values[which])

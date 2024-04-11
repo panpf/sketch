@@ -6,8 +6,8 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.view.core")
 
 dependencies {
-    api(project(":sketch-extensions-core"))
-    api(project(":sketch-viewability"))
+    api(projects.sketchExtensionsCore)
+    api(projects.sketchViewability)
     api(libs.androidx.recyclerview)
-    androidTestImplementation(project(":internal:test-utils"))
+    androidTestImplementation(projects.internal.testUtils)
 }

@@ -6,6 +6,6 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.video")
 
 dependencies {
-    api(project(":sketch-core"))
-    androidTestImplementation(project(":internal:test-utils"))
+    api(projects.sketchCore)
+    androidTestImplementation(projects.internal.testUtils)
 }

@@ -4,35 +4,21 @@ plugins {
     id("com.android.library")
 }
 
-group = property("GROUP").toString()
-version = property("versionName").toString()
-
 addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        androidMain {
-            dependencies {
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(projects.internal.testUtils)
         }
-//        androidInstrumentedTest {
-//            dependencies {
-//                implementation(project(":internal:test-utils"))
-//            }
-//        }
-
-        commonMain {
-            dependencies {
-                api(project(":sketch"))
-                api(project(":sketch-compose-core"))
-            }
+        commonMain.dependencies {
+            api(projects.sketch)
+            api(projects.sketchComposeCore)
         }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
+        commonTest.dependencies {
+            implementation(kotlin("test"))
 //                implementation(libs.junit)
 //                implementation(libs.panpf.tools4j.test)
-            }
         }
     }
 }

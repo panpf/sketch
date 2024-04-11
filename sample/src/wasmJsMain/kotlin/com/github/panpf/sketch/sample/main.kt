@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample
 
-import androidx.compose.material.Text
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import com.github.panpf.sketch.PlatformContext

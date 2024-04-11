@@ -7,24 +7,17 @@ addAllMultiplatformTargets(listOf(MultiplatformTargets.Android, MultiplatformTar
 
 kotlin {
     sourceSets {
-        jvmCommonMain {
-            dependencies {
-                api(project(":sketch-core"))
-                api(libs.okhttp3)
-            }
+        jvmCommonMain.dependencies {
+            api(projects.sketchCore)
+            api(libs.okhttp3)
         }
-
-        androidInstrumentedTest {
-            dependencies {
-                implementation(project(":internal:test-utils"))
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(projects.internal.testUtils)
         }
-        desktopTest {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.junit)
-                implementation(libs.panpf.tools4j.test)
-            }
+        desktopTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.junit)
+            implementation(libs.panpf.tools4j.test)
         }
     }
 }

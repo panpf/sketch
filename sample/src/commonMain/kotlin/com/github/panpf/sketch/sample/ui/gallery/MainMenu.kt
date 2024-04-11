@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,13 +25,14 @@ import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_layout_grid
-import sketch.sample.generated.resources.ic_layout_grid_staggered
-import sketch.sample.generated.resources.ic_pause
-import sketch.sample.generated.resources.ic_play
-import sketch.sample.generated.resources.ic_settings
+import sketch_root.sample.generated.resources.Res.drawable
+import sketch_root.sample.generated.resources.ic_layout_grid
+import sketch_root.sample.generated.resources.ic_layout_grid_staggered
+import sketch_root.sample.generated.resources.ic_pause
+import sketch_root.sample.generated.resources.ic_play
+import sketch_root.sample.generated.resources.ic_settings
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MainMenu(modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme

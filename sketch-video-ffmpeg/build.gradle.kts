@@ -6,9 +6,9 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.video.ffmpeg")
 
 dependencies {
-    api(project(":sketch-core"))
-    api(project(":sketch-video"))
+    api(projects.sketchCore)
+    api(projects.sketchVideo)
     api(libs.ffmpegMediaMetadataRetriever.core)
     api(libs.ffmpegMediaMetadataRetriever.native)
-    androidTestImplementation(project(":internal:test-utils"))
+    androidTestImplementation(projects.internal.testUtils)
 }

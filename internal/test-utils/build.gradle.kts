@@ -6,6 +6,6 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.test.singleton")
 
 dependencies {
-    api(project(":sketch-core"))
-    api(project(":internal:test-utils-core"))
+    api(projects.sketchCore)
+    api(projects.internal.testUtilsCore)
 }

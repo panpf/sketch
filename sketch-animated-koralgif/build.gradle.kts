@@ -6,7 +6,7 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.animated.koralgif")
 
 dependencies {
-    api(project(":sketch-animated"))
+    api(projects.sketchAnimated)
     api(libs.androidgifdrawable)
-    androidTestImplementation(project(":internal:test-utils"))
+    androidTestImplementation(projects.internal.testUtils)
 }

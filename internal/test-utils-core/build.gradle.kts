@@ -6,8 +6,8 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils")
 
 dependencies {
-    api(project(":sketch-core"))
-    api(project(":internal:images"))
+    api(projects.sketchCore)
+    api(projects.internal.images)
     api(libs.androidx.fragment)
     api(libs.androidx.test.runner)
     api(libs.androidx.test.rules)

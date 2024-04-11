@@ -8,73 +8,43 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        androidMain {
-            dependencies {
-                api(libs.kotlinx.coroutines.android)
-                api(libs.androidx.exifinterface)
-                api(libs.androidx.annotation)
-                api(libs.androidx.appcompat.resources)
-                api(libs.androidx.core)
-                api(libs.androidx.exifinterface)
-                api(libs.androidx.lifecycle.runtime)
-                api(libs.ktor.client.android)
-            }
-        }
-        androidInstrumentedTest {
-            dependencies {
-//                implementation(project(":internal:test-utils"))
-            }
-        }
-
-        commonMain {
-            dependencies {
-//                api(libs.kotlin.stdlib.jdk8)
-//                api(libs.androidx.annotation)
-                api(libs.kotlinx.coroutines.core)
+        commonMain.dependencies {
+            api(libs.kotlin.stdlib)
+            api(libs.kotlinx.coroutines.core)
+            api(libs.ktor.client.core)
+            api(libs.okio)
+            api(libs.skiko)
 //                compileOnly(libs.composeStableMarker)
-                api(libs.okio)
-                api(libs.ktor.client.core)
-                api(libs.skiko)
-//                api(libs.urlencoder)
-            }
         }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-//                implementation(libs.junit)
-//                implementation(libs.panpf.tools4j.test)
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-
-        desktopMain {
-            dependencies {
-                api(libs.kotlinx.coroutines.swing)
-//                api(libs.metadataExtractor)
-                api(libs.ktor.client.java)
-            }
+        androidMain.dependencies {
+            api(libs.androidx.exifinterface)
+            api(libs.androidx.annotation)
+            api(libs.androidx.appcompat.resources)
+            api(libs.androidx.core)
+            api(libs.androidx.exifinterface)
+            api(libs.androidx.lifecycle.runtime)
+            api(libs.kotlinx.coroutines.android)
+            api(libs.ktor.client.android)
         }
-        desktopTest {
-            dependencies {
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(projects.internal.testUtils)
         }
-
-        iosMain {
-            dependencies {
-                api(libs.ktor.client.ios)
-            }
+        desktopMain.dependencies {
+            api(libs.kotlinx.coroutines.swing)
+            api(libs.ktor.client.java)
         }
-
-        jsMain {
-            dependencies {
-                api(libs.ktor.client.js)
-            }
+        iosMain.dependencies {
+            api(libs.ktor.client.ios)
         }
-
-        wasmJsMain {
-            dependencies {
-                api(libs.ktor.client.core.wasm)
-                api(libs.ktor.client.wasmJs)
-            }
+        jsMain.dependencies {
+            api(libs.ktor.client.js)
+        }
+        wasmJsMain.dependencies {
+            api(libs.ktor.client.core.wasm)
+            api(libs.ktor.client.wasmJs)
         }
     }
 }

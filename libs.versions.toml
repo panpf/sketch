@@ -1,108 +1,72 @@
 [versions]
-
-# kotlin
-kotlin = "1.9.23"
-kotlinx-coroutines = "1.8.0"
-kotlinx-serialization-json = "1.6.3"
-# sync with kotlin version
-kotlinx-atomicfu = "0.23.2"
-ktor = "2.3.9"
-# TODO 3.0.0-wasm2 only started to support wasm
-ktor-wasm = "3.0.0-wasm2"
-# sync with compose version
-skiko = "0.7.97"
-
-jetbrains-compose = "1.6.1"
-jetbrains-compose-compiler = "1.5.10"
-
-# android
 android-plugin = "8.3.1"
 androidx-activity = "1.8.2"
-androidx-appcompat = "1.6.1"
 androidx-annotation = "1.7.1"
+androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
-#androidx-constraintlayout-compose = "1.0.1"
+androidx-constraintlayout-compose = "1.0.1"
 androidx-core = "1.12.0"
+androidx-datastore = "1.1.0-rc01"
 androidx-exifinterface = "1.3.7"
 androidx-fragment = "1.6.2"
 androidx-lifecycle = "2.7.0"
 androidx-multidex = "2.0.1"
 androidx-navigation = "2.7.7"
-androidx-paging = "3.3.0-alpha02"
-#androidx-palette = "1.0.0"
 androidx-recyclerview = "1.3.2"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-test-runner = "1.5.2"
 androidx-test-rules = "1.5.0"
 androidx-test-ext-junit = "1.1.5"
-androidx-datastore = "1.1.0-beta02"
 
-# google
-google-accompanist = "0.34.0"
+androidgifdrawable = "1.2.15"
+androidsvg = "1.4"
+appdirs = "1.2.2"
+cashapp-paging = "3.3.0-alpha02-0.5.1"
+composeStableMarker = "1.0.3"
+ffmpegMediaMetadataRetriever = "1.0.16"
 google-material = "1.11.0"
 
-# panpf
-panpf-activitymonitor = "1.0.0"
+jetbrains-compose = "1.6.1"
+jetbrains-compose-compiler = "1.5.10.1"
+
+junit = "4.13.2"
+
+kotlin = "1.9.23"
+kotlinx-atomicfu = "0.23.2" # sync with kotlin version
+kotlinx-coroutines = "1.8.0"
+kotlinx-serialization-json = "1.6.3"
+ktor = "2.3.9"
+ktor-wasm = "3.0.0-wasm2"   # TODO Currently only versions with the '-wasm2' suffix support wasm
+
+leakcanary = "2.12"
+mavenpublish = "0.28.0"
+okhttp3 = "3.12.0"   # 3.12.0 is the last version to support Android below 5.0. TODO Upgrade okhttp to 4.12.0
+okio = "3.9.0"
+
 panpf-assemblyadapter4 = "4.1.0"
 panpf-tools4a = "1.0.0"
 panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.0"
 panpf-zoomimage = "1.0.2"
 
-# other
-androidgifdrawable = "1.2.15"
-androidsvg = "1.4"
-ffmpegMediaMetadataRetriever = "1.0.16"
-junit = "4.13.2"
-leakcanary = "2.12"
-#noinspection GradleDependency
-okhttp3 = "3.12.0"   # 3.12.0 是最后一个支持 Android 5.0 以下的版本
-#noinspection GradleDependency
-#retrofit2 = "2.6.4"
-#retrofit2-kotlinxSerializationConverter = "0.8.0"
-tinypinyin = "2.0.3"
-mavenpublish = "0.28.0"
-#composeStableMarker = "1.0.3"
-#metadataExtractor = "2.18.0"
-okio = "3.9.0"
-cashapp-paging = "3.3.0-alpha02-0.5.1"
+skiko = "0.7.97"    # sync with compose version
 voyager = "1.1.0-alpha03"
-harawata-appdirs = "1.2.2"
-#urlencoder = "1.4.0"
 
 [libraries]
-# plugins
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-kotlinSerialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-gradlePlugin-kotlinxAtomicfu = {module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref="kotlinx-atomicfu"}
+gradlePlugin-kotlinxAtomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
 gradlePlugin-androidxNavigationSafeArgs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
 gradlePlugin-jetbrainsCompose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenpublish" }
 
-# kotlin
-#kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-skiko = { module = "org.jetbrains.skiko:skiko", version.ref = "skiko" }
-
-# android
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
-#androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "androidx-compose" }
-#androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidx-compose-compiler" }
-jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jetbrains-compose-compiler" }
-#androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
-#androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose-material" }
-#androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material3" }
-#androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidx-compose" }
-#androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
-#androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraintlayout-compose" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "androidx-exifinterface" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
@@ -112,10 +76,6 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
-#androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
-#androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging" }
-#androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging" }
-#androidx-palette = { module = "androidx.palette:palette", version.ref = "androidx-palette" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
@@ -124,13 +84,43 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 androidx-datastore-core-okio = { group = "androidx.datastore", name = "datastore-core-okio", version.ref = "androidx-datastore" }
 androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "androidx-datastore" }
 
-# google
-google-accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "google-accompanist" }
+androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidgifdrawable" }
+androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
+appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
+
+cashapp-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "cashapp-paging" }
+#composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
+ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
+ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 
-# panpf
-panpf-activitymonitor = { module = "io.github.panpf.activitymonitor:activitymonitor", version.ref = "panpf-activitymonitor" }
-panpf-assemblyadapter4-pager = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager", version.ref = "panpf-assemblyadapter4" }
+jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jetbrains-compose-compiler" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-contentNegotiation-wasm = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-wasm" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-core-wasm = { module = "io.ktor:ktor-client-core", version.ref = "ktor-wasm" }
+ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
+ktor-client-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+#ktor-client-logging={ module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor-wasm" }
+ktor-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-serialization-kotlinxJson-wasm = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-wasm" }
+
+leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
+
+okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+
 panpf-assemblyadapter4-pager2 = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-pager2", version.ref = "panpf-assemblyadapter4" }
 panpf-assemblyadapter4-recycler = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler", version.ref = "panpf-assemblyadapter4" }
 panpf-assemblyadapter4-recycler-paging = { module = "io.github.panpf.assemblyadapter4:assemblyadapter-recycler-paging", version.ref = "panpf-assemblyadapter4" }
@@ -139,63 +129,31 @@ panpf-tools4a-device = { module = "io.github.panpf.tools4a:tools4a-device-ktx", 
 panpf-tools4a-display = { module = "io.github.panpf.tools4a:tools4a-display-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-dimen = { module = "io.github.panpf.tools4a:tools4a-dimen-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-fileprovider = { module = "io.github.panpf.tools4a:tools4a-fileprovider-ktx", version.ref = "panpf-tools4a" }
-panpf-tools4a-toast = { module = "io.github.panpf.tools4a:tools4a-toast-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-network = { module = "io.github.panpf.tools4a:tools4a-network-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-run = { module = "io.github.panpf.tools4a:tools4a-run-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4a-test = { module = "io.github.panpf.tools4a:tools4a-test-ktx", version.ref = "panpf-tools4a" }
+panpf-tools4a-toast = { module = "io.github.panpf.tools4a:tools4a-toast-ktx", version.ref = "panpf-tools4a" }
 panpf-tools4j-math = { module = "io.github.panpf.tools4j:tools4j-math-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-date = { module = "io.github.panpf.tools4j:tools4j-date-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-io = { module = "io.github.panpf.tools4j:tools4j-io-ktx", version.ref = "panpf-tools4j" }
-panpf-tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-security = { module = "io.github.panpf.tools4j:tools4j-security-ktx", version.ref = "panpf-tools4j" }
+panpf-tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "panpf-tools4k" }
 panpf-zoomimage-view = { module = "io.github.panpf.zoomimage:zoomimage-view", version.ref = "panpf-zoomimage" }
 panpf-zoomimage-compose = { module = "io.github.panpf.zoomimage:zoomimage-compose", version.ref = "panpf-zoomimage" }
 
-# other
-androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidgifdrawable" }
-androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
-ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
-ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
-junit = { module = "junit:junit", version.ref = "junit" }
-leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
-okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
-okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3" }
-#retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit2" }
-#retrofit2-kotlinxSerializationConverter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2-kotlinxSerializationConverter" }
-tinypinyin = { module = "com.github.promeg:tinypinyin", version.ref = "tinypinyin" }
-#composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
-#metadataExtractor={ module = "com.drewnoakes:metadata-extractor", version.ref = "metadataExtractor" }
-okio={ module = "com.squareup.okio:okio", version.ref = "okio" }
-#cashapp-paging-common={ module = "app.cash.paging:paging-common", version.ref = "cashapp-paging" }
-#cashapp-paging-runtime={ module = "app.cash.paging:paging-runtime", version.ref = "cashapp-paging" }
-cashapp-paging-compose-common={ module = "app.cash.paging:paging-compose-common", version.ref = "cashapp-paging" }
-harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
+skiko = { module = "org.jetbrains.skiko:skiko", version.ref = "skiko" }
 
-ktor-client-core={ module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-core-wasm={ module = "io.ktor:ktor-client-core", version.ref = "ktor-wasm" }
-#ktor-client-logging={ module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-ktor-client-java={ module = "io.ktor:ktor-client-java", version.ref = "ktor" }
-ktor-client-android={ module = "io.ktor:ktor-client-android", version.ref = "ktor" }
-ktor-client-ios={ module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
-ktor-client-js={ module = "io.ktor:ktor-client-js", version.ref = "ktor" }
-ktor-client-wasmJs={ module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor-wasm" }
-ktor-client-contentNegotiation={ module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-serialization-kotlinxJson={ module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-ktor-client-contentNegotiation-wasm={ module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-wasm" }
-ktor-serialization-kotlinxJson-wasm={ module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-wasm" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
-voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
-voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
+#voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
+#voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 #voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 #voyager-hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 #voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 #voyager-rxjava = { module = "cafe.adriel.voyager:voyager-rxjava", version.ref = "voyager" }
-
-#urlencoder = { module = "net.thauvin.erik.urlencoder:urlencoder-lib", version.ref = "urlencoder" }
 
 [plugins]
 #com-android-application = { id = "com.android.application", version.ref = "android-plugin" }

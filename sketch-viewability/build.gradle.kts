@@ -6,7 +6,7 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.viewability")
 
 dependencies {
-    api(project(":sketch-core"))
+    api(projects.sketchCore)
     api(libs.androidx.appcompat)
-    androidTestImplementation(project(":internal:test-utils"))
+    androidTestImplementation(projects.internal.testUtils)
 }

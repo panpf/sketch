@@ -12,43 +12,25 @@ buildscript {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
     dependencies {
-        classpath(libs.gradlePlugin.kotlin)
-        classpath(libs.gradlePlugin.kotlinSerialization)
-//        classpath(libs.gradlePlugin.kotlinParcelize)
-        classpath(libs.gradlePlugin.kotlinxAtomicfu)
         classpath(libs.gradlePlugin.android)
         classpath(libs.gradlePlugin.androidxNavigationSafeArgs)
         classpath(libs.gradlePlugin.jetbrainsCompose)
+        classpath(libs.gradlePlugin.kotlin)
+        classpath(libs.gradlePlugin.kotlinSerialization)
+        classpath(libs.gradlePlugin.kotlinxAtomicfu)
         classpath(libs.gradlePlugin.mavenPublish)
     }
 }
 
-//tasks.register("clean", Delete::class) {
-//    delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
-//}
+tasks.register("cleanRootBuild", Delete::class) {
+    delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
+}
 
 allprojects {
-    // Target JVM 8.
-    tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-        targetCompatibility = JavaVersion.VERSION_1_8.toString()
-        options.compilerArgs = options.compilerArgs + "-Xlint:-options"
-    }
-    tasks.withType<KotlinJvmCompile>().configureEach {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
-    }
-
+    jvmTargetConfig()
+    composeConfig()
     publishConfig()
     applyOkioJsTestWorkaround()
-
-    plugins.withId("org.jetbrains.compose") {
-        extensions.configure<ComposeExtension> {
-            kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
-            extensions.configure<ExperimentalExtension> {
-                web.application {}  // Render components in html canvas using wasm
-            }
-        }
-    }
 }
 
 /**
@@ -70,6 +52,29 @@ subprojects {
                     "-P",
                     "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.layout.buildDirectory.get().asFile.absolutePath}/compose_compiler"
                 )
+            }
+        }
+    }
+}
+
+fun Project.jvmTargetConfig() {
+    // Target JVM 8.
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+        targetCompatibility = JavaVersion.VERSION_1_8.toString()
+        options.compilerArgs = options.compilerArgs + "-Xlint:-options"
+    }
+    tasks.withType<KotlinJvmCompile>().configureEach {
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+    }
+}
+
+fun Project.composeConfig() {
+    plugins.withId("org.jetbrains.compose") {
+        extensions.configure<ComposeExtension> {
+            kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
+            extensions.configure<ExperimentalExtension> {
+                web.application {}  // Render components in html canvas using wasm
             }
         }
     }

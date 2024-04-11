@@ -6,7 +6,7 @@ plugins {
 androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.view")
 
 dependencies {
-    api(project(":sketch"))
-    api(project(":sketch-extensions-view-core"))
-    androidTestImplementation(project(":internal:test-utils"))
+    api(projects.sketch)
+    api(projects.sketchExtensionsViewCore)
+    androidTestImplementation(projects.internal.testUtils)
 }
