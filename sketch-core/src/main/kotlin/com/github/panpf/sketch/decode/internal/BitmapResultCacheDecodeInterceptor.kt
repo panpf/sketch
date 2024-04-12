@@ -85,16 +85,10 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         requestContext: RequestContext,
     ): BitmapDecodeResult? {
         val resultCache = sketch.resultCache
-        val bitmapDataDiskCacheSnapshot = resultCache[requestContext.resultCacheDataKey]
-        val bitmapMetaDiskCacheSnapshot = resultCache[requestContext.resultCacheMetaKey]
-        if (bitmapDataDiskCacheSnapshot == null || bitmapMetaDiskCacheSnapshot == null) {
-            kotlin.runCatching { bitmapDataDiskCacheSnapshot?.remove() }
-            kotlin.runCatching { bitmapMetaDiskCacheSnapshot?.remove() }
-            return null
-        }
+        val snapshot = resultCache[requestContext.cacheKey] ?: return null
 
         return try {
-            val metaDataJSONObject = bitmapMetaDiskCacheSnapshot.newInputStream()
+            val metaDataJSONObject = snapshot.newMetadataInputStream()
                 .use { it.bufferedReader().readText() }
                 .let { JSONObject(it) }
             val imageInfo = ImageInfo(
@@ -118,12 +112,11 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             }
 
             val dataSource = DiskCacheDataSource(
-                sketch, requestContext.request, RESULT_CACHE, bitmapDataDiskCacheSnapshot
+                sketch, requestContext.request, RESULT_CACHE, snapshot
             )
             val cacheImageInfo = dataSource.readImageInfoWithBitmapFactory(true)
             val decodeOptions = requestContext.request
-                // TODO Use imageInfo.mimeType here
-                .newDecodeConfigByQualityParams(cacheImageInfo.mimeType)
+                .newDecodeConfigByQualityParams(imageInfo.mimeType)
                 .toBitmapOptions()
             sketch.bitmapPool.setInBitmap(
                 options = decodeOptions,
@@ -175,8 +168,7 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
-            bitmapDataDiskCacheSnapshot.remove()
-            bitmapMetaDiskCacheSnapshot.remove()
+            snapshot.remove()
             null
         }
     }
@@ -193,21 +185,13 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         }
 
         val resultCache = sketch.resultCache
-        // TODO Use metadata
-        val bitmapDataEditor = resultCache.edit(requestContext.resultCacheDataKey)
-        val metaDataEditor = resultCache.edit(requestContext.resultCacheMetaKey)
-        if (bitmapDataEditor == null || metaDataEditor == null) {
-            kotlin.runCatching { bitmapDataEditor?.abort() }
-            kotlin.runCatching { metaDataEditor?.abort() }
-            return false
-        }
+        val editor = resultCache.edit(requestContext.cacheKey) ?: return false
         return try {
-            bitmapDataEditor.newOutputStream().buffered().use {
+            editor.newOutputStream().buffered().use {
                 result.bitmap.compress(PNG, 100, it)
             }
-            bitmapDataEditor.commit()
 
-            metaDataEditor.newOutputStream().bufferedWriter().use { writer ->
+            editor.newMetadataOutputStream().bufferedWriter().use { writer ->
                 val metaJSONObject = JSONObject().apply {
                     put("width", result.imageInfo.width)
                     put("height", result.imageInfo.height)
@@ -230,14 +214,11 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
                 }
                 writer.write(metaJSONObject.toString())
             }
-            metaDataEditor.commit()
+            editor.commit()
             true
         } catch (e: Throwable) {
             e.printStackTrace()
-            bitmapDataEditor.abort()
-            metaDataEditor.abort()
-            resultCache.remove(requestContext.resultCacheDataKey)
-            resultCache.remove(requestContext.resultCacheMetaKey)
+            editor.abort()
             false
         }
     }
@@ -254,12 +235,6 @@ class BitmapResultCacheDecodeInterceptor : BitmapDecodeInterceptor {
         return javaClass.hashCode()
     }
 }
-
-val RequestContext.resultCacheDataKey: String
-    get() = "${cacheKey}_result_data"
-
-val RequestContext.resultCacheMetaKey: String
-    get() = "${cacheKey}_result_meta"
 
 val RequestContext.resultCacheLockKey: String
     get() = "${cacheKey}_result"

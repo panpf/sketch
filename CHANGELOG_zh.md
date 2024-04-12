@@ -7,6 +7,7 @@
 #### sketch:
 
 * fix: 修复 GlobalImageOptions resizeSize 不生效的 bug
+* improve: 现在 http download 和 result 缓存的 metadata 信息和数据算是同一个缓存实体，清除时会一起清除
 
 #### sketch-compose:
 

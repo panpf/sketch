@@ -7,6 +7,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 #### sketch:
 
 * fix: Fix the bug that GlobalImageOptions resizeSize does not take effect
+* improve: Now the metadata information and data cached by http download and result are regarded as the same cache entity, and will be cleared together when cleared.
 
 #### sketch-compose:
 

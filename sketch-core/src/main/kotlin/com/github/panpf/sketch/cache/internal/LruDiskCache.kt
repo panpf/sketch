@@ -53,6 +53,8 @@ class LruDiskCache private constructor(
 
         @JvmStatic
         private val editLockLock = Any()
+        private const val ENTRY_DATA = 0
+        private const val ENTRY_METADATA = 1
     }
 
     private var _cache: DiskLruCache? = null
@@ -87,7 +89,7 @@ class LruDiskCache private constructor(
             }
         }
         val unionVersion = intMerged(appVersion, internalVersion)
-        return DiskLruCache.open(directory, unionVersion, 1, maxSize)
+        return DiskLruCache.open(directory, unionVersion, 2, maxSize)
     }
 
     override fun edit(key: String): Editor? {
@@ -236,12 +238,28 @@ class LruDiskCache private constructor(
         private val logger: Logger?,
     ) : Snapshot {
 
-        override val file: File = snapshot.getFile(0)
+        override val file: File = snapshot.getFile(ENTRY_DATA)
+
+        override val metadataFile: File = snapshot.getFile(ENTRY_METADATA)
 
         @Throws(IOException::class)
         override fun newInputStream(): InputStream {
             try {
-                return snapshot.getInputStream(0)
+                return snapshot.getInputStream(ENTRY_DATA)
+            } catch (e: FileNotFoundException) {
+                remove()
+                logger?.w(MODULE) {
+                    val currentSize = cache.size().formatFileSize()
+                    "newInputStream. Auto remove because FileNotFoundException. size $currentSize. '$key'"
+                }
+                throw e
+            }
+        }
+
+        @Throws(IOException::class)
+        override fun newMetadataInputStream(): InputStream {
+            try {
+                return snapshot.getInputStream(ENTRY_METADATA)
             } catch (e: FileNotFoundException) {
                 remove()
                 logger?.w(MODULE) {
@@ -278,7 +296,12 @@ class LruDiskCache private constructor(
 
         @Throws(IOException::class)
         override fun newOutputStream(): OutputStream {
-            return editor.newOutputStream(0)
+            return editor.newOutputStream(ENTRY_DATA)
+        }
+
+        @Throws(IOException::class)
+        override fun newMetadataOutputStream(): OutputStream {
+            return editor.newOutputStream(ENTRY_METADATA)
         }
 
         @Throws(IOException::class)
@@ -308,8 +331,9 @@ class LruDiskCache private constructor(
              * Range from 1 to Short.MAX_VALUE
              *
              * 1: initial
+             * 2. change. valueCount change to 2
              */
-            const val INTERNAL_VERSION = 1
+            const val INTERNAL_VERSION = 2
         }
 
         private var maxSize: Long? = null
@@ -364,8 +388,9 @@ class LruDiskCache private constructor(
              * 3: added. BitmapDecodeResult.extras
              * 4: change. DecodeUtils.realDecode(): transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect, decodeConfig.inSampleSize))
              * 5. change. DecodeUtils.calculateSampleSize()
+             * 6. change. valueCount change to 2
              */
-            const val INTERNAL_VERSION = 5
+            const val INTERNAL_VERSION = 6
         }
 
         private var maxSize: Long? = null

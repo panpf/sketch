@@ -98,10 +98,21 @@ interface DiskCache : Closeable {
         val file: File
 
         /**
+         * Returns cache file
+         */
+        val metadataFile: File
+
+        /**
          * Returns the unbuffered stream
          */
         @Throws(IOException::class)
         fun newInputStream(): InputStream
+
+        /**
+         * Returns the unbuffered stream
+         */
+        @Throws(IOException::class)
+        fun newMetadataInputStream(): InputStream
 
         /**
          * Returns an editor, or null if another edit is in progress.
@@ -127,13 +138,13 @@ interface DiskCache : Closeable {
         @Throws(IOException::class)
         fun newOutputStream(): OutputStream
 
+        fun newMetadataOutputStream(): OutputStream
+
         /**
          * Commits this edit so it is visible to readers.  This releases the
          * edit lock so another edit may be started on the same key.
          */
-        @Throws(
-            IOException::class,
-        )
+        @Throws(IOException::class)
         fun commit()
 
         /**
