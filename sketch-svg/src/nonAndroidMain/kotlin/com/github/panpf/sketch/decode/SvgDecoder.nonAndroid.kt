@@ -59,8 +59,12 @@ actual suspend fun decodeSvg(
     )
 
     val targetSize = requestContext.size!!
-    val targetScale: Float = if (targetSize.isNotEmpty)
-        min(targetSize.width / svgWidth, targetSize.height / svgHeight) else 1f
+    val targetScale: Float = when {
+        targetSize.isNotEmpty -> min(targetSize.width / svgWidth, targetSize.height / svgHeight)
+        targetSize.width > 0 -> targetSize.width / svgHeight
+        targetSize.height > 0 -> targetSize.height / svgHeight
+        else -> 1f
+    }
     val bitmapWidth: Int = (svgWidth * targetScale).roundToInt()
     val bitmapHeight: Int = (svgHeight * targetScale).roundToInt()
     svg.setContainerSize(bitmapWidth.toFloat(), bitmapHeight.toFloat())

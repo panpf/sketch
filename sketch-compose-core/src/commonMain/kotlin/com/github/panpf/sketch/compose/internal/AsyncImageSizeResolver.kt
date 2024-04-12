@@ -37,7 +37,6 @@ class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
     override suspend fun size(): Size {
         return sizeState
             .filterNotNull()
-            .filter { !it.isEmpty() }
             .mapNotNull { it.toSketchSize() }
             .first()
     }

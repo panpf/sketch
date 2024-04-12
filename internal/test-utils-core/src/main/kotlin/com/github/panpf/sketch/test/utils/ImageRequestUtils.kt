@@ -10,6 +10,7 @@ import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -17,7 +18,9 @@ import kotlinx.coroutines.runBlocking
 
 fun ImageRequest.toRequestContext(sketch: Sketch, size: Size? = null): RequestContext {
     return RequestContext(sketch, this).apply {
-        this@apply.size = size ?: runBlocking { sizeResolver.size() * (sizeMultiplier ?: 1f) }
+        this@apply.size = size ?: runBlocking {
+            sizeResolver.size().coerceAtLeast(Size.Empty) * (sizeMultiplier ?: 1f)
+        }
     }
 }
 

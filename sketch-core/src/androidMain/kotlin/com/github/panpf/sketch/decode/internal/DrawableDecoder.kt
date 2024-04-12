@@ -32,7 +32,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isNotEmpty
-import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toNewBitmap
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -56,18 +55,18 @@ open class DrawableDecoder constructor(
         if (imageWidth <= 0 || imageHeight <= 0) {
             throw ImageInvalidException("Invalid drawable intrinsicSize, intrinsicSize=${imageWidth}x${imageHeight}")
         }
-        val size = requestContext.size!!
+        val targetSize = requestContext.size!!
         var transformedList: List<String>? = null
         val dstSize =
             if (drawable is BitmapDrawable || request.sizeResolver is DisplaySizeResolver) {
                 val imageSize = Size(imageWidth, imageHeight)
                 val precision = request.precisionDecider.get(
                     imageSize = imageSize,
-                    targetSize = size,
+                    targetSize = targetSize,
                 )
                 val inSampleSize = calculateSampleSize(
                     imageSize = imageSize,
-                    targetSize = size,
+                    targetSize = targetSize,
                     smallerSizeMode = precision.isSmallerSizeMode(),
                     mimeType = null
                 )
@@ -76,10 +75,14 @@ open class DrawableDecoder constructor(
                 }
                 calculateSampledBitmapSize(imageSize, inSampleSize, mimeType)
             } else {
-                val scale: Float = if (size.isNotEmpty) {
-                    min(size.width / imageWidth.toFloat(), size.height / imageHeight.toFloat())
-                } else {
-                    1f
+                val scale: Float = when {
+                    targetSize.isNotEmpty -> min(
+                        targetSize.width / imageWidth.toFloat(),
+                        targetSize.height / imageHeight.toFloat()
+                    )
+                    targetSize.width > 0 -> targetSize.width / imageWidth.toFloat()
+                    targetSize.height > 0 -> targetSize.height / imageHeight.toFloat()
+                    else -> 1f
                 }
                 if (scale != 1f) {
                     transformedList = listOf(createScaledTransformed(scale))
@@ -89,10 +92,10 @@ open class DrawableDecoder constructor(
                     height = (imageHeight * scale).roundToInt()
                 )
             }
-        val targetSize = Size(width = dstSize.width, height = dstSize.height)
+        val bitmapSize = Size(width = dstSize.width, height = dstSize.height)
         val bitmap = drawable.toNewBitmap(
             preferredConfig = request.bitmapConfig?.getConfig(PNG.mimeType),
-            targetSize = targetSize
+            targetSize = bitmapSize
         )
         val imageInfo = ImageInfo(
             width = imageWidth,

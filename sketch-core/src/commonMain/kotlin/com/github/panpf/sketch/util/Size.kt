@@ -112,3 +112,13 @@ fun Size.isSameAspectRatio(other: Size, delta: Float = 0f): Boolean {
 fun Size.rotate(rotation: Int): Size {
     return if (rotation % 180 == 0) this else Size(width = height, height = width)
 }
+
+fun Size.coerceAtLeast(minimumValue: Size): Size = Size(
+    width = width.coerceAtLeast(minimumValue.width),
+    height = height.coerceAtLeast(minimumValue.height),
+)
+
+fun Size.coerceAtMost(maximumValue: Size): Size = Size(
+    width = width.coerceAtMost(maximumValue.width),
+    height = height.coerceAtMost(maximumValue.height),
+)

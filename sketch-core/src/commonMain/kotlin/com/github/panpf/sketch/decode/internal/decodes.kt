@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ExifOrientation
@@ -51,7 +51,7 @@ fun calculateSampleSize(
     smallerSizeMode: Boolean,
     mimeType: String? = null,
 ): Int {
-    if (imageSize.isEmpty || targetSize.isEmpty) {
+    if (imageSize.isEmpty) {
         return 1
     }
     var sampleSize = 1
@@ -100,7 +100,7 @@ fun calculateSampleSizeForRegion(
     mimeType: String? = null,
     imageSize: Size? = null,
 ): Int {
-    if (regionSize.isEmpty || targetSize.isEmpty) {
+    if (regionSize.isEmpty) {
         return 1
     }
     var sampleSize = 1
@@ -148,16 +148,24 @@ fun checkSampledBitmapSize(
     smallerSizeMode: Boolean,
     maxBitmapSize: Size? = null
 ): Boolean {
-    var accept = if (smallerSizeMode) {
-        sampledBitmapSize.width <= targetSize.width && sampledBitmapSize.height <= targetSize.height
+    var accept = if (targetSize.isEmpty || smallerSizeMode) {
+        sampledBitmapSize.checkSideLimit(targetSize)
     } else {
-        sampledBitmapSize.width * sampledBitmapSize.height <= targetSize.width * targetSize.height
+        sampledBitmapSize.checkAreaLimit(targetSize)
     }
     if (accept && maxBitmapSize != null) {
-        accept =
-            sampledBitmapSize.width <= maxBitmapSize.width && sampledBitmapSize.height <= maxBitmapSize.height
+        accept = sampledBitmapSize.checkSideLimit(maxBitmapSize)
     }
     return accept
+}
+
+private fun Size.checkSideLimit(limitSize: Size): Boolean {
+    return (limitSize.width <= 0 || this.width <= limitSize.width)
+            && (limitSize.height <= 0 || this.height <= limitSize.height)
+}
+
+private fun Size.checkAreaLimit(limitSize: Size): Boolean {
+    return (this.width * this.height) <= (limitSize.width * limitSize.height)
 }
 
 

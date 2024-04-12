@@ -122,6 +122,8 @@ fun DataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = f
     )
 }
 
+// TODO Remove the ignoreExifOrientation parameter, encapsulate BitmapFactory, and automatically handle ExifOrientation
+
 @Throws(IOException::class, ImageInvalidException::class)
 fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory(ignoreExifOrientation)

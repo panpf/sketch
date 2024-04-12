@@ -98,13 +98,17 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             title = "RemoteViews",
             navDirections = NavMainDirections.actionRemoteViewsFragment()
         ),
-        Link(
-            title = "ShareElement",
-            navDirections = NavMainDirections.actionShareElementTestFragment(),
-        ),
+//        Link(
+//            title = "ShareElement",
+//            navDirections = NavMainDirections.actionShareElementTestFragment(),
+//        ),
         Link(
             title = "Transformation",
             navDirections = NavMainDirections.actionTransformationTestPagerFragment()
+        ),
+        Link(
+            title = "Temp",
+            navDirections = NavMainDirections.actionTempTestFragment()
         ),
         "ProjectInfo"
     )

@@ -25,6 +25,7 @@ data class DecodeResult constructor(
     val image: Image,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
+    // TODO resize
     /**
      * Store the transformation history of the Image
      */

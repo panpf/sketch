@@ -35,6 +35,7 @@ import com.github.panpf.sketch.compose.PainterState.Loading
 import com.github.panpf.sketch.compose.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.compose.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.compose.internal.fitScale
+import com.github.panpf.sketch.compose.internal.isEmpty
 import com.github.panpf.sketch.compose.internal.toScale
 import com.github.panpf.sketch.compose.request.internal.ComposeTargetRequestManager
 import com.github.panpf.sketch.compose.target.GenericComposeTarget
@@ -107,6 +108,13 @@ class AsyncImageState internal constructor(
         private set
 
     fun setSize(size: IntSize) {
+        val oldSize = this.size
+        if (oldSize != null && oldSize.isEmpty()) {
+            // The width or height of oldSize is 0, which means that the width or height of AsyncImage is wrap content.
+            // Then only the size set for the first time can be used as the size of the image request,
+            // because the first size can accurately represent the width and height of AsyncImage.
+            return
+        }
         this.size = size
         this.sizeResolver.sizeState.value = size
     }
