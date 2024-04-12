@@ -42,7 +42,10 @@ fun calculateResizeMapping(
     resizeHeight: Int,
     precision: Precision,
     resizeScale: Scale,
-): ResizeMapping {
+): ResizeMapping? {
+    if (imageWidth <= 0 || imageHeight <= 0 || resizeWidth <= 0 || resizeHeight <= 0) {
+        return null
+    }
     if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
         return ResizeMapping(
             srcRect = Rect(0, 0, imageWidth, imageHeight),

@@ -118,7 +118,11 @@ class DefaultBitmapDecoderTest {
                         imageInfo.toShortString()
                     )
                     Assert.assertEquals(LOCAL, dataFrom)
-                    Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+                    if (testFile.exifOrientation != ExifInterface.ORIENTATION_NORMAL) {
+                        Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+                    } else {
+                        Assert.assertNull(transformedList?.getExifOrientationTransformed())
+                    }
                 }
             }
     }
@@ -1084,7 +1088,13 @@ class DefaultBitmapDecoderTest {
             val dataSource = runBlocking {
                 sketch.components.newFetcherOrThrow(request).fetch()
             }.getOrThrow().dataSource
-            sketch.bitmapPool.put(Bitmap.createBitmap(AssetImages.jpeg.size.width, AssetImages.jpeg.size.height, ARGB_8888))
+            sketch.bitmapPool.put(
+                Bitmap.createBitmap(
+                    AssetImages.jpeg.size.width,
+                    AssetImages.jpeg.size.height,
+                    ARGB_8888
+                )
+            )
             val bitmapDecoder = DefaultBitmapDecoder(
                 sketch = sketch,
                 requestContext = request.toRequestContext(),
@@ -1101,7 +1111,13 @@ class DefaultBitmapDecoderTest {
             val dataSource = runBlocking {
                 sketch.components.newFetcherOrThrow(request).fetch()
             }.getOrThrow().dataSource
-            sketch.bitmapPool.put(Bitmap.createBitmap(AssetImages.jpeg.size.width, AssetImages.jpeg.size.height, ARGB_8888))
+            sketch.bitmapPool.put(
+                Bitmap.createBitmap(
+                    AssetImages.jpeg.size.width,
+                    AssetImages.jpeg.size.height,
+                    ARGB_8888
+                )
+            )
             val bitmapDecoder = DefaultBitmapDecoder(
                 sketch = sketch,
                 requestContext = request.toRequestContext(),

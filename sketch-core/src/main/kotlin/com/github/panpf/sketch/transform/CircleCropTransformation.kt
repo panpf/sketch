@@ -58,7 +58,7 @@ class CircleCropTransformation constructor(val scale: Scale? = null) : Transform
             )
         val resizeMapping = calculateResizeMapping(
             input.width, input.height, newSize, newSize, SAME_ASPECT_RATIO, scale
-        )
+        )!!
         val config = input.safeConfig
         val outBitmap = sketch.bitmapPool.getOrCreate(
             width = resizeMapping.newWidth,

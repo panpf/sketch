@@ -6,13 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
@@ -22,13 +19,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.compose.AsyncImage
+import com.github.panpf.sketch.request.DisplayRequest
 import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarComposeFragment
 import kotlinx.coroutines.CoroutineScope
@@ -48,28 +46,45 @@ class TempTestComposeFragment : BaseToolbarComposeFragment() {
 
     @Composable
     override fun DrawContent() {
-        Log.i("RememberObserverTest", "DrawContent. start")
-        val state = rememberTestState()
-        Component1(state)
-        Box(Modifier.fillMaxSize()) {
-            if (state.showLoading) {
-                CircularProgressIndicator(
+//        Log.i("RememberObserverTest", "DrawContent. start")
+//        val state = rememberTestState()
+//        Component1(state)
+//        Box(Modifier.fillMaxSize()) {
+//            if (state.showLoading) {
+//                CircularProgressIndicator(
+//                    modifier = Modifier
+//                        .size(50.dp)
+//                        .align(Alignment.Center)
+//                )
+//            } else {
+//                Button(
+//                    onClick = { state.next() },
+//                    modifier = Modifier
+//                        .align(Alignment.BottomCenter)
+//                        .padding(bottom = 50.dp)
+//                ) {
+//                    Text(text = "NEXT")
+//                }
+//            }
+//        }
+//        Log.w("RememberObserverTest", "DrawContent. end")
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            item {
+                AsyncImage(
+                    request = DisplayRequest(
+                        LocalContext.current,
+                        AssetImages.jpeg.uri
+                    ) {
+                        memoryCachePolicy(DISABLED)
+                        resultCachePolicy(DISABLED)
+                    },
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                 )
-            } else {
-                Button(
-                    onClick = { state.next() },
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 50.dp)
-                ) {
-                    Text(text = "NEXT")
-                }
             }
         }
-        Log.w("RememberObserverTest", "DrawContent. end")
     }
 
     @Composable

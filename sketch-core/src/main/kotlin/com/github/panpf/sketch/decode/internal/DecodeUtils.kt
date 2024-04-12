@@ -98,11 +98,20 @@ private fun checkSampledSize(
     targetSize: Size,
     smallerSizeMode: Boolean
 ): Boolean {
-    return if (smallerSizeMode) {
-        sampledSize.width <= targetSize.width && sampledSize.height <= targetSize.height
+    return if (targetSize.isEmpty || smallerSizeMode) {
+        sampledSize.checkSideLimit(targetSize)
     } else {
-        sampledSize.width * sampledSize.height <= targetSize.width * targetSize.height
+        sampledSize.checkAreaLimit(targetSize)
     }
+}
+
+private fun Size.checkSideLimit(limitSize: Size): Boolean {
+    return (limitSize.width <= 0 || this.width <= limitSize.width)
+            && (limitSize.height <= 0 || this.height <= limitSize.height)
+}
+
+private fun Size.checkAreaLimit(limitSize: Size): Boolean {
+    return (this.width * this.height) <= (limitSize.width * limitSize.height)
 }
 
 /**
@@ -114,6 +123,9 @@ fun calculateSampleSize(
     smallerSizeMode: Boolean,
     mimeType: String? = null
 ): Int {
+    if (imageSize.isEmpty) {
+        return 1
+    }
     var sampleSize = 1
     var accepted = false
     while (!accepted) {
@@ -159,6 +171,9 @@ fun calculateSampleSizeForRegion(
     mimeType: String? = null,
     imageSize: Size? = null
 ): Int {
+    if (regionSize.isEmpty) {
+        return 1
+    }
     var sampleSize = 1
     var accepted = false
     while (!accepted) {
@@ -212,7 +227,9 @@ fun limitedSampleSizeByMaxBitmapSize(
     var finalSampleSize = sampleSize.coerceAtLeast(1)
     while (true) {
         val bitmapSize = calculateSampledBitmapSize(imageSize, finalSampleSize, mimeType)
-        if (bitmapSize.width <= maxBitmapSize.width && bitmapSize.height <= maxBitmapSize.height) {
+        if ((maxBitmapSize.width <= 0 || bitmapSize.width <= maxBitmapSize.width)
+            && (maxBitmapSize.height <= 0 || bitmapSize.height <= maxBitmapSize.height)
+        ) {
             break
         } else {
             finalSampleSize *= 2
@@ -298,19 +315,20 @@ fun realDecode(
     val addedResize = exifOrientationHelper.addToResize(resize, appliedImageSize)
     val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
     val transformedList = mutableListOf<String>()
+    val resizeMapping = calculateResizeMapping(
+        imageWidth = imageInfo.width,
+        imageHeight = imageInfo.height,
+        resizeWidth = addedResize.width,
+        resizeHeight = addedResize.height,
+        precision = addedResize.precision,
+        resizeScale = addedResize.scale,
+    )
     val bitmap = if (
         addedResize.shouldClip(imageInfo.width, imageInfo.height)
         && addedResize.precision != LESS_PIXELS
         && decodeRegion != null
+        && resizeMapping != null
     ) {
-        val resizeMapping = calculateResizeMapping(
-            imageWidth = imageInfo.width,
-            imageHeight = imageInfo.height,
-            resizeWidth = addedResize.width,
-            resizeHeight = addedResize.height,
-            precision = addedResize.precision,
-            resizeScale = addedResize.scale,
-        )
         val sampleSize = calculateSampleSizeForRegion(
             regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
             targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
@@ -441,15 +459,19 @@ fun BitmapDecodeResult.appliedResize(
             precision = resize.precision,
             resizeScale = resize.scale,
         )
-        val config = inputBitmap.safeConfig
-        sketch.bitmapPool.getOrCreate(
-            width = mapping.newWidth,
-            height = mapping.newHeight,
-            config = config,
-            disallowReuseBitmap = request.disallowReuseBitmap,
-            caller = "appliedResize"
-        ).apply {
-            Canvas(this).drawBitmap(inputBitmap, mapping.srcRect, mapping.destRect, null)
+        if (mapping != null) {
+            val config = inputBitmap.safeConfig
+            sketch.bitmapPool.getOrCreate(
+                width = mapping.newWidth,
+                height = mapping.newHeight,
+                config = config,
+                disallowReuseBitmap = request.disallowReuseBitmap,
+                caller = "appliedResize"
+            ).apply {
+                Canvas(this).drawBitmap(inputBitmap, mapping.srcRect, mapping.destRect, null)
+            }
+        } else {
+            null
         }
     } else {
         null

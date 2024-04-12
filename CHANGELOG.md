@@ -4,7 +4,13 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
-* fix: Fix the bug that the resizeSize of GlobalImageOptions does not take effect
+#### sketch:
+
+* fix: Fix the bug that GlobalImageOptions resizeSize does not take effect
+
+#### sketch-compose:
+
+* fix: Fix the bug that AsyncImage cannot display images when the height of LazyColumn is wrapContentHeight [#194](https://github.com/panpf/sketch/issues/194)
 
 # v3.3.1
 

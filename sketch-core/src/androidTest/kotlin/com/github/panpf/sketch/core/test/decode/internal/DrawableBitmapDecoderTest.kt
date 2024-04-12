@@ -33,6 +33,7 @@ import com.github.panpf.sketch.resources.AssetImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -217,5 +218,5 @@ class DrawableBitmapDecoderTest {
 }
 
 fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
-    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
+    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size().coerceAtLeast(Size.Empty) })
 }

@@ -42,6 +42,7 @@ import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.isNotEmpty
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -96,7 +97,7 @@ class SvgBitmapDecoder constructor(
             exifOrientation = ExifInterface.ORIENTATION_UNDEFINED
         )
 
-        val resizeSize = requestContext.resizeSize
+        val targetSize = requestContext.resizeSize
         val dstWidth: Int
         val dstHeight: Int
         var transformedList: List<String>? = null
@@ -105,12 +106,12 @@ class SvgBitmapDecoder constructor(
             val precision = request.resizePrecisionDecider.get(
                 imageWidth = imageSize.width,
                 imageHeight = imageSize.height,
-                resizeWidth = resizeSize.width,
-                resizeHeight = resizeSize.height
+                resizeWidth = targetSize.width,
+                resizeHeight = targetSize.height
             )
             val inSampleSize = calculateSampleSize(
                 imageSize = imageSize,
-                targetSize = resizeSize,
+                targetSize = targetSize,
                 smallerSizeMode = precision.isSmallerSizeMode(),
                 mimeType = null
             )
@@ -120,7 +121,15 @@ class SvgBitmapDecoder constructor(
                 transformedList = listOf(createInSampledTransformed(inSampleSize))
             }
         } else {
-            val scale: Float = min(resizeSize.width / imageWidth, resizeSize.height / imageHeight)
+            val scale: Float =  when {
+                targetSize.isNotEmpty -> min(
+                    targetSize.width / imageWidth,
+                    targetSize.height / imageHeight
+                )
+                targetSize.width > 0 -> targetSize.width / imageWidth
+                targetSize.height > 0 -> targetSize.height / imageHeight
+                else -> 1f
+            }
             dstWidth = (imageWidth * scale).roundToInt()
             dstHeight = (imageHeight * scale).roundToInt()
             if (scale != 1f) {

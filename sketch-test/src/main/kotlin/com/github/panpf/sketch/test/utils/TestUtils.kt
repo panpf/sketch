@@ -33,6 +33,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LoadRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.coerceAtLeast
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.InputStream
@@ -75,7 +76,7 @@ fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null
 }
 
 fun ImageRequest.toRequestContext(resizeSize: Size? = null): RequestContext {
-    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size() })
+    return RequestContext(this, resizeSize ?: runBlocking { resizeSizeResolver.size().coerceAtLeast(Size.Empty) })
 }
 
 fun LoadRequest.decode(sketch: Sketch): BitmapDecodeResult {

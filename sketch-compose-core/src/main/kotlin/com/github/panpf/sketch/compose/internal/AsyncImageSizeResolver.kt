@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
@@ -35,7 +34,6 @@ class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
     override suspend fun size(): Size {
         return sizeState
             .filterNotNull()
-            .filter { !it.isEmpty() }
             .mapNotNull { it.toSketchSize() }
             .first()
     }

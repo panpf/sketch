@@ -46,6 +46,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.awaitStarted
+import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
@@ -83,7 +84,7 @@ class RequestExecutor {
             }
 
             // resolve resize size
-            val resizeSize = request.resizeSizeResolver.size()
+            val resizeSize = request.resizeSizeResolver.size().coerceAtLeast(Size.Empty)
             requestContext = RequestContext(request, resizeSize)
             firstRequestKey = requestContext.key
 

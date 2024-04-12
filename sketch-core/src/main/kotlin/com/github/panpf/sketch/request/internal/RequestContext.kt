@@ -19,6 +19,7 @@ import androidx.annotation.MainThread
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.requiredMainThread
 
 class RequestContext constructor(firstRequest: ImageRequest, resizeSize: Size) {
@@ -59,7 +60,7 @@ class RequestContext constructor(firstRequest: ImageRequest, resizeSize: Size) {
             _requestList.add(request)
             _request = request
             if (lastRequest.resizeSizeResolver != request.resizeSizeResolver) {
-                resizeSize = request.resizeSizeResolver.size()
+                resizeSize = request.resizeSizeResolver.size().coerceAtLeast(Size.Empty)
             }
             _key = null
             _cacheKey = null

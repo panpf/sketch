@@ -4,7 +4,13 @@
 
 # new
 
-* fix: 修复 GlobalImageOptions resizeSize 不生效的 bug 
+#### sketch:
+
+* fix: 修复 GlobalImageOptions resizeSize 不生效的 bug
+
+#### sketch-compose:
+
+* fix: 修复 AsyncImage 在 LazyColumn 中 高度是 wrapContentHeight 时无法显示图片的 bug [#194](https://github.com/panpf/sketch/issues/194)
 
 # v3.3.1
 

@@ -22,12 +22,13 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
+import com.github.panpf.sketch.util.isNotEmpty
 
 fun Drawable.tryToResizeDrawable(
     request: ImageRequest,
     resizeSize: Size?,
 ): Drawable {
-    return if (request.resizeApplyToDrawable && resizeSize != null) {
+    return if (request.resizeApplyToDrawable && resizeSize != null && resizeSize.isNotEmpty) {
         val scale = request.resizeScaleDecider.get(
             imageWidth = intrinsicWidth,
             imageHeight = intrinsicHeight,

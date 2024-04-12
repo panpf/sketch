@@ -47,8 +47,11 @@ data class Resize constructor(
     /**
      * Calculate the precision according to the original image, and then decide whether to crop the image according to the precision
      */
-    fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean =
-        when (precision) {
+    fun shouldClip(imageWidth: Int, imageHeight: Int): Boolean {
+        if (width <= 0 || height <= 0 || imageWidth <= 0 || imageHeight <= 0) {
+            return false
+        }
+        return when (precision) {
             Precision.EXACTLY -> imageWidth != width || imageHeight != height
             Precision.SAME_ASPECT_RATIO -> {
                 val imageAspectRatio = imageWidth.toFloat().div(imageHeight).format(1)
@@ -59,6 +62,8 @@ data class Resize constructor(
             Precision.LESS_PIXELS -> false
             Precision.SMALLER_SIZE -> false
         }
+    }
+
 
     override fun toString(): String {
         return "Resize(width=${width}, height=$height, precision=${precision}, scale=${scale})"
