@@ -82,8 +82,6 @@ open class SketchZoomImageView @JvmOverloads constructor(
             }
             _subsamplingEngine?.disabledTileBitmapCacheState?.value =
                 result.request.memoryCachePolicy != CachePolicy.ENABLED
-            _subsamplingEngine?.ignoreExifOrientationState?.value =
-                result.request.ignoreExifOrientation
             _subsamplingEngine?.setImageSource(newImageSource(result))
         }
     }

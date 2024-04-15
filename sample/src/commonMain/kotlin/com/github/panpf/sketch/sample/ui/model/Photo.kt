@@ -25,7 +25,6 @@ data class Photo constructor(
     @SerialName("thumbnailUrl") val thumbnailUrl: String?,
     @SerialName("width") val width: Int?,
     @SerialName("height") val height: Int?,
-    @SerialName("exifOrientation") val exifOrientation: Int,
     @SerialName("index") val index: Int? = null,
 ) {
 

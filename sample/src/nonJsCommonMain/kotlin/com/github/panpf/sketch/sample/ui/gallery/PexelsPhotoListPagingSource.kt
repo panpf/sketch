@@ -59,6 +59,5 @@ class PexelsPhotoListPagingSource : PagingSource<Int, Photo>() {
         thumbnailUrl = src.medium,
         width = width,
         height = height,
-        exifOrientation = 0,
     )
 }

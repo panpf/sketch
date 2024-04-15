@@ -30,7 +30,6 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendPrecision()
     .appendScale()
     .appendTransformations()
-    .appendIgnoreExifOrientation()
     .appendResultCachePolicy()
     .appendDisallowAnimatedImage()
     .appendResizeOnDraw()
@@ -49,7 +48,6 @@ internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuild
     .appendPrecision()
     .appendScale()
     .appendTransformations()
-    .appendIgnoreExifOrientation()
     .appendDisallowAnimatedImage()
     .appendDecoders()
     .appendDecodeInterceptors()
@@ -154,12 +152,6 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
                     it.key.replace("Transformation", "")
                 }
             appendQueryParameter("_transformations", transformationKeys)
-        }
-    }
-
-    fun appendIgnoreExifOrientation(): ImageRequestKeyBuilder = apply {
-        if (request.ignoreExifOrientation) {
-            appendQueryParameter("_ignoreExifOrientation", true.toString())
         }
     }
 

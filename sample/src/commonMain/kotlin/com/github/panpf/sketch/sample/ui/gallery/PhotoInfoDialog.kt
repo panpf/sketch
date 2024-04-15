@@ -48,7 +48,7 @@ fun PhotoInfoDialog(imageResult: ImageResult?, onDismissRequest: () -> Unit) {
 
                 val sourceImageInfo = remember {
                     imageResult.imageInfo.run {
-                        "${width}x${height}, ${mimeType}, ${ExifOrientation.name(exifOrientation)}"
+                        "${width}x${height}, ${mimeType}"
                     }
                 }
                 PhotoInfoItem("Source Image: ", sourceImageInfo)

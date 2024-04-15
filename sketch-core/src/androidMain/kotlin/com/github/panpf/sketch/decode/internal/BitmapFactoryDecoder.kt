@@ -15,81 +15,22 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import android.graphics.Bitmap
-import android.graphics.Rect
-import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.DecodeException
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.toAndroidRect
-import com.github.panpf.sketch.util.toLogString
 
 /**
  * Decode image files using BitmapFactory
  */
 open class BitmapFactoryDecoder(
-    private val requestContext: RequestContext,
-    private val dataSource: DataSource,
-) : Decoder {
-
-    @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
-        val request = requestContext.request
-        val imageInfo =
-            dataSource.readImageInfoWithBitmapFactoryOrThrow(request.ignoreExifOrientation)
-        val canDecodeRegion = ImageFormat.parseMimeType(imageInfo.mimeType)
-            ?.supportBitmapRegionDecoder() == true
-        val decodeResult = realDecode(
-            requestContext = requestContext,
-            dataFrom = dataSource.dataFrom,
-            imageInfo = imageInfo,
-            decodeFull = { sampleSize ->
-                realDecodeFull(imageInfo, sampleSize).asSketchImage()
-            },
-            decodeRegion = if (canDecodeRegion) { srcRect, sampleSize ->
-                realDecodeRegion(imageInfo, srcRect.toAndroidRect(), sampleSize).asSketchImage()
-            } else null
-        )
-        val exifResult = decodeResult.appliedExifOrientation(requestContext)
-        val resizedResult = exifResult.appliedResize(requestContext)
-        resizedResult
-    }
-
-    private fun realDecodeFull(imageInfo: ImageInfo, sampleSize: Int): Bitmap {
-        val request = requestContext.request
-        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-        decodeConfig.inSampleSize = sampleSize
-        val decodeOptions = decodeConfig.toBitmapOptions()
-
-        val bitmap: Bitmap = try {
-            dataSource.decodeBitmap(decodeOptions)
-                ?: throw ImageInvalidException("Invalid image. decode return null")
-        } catch (throwable: Throwable) {
-            throw DecodeException("Bitmap decode error: $throwable", throwable)
-        }
-        return bitmap
-    }
-
-    private fun realDecodeRegion(imageInfo: ImageInfo, srcRect: Rect, sampleSize: Int): Bitmap {
-        val request = requestContext.request
-        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-        decodeConfig.inSampleSize = sampleSize
-        val decodeOptions = decodeConfig.toBitmapOptions()
-
-        val bitmap: Bitmap = try {
-            dataSource.decodeRegionBitmap(srcRect, decodeOptions)
-                ?: throw ImageInvalidException("Invalid image. region decode return null")
-        } catch (throwable: Throwable) {
-            throw DecodeException("Bitmap region decode error", throwable)
-        }
-        return bitmap
-    }
+    requestContext: RequestContext,
+    dataSource: DataSource,
+) : HelperDecoder(
+    requestContext = requestContext,
+    dataSource = dataSource,
+    decodeHelper = BitmapFactoryDecodeHelper(requestContext.request, dataSource)
+) {
 
     class Factory : Decoder.Factory {
 

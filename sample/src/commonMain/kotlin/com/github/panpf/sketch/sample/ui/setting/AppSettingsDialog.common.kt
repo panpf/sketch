@@ -39,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -117,9 +116,10 @@ fun createSettingItems(
         add(GroupSettingItem("Zoom"))
         addAll(makeZoomMenuList(appSettings))
     }
-    add(GroupSettingItem("Decode"))
-    addAll(makeDecodeMenuList(appSettings))
-    addAll(platformMakeDecodeMenuList(appSettings))
+    platformMakeDecodeMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
+        add(GroupSettingItem("Decode"))
+        addAll(it)
+    }
     add(GroupSettingItem("Cache"))
     addAll(makeCacheMenuList(context, appSettings, recreateSettingItems))
     add(GroupSettingItem("Other"))
@@ -204,15 +204,6 @@ expect fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem>
 
 expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem>
 
-private fun makeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        SwitchSettingItem(
-            title = "Exif Orientation",
-            desc = null,
-            state = appSettings.exifOrientation,
-        )
-    )
-}
 
 private fun makeCacheMenuList(
     context: PlatformContext,

@@ -16,26 +16,13 @@
 package com.github.panpf.sketch.decode
 
 import android.annotation.TargetApi
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
-import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build
-import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.ContentDataSource
 import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.internal.appliedExifOrientation
-import com.github.panpf.sketch.decode.internal.appliedResize
-import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
-import com.github.panpf.sketch.decode.internal.realDecode
+import com.github.panpf.sketch.decode.internal.HelperDecoder
+import com.github.panpf.sketch.decode.internal.VideoFrameDecodeHelper
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.request.videoFrameMicros
-import com.github.panpf.sketch.request.videoFrameOption
-import com.github.panpf.sketch.request.videoFramePercent
-import kotlin.math.roundToInt
 
 /**
  * Adds video frame support
@@ -59,159 +46,11 @@ class VideoFrameDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val mimeType: String,
-) : Decoder {
-
-    @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
-        val request = requestContext.request
-        val mediaMetadataRetriever = MediaMetadataRetriever().apply {
-            when (dataSource) {
-                is ContentDataSource -> {
-                    setDataSource(request.context, dataSource.contentUri)
-                }
-
-                else -> {
-                    dataSource.getFileOrNull()?.let { setDataSource(it.toFile().path) }
-                        ?: throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
-                }
-            }
-        }
-        try {
-            val imageInfo = readImageInfo(mediaMetadataRetriever)
-            val decodeResult = realDecode(
-                requestContext = requestContext,
-                dataFrom = dataSource.dataFrom,
-                imageInfo = imageInfo,
-                decodeFull = { sampleSize ->
-                    realDecodeFull(mediaMetadataRetriever, imageInfo, sampleSize).asSketchImage()
-                },
-                decodeRegion = null
-            )
-            val exifResult = decodeResult.appliedExifOrientation(requestContext)
-            val resizedResult = exifResult.appliedResize(requestContext)
-            resizedResult
-        } finally {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                mediaMetadataRetriever.close()
-            } else {
-                mediaMetadataRetriever.release()
-            }
-        }
-    }
-
-    private fun readImageInfo(mediaMetadataRetriever: MediaMetadataRetriever): ImageInfo {
-        val srcWidth = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
-        val srcHeight = mediaMetadataRetriever
-            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
-        if (srcWidth <= 1 || srcHeight <= 1) {
-            val message = "Invalid video file. size=${srcWidth}x${srcHeight}"
-            throw ImageInvalidException(message)
-        }
-        val exifOrientation = if (!requestContext.request.ignoreExifOrientation) {
-            readExifOrientation(mediaMetadataRetriever)
-        } else {
-            ExifInterface.ORIENTATION_UNDEFINED
-        }
-        return ImageInfo(srcWidth, srcHeight, mimeType, exifOrientation)
-    }
-
-    private fun readExifOrientation(mediaMetadataRetriever: MediaMetadataRetriever): Int =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val videoRotation = mediaMetadataRetriever
-                .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-                ?.toIntOrNull() ?: 0
-            videoRotation.run {
-                when (this) {
-                    90 -> ExifInterface.ORIENTATION_ROTATE_90
-                    180 -> ExifInterface.ORIENTATION_ROTATE_180
-                    270 -> ExifInterface.ORIENTATION_ROTATE_270
-                    else -> ExifInterface.ORIENTATION_UNDEFINED
-                }
-            }
-        } else {
-            ExifInterface.ORIENTATION_UNDEFINED
-        }
-
-    private fun realDecodeFull(
-        mediaMetadataRetriever: MediaMetadataRetriever,
-        imageInfo: ImageInfo,
-        sampleSize: Int
-    ): Bitmap {
-        val request = requestContext.request
-        val decodeConfig = request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-        decodeConfig.inSampleSize = sampleSize
-        val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
-        val frameMicros = request.videoFrameMicros
-            ?: request.videoFramePercent?.let { percentDuration ->
-                val duration = mediaMetadataRetriever
-                    .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                    ?.toLongOrNull() ?: 0L
-                (duration * percentDuration * 1000).toLong()
-            }
-            ?: 0L
-
-        val inSampleSize = decodeConfig.inSampleSize?.toFloat()
-        val dstWidth = if (inSampleSize != null) {
-            (imageInfo.width / inSampleSize).roundToInt()
-        } else {
-            imageInfo.width
-        }
-        val dstHeight = if (inSampleSize != null) {
-            (imageInfo.height / inSampleSize).roundToInt()
-        } else {
-            imageInfo.height
-        }
-        val bitmap = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                val bitmapParams = BitmapParams().apply {
-                    val inPreferredConfigFromRequest = decodeConfig.inPreferredConfig
-                    if (inPreferredConfigFromRequest != null) {
-                        preferredConfig = inPreferredConfigFromRequest
-                    }
-                }
-                mediaMetadataRetriever
-                    .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
-                    ?: throw DecodeException(
-                        "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d, preferredConfig=%s.".format(
-                            frameMicros, optionToName(option), dstWidth, dstHeight,
-                            imageInfo.width, imageInfo.height, decodeConfig.inPreferredConfig
-                        )
-                    )
-            }
-
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
-                mediaMetadataRetriever
-                    .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
-                    ?: throw DecodeException(
-                        "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d.".format(
-                            frameMicros, optionToName(option), dstWidth, dstHeight,
-                            imageInfo.width, imageInfo.height
-                        )
-                    )
-            }
-
-            else -> {
-                mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
-                    ?: throw DecodeException(
-                        "Failed to getFrameAtTime. frameMicros=%d, option=%s, image=%dx%d.".format(
-                            frameMicros, optionToName(option), imageInfo.width, imageInfo.height
-                        )
-                    )
-            }
-        }
-        return bitmap
-    }
-
-    private fun optionToName(option: Int): String {
-        return when (option) {
-            MediaMetadataRetriever.OPTION_CLOSEST -> "CLOSEST"
-            MediaMetadataRetriever.OPTION_CLOSEST_SYNC -> "CLOSEST_SYNC"
-            MediaMetadataRetriever.OPTION_NEXT_SYNC -> "NEXT_SYNC"
-            MediaMetadataRetriever.OPTION_PREVIOUS_SYNC -> "PREVIOUS_SYNC"
-            else -> "Unknown($option)"
-        }
-    }
+) : HelperDecoder(
+    requestContext = requestContext,
+    dataSource = dataSource,
+    decodeHelper = VideoFrameDecodeHelper(requestContext.request, dataSource, mimeType)
+) {
 
     @TargetApi(Build.VERSION_CODES.O_MR1)
     class Factory : Decoder.Factory {

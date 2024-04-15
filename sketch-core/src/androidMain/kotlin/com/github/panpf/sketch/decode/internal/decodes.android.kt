@@ -103,30 +103,22 @@ actual fun calculateSampledBitmapSizeForRegion(
 /* **************************************** decode ********************************************* */
 
 @Throws(IOException::class)
-fun DataSource.readImageInfoWithBitmapFactory(ignoreExifOrientation: Boolean = false): ImageInfo {
+fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
     }
     decodeBitmap(boundOptions)
     val mimeType = boundOptions.outMimeType.orEmpty()
-    val exifOrientation = if (!ignoreExifOrientation) {
-        readExifOrientationWithMimeType(mimeType)
-    } else {
-        ExifInterface.ORIENTATION_UNDEFINED
-    }
     return ImageInfo(
         width = boundOptions.outWidth,
         height = boundOptions.outHeight,
         mimeType = mimeType,
-        exifOrientation = exifOrientation,
     )
 }
 
-// TODO Remove the ignoreExifOrientation parameter, encapsulate BitmapFactory, and automatically handle ExifOrientation
-
 @Throws(IOException::class, ImageInvalidException::class)
-fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Boolean = false): ImageInfo {
-    val imageInfo = readImageInfoWithBitmapFactory(ignoreExifOrientation)
+fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
+    val imageInfo = readImageInfoWithBitmapFactory()
     val width = imageInfo.width
     val height = imageInfo.height
     if (width <= 0 || height <= 0) {
@@ -136,9 +128,9 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation: Bool
 }
 
 @WorkerThread
-fun DataSource.readImageInfoWithBitmapFactoryOrNull(ignoreExifOrientation: Boolean = false): ImageInfo? =
+fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
     try {
-        readImageInfoWithBitmapFactory(ignoreExifOrientation).takeIf {
+        readImageInfoWithBitmapFactory().takeIf {
             it.width > 0 && it.height > 0
         }
     } catch (e: IOException) {

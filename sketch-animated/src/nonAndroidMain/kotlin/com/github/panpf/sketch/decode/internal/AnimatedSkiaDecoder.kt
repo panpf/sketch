@@ -28,7 +28,6 @@ open class AnimatedSkiaDecoder(
             width = codec.width,
             height = codec.height,
             mimeType = mimeType,
-            exifOrientation = ExifOrientation.UNDEFINED
         )
         // TODO not support resize
         val request = requestContext.request

@@ -78,12 +78,6 @@ fun PhotoList(
             refreshing = false
         }
     }
-    LaunchedEffect(Unit) {
-        appSettingsService.exifOrientation.ignoreFirst().collect {
-            // PhotoPagingSource needs to calculate the width and height of the image based on exif information, so it needs to be refreshed
-            pageStart = -1
-        }
-    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,

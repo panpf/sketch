@@ -166,7 +166,6 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             appendLine("width=${imageInfo.width}")
             appendLine("height=${imageInfo.height}")
             appendLine("mimeType=${imageInfo.mimeType}")
-            appendLine("exifOrientation=${imageInfo.exifOrientation}")
             transformedList?.forEach {
                 appendLine("transformed=${it}")
             }
@@ -190,7 +189,6 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                     width = propertiesMap["width"]!!.toInt(),
                     height = propertiesMap["height"]!!.toInt(),
                     mimeType = propertiesMap["mimeType"]!!,
-                    exifOrientation = propertiesMap["exifOrientation"]!!.toInt(),
                 )
                 val transformedList = propertiesMap.keys.asSequence()
                     .filter { key -> key == "transformed" }

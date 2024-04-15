@@ -22,11 +22,8 @@ import app.cash.paging.PagingState
 import app.cash.paging.createPagingSourceLoadResultPage
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 expect suspend fun readPhotosFromPhotoAlbum(
@@ -39,7 +36,6 @@ expect suspend fun readImageInfoOrNull(
     context: PlatformContext,
     sketch: Sketch,
     uri: String,
-    ignoreExifOrientation: Boolean
 ): ImageInfo?
 
 class LocalPhotoListPagingSource(
@@ -80,12 +76,16 @@ class LocalPhotoListPagingSource(
             }
         } else {
             val photoAlbumStartPosition = startPosition - builtInPhotos.size
-            @Suppress("UnnecessaryVariable") val photoAlbumPageSize = pageSize
+            val photoAlbumPageSize = pageSize
             readPhotosFromPhotoAlbum(context, photoAlbumStartPosition, photoAlbumPageSize)
         }.map { uri -> uriToPhoto(uri) }
         val nextKey = if (photos.isNotEmpty()) startPosition + pageSize else null
         val filteredPhotos = photos.filter { keySet.add(it.originalUrl) }
-        return createPagingSourceLoadResultPage(filteredPhotos, null, nextKey) as PagingSourceLoadResult<Int, Photo>
+        return createPagingSourceLoadResultPage(
+            filteredPhotos,
+            null,
+            nextKey
+        ) as PagingSourceLoadResult<Int, Photo>
     }
 
     private suspend fun uriToPhoto(uri: String): Photo {
@@ -93,19 +93,13 @@ class LocalPhotoListPagingSource(
             context = context,
             sketch = sketch,
             uri = uri,
-            ignoreExifOrientation = !context.appSettings.exifOrientation.value
-        )?.let {
-            val exifOrientationHelper = ExifOrientationHelper(it.exifOrientation)
-            val newSize = exifOrientationHelper?.applyToSize(it.size) ?: it.size
-            it.copy(size = newSize)
-        }
+        )
         return Photo(
             originalUrl = uri,
             mediumUrl = null,
             thumbnailUrl = null,
             width = imageInfo?.width,
             height = imageInfo?.height,
-            exifOrientation = imageInfo?.exifOrientation ?: ExifOrientation.UNDEFINED,
         )
     }
 }

@@ -105,9 +105,6 @@ class AppSettings(val context: PlatformContext) {
         )
     }
 
-    val exifOrientation: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context,"exifOrientation", true,)
-    }
     val saveCellularTrafficInList: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context,"saveCellularTrafficInList", false,)
     }
@@ -188,7 +185,6 @@ class AppSettings(val context: PlatformContext) {
         longImageScale,
         otherImageScale,
 
-        exifOrientation,
         saveCellularTrafficInList,
         disallowAnimatedImageInList,
     )
@@ -203,8 +199,6 @@ class AppSettings(val context: PlatformContext) {
         memoryCache,
         resultCache,
         downloadCache,
-
-        exifOrientation,
     )
     val viewersCombinedFlow: Flow<Any> =
         combine(viewerSettingFlows) { it.joinToString() }
@@ -221,7 +215,6 @@ class AppSettings(val context: PlatformContext) {
         precision(precisionValue)
         scale(scaleValue)
 
-        ignoreExifOrientation(!exifOrientation.value)
         saveCellularTraffic(saveCellularTrafficInList.value)
         disallowAnimatedImage(disallowAnimatedImageInList.value)
     }
@@ -232,8 +225,6 @@ class AppSettings(val context: PlatformContext) {
         memoryCachePolicy(memoryCacheValue)
         resultCachePolicy(resultCacheValue)
         downloadCachePolicy(downloadCacheValue)
-
-        ignoreExifOrientation(!exifOrientation.value)
     }
 }
 

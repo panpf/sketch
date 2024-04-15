@@ -29,7 +29,6 @@ actual fun Screen.LocalPhotoPage() {
                             thumbnailUrl = it.uri,
                             width = it.size.width,
                             height = it.size.height,
-                            exifOrientation = it.exifOrientation,
                         )
                     }
             } else {

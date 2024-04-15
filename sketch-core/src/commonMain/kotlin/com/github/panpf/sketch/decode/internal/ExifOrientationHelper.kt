@@ -27,6 +27,7 @@ import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.rotateInSpace
 import kotlin.math.abs
 
+// TODO Only android
 expect fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper?
 
 /**

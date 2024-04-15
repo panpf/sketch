@@ -102,10 +102,9 @@ open class AnimatedImageDecoderDecoder(
             ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
                 imageDecoder = decoder
                 imageInfo = ImageInfo(
-                    info.size.width,
-                    info.size.height,
-                    info.mimeType,
-                    ExifOrientation.UNDEFINED
+                    width = info.size.width,
+                    height = info.size.height,
+                    mimeType = info.mimeType,
                 )
                 val size = requestContext.size!!
                 val precision = request.precisionDecider.get(

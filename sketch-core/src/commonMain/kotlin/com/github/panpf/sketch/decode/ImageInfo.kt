@@ -20,7 +20,6 @@ import com.github.panpf.sketch.util.Size
 data class ImageInfo constructor(
     val size: Size,
     val mimeType: String,
-    @ExifOrientation val exifOrientation: Int,
 ) {
 
     val width: Int get() = size.width
@@ -30,14 +29,9 @@ data class ImageInfo constructor(
         width: Int,
         height: Int,
         mimeType: String,
-        @ExifOrientation exifOrientation: Int,
-    ) : this(Size(width, height), mimeType, exifOrientation)
+    ) : this(Size(width, height), mimeType)
 
-    override fun toString(): String {
-        val exifOrientationName = ExifOrientation.name(exifOrientation)
-        return "ImageInfo(size=$size, mimeType='$mimeType', exifOrientation=$exifOrientationName)"
-    }
+    override fun toString(): String = "ImageInfo(size=$size, mimeType='$mimeType'"
 
-    fun toShortString(): String =
-        "ImageInfo(${width}x$height,'$mimeType',${ExifOrientation.name(exifOrientation)})"
+    fun toShortString(): String = "ImageInfo(${width}x$height,'$mimeType')"
 }

@@ -4,7 +4,6 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.datasource.DataFrom
 import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -182,35 +181,32 @@ fun realDecode(
     requiredWorkThread()
     val request = requestContext.request
     val size = requestContext.size!!
-    val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation)
     val imageSize = Size(imageInfo.width, imageInfo.height)
-    val appliedImageSize = exifOrientationHelper?.applyToSize(imageSize) ?: imageSize
-    val precision = request.precisionDecider.get(imageSize = appliedImageSize, targetSize = size)
-    val scale = request.scaleDecider.get(imageSize = appliedImageSize, targetSize = size)
+    val precision = request.precisionDecider.get(imageSize = imageSize, targetSize = size)
+    val scale = request.scaleDecider.get(imageSize = imageSize, targetSize = size)
     val resize = Resize(
         width = size.width,
         height = size.height,
         precision = precision,
         scale = scale
     )
-    val addedResize = exifOrientationHelper?.addToResize(resize, appliedImageSize) ?: resize
     val transformedList = mutableListOf<String>()
     val resizeMapping = calculateResizeMapping(
         imageSize = imageInfo.size,
-        resizeSize = addedResize.size,
-        precision = addedResize.precision,
-        scale = addedResize.scale,
+        resizeSize = resize.size,
+        precision = resize.precision,
+        scale = resize.scale,
     )
     val image = if (
-        addedResize.shouldClip(imageInfo.size)
-        && addedResize.precision != LESS_PIXELS
+        resize.shouldClip(imageInfo.size)
+        && resize.precision != LESS_PIXELS
         && decodeRegion != null
         && resizeMapping != null
     ) {
         val sampleSize = calculateSampleSizeForRegion(
             regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
             targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
-            smallerSizeMode = addedResize.precision.isSmallerSizeMode(),
+            smallerSizeMode = resize.precision.isSmallerSizeMode(),
             mimeType = imageInfo.mimeType,
             imageSize = imageSize
         )
@@ -222,8 +218,8 @@ fun realDecode(
     } else {
         val sampleSize = calculateSampleSize(
             imageSize = imageSize,
-            targetSize = addedResize.size,
-            smallerSizeMode = addedResize.precision.isSmallerSizeMode(),
+            targetSize = resize.size,
+            smallerSizeMode = resize.precision.isSmallerSizeMode(),
             mimeType = imageInfo.mimeType
         )
         if (sampleSize > 1) {
@@ -241,28 +237,6 @@ fun realDecode(
         transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList(),
         extras = null,
     )
-}
-
-@WorkerThread
-fun DecodeResult.appliedExifOrientation(@Suppress("UNUSED_PARAMETER") requestContext: RequestContext): DecodeResult {
-    requiredWorkThread()
-    if (transformedList?.getExifOrientationTransformed() != null
-        || imageInfo.exifOrientation == ExifOrientation.UNDEFINED
-        || imageInfo.exifOrientation == ExifOrientation.NORMAL
-    ) {
-        return this
-    }
-    val exifOrientationHelper = ExifOrientationHelper(imageInfo.exifOrientation) ?: return this
-    val newImage = exifOrientationHelper.applyToImage(image) ?: return this
-    val newSize = exifOrientationHelper.applyToSize(
-        Size(imageInfo.width, imageInfo.height)
-    )
-    return newResult(
-        image = newImage,
-        imageInfo = imageInfo.copy(size = newSize)
-    ) {
-        addTransformed(createExifOrientationTransformed(imageInfo.exifOrientation))
-    }
 }
 
 @WorkerThread

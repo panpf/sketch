@@ -91,6 +91,5 @@ fun DataSource.readImageInfo(): ImageInfo {
         width = image.width,
         height = image.height,
         mimeType = mimeType,
-        exifOrientation = ExifOrientation.UNDEFINED
     )
 }

@@ -18,34 +18,53 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
-import com.github.panpf.sketch.decode.ExifOrientation
+import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
+import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.google.android.material.tabs.TabLayoutMediator
+import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
+import com.github.panpf.sketch.sample.ui.gallery.ExifOrientationGridItemFactory
 
-class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
+class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
-    override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
+    override fun getNavigationBarInsetsView(binding: FragmentRecyclerBinding): View {
         return binding.root
     }
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentTabPagerBinding,
+        binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
         toolbar.title = "ExifOrientation"
 
-        val list = MyImages.clockExifs
-        val titles = list.map { ExifOrientation.name(it.exifOrientation) }
-        val fragments = list.map { ExifOrientationTestImageFragment.create(it.uri) }
+        binding.recycler.apply {
+            layoutManager =
+                newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
+                    itemSpanByItemFactory(
+                        LoadStateItemFactory::class,
+                        ItemSpan.fullSpan()
+                    )
+                }
+            addAssemblyGridDividerItemDecoration {
+                val gridDivider =
+                    requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                divider(Divider.space(gridDivider))
+                sideDivider(Divider.space(gridDivider))
+                useDividerAsHeaderAndFooterDivider()
+                useSideDividerAsSideHeaderAndFooterDivider()
+            }
 
-        binding.pager.adapter = ArrayFragmentStateAdapter(this, fragments)
-
-        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-            tab.text = titles[position]
-        }.attach()
+            adapter = AssemblyRecyclerAdapter(
+                itemFactoryList = listOf(ExifOrientationGridItemFactory()),
+                initDataList = MyImages.clockExifs.toList(),
+            )
+        }
     }
 }

@@ -114,10 +114,6 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            appSettingsService.exifOrientation.ignoreFirst()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    adapter?.findPagingAdapter()?.refresh()
-                }
         }
 
         binding.swipeRefresh.setOnRefreshListener {

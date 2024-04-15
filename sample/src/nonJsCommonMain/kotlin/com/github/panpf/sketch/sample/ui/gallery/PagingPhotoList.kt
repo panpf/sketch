@@ -52,12 +52,6 @@ fun PagingPhotoList(
     val pagingItems = photoPagingFlow.collectAsLazyPagingItems()
     val context = LocalPlatformContext.current
     val appSettingsService = context.appSettings
-    LaunchedEffect(Unit) {
-        appSettingsService.exifOrientation.ignoreFirst().collect {
-            // PhotoPagingSource needs to calculate the width and height of the image based on exif information, so it needs to be refreshed
-            pagingItems.refresh()
-        }
-    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pagingItems.loadState.refresh is Loading,

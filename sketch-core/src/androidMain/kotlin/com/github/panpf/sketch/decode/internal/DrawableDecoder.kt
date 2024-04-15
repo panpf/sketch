@@ -101,7 +101,6 @@ open class DrawableDecoder constructor(
             width = imageWidth,
             height = imageHeight,
             mimeType = mimeType ?: "image/png",
-            exifOrientation = ExifOrientation.UNDEFINED
         )
         val decodeResult = DecodeResult(
             image = bitmap.asSketchImage(resources = requestContext.request.context.resources),

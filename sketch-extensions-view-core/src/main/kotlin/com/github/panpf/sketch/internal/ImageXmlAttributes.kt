@@ -72,10 +72,6 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                 ?.apply {
                     bitmapConfig(parseBitmapConfigAttribute(this))
                 }
-            typedArray.getBooleanOrNull(R.styleable.SketchImageView_sketch_ignoreExifOrientation)
-                ?.apply {
-                    ignoreExifOrientation(this)
-                }
             val sizeWidth =
                 typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_sizeWidth)
             val sizeHeight =

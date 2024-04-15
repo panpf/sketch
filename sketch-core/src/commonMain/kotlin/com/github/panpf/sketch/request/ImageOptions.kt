@@ -117,13 +117,6 @@ interface ImageOptions {
     val transformations: List<Transformation>?
 
     /**
-     * Ignore Orientation property in file Exif info
-     *
-     * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
-     */
-    val ignoreExifOrientation: Boolean?
-
-    /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -222,7 +215,6 @@ interface ImageOptions {
                 && precisionDecider == null
                 && scaleDecider == null
                 && transformations == null
-                && ignoreExifOrientation == null
                 && resultCachePolicy == null
                 && placeholder == null
                 && uriEmpty == null
@@ -246,7 +238,6 @@ interface ImageOptions {
         private var precisionDecider: PrecisionDecider? = null
         private var scaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
-        private var ignoreExifOrientation: Boolean? = null
         private var resultCachePolicy: CachePolicy? = null
 
         private var placeholder: StateImage? = null
@@ -273,7 +264,6 @@ interface ImageOptions {
             this.precisionDecider = request.precisionDecider
             this.scaleDecider = request.scaleDecider
             this.transformations = request.transformations?.toMutableList()
-            this.ignoreExifOrientation = request.ignoreExifOrientation
             this.resultCachePolicy = request.resultCachePolicy
 
             this.placeholder = request.placeholder
@@ -523,13 +513,6 @@ interface ImageOptions {
             removeTransformations(removeTransformations.toList())
 
         /**
-         * Set ignore Orientation property in file Exif info
-         */
-        fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
-            this.ignoreExifOrientation = ignore
-        }
-
-        /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder =
@@ -722,9 +705,6 @@ interface ImageOptions {
             options.transformations?.takeIf { it.isNotEmpty() }?.let {
                 addTransformations(it)
             }
-            if (this.ignoreExifOrientation == null) {
-                this.ignoreExifOrientation = options.ignoreExifOrientation
-            }
             if (this.resultCachePolicy == null) {
                 this.resultCachePolicy = options.resultCachePolicy
             }
@@ -772,7 +752,6 @@ interface ImageOptions {
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
-                ignoreExifOrientation = ignoreExifOrientation,
                 placeholder = placeholder,
                 uriEmpty = uriEmpty,
                 error = error,
@@ -808,7 +787,6 @@ interface ImageOptions {
         override val precisionDecider: PrecisionDecider?,
         override val scaleDecider: ScaleDecider?,
         override val transformations: List<Transformation>?,
-        override val ignoreExifOrientation: Boolean?,
         override val resultCachePolicy: CachePolicy?,
         override val placeholder: StateImage?,
         override val uriEmpty: StateImage?,
@@ -832,7 +810,6 @@ interface ImageOptions {
             if (precisionDecider != other.precisionDecider) return false
             if (scaleDecider != other.scaleDecider) return false
             if (transformations != other.transformations) return false
-            if (ignoreExifOrientation != other.ignoreExifOrientation) return false
             if (resultCachePolicy != other.resultCachePolicy) return false
             if (placeholder != other.placeholder) return false
             if (uriEmpty != other.uriEmpty) return false
@@ -855,7 +832,6 @@ interface ImageOptions {
             result = 31 * result + (precisionDecider?.hashCode() ?: 0)
             result = 31 * result + (scaleDecider?.hashCode() ?: 0)
             result = 31 * result + (transformations?.hashCode() ?: 0)
-            result = 31 * result + (ignoreExifOrientation?.hashCode() ?: 0)
             result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
             result = 31 * result + (placeholder?.hashCode() ?: 0)
             result = 31 * result + (uriEmpty?.hashCode() ?: 0)
@@ -880,7 +856,6 @@ interface ImageOptions {
                 append("precisionDecider=$precisionDecider, ")
                 append("scaleDecider=$scaleDecider, ")
                 append("transformations=$transformations, ")
-                append("ignoreExifOrientation=$ignoreExifOrientation, ")
                 append("resultCachePolicy=$resultCachePolicy, ")
                 append("placeholder=$placeholder, ")
                 append("uriEmpty=$uriEmpty, ")

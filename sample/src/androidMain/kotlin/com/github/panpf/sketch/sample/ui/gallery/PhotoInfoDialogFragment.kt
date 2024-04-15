@@ -88,7 +88,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
             var throwableString: String? = null
             if (imageResult is ImageResult.Success) {
                 sourceImageInfo = imageResult.imageInfo.run {
-                    "${width}x${height}, ${mimeType}, ${ExifOrientation.name(exifOrientation)}"
+                    "${width}x${height}, ${mimeType}"
                 }
 
                 optionsInfo = imageResult.cacheKey

@@ -25,7 +25,6 @@
         <enum name="rgbaF16" value="8" />
         <enum name="hardware" value="9" />
     </attr>
-    <attr name="sketch_ignoreExifOrientation" format="boolean|reference" />
     <attr name="sketch_sizeWidth" format="dimension|reference" />
     <attr name="sketch_sizeHeight" format="dimension|reference" />
     <attr name="sketch_precision" format="enum">
@@ -93,7 +92,6 @@
         <attr name="sketch_downloadCachePolicy" />
         <attr name="sketch_preferQualityOverSpeed" />
         <attr name="sketch_bitmapConfig" />
-        <attr name="sketch_ignoreExifOrientation" />
         <attr name="sketch_sizeWidth" />
         <attr name="sketch_sizeHeight" />
         <attr name="sketch_precision" />

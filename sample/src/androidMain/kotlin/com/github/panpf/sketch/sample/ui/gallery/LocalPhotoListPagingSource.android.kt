@@ -10,6 +10,8 @@ import com.github.panpf.sketch.datasource.DataSource
 import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
+import com.github.panpf.sketch.decode.internal.AndroidExifOrientationHelper
+import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.tools4k.coroutines.withToIO
@@ -60,7 +62,6 @@ actual suspend fun readImageInfoOrNull(
     context: PlatformContext,
     sketch: Sketch,
     uri: String,
-    ignoreExifOrientation: Boolean
 ): ImageInfo? = withContext(Dispatchers.IO) {
     runCatching {
         val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
@@ -68,7 +69,11 @@ actual suspend fun readImageInfoOrNull(
         if (uri.endsWith(".svg")) {
             dataSource.readSVGImageInfo()
         } else {
-            dataSource.readImageInfoWithBitmapFactoryOrThrow(ignoreExifOrientation)
+            val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
+            val exifOrientation = dataSource.readExifOrientation()
+            val exifOrientationHelper = AndroidExifOrientationHelper(exifOrientation)
+            val newSize = exifOrientationHelper.applyToSize(imageInfo.size)
+            imageInfo.copy(size = newSize)
         }
     }.apply {
         if (isFailure) {
@@ -89,10 +94,5 @@ private fun DataSource.readSVGImageInfo(useViewBoundsAsIntrinsicSize: Boolean = 
         width = svg.documentWidth.toInt()
         height = svg.documentHeight.toInt()
     }
-    return ImageInfo(
-        width,
-        height,
-        SvgDecoder.MIME_TYPE,
-        ExifOrientation.UNDEFINED
-    )
+    return ImageInfo(width = width, height = height, mimeType = SvgDecoder.MIME_TYPE)
 }

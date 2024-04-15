@@ -40,12 +40,6 @@ object MyImages {
 
     val longQMSHT: MyImage = MyResourceImage("sample_long_qmsht.jpg", "QMSHT", Size(30000, 926))
 
-    val clockExifUndefined: MyImage = MyResourceImage(
-        "clock_exif_undefined.jpeg",
-        "UNDEFINED",
-        Size(1500, 750),
-        ExifOrientation.UNDEFINED
-    )
     val clockExifFlipHorizontal: MyImage = MyResourceImage(
         "clock_exif_flip_horizontal.jpeg",
         "FLIP_HOR",
@@ -94,8 +88,13 @@ object MyImages {
         Size(750, 1500),
         ExifOrientation.TRANSVERSE
     )
+    val clockExifUndefined: MyImage = MyResourceImage(
+        "clock_exif_undefined.jpeg",
+        "UNDEFINED",
+        Size(1500, 750),
+        ExifOrientation.UNDEFINED
+    )
     val clockExifs = arrayOf(
-        clockExifUndefined,
         clockExifFlipHorizontal,
         clockExifFlipVertical,
         clockExifNormal,
@@ -103,7 +102,8 @@ object MyImages {
         clockExifRotate180,
         clockExifRotate270,
         clockExifTranspose,
-        clockExifTransverse
+        clockExifTransverse,
+        clockExifUndefined,
     )
 
     val number1: MyImage = MyResourceImage("number_1.png", "NUMBER_1", Size(698, 776))

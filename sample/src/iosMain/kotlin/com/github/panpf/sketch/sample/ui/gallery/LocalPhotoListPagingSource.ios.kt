@@ -19,7 +19,6 @@ actual suspend fun readImageInfoOrNull(
     context: PlatformContext,
     sketch: Sketch,
     uri: String,
-    ignoreExifOrientation: Boolean
 ): ImageInfo? = withContext(Dispatchers.IO) {
     runCatching {
         val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))

@@ -60,6 +60,5 @@ class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
         thumbnailUrl = images.fixedWidth.downloadUrl,
         width = images.original.width.toInt(),
         height = images.original.height.toInt(),
-        exifOrientation = 0,
     )
 }

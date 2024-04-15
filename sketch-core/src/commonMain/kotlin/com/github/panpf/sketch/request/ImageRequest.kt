@@ -153,14 +153,6 @@ interface ImageRequest {
     val transformations: List<Transformation>?
 
     /**
-     * Ignore Orientation property in file Exif info
-     *
-     * @see com.github.panpf.sketch.decode.internal.appliedExifOrientation
-     */
-    // TODO Android only or delete, because this attribute is meaningless on Skia platforms
-    val ignoreExifOrientation: Boolean
-
-    /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -607,13 +599,6 @@ interface ImageRequest {
         }
 
         /**
-         * Set ignore Orientation property in file Exif info
-         */
-        fun ignoreExifOrientation(ignore: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.ignoreExifOrientation(ignore)
-        }
-
-        /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
@@ -784,7 +769,6 @@ interface ImageRequest {
                 ?: PrecisionDecider(Precision.LESS_PIXELS)
             val scaleDecider = finalOptions.scaleDecider ?: ScaleDecider(resolveScale())
             val transformations = finalOptions.transformations
-            val ignoreExifOrientation = finalOptions.ignoreExifOrientation ?: false
             val placeholder = finalOptions.placeholder
             val uriEmpty = finalOptions.uriEmpty
             val error = finalOptions.error
@@ -814,7 +798,6 @@ interface ImageRequest {
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
-                ignoreExifOrientation = ignoreExifOrientation,
                 placeholder = placeholder,
                 uriEmpty = uriEmpty,
                 error = error,
@@ -892,7 +875,6 @@ interface ImageRequest {
         override val precisionDecider: PrecisionDecider,
         override val scaleDecider: ScaleDecider,
         override val transformations: List<Transformation>?,
-        override val ignoreExifOrientation: Boolean,
         override val resultCachePolicy: CachePolicy,
         override val placeholder: StateImage?,
         override val uriEmpty: StateImage?,

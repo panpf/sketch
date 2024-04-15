@@ -72,7 +72,6 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
             appSettingsService.inPreferQualityOverSpeed.ignoreFirst(),
             appSettingsService.bitmapQuality.ignoreFirst(),
             if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.ignoreFirst() else null,
-            appSettingsService.exifOrientation.ignoreFirst(),
             appSettingsService.memoryCache.ignoreFirst(),
             appSettingsService.resultCache.ignoreFirst(),
             appSettingsService.downloadCache.ignoreFirst(),
@@ -255,13 +254,6 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
     }
 
     private fun makeDecodeMenuList(): List<Any> = buildList {
-        add(
-            SwitchMenuFlow(
-                title = "Exif Orientation",
-                desc = null,
-                data = appSettingsService.exifOrientation,
-            )
-        )
         add(
             MultiSelectMenu(
                 title = "Bitmap Quality",

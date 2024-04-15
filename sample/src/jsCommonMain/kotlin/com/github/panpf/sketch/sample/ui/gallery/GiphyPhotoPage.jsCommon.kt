@@ -43,5 +43,4 @@ private fun GiphyGif.toPhoto(): Photo = Photo(
     thumbnailUrl = images.fixedWidth.downloadUrl,
     width = images.original.width.toInt(),
     height = images.original.height.toInt(),
-    exifOrientation = 0,
 )

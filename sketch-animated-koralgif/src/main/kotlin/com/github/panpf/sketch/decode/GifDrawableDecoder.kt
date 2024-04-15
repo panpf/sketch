@@ -113,10 +113,9 @@ class GifDrawableDecoder(
         val transformedList =
             if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
         val imageInfo = ImageInfo(
-            imageWidth,
-            imageHeight,
-            ImageFormat.GIF.mimeType,
-            ExifOrientation.UNDEFINED
+            width = imageWidth,
+            height = imageHeight,
+            mimeType = ImageFormat.GIF.mimeType,
         )
         val animatableDrawable =
             AnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {

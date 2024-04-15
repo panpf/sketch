@@ -83,8 +83,11 @@ class GifMovieDecoder(
             setAnimatedTransformation(request.animatedTransformation)
         }
 
-        val imageInfo =
-            ImageInfo(width, height, ImageFormat.GIF.mimeType, ExifOrientation.UNDEFINED)
+        val imageInfo = ImageInfo(
+            width = width,
+            height = height,
+            mimeType = ImageFormat.GIF.mimeType
+        )
 
         val animatableDrawable = AnimatableDrawable(movieDrawable).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.

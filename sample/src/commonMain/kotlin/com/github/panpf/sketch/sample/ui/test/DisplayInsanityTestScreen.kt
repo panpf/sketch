@@ -24,7 +24,6 @@ fun buildDisplayInsanityTestPhotos(): List<Photo> = buildList {
                 thumbnailUrl = null,
                 width = image.size.width,
                 height = image.size.height,
-                exifOrientation = image.exifOrientation,
                 index = index++,
             )
             add(photo)

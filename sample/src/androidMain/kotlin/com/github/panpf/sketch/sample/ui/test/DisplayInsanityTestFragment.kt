@@ -76,10 +76,6 @@ class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
-            appSettingsService.exifOrientation.ignoreFirst()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    adapter?.findPagingAdapter()?.refresh()
-                }
         }
     }
 }

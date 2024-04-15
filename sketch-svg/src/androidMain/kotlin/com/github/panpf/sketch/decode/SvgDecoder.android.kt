@@ -73,7 +73,6 @@ actual suspend fun decodeSvg(
         width = svgWidth.roundToInt(),
         height = svgHeight.roundToInt(),
         mimeType = SvgDecoder.MIME_TYPE,
-        exifOrientation = ExifOrientation.UNDEFINED
     )
     val transformedList: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
