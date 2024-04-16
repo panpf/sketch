@@ -42,7 +42,7 @@ import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
+import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec

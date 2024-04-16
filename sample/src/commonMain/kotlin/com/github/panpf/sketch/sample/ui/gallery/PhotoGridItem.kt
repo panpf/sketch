@@ -33,7 +33,7 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.ifLet
-import com.github.panpf.sketch.stateimage.saveCellularTrafficError
+import com.github.panpf.sketch.state.saveCellularTrafficError
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import sketch_root.sample.generated.resources.Res.drawable

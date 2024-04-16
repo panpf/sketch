@@ -27,7 +27,7 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestShareElement2Binding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
+import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2Binding>() {

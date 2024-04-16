@@ -27,8 +27,8 @@ import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.AssetImages
-import com.github.panpf.sketch.stateimage.CurrentStateImage
-import com.github.panpf.sketch.stateimage.DrawableStateImage
+import com.github.panpf.sketch.state.CurrentStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert

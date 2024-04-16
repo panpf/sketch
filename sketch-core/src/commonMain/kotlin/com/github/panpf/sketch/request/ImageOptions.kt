@@ -30,8 +30,8 @@ import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition

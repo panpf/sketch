@@ -38,7 +38,7 @@ import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
+import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
 import com.github.panpf.zoomimage.compose.internal.toPlatform
 import com.github.panpf.zoomimage.compose.rememberZoomState

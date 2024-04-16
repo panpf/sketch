@@ -19,7 +19,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
 
 /**
  * Adds save cellular traffic support

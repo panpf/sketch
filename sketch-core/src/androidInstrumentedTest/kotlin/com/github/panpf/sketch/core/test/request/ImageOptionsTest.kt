@@ -60,10 +60,10 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
-import com.github.panpf.sketch.stateimage.ColorStateImage
-import com.github.panpf.sketch.stateimage.DrawableStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.IntColor
+import com.github.panpf.sketch.state.ColorStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder

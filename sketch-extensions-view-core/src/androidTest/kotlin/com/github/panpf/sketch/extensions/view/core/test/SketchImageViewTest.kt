@@ -33,8 +33,8 @@ import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
-import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyCondition
+import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.ErrorStateImage.UriEmptyCondition
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation

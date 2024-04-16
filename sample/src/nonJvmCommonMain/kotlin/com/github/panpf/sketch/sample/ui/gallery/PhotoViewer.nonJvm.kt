@@ -40,7 +40,7 @@ import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.ui.util.valueOf
-import com.github.panpf.sketch.stateimage.ThumbnailMemoryCacheStateImage
+import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -50,8 +50,6 @@ import sketch_root.sample.generated.resources.ic_rotate_right
 import sketch_root.sample.generated.resources.ic_save
 import sketch_root.sample.generated.resources.ic_share
 import sketch_root.sample.generated.resources.ic_zoom_in
-import sketch_root.sample.generated.resources.ic_zoom_out
-import kotlin.math.roundToInt
 
 @Composable
 actual fun PhotoViewer(

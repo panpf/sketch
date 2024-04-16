@@ -32,7 +32,7 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.GridItemExifOrientationBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
-import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.state.IconStateImage
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 

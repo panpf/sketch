@@ -41,7 +41,7 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.stateimage.uriEmptyError
+import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation

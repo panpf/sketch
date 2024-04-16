@@ -13,35 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.stateimage
+package com.github.panpf.sketch.state
 
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
-import com.github.panpf.sketch.stateimage.internal.CombinedStateImage
+import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
 
 
 /**
  * Set the error image when the save cellular traffic
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition to null)
+fun ErrorStateImage.Builder.saveCellularTrafficError(
+    saveCellularTrafficDrawable: Drawable
+): ErrorStateImage.Builder = apply {
+    addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficDrawable))
 }
 
 /**
  * Set the error image when the save cellular traffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
-    saveCellularTrafficImage: StateImage
+    @DrawableRes saveCellularTrafficImageResId: Int
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition to saveCellularTrafficImage)
-}
-
-object SaveCellularTrafficCondition : CombinedStateImage.Condition {
-
-    override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
-        isCausedBySaveCellularTraffic(request, throwable)
-
-    override fun toString(): String {
-        return "SaveCellularTrafficCondition"
-    }
+    addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficImageResId))
 }

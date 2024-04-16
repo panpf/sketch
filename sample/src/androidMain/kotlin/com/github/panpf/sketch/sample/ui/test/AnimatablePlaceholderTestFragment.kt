@@ -24,7 +24,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.stateimage.IconAnimatableStateImage
+import com.github.panpf.sketch.state.IconAnimatableStateImage
 
 class AnimatablePlaceholderTestFragment :
     BaseToolbarBindingFragment<FragmentTestAnimatablePlaceholderBinding>() {

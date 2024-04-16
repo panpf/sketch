@@ -22,9 +22,9 @@ import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.images.AssetImages
-import com.github.panpf.sketch.stateimage.ColorStateImage
-import com.github.panpf.sketch.stateimage.DrawableStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.state.ColorStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow

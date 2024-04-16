@@ -16,8 +16,8 @@
 package com.github.panpf.sketch.compose.stateimage
 
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.SaveCellularTrafficCondition
+import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 
 
 /**

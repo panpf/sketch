@@ -22,7 +22,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.AssetImages
-import com.github.panpf.sketch.stateimage.DrawableStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow

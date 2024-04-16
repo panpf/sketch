@@ -21,8 +21,8 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.stateimage.ColorFetcher
-import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.state.ColorFetcher
+import com.github.panpf.sketch.state.StateImage
 
 open class ColorFetcherPainterStateImage(val color: ColorFetcher) : StateImage {
 

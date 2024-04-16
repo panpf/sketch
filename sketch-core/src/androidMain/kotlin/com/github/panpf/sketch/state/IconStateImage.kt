@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.stateimage
+package com.github.panpf.sketch.state
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.drawable.IconAnimatableDrawable
+import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ColorFetcherDrawable
 import com.github.panpf.sketch.util.DrawableFetcher
@@ -31,14 +31,14 @@ import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
 /**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconAnimatableStateImage(
+fun IconStateImage(
     icon: Drawable,
     background: Drawable? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconStateImage = IconStateImage(
     icon = RealDrawable(icon),
     background = background?.let { RealDrawable(it) },
     iconSize = iconSize,
@@ -46,14 +46,14 @@ fun IconAnimatableStateImage(
 )
 
 /**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconAnimatableStateImage(
+fun IconStateImage(
     icon: Drawable,
     background: Drawable? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconStateImage = IconStateImage(
     icon = RealDrawable(icon),
     background = background?.let { RealDrawable(it) },
     iconSize = iconSize,
@@ -61,14 +61,14 @@ fun IconAnimatableStateImage(
 )
 
 /**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconAnimatableStateImage(
+fun IconStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconStateImage = IconStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
@@ -76,14 +76,14 @@ fun IconAnimatableStateImage(
 )
 
 /**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconAnimatableStateImage(
+fun IconStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconStateImage = IconStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
@@ -91,14 +91,14 @@ fun IconAnimatableStateImage(
 )
 
 /**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconAnimatableStateImage(
+fun IconStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconStateImage = IconStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -106,14 +106,14 @@ fun IconAnimatableStateImage(
 )
 
 /**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
-fun IconAnimatableStateImage(
+fun IconStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconStateImage = IconStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -125,7 +125,7 @@ fun IconAnimatableStateImage(
  *
  * Icons are centered and always the same size
  */
-class IconAnimatableStateImage internal constructor(
+class IconStateImage internal constructor(
     private val icon: DrawableFetcher,
     private val background: DrawableFetcher?,
     private val iconSize: Size?,
@@ -156,14 +156,14 @@ class IconAnimatableStateImage internal constructor(
             }
             val background = background?.getDrawable(request.context)
             val iconTintColor = iconTint?.getColor(request.context)
-            IconAnimatableDrawable(
+            IconDrawable(
                 icon = icon,
                 background = background,
                 iconSize = iconSize,
                 iconTint = iconTintColor
             )
         } catch (e: Throwable) {
-            sketch.logger.w("IconAnimatableDrawable. getDrawable error. ${e.message}")
+            sketch.logger.w("IconStateImage. getDrawable error. ${e.message}")
             e.printStackTrace()
             null
         }?.asSketchImage()
@@ -171,7 +171,7 @@ class IconAnimatableStateImage internal constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconAnimatableStateImage) return false
+        if (other !is IconStateImage) return false
         if (icon != other.icon) return false
         if (iconSize != other.iconSize) return false
         if (background != other.background) return false
@@ -186,6 +186,6 @@ class IconAnimatableStateImage internal constructor(
     }
 
     override fun toString(): String {
-        return "IconAnimatableStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+        return "IconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
     }
 }

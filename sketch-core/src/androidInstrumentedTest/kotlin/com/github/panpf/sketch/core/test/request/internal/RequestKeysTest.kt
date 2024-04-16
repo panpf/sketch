@@ -34,8 +34,8 @@ import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.stateimage.DrawableStateImage
-import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.IconStateImage
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher

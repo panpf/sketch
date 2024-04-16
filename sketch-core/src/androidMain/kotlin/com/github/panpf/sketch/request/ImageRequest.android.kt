@@ -9,8 +9,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.stateimage.DrawableStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
 
 

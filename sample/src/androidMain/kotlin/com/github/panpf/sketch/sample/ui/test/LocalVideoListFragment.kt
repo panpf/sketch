@@ -47,12 +47,11 @@ import com.github.panpf.sketch.sample.model.VideoInfo
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
-import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.saveCellularTrafficError
+import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import java.io.File
 

@@ -25,7 +25,7 @@ import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.AssetImages
-import com.github.panpf.sketch.stateimage.IconStateImage
+import com.github.panpf.sketch.state.IconStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull

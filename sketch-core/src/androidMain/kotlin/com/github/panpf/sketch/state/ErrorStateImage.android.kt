@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.stateimage
+package com.github.panpf.sketch.state
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.stateimage.ErrorStateImage.Builder
-import com.github.panpf.sketch.stateimage.ErrorStateImage.UriEmptyCondition
+import com.github.panpf.sketch.state.ErrorStateImage.Builder
+import com.github.panpf.sketch.state.ErrorStateImage.UriEmptyCondition
 
 
 /**

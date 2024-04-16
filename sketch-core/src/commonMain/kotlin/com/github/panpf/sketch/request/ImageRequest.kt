@@ -32,8 +32,8 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.defaultSizeResolver
-import com.github.panpf.sketch.stateimage.ErrorStateImage
-import com.github.panpf.sketch.stateimage.StateImage
+import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.Transformation

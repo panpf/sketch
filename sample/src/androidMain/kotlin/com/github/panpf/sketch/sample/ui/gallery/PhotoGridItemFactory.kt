@@ -32,9 +32,9 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.stateimage.IconAnimatableStateImage
-import com.github.panpf.sketch.stateimage.IconStateImage
-import com.github.panpf.sketch.stateimage.saveCellularTrafficError
+import com.github.panpf.sketch.state.IconAnimatableStateImage
+import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 

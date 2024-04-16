@@ -28,9 +28,9 @@ import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.images.AssetImages
-import com.github.panpf.sketch.stateimage.ColorStateImage
-import com.github.panpf.sketch.stateimage.IntColor
-import com.github.panpf.sketch.stateimage.MemoryCacheStateImage
+import com.github.panpf.sketch.state.ColorStateImage
+import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.toRequestContext

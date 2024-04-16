@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.stateimage.ColorFetcher
+import com.github.panpf.sketch.state.ColorFetcher
 
 /**
  * For getting the Drawable

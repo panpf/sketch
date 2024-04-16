@@ -10,8 +10,8 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
-import com.github.panpf.sketch.stateimage.DrawableStateImage
-import com.github.panpf.sketch.stateimage.ErrorStateImage
+import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition

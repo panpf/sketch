@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.stateimage
+package com.github.panpf.sketch.state
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
