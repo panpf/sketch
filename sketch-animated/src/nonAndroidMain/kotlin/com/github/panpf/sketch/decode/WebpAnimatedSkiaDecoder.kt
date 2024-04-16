@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.AnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP

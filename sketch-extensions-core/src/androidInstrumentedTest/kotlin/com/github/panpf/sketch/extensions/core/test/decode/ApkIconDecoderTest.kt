@@ -20,8 +20,8 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ApkIconDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed

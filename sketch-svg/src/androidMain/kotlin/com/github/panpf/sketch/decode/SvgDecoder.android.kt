@@ -6,7 +6,7 @@ import android.graphics.RectF
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.createScaledTransformed

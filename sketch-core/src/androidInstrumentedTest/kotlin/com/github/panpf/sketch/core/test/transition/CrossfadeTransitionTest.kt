@@ -22,8 +22,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageRequest

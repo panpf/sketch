@@ -18,11 +18,10 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.drawable.BitmapDrawable
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG

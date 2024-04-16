@@ -17,8 +17,8 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIER
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.svg.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.datasource.AssetDataSource
+import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest

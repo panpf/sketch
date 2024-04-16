@@ -19,8 +19,8 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportSvg

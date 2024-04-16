@@ -23,8 +23,8 @@ import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.internal.versionCodeCompat
 import com.github.panpf.sketch.request.ImageRequest

@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.ability
 
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.source.DataFrom
 
 private const val DATA_FROM_COLOR_MEMORY = 0x77008800   // dark green
 

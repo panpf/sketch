@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 
 /**

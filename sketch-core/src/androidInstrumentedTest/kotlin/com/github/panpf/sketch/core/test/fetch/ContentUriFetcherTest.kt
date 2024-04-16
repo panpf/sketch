@@ -17,7 +17,7 @@ package com.github.panpf.sketch.core.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.datasource.ContentDataSource
+import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.runBlocking

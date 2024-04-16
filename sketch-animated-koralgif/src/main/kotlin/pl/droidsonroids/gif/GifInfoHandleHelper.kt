@@ -15,11 +15,11 @@
  */
 package pl.droidsonroids.gif
 
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
-import com.github.panpf.sketch.datasource.ContentDataSource
-import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.ResourceDataSource
 import okio.buffer
 
 class GifInfoHandleHelper constructor(private val dataSource: DataSource) {

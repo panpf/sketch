@@ -21,7 +21,7 @@ import androidx.annotation.MainThread
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY

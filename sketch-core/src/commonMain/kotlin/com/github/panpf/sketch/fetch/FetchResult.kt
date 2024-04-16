@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Bytes
 import okio.buffer
 import okio.use

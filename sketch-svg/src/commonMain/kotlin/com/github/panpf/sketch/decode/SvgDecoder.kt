@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.fetch.FetchResult

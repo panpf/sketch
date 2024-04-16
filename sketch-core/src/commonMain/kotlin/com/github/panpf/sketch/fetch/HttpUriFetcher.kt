@@ -20,10 +20,10 @@ package com.github.panpf.sketch.fetch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
-import com.github.panpf.sketch.datasource.DataFrom.DOWNLOAD_CACHE
-import com.github.panpf.sketch.datasource.DataFrom.NETWORK
-import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
+import com.github.panpf.sketch.source.DataFrom.NETWORK
+import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.http.HttpStack.Response

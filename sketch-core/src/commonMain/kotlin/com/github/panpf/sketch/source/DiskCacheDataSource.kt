@@ -13,44 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import okio.FileSystem
 import okio.IOException
 import okio.Path
 import okio.Source
-import okio.buffer
-import okio.use
 
 /**
- * Provides access to the image data.
+ * Provides access to image data in disk cache
  */
-interface DataSource {
+class DiskCacheDataSource constructor(
+    override val sketch: Sketch,
+    override val request: ImageRequest,
+    override val dataFrom: DataFrom,
+    val fileSystem: FileSystem,
+    val path: Path,
+) : DataSource {
 
-    val sketch: Sketch
-
-    val request: ImageRequest
-
-    val dataFrom: DataFrom
-
+    @WorkerThread
     @Throws(IOException::class)
-    fun openSource(): Source = openSourceOrNull() ?: throw IOException("Not supported Source")
+    override fun openSourceOrNull(): Source = fileSystem.source(path)
 
+    @WorkerThread
     @Throws(IOException::class)
-    fun openSourceOrNull(): Source?
+    override fun getFileOrNull(): Path = path
 
-    @Throws(IOException::class)
-    fun getFile(): Path = getFileOrNull() ?: throw IOException("Not supported File")
-
-    @Throws(IOException::class)
-    fun getFileOrNull(): Path?
+    override fun toString(): String =
+        "DiskCacheDataSource(from=$dataFrom,path='${path}')"
 }
-
-@WorkerThread
-internal expect fun getDataSourceCacheFile(
-    sketch: Sketch,
-    request: ImageRequest,
-    dataSource: DataSource,
-): Path?

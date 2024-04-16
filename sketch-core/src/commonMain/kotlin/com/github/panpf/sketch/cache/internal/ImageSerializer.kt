@@ -2,7 +2,7 @@ package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
 import okio.BufferedSink

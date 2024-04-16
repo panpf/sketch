@@ -2,8 +2,7 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.ExifOrientation
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Rect

@@ -17,7 +17,7 @@ package com.github.panpf.sketch.core.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.request.ImageRequest

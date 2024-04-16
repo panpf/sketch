@@ -19,8 +19,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext

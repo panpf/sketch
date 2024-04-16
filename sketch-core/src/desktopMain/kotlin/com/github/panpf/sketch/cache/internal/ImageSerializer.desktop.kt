@@ -4,7 +4,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.JvmBitmapImage
 import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.decodeImage
 import com.github.panpf.sketch.request.internal.RequestContext

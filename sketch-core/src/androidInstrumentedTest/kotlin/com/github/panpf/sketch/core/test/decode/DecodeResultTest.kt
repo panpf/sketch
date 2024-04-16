@@ -18,8 +18,8 @@ package com.github.panpf.sketch.core.test.decode
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DataFrom.MEMORY
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed

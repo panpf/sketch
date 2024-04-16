@@ -5,7 +5,7 @@ import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
 import okio.BufferedSink

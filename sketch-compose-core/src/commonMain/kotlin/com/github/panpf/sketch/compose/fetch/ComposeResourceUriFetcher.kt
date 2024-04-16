@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.compose.fetch
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest

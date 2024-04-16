@@ -18,8 +18,8 @@ package com.github.panpf.sketch.core.test.datasource
 import android.content.res.Resources
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.tools4j.test.ktx.assertThrow

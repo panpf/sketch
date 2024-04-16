@@ -8,10 +8,9 @@ import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.ContentDataSource
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.DecodeException
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest

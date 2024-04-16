@@ -2,7 +2,7 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.datasource.FileDataSource
+import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.toUri

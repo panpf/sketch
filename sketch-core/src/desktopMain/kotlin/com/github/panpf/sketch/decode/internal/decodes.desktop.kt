@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import okio.buffer
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO

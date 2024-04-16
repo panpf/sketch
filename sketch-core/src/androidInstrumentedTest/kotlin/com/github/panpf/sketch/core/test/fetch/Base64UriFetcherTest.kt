@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.test.fetch
 import android.util.Base64
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.datasource.ByteArrayDataSource
+import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.newBase64Uri
 import com.github.panpf.sketch.request.ImageRequest

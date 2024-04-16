@@ -2,7 +2,7 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.datasource.KotlinResourceDataSource
+import com.github.panpf.sketch.source.KotlinResourceDataSource
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap

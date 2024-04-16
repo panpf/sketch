@@ -15,16 +15,8 @@
  */
 package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import okio.IOException
-import okio.Path
-import okio.buffer
-import okio.use
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract

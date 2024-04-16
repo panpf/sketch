@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread

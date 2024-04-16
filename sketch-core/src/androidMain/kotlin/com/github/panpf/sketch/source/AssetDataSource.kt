@@ -13,35 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
-import com.github.panpf.sketch.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import okio.FileSystem
-import okio.IOException
 import okio.Path
 import okio.Source
+import okio.source
+import java.io.IOException
 
 /**
- * Provides access to image data in disk cache
+ * Provides access to image data in asset resources
  */
-class DiskCacheDataSource constructor(
+class AssetDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    override val dataFrom: DataFrom,
-    val fileSystem: FileSystem,
-    val path: Path,
+    val assetFileName: String
 ) : DataSource {
 
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = fileSystem.source(path)
+    override val dataFrom: DataFrom
+        get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path = path
+//    override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
+    override fun openSourceOrNull(): Source = request.context.assets.open(assetFileName).source()
+
+    @WorkerThread
+    @Throws(IOException::class)
+//    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
+    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
 
     override fun toString(): String =
-        "DiskCacheDataSource(from=$dataFrom,path='${path}')"
+        "AssetDataSource('$assetFileName')"
 }

@@ -17,7 +17,7 @@ package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.datasource.DataFrom
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException

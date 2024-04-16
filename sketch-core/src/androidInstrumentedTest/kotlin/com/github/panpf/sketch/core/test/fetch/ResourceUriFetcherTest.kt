@@ -20,8 +20,8 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.datasource.DrawableDataSource
-import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.source.DrawableDataSource
+import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest

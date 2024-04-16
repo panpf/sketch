@@ -20,8 +20,8 @@ package com.github.panpf.sketch.cache.internal
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.datasource.DataFrom.RESULT_CACHE
-import com.github.panpf.sketch.datasource.DiskCacheDataSource
+import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
+import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo

@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ClassLoaderResourceLoader
 import okio.Path

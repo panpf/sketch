@@ -25,10 +25,8 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ExifOrientation
-import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.safeConfig
 import okio.buffer
 import java.io.IOException

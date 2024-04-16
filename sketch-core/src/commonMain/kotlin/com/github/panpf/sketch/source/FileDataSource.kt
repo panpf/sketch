@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import okio.Buffer
 import okio.IOException
 import okio.Path
 import okio.Source
 
 /**
- * Provides access to byte array image data.
+ * Provides access to local file image data
  */
-class ByteArrayDataSource constructor(
+class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    override val dataFrom: DataFrom,
-    val data: ByteArray,
+    private val path: Path
 ) : DataSource {
 
-    @WorkerThread
-    @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = Buffer().write(data)
+    override val dataFrom: DataFrom
+        get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
+    override fun openSourceOrNull(): Source = sketch.fileSystem.source(path)
 
-    override fun toString(): String =
-        "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"
+    @WorkerThread
+    @Throws(IOException::class)
+    override fun getFileOrNull(): Path = path
+
+    override fun toString(): String = "FileDataSource('${path}')"
 }

@@ -13,42 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
-import android.content.res.Resources
-import androidx.annotation.DrawableRes
-import androidx.annotation.RawRes
-import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
+import okio.Buffer
+import okio.IOException
 import okio.Path
 import okio.Source
-import okio.source
-import java.io.IOException
 
 /**
- * Provides access to image data in android resources
+ * Provides access to byte array image data.
  */
-class ResourceDataSource constructor(
+class ByteArrayDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    val packageName: String,
-    val resources: Resources,
-    @RawRes @DrawableRes val resId: Int
+    override val dataFrom: DataFrom,
+    val data: ByteArray,
 ) : DataSource {
-
-    override val dataFrom: DataFrom
-        get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source =
-        resources.openRawResource(resId).source()
+    override fun openSourceOrNull(): Source = Buffer().write(data)
 
     @WorkerThread
     @Throws(IOException::class)
     override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
 
-    override fun toString(): String = "ResourceDataSource($resId)"
+    override fun toString(): String =
+        "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"
 }

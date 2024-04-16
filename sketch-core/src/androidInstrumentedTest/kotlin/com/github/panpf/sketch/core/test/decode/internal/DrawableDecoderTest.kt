@@ -19,8 +19,8 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
-import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.fetch.FetchResult

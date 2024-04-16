@@ -13,39 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.datasource
+package com.github.panpf.sketch.source
 
+import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import okio.Path
+import okio.Path.Companion.toOkioPath
 import okio.Source
 import okio.source
+import java.io.File
 import java.io.IOException
 
 /**
- * Provides access to image data in asset resources
+ * Provides access to image data in content resources
  */
-class AssetDataSource constructor(
+class ContentDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    val assetFileName: String
+    val contentUri: Uri
 ) : DataSource {
 
-    override val dataFrom: DataFrom
-        get() = LOCAL
+    override val dataFrom: DataFrom = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-//    override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
-    override fun openSourceOrNull(): Source = request.context.assets.open(assetFileName).source()
+    override fun openSourceOrNull(): Source =
+        (request.context.contentResolver.openInputStream(contentUri)
+            ?: throw IOException("Invalid content uri: $contentUri")).source()
 
     @WorkerThread
     @Throws(IOException::class)
-//    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
-    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
+    override fun getFileOrNull(): Path? =
+        if (contentUri.scheme.equals("file", ignoreCase = true)) {
+            val filePath = FileUriFetcher.parseFilePathFromFileUri(contentUri.toString())!!
+            File(filePath).toOkioPath()
+        } else {
+            getDataSourceCacheFile(sketch, request, this)
+        }
 
-    override fun toString(): String =
-        "AssetDataSource('$assetFileName')"
+    override fun toString(): String = "ContentDataSource('$contentUri')"
 }

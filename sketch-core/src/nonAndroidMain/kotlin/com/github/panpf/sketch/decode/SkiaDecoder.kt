@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.datasource.DataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.HelperDecoder
 import com.github.panpf.sketch.decode.internal.SkiaDecodeHelper
 import com.github.panpf.sketch.fetch.FetchResult

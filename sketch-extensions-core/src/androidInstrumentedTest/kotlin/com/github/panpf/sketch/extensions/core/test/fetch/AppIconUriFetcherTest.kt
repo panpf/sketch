@@ -17,8 +17,8 @@ package com.github.panpf.sketch.extensions.core.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.datasource.DataFrom
-import com.github.panpf.sketch.datasource.DrawableDataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.supportAppIcon

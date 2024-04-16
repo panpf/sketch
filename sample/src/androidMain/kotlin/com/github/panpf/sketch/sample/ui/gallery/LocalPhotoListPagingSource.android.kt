@@ -6,8 +6,7 @@ import androidx.core.content.PermissionChecker
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.datasource.DataSource
-import com.github.panpf.sketch.decode.ExifOrientation
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.AndroidExifOrientationHelper

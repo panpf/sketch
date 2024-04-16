@@ -22,9 +22,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.datasource.AssetDataSource
-import com.github.panpf.sketch.datasource.FileDataSource
-import com.github.panpf.sketch.datasource.ResourceDataSource
+import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.FileDataSource
+import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.exifOrientationName
 import com.github.panpf.sketch.decode.internal.readExifOrientation
