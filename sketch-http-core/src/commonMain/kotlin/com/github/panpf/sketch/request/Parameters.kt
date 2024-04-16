@@ -30,13 +30,11 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.Parameters.Entry
 import kotlin.jvm.JvmField
 
 /**
- * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
+ * A map of generic values that can be used to pass custom data to Fetcher and Decoder.
  */
 class Parameters private constructor(
     private val entries: Map<String, Entry>
@@ -187,7 +185,8 @@ class Parameters private constructor(
             entries.remove(key)
         }
 
-        internal fun <T> value(key: String): T? = entries[key]?.value as T?
+        @Suppress("UNCHECKED_CAST")
+        fun <T> value(key: String): T? = entries[key]?.value as T?
 
         /** Create a new [Parameters] instance. */
         fun build() = Parameters(entries.toMap())

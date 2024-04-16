@@ -27,8 +27,12 @@ import com.github.panpf.sketch.decode.supportAnimatedWebp
 import com.github.panpf.sketch.decode.supportApkIcon
 import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.decode.supportKoralGif
+import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.decode.supportSvg
+import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.supportAppIcon
+import com.github.panpf.sketch.http.HurlStack
+import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
@@ -44,42 +48,33 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
 
     override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
         logger(Logger(level = Logger.level(appSettingsService.logLevel.value)))   // for Sketch init log
-        httpStack(OkHttpStack.Builder().apply {
-            if (VERSION.SDK_INT <= 19) {
-                enabledTlsProtocols("TLSv1.1", "TLSv1.2")
-            }
-        }.build())
-//        httpStack(HurlStack.Builder().apply {
-//            if (VERSION.SDK_INT <= 19) {
-//                enabledTlsProtocols("TLSv1.1", "TLSv1.2")
-//            }
-//        }.build())
+        val httpStack = when (appSettingsService.httpEngine.value) {
+            "Ktor" -> KtorStack()
+            "OkHttp" -> OkHttpStack.Builder().build()
+            "HttpURLConnection" -> HurlStack.Builder().build()
+            else -> throw IllegalArgumentException("Unknown httpEngine: ${appSettingsService.httpEngine.value}")
+        }
+        httpStack(httpStack)
         components {
             supportSaveCellularTraffic()
-
             supportPauseLoadWhenScrolling()
 
-            // app icon
             supportAppIcon()
-
-            // apk icon
             supportApkIcon()
-
-            // svg
             supportSvg()
 
             // video
-//            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-//                supportVideoFrame()
-//            } else {
-            supportFFmpegVideoFrame()
-//            }
+            when (appSettingsService.videoFrameDecoder.value) {
+                "FFmpeg" -> supportFFmpegVideoFrame()
+                "AndroidBuiltIn" -> supportVideoFrame()
+                else -> throw IllegalArgumentException("Unknown videoFrameDecoder: ${appSettingsService.videoFrameDecoder.value}")
+            }
 
             // gif
-            when {
-                VERSION.SDK_INT >= VERSION_CODES.P -> supportAnimatedGif()
-//                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> supportMovieGif()
-                else -> supportKoralGif()
+            when (appSettingsService.gifDecoder.value) {
+                "KoralGif" -> supportKoralGif()
+                "ImageDecoder+Movie" -> if (VERSION.SDK_INT >= VERSION_CODES.P) supportAnimatedGif() else supportMovieGif()
+                else -> throw IllegalArgumentException("Unknown animatedDecoder: ${appSettingsService.gifDecoder.value}")
             }
 
             // webp animated

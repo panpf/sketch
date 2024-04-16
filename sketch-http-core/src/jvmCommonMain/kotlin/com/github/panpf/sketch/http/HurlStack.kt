@@ -15,9 +15,8 @@
  */
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.http.HttpStack.Response
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Parameters
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -64,9 +63,12 @@ class HurlStack private constructor(
     val enabledTlsProtocols: Array<String>? = null
 ) : HttpStack {
 
-    @WorkerThread
     @Throws(IOException::class)
-    override suspend fun getResponse(request: ImageRequest, url: String): Response {
+    override suspend fun getResponse(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        parameters: Parameters?
+    ): Response {
         var newUri = url
         while (newUri.isNotEmpty()) {
             val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
@@ -86,7 +88,7 @@ class HurlStack private constructor(
                         setRequestProperty(key, value)
                     }
                 }
-                request.httpHeaders?.apply {
+                httpHeaders?.apply {
                     addList.forEach {
                         addRequestProperty(it.first, it.second)
                     }

@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Parameters
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
@@ -27,10 +27,14 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     @Throws(IOException::class)
-    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override suspend fun getResponse(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        parameters: Parameters?
+    ): HttpStack.Response {
         val httpRequest = Request.Builder().apply {
             url(url)
-            request.httpHeaders?.apply {
+            httpHeaders?.apply {
                 addList.forEach {
                     addHeader(it.first, it.second)
                 }

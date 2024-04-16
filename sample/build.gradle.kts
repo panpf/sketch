@@ -60,10 +60,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.internal.images)
-            implementation(projects.sketchCompose)
-            implementation(projects.sketchSvg)
             implementation(projects.sketchAnimated)
+            implementation(projects.sketchCompose)
             implementation(projects.sketchExtensionsCompose)
+            implementation(projects.sketchHttpKtor)
+            implementation(projects.sketchSvg)
             implementation(compose.components.resources)
             implementation(compose.material)
             implementation(compose.material3)
@@ -123,7 +124,7 @@ kotlin {
             implementation(libs.appdirs)
         }
         jvmCommonMain.dependencies {
-            implementation(projects.sketchOkhttp)
+            implementation(projects.sketchHttpOkhttp)
             implementation(libs.panpf.zoomimage.compose)
         }
         iosMain {

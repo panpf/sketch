@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Parameters
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
@@ -15,10 +15,14 @@ class KtorStack(client: HttpClient? = null) : HttpStack {
 
     private val client = client ?: HttpClient()
 
-    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override suspend fun getResponse(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        parameters: Parameters?
+    ): HttpStack.Response {
         val httpRequest = HttpRequestBuilder().apply {
             url(url)
-            request.httpHeaders?.apply {
+            httpHeaders?.apply {
                 addList.forEach {
                     header(it.first, it.second)
                 }
@@ -30,6 +34,8 @@ class KtorStack(client: HttpClient? = null) : HttpStack {
         val httpResponse = client.request(httpRequest)
         return Response(httpResponse)
     }
+
+    override fun toString(): String = "KtorStack"
 
     class Response(val httpResponse: HttpResponse) : HttpStack.Response {
 

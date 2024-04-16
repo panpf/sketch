@@ -8,7 +8,7 @@ addAllMultiplatformTargets(listOf(MultiplatformTargets.Android, MultiplatformTar
 kotlin {
     sourceSets {
         jvmCommonMain.dependencies {
-            api(projects.sketchCore)
+            api(projects.sketchHttpCore)
             api(libs.okhttp3)
         }
         androidInstrumentedTest.dependencies {
@@ -22,4 +22,4 @@ kotlin {
     }
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.okhttp")
+androidLibrary(nameSpace = "com.github.panpf.sketch.http.okhttp")

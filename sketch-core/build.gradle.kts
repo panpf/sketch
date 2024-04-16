@@ -9,9 +9,9 @@ addAllMultiplatformTargets()
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            api(projects.sketchHttpCore)
             api(libs.kotlin.stdlib)
             api(libs.kotlinx.coroutines.core)
-            api(libs.ktor.client.core)
             api(libs.okio)
             api(libs.skiko)
 //                compileOnly(libs.composeStableMarker)
@@ -20,31 +20,21 @@ kotlin {
             implementation(kotlin("test"))
         }
         androidMain.dependencies {
-            api(libs.androidx.exifinterface)
             api(libs.androidx.annotation)
             api(libs.androidx.appcompat.resources)
             api(libs.androidx.core)
             api(libs.androidx.exifinterface)
             api(libs.androidx.lifecycle.runtime)
             api(libs.kotlinx.coroutines.android)
-            api(libs.ktor.client.android)
         }
         androidInstrumentedTest.dependencies {
             implementation(projects.internal.testUtils)
         }
         desktopMain.dependencies {
             api(libs.kotlinx.coroutines.swing)
-            api(libs.ktor.client.java)
         }
-        iosMain.dependencies {
-            api(libs.ktor.client.ios)
-        }
-        jsMain.dependencies {
-            api(libs.ktor.client.js)
-        }
-        wasmJsMain.dependencies {
-            api(libs.ktor.client.core.wasm)
-            api(libs.ktor.client.wasmJs)
+        nonJvmCommonMain.dependencies {
+            api(projects.sketchHttpKtor)
         }
     }
 }

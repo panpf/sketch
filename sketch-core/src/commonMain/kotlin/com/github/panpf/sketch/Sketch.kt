@@ -27,7 +27,6 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -327,7 +326,7 @@ class Sketch private constructor(options: Options) {
                 fileSystem = fileSystem ?: defaultFileSystem(),
                 memoryCacheFactory = memoryCacheFactory ?: MemoryCache.DefaultFactory(),
                 diskCacheFactory = diskCacheFactory ?: DiskCache.OptionsFactory(),
-                httpStack = httpStack ?: KtorStack(),
+                httpStack = httpStack ?: defaultHttpStack(),
                 componentRegistry = componentRegistry,
                 globalImageOptions = globalImageOptions,
             )
@@ -337,6 +336,7 @@ class Sketch private constructor(options: Options) {
 }
 
 internal expect fun platformComponents(): ComponentRegistry
+internal expect fun defaultHttpStack(): HttpStack
 
 internal fun defaultComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {

@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +59,7 @@ import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import sketch_root.sample.generated.resources.Res.drawable
@@ -124,6 +126,7 @@ fun createSettingItems(
     addAll(makeCacheMenuList(context, appSettings, recreateSettingItems))
     add(GroupSettingItem("Other"))
     addAll(makeOtherMenuList(appSettings))
+    addAll(platformMakeOtherMenuList(appSettings))
 }
 
 
@@ -273,6 +276,8 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
     )
 }
 
+expect fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem>
+
 interface SettingItem {
     val title: String
     val desc: String?
@@ -293,6 +298,7 @@ data class DropdownSettingItem<T>(
     val state: MutableStateFlow<T>,
     override val desc: String? = null,
     override val enabled: Flow<Boolean> = MutableStateFlow(true),
+    val onItemClick: (suspend (T) -> Unit)? = null,
 ) : SettingItem
 
 data class GroupSettingItem(override val title: String) : SettingItem {
@@ -373,6 +379,7 @@ fun SwitchSetting(settingItem: SwitchSettingItem) {
 fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
     val enabled by settingItem.enabled.collectAsState(false)
     if (enabled) {
+        val coroutineScope = rememberCoroutineScope()
         Box(modifier = Modifier.fillMaxWidth()) {
             var expanded by remember { mutableStateOf(false) }
             Row(
@@ -433,6 +440,9 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                         onClick = {
                             settingItem.state.value = value
                             expanded = false
+                            coroutineScope.launch {
+                                settingItem.onItemClick?.invoke(value)
+                            }
                         }
                     )
                 }

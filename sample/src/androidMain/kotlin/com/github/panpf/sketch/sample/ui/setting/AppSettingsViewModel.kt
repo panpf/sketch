@@ -35,6 +35,7 @@ import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.tools4a.toast.Toastx
 import com.github.panpf.tools4j.io.ktx.formatFileSize
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
@@ -369,6 +370,42 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 getValue = { Logger.levelName(application1.sketch.logger.level) },
                 onSelect = { _, value ->
                     appSettingsService.logLevel.value = value
+                }
+            )
+        )
+        add(
+            MultiSelectMenu(
+                title = "Http Engine",
+                desc = null,
+                values = listOf("Ktor", "Okhttp", "HttpURLConnection"),
+                getValue = { appSettingsService.httpEngine.value },
+                onSelect = { _, value ->
+                    appSettingsService.httpEngine.value = value
+                    Toastx.showLong(application1, "Restart the app to take effect")
+                }
+            )
+        )
+        add(
+            MultiSelectMenu(
+                title = "Video Frame Decoder",
+                desc = null,
+                values = listOf("FFmpeg", "AndroidBuiltIn"),
+                getValue = { appSettingsService.videoFrameDecoder.value },
+                onSelect = { _, value ->
+                    appSettingsService.videoFrameDecoder.value = value
+                    Toastx.showLong(application1, "Restart the app to take effect")
+                }
+            )
+        )
+        add(
+            MultiSelectMenu(
+                title = "Gif Decoder",
+                desc = null,
+                values = listOf("KoralGif", "ImageDecoder+Movie"),
+                getValue = { appSettingsService.gifDecoder.value },
+                onSelect = { _, value ->
+                    appSettingsService.gifDecoder.value = value
+                    Toastx.showLong(application1, "Restart the app to take effect")
                 }
             )
         )

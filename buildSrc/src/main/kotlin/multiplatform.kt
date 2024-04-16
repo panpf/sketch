@@ -128,8 +128,13 @@ fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = nu
         }
         if (targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
             applyKotlinWasmJsImplicitDependencyWorkaround()
-            createSkikoWasmJsRuntimeDependency()
         }
+        // An error occurs when compiling js or wasmJs:
+        // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
+        //Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
+//        if (targets == null || targets.contains(MultiplatformTargets.Js) || targets.contains(MultiplatformTargets.WasmJs)) {
+//            createSkikoWasmJsRuntimeDependency()
+//        }
     }
 }
 
@@ -156,6 +161,12 @@ val NamedDomainObjectContainer<KotlinSourceSet>.jvmCommonMain: NamedDomainObject
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jvmCommonTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("jvmCommonTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonJvmCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJvmCommonMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonJvmCommonTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJvmCommonTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jsCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("jsCommonMain")

@@ -141,6 +141,15 @@ class AppSettings(val context: PlatformContext) {
         val defaultState = Logger.levelName(if (isDebugMode()) Logger.Debug else Logger.Info)
         stringSettingsStateFlow(context, "newNewLogLevel", defaultState)
     }
+    val httpEngine by lazy {
+        stringSettingsStateFlow(context, key = "httpEngine", initialize = "Ktor")
+    }
+    val videoFrameDecoder by lazy {
+        stringSettingsStateFlow(context, key = "videoFrameDecoder", initialize = "FFmpeg")
+    }
+    val gifDecoder by lazy {
+        stringSettingsStateFlow(context, key = "gifDecoder", initialize = "KoralGif")
+    }
 
     // Only for Android
     val composePage: SettingsStateFlow<Boolean> by lazy {

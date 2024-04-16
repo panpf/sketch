@@ -26,6 +26,9 @@ import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.http.HurlStack
+import com.github.panpf.sketch.http.KtorStack
+import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
@@ -100,6 +103,12 @@ private fun initialSketch() {
     val appSettings = context.appSettings
     SingletonSketch.setSafe {
         Sketch.Builder(context).apply {
+            when (appSettings.httpEngine.value) {
+                "Ktor" -> KtorStack()
+                "OkHttp" -> OkHttpStack.Builder().build()
+                "HttpURLConnection" -> HurlStack.Builder().build()
+                else -> throw IllegalArgumentException("Unknown httpEngine: ${appSettings.httpEngine.value}")
+            }
             val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
                 /* appName = */ appId,
                 /* appVersion = */ null,
