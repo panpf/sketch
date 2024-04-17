@@ -18,12 +18,18 @@ package com.github.panpf.sketch.http
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
+import okhttp3.internal.platform.Platform
 
 fun OkHttpClient.Builder.setEnabledTlsProtocols(enabledTlsProtocols: Array<String>): OkHttpClient.Builder {
     if (enabledTlsProtocols.isNotEmpty()) {
         try {
-            @Suppress("DEPRECATION")
-            sslSocketFactory(TlsCompatSocketFactory(enabledTlsProtocols))
+            val sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
+            val trustManager = Platform.get().trustManager(sslSocketFactory)
+                ?: throw IllegalStateException(
+                    "Unable to extract the trust manager on ${Platform.get()}, " +
+                            "sslSocketFactory is ${sslSocketFactory.javaClass}"
+                )
+            sslSocketFactory(sslSocketFactory, trustManager)
 
             val connectionSpec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                 .tlsVersions(*enabledTlsProtocols.map { TlsVersion.forJavaName(it) }.toTypedArray())

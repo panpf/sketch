@@ -16,6 +16,8 @@
 package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.request.Parameters
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
@@ -32,22 +34,31 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         httpHeaders: HttpHeaders?,
         parameters: Parameters?
     ): HttpStack.Response {
-        val httpRequest = Request.Builder().apply {
-            url(url)
-            httpHeaders?.apply {
-                addList.forEach {
-                    addHeader(it.first, it.second)
-                }
-                setList.forEach {
-                    header(it.first, it.second)
-                }
+        val result = withContext(Dispatchers.IO) {
+            runCatching {
+                val httpRequest = Request.Builder().apply {
+                    url(url)
+                    httpHeaders?.apply {
+                        addList.forEach {
+                            addHeader(it.first, it.second)
+                        }
+                        setList.forEach {
+                            header(it.first, it.second)
+                        }
+                    }
+                }.build()
+                Response(okHttpClient.newCall(httpRequest).execute())
             }
-        }.build()
-        return Response(okHttpClient.newCall(httpRequest).execute())
+        }
+        if (result.isSuccess) {
+            return result.getOrNull()!!
+        } else {
+            throw result.exceptionOrNull()!!
+        }
     }
 
     override fun toString(): String =
-        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis()},readTimeout=${okHttpClient.readTimeoutMillis()})"
+        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis},readTimeout=${okHttpClient.readTimeoutMillis})"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -60,12 +71,13 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         return okHttpClient.hashCode()
     }
 
-    class Response(val response: okhttp3.Response) :
-        HttpStack.Response {
+    class Response(
+        @Suppress("MemberVisibilityCanBePrivate") val response: okhttp3.Response
+    ) : HttpStack.Response {
 
-        override val code: Int = response.code()
+        override val code: Int = response.code
 
-        override val message: String? = response.message()
+        override val message: String = response.message
 
         override val contentLength: Long = getHeaderField("content-length")?.toLongOrNull() ?: -1L
 
@@ -74,7 +86,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         override fun getHeaderField(name: String): String? = response.header(name)
 
         override suspend fun content(): HttpStack.Content {
-            val body = response.body() ?: throw IOException("response body is null")
+            val body = response.body ?: throw IOException("response body is null")
             return Content(body.byteStream())
         }
     }
@@ -82,7 +94,16 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     class Content(private val inputStream: InputStream) : HttpStack.Content {
 
         override suspend fun read(buffer: ByteArray): Int {
-            return inputStream.read(buffer)
+            val result = withContext(Dispatchers.IO) {
+                runCatching {
+                    inputStream.read(buffer)
+                }
+            }
+            if (result.isSuccess) {
+                return result.getOrNull()!!
+            } else {
+                throw result.exceptionOrNull()!!
+            }
         }
 
         override fun close() {

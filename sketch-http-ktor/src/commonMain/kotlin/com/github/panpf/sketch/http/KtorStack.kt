@@ -37,7 +37,9 @@ class KtorStack(client: HttpClient? = null) : HttpStack {
 
     override fun toString(): String = "KtorStack"
 
-    class Response(val httpResponse: HttpResponse) : HttpStack.Response {
+    class Response(
+        @Suppress("MemberVisibilityCanBePrivate") val httpResponse: HttpResponse
+    ) : HttpStack.Response {
 
         override val code: Int = httpResponse.status.value
 
