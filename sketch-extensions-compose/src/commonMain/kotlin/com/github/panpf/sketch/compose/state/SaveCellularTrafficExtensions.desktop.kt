@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.compose.stateimage
+package com.github.panpf.sketch.compose.state
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.state.ErrorStateImage

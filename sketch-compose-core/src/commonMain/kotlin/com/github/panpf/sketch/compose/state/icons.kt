@@ -1,17 +1,17 @@
-package com.github.panpf.sketch.compose.stateimage
+package com.github.panpf.sketch.compose.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.rememberIconAnimatablePainter
 import com.github.panpf.sketch.compose.painter.rememberIconPainter
 
-
 @Composable
 fun rememberIconPainterStateImage(
-    icon: String,
-    background: String? = null,
+    icon: Painter,
+    background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
@@ -26,7 +26,7 @@ fun rememberIconPainterStateImage(
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: String,
+    icon: Painter,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
@@ -42,8 +42,8 @@ fun rememberIconPainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
-    icon: String,
-    background: String? = null,
+    icon: Painter,
+    background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): PainterStateImage {
@@ -58,7 +58,7 @@ fun rememberIconAnimatablePainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
-    icon: String,
+    icon: Painter,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,

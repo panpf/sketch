@@ -25,7 +25,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.ability.dataFromLogo
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.compose.stateimage.rememberIconPainterStateImage
+import com.github.panpf.sketch.compose.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.runtime.Composable
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.compose.stateimage.rememberIconAnimatableStateImage
+import com.github.panpf.sketch.compose.state.rememberIconAnimatableStateImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.state.StateImage
 

@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.compose.stateimage
+package com.github.panpf.sketch.compose.state
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.ColorFetcher
 import com.github.panpf.sketch.state.StateImage
 
-open class ColorFetcherPainterStateImage(val color: ColorFetcher) : StateImage {
+open class PainterStateImage(val painter: Painter) : StateImage {
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
-        return ColorPainter(Color(color.getColor(request.context))).asSketchImage()
+        return painter.asSketchImage()
     }
 }

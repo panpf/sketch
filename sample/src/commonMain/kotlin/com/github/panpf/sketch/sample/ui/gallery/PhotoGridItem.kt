@@ -26,7 +26,7 @@ import com.github.panpf.sketch.compose.ability.mimeTypeLogo
 import com.github.panpf.sketch.compose.ability.progressIndicator
 import com.github.panpf.sketch.compose.rememberAsyncImagePainter
 import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.compose.stateimage.rememberIconPainterStateImage
+import com.github.panpf.sketch.compose.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings

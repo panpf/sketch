@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.stateimage
+package com.github.panpf.sketch.compose.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

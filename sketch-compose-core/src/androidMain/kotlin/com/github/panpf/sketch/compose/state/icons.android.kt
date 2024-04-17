@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.stateimage
+package com.github.panpf.sketch.compose.state
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
