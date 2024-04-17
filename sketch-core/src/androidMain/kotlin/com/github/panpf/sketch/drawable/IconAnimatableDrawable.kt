@@ -29,7 +29,6 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
-import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.calculateFitBounds
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.util.Size

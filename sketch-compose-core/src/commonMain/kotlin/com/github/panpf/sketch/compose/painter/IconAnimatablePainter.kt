@@ -48,31 +48,31 @@ class IconAnimatablePainter(
     background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-) : IconPainter(icon, background, iconSize, iconTint), Animatable {
+) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
 
-    private val animatableIcon: Animatable?
-    private val animatableBackground: Animatable?
+    private val animatablePainterIcon: AnimatablePainter?
+    private val animatablePainterBackground: AnimatablePainter?
 
     init {
-        require(icon is Animatable || background is Animatable) {
+        require(icon is AnimatablePainter || background is AnimatablePainter) {
             "painter must be AnimatablePainter"
         }
-        animatableIcon = icon as? Animatable
-        animatableBackground = background as? Animatable
+        animatablePainterIcon = icon as? AnimatablePainter
+        animatablePainterBackground = background as? AnimatablePainter
     }
 
     override fun start() {
-        animatableIcon?.start()
-        animatableBackground?.start()
+        animatablePainterIcon?.start()
+        animatablePainterBackground?.start()
     }
 
     override fun stop() {
-        animatableIcon?.stop()
-        animatableBackground?.stop()
+        animatablePainterIcon?.stop()
+        animatablePainterBackground?.stop()
     }
 
     override fun isRunning(): Boolean {
-        return animatableIcon?.isRunning() == true || animatableBackground?.isRunning() == true
+        return animatablePainterIcon?.isRunning() == true || animatablePainterBackground?.isRunning() == true
     }
 
     override fun equals(other: Any?): Boolean {

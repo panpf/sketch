@@ -20,7 +20,6 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATIO
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.compose.painter.internal.AbsProgressPainter
-import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 
 @Composable
 fun rememberSectorProgressPainter(

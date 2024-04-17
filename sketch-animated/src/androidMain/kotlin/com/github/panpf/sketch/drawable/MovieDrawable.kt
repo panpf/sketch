@@ -50,7 +50,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.util.computeSizeMultiplier
-import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE

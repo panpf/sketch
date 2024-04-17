@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.VectorPainter
+import com.github.panpf.sketch.compose.painter.SketchPainter
 
 
 fun Painter.toLogString(): String = when (this) {

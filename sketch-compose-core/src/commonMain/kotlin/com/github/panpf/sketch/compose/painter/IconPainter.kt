@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.compose.painter.internal.SketchPainter
+import com.github.panpf.sketch.compose.painter.internal.DrawInvalidate
 import com.github.panpf.sketch.compose.painter.internal.toLogString
 
 
@@ -131,15 +131,15 @@ open class IconPainter constructor(
     override fun onRemembered() {
         (icon as? RememberObserver)?.onRemembered()
         (background as? RememberObserver)?.onRemembered()
-        (icon as? Animatable)?.start()
-        (background as? Animatable)?.start()
+        (icon as? AnimatablePainter)?.start()
+        (background as? AnimatablePainter)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (icon as? Animatable)?.stop()
-        (background as? Animatable)?.stop()
+        (icon as? AnimatablePainter)?.stop()
+        (background as? AnimatablePainter)?.stop()
         (icon as? RememberObserver)?.onForgotten()
         (background as? RememberObserver)?.onForgotten()
     }

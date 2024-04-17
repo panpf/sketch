@@ -17,7 +17,6 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
-import com.github.panpf.sketch.drawable.internal.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size

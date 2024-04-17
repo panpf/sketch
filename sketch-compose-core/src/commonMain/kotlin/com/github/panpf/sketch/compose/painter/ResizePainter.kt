@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
-import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.util.computeSizeMultiplier
 import com.github.panpf.sketch.resize.Scale
@@ -26,7 +25,7 @@ fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CR
 }
 
 fun Painter.resize(size: Size, scale: Scale): ResizePainter {
-    return if (this is Animatable) {
+    return if (this is AnimatablePainter) {
         ResizeAnimatablePainter(this, size, scale)
     } else {
         ResizePainter(this, size, scale)
@@ -46,13 +45,13 @@ open class ResizePainter(
 
     override fun onRemembered() {
         (painter as? RememberObserver)?.onRemembered()
-        (painter as? Animatable)?.start()
+        (painter as? AnimatablePainter)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (painter as? Animatable)?.stop()
+        (painter as? AnimatablePainter)?.stop()
         (painter as? RememberObserver)?.onForgotten()
     }
 

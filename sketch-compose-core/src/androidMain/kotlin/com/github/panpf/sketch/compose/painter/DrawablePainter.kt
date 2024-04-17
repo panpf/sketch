@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.Ltr
 import androidx.compose.ui.unit.LayoutDirection.Rtl
-import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 import com.github.panpf.sketch.drawable.internal.toLogString
 import kotlin.math.roundToInt
 
@@ -168,7 +167,7 @@ open class DrawablePainter(
 
 class DrawableAnimatablePainter(
     drawable: Drawable
-) : DrawablePainter(drawable), com.github.panpf.sketch.compose.painter.Animatable {
+) : DrawablePainter(drawable), com.github.panpf.sketch.compose.painter.AnimatablePainter {
 
     private val animatable: Animatable
 

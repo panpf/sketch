@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.compose.ComposeBitmap
-import com.github.panpf.sketch.compose.painter.internal.SketchPainter
 
 fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
 

@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.Constraints
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.internal.isEmpty
 import com.github.panpf.sketch.compose.internal.toIntSizeOrNull
-import com.github.panpf.sketch.compose.painter.internal.SketchPainter
+import com.github.panpf.sketch.compose.painter.SketchPainter
 import com.github.panpf.sketch.request.ImageRequest
 
 /**

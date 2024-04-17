@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.painter.internal
+package com.github.panpf.sketch.compose.painter
 
 /**
  * Mark this Painter as coming from Sketch, and it implements equals(), hashCode(), toString() methods

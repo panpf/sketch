@@ -9,27 +9,27 @@ class ResizeAnimatablePainter(
     painter: Painter,
     size: Size,
     scale: Scale
-) : ResizePainter(painter, size, scale), Animatable {
+) : ResizePainter(painter, size, scale), AnimatablePainter {
 
-    private val animatable: Animatable
+    private val animatablePainter: AnimatablePainter
 
     init {
-        require(painter is Animatable) {
+        require(painter is AnimatablePainter) {
             "painter must be AnimatablePainter"
         }
-        animatable = painter
+        animatablePainter = painter
     }
 
     override fun start() {
-        animatable.start()
+        animatablePainter.start()
     }
 
     override fun stop() {
-        animatable.stop()
+        animatablePainter.stop()
     }
 
     override fun isRunning(): Boolean {
-        return animatable.isRunning()
+        return animatablePainter.isRunning()
     }
 
     override fun equals(other: Any?): Boolean {

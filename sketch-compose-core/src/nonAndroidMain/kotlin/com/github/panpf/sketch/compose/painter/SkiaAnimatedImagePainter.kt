@@ -32,7 +32,7 @@ class SkiaAnimatedImagePainter(
     private val srcOffset: IntOffset = IntOffset.Zero,
     private val srcSize: IntSize = IntSize(animatedImage.width, animatedImage.height),
     private val filterQuality: FilterQuality = FilterQuality.Low,
-) : Painter(), Animatable, RememberObserver {
+) : Painter(), AnimatablePainter, RememberObserver {
 
     /*
      * Why do you need to remember to count?

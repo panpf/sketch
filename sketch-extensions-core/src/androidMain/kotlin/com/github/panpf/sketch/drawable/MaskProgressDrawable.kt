@@ -26,7 +26,6 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMIN
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_MASK_COLOR
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
-import com.github.panpf.sketch.drawable.internal.SketchDrawable
 
 /**
  * Mask Progress Drawable

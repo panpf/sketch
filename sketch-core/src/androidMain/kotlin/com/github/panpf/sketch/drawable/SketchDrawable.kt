@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable.internal
+package com.github.panpf.sketch.drawable
 
 /**
  * Mark this Drawable as coming from Sketch, and it implements equals(), hashCode(), toString() methods

@@ -32,6 +32,7 @@ import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.Size
 import kotlin.math.min
