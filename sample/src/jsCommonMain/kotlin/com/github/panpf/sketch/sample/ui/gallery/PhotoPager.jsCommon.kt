@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons.Filled
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -74,7 +74,11 @@ actual fun BoxScope.PlatformPagerTools(
             .background(buttonBgColorState.value, shape = CircleShape)
             .align(Alignment.CenterStart)
     ) {
-        Icon(Filled.KeyboardArrowLeft, contentDescription = "Previous", tint = Color.White)
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            contentDescription = "Previous",
+            tint = Color.White
+        )
     }
 
     IconButton(
@@ -90,6 +94,10 @@ actual fun BoxScope.PlatformPagerTools(
             .background(buttonBgColorState.value, shape = CircleShape)
             .align(Alignment.CenterEnd)
     ) {
-        Icon(Filled.KeyboardArrowRight, contentDescription = "Next", tint = Color.White)
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = "Next",
+            tint = Color.White
+        )
     }
 }

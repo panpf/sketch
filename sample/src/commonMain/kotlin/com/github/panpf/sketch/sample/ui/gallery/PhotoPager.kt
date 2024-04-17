@@ -17,7 +17,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -205,7 +205,7 @@ private fun PagerTools(
         Column(modifier = Modifier.padding(20.dp)) {
             IconButton(onClick = { navigator.pop() }) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = "Back",
                     tint = Color.White,
                     modifier = Modifier
