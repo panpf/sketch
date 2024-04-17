@@ -15,36 +15,28 @@
  */
 package com.github.panpf.sketch.core.test.stateimage
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.state.IconStateImage
 import com.github.panpf.sketch.state.IntColor
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.asOrThrow
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class IconStateImageTest {
 
-    fun Icon(context: Context) {
-        val drawableIcon = context.getDrawable(R.drawable.ic_cloudy)!!
-        val drawableBackground = context.getDrawable(R.drawable.bg_item)
+    @Test
+    fun createFunctionTest() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
         val iconSize = Size(100, 100)
         val intIconTine = IntColor(Color.GREEN)
-        val resIconTine = android.R.color.menu_icon
+        val resIconTine = android.R.color.black
+
+        // icon drawable, background drawable
+        val drawableIcon = context.getDrawable(androidx.core.R.drawable.ic_call_decline)!!
+        val drawableBackground = context.getDrawable(androidx.core.R.drawable.notification_bg)
         IconStateImage(
             icon = drawableIcon,
             background = drawableBackground,
@@ -105,8 +97,9 @@ class IconStateImageTest {
             icon = drawableIcon,
         )
 
-        val resIcon = R.drawable.ic_cloudy
-        val resBackground = R.drawable.bg_item
+        // icon res, background res
+        val resIcon = androidx.core.R.drawable.ic_call_answer
+        val resBackground = androidx.core.R.drawable.notification_template_icon_bg
         IconStateImage(
             icon = resIcon,
             background = resBackground,
@@ -167,6 +160,7 @@ class IconStateImageTest {
             icon = resIcon,
         )
 
+        // icon drawable, background int color
         val intColorBackground = IntColor(Color.BLUE)
         IconStateImage(
             icon = resIcon,

@@ -30,24 +30,24 @@ import com.github.panpf.sketch.state.ResColor
 import com.github.panpf.sketch.state.StateImage
 
 @Composable
-fun rememberColorPainterStateImage(colorFetcher: ColorFetcher): ColorPainterStateImage =
-    remember(colorFetcher) { ColorPainterStateImageImpl(colorFetcher) }
+fun rememberColorPainterStateImage(colorFetcher: ColorFetcher): ColorFetcherPainterStateImage =
+    remember(colorFetcher) { ColorFetcherPainterStateImageImpl(colorFetcher) }
 
 @Composable
-fun rememberColorPainterStateImage(intColor: IntColor): ColorPainterStateImage =
-    remember(intColor) { ColorPainterStateImageImpl(intColor) }
+fun rememberColorPainterStateImage(intColor: IntColor): ColorFetcherPainterStateImage =
+    remember(intColor) { ColorFetcherPainterStateImageImpl(intColor) }
 
 @Composable
-fun rememberColorPainterStateImage(@ColorRes colorRes: Int): ColorPainterStateImage =
-    remember(colorRes) { ColorPainterStateImageImpl(ResColor(colorRes)) }
+fun rememberColorPainterStateImage(@ColorRes colorRes: Int): ColorFetcherPainterStateImage =
+    remember(colorRes) { ColorFetcherPainterStateImageImpl(ResColor(colorRes)) }
 
-interface ColorPainterStateImage : StateImage {
+interface ColorFetcherPainterStateImage : StateImage {
     val colorFetcher: ColorFetcher
 }
 
-private class ColorPainterStateImageImpl(
+private class ColorFetcherPainterStateImageImpl(
     override val colorFetcher: ColorFetcher
-) : ColorPainterStateImage {
+) : ColorFetcherPainterStateImage {
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
         return ColorPainter(Color(colorFetcher.getColor(request.context))).asSketchImage()
@@ -55,7 +55,7 @@ private class ColorPainterStateImageImpl(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ColorPainterStateImage) return false
+        if (other !is ColorFetcherPainterStateImage) return false
         if (colorFetcher != other.colorFetcher) return false
         return true
     }

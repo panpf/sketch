@@ -18,6 +18,8 @@ package com.github.panpf.sketch.util
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+typealias SketchSize = Size
+
 open class Size(val width: Int, val height: Int) {
 
     constructor() : this(0, 0)

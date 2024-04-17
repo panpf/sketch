@@ -60,6 +60,7 @@ fun IconStateImage(
     iconTint = iconTint,
 )
 
+
 /**
  * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
@@ -90,6 +91,7 @@ fun IconStateImage(
     iconTint = iconTint,
 )
 
+
 /**
  * Create an IconStateImage. Set the size and background of the icon through trailing functions.
  */
@@ -119,6 +121,36 @@ fun IconStateImage(
     iconSize = iconSize,
     iconTint = iconTint,
 )
+
+
+/**
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconStateImage = IconStateImageImpl(
+    icon = ResDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+/**
+ * Create an IconStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconStateImage = IconStateImageImpl(
+    icon = ResDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.

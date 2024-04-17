@@ -16,25 +16,186 @@
 package com.github.panpf.sketch.core.test.stateimage
 
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.drawable.IconAnimatableDrawable
-import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.state.IconAnimatableStateImage
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.getDrawableCompat
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class IconAnimatableStateImageTest {
+
+    @Test
+    fun createFunctionTest() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val iconSize = Size(100, 100)
+        val intIconTine = IntColor(Color.GREEN)
+        val resIconTine = android.R.color.black
+
+        // icon drawable, background drawable
+        val drawableIcon = context.getDrawable(androidx.core.R.drawable.ic_call_decline)!!
+        val drawableBackground = context.getDrawable(androidx.core.R.drawable.notification_bg)
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = intIconTine
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+        )
+
+        // icon res, background res
+        val resIcon = androidx.core.R.drawable.ic_call_answer
+        val resBackground = androidx.core.R.drawable.notification_template_icon_bg
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = intIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+        )
+
+        // icon drawable, background int color
+        val intColorBackground = IntColor(Color.BLUE)
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconTint = resIconTine
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconTint = intIconTine
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+        )
+    }
 
     @Test
     fun testGetDrawable() {

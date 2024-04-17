@@ -60,6 +60,7 @@ fun IconAnimatableStateImage(
     iconTint = iconTint,
 )
 
+
 /**
  * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
  */
@@ -90,6 +91,7 @@ fun IconAnimatableStateImage(
     iconTint = iconTint,
 )
 
+
 /**
  * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
  */
@@ -119,6 +121,36 @@ fun IconAnimatableStateImage(
     iconSize = iconSize,
     iconTint = iconTint,
 )
+
+
+/**
+ * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = ResDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+/**
+ * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
+ */
+fun IconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = ResDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.

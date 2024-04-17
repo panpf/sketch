@@ -15,18 +15,18 @@ import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.SketchSize
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     icon: Drawable,
     background: Drawable? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconTintColor = ResColor(iconTint)
             .getColor(context)
             .let { Color(it) }
-        IconPainter(
+        IconAnimatablePainter(
             icon = icon.asPainter(),
             background = background?.asPainter(),
             iconSize = iconSize?.toSize(),
@@ -36,13 +36,13 @@ fun rememberIconPainter(
 }
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     icon: Drawable,
     background: Drawable? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
-): IconPainter = remember(icon, background, iconSize, iconTint) {
-    IconPainter(
+): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
+    IconAnimatablePainter(
         icon = icon.asPainter(),
         background = background?.asPainter(),
         iconSize = iconSize?.toSize(),
@@ -52,12 +52,12 @@ fun rememberIconPainter(
 
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
@@ -67,7 +67,7 @@ fun rememberIconPainter(
         val iconTintColor = ResColor(iconTint)
             .getColor(context)
             .let { Color(it) }
-        IconPainter(
+        IconAnimatablePainter(
             icon = iconDrawable.asPainter(),
             background = backgroundDrawable.asPainter(),
             iconSize = iconSize?.toSize(),
@@ -77,19 +77,19 @@ fun rememberIconPainter(
 }
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
         val backgroundDrawable = background
             ?.let { ResDrawable(it) }
             ?.getDrawable(context)
-        IconPainter(
+        IconAnimatablePainter(
             icon = iconDrawable.asPainter(),
             background = backgroundDrawable.asPainter(),
             iconSize = iconSize?.toSize(),
@@ -100,19 +100,19 @@ fun rememberIconPainter(
 
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
         val iconTintColor = ResColor(iconTint)
             .getColor(context)
             .let { Color(it) }
-        IconPainter(
+        IconAnimatablePainter(
             icon = iconDrawable.asPainter(),
             background = background?.let { ColorPainter(Color(it.color)) },
             iconSize = iconSize?.toSize(),
@@ -122,16 +122,16 @@ fun rememberIconPainter(
 }
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
-        IconPainter(
+        IconAnimatablePainter(
             icon = iconDrawable.asPainter(),
             background = background?.let { ColorPainter(Color(it.color)) },
             iconSize = iconSize?.toSize(),
@@ -142,18 +142,18 @@ fun rememberIconPainter(
 
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
         val iconTintColor = ResColor(iconTint)
             .getColor(context)
             .let { Color(it) }
-        IconPainter(
+        IconAnimatablePainter(
             icon = iconDrawable.asPainter(),
             background = null,
             iconSize = iconSize?.toSize(),
@@ -163,15 +163,15 @@ fun rememberIconPainter(
 }
 
 @Composable
-fun rememberIconPainter(
+fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
-): IconPainter {
+): IconAnimatablePainter {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
-        IconPainter(
+        IconAnimatablePainter(
             icon = iconDrawable.asPainter(),
             background = null,
             iconSize = iconSize?.toSize(),

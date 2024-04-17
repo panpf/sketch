@@ -29,7 +29,11 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.DrawInvalidate
 import com.github.panpf.sketch.compose.painter.internal.toLogString
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
+// TODO Looking forward to Compose Multiplatform supporting ColorResource
 
 @Composable
 fun rememberIconPainter(
@@ -37,15 +41,13 @@ fun rememberIconPainter(
     background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconPainter {
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainter(
-            icon = icon,
-            background = background,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
+): IconPainter = remember(icon, background, iconSize, iconTint) {
+    IconPainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
 }
 
 @Composable
@@ -54,9 +56,26 @@ fun rememberIconPainter(
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
+): IconPainter = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background?.let { ColorPainter(it) }
+    IconPainter(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconPainter(
+    icon: Painter,
+    background: DrawableResource? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
 ): IconPainter {
+    val backgroundPainter = background?.let { painterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
-        val backgroundPainter = background?.let { ColorPainter(it) }
         IconPainter(
             icon = icon,
             background = backgroundPainter,
@@ -66,11 +85,104 @@ fun rememberIconPainter(
     }
 }
 
+@Composable
+fun rememberIconPainter(
+    icon: Painter,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter = remember(icon, iconSize, iconTint) {
+    IconPainter(
+        icon = icon,
+        background = null,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconPainter(
+    icon: DrawableResource,
+    background: Painter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    val iconPainter = painterResource(icon)
+    return remember(icon, background, iconSize, iconTint) {
+        IconPainter(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconPainter(
+    icon: DrawableResource,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    val iconPainter = painterResource(icon)
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background?.let { ColorPainter(it) }
+        IconPainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconPainter(
+    icon: DrawableResource,
+    background: DrawableResource? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    val iconPainter = painterResource(icon)
+    val backgroundPainter = background?.let { painterResource(it) }
+    return remember(icon, background, iconSize, iconTint) {
+        IconPainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconPainter(
+    icon: DrawableResource,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainter {
+    val iconPainter = painterResource(icon)
+    return remember(icon, iconSize, iconTint) {
+        IconPainter(
+            icon = iconPainter,
+            background = null,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
  */
-open class IconPainter constructor(
+open class IconPainter(
     val icon: Painter,
     val background: Painter? = null,
     val iconSize: Size? = null,

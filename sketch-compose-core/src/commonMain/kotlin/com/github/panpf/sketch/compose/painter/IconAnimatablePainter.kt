@@ -7,6 +7,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+
+// TODO Looking forward to Compose Multiplatform supporting ColorResource
+
 
 @Composable
 fun rememberIconAnimatablePainter(
@@ -14,15 +20,13 @@ fun rememberIconAnimatablePainter(
     background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconAnimatablePainter {
-    return remember(icon, background, iconSize, iconTint) {
-        IconAnimatablePainter(
-            icon = icon,
-            background = background,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
+): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
+    IconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
 }
 
 @Composable
@@ -31,9 +35,26 @@ fun rememberIconAnimatablePainter(
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
+): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background?.let { ColorPainter(it) }
+    IconAnimatablePainter(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconAnimatablePainter(
+    icon: Painter,
+    background: DrawableResource? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
 ): IconAnimatablePainter {
+    val backgroundPainter = background?.let { painterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
-        val backgroundPainter = background?.let { ColorPainter(it) }
         IconAnimatablePainter(
             icon = icon,
             background = backgroundPainter,
@@ -42,6 +63,99 @@ fun rememberIconAnimatablePainter(
         )
     }
 }
+
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: Painter,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconAnimatablePainter = remember(icon, iconSize, iconTint) {
+    IconAnimatablePainter(
+        icon = icon,
+        background = null,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconAnimatablePainter(
+    icon: DrawableResource,
+    background: Painter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconAnimatablePainter {
+    val iconPainter = painterResource(icon)
+    return remember(icon, background, iconSize, iconTint) {
+        IconAnimatablePainter(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconAnimatablePainter(
+    icon: DrawableResource,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconAnimatablePainter {
+    val iconPainter = painterResource(icon)
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background?.let { ColorPainter(it) }
+        IconAnimatablePainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconAnimatablePainter(
+    icon: DrawableResource,
+    background: DrawableResource? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconAnimatablePainter {
+    val iconPainter = painterResource(icon)
+    val backgroundPainter = background?.let { painterResource(it) }
+    return remember(icon, background, iconSize, iconTint) {
+        IconAnimatablePainter(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalResourceApi::class)
+fun rememberIconAnimatablePainter(
+    icon: DrawableResource,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconAnimatablePainter {
+    val iconPainter = painterResource(icon)
+    return remember(icon, iconSize, iconTint) {
+        IconAnimatablePainter(
+            icon = iconPainter,
+            background = null,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
 
 class IconAnimatablePainter(
     icon: Painter,
