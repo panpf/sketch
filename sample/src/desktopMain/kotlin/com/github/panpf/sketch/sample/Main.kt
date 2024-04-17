@@ -103,11 +103,11 @@ private fun initialSketch() {
     val appSettings = context.appSettings
     SingletonSketch.setSafe {
         Sketch.Builder(context).apply {
-            when (appSettings.httpEngine.value) {
+            when (appSettings.httpClient.value) {
                 "Ktor" -> KtorStack()
                 "OkHttp" -> OkHttpStack.Builder().build()
                 "HttpURLConnection" -> HurlStack.Builder().build()
-                else -> throw IllegalArgumentException("Unknown httpEngine: ${appSettings.httpEngine.value}")
+                else -> throw IllegalArgumentException("Unknown httpClient: ${appSettings.httpClient.value}")
             }
             val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
                 /* appName = */ appId,

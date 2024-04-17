@@ -48,11 +48,11 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
 
     override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
         logger(Logger(level = Logger.level(appSettingsService.logLevel.value)))   // for Sketch init log
-        val httpStack = when (appSettingsService.httpEngine.value) {
+        val httpStack = when (appSettingsService.httpClient.value) {
             "Ktor" -> KtorStack()
             "OkHttp" -> OkHttpStack.Builder().build()
             "HttpURLConnection" -> HurlStack.Builder().build()
-            else -> throw IllegalArgumentException("Unknown httpEngine: ${appSettingsService.httpEngine.value}")
+            else -> throw IllegalArgumentException("Unknown httpClient: ${appSettingsService.httpClient.value}")
         }
         httpStack(httpStack)
         components {

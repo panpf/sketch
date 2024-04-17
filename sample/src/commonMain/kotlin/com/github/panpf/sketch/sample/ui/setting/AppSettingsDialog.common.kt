@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -415,7 +413,6 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                 Spacer(modifier = Modifier.width(10.dp))
                 val value by settingItem.state.collectAsState()
                 Text(text = value.toString(), fontSize = 10.sp)
-                Icons.Filled.MoreVert
                 Icon(
                     painter = painterResource(drawable.ic_expand_more),
                     contentDescription = "more"

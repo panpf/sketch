@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.sample.AppSettings
+import com.github.panpf.sketch.sample.ui.MyEvents
 
 @Composable
 actual fun getSettingsDialogHeight(): Dp {
@@ -15,10 +16,13 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
 actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
-            title = "Http Engine",
-            desc = "Default: HttpURLConnection",
-            values = listOf("Default", "Ktor", "Okhttp"),
-            state = appSettings.httpEngine,
+            title = "Http Client",
+            desc = null,
+            values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
+            state = appSettings.httpClient,
+            onItemClick = {
+                MyEvents.toastFlow.emit("Restart the app to take effect")
+            }
         )
     )
 }

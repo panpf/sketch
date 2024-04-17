@@ -375,12 +375,12 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
         )
         add(
             MultiSelectMenu(
-                title = "Http Engine",
+                title = "Http Client",
                 desc = null,
-                values = listOf("Ktor", "Okhttp", "HttpURLConnection"),
-                getValue = { appSettingsService.httpEngine.value },
+                values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
+                getValue = { appSettingsService.httpClient.value },
                 onSelect = { _, value ->
-                    appSettingsService.httpEngine.value = value
+                    appSettingsService.httpClient.value = value
                     Toastx.showLong(application1, "Restart the app to take effect")
                 }
             )

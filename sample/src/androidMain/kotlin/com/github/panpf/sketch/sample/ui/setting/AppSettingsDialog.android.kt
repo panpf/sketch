@@ -52,10 +52,10 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
 actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
-            title = "Http Engine",
+            title = "Http Client",
             desc = null,
             values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
-            state = appSettings.httpEngine,
+            state = appSettings.httpClient,
             onItemClick = {
                 MyEvents.toastFlow.emit("Restart the app to take effect")
             }
