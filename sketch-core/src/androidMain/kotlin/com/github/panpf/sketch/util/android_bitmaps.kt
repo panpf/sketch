@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -32,7 +33,6 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
-import org.jetbrains.skia.Color
 import kotlin.math.ceil
 import kotlin.math.min
 

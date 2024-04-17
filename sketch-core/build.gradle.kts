@@ -13,7 +13,6 @@ kotlin {
             api(libs.kotlin.stdlib)
             api(libs.kotlinx.coroutines.core)
             api(libs.okio)
-            api(libs.skiko)
 //                compileOnly(libs.composeStableMarker)
         }
         commonTest.dependencies {
@@ -32,6 +31,9 @@ kotlin {
         }
         desktopMain.dependencies {
             api(libs.kotlinx.coroutines.swing)
+        }
+        nonAndroidMain.dependencies {
+            api(libs.skiko)
         }
         nonJvmCommonMain.dependencies {
             api(projects.sketchHttpKtor)
