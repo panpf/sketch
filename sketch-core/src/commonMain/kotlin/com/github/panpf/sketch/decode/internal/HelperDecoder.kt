@@ -16,20 +16,21 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
+import okio.use
 
 open class HelperDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
-    private val decodeHelper: DecodeHelper,
+    private val decodeHelperFactory: () -> DecodeHelper,
 ) : Decoder {
 
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
-        val decodeResult = try {
+        val decodeResult = decodeHelperFactory().use { decodeHelper ->
             val imageInfo = decodeHelper.imageInfo
             val supportRegion = decodeHelper.supportRegion
             realDecode(
@@ -43,8 +44,6 @@ open class HelperDecoder(
                     decodeHelper.decodeRegion(srcRect, sampleSize)
                 } else null
             )
-        } finally {
-            decodeHelper.close()
         }
         val resizedResult = decodeResult.appliedResize(requestContext)
         resizedResult

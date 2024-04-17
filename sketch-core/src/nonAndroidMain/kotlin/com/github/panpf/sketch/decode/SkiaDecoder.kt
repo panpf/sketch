@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.HelperDecoder
 import com.github.panpf.sketch.decode.internal.SkiaDecodeHelper
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 class SkiaDecoder(
     requestContext: RequestContext,
@@ -12,7 +12,7 @@ class SkiaDecoder(
 ) : HelperDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
-    decodeHelper = SkiaDecodeHelper(requestContext.request, dataSource)
+    decodeHelperFactory = { SkiaDecodeHelper(requestContext.request, dataSource) }
 ) {
 
     class Factory : Decoder.Factory {

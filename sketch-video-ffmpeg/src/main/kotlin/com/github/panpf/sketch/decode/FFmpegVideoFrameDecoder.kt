@@ -16,11 +16,11 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecodeHelper
 import com.github.panpf.sketch.decode.internal.HelperDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds video frame support by ffmpeg
@@ -43,7 +43,9 @@ class FFmpegVideoFrameDecoder(
 ) : HelperDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
-    decodeHelper = FFmpegVideoFrameDecodeHelper(requestContext.request, dataSource, mimeType)
+    decodeHelperFactory = {
+        FFmpegVideoFrameDecodeHelper(requestContext.request, dataSource, mimeType)
+    }
 ) {
 
     class Factory : Decoder.Factory {

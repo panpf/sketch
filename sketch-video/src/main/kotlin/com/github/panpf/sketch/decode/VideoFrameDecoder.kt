@@ -18,11 +18,11 @@ package com.github.panpf.sketch.decode
 import android.annotation.TargetApi
 import android.os.Build
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.HelperDecoder
 import com.github.panpf.sketch.decode.internal.VideoFrameDecodeHelper
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds video frame support
@@ -49,7 +49,7 @@ class VideoFrameDecoder(
 ) : HelperDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
-    decodeHelper = VideoFrameDecodeHelper(requestContext.request, dataSource, mimeType)
+    decodeHelperFactory = { VideoFrameDecodeHelper(requestContext.request, dataSource, mimeType) }
 ) {
 
     @TargetApi(Build.VERSION_CODES.O_MR1)
