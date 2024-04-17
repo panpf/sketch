@@ -10,6 +10,7 @@ import com.github.panpf.sketch.sample.ui.util.getDrawableCompat
 
 @Composable
 actual fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): Painter? {
+    // AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above android api 29
     return remember {
         context.getDrawableCompat(R.drawable.ic_placeholder_eclipse_animated).asPainter()
     }

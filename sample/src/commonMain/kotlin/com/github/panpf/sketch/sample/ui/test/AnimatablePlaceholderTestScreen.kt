@@ -61,7 +61,6 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                     val request = ImageRequest(context, uriString) {
                         memoryCachePolicy(DISABLED)
                         resultCachePolicy(DISABLED)
-                        // TODO AnimatedVectorDrawable and AnimatedVectorDrawableCompat cannot be played above android api 29
                         placeholder(placeholderStateImage)
                         components {
                             addDecodeInterceptor(DelayDecodeInterceptor(3000))

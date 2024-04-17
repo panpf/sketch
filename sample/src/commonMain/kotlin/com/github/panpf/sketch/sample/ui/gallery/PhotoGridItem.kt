@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.compose.AsyncImage
 import com.github.panpf.sketch.compose.LocalPlatformContext
 import com.github.panpf.sketch.compose.SubcomposeAsyncImage
@@ -33,6 +34,7 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.ifLet
+import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -41,12 +43,14 @@ import sketch_root.sample.generated.resources.ic_error_baseline
 import sketch_root.sample.generated.resources.ic_image_outline
 import sketch_root.sample.generated.resources.ic_signal_cellular
 
+@Composable
+expect fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): StateImage?
 
 @Composable
 fun PhotoGridItem(
     index: Int,
     photo: Photo,
-    @Suppress("UNUSED_PARAMETER") animatedPlaceholder: Boolean = false,
+    animatedPlaceholder: Boolean = false,
     staggeredGridMode: Boolean = false,
     onClick: (photo: Photo, index: Int) -> Unit,
 ) {
@@ -94,7 +98,9 @@ fun PhotoGridItem(
 
     val listSettings by appSettingsService.listsCombinedFlow.collectAsState(Unit)
     val colorScheme = MaterialTheme.colorScheme
-    val placeholderStateImage = rememberIconPainterStateImage(
+    val animatedPlaceholderStateImage =
+        if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
+    val placeholderStateImage = animatedPlaceholderStateImage ?: rememberIconPainterStateImage(
         icon = painterResource(drawable.ic_image_outline),
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
@@ -111,15 +117,7 @@ fun PhotoGridItem(
     )
     val request = remember(photo.listThumbnailUrl, listSettings) {
         ImageRequest(context, photo.listThumbnailUrl) {
-//                if (animatedPlaceholder) {   // TODO animatedPlaceholder
-//                    placeholder(
-//                        IconAnimatableStateImage(drawable.ic_placeholder_eclipse_animated) {
-//                            resColorBackground(color.placeholder_bg)
-//                        }
-//                    )
-//                } else {
             placeholder(placeholderStateImage)
-//                }
             error(errorStateImage) {
                 saveCellularTrafficError(saveCellularTrafficStateImage)
             }

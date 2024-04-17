@@ -6,5 +6,6 @@ import com.github.panpf.sketch.PlatformContext
 
 @Composable
 actual fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): Painter? {
+    // Animated svg is not yet supported on non-Android platforms
     return null
 }
