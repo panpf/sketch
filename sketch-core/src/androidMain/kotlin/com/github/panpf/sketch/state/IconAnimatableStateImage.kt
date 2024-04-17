@@ -38,7 +38,7 @@ fun IconAnimatableStateImage(
     background: Drawable? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = RealDrawable(icon),
     background = background?.let { RealDrawable(it) },
     iconSize = iconSize,
@@ -53,7 +53,7 @@ fun IconAnimatableStateImage(
     background: Drawable? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = RealDrawable(icon),
     background = background?.let { RealDrawable(it) },
     iconSize = iconSize,
@@ -68,7 +68,7 @@ fun IconAnimatableStateImage(
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
@@ -83,7 +83,7 @@ fun IconAnimatableStateImage(
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
@@ -98,7 +98,7 @@ fun IconAnimatableStateImage(
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -113,7 +113,7 @@ fun IconAnimatableStateImage(
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImage(
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -125,12 +125,24 @@ fun IconAnimatableStateImage(
  *
  * Icons are centered and always the same size
  */
-class IconAnimatableStateImage internal constructor(
-    private val icon: DrawableFetcher,
-    private val background: DrawableFetcher?,
-    private val iconSize: Size?,
-    private val iconTint: ColorFetcher?
-) : StateImage {
+interface IconAnimatableStateImage : StateImage {
+    val icon: DrawableFetcher
+    val background: DrawableFetcher?
+    val iconSize: Size?
+    val iconTint: ColorFetcher?
+}
+
+/**
+ * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
+ *
+ * Icons are centered and always the same size
+ */
+class IconAnimatableStateImageImpl internal constructor(
+    override val icon: DrawableFetcher,
+    override val background: DrawableFetcher?,
+    override val iconSize: Size?,
+    override val iconTint: ColorFetcher?
+) : IconAnimatableStateImage {
 
     override fun getImage(
         sketch: Sketch,

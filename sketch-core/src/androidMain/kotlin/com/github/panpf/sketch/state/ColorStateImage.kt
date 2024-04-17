@@ -17,18 +17,29 @@ package com.github.panpf.sketch.state
 
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
-import com.github.panpf.sketch.Sketch
+import androidx.annotation.ColorRes
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.request.ImageRequest
+
+fun ColorStateImage(colorFetcher: ColorFetcher): ColorStateImage = ColorStateImageImpl(colorFetcher)
+
+fun ColorStateImage(intColor: IntColor): ColorStateImage = ColorStateImageImpl(intColor)
+
+fun ColorStateImage(@ColorRes colorRes: Int): ColorStateImage = ColorStateImageImpl(ResColor(colorRes))
 
 /**
  * Use color as the state [Drawable]
  */
-class ColorStateImage constructor(private val color: ColorFetcher) : StateImage {
+interface ColorStateImage : StateImage {
+    val color: ColorFetcher
+}
 
-    constructor(@ColorInt color: Int) : this(IntColor(color))
+/**
+ * Use color as the state [Drawable]
+ */
+private class ColorStateImageImpl(override val color: ColorFetcher) : ColorStateImage {
 
     override fun getImage(
         sketch: Sketch,

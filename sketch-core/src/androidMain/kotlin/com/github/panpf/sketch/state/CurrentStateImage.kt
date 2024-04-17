@@ -16,23 +16,33 @@
 package com.github.panpf.sketch.state
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.Sketch
+import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.asOrNull
+
+fun CurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
+    CurrentStateImageImpl(defaultImage)
+
+fun CurrentStateImage(defaultDrawable: Drawable): CurrentStateImage =
+    CurrentStateImageImpl(DrawableStateImage(defaultDrawable))
+
+fun CurrentStateImage(@DrawableRes defaultDrawableRes: Int): CurrentStateImage =
+    CurrentStateImageImpl(DrawableStateImage(defaultDrawableRes))
 
 /**
  * Use current [Drawable] as the state [Drawable]
  */
-class CurrentStateImage(
-    private val defaultImage: StateImage? = null
-) : StateImage {
+interface CurrentStateImage : StateImage {
+    val defaultImage: StateImage?
+}
 
-    constructor(defaultDrawable: Drawable) : this(DrawableStateImage(defaultDrawable))
-
-    constructor(defaultDrawableRes: Int) : this(DrawableStateImage(defaultDrawableRes))
+private class CurrentStateImageImpl(
+    override val defaultImage: StateImage? = null
+) : CurrentStateImage {
 
     override fun getImage(
         sketch: Sketch,

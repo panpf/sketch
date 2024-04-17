@@ -17,31 +17,38 @@ package com.github.panpf.sketch.state
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.util.ResDrawable
 
+fun DrawableStateImage(drawableFetcher: DrawableFetcher): DrawableStateImage =
+    DrawableStateImageImpl(drawableFetcher)
+
+fun DrawableStateImage(drawable: Drawable): DrawableStateImage =
+    DrawableStateImageImpl(RealDrawable(drawable))
+
+fun DrawableStateImage(@DrawableRes drawableRes: Int): DrawableStateImage =
+    DrawableStateImageImpl(ResDrawable(drawableRes))
+
 /**
  * Use [Drawable] as the state [Drawable]
  */
-class DrawableStateImage : StateImage {
+interface DrawableStateImage : StateImage {
+    val drawableFetcher: DrawableFetcher
+}
 
-    private val drawableFetcher: DrawableFetcher
-
-    constructor(@DrawableRes drawableRes: Int) {
-        this.drawableFetcher = ResDrawable(drawableRes)
-    }
-
-    constructor(drawable: Drawable) {
-        this.drawableFetcher = RealDrawable(drawable)
-    }
+private class DrawableStateImageImpl(
+    override val drawableFetcher: DrawableFetcher
+) : DrawableStateImage {
 
     override fun getImage(
-        sketch: Sketch, request: ImageRequest, throwable: Throwable?
+        sketch: Sketch,
+        request: ImageRequest,
+        throwable: Throwable?
     ): Image? {
         return try {
             drawableFetcher.getDrawable(request.context)

@@ -38,7 +38,7 @@ fun IconStateImage(
     background: Drawable? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconStateImage = IconStateImageImpl(
     icon = RealDrawable(icon),
     background = background?.let { RealDrawable(it) },
     iconSize = iconSize,
@@ -53,7 +53,7 @@ fun IconStateImage(
     background: Drawable? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconStateImage = IconStateImageImpl(
     icon = RealDrawable(icon),
     background = background?.let { RealDrawable(it) },
     iconSize = iconSize,
@@ -68,7 +68,7 @@ fun IconStateImage(
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconStateImage = IconStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
@@ -83,7 +83,7 @@ fun IconStateImage(
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconStateImage = IconStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
@@ -98,7 +98,7 @@ fun IconStateImage(
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconStateImage = IconStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -113,7 +113,7 @@ fun IconStateImage(
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconStateImage = IconStateImageImpl(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -125,12 +125,24 @@ fun IconStateImage(
  *
  * Icons are centered and always the same size
  */
-class IconStateImage internal constructor(
-    private val icon: DrawableFetcher,
-    private val background: DrawableFetcher?,
-    private val iconSize: Size?,
-    private val iconTint: ColorFetcher?
-) : StateImage {
+interface IconStateImage : StateImage {
+    val icon: DrawableFetcher
+    val background: DrawableFetcher?
+    val iconSize: Size?
+    val iconTint: ColorFetcher?
+}
+
+/**
+ * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
+ *
+ * Icons are centered and always the same size
+ */
+private class IconStateImageImpl(
+    override val icon: DrawableFetcher,
+    override val background: DrawableFetcher?,
+    override val iconSize: Size?,
+    override val iconTint: ColorFetcher?
+) : IconStateImage {
 
     override fun getImage(
         sketch: Sketch,

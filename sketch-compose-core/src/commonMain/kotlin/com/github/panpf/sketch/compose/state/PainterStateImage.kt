@@ -22,7 +22,13 @@ import com.github.panpf.sketch.compose.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.StateImage
 
-open class PainterStateImage(val painter: Painter) : StateImage {
+fun PainterStateImage(painter: Painter): PainterStateImage = PainterStateImageImpl(painter)
+
+interface PainterStateImage : StateImage {
+    val painter: Painter
+}
+
+private class PainterStateImageImpl(override val painter: Painter) : PainterStateImage {
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
         return painter.asSketchImage()

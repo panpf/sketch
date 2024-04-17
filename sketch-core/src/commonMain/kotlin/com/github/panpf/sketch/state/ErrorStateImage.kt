@@ -33,25 +33,7 @@ fun ErrorStateImage(
 /**
  * Provide Drawable specifically for error status, support custom [CombinedStateImage.Condition] Provide different Drawable according to different error types
  */
-class ErrorStateImage(
-    override val stateList: List<Pair<CombinedStateImage.Condition, StateImage?>>
-) : CombinedStateImage {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ErrorStateImage) return false
-        if (stateList != other.stateList) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return stateList.hashCode()
-    }
-
-    override fun toString(): String {
-        val listString = stateList.joinToString(prefix = "[", postfix = "]")
-        return "ErrorStateImage(${listString})"
-    }
+interface ErrorStateImage : CombinedStateImage {
 
     class Builder constructor(private val defaultImage: StateImage?) {
 
@@ -77,26 +59,41 @@ class ErrorStateImage(
             } else {
                 stateList
             }
-            return ErrorStateImage(list)
+            return ErrorStateImageImpl(list)
         }
     }
 
-    object DefaultCondition : CombinedStateImage.Condition {
+    data object DefaultCondition : CombinedStateImage.Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
 
-        override fun toString(): String {
-            return "DefaultCondition"
-        }
     }
 
-    object UriEmptyCondition : CombinedStateImage.Condition {
+    data object UriEmptyCondition : CombinedStateImage.Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
             throwable is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
 
-        override fun toString(): String {
-            return "UriEmptyCondition"
-        }
+    }
+}
+
+private class ErrorStateImageImpl(
+    override val stateList: List<Pair<CombinedStateImage.Condition, StateImage?>>
+) : ErrorStateImage {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ErrorStateImage) return false
+        if (stateList != other.stateList) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return stateList.hashCode()
+    }
+
+    override fun toString(): String {
+        val listString = stateList.joinToString(prefix = "[", postfix = "]")
+        return "ErrorStateImage(${listString})"
     }
 }

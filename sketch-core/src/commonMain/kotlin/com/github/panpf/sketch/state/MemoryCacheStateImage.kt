@@ -22,10 +22,23 @@ import com.github.panpf.sketch.request.ImageRequest
 /**
  * Get a Bitmap from memory using the given memory cache key as a state Drawable, if not found, use defaultImage
  */
-class MemoryCacheStateImage(
-    private val cacheKey: String?,
-    private val defaultImage: StateImage? = null
-) : StateImage {
+fun MemoryCacheStateImage(
+    cacheKey: String?,
+    defaultImage: StateImage? = null
+): MemoryCacheStateImage = MemoryCacheStateImageImpl(cacheKey, defaultImage)
+
+/**
+ * Get a Bitmap from memory using the given memory cache key as a state Drawable, if not found, use defaultImage
+ */
+interface MemoryCacheStateImage : StateImage {
+    val cacheKey: String?
+    val defaultImage: StateImage?
+}
+
+private class MemoryCacheStateImageImpl(
+    override val cacheKey: String?,
+    override val defaultImage: StateImage? = null
+) : MemoryCacheStateImage {
 
     override fun getImage(
         sketch: Sketch,

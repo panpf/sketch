@@ -15,10 +15,27 @@ import kotlin.math.abs
  * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
  * @param uri The uri of the image, if null use ImageRequest.uriString
  */
-class ThumbnailMemoryCacheStateImage(
-    private val uri: String? = null,
-    private val defaultImage: StateImage? = null
-) : StateImage {
+fun ThumbnailMemoryCacheStateImage(
+    uri: String? = null,
+    defaultImage: StateImage? = null
+): ThumbnailMemoryCacheStateImage = ThumbnailMemoryCacheStateImageImpl(uri, defaultImage)
+
+/**
+ * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
+ */
+interface ThumbnailMemoryCacheStateImage : StateImage {
+    val uri: String?
+    val defaultImage: StateImage?
+}
+
+/**
+ * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
+ * @param uri The uri of the image, if null use ImageRequest.uriString
+ */
+private class ThumbnailMemoryCacheStateImageImpl(
+    override val uri: String? = null,
+    override val defaultImage: StateImage? = null
+) : ThumbnailMemoryCacheStateImage {
 
     override fun getImage(
         sketch: Sketch,
