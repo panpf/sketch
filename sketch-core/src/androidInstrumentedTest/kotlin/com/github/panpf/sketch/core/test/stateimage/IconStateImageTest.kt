@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.test.stateimage
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
@@ -26,6 +27,7 @@ import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
@@ -36,6 +38,170 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class IconStateImageTest {
+
+    fun Icon(context: Context) {
+        val drawableIcon = context.getDrawable(R.drawable.ic_cloudy)!!
+        val drawableBackground = context.getDrawable(R.drawable.bg_item)
+        val iconSize = Size(100, 100)
+        val intIconTine = IntColor(Color.GREEN)
+        val resIconTine = android.R.color.menu_icon
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = intIconTine
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+        )
+
+        val resIcon = R.drawable.ic_cloudy
+        val resBackground = R.drawable.bg_item
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = intIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = resIcon,
+        )
+
+        val intColorBackground = IntColor(Color.BLUE)
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconTint = resIconTine
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconTint = intIconTine
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+        )
+    }
 
     @Test
     fun testGetDrawable() {
