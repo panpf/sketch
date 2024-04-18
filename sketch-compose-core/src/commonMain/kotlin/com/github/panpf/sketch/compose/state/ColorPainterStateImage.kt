@@ -7,5 +7,5 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 
 @Composable
 fun rememberColorPainterStateImage(color: Color): PainterStateImage = remember(color) {
-    PainterStateImage(ColorPainter(color))
+    PainterStateImage(ColorPainter(color).asEqualWrapper())
 }

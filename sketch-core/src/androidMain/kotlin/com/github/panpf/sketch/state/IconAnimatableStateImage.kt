@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.state
 
-import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
@@ -26,7 +25,7 @@ import com.github.panpf.sketch.drawable.IconAnimatableDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ColorFetcherDrawable
 import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealDrawable
+import com.github.panpf.sketch.util.RealEqualDrawable
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
@@ -34,36 +33,36 @@ import com.github.panpf.sketch.util.Size
 /* ********************************************* drawable icon ********************************************* */
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
-    background: Drawable? = null,
+    icon: DrawableEqualWrapper,
+    background: DrawableEqualWrapper? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
-    background = background?.let { RealDrawable(it) },
+    icon = RealEqualDrawable(icon),
+    background = background?.let { RealEqualDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
+    icon = RealEqualDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
+    icon = RealEqualDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
@@ -71,36 +70,36 @@ fun IconAnimatableStateImage(
 
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
-    background: Drawable? = null,
+    icon: DrawableEqualWrapper,
+    background: DrawableEqualWrapper? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
-    background = background?.let { RealDrawable(it) },
+    icon = RealEqualDrawable(icon),
+    background = background?.let { RealEqualDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
+    icon = RealEqualDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
+    icon = RealEqualDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
@@ -108,22 +107,22 @@ fun IconAnimatableStateImage(
 
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
+    icon = RealEqualDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
 fun IconAnimatableStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = RealDrawable(icon),
+    icon = RealEqualDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = iconTint,
@@ -134,12 +133,12 @@ fun IconAnimatableStateImage(
 
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
-    background: Drawable? = null,
+    background: DrawableEqualWrapper? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = ResDrawable(icon),
-    background = background?.let { RealDrawable(it) },
+    background = background?.let { RealEqualDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
@@ -171,12 +170,12 @@ fun IconAnimatableStateImage(
 
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
-    background: Drawable? = null,
+    background: DrawableEqualWrapper? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = IconAnimatableStateImageImpl(
     icon = ResDrawable(icon),
-    background = background?.let { RealDrawable(it) },
+    background = background?.let { RealEqualDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )

@@ -15,6 +15,10 @@
  */
 package com.github.panpf.sketch.util
 
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageOptions.ImageOptionsImpl
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageRequest.ImageRequestImpl
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.contracts.ExperimentalContracts
@@ -200,3 +204,70 @@ fun computeSizeMultiplier(
         max(widthPercent, heightPercent)
     }
 }
+
+fun ImageRequest?.difference(other: ImageRequest?): String {
+    if (this == null && other == null) return "Both are null"
+    if (this == null) return "This is null"
+    if (other == null) return "Other is null"
+    if (this === other) return "Same instance"
+    if (this::class != other::class) return "Different class"
+    other as ImageRequestImpl
+    if (context != other.context) return "context different: '${context}' vs '${other.context}'"
+    if (uriString != other.uriString) return "uriString different: '${uriString}' vs '${other.uriString}'"
+    if (listener != other.listener) return "listener different: '${listener}' vs '${other.listener}'"
+    if (progressListener != other.progressListener) return "progressListener different: '${progressListener}' vs '${other.progressListener}'"
+    if (target != other.target) return "target different: '${target}' vs '${other.target}'"
+    if (lifecycleResolver != other.lifecycleResolver) return "lifecycleResolver different: '${lifecycleResolver}' vs '${other.lifecycleResolver}'"
+    if (definedOptions != other.definedOptions) return "definedOptions different: '${definedOptions.difference(other.definedOptions)}'"
+    if (defaultOptions != other.defaultOptions) return "defaultOptions different: '${defaultOptions.difference(other.defaultOptions)}'"
+    if (definedRequestOptions != other.definedRequestOptions) return "definedRequestOptions different: '${definedRequestOptions}' vs '${other.definedRequestOptions}'"
+    if (depth != other.depth) return "depth different: '${depth}' vs '${other.depth}'"
+    if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"
+    if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
+    if (downloadCachePolicy != other.downloadCachePolicy) return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
+    if (sizeResolver != other.sizeResolver) return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
+    if (sizeMultiplier != other.sizeMultiplier) return "sizeMultiplier different: '${sizeMultiplier}' vs '${other.sizeMultiplier}'"
+    if (precisionDecider != other.precisionDecider) return "precisionDecider different: '${precisionDecider}' vs '${other.precisionDecider}'"
+    if (scaleDecider != other.scaleDecider) return "scaleDecider different: '${scaleDecider}' vs '${other.scaleDecider}'"
+    if (transformations != other.transformations) return "transformations different: '${transformations}' vs '${other.transformations}'"
+    if (resultCachePolicy != other.resultCachePolicy) return "resultCachePolicy different: '${resultCachePolicy}' vs '${other.resultCachePolicy}'"
+    if (placeholder != other.placeholder) return "placeholder different: '${placeholder}' vs '${other.placeholder}'"
+    if (uriEmpty != other.uriEmpty) return "uriEmpty different: '${uriEmpty}' vs '${other.uriEmpty}'"
+    if (error != other.error) return "error different: '${error}' vs '${other.error}'"
+    if (transitionFactory != other.transitionFactory) return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
+    if (disallowAnimatedImage != other.disallowAnimatedImage) return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
+    if (resizeOnDrawHelper != other.resizeOnDrawHelper) return "resizeOnDrawHelper different: '${resizeOnDrawHelper}' vs '${other.resizeOnDrawHelper}'"
+    if (memoryCachePolicy != other.memoryCachePolicy) return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
+    if (componentRegistry != other.componentRegistry) return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
+
+    return "Same content"
+}
+
+fun ImageOptions?.difference(other: ImageOptions?): String {
+    if (this == null && other == null) return "Both are null"
+    if (this == null) return "This is null"
+    if (other == null) return "Other is null"
+    if (this === other) return "Same instance"
+    if (other !is ImageOptionsImpl) return "Different class"
+    if (depth != other.depth) return "depth different: '${depth}' vs '${other.depth}'"
+    if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"
+    if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
+    if (downloadCachePolicy != other.downloadCachePolicy) return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
+    if (sizeResolver != other.sizeResolver) return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
+    if (sizeMultiplier != other.sizeMultiplier) return "sizeMultiplier different: '${sizeMultiplier}' vs '${other.sizeMultiplier}'"
+    if (precisionDecider != other.precisionDecider) return "precisionDecider different: '${precisionDecider}' vs '${other.precisionDecider}'"
+    if (scaleDecider != other.scaleDecider) return "scaleDecider different: '${scaleDecider}' vs '${other.scaleDecider}'"
+    if (transformations != other.transformations) return "transformations different: '${transformations}' vs '${other.transformations}'"
+    if (resultCachePolicy != other.resultCachePolicy) return "resultCachePolicy different: '${resultCachePolicy}' vs '${other.resultCachePolicy}'"
+    if (placeholder != other.placeholder) return "placeholder different: '${placeholder}' vs '${other.placeholder}'"
+    if (uriEmpty != other.uriEmpty) return "uriEmpty different: '${uriEmpty}' vs '${other.uriEmpty}'"
+    if (error != other.error) return "error different: '${error}' vs '${other.error}'"
+    if (transitionFactory != other.transitionFactory) return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
+    if (disallowAnimatedImage != other.disallowAnimatedImage) return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
+    if (resizeOnDrawHelper != other.resizeOnDrawHelper) return "resizeOnDrawHelper different: '${resizeOnDrawHelper}' vs '${other.resizeOnDrawHelper}'"
+    if (memoryCachePolicy != other.memoryCachePolicy) return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
+    if (componentRegistry != other.componentRegistry) return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
+    return "Same content"
+}
+
+//'ImageOptionsImpl(depth=null, parameters=Parameters({sketch#crossfade=Entry(value=Crossfade(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=false), cacheKey=null, notJoinRequestKey=true), sketch#resizeOnDraw=Entry(value=true, cacheKey=null, notJoinRequestKey=true)}), httpHeaders=null, downloadCachePolicy=ENABLED, sizeResolver=null, sizeMultiplier=2, precisionDecider=LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, otherPrecision=LESS_PIXELS, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5)), scaleDecider=LongImageScaleDecider(longImage=START_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5)), transformations=null, resultCachePolicy=ENABLED, placeholder=[object Object], uriEmpty=null, error=ErrorStateImage([(SaveCellularTrafficCondition, [object Object]), (DefaultCondition, [object Object])]), transition=null, disallowAnimatedImage=false, resizeOnDraw=nullmemoryCachePolicy=ENABLED, componentRegistry=null, )'

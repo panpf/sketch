@@ -2,14 +2,13 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
-import android.graphics.ColorSpace.Named
-import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
+import com.github.panpf.sketch.state.DrawableEqualWrapper
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.transition.Crossfade
@@ -33,7 +32,7 @@ actual fun createResizeOnDrawHelper(): ResizeOnDrawHelper? {
 /**
  * Set Drawable placeholder image when loading
  */
-fun ImageOptions.Builder.placeholder(drawable: Drawable): ImageOptions.Builder =
+fun ImageOptions.Builder.placeholder(drawable: DrawableEqualWrapper): ImageOptions.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
@@ -45,7 +44,7 @@ fun ImageOptions.Builder.placeholder(@DrawableRes resId: Int): ImageOptions.Buil
 /**
  * Set Drawable placeholder image when uri is empty
  */
-fun ImageOptions.Builder.uriEmpty(drawable: Drawable): ImageOptions.Builder =
+fun ImageOptions.Builder.uriEmpty(drawable: DrawableEqualWrapper): ImageOptions.Builder =
     uriEmpty(DrawableStateImage(drawable))
 
 /**
@@ -60,7 +59,7 @@ fun ImageOptions.Builder.uriEmpty(@DrawableRes resId: Int): ImageOptions.Builder
  * You can also set image of different error types via the trailing lambda function
  */
 fun ImageOptions.Builder.error(
-    defaultDrawable: Drawable,
+    defaultDrawable: DrawableEqualWrapper,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageOptions.Builder = error(DrawableStateImage(defaultDrawable), configBlock)
 
@@ -131,7 +130,7 @@ fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Buil
 @get:RequiresApi(Build.VERSION_CODES.O)
 val ImageOptions.colorSpace: ColorSpace?
     get() = parameters?.value<String>(COLOR_SPACE_NAMED_KEY)
-        ?.let { ColorSpace.get(Named.valueOf(it)) }
+        ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
 /**
  * From Android N (API 24), this is ignored.  The output will always be high quality.

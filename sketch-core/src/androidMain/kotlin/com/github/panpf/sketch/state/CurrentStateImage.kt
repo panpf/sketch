@@ -27,7 +27,7 @@ import com.github.panpf.sketch.util.asOrNull
 fun CurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
     CurrentStateImageImpl(defaultImage)
 
-fun CurrentStateImage(defaultDrawable: Drawable): CurrentStateImage =
+fun CurrentStateImage(defaultDrawable: DrawableEqualWrapper): CurrentStateImage =
     CurrentStateImageImpl(DrawableStateImage(defaultDrawable))
 
 fun CurrentStateImage(@DrawableRes defaultDrawableRes: Int): CurrentStateImage =

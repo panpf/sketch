@@ -54,6 +54,7 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.target.TargetLifecycle
+import com.github.panpf.sketch.util.difference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -169,7 +170,8 @@ class AsyncImageState internal constructor(
                     val lastRequest = this@AsyncImageState.lastRequest
                     if (lastRequest != null && lastRequest.key == request.key && lastRequest != request) {
                         // TODO JS
-                        throw IllegalArgumentException("ImageRequest error. Please ensure that the equals result is true when the keys are the same")
+                        val diffImageRequest = lastRequest.difference(request)
+                        throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
                     }
                     this@AsyncImageState.lastRequest = request
                     cancelLoadImageJob()

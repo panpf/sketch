@@ -775,13 +775,11 @@ interface ImageOptions {
         }
     }
 
-    class ImageOptionsImpl(
+    data class ImageOptionsImpl(
         override val depth: Depth?,
         override val parameters: Parameters?,
-
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy?,
-
         override val sizeResolver: SizeResolver?,
         override val sizeMultiplier: Float?,
         override val precisionDecider: PrecisionDecider?,
@@ -796,79 +794,7 @@ interface ImageOptions {
         override val resizeOnDrawHelper: ResizeOnDrawHelper?,
         override val memoryCachePolicy: CachePolicy?,
         override val componentRegistry: ComponentRegistry?,
-    ) : ImageOptions {
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is ImageOptionsImpl) return false
-            if (depth != other.depth) return false
-            if (parameters != other.parameters) return false
-            if (httpHeaders != other.httpHeaders) return false
-            if (downloadCachePolicy != other.downloadCachePolicy) return false
-            if (sizeResolver != other.sizeResolver) return false
-            if (sizeMultiplier != other.sizeMultiplier) return false
-            if (precisionDecider != other.precisionDecider) return false
-            if (scaleDecider != other.scaleDecider) return false
-            if (transformations != other.transformations) return false
-            if (resultCachePolicy != other.resultCachePolicy) return false
-            if (placeholder != other.placeholder) return false
-            if (uriEmpty != other.uriEmpty) return false
-            if (error != other.error) return false
-            if (transitionFactory != other.transitionFactory) return false
-            if (disallowAnimatedImage != other.disallowAnimatedImage) return false
-            if (resizeOnDrawHelper != other.resizeOnDrawHelper) return false
-            if (memoryCachePolicy != other.memoryCachePolicy) return false
-            if (componentRegistry != other.componentRegistry) return false
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = depth?.hashCode() ?: 0
-            result = 31 * result + (parameters?.hashCode() ?: 0)
-            result = 31 * result + (httpHeaders?.hashCode() ?: 0)
-            result = 31 * result + (downloadCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (sizeResolver?.hashCode() ?: 0)
-            result = 31 * result + (sizeMultiplier?.hashCode() ?: 0)
-            result = 31 * result + (precisionDecider?.hashCode() ?: 0)
-            result = 31 * result + (scaleDecider?.hashCode() ?: 0)
-            result = 31 * result + (transformations?.hashCode() ?: 0)
-            result = 31 * result + (resultCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (placeholder?.hashCode() ?: 0)
-            result = 31 * result + (uriEmpty?.hashCode() ?: 0)
-            result = 31 * result + (error?.hashCode() ?: 0)
-            result = 31 * result + (transitionFactory?.hashCode() ?: 0)
-            result = 31 * result + (disallowAnimatedImage?.hashCode() ?: 0)
-            result = 31 * result + (resizeOnDrawHelper?.hashCode() ?: 0)
-            result = 31 * result + (memoryCachePolicy?.hashCode() ?: 0)
-            result = 31 * result + (componentRegistry?.hashCode() ?: 0)
-            return result
-        }
-
-        override fun toString(): String {
-            return buildString {
-                append("ImageOptionsImpl(")
-                append("depth=$depth, ")
-                append("parameters=$parameters, ")
-                append("httpHeaders=$httpHeaders, ")
-                append("downloadCachePolicy=$downloadCachePolicy, ")
-                append("sizeResolver=$sizeResolver, ")
-                append("sizeMultiplier=$sizeMultiplier, ")
-                append("precisionDecider=$precisionDecider, ")
-                append("scaleDecider=$scaleDecider, ")
-                append("transformations=$transformations, ")
-                append("resultCachePolicy=$resultCachePolicy, ")
-                append("placeholder=$placeholder, ")
-                append("uriEmpty=$uriEmpty, ")
-                append("error=$error, ")
-                append("transition=$transitionFactory, ")
-                append("disallowAnimatedImage=$disallowAnimatedImage, ")
-                append("resizeOnDraw=$resizeOnDrawHelper")
-                append("memoryCachePolicy=$memoryCachePolicy, ")
-                append("componentRegistry=$componentRegistry, ")
-                append(")")
-            }
-        }
-    }
+    ) : ImageOptions
 }
 
 /**

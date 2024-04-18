@@ -19,22 +19,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.compose.state.PainterEqualWrapper
 import com.github.panpf.sketch.compose.state.rememberIconAnimatablePainterStateImage
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 
 @Composable
-expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): Painter?
+expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): PainterEqualWrapper?
 
 class AnimatablePlaceholderTestScreen : BaseScreen() {
 

@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.compose.state
 
-import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.panpf.sketch.compose.painter.rememberIconPainter
+import com.github.panpf.sketch.state.DrawableEqualWrapper
 import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.util.SketchSize
 
@@ -14,8 +14,8 @@ import com.github.panpf.sketch.util.SketchSize
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
-    background: Drawable? = null,
+    icon: DrawableEqualWrapper,
+    background: DrawableEqualWrapper? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): PainterStateImage {
@@ -25,12 +25,12 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
@@ -41,12 +41,12 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
@@ -57,14 +57,14 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
-    background: Drawable? = null,
+    icon: DrawableEqualWrapper,
+    background: DrawableEqualWrapper? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): PainterStateImage {
@@ -74,12 +74,12 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
@@ -90,12 +90,12 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
@@ -106,13 +106,13 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): PainterStateImage {
@@ -121,12 +121,12 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
 fun rememberIconPainterStateImage(
-    icon: Drawable,
+    icon: DrawableEqualWrapper,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): PainterStateImage {
@@ -135,7 +135,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 
@@ -144,7 +144,7 @@ fun rememberIconPainterStateImage(
 @Composable
 fun rememberIconPainterStateImage(
     @DrawableRes icon: Int,
-    background: Drawable? = null,
+    background: DrawableEqualWrapper? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): PainterStateImage {
@@ -154,7 +154,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
@@ -170,7 +170,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
@@ -186,14 +186,14 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 
 @Composable
 fun rememberIconPainterStateImage(
     @DrawableRes icon: Int,
-    background: Drawable? = null,
+    background: DrawableEqualWrapper? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): PainterStateImage {
@@ -203,7 +203,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
@@ -219,7 +219,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
@@ -235,7 +235,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 
@@ -250,7 +250,7 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }
 
 @Composable
@@ -264,5 +264,5 @@ fun rememberIconPainterStateImage(
         iconSize = iconSize,
         iconTint = iconTint
     )
-    return remember(iconPainter) { PainterStateImage(iconPainter) }
+    return remember(iconPainter) { PainterStateImage(iconPainter.asEqualWrapper()) }
 }

@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.state
 
-import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 
 
@@ -23,7 +22,7 @@ import androidx.annotation.DrawableRes
  * Set the error image when the save cellular traffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
-    saveCellularTrafficDrawable: Drawable
+    saveCellularTrafficDrawable: DrawableEqualWrapper
 ): ErrorStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficDrawable))
 }

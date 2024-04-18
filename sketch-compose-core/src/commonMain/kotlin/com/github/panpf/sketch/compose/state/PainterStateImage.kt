@@ -15,22 +15,35 @@
  */
 package com.github.panpf.sketch.compose.state
 
-import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.StateImage
 
-fun PainterStateImage(painter: Painter): PainterStateImage = PainterStateImageImpl(painter)
+fun PainterStateImage(painter: PainterEqualWrapper): PainterStateImage = PainterStateImageImpl(painter)
 
 interface PainterStateImage : StateImage {
-    val painter: Painter
+    val painter: PainterEqualWrapper
 }
 
-private class PainterStateImageImpl(override val painter: Painter) : PainterStateImage {
+private class PainterStateImageImpl(override val painter: PainterEqualWrapper) : PainterStateImage {
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
-        return painter.asSketchImage()
+        return painter.painter.asSketchImage()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PainterStateImage) return false
+        return painter == other.painter
+    }
+
+    override fun hashCode(): Int {
+        return painter.hashCode()
+    }
+
+    override fun toString(): String {
+        return "PainterStateImage(painter=$painter)"
     }
 }

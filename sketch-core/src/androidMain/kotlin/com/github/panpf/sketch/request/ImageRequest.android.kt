@@ -2,13 +2,12 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
-import android.graphics.ColorSpace.Named
-import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.state.DrawableEqualWrapper
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
@@ -21,7 +20,7 @@ import com.github.panpf.sketch.target.AndroidTargetLifecycle
  * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
  *
  * If this is null or is not set the will attempt to find the lifecycle
- * for this request through its [context].
+ * for this request through its context.
  */
 fun ImageRequest.Builder.lifecycle(lifecycle: Lifecycle): ImageRequest.Builder =
     lifecycle(AndroidTargetLifecycle(lifecycle))
@@ -29,7 +28,7 @@ fun ImageRequest.Builder.lifecycle(lifecycle: Lifecycle): ImageRequest.Builder =
 /**
  * Set Drawable placeholder image when loading
  */
-fun ImageRequest.Builder.placeholder(drawable: Drawable): ImageRequest.Builder =
+fun ImageRequest.Builder.placeholder(drawable: DrawableEqualWrapper): ImageRequest.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
@@ -41,7 +40,7 @@ fun ImageRequest.Builder.placeholder(@DrawableRes resId: Int): ImageRequest.Buil
 /**
  * Set Drawable placeholder image when uri is empty
  */
-fun ImageRequest.Builder.uriEmpty(drawable: Drawable): ImageRequest.Builder =
+fun ImageRequest.Builder.uriEmpty(drawable: DrawableEqualWrapper): ImageRequest.Builder =
     uriEmpty(DrawableStateImage(drawable))
 
 /**
@@ -56,7 +55,7 @@ fun ImageRequest.Builder.uriEmpty(@DrawableRes resId: Int): ImageRequest.Builder
  * You can also set image of different error types via the trailing lambda function
  */
 fun ImageRequest.Builder.error(
-    defaultDrawable: Drawable,
+    defaultDrawable: DrawableEqualWrapper,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageRequest.Builder = error(DrawableStateImage(defaultDrawable), configBlock)
 
@@ -132,7 +131,7 @@ fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Buil
 @get:RequiresApi(Build.VERSION_CODES.O)
 val ImageRequest.colorSpace: ColorSpace?
     get() = parameters?.value<String>(COLOR_SPACE_NAMED_KEY)
-        ?.let { ColorSpace.get(Named.valueOf(it)) }
+        ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
 const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_Quality_Over_Speed"
 

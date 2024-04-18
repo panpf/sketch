@@ -28,17 +28,18 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.DrawInvalidate
-import com.github.panpf.sketch.compose.painter.internal.toLogString
+import com.github.panpf.sketch.compose.state.PainterEqualWrapper
+import com.github.panpf.sketch.compose.state.asEqualWrapper
+import com.github.panpf.sketch.compose.state.equalWrapperPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 // TODO Looking forward to Compose Multiplatform supporting ColorResource
 
 @Composable
 fun rememberIconPainter(
-    icon: Painter,
-    background: Painter? = null,
+    icon: PainterEqualWrapper,
+    background: PainterEqualWrapper? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
@@ -52,7 +53,7 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: Painter,
+    icon: PainterEqualWrapper,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
@@ -60,7 +61,7 @@ fun rememberIconPainter(
     val backgroundPainter = background?.let { ColorPainter(it) }
     IconPainter(
         icon = icon,
-        background = backgroundPainter,
+        background = backgroundPainter?.asEqualWrapper(),
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -69,12 +70,12 @@ fun rememberIconPainter(
 @Composable
 @OptIn(ExperimentalResourceApi::class)
 fun rememberIconPainter(
-    icon: Painter,
+    icon: PainterEqualWrapper,
     background: DrawableResource? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val backgroundPainter = background?.let { painterResource(it) }
+    val backgroundPainter = background?.let { equalWrapperPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = icon,
@@ -87,7 +88,7 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: Painter,
+    icon: PainterEqualWrapper,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter = remember(icon, iconSize, iconTint) {
@@ -104,11 +105,11 @@ fun rememberIconPainter(
 @OptIn(ExperimentalResourceApi::class)
 fun rememberIconPainter(
     icon: DrawableResource,
-    background: Painter? = null,
+    background: PainterEqualWrapper? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = painterResource(icon)
+    val iconPainter = equalWrapperPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -127,12 +128,12 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = painterResource(icon)
+    val iconPainter = equalWrapperPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
         IconPainter(
             icon = iconPainter,
-            background = backgroundPainter,
+            background = backgroundPainter?.asEqualWrapper(),
             iconSize = iconSize,
             iconTint = iconTint
         )
@@ -147,8 +148,8 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = painterResource(icon)
-    val backgroundPainter = background?.let { painterResource(it) }
+    val iconPainter = equalWrapperPainterResource(icon)
+    val backgroundPainter = background?.let { equalWrapperPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -166,7 +167,7 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = painterResource(icon)
+    val iconPainter = equalWrapperPainterResource(icon)
     return remember(icon, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -183,8 +184,8 @@ fun rememberIconPainter(
  * It is suitable for use as a placeholder image for waterfall flow.
  */
 open class IconPainter(
-    val icon: Painter,
-    val background: Painter? = null,
+    val icon: PainterEqualWrapper,
+    val background: PainterEqualWrapper? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
 ) : Painter(), RememberObserver, SketchPainter {
@@ -205,10 +206,10 @@ open class IconPainter(
     override val intrinsicSize: Size = Size.Unspecified
 
     init {
-        require(icon.intrinsicSize.isSpecified) {
+        require(icon.painter.intrinsicSize.isSpecified) {
             "icon's intrinsicSize must be specified"
         }
-        require(background == null || background.intrinsicSize.isUnspecified) {
+        require(background == null || background.painter.intrinsicSize.isUnspecified) {
             "background's intrinsicSize must be unspecified"
         }
         require(iconSize == null || iconSize.isSpecified) {
@@ -217,8 +218,8 @@ open class IconPainter(
     }
 
     override fun DrawScope.onDraw() {
-        val icon = icon
-        val background = background
+        val icon = icon.painter
+        val background = background?.painter
         (icon as? DrawInvalidate)?.drawInvalidateTick?.value
         (background as? DrawInvalidate)?.drawInvalidateTick?.value
 
@@ -241,19 +242,19 @@ open class IconPainter(
     }
 
     override fun onRemembered() {
-        (icon as? RememberObserver)?.onRemembered()
-        (background as? RememberObserver)?.onRemembered()
-        (icon as? AnimatablePainter)?.start()
-        (background as? AnimatablePainter)?.start()
+        (icon.painter as? RememberObserver)?.onRemembered()
+        (background?.painter as? RememberObserver)?.onRemembered()
+        (icon.painter as? AnimatablePainter)?.start()
+        (background?.painter as? AnimatablePainter)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (icon as? AnimatablePainter)?.stop()
-        (background as? AnimatablePainter)?.stop()
-        (icon as? RememberObserver)?.onForgotten()
-        (background as? RememberObserver)?.onForgotten()
+        (icon.painter as? AnimatablePainter)?.stop()
+        (background?.painter as? AnimatablePainter)?.stop()
+        (icon.painter as? RememberObserver)?.onForgotten()
+        (background?.painter as? RememberObserver)?.onForgotten()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -274,6 +275,6 @@ open class IconPainter(
     }
 
     override fun toString(): String {
-        return "IconPainter(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
+        return "IconPainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=$iconTint)"
     }
 }

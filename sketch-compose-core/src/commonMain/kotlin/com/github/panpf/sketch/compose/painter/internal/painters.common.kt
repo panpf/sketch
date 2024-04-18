@@ -11,10 +11,10 @@ import com.github.panpf.sketch.compose.painter.SketchPainter
 
 fun Painter.toLogString(): String = when (this) {
     is SketchPainter -> toString()
-    is BitmapPainter -> "BitmapPainter(${toSizeString()})"
-    is ColorPainter -> "ColorPainter(${color})"
-    is BrushPainter -> "BrushPainter(${brush})"
-    is VectorPainter -> "VectorPainter(${toSizeString()})"
+    is BitmapPainter -> "BitmapPainter@${hashCode().toString(16)}(${toSizeString()})"
+    is ColorPainter -> "ColorPainter@${hashCode().toString(16)}(${color})"
+    is BrushPainter -> "BrushPainter@${hashCode().toString(16)}(${brush})"
+    is VectorPainter -> "VectorPainter@${hashCode().toString(16)}(${toSizeString()})"
     else -> platformToLogString() ?: toString()
 }
 

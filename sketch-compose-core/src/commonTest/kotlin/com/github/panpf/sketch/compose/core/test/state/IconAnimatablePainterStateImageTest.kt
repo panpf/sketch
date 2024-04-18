@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.compose.core.test.painter.SizeColorPainter
+import com.github.panpf.sketch.compose.state.asEqualWrapper
 import com.github.panpf.sketch.compose.state.rememberIconAnimatablePainterStateImage
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -13,9 +14,11 @@ class IconAnimatablePainterStateImageTest {
     @OptIn(ExperimentalResourceApi::class)
     @Composable
     fun CreateFunctionTest() {
-        val painterIcon = SizeColorPainter(Color.Cyan, Size(100f, 100f))
+        val painterIcon =
+            Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEqualWrapper(it) }
         val resourceIcon = DrawableResource("testIcon")
-        val painterBackground = SizeColorPainter(Color.Gray, Size(1000f, 1000f))
+        val painterBackground =
+            Color.Gray.let { SizeColorPainter(it, Size(100f, 100f)).asEqualWrapper(it) }
         val colorBackground = Color.DarkGray
         val resourceBackground = DrawableResource("testBackground")
         val iconSize = Size(200f, 200f)
