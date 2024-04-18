@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.test.stateimage
+package com.github.panpf.sketch.core.test.state
 
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -30,170 +30,269 @@ class IconStateImageTest {
     @Test
     fun createFunctionTest() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val iconSize = Size(100, 100)
-        val intIconTine = IntColor(Color.GREEN)
-        val resIconTine = android.R.color.black
-
-        // icon drawable, background drawable
         val drawableIcon = context.getDrawable(androidx.core.R.drawable.ic_call_decline)!!
-        val drawableBackground = context.getDrawable(androidx.core.R.drawable.notification_bg)
-        IconStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconSize = iconSize,
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconTint = intIconTine
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            iconSize = iconSize,
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = drawableIcon,
-            iconTint = intIconTine
-        )
-
-        IconStateImage(
-            icon = drawableIcon,
-        )
-
-        // icon res, background res
         val resIcon = androidx.core.R.drawable.ic_call_answer
+        val drawableBackground = context.getDrawable(androidx.core.R.drawable.notification_bg)!!
         val resBackground = androidx.core.R.drawable.notification_template_icon_bg
-        IconStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconSize = iconSize,
-        )
-        IconStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconTint = intIconTine
-        )
-        IconStateImage(
-            icon = resIcon,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = resIcon,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconStateImage(
-            icon = resIcon,
-            background = resBackground,
-        )
-        IconStateImage(
-            icon = resIcon,
-            iconSize = iconSize,
-        )
-        IconStateImage(
-            icon = resIcon,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = resIcon,
-            iconTint = intIconTine
-        )
-
-        IconStateImage(
-            icon = resIcon,
-        )
-
-        // icon drawable, background int color
         val intColorBackground = IntColor(Color.BLUE)
+        val iconSize = Size(100, 100)
+        val intIconTint = IntColor(Color.GREEN)
+        val resIconTint = android.R.color.black
+
+        // drawable icon
         IconStateImage(
-            icon = resIcon,
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
-            iconTint = resIconTine
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconTint = resIconTint
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = drawableIcon,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = drawableIcon,
+        )
+
+        // res icon
+        IconStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
         )
         IconStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
-            iconTint = intIconTine
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
         )
 
         IconStateImage(
             icon = resIcon,
-            background = intColorBackground,
+            background = drawableBackground,
+            iconSize = iconSize,
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
             iconSize = iconSize,
         )
         IconStateImage(
             icon = resIcon,
             background = intColorBackground,
-            iconTint = resIconTine
-        )
-        IconStateImage(
-            icon = resIcon,
-            background = intColorBackground,
-            iconTint = intIconTine
+            iconSize = iconSize,
         )
 
         IconStateImage(
             icon = resIcon,
+            background = drawableBackground,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
             background = intColorBackground,
+            iconTint = resIconTint
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = intIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = resBackground,
+        )
+        IconStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+        )
+
+        IconStateImage(
+            icon = resIcon,
+            iconTint = resIconTint
+        )
+        IconStateImage(
+            icon = resIcon,
+            iconTint = intIconTint
+        )
+
+        IconStateImage(
+            icon = resIcon,
         )
     }
 

@@ -10,9 +10,8 @@ import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.util.SketchSize
 
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+/* ********************************************* drawable icon ********************************************* */
+
 @Composable
 fun rememberIconAnimatableStateImage(
     icon: Drawable,
@@ -28,9 +27,37 @@ fun rememberIconAnimatableStateImage(
     )
 }
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+@Composable
+fun rememberIconAnimatableStateImage(
+    icon: Drawable,
+    @DrawableRes background: Int? = null,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
+@Composable
+fun rememberIconAnimatableStateImage(
+    icon: Drawable,
+    background: IntColor? = null,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
+
 @Composable
 fun rememberIconAnimatableStateImage(
     icon: Drawable,
@@ -46,10 +73,81 @@ fun rememberIconAnimatableStateImage(
     )
 }
 
+@Composable
+fun rememberIconAnimatableStateImage(
+    icon: Drawable,
+    @DrawableRes background: Int? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+@Composable
+fun rememberIconAnimatableStateImage(
+    icon: Drawable,
+    background: IntColor? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
+
+@Composable
+fun rememberIconAnimatableStateImage(
+    icon: Drawable,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = remember(icon, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
+@Composable
+fun rememberIconAnimatableStateImage(
+    icon: Drawable,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = remember(icon, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
+
+/* ********************************************* res icon ********************************************* */
+
+@Composable
+fun rememberIconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    background: Drawable? = null,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,
@@ -65,28 +163,6 @@ fun rememberIconAnimatableStateImage(
     )
 }
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
-@Composable
-fun rememberIconAnimatableStateImage(
-    @DrawableRes icon: Int,
-    @DrawableRes background: Int? = null,
-    iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
-): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
-    IconAnimatableStateImage(
-        icon = icon,
-        background = background,
-        iconSize = iconSize,
-        iconTint = iconTint,
-    )
-}
-
-
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,
@@ -102,9 +178,37 @@ fun rememberIconAnimatableStateImage(
     )
 }
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+
+@Composable
+fun rememberIconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    background: Drawable? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
+@Composable
+fun rememberIconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
+    IconAnimatableStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint,
+    )
+}
+
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,
@@ -121,9 +225,6 @@ fun rememberIconAnimatableStateImage(
 }
 
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,
@@ -137,9 +238,6 @@ fun rememberIconAnimatableStateImage(
     )
 }
 
-/**
- * Create and remember an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,

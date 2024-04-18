@@ -20,6 +20,7 @@ class IconPainterTest {
         val iconSize = Size(200f, 200f)
         val iconTint = Color.Magenta
 
+        // painter icon
         rememberIconPainter(
             icon = painterIcon,
             background = painterBackground,
@@ -41,8 +42,24 @@ class IconPainterTest {
 
         rememberIconPainter(
             icon = painterIcon,
+            background = painterBackground,
+            iconSize = iconSize,
+        )
+        rememberIconPainter(
+            icon = painterIcon,
             background = colorBackground,
             iconSize = iconSize,
+        )
+        rememberIconPainter(
+            icon = painterIcon,
+            background = resourceBackground,
+            iconSize = iconSize,
+        )
+
+        rememberIconPainter(
+            icon = painterIcon,
+            background = painterBackground,
+            iconTint = iconTint
         )
         rememberIconPainter(
             icon = painterIcon,
@@ -52,19 +69,19 @@ class IconPainterTest {
         rememberIconPainter(
             icon = painterIcon,
             background = resourceBackground,
-            iconSize = iconSize,
-        )
-        rememberIconPainter(
-            icon = painterIcon,
-            background = resourceBackground,
             iconTint = iconTint
         )
+
         rememberIconPainter(
             icon = painterIcon,
             iconSize = iconSize,
             iconTint = iconTint
         )
 
+        rememberIconPainter(
+            icon = painterIcon,
+            background = painterBackground,
+        )
         rememberIconPainter(
             icon = painterIcon,
             background = colorBackground,
@@ -73,6 +90,7 @@ class IconPainterTest {
             icon = painterIcon,
             background = resourceBackground,
         )
+
         rememberIconPainter(
             icon = painterIcon,
             iconSize = iconSize,
@@ -86,7 +104,7 @@ class IconPainterTest {
             icon = painterIcon,
         )
 
-
+        // resource icon
         rememberIconPainter(
             icon = resourceIcon,
             background = painterBackground,
@@ -108,8 +126,24 @@ class IconPainterTest {
 
         rememberIconPainter(
             icon = resourceIcon,
+            background = painterBackground,
+            iconSize = iconSize,
+        )
+        rememberIconPainter(
+            icon = resourceIcon,
             background = colorBackground,
             iconSize = iconSize,
+        )
+        rememberIconPainter(
+            icon = resourceIcon,
+            background = resourceBackground,
+            iconSize = iconSize,
+        )
+
+        rememberIconPainter(
+            icon = resourceIcon,
+            background = painterBackground,
+            iconTint = iconTint
         )
         rememberIconPainter(
             icon = resourceIcon,
@@ -119,13 +153,9 @@ class IconPainterTest {
         rememberIconPainter(
             icon = resourceIcon,
             background = resourceBackground,
-            iconSize = iconSize,
-        )
-        rememberIconPainter(
-            icon = resourceIcon,
-            background = resourceBackground,
             iconTint = iconTint
         )
+
         rememberIconPainter(
             icon = resourceIcon,
             iconSize = iconSize,
@@ -134,12 +164,17 @@ class IconPainterTest {
 
         rememberIconPainter(
             icon = resourceIcon,
+            background = painterBackground,
+        )
+        rememberIconPainter(
+            icon = resourceIcon,
             background = colorBackground,
         )
         rememberIconPainter(
             icon = resourceIcon,
             background = resourceBackground,
         )
+
         rememberIconPainter(
             icon = resourceIcon,
             iconSize = iconSize,

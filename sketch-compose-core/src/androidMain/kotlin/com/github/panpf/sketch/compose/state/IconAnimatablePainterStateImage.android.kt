@@ -10,6 +10,8 @@ import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.util.SketchSize
 
 
+/* ********************************************* drawable icon ********************************************* */
+
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: Drawable,
@@ -29,7 +31,72 @@ fun rememberIconAnimatablePainterStateImage(
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: Drawable,
+    @DrawableRes background: Int? = null,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: Drawable,
+    background: IntColor? = null,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: Drawable,
     background: Drawable? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: Drawable,
+    @DrawableRes background: Int? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: Drawable,
+    background: IntColor? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): PainterStateImage {
@@ -45,8 +112,39 @@ fun rememberIconAnimatablePainterStateImage(
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
+    icon: Drawable,
+    iconSize: SketchSize? = null,
+    @ColorRes iconTint: Int,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: Drawable,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+
+/* ********************************************* res icon ********************************************* */
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
-    @DrawableRes background: Int? = null,
+    background: Drawable? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): PainterStateImage {
@@ -64,7 +162,7 @@ fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
+    @ColorRes iconTint: Int,
 ): PainterStateImage {
     val iconAnimatablePainter = rememberIconAnimatablePainter(
         icon = icon,
@@ -74,7 +172,6 @@ fun rememberIconAnimatablePainterStateImage(
     )
     return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
 }
-
 
 @Composable
 fun rememberIconAnimatablePainterStateImage(
@@ -82,6 +179,39 @@ fun rememberIconAnimatablePainterStateImage(
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    @DrawableRes icon: Int,
+    background: Drawable? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
+): PainterStateImage {
+    val iconAnimatablePainter = rememberIconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+    return remember(iconAnimatablePainter) { PainterStateImage(iconAnimatablePainter) }
+}
+
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: SketchSize? = null,
+    iconTint: IntColor? = null,
 ): PainterStateImage {
     val iconAnimatablePainter = rememberIconAnimatablePainter(
         icon = icon,

@@ -1,63 +1,69 @@
 /*
  * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.test.stateimage
+package com.github.panpf.sketch.core.test.state
 
-import android.graphics.Color
+import androidx.core.content.res.ResourcesCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.state.ResColor
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class IntColorTest {
+class ResColorTest {
 
     @Test
     fun testGetColor() {
         val context = getTestContext()
 
-        IntColor(Color.RED).apply {
-            Assert.assertEquals(Color.RED, color)
-            Assert.assertEquals(Color.RED, getColor(context))
+        ResColor(android.R.color.background_dark).apply {
+            Assert.assertEquals(android.R.color.background_dark, resId)
+            Assert.assertEquals(
+                ResourcesCompat.getColor(context.resources, android.R.color.background_dark, null),
+                getColor(context)
+            )
         }
 
-        IntColor(Color.GREEN).apply {
-            Assert.assertEquals(Color.GREEN, color)
-            Assert.assertEquals(Color.GREEN, getColor(context))
+        ResColor(android.R.color.background_light).apply {
+            Assert.assertEquals(android.R.color.background_light, resId)
+            Assert.assertEquals(
+                ResourcesCompat.getColor(context.resources, android.R.color.background_light, null),
+                getColor(context)
+            )
         }
     }
 
     @Test
     fun testToString() {
-        IntColor(Color.RED).apply {
-            Assert.assertEquals("IntColor(${Color.RED})", toString())
+        ResColor(android.R.color.background_dark).apply {
+            Assert.assertEquals("ResColor(${android.R.color.background_dark})", toString())
         }
 
-        IntColor(Color.GREEN).apply {
-            Assert.assertEquals("IntColor(${Color.GREEN})", toString())
+        ResColor(android.R.color.background_light).apply {
+            Assert.assertEquals("ResColor(${android.R.color.background_light})", toString())
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = IntColor(Color.RED)
-        val element11 = IntColor(Color.RED)
-        val element2 = IntColor(Color.GREEN)
-        val element3 = IntColor(Color.BLUE)
+        val element1 = ResColor(android.R.color.background_dark)
+        val element11 = ResColor(android.R.color.background_dark)
+        val element2 = ResColor(android.R.color.background_light)
+        val element3 = ResColor(android.R.color.darker_gray)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

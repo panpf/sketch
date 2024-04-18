@@ -1,69 +1,77 @@
 /*
  * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.test.stateimage
+package com.github.panpf.sketch.core.test.state
 
-import androidx.core.content.res.ResourcesCompat
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.state.ResColor
+import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.state.ColorStateImage
+import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ResColorTest {
+class ColorStateImageTest {
 
     @Test
-    fun testGetColor() {
-        val context = getTestContext()
+    fun testGetDrawable() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, AssetImages.jpeg.uri)
 
-        ResColor(android.R.color.background_dark).apply {
-            Assert.assertEquals(android.R.color.background_dark, resId)
+        ColorStateImage(Color.BLUE).apply {
             Assert.assertEquals(
-                ResourcesCompat.getColor(context.resources, android.R.color.background_dark, null),
-                getColor(context)
+                Color.BLUE,
+                getImage(sketch, request, null)
+                    .asOrThrow<DrawableImage>().drawable
+                    .asOrNull<ColorDrawable>()!!.color
             )
         }
 
-        ResColor(android.R.color.background_light).apply {
-            Assert.assertEquals(android.R.color.background_light, resId)
+        ColorStateImage(IntColor(Color.RED)).apply {
             Assert.assertEquals(
-                ResourcesCompat.getColor(context.resources, android.R.color.background_light, null),
-                getColor(context)
+                Color.RED,
+                getImage(sketch, request, null)
+                    .asOrThrow<DrawableImage>().drawable
+                    .asOrNull<ColorDrawable>()!!.color
             )
         }
-    }
 
-    @Test
-    fun testToString() {
-        ResColor(android.R.color.background_dark).apply {
-            Assert.assertEquals("ResColor(${android.R.color.background_dark})", toString())
-        }
-
-        ResColor(android.R.color.background_light).apply {
-            Assert.assertEquals("ResColor(${android.R.color.background_light})", toString())
+        ColorStateImage(IntColor(Color.GREEN)).apply {
+            Assert.assertEquals(
+                Color.GREEN,
+                getImage(sketch, request, null)
+                    .asOrThrow<DrawableImage>().drawable
+                    .asOrNull<ColorDrawable>()!!.color
+            )
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ResColor(android.R.color.background_dark)
-        val element11 = ResColor(android.R.color.background_dark)
-        val element2 = ResColor(android.R.color.background_light)
-        val element3 = ResColor(android.R.color.darker_gray)
+        val element1 = ColorStateImage(Color.RED)
+        val element11 = ColorStateImage(Color.RED)
+        val element2 = ColorStateImage(Color.GREEN)
+        val element3 = ColorStateImage(Color.BLUE)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -86,5 +94,15 @@ class ResColorTest {
         Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        ColorStateImage(Color.RED).apply {
+            Assert.assertEquals("ColorStateImage(IntColor(${Color.RED}))", toString())
+        }
+        ColorStateImage(Color.GREEN).apply {
+            Assert.assertEquals("ColorStateImage(IntColor(${Color.GREEN}))", toString())
+        }
     }
 }

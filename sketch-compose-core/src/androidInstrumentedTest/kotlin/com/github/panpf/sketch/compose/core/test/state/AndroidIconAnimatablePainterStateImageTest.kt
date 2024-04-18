@@ -2,16 +2,13 @@ package com.github.panpf.sketch.compose.core.test.state
 
 import android.graphics.Color
 import androidx.compose.runtime.Composable
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.compose.state.rememberIconStateImage
+import com.github.panpf.sketch.compose.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.util.Size
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-class IconStateImageTest {
+class AndroidIconAnimatablePainterStateImageTest {
 
     @Test
     @Composable
@@ -27,259 +24,260 @@ class IconStateImageTest {
         val resIconTint = android.R.color.black
 
         // drawable icon
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconSize = iconSize,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconSize = iconSize,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconTint = resIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = drawableBackground,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = resBackground,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             background = intColorBackground,
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             iconSize = iconSize,
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = drawableIcon,
         )
 
         // res icon
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconSize = iconSize,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = resBackground,
             iconSize = iconSize,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = resBackground,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconTint = resIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = resBackground,
             iconTint = intIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = drawableBackground,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = resBackground,
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             background = intColorBackground,
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             iconSize = iconSize,
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             iconTint = resIconTint
         )
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
             iconTint = intIconTint
         )
 
-        rememberIconStateImage(
+        rememberIconAnimatablePainterStateImage(
             icon = resIcon,
         )
     }
+
 }

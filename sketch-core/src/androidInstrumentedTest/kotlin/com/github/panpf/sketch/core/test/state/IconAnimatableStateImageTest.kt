@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.test.stateimage
+package com.github.panpf.sketch.core.test.state
 
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -30,170 +30,269 @@ class IconAnimatableStateImageTest {
     @Test
     fun createFunctionTest() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val iconSize = Size(100, 100)
-        val intIconTine = IntColor(Color.GREEN)
-        val resIconTine = android.R.color.black
-
-        // icon drawable, background drawable
         val drawableIcon = context.getDrawable(androidx.core.R.drawable.ic_call_decline)!!
-        val drawableBackground = context.getDrawable(androidx.core.R.drawable.notification_bg)
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconSize = iconSize,
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-            iconTint = intIconTine
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            background = drawableBackground,
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            iconSize = iconSize,
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-            iconTint = intIconTine
-        )
-
-        IconAnimatableStateImage(
-            icon = drawableIcon,
-        )
-
-        // icon res, background res
         val resIcon = androidx.core.R.drawable.ic_call_answer
+        val drawableBackground = context.getDrawable(androidx.core.R.drawable.notification_bg)!!
         val resBackground = androidx.core.R.drawable.notification_template_icon_bg
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconSize = iconSize,
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = resBackground,
-            iconTint = intIconTine
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            iconSize = iconSize,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            iconSize = iconSize,
-            iconTint = intIconTine
-        )
-
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = resBackground,
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            iconSize = iconSize,
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            iconTint = intIconTine
-        )
-
-        IconAnimatableStateImage(
-            icon = resIcon,
-        )
-
-        // icon drawable, background int color
         val intColorBackground = IntColor(Color.BLUE)
+        val iconSize = Size(100, 100)
+        val intIconTint = IntColor(Color.GREEN)
+        val resIconTint = android.R.color.black
+
+        // drawable icon
         IconAnimatableStateImage(
-            icon = resIcon,
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
-            iconTint = resIconTine
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconTint = resIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = drawableBackground,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = resBackground,
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            background = intColorBackground,
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconSize = iconSize,
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = drawableIcon,
+        )
+
+        // res icon
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = resIconTint
         )
         IconAnimatableStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
-            iconTint = intIconTine
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconSize = iconSize,
+            iconTint = intIconTint
         )
 
         IconAnimatableStateImage(
             icon = resIcon,
-            background = intColorBackground,
+            background = drawableBackground,
+            iconSize = iconSize,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
             iconSize = iconSize,
         )
         IconAnimatableStateImage(
             icon = resIcon,
             background = intColorBackground,
-            iconTint = resIconTine
-        )
-        IconAnimatableStateImage(
-            icon = resIcon,
-            background = intColorBackground,
-            iconTint = intIconTine
+            iconSize = iconSize,
         )
 
         IconAnimatableStateImage(
             icon = resIcon,
+            background = drawableBackground,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
             background = intColorBackground,
+            iconTint = resIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+            iconTint = intIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = drawableBackground,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = resBackground,
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            background = intColorBackground,
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconSize = iconSize,
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconTint = resIconTint
+        )
+        IconAnimatableStateImage(
+            icon = resIcon,
+            iconTint = intIconTint
+        )
+
+        IconAnimatableStateImage(
+            icon = resIcon,
         )
     }
 

@@ -30,9 +30,9 @@ import com.github.panpf.sketch.util.RealDrawable
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+
+/* ********************************************* drawable icon ********************************************* */
+
 fun IconAnimatableStateImage(
     icon: Drawable,
     background: Drawable? = null,
@@ -45,9 +45,31 @@ fun IconAnimatableStateImage(
     iconTint = ResColor(iconTint),
 )
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+fun IconAnimatableStateImage(
+    icon: Drawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = RealDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+fun IconAnimatableStateImage(
+    icon: Drawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = RealDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+
 fun IconAnimatableStateImage(
     icon: Drawable,
     background: Drawable? = null,
@@ -60,10 +82,68 @@ fun IconAnimatableStateImage(
     iconTint = iconTint,
 )
 
+fun IconAnimatableStateImage(
+    icon: Drawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = RealDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+fun IconAnimatableStateImage(
+    icon: Drawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = RealDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
+
+fun IconAnimatableStateImage(
+    icon: Drawable,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = RealDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
+fun IconAnimatableStateImage(
+    icon: Drawable,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = RealDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
+
+/* ********************************************* res icon ********************************************* */
+
+fun IconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    background: Drawable? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = ResDrawable(icon),
+    background = background?.let { RealDrawable(it) },
+    iconSize = iconSize,
+    iconTint = ResColor(iconTint),
+)
+
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
@@ -76,25 +156,6 @@ fun IconAnimatableStateImage(
     iconTint = ResColor(iconTint),
 )
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
-fun IconAnimatableStateImage(
-    @DrawableRes icon: Int,
-    @DrawableRes background: Int? = null,
-    iconSize: Size? = null,
-    iconTint: IntColor? = null,
-): IconAnimatableStateImage = IconAnimatableStateImageImpl(
-    icon = ResDrawable(icon),
-    background = background?.let { ResDrawable(it) },
-    iconSize = iconSize,
-    iconTint = iconTint,
-)
-
-
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
@@ -107,9 +168,31 @@ fun IconAnimatableStateImage(
     iconTint = ResColor(iconTint),
 )
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
+
+fun IconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    background: Drawable? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = ResDrawable(icon),
+    background = background?.let { RealDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
+fun IconAnimatableStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconAnimatableStateImage = IconAnimatableStateImageImpl(
+    icon = ResDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint,
+)
+
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
@@ -123,9 +206,6 @@ fun IconAnimatableStateImage(
 )
 
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
@@ -137,9 +217,6 @@ fun IconAnimatableStateImage(
     iconTint = ResColor(iconTint),
 )
 
-/**
- * Create an IconAnimatableStateImage. Set the size and background of the icon through trailing functions.
- */
 fun IconAnimatableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
