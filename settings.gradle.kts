@@ -44,6 +44,7 @@ include(":sketch-extensions")
 include(":sketch-extensions-core")
 include(":sketch-extensions-compose")
 include(":sketch-extensions-view")
+include(":sketch-extensions-view-ability")
 include(":sketch-extensions-view-core")
 include(":sketch-http-core")
 include(":sketch-http-ktor")
@@ -54,7 +55,6 @@ include(":sketch-video")
 include(":sketch-video-ffmpeg")
 include(":sketch-view")
 include(":sketch-view-core")
-include(":sketch-viewability")
 
 /*
  * Private
