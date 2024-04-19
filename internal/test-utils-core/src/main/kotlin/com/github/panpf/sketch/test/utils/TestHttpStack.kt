@@ -16,9 +16,10 @@
 package com.github.panpf.sketch.test.utils
 
 import android.content.Context
+import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Parameters
 
 class TestHttpStack constructor(
     private val context: Context,
@@ -40,7 +41,11 @@ class TestHttpStack constructor(
         )
     }
 
-    override suspend fun getResponse(request: ImageRequest, url: String): HttpStack.Response {
+    override suspend fun getResponse(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        parameters: Parameters?
+    ): HttpStack.Response {
         connectionDelayMillis?.let {
             Thread.sleep(it)
         }
