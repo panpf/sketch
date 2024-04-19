@@ -35,6 +35,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asDrawableOrThrow
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -60,14 +61,16 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
 
     override fun getRequestManager(): RequestManager = requestManager
 
-    override fun onStart(requestContext: RequestContext, placeholder: Image?) =
+    override fun onStart(requestContext: RequestContext, placeholder: Image?) {
         updateImage(requestContext, placeholder)
+    }
+
+    override fun onSuccess(requestContext: RequestContext, result: Image) {
+        updateImage(requestContext, result)
+    }
 
     override fun onError(requestContext: RequestContext, error: Image?) =
         updateImage(requestContext, error)
-
-    override fun onSuccess(requestContext: RequestContext, result: Image) =
-        updateImage(requestContext, result)
 
     override fun onStateChanged(source: TargetLifecycle, event: Event) {
         when (event) {

@@ -46,11 +46,11 @@ class RemoteViewsTarget constructor(
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         setDrawable(requestContext, placeholder)
 
-    override fun onError(requestContext: RequestContext, error: Image?) =
-        setDrawable(requestContext, error)
-
     override fun onSuccess(requestContext: RequestContext, result: Image) =
         setDrawable(requestContext, result)
+
+    override fun onError(requestContext: RequestContext, error: Image?) =
+        setDrawable(requestContext, error)
 
     private fun setDrawable(requestContext: RequestContext, result: Image?) {
         if (result != null || requestContext.request.allowSetNullDrawable) {

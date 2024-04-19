@@ -35,6 +35,9 @@ import kotlinx.coroutines.Job
  */
 interface Target {
 
+    val currentImage: Image?
+        get() = null
+
     fun getRequestManager(): RequestManager
 
     fun newRequestDelegate(sketch: Sketch, initialRequest: ImageRequest, job: Job): RequestDelegate

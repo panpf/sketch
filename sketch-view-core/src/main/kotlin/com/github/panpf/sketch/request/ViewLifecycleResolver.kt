@@ -15,12 +15,14 @@
  */
 package com.github.panpf.sketch.request
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.view.View
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle
-import com.github.panpf.sketch.util.findLifecycle
 import java.lang.ref.WeakReference
 
 class ViewLifecycleResolver constructor(
@@ -55,5 +57,16 @@ class ViewLifecycleResolver constructor(
 
     override fun toString(): String {
         return "ViewLifecycleResolver(${viewReference.get()})"
+    }
+}
+
+internal fun Context?.findLifecycle(): Lifecycle? {
+    var context: Context? = this
+    while (true) {
+        when (context) {
+            is LifecycleOwner -> return context.lifecycle
+            is ContextWrapper -> context = context.baseContext
+            else -> return null
+        }
     }
 }

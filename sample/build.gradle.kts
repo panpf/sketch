@@ -82,6 +82,7 @@ kotlin {
             implementation(projects.sketchExtensions)
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)
+            implementation(projects.sketchView)
             implementation(compose.preview)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.activity.compose)

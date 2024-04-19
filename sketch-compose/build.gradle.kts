@@ -12,8 +12,8 @@ kotlin {
             implementation(projects.internal.testUtils)
         }
         commonMain.dependencies {
-            api(projects.sketch)
             api(projects.sketchComposeCore)
+            api(projects.sketchSingleton)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

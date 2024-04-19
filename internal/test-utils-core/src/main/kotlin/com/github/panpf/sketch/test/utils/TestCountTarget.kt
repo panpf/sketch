@@ -10,7 +10,7 @@ import com.github.panpf.sketch.target.Target
 import kotlinx.coroutines.Job
 
 class TestCountTarget : Target {
-    
+
     private val requestManager = BaseRequestManager()
 
     override fun getRequestManager(): RequestManager = requestManager

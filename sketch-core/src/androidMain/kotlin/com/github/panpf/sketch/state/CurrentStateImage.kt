@@ -19,10 +19,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.target.ViewTarget
-import com.github.panpf.sketch.util.asOrNull
 
 fun CurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
     CurrentStateImageImpl(defaultImage)
@@ -48,9 +45,7 @@ private class CurrentStateImageImpl(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Image? =
-        request.target.asOrNull<ViewTarget<*>>()?.drawable?.asSketchImage()
-            ?: defaultImage?.getImage(sketch, request, throwable)
+    ): Image? = request.target?.currentImage ?: defaultImage?.getImage(sketch, request, throwable)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

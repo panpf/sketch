@@ -101,12 +101,6 @@ internal fun getProcessNameSuffix(context: Context, processName: String? = null)
     }
 }
 
-internal val ScaleType.fitScale: Boolean
-    get() = this == ScaleType.FIT_START
-            || this == ScaleType.FIT_CENTER
-            || this == ScaleType.FIT_END
-            || this == ScaleType.CENTER_INSIDE
-
 internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
     if (srcSize.isEmpty || dstSize.isEmpty) {
         return Rect(

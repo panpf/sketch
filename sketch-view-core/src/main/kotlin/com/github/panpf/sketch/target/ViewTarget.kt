@@ -33,7 +33,9 @@ package com.github.panpf.sketch.target
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.lifecycle.LifecycleObserver
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.ImageRequest
@@ -41,7 +43,6 @@ import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
 import com.github.panpf.sketch.resize.SizeResolver
@@ -68,6 +69,9 @@ interface ViewTarget<T : View> : Target {
      */
     var drawable: Drawable?
 
+    override val currentImage: Image?
+        get() = drawable?.asSketchImage()
+
     override fun getImageOptions(): ImageOptions? =
         view?.asOrNull<ImageOptionsProvider>()?.imageOptions
 
@@ -75,7 +79,7 @@ interface ViewTarget<T : View> : Target {
         view?.let { ViewSizeResolver(it) }
 
     override fun getLifecycleResolver(): LifecycleResolver? =
-        view?.let { ViewLifecycleResolver(it) }
+        view?.let { com.github.panpf.sketch.request.ViewLifecycleResolver(it) }
 
     override fun newRequestDelegate(
         sketch: Sketch,

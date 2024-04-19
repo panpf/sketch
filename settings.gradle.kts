@@ -35,7 +35,8 @@ dependencyResolutionManagement {
 /*
  * Release
  */
-include(":sketch")
+include(":sketch-animated")
+include(":sketch-animated-koralgif")
 include(":sketch-compose")
 include(":sketch-compose-core")
 include(":sketch-core")
@@ -44,14 +45,15 @@ include(":sketch-extensions-core")
 include(":sketch-extensions-compose")
 include(":sketch-extensions-view")
 include(":sketch-extensions-view-core")
-include(":sketch-animated")
-include(":sketch-animated-koralgif")
 include(":sketch-http-core")
 include(":sketch-http-ktor")
 include(":sketch-http-okhttp")
+include(":sketch-singleton")
 include(":sketch-svg")
 include(":sketch-video")
 include(":sketch-video-ffmpeg")
+include(":sketch-view")
+include(":sketch-view-core")
 include(":sketch-viewability")
 
 /*

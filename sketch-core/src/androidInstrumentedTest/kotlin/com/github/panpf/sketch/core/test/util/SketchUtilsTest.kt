@@ -52,9 +52,9 @@ class SketchUtilsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = ImageView(context)
 
-        Assert.assertNull(SketchUtils.requestManagerOrNull(imageView))
+        Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
         imageView.displayAssetImage(AssetImages.jpeg.fileName)
-        Assert.assertNotNull(SketchUtils.requestManagerOrNull(imageView))
+        Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
     }
 
     @Test
@@ -222,10 +222,10 @@ class SketchUtilsTest {
         }
         Thread.sleep(100)
 
-        Assert.assertNull(SketchUtils.getRequest(imageView))
+        Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
         imageView.displayAssetImage(AssetImages.jpeg.fileName)
         Thread.sleep(100)
-        Assert.assertNotNull(SketchUtils.getRequest(imageView))
+        Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
     }
 
     @Test
@@ -238,9 +238,9 @@ class SketchUtilsTest {
         }
         Thread.sleep(100)
 
-        Assert.assertNull(SketchUtils.getSketch(imageView))
+        Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
         imageView.displayAssetImage(AssetImages.jpeg.fileName)
         Thread.sleep(100)
-        Assert.assertNotNull(SketchUtils.getSketch(imageView))
+        Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
     }
 }

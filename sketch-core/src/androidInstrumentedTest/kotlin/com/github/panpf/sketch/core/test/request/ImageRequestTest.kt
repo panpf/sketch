@@ -58,7 +58,6 @@ import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
-import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -159,7 +158,11 @@ class ImageRequestTest {
             Assert.assertNull(this.progressListener)
             Assert.assertEquals(ImageViewTarget(imageView1), this.target)
             Assert.assertEquals(
-                DefaultLifecycleResolver(ViewLifecycleResolver(imageView1)),
+                DefaultLifecycleResolver(
+                    com.github.panpf.sketch.request.ViewLifecycleResolver(
+                        imageView1
+                    )
+                ),
                 this.lifecycleResolver
             )
 
@@ -380,7 +383,11 @@ class ImageRequestTest {
         val imageView = TestOptionsImageView(activity)
         ImageRequest(imageView, uriString1).apply {
             Assert.assertEquals(
-                DefaultLifecycleResolver(ViewLifecycleResolver(imageView)),
+                DefaultLifecycleResolver(
+                    com.github.panpf.sketch.request.ViewLifecycleResolver(
+                        imageView
+                    )
+                ),
                 this.lifecycleResolver
             )
         }
