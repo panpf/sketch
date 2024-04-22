@@ -11,13 +11,9 @@ kotlin {
             api(projects.sketchHttpCore)
             api(libs.okhttp3)
         }
-        androidInstrumentedTest.dependencies {
+
+        commonTest.dependencies {
             implementation(projects.internal.testUtils)
-        }
-        desktopTest.dependencies {
-            implementation(kotlin("test"))
-            implementation(libs.junit)
-            implementation(libs.panpf.tools4j.test)
         }
     }
 }

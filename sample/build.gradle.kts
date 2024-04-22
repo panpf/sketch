@@ -116,9 +116,6 @@ kotlin {
             implementation(libs.panpf.tools4k)
             implementation(libs.panpf.zoomimage.view)
         }
-        androidInstrumentedTest.dependencies {
-            implementation(projects.internal.testUtils)
-        }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(compose.preview)
@@ -140,6 +137,10 @@ kotlin {
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.contentNegotiation.wasm)
             implementation(libs.ktor.serialization.kotlinxJson.wasm)
+        }
+
+        commonTest.dependencies {
+            implementation(projects.internal.testUtils)
         }
     }
 }

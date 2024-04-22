@@ -27,6 +27,10 @@ kotlin {
             api(libs.ktor.client.core.wasm)
             api(libs.ktor.client.wasmJs)
         }
+
+        commonTest.dependencies {
+            implementation(projects.internal.testUtils)
+        }
     }
 }
 

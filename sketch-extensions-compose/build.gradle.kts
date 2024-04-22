@@ -13,10 +13,9 @@ kotlin {
             api(projects.sketchExtensionsCore)
             api(compose.foundation)
         }
+
         commonTest.dependencies {
-            implementation(kotlin("test"))
-//                implementation(libs.junit)
-//                implementation(libs.panpf.tools4j.test)
+            implementation(projects.internal.testUtils)
         }
     }
 }

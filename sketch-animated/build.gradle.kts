@@ -7,16 +7,12 @@ addAllMultiplatformTargets()
 
 kotlin {
     sourceSets {
-        androidInstrumentedTest.dependencies {
-            implementation(projects.internal.testUtils)
-        }
         commonMain.dependencies {
             api(projects.sketchCore)
         }
+
         commonTest.dependencies {
-            implementation(kotlin("test"))
-//                implementation(libs.junit)
-//                implementation(libs.panpf.tools4j.test)
+            implementation(projects.internal.testUtils)
         }
     }
 }

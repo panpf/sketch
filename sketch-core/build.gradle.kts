@@ -15,9 +15,6 @@ kotlin {
             api(libs.okio)
 //                compileOnly(libs.composeStableMarker)
         }
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-        }
         androidMain.dependencies {
             api(libs.androidx.annotation)
             api(libs.androidx.appcompat.resources)
@@ -25,9 +22,6 @@ kotlin {
             api(libs.androidx.exifinterface)
             api(libs.androidx.lifecycle.runtime)
             api(libs.kotlinx.coroutines.android)
-        }
-        androidInstrumentedTest.dependencies {
-            implementation(projects.internal.testUtils)
         }
         desktopMain.dependencies {
             api(libs.kotlinx.coroutines.swing)
@@ -37,6 +31,10 @@ kotlin {
         }
         nonJvmCommonMain.dependencies {
             api(projects.sketchHttpKtor)
+        }
+
+        commonTest.dependencies {
+            implementation(projects.internal.testUtils)
         }
     }
 }
