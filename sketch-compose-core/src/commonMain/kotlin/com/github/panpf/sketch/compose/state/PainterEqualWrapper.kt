@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.compose.state
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -40,6 +41,7 @@ fun SketchPainter.asEqualWrapper(): PainterEqualWrapper =
  *
  * Solve this problem with wrapper
  */
+@Stable
 class PainterEqualWrapper(val painter: Painter, val equalKey: Any) {
 
     override fun equals(other: Any?): Boolean {

@@ -3,6 +3,7 @@ import org.jetbrains.compose.experimental.dsl.ExperimentalExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
@@ -28,33 +29,11 @@ tasks.register("cleanRootBuild", Delete::class) {
 
 allprojects {
     jvmTargetConfig()
-    composeConfig()
+    composeCompilerVersionConfig()
+    composeStabilityConfig()
+    composeReportsConfig()
     publishConfig()
     applyOkioJsTestWorkaround()
-}
-
-/**
- * Run the `./gradlew assembleRelease -PcomposeCompilerReports=true` command to generate a report,
- * which is located in the `project/module/build/compose_compiler` directory.
- *
- * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
- */
-subprojects {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            // Enable Compose Compiler Report
-            if (project.findProperty("composeCompilerReports") == "true") {
-                freeCompilerArgs += listOf(
-                    "-P",
-                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.layout.buildDirectory.get().asFile.absolutePath}/compose_compiler"
-                )
-                freeCompilerArgs += listOf(
-                    "-P",
-                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.layout.buildDirectory.get().asFile.absolutePath}/compose_compiler"
-                )
-            }
-        }
-    }
 }
 
 fun Project.jvmTargetConfig() {
@@ -69,12 +48,45 @@ fun Project.jvmTargetConfig() {
     }
 }
 
-fun Project.composeConfig() {
+fun Project.composeCompilerVersionConfig() {
     plugins.withId("org.jetbrains.compose") {
         extensions.configure<ComposeExtension> {
             kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
             extensions.configure<ExperimentalExtension> {
                 web.application {}  // Render components in html canvas using wasm
+            }
+        }
+    }
+}
+
+private val composePlugin = "androidx.compose.compiler.plugins.kotlin"
+
+fun Project.composeStabilityConfig() {
+    plugins.withId("org.jetbrains.compose") {
+        tasks.withType<KotlinCompile> {
+            val outputDir = rootDir.resolve("sketch-core/compose_compiler_config.conf").path
+            compilerOptions.freeCompilerArgs
+                .addAll("-P", "plugin:$composePlugin:stabilityConfigurationPath=$outputDir")
+        }
+    }
+}
+
+/**
+ * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
+ * which is located in the `project/module/build/compose_compiler` directory.
+ *
+ * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
+ */
+fun Project.composeReportsConfig() {
+    if (project.findProperty("composeCompilerReports") == "true") {
+        plugins.withId("org.jetbrains.compose") {
+            tasks.withType<KotlinCompile> {
+                val outputDir =
+                    project.layout.buildDirectory.dir("compose_compiler").get().asFile.path
+                compilerOptions.freeCompilerArgs
+                    .addAll("-P", "plugin:$composePlugin:metricsDestination=$outputDir")
+                compilerOptions.freeCompilerArgs
+                    .addAll("-P", "plugin:$composePlugin:reportsDestination=$outputDir")
             }
         }
     }

@@ -338,6 +338,7 @@ class AsyncImageState internal constructor(
 /**
  * The current painter state of the [AsyncImageState].
  */
+@Stable
 sealed interface PainterState {
 
     /** The current painter being drawn by [AsyncImagePainter]. */

@@ -2,8 +2,10 @@ package com.github.panpf.sketch.compose.painter
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.drawable.internal.toLogString
 
+@Stable
 class DrawableAnimatablePainter(
     drawable: Drawable
 ) : DrawablePainter(drawable), AnimatablePainter {

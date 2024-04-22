@@ -1,9 +1,8 @@
-package com.github.panpf.sketch.state.internal
+package com.github.panpf.sketch.state
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.StateImage
 
 /**
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,

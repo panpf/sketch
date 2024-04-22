@@ -57,4 +57,18 @@ class AndroidTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
             Lifecycle.State.DESTROYED -> State.DESTROYED
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AndroidTargetLifecycle) return false
+        return lifecycle == other.lifecycle
+    }
+
+    override fun hashCode(): Int {
+        return lifecycle.hashCode()
+    }
+
+    override fun toString(): String {
+        return "AndroidTargetLifecycle(lifecycle=$lifecycle)"
+    }
 }

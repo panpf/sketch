@@ -18,7 +18,6 @@ package com.github.panpf.sketch.state
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.state.ErrorStateImage.Builder
-import com.github.panpf.sketch.state.internal.CombinedStateImage
 
 /**
  * Create an ErrorStateImage

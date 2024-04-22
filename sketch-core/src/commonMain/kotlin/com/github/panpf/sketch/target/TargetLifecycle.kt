@@ -16,10 +16,10 @@ abstract class TargetLifecycle {
     abstract fun removeObserver(observer: EventObserver)
 
     fun interface EventObserver {
-        public fun onStateChanged(source: TargetLifecycle, event: Event)
+        fun onStateChanged(source: TargetLifecycle, event: Event)
     }
 
-    public enum class Event {
+    enum class Event {
         /**
          * Constant for onCreate event of the [LifecycleOwner].
          */

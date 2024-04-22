@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -157,6 +158,7 @@ fun rememberIconAnimatablePainter(
 }
 
 
+@Stable
 class IconAnimatablePainter(
     icon: PainterEqualWrapper,
     background: PainterEqualWrapper? = null,

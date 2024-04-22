@@ -1,10 +1,12 @@
 package com.github.panpf.sketch.compose.painter
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.toLogString
 import com.github.panpf.sketch.resize.Scale
 
+@Stable
 class ResizeAnimatablePainter(
     painter: Painter,
     size: Size,

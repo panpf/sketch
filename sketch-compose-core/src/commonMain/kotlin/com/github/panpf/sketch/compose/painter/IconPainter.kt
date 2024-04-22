@@ -17,6 +17,7 @@ package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
@@ -183,6 +184,7 @@ fun rememberIconPainter(
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
  */
+@Stable
 open class IconPainter(
     val icon: PainterEqualWrapper,
     val background: PainterEqualWrapper? = null,

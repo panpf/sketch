@@ -2,6 +2,7 @@ package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -32,6 +33,7 @@ fun Painter.resize(size: Size, scale: Scale): ResizePainter {
     }
 }
 
+@Stable
 open class ResizePainter(
     val painter: Painter,
     val size: Size,

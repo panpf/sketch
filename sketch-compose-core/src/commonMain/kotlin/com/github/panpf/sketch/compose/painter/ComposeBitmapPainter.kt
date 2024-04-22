@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.compose.painter
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
@@ -11,6 +12,7 @@ fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
 fun ComposeBitmap.toLogString(): String =
     "ComposeBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
 
+@Stable
 class ComposeBitmapPainter(val bitmap: ComposeBitmap) : Painter(), SketchPainter {
 
     override val intrinsicSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat())

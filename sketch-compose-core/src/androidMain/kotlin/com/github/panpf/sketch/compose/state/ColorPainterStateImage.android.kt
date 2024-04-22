@@ -17,6 +17,7 @@ package com.github.panpf.sketch.compose.state
 
 import androidx.annotation.ColorRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -41,6 +42,7 @@ fun rememberColorPainterStateImage(intColor: IntColor): ColorFetcherPainterState
 fun rememberColorPainterStateImage(@ColorRes colorRes: Int): ColorFetcherPainterStateImage =
     remember(colorRes) { ColorFetcherPainterStateImageImpl(ResColor(colorRes)) }
 
+@Stable
 interface ColorFetcherPainterStateImage : StateImage {
     val colorFetcher: ColorFetcher
 }

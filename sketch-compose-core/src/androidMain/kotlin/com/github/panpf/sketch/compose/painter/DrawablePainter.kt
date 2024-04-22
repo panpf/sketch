@@ -11,6 +11,7 @@ import android.os.Looper
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +67,7 @@ fun Drawable?.asPainter(): Painter {
  *
  * Instances are usually retrieved from [rememberDrawablePainter].
  */
+@Stable
 open class DrawablePainter(
     val drawable: Drawable
 ) : Painter(), RememberObserver, SketchPainter {

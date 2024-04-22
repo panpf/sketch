@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
@@ -40,4 +39,18 @@ class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
             .mapNotNull { it.toSketchSize() }
             .first()
     }
+
+    @Suppress("RedundantOverride")
+    override fun equals(other: Any?): Boolean {
+        // If you add construction parameters to this class, you need to change it here
+        return super.equals(other)
+    }
+
+    @Suppress("RedundantOverride")
+    override fun hashCode(): Int {
+        // If you add construction parameters to this class, you need to change it here
+        return super.hashCode()
+    }
+
+    override fun toString(): String = "AsyncImageSizeResolver"
 }

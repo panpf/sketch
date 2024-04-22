@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.compose.painter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -34,6 +35,7 @@ fun rememberMaskProgressPainter(
     }
 }
 
+@Stable
 class MaskProgressPainter(
     private val maskColor: Color = Color(PROGRESS_INDICATOR_MASK_COLOR),
     hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,

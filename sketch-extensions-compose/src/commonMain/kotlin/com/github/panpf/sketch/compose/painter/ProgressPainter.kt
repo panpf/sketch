@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.compose.painter
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.compose.painter.internal.DrawInvalidate
 
+@Stable
 abstract class ProgressPainter : Painter(), DrawInvalidate {
 
     /**

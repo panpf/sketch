@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew assembleRelease -PcomposeCompilerReports=true
+./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true

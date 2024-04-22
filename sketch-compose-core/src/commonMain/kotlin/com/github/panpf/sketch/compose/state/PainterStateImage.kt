@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.compose.state
 
+import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.compose.asSketchImage
@@ -23,6 +24,8 @@ import com.github.panpf.sketch.state.StateImage
 
 fun PainterStateImage(painter: PainterEqualWrapper): PainterStateImage = PainterStateImageImpl(painter)
 
+
+@Stable
 interface PainterStateImage : StateImage {
     val painter: PainterEqualWrapper
 }
