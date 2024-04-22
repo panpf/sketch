@@ -5,12 +5,12 @@ import androidx.compose.runtime.Composable
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
-import com.github.panpf.sketch.compose.painter.MaskProgressPainter
-import com.github.panpf.sketch.compose.painter.RingProgressPainter
-import com.github.panpf.sketch.compose.painter.SectorProgressPainter
-import com.github.panpf.sketch.compose.painter.rememberMaskProgressPainter
-import com.github.panpf.sketch.compose.painter.rememberRingProgressPainter
-import com.github.panpf.sketch.compose.painter.rememberSectorProgressPainter
+import com.github.panpf.sketch.painter.MaskProgressPainter
+import com.github.panpf.sketch.painter.RingProgressPainter
+import com.github.panpf.sketch.painter.SectorProgressPainter
+import com.github.panpf.sketch.painter.rememberMaskProgressPainter
+import com.github.panpf.sketch.painter.rememberRingProgressPainter
+import com.github.panpf.sketch.painter.rememberSectorProgressPainter
 
 @Composable
 fun rememberThemeMaskProgressPainter(

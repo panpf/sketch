@@ -3,7 +3,7 @@ package com.github.panpf.sketch.sample.ui.test
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.res.ResourceLoader
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.compose.fetch.newComposeResourceUri
+import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.images.MyImage

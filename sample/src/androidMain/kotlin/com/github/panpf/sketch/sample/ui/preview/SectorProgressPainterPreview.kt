@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.compose.painter.rememberRingProgressPainter
-import com.github.panpf.sketch.compose.painter.rememberSectorProgressPainter
+import com.github.panpf.sketch.painter.rememberRingProgressPainter
+import com.github.panpf.sketch.painter.rememberSectorProgressPainter
 import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import com.github.panpf.tools4a.dimen.ktx.dp2px

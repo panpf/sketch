@@ -18,7 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog

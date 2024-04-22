@@ -12,7 +12,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.LocalPlatformContext
 
 
 @Composable

@@ -28,10 +28,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.compose.AsyncImage
-import com.github.panpf.sketch.compose.LocalPlatformContext
-import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.ability.progressIndicator
+import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings

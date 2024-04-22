@@ -25,10 +25,10 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.compose.LocalPlatformContext
-import com.github.panpf.sketch.compose.ability.dataFromLogo
-import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.ability.dataFromLogo
+import com.github.panpf.sketch.ability.progressIndicator
+import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold

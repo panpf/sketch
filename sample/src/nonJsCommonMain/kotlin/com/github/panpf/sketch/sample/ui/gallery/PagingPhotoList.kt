@@ -30,7 +30,7 @@ import androidx.paging.LoadState.Loading
 import app.cash.paging.PagingData
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
-import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.common.list.AppendState

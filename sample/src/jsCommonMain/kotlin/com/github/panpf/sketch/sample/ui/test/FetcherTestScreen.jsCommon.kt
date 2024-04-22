@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.compose.fetch.newComposeResourceUri
+import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.images.MyImages
 
 actual suspend fun buildFetcherTestItems(

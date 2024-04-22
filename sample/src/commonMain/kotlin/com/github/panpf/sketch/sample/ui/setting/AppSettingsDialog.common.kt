@@ -45,7 +45,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.compose.LocalPlatformContext
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings

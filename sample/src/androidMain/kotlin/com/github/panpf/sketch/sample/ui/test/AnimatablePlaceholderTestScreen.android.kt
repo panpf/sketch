@@ -3,8 +3,8 @@ package com.github.panpf.sketch.sample.ui.test
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.compose.state.PainterEqualWrapper
-import com.github.panpf.sketch.compose.state.asPainterEqualWrapper
+import com.github.panpf.sketch.state.PainterEqualWrapper
+import com.github.panpf.sketch.state.asPainterEqualWrapper
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.state.getEqualWrapperDrawableCompat
 

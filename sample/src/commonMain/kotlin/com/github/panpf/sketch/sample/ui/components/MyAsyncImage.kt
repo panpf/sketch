@@ -14,10 +14,11 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.AsyncImageState
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.compose.AsyncImageState
-import com.github.panpf.sketch.compose.LocalPlatformContext
-import com.github.panpf.sketch.compose.rememberAsyncImageState
+import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.ui.gallery.PhotoInfoDialog
@@ -37,7 +38,7 @@ fun MyAsyncImage(
 ) {
     var photoInfoImageResult: ImageResult? by remember { mutableStateOf(null) }
 
-    com.github.panpf.sketch.compose.AsyncImage(
+    AsyncImage(
         request = request,
         contentDescription = contentDescription,
         sketch = SingletonSketch.get(LocalPlatformContext.current),

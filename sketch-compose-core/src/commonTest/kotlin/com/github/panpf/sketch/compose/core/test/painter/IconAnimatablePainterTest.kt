@@ -3,8 +3,8 @@ package com.github.panpf.sketch.compose.core.test.painter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import com.github.panpf.sketch.compose.painter.rememberIconAnimatablePainter
-import com.github.panpf.sketch.compose.state.asEqualWrapper
+import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
+import com.github.panpf.sketch.state.asEqualWrapper
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

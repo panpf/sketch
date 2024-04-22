@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.panpf.sketch.compose.ability.progressIndicator
-import com.github.panpf.sketch.compose.painter.rememberIconPainter
-import com.github.panpf.sketch.compose.rememberAsyncImageState
-import com.github.panpf.sketch.compose.state.equalWrapperPainterResource
+import com.github.panpf.sketch.ability.progressIndicator
+import com.github.panpf.sketch.painter.rememberIconPainter
+import com.github.panpf.sketch.rememberAsyncImageState
+import com.github.panpf.sketch.state.equalWrapperPainterResource
 import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold

@@ -4,7 +4,7 @@ import android.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.compose.state.rememberIconAnimatableStateImage
+import com.github.panpf.sketch.state.rememberIconAnimatableStateImage
 import com.github.panpf.sketch.state.IntColor
 import com.github.panpf.sketch.state.asEqualWrapper
 import com.github.panpf.sketch.util.Size
