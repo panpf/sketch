@@ -3,9 +3,9 @@ package com.github.panpf.sketch.state
 import androidx.annotation.ColorRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.state.ColorFetcher
+import com.github.panpf.sketch.util.ColorFetcher
 import com.github.panpf.sketch.state.ColorStateImage
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.util.IntColor
 
 
 @Composable

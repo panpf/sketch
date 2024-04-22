@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.test.state
 import androidx.core.content.res.ResourcesCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.state.ResColor
+import com.github.panpf.sketch.util.ResColor
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

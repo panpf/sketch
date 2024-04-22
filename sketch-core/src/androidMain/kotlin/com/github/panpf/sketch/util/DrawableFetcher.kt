@@ -23,8 +23,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.state.ColorFetcher
-import com.github.panpf.sketch.state.DrawableEqualWrapper
+import com.github.panpf.sketch.util.ColorFetcher
 
 /**
  * For getting the Drawable
@@ -103,15 +102,15 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
     }
 }
 
-class RealEqualDrawable(val wrapper: DrawableEqualWrapper) : DrawableFetcher {
+class RealEqualityDrawable(val wrapper: DrawableEqualizer) : DrawableFetcher {
 
     override fun getDrawable(context: Context): Drawable {
-        return wrapper.drawable
+        return wrapper.wrapped
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RealEqualDrawable) return false
+        if (other !is RealEqualityDrawable) return false
         if (wrapper != other.wrapper) return false
         return true
     }
@@ -121,7 +120,7 @@ class RealEqualDrawable(val wrapper: DrawableEqualWrapper) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "RealEqualDrawable($wrapper)"
+        return "RealEqualityDrawable($wrapper)"
     }
 }
 

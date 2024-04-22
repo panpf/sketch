@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
-import com.github.panpf.sketch.state.DrawableEqualWrapper
+import com.github.panpf.sketch.util.DrawableEqualizer
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.transition.Crossfade
@@ -32,7 +32,7 @@ actual fun createResizeOnDrawHelper(): ResizeOnDrawHelper? {
 /**
  * Set Drawable placeholder image when loading
  */
-fun ImageOptions.Builder.placeholder(drawable: DrawableEqualWrapper): ImageOptions.Builder =
+fun ImageOptions.Builder.placeholder(drawable: DrawableEqualizer): ImageOptions.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
@@ -44,7 +44,7 @@ fun ImageOptions.Builder.placeholder(@DrawableRes resId: Int): ImageOptions.Buil
 /**
  * Set Drawable placeholder image when uri is empty
  */
-fun ImageOptions.Builder.uriEmpty(drawable: DrawableEqualWrapper): ImageOptions.Builder =
+fun ImageOptions.Builder.uriEmpty(drawable: DrawableEqualizer): ImageOptions.Builder =
     uriEmpty(DrawableStateImage(drawable))
 
 /**
@@ -59,7 +59,7 @@ fun ImageOptions.Builder.uriEmpty(@DrawableRes resId: Int): ImageOptions.Builder
  * You can also set image of different error types via the trailing lambda function
  */
 fun ImageOptions.Builder.error(
-    defaultDrawable: DrawableEqualWrapper,
+    defaultDrawable: DrawableEqualizer,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageOptions.Builder = error(DrawableStateImage(defaultDrawable), configBlock)
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.state
+package com.github.panpf.sketch.util
 
 import android.content.Context
 import androidx.annotation.ColorInt

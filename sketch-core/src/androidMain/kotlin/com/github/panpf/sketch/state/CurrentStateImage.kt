@@ -20,11 +20,12 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.DrawableEqualizer
 
 fun CurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
     CurrentStateImageImpl(defaultImage)
 
-fun CurrentStateImage(defaultDrawable: DrawableEqualWrapper): CurrentStateImage =
+fun CurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =
     CurrentStateImageImpl(DrawableStateImage(defaultDrawable))
 
 fun CurrentStateImage(@DrawableRes defaultDrawableRes: Int): CurrentStateImage =

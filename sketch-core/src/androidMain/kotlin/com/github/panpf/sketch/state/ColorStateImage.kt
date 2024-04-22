@@ -22,12 +22,16 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.ColorFetcher
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 
 fun ColorStateImage(colorFetcher: ColorFetcher): ColorStateImage = ColorStateImageImpl(colorFetcher)
 
 fun ColorStateImage(intColor: IntColor): ColorStateImage = ColorStateImageImpl(intColor)
 
-fun ColorStateImage(@ColorRes colorRes: Int): ColorStateImage = ColorStateImageImpl(ResColor(colorRes))
+fun ColorStateImage(@ColorRes colorRes: Int): ColorStateImage =
+    ColorStateImageImpl(ResColor(colorRes))
 
 /**
  * Use color as the state [Drawable]

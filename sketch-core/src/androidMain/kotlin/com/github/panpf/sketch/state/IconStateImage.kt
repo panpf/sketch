@@ -23,9 +23,13 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.ColorFetcher
 import com.github.panpf.sketch.util.ColorFetcherDrawable
+import com.github.panpf.sketch.util.DrawableEqualizer
 import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealEqualDrawable
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.RealEqualityDrawable
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.Size
 
@@ -33,36 +37,36 @@ import com.github.panpf.sketch.util.Size
 /* ********************************************* drawable icon ********************************************* */
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
-    background: DrawableEqualWrapper? = null,
+    icon: DrawableEqualizer,
+    background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
-    background = background?.let { RealEqualDrawable(it) },
+    icon = RealEqualityDrawable(icon),
+    background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
+    icon = RealEqualityDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
+    icon = RealEqualityDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
@@ -70,36 +74,36 @@ fun IconStateImage(
 
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
-    background: DrawableEqualWrapper? = null,
+    icon: DrawableEqualizer,
+    background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
-    background = background?.let { RealEqualDrawable(it) },
+    icon = RealEqualityDrawable(icon),
+    background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
+    icon = RealEqualityDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
+    icon = RealEqualityDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
@@ -107,22 +111,22 @@ fun IconStateImage(
 
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
+    icon = RealEqualityDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
 fun IconStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconStateImage = IconStateImageImpl(
-    icon = RealEqualDrawable(icon),
+    icon = RealEqualityDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = iconTint,
@@ -133,12 +137,12 @@ fun IconStateImage(
 
 fun IconStateImage(
     @DrawableRes icon: Int,
-    background: DrawableEqualWrapper? = null,
+    background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconStateImage = IconStateImageImpl(
     icon = ResDrawable(icon),
-    background = background?.let { RealEqualDrawable(it) },
+    background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
@@ -170,12 +174,12 @@ fun IconStateImage(
 
 fun IconStateImage(
     @DrawableRes icon: Int,
-    background: DrawableEqualWrapper? = null,
+    background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconStateImage = IconStateImageImpl(
     icon = ResDrawable(icon),
-    background = background?.let { RealEqualDrawable(it) },
+    background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )

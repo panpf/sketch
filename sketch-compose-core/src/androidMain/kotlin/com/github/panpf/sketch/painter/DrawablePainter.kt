@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.Ltr
 import androidx.compose.ui.unit.LayoutDirection.Rtl
 import com.github.panpf.sketch.drawable.internal.toLogString
+import com.github.panpf.sketch.util.DrawableEqualizer
 import kotlin.math.roundToInt
 
 /**
@@ -45,8 +46,8 @@ import kotlin.math.roundToInt
  * within Compose.
  */
 @Composable
-fun rememberDrawablePainter(drawable: Drawable?): Painter = remember(drawable) {
-    drawable.asPainter()
+fun rememberDrawablePainter(drawable: DrawableEqualizer): Painter = remember(drawable) {
+    drawable.wrapped.asPainter()
 }
 
 fun Drawable?.asPainter(): Painter {

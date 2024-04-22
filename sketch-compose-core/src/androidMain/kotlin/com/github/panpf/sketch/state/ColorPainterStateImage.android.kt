@@ -25,9 +25,9 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.ColorFetcher
-import com.github.panpf.sketch.state.IntColor
-import com.github.panpf.sketch.state.ResColor
+import com.github.panpf.sketch.util.ColorFetcher
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.state.StateImage
 
 @Composable

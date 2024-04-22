@@ -27,7 +27,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import org.junit.Assert

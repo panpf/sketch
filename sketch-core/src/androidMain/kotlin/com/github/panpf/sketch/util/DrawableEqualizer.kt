@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.state
+package com.github.panpf.sketch.util
 
 import android.content.Context
 import android.content.res.Resources
@@ -11,88 +11,88 @@ import com.github.panpf.sketch.drawable.internal.toLogString
 import java.lang.Deprecated
 
 
-fun Context.getEqualWrapperDrawable(@DrawableRes resId: Int): DrawableEqualWrapper {
+fun Context.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
 
-fun Context.getEqualWrapperDrawableCompat(@DrawableRes resId: Int): DrawableEqualWrapper {
+fun Context.getEqualityDrawableCompat(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = AppCompatResources.getDrawable(this, resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
-fun AppCompatResources.getEqualWrapperDrawable(
+fun AppCompatResources.getEqualityDrawable(
     context: Context,
     @DrawableRes resId: Int
-): DrawableEqualWrapper {
+): DrawableEqualizer {
     val drawable = AppCompatResources.getDrawable(context, resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
-fun ResourcesCompat.getEqualWrapperDrawable(
+fun ResourcesCompat.getEqualityDrawable(
     resources: Resources,
     @DrawableRes resId: Int,
     theme: Theme?
-): DrawableEqualWrapper {
+): DrawableEqualizer {
     val drawable = ResourcesCompat.getDrawable(resources, resId, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
-fun ResourcesCompat.getEqualWrapperDrawableForDensity(
+fun ResourcesCompat.getEqualityDrawableForDensity(
     resources: Resources,
     @DrawableRes resId: Int,
     density: Int,
     theme: Theme?
-): DrawableEqualWrapper {
+): DrawableEqualizer {
     val drawable = ResourcesCompat.getDrawableForDensity(resources, resId, density, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
 @Deprecated
-fun Resources.getEqualWrapperDrawable(@DrawableRes resId: Int): DrawableEqualWrapper {
+fun Resources.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
-fun Resources.getEqualWrapperDrawable(
+fun Resources.getEqualityDrawable(
     @DrawableRes resId: Int,
     theme: Resources.Theme?
-): DrawableEqualWrapper {
+): DrawableEqualizer {
     val drawable = getDrawable(resId, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
 @Deprecated
-fun Resources.getEqualWrapperDrawableForDensity(
+fun Resources.getEqualityDrawableForDensity(
     @DrawableRes resId: Int,
     density: Int,
-): DrawableEqualWrapper {
+): DrawableEqualizer {
     val drawable = getDrawableForDensity(resId, density)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
-fun Resources.getEqualWrapperDrawableForDensity(
+fun Resources.getEqualityDrawableForDensity(
     @DrawableRes resId: Int,
     density: Int,
     theme: Resources.Theme?
-): DrawableEqualWrapper {
+): DrawableEqualizer {
     val drawable = getDrawableForDensity(resId, density, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEqualWrapper(resId)
+    return drawable.asEquality(resId)
 }
 
 
-fun Drawable.asEqualWrapper(equalKey: Any): DrawableEqualWrapper =
-    DrawableEqualWrapper(drawable = this, equalKey = equalKey)
+fun Drawable.asEquality(equalKey: Any): DrawableEqualizer =
+    DrawableEqualizer(wrapped = this, equalityKey = equalKey)
 
 /**
  * Using Resources.getDrawable() for the same drawable resource and calling it twice in a row returns Drawable equals as false.
@@ -101,20 +101,23 @@ fun Drawable.asEqualWrapper(equalKey: Any): DrawableEqualWrapper =
  *
  * Solve this problem with wrapper
  */
-class DrawableEqualWrapper(val drawable: Drawable, val equalKey: Any) {
+class DrawableEqualizer(
+    override val wrapped: Drawable,
+    override val equalityKey: Any
+) : Equalizer<Drawable> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is DrawableEqualWrapper) return false
-        if (equalKey != other.equalKey) return false
+        if (other !is DrawableEqualizer) return false
+        if (equalityKey != other.equalityKey) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return equalKey.hashCode()
+        return equalityKey.hashCode()
     }
 
     override fun toString(): String {
-        return "DrawableEqualWrapper(drawable=${drawable.toLogString()}, equalKey=$equalKey)"
+        return "DrawableEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKey)"
     }
 }

@@ -7,10 +7,10 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.state.DrawableEqualWrapper
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
+import com.github.panpf.sketch.util.DrawableEqualizer
 
 
 /**
@@ -28,7 +28,7 @@ fun ImageRequest.Builder.lifecycle(lifecycle: Lifecycle): ImageRequest.Builder =
 /**
  * Set Drawable placeholder image when loading
  */
-fun ImageRequest.Builder.placeholder(drawable: DrawableEqualWrapper): ImageRequest.Builder =
+fun ImageRequest.Builder.placeholder(drawable: DrawableEqualizer): ImageRequest.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
@@ -40,7 +40,7 @@ fun ImageRequest.Builder.placeholder(@DrawableRes resId: Int): ImageRequest.Buil
 /**
  * Set Drawable placeholder image when uri is empty
  */
-fun ImageRequest.Builder.uriEmpty(drawable: DrawableEqualWrapper): ImageRequest.Builder =
+fun ImageRequest.Builder.uriEmpty(drawable: DrawableEqualizer): ImageRequest.Builder =
     uriEmpty(DrawableStateImage(drawable))
 
 /**
@@ -55,7 +55,7 @@ fun ImageRequest.Builder.uriEmpty(@DrawableRes resId: Int): ImageRequest.Builder
  * You can also set image of different error types via the trailing lambda function
  */
 fun ImageRequest.Builder.error(
-    defaultDrawable: DrawableEqualWrapper,
+    defaultDrawable: DrawableEqualizer,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageRequest.Builder = error(DrawableStateImage(defaultDrawable), configBlock)
 

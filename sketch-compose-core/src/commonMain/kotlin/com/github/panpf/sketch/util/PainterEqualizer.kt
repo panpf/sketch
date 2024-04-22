@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.state
+package com.github.panpf.sketch.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -14,25 +14,25 @@ import org.jetbrains.compose.resources.painterResource
 
 @ExperimentalResourceApi
 @Composable
-fun equalWrapperPainterResource(resource: DrawableResource): PainterEqualWrapper {
+fun equalityPainterResource(resource: DrawableResource): PainterEqualizer {
     val painter = painterResource(resource)
-    return PainterEqualWrapper(painter = painter, equalKey = resource)
+    return PainterEqualizer(wrapped = painter, equalityKey = resource)
 }
 
-fun Painter.asEqualWrapper(equalKey: Any): PainterEqualWrapper =
-    PainterEqualWrapper(painter = this, equalKey = equalKey)
+fun Painter.asEquality(equalKey: Any): PainterEqualizer =
+    PainterEqualizer(wrapped = this, equalityKey = equalKey)
 
-fun ColorPainter.asEqualWrapper(): PainterEqualWrapper =
-    PainterEqualWrapper(painter = this, equalKey = this)
+fun ColorPainter.asEquality(): PainterEqualizer =
+    PainterEqualizer(wrapped = this, equalityKey = this)
 
-fun BrushPainter.asEqualWrapper(): PainterEqualWrapper =
-    PainterEqualWrapper(painter = this, equalKey = this)
+fun BrushPainter.asEquality(): PainterEqualizer =
+    PainterEqualizer(wrapped = this, equalityKey = this)
 
-fun BitmapPainter.asEqualWrapper(): PainterEqualWrapper =
-    PainterEqualWrapper(painter = this, equalKey = this)
+fun BitmapPainter.asEquality(): PainterEqualizer =
+    PainterEqualizer(wrapped = this, equalityKey = this)
 
-fun SketchPainter.asEqualWrapper(): PainterEqualWrapper =
-    PainterEqualWrapper(painter = this as Painter, equalKey = this)
+fun SketchPainter.asEquality(): PainterEqualizer =
+    PainterEqualizer(wrapped = this as Painter, equalityKey = this)
 
 /**
  * The VectorPainter equals returned by two consecutive calls to painterResource() on the same vector drawable resource is false.
@@ -42,20 +42,23 @@ fun SketchPainter.asEqualWrapper(): PainterEqualWrapper =
  * Solve this problem with wrapper
  */
 @Stable
-class PainterEqualWrapper(val painter: Painter, val equalKey: Any) {
+class PainterEqualizer(
+    override val wrapped: Painter,
+    override val equalityKey: Any
+) : Equalizer<Painter> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is PainterEqualWrapper) return false
-        if (equalKey != other.equalKey) return false
+        if (other !is PainterEqualizer) return false
+        if (equalityKey != other.equalityKey) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return equalKey.hashCode()
+        return equalityKey.hashCode()
     }
 
     override fun toString(): String {
-        return "PainterEqualWrapper(painter=${painter.toLogString()}, equalKey=$equalKey)"
+        return "PainterEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKey)"
     }
 }

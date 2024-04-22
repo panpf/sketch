@@ -7,11 +7,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
-import com.github.panpf.sketch.state.asEqualWrapper
-import com.github.panpf.sketch.state.asPainterEqualWrapper
-import com.github.panpf.sketch.state.DrawableEqualWrapper
-import com.github.panpf.sketch.state.IntColor
-import com.github.panpf.sketch.state.ResColor
+import com.github.panpf.sketch.util.asEquality
+import com.github.panpf.sketch.state.asPainterEqualizer
+import com.github.panpf.sketch.util.DrawableEqualizer
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.toSize
@@ -21,8 +21,8 @@ import com.github.panpf.sketch.util.toSize
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
-    background: DrawableEqualWrapper? = null,
+    icon: DrawableEqualizer,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): IconPainter {
@@ -32,8 +32,8 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
-            background = background?.asPainterEqualWrapper(),
+            icon = icon.asPainterEqualizer(),
+            background = background?.asPainterEqualizer(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
         )
@@ -42,7 +42,7 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
@@ -56,8 +56,8 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
-            background = backgroundDrawable?.asPainterEqualWrapper(background),
+            icon = icon.asPainterEqualizer(),
+            background = backgroundDrawable?.asPainterEqualizer(background),
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
         )
@@ -66,7 +66,7 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
@@ -77,8 +77,8 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEqualWrapper(),
+            icon = icon.asPainterEqualizer(),
+            background = background?.let { ColorPainter(Color(it.color)) }?.asEquality(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
         )
@@ -88,14 +88,14 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
-    background: DrawableEqualWrapper? = null,
+    icon: DrawableEqualizer,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
     IconPainter(
-        icon = icon.asPainterEqualWrapper(),
-        background = background?.asPainterEqualWrapper(),
+        icon = icon.asPainterEqualizer(),
+        background = background?.asPainterEqualizer(),
         iconSize = iconSize?.toSize(),
         iconTint = iconTint?.let { Color(it.color) }
     )
@@ -103,7 +103,7 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
@@ -114,8 +114,8 @@ fun rememberIconPainter(
             ?.let { ResDrawable(it) }
             ?.getDrawable(context)
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
-            background = backgroundDrawable?.asPainterEqualWrapper(background),
+            icon = icon.asPainterEqualizer(),
+            background = backgroundDrawable?.asPainterEqualizer(background),
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }
         )
@@ -124,15 +124,15 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEqualWrapper(),
+            icon = icon.asPainterEqualizer(),
+            background = background?.let { ColorPainter(Color(it.color)) }?.asEquality(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }
         )
@@ -142,7 +142,7 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): IconPainter {
@@ -152,7 +152,7 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
+            icon = icon.asPainterEqualizer(),
             background = null,
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
@@ -162,13 +162,13 @@ fun rememberIconPainter(
 
 @Composable
 fun rememberIconPainter(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconPainter {
     return remember(icon, iconSize, iconTint) {
         IconPainter(
-            icon = icon.asPainterEqualWrapper(),
+            icon = icon.asPainterEqualizer(),
             background = null,
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }
@@ -182,7 +182,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: DrawableEqualWrapper? = null,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): IconPainter {
@@ -193,8 +193,8 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
-            background = background?.asPainterEqualWrapper(),
+            icon = iconDrawable.asPainterEqualizer(icon),
+            background = background?.asPainterEqualizer(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
         )
@@ -218,8 +218,8 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
-            background = backgroundDrawable?.asPainterEqualWrapper(background),
+            icon = iconDrawable.asPainterEqualizer(icon),
+            background = backgroundDrawable?.asPainterEqualizer(background),
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
         )
@@ -240,8 +240,8 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEqualWrapper(),
+            icon = iconDrawable.asPainterEqualizer(icon),
+            background = background?.let { ColorPainter(Color(it.color)) }?.asEquality(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
         )
@@ -252,7 +252,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: DrawableEqualWrapper? = null,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconPainter {
@@ -260,8 +260,8 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
-            background = background?.asPainterEqualWrapper(),
+            icon = iconDrawable.asPainterEqualizer(icon),
+            background = background?.asPainterEqualizer(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }
         )
@@ -282,8 +282,8 @@ fun rememberIconPainter(
             ?.let { ResDrawable(it) }
             ?.getDrawable(context)
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
-            background = backgroundDrawable?.asPainterEqualWrapper(background),
+            icon = iconDrawable.asPainterEqualizer(icon),
+            background = backgroundDrawable?.asPainterEqualizer(background),
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }
         )
@@ -301,8 +301,8 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEqualWrapper(),
+            icon = iconDrawable.asPainterEqualizer(icon),
+            background = background?.let { ColorPainter(Color(it.color)) }?.asEquality(),
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }
         )
@@ -323,7 +323,7 @@ fun rememberIconPainter(
             .getColor(context)
             .let { Color(it) }
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
+            icon = iconDrawable.asPainterEqualizer(icon),
             background = null,
             iconSize = iconSize?.toSize(),
             iconTint = iconTintColor
@@ -341,7 +341,7 @@ fun rememberIconPainter(
     return remember(icon, iconSize, iconTint) {
         val iconDrawable = ResDrawable(icon).getDrawable(context)
         IconPainter(
-            icon = iconDrawable.asPainterEqualWrapper(icon),
+            icon = iconDrawable.asPainterEqualizer(icon),
             background = null,
             iconSize = iconSize?.toSize(),
             iconTint = iconTint?.let { Color(it.color) }

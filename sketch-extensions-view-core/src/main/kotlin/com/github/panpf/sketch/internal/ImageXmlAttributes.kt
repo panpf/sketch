@@ -41,7 +41,7 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.state.asEqualWrapper
+import com.github.panpf.sketch.util.asEquality
 import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -127,15 +127,15 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                     }
                 }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_placeholder)?.apply {
-                placeholder(this.asEqualWrapper(this))
+                placeholder(this.asEquality(this))
             }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmpty)?.apply {
-                uriEmpty(this.asEqualWrapper(this))
+                uriEmpty(this.asEquality(this))
             }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_error)?.apply {
-                error(this.asEqualWrapper(this)) {
+                error(this.asEquality(this)) {
                     typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmptyError)
-                        ?.let { uriEmptyError(it.asEqualWrapper(it)) }
+                        ?.let { uriEmptyError(it.asEquality(it)) }
                 }
             }
         }.takeIf { !it.isEmpty() }

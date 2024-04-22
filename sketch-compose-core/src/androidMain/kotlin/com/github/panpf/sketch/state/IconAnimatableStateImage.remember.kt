@@ -4,9 +4,9 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.state.DrawableEqualWrapper
+import com.github.panpf.sketch.util.DrawableEqualizer
 import com.github.panpf.sketch.state.IconAnimatableStateImage
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.SketchSize
 
 
@@ -14,8 +14,8 @@ import com.github.panpf.sketch.util.SketchSize
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
-    background: DrawableEqualWrapper? = null,
+    icon: DrawableEqualizer,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
@@ -29,7 +29,7 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
@@ -44,7 +44,7 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
@@ -60,8 +60,8 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
-    background: DrawableEqualWrapper? = null,
+    icon: DrawableEqualizer,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
@@ -75,7 +75,7 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
@@ -90,7 +90,7 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
@@ -106,7 +106,7 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = remember(icon, iconSize, iconTint) {
@@ -119,7 +119,7 @@ fun rememberIconAnimatableStateImage(
 
 @Composable
 fun rememberIconAnimatableStateImage(
-    icon: DrawableEqualWrapper,
+    icon: DrawableEqualizer,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = remember(icon, iconSize, iconTint) {
@@ -136,7 +136,7 @@ fun rememberIconAnimatableStateImage(
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,
-    background: DrawableEqualWrapper? = null,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     @ColorRes iconTint: Int,
 ): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {
@@ -182,7 +182,7 @@ fun rememberIconAnimatableStateImage(
 @Composable
 fun rememberIconAnimatableStateImage(
     @DrawableRes icon: Int,
-    background: DrawableEqualWrapper? = null,
+    background: DrawableEqualizer? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
 ): IconAnimatableStateImage = remember(icon, background, iconSize, iconTint) {

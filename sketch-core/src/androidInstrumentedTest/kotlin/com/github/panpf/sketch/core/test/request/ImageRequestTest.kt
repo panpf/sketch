@@ -78,9 +78,9 @@ import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IconStateImage
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.MemoryCacheStateImage
-import com.github.panpf.sketch.state.ResColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.TestActivity

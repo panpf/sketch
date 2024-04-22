@@ -2,13 +2,13 @@ package com.github.panpf.sketch.state
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.painter.asPainter
-import com.github.panpf.sketch.state.DrawableEqualWrapper
-import com.github.panpf.sketch.state.PainterEqualWrapper
+import com.github.panpf.sketch.util.DrawableEqualizer
+import com.github.panpf.sketch.util.PainterEqualizer
 
 
-fun Drawable.asPainterEqualWrapper(equalKey: Any): PainterEqualWrapper =
-    PainterEqualWrapper(painter = this.asPainter(), equalKey = equalKey)
+fun Drawable.asPainterEqualizer(equalKey: Any): PainterEqualizer =
+    PainterEqualizer(wrapped = this.asPainter(), equalityKey = equalKey)
 
-fun DrawableEqualWrapper.asPainterEqualWrapper(): PainterEqualWrapper {
-    return PainterEqualWrapper(this.drawable.asPainter(), this.equalKey)
+fun DrawableEqualizer.asPainterEqualizer(): PainterEqualizer {
+    return PainterEqualizer(this.wrapped.asPainter(), this.equalityKey)
 }

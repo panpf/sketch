@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.state.PainterEqualWrapper
+import com.github.panpf.sketch.util.PainterEqualizer
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
@@ -34,7 +34,7 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 
 @Composable
-expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): PainterEqualWrapper?
+expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): PainterEqualizer?
 
 class AnimatablePlaceholderTestScreen : BaseScreen() {
 

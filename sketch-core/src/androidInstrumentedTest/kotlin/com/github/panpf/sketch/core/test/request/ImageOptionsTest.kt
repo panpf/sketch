@@ -63,7 +63,7 @@ import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder

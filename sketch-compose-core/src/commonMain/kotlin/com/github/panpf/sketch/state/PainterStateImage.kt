@@ -20,20 +20,22 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.StateImage
+import com.github.panpf.sketch.util.PainterEqualizer
 
-fun PainterStateImage(painter: PainterEqualWrapper): PainterStateImage = PainterStateImageImpl(painter)
+fun PainterStateImage(painter: PainterEqualizer): PainterStateImage =
+    PainterStateImageImpl(painter)
 
 
 @Stable
 interface PainterStateImage : StateImage {
-    val painter: PainterEqualWrapper
+    val painter: PainterEqualizer
 }
 
-private class PainterStateImageImpl(override val painter: PainterEqualWrapper) : PainterStateImage {
+private class PainterStateImageImpl(override val painter: PainterEqualizer) :
+    PainterStateImage {
 
-    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
-        return painter.painter.asSketchImage()
+    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
+        return painter.wrapped.asSketchImage()
     }
 
     override fun equals(other: Any?): Boolean {

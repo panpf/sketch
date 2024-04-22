@@ -6,9 +6,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import com.github.panpf.sketch.state.PainterEqualWrapper
-import com.github.panpf.sketch.state.asEqualWrapper
-import com.github.panpf.sketch.state.equalWrapperPainterResource
+import com.github.panpf.sketch.util.PainterEqualizer
+import com.github.panpf.sketch.util.asEquality
+import com.github.panpf.sketch.util.equalityPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -17,8 +17,8 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualWrapper,
-    background: PainterEqualWrapper? = null,
+    icon: PainterEqualizer,
+    background: PainterEqualizer? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
@@ -32,7 +32,7 @@ fun rememberIconAnimatablePainter(
 
 @Composable
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualWrapper,
+    icon: PainterEqualizer,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
@@ -40,7 +40,7 @@ fun rememberIconAnimatablePainter(
     val backgroundPainter = background?.let { ColorPainter(it) }
     IconAnimatablePainter(
         icon = icon,
-        background = backgroundPainter?.asEqualWrapper(),
+        background = backgroundPainter?.asEquality(),
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -49,12 +49,12 @@ fun rememberIconAnimatablePainter(
 @Composable
 @OptIn(ExperimentalResourceApi::class)
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualWrapper,
+    icon: PainterEqualizer,
     background: DrawableResource? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val backgroundPainter = background?.let { equalWrapperPainterResource(it) }
+    val backgroundPainter = background?.let { equalityPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = icon,
@@ -67,7 +67,7 @@ fun rememberIconAnimatablePainter(
 
 @Composable
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualWrapper,
+    icon: PainterEqualizer,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter = remember(icon, iconSize, iconTint) {
@@ -84,11 +84,11 @@ fun rememberIconAnimatablePainter(
 @OptIn(ExperimentalResourceApi::class)
 fun rememberIconAnimatablePainter(
     icon: DrawableResource,
-    background: PainterEqualWrapper? = null,
+    background: PainterEqualizer? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalWrapperPainterResource(icon)
+    val iconPainter = equalityPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = iconPainter,
@@ -107,12 +107,12 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalWrapperPainterResource(icon)
+    val iconPainter = equalityPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
         IconAnimatablePainter(
             icon = iconPainter,
-            background = backgroundPainter?.asEqualWrapper(),
+            background = backgroundPainter?.asEquality(),
             iconSize = iconSize,
             iconTint = iconTint
         )
@@ -127,8 +127,8 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalWrapperPainterResource(icon)
-    val backgroundPainter = background?.let { equalWrapperPainterResource(it) }
+    val iconPainter = equalityPainterResource(icon)
+    val backgroundPainter = background?.let { equalityPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = iconPainter,
@@ -146,7 +146,7 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalWrapperPainterResource(icon)
+    val iconPainter = equalityPainterResource(icon)
     return remember(icon, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = iconPainter,
@@ -160,8 +160,8 @@ fun rememberIconAnimatablePainter(
 
 @Stable
 class IconAnimatablePainter(
-    icon: PainterEqualWrapper,
-    background: PainterEqualWrapper? = null,
+    icon: PainterEqualizer,
+    background: PainterEqualizer? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
@@ -170,11 +170,11 @@ class IconAnimatablePainter(
     private val animatablePainterBackground: AnimatablePainter?
 
     init {
-        require(icon.painter is AnimatablePainter || background?.painter is AnimatablePainter) {
+        require(icon.wrapped is AnimatablePainter || background?.wrapped is AnimatablePainter) {
             "painter must be AnimatablePainter"
         }
-        animatablePainterIcon = icon.painter as? AnimatablePainter
-        animatablePainterBackground = background?.painter as? AnimatablePainter
+        animatablePainterIcon = icon.wrapped as? AnimatablePainter
+        animatablePainterBackground = background?.wrapped as? AnimatablePainter
     }
 
     override fun start() {

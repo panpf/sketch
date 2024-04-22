@@ -21,12 +21,13 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.DrawableEqualizer
 import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealEqualDrawable
+import com.github.panpf.sketch.util.RealEqualityDrawable
 import com.github.panpf.sketch.util.ResDrawable
 
-fun DrawableStateImage(drawable: DrawableEqualWrapper): DrawableStateImage =
-    DrawableStateImageImpl(RealEqualDrawable(drawable))
+fun DrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
+    DrawableStateImageImpl(RealEqualityDrawable(drawable))
 
 fun DrawableStateImage(@DrawableRes drawableRes: Int): DrawableStateImage =
     DrawableStateImageImpl(ResDrawable(drawableRes))

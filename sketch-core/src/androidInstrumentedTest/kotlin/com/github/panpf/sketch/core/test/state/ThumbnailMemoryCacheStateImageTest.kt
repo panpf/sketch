@@ -25,7 +25,7 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.images.AssetImages
 import com.github.panpf.sketch.state.ColorStateImage
-import com.github.panpf.sketch.state.IntColor
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.toRequestContext
