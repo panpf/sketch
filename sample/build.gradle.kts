@@ -79,7 +79,7 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(projects.sketchAnimatedKoralgif)
-            implementation(projects.sketchExtensions)
+            implementation(projects.sketchExtensionsView)
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)
             implementation(projects.sketchView)
