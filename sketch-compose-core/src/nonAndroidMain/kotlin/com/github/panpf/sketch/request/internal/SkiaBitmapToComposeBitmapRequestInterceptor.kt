@@ -29,18 +29,15 @@ class SkiaBitmapToComposeBitmapRequestInterceptor : RequestInterceptor {
         return result
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is SkiaBitmapToComposeBitmapRequestInterceptor
+    }
+
+    override fun hashCode(): Int {
+        return this@SkiaBitmapToComposeBitmapRequestInterceptor::class.hashCode()
+    }
+
     override fun toString(): String =
         "SkiaBitmapToComposeBitmapRequestInterceptor(sortWeight=$sortWeight)"
-
-    @Suppress("RedundantOverride")
-    override fun equals(other: Any?): Boolean {
-        // If you add construction parameters to this class, you need to change it here
-        return super.equals(other)
-    }
-
-    @Suppress("RedundantOverride")
-    override fun hashCode(): Int {
-        // If you add construction parameters to this class, you need to change it here
-        return super.hashCode()
-    }
 }

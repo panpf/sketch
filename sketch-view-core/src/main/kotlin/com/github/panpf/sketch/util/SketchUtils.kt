@@ -17,10 +17,10 @@ package com.github.panpf.sketch.util
 
 import android.view.View
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.core.R
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
+import com.github.panpf.sketch.view.core.R
 
 class SketchUtils private constructor() {
 

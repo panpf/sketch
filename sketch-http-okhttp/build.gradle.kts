@@ -7,7 +7,7 @@ addAllMultiplatformTargets(listOf(MultiplatformTargets.Android, MultiplatformTar
 
 kotlin {
     sourceSets {
-        jvmCommonMain.dependencies {
+        commonMain.dependencies {
             api(projects.sketchHttpCore)
             api(libs.okhttp3)
         }

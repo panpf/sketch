@@ -66,18 +66,15 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is TransformationDecodeInterceptor
+    }
+
+    override fun hashCode(): Int {
+        return this@TransformationDecodeInterceptor::class.hashCode()
+    }
+
     override fun toString(): String =
         "TransformationDecodeInterceptor(sortWeight=$sortWeight)"
-
-    @Suppress("RedundantOverride")
-    override fun equals(other: Any?): Boolean {
-        // If you add construction parameters to this class, you need to change it here
-        return super.equals(other)
-    }
-
-    @Suppress("RedundantOverride")
-    override fun hashCode(): Int {
-        // If you add construction parameters to this class, you need to change it here
-        return super.hashCode()
-    }
 }

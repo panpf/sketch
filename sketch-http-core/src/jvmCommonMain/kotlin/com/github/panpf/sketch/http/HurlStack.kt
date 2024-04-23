@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.http.HttpStack.Response
+import com.github.panpf.sketch.http.internal.TlsCompatSocketFactory
 import com.github.panpf.sketch.request.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

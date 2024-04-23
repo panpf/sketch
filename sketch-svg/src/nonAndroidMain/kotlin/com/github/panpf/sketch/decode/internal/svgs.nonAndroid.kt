@@ -1,11 +1,12 @@
-package com.github.panpf.sketch.decode
+package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
-import com.github.panpf.sketch.decode.internal.appliedResize
-import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.isNotEmpty
 import okio.buffer
 import okio.use
@@ -21,7 +22,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 
-actual suspend fun decodeSvg(
+internal actual suspend fun decodeSvg(
     requestContext: RequestContext,
     dataSource: DataSource,
     useViewBoundsAsIntrinsicSize: Boolean,

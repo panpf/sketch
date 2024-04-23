@@ -92,18 +92,13 @@ class AppIconUriFetcher(
             }
         }
 
-        override fun toString(): String = "AppIconUriFetcher"
-
-        @Suppress("RedundantOverride")
         override fun equals(other: Any?): Boolean {
-            // If you add construction parameters to this class, you need to change it here
-            return super.equals(other)
+            if (this === other) return true
+            return other is Factory
         }
 
-        @Suppress("RedundantOverride")
         override fun hashCode(): Int {
-            // If you add construction parameters to this class, you need to change it here
-            return super.hashCode()
+            return this@Factory::class.hashCode()
         }
     }
 

@@ -33,7 +33,7 @@ package com.github.panpf.sketch.request.internal
 import android.view.View
 import androidx.annotation.MainThread
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.core.R
+import com.github.panpf.sketch.view.core.R
 
 internal val View.requestManager: ViewTargetRequestManager
     get() {

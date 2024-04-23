@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
+import com.github.panpf.sketch.http.internal.TlsCompatSocketFactory
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion

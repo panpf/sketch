@@ -22,7 +22,12 @@ import okio.buffer
 import okio.use
 
 fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
-    DefaultFetchResult(dataSource, mimeType)
+    FetchResultImpl(dataSource, mimeType)
+
+fun FetchResult.copy(
+    dataSource: DataSource = this.dataSource,
+    mimeType: String? = this.mimeType
+): FetchResult = FetchResultImpl(dataSource, mimeType)
 
 /**
  * The result of [Fetcher.fetch]
@@ -42,7 +47,7 @@ interface FetchResult {
     val headerBytes: Bytes
 }
 
-open class DefaultFetchResult constructor(
+open class FetchResultImpl constructor(
     override val dataSource: DataSource, override val mimeType: String?
 ) : FetchResult {
 

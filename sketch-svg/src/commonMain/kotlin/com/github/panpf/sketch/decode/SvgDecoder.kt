@@ -16,13 +16,14 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
+import com.github.panpf.sketch.decode.internal.decodeSvg
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds SVG support
@@ -31,18 +32,10 @@ fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
     addDecoder(Factory())
 }
 
-expect suspend fun decodeSvg(
-    requestContext: RequestContext,
-    dataSource: DataSource,
-    useViewBoundsAsIntrinsicSize: Boolean,
-    backgroundColor: Int?,
-    css: String?,
-): DecodeResult
-
 /**
  * Decode svg file and convert to Bitmap
  */
-class SvgDecoder constructor(
+class SvgDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
@@ -90,9 +83,6 @@ class SvgDecoder constructor(
             }
         }
 
-        override fun toString(): String =
-            "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
-
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Factory) return false
@@ -103,5 +93,8 @@ class SvgDecoder constructor(
         override fun hashCode(): Int {
             return useViewBoundsAsIntrinsicSize.hashCode()
         }
+
+        override fun toString(): String =
+            "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
     }
 }
