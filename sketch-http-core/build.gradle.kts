@@ -12,6 +12,10 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             api(libs.okio)
         }
+
+        commonTest.dependencies {
+            implementation(projects.internal.testUtils)
+        }
     }
 }
 

@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
@@ -42,34 +42,34 @@ class AnimatedExtensionsTest {
     fun testRepeatCount() {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(repeatCount)
         }
         assertThrow(IllegalArgumentException::class) {
-            ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri) {
                 this.repeatCount(-2)
             }
         }
         assertThrow(IllegalArgumentException::class) {
-            ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri) {
                 repeatCount(-2)
             }
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             this.repeatCount(5)
         }.apply {
             Assert.assertEquals(5, repeatCount)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(repeatCount)
         }
         assertThrow(IllegalArgumentException::class) {
-            ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri) {
                 this.repeatCount(-2)
             }
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             repeatCount(5)
         }.apply {
             Assert.assertEquals(5, repeatCount)
@@ -89,15 +89,15 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(5, repeatCount)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
-        val key2 = ImageRequest(context, AssetImages.animGif.uri) {
+        val key1 = ImageRequest(context, MyImages.animGif.uri).key
+        val key2 = ImageRequest(context, MyImages.animGif.uri) {
             repeatCount(5)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, MyImages.animGif.uri) {
             repeatCount(5)
         }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
@@ -108,19 +108,19 @@ class AnimatedExtensionsTest {
         val (context, sketch) = getTestContextAndSketch()
         val myAnimationStartCallback = {}
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(animationStartCallback)
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             this.onAnimationStart(myAnimationStartCallback)
         }.apply {
             Assert.assertEquals(myAnimationStartCallback, animationStartCallback)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(animationStartCallback)
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             onAnimationStart(myAnimationStartCallback)
         }.apply {
             Assert.assertEquals(myAnimationStartCallback, animationStartCallback)
@@ -135,15 +135,15 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimationStartCallback, animationStartCallback)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
-        val key2 = ImageRequest(context, AssetImages.animGif.uri) {
+        val key1 = ImageRequest(context, MyImages.animGif.uri).key
+        val key2 = ImageRequest(context, MyImages.animGif.uri) {
             onAnimationStart(myAnimationStartCallback)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, MyImages.animGif.uri) {
             onAnimationStart(myAnimationStartCallback)
         }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
@@ -154,19 +154,19 @@ class AnimatedExtensionsTest {
         val (context, sketch) = getTestContextAndSketch()
         val myAnimationEndCallback = {}
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(animationEndCallback)
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             this.onAnimationEnd(myAnimationEndCallback)
         }.apply {
             Assert.assertEquals(myAnimationEndCallback, animationEndCallback)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(animationEndCallback)
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             onAnimationEnd(myAnimationEndCallback)
         }.apply {
             Assert.assertEquals(myAnimationEndCallback, animationEndCallback)
@@ -181,15 +181,15 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimationEndCallback, animationEndCallback)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
-        val key2 = ImageRequest(context, AssetImages.animGif.uri) {
+        val key1 = ImageRequest(context, MyImages.animGif.uri).key
+        val key2 = ImageRequest(context, MyImages.animGif.uri) {
             onAnimationEnd(myAnimationEndCallback)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, MyImages.animGif.uri) {
             onAnimationEnd(myAnimationEndCallback)
         }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)
@@ -200,19 +200,19 @@ class AnimatedExtensionsTest {
         val (context, sketch) = getTestContextAndSketch()
         val myAnimatedTransformation = AnimatedTransformation { PixelOpacity.TRANSLUCENT }
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(animatedTransformation)
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             this.animatedTransformation(myAnimatedTransformation)
         }.apply {
             Assert.assertEquals(myAnimatedTransformation, animatedTransformation)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).apply {
+        ImageRequest(context, MyImages.animGif.uri).apply {
             Assert.assertNull(animatedTransformation)
         }
-        ImageRequest(context, AssetImages.animGif.uri) {
+        ImageRequest(context, MyImages.animGif.uri) {
             animatedTransformation(myAnimatedTransformation)
         }.apply {
             Assert.assertEquals(myAnimatedTransformation, animatedTransformation)
@@ -227,15 +227,15 @@ class AnimatedExtensionsTest {
             Assert.assertEquals(myAnimatedTransformation, animatedTransformation)
         }
 
-        val key1 = ImageRequest(context, AssetImages.animGif.uri).key
-        val key2 = ImageRequest(context, AssetImages.animGif.uri) {
+        val key1 = ImageRequest(context, MyImages.animGif.uri).key
+        val key2 = ImageRequest(context, MyImages.animGif.uri) {
             animatedTransformation(myAnimatedTransformation)
         }.key
         Assert.assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, AssetImages.animGif.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, AssetImages.animGif.uri) {
+            ImageRequest(context, MyImages.animGif.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, MyImages.animGif.uri) {
             animatedTransformation(myAnimatedTransformation)
         }.toRequestContext(sketch).cacheKey
         Assert.assertEquals(cacheKey1, cacheKey2)

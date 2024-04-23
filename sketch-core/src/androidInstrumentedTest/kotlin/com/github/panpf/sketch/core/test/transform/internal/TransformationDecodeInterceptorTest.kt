@@ -27,7 +27,7 @@ import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -53,7 +53,7 @@ class TransformationDecodeInterceptorTest {
             listOf(EngineDecodeInterceptor())
 
         runBlocking {
-            val request = ImageRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
             }
@@ -76,7 +76,7 @@ class TransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = ImageRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
@@ -100,7 +100,7 @@ class TransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = ImageRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -133,7 +133,7 @@ class TransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = ImageRequest(context, AssetImages.jpeg.uri) {
+            val request = ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(3000, 3000)
                 resizePrecision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -167,7 +167,7 @@ class TransformationDecodeInterceptorTest {
 
         assertThrow(IllegalArgumentException::class) {
             runBlocking {
-                val request = ImageRequest(context, AssetImages.jpeg.uri) {
+                val request = ImageRequest(context, MyImages.jpeg.uri) {
                     transformations(object : Transformation {
                         override val key: String
                             get() = "TestTransformation"

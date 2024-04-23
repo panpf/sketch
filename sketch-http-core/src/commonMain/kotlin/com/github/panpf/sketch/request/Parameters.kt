@@ -36,6 +36,7 @@ import kotlin.jvm.JvmField
 /**
  * A map of generic values that can be used to pass custom data to Fetcher and Decoder.
  */
+// TODO rename Extras
 class Parameters private constructor(
     private val entries: Map<String, Entry>
 ) : Iterable<Pair<String, Entry>> {

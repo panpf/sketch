@@ -21,7 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
@@ -132,7 +132,7 @@ class ErrorStateImageTest {
     @Test
     fun testUriEmptyCondition() {
         val context = getTestContext()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val request1 = ImageRequest(context, "")
         val request2 = ImageRequest(context, " ")
 
@@ -149,7 +149,7 @@ class ErrorStateImageTest {
     @Test
     fun testDefaultCondition() {
         val context = getTestContext()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
 
         ErrorStateImage.DefaultCondition.apply {
             Assert.assertTrue(accept(request, null))

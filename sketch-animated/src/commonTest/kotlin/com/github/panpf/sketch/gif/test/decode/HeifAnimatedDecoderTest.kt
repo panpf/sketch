@@ -33,7 +33,7 @@ import com.github.panpf.sketch.getDrawableOrThrow
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -102,10 +102,10 @@ class HeifAnimatedDecoderTest {
         Assert.assertEquals("HeifAnimatedDecoder", factory.toString())
 
         // normal
-        ImageRequest(context, AssetImages.animHeif.uri).let {
+        ImageRequest(context, MyImages.animHeif.uri).let {
             val fetchResult =
                 FetchResult(
-                    AssetDataSource(sketch, it, AssetImages.animHeif.fileName),
+                    AssetDataSource(sketch, it, MyImages.animHeif.fileName),
                     "image/heif"
                 )
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
@@ -113,46 +113,46 @@ class HeifAnimatedDecoderTest {
             Assert.assertNotNull(this)
         }
 
-        ImageRequest(context, AssetImages.animHeif.uri).let {
+        ImageRequest(context, MyImages.animHeif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.animHeif.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.animHeif.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // disallowAnimatedImage true
-        ImageRequest(context, AssetImages.animHeif.uri) {
+        ImageRequest(context, MyImages.animHeif.uri) {
             disallowAnimatedImage()
         }.let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.animHeif.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.animHeif.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // data error
-        ImageRequest(context, AssetImages.png.uri).let {
+        ImageRequest(context, MyImages.png.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.png.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, MyImages.png.fileName), null)
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
-        ImageRequest(context, AssetImages.animGif.uri).let {
+        ImageRequest(context, MyImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, AssetImages.animGif.fileName), "image/heif")
+                FetchResult(AssetDataSource(sketch, it, MyImages.animGif.fileName), "image/heif")
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // mimeType error
-        ImageRequest(context, AssetImages.animHeif.uri).let {
+        ImageRequest(context, MyImages.animHeif.uri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, AssetImages.animHeif.fileName),
+                AssetDataSource(sketch, it, MyImages.animHeif.fileName),
                 "image/jpeg",
             )
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)
@@ -169,7 +169,7 @@ class HeifAnimatedDecoderTest {
         val sketch = context.sketch
         val factory = HeifAnimatedDecoder.Factory()
 
-        val request = ImageRequest(context, AssetImages.animHeif.uri) {
+        val request = ImageRequest(context, MyImages.animHeif.uri) {
             colorSpace(ColorSpace.get(ColorSpace.Named.SRGB))
             onAnimationEnd { }
             onAnimationStart { }
@@ -187,7 +187,7 @@ class HeifAnimatedDecoderTest {
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
             }
 
-        val request1 = ImageRequest(context, AssetImages.animHeif.uri) {
+        val request1 = ImageRequest(context, MyImages.animHeif.uri) {
             repeatCount(3)
             size(100, 100)
         }

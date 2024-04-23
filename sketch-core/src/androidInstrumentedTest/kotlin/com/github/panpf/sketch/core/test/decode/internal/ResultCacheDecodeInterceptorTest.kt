@@ -30,7 +30,7 @@ import com.github.panpf.sketch.cache.internal.resultCacheDataKey
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
@@ -65,7 +65,7 @@ class ResultCacheDecodeInterceptorTest {
             }.getOrThrow()
         }
 
-        val request = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request = ImageRequest(context, MyImages.jpeg.uri) {
             resizeSize(500, 500)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
@@ -175,7 +175,7 @@ class ResultCacheDecodeInterceptorTest {
         }
         Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
 
-        val request1 = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request1 = ImageRequest(context, MyImages.jpeg.uri) {
             resizeSize(2000, 2000)
             resizePrecision(LESS_PIXELS)
             resultCachePolicy(ENABLED)

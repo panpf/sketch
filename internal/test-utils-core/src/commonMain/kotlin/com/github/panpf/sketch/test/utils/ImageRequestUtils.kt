@@ -8,23 +8,19 @@ import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.Job
 
-suspend fun ImageRequest.toRequestContext(sketch: Sketch): RequestContext {
-    val targetSize = sizeResolver.size().coerceAtLeast(Size.Empty) * (sizeMultiplier ?: 1f)
+suspend fun ImageRequest.toRequestContext(sketch: Sketch, size: Size? = null): RequestContext {
+    val targetSize =
+        size ?: (sizeResolver.size().coerceAtLeast(Size.Empty) * (sizeMultiplier ?: 1f))
     val requestContext = RequestContext(sketch, this)
     requestContext.size = targetSize
     return requestContext
-}
-
-fun ImageRequest.toRequestContextWithSize(sketch: Sketch, size: Size): RequestContext {
-    return RequestContext(sketch, this).apply {
-        this@apply.size = size
-    }
 }
 
 inline fun ImageRequest.Builder.target(

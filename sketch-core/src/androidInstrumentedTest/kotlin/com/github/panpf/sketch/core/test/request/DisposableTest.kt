@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.async
@@ -67,7 +67,7 @@ class DisposableTest {
                 delay(100)
                 delay(100)
                 delay(100)
-                val requestContext = ImageRequest(view, AssetImages.jpeg.uri).toRequestContext(sketch)
+                val requestContext = ImageRequest(view, MyImages.jpeg.uri).toRequestContext(sketch)
                 ImageResult.Success(
                     request = requestContext.request,
                     cacheKey = requestContext.cacheKey,

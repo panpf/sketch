@@ -37,7 +37,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
@@ -57,7 +57,7 @@ class ResizeDrawableTest {
         val (context, sketch) = getTestContextAndSketch()
         val resources = context.resources
 
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
         val request = ImageRequest(context, imageUri)
@@ -129,7 +129,7 @@ class ResizeDrawableTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val resources = context.resources
 
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
             .apply {
                 Assert.assertEquals(Size(100, 200), intrinsicSize)

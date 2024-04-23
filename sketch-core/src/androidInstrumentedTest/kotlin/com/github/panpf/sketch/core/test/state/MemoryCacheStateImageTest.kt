@@ -27,7 +27,7 @@ import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.MemoryCacheStateImage
@@ -45,7 +45,7 @@ class MemoryCacheStateImageTest {
     @Test
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val memoryCache = sketch.memoryCache
         val memoryCacheKey = request.toRequestContext(sketch).cacheKey
 
@@ -156,7 +156,7 @@ class MemoryCacheStateImageTest {
     @Test
     fun testToString() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val memoryCacheKey = request.toRequestContext(sketch).cacheKey
 
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {

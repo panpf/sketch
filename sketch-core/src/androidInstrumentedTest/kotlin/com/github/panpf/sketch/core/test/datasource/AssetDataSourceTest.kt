@@ -21,7 +21,7 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -35,15 +35,15 @@ class AssetDataSourceTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
 
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         AssetDataSource(
             sketch = sketch,
             request = request,
-            assetFileName = AssetImages.jpeg.fileName
+            assetFileName = MyImages.jpeg.fileName
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals(AssetImages.jpeg.fileName, this.assetFileName)
+            Assert.assertEquals(MyImages.jpeg.fileName, this.assetFileName)
             Assert.assertEquals(DataFrom.LOCAL, this.dataFrom)
         }
     }
@@ -54,8 +54,8 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).apply {
             openSource().close()
         }
@@ -77,8 +77,8 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).apply {
             Assert.assertEquals(
                 "AssetDataSource('sample.jpeg')",

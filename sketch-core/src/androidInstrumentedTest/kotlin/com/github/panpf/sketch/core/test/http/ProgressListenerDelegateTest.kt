@@ -20,7 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.junit.Assert
@@ -33,7 +33,7 @@ class ProgressListenerDelegateTest {
     @Test
     fun test() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val scope = CoroutineScope(SupervisorJob())
         val completedList = mutableListOf<Long>()
         val listener = ProgressListener { _, progress ->

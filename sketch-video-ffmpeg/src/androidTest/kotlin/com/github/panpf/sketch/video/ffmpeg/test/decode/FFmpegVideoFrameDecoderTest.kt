@@ -22,22 +22,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.source.AssetDataSource
-import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.video.ffmpeg.test.utils.corners
 import com.github.panpf.tools4a.device.Devicex
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -99,40 +98,50 @@ class FFmpegVideoFrameDecoderTest {
 
         Assert.assertEquals("FFmpegVideoFrameDecoder", factory.toString())
 
+        val mp4Request = ImageRequest(context, MyImages.mp4.uri)
+        val mp4RequestContext = runBlocking {
+            mp4Request.toRequestContext(sketch)
+        }
+        val mp4FetchResult = runBlocking {
+            sketch.components.newFetcherOrThrow(mp4Request).fetch().getOrThrow()
+        }.apply {
+            Assert.assertEquals(
+                /* expected = */ "FetchResult(source=AssetDataSource('sample.mp4'),mimeType='video/mp4')",
+                /* actual = */ this@apply.toString()
+            )
+        }
+
+        val pngRequest = ImageRequest(context, MyImages.png.uri)
+        val pngRequestContext = runBlocking {
+            pngRequest.toRequestContext(sketch)
+        }
+        val pngFetchResult = runBlocking {
+            sketch.components.newFetcherOrThrow(pngRequest).fetch().getOrThrow()
+        }.apply {
+            Assert.assertEquals(
+                /* expected = */ "FetchResult(source=AssetDataSource('sample.png'),mimeType='image/png')",
+                /* actual = */ this@apply.toString()
+            )
+        }
+
         // normal
-        ImageRequest(context, MyImages.mp4.uri).let {
-            val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.mp4.fileName), null)
-            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            Assert.assertNull(this)
-        }
-
-        ImageRequest(context, MyImages.mp4.uri).let {
-            val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.mp4.fileName), "video/mp4")
-            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            Assert.assertNotNull(this)
-        }
-
-        // data error
-        ImageRequest(context, MyImages.png.uri).let {
-            val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.png.fileName), "video/mp4")
-            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            Assert.assertNotNull(this)
-        }
+        Assert.assertNotNull(factory.create(mp4RequestContext, mp4FetchResult))
 
         // mimeType error
-        ImageRequest(context, MyImages.mp4.uri).let {
-            val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.mp4.fileName), "image/png")
-            factory.create(sketch, it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            Assert.assertNull(this)
-        }
+        Assert.assertNull(
+            factory.create(mp4RequestContext, mp4FetchResult.copy(mimeType = null))
+        )
+        Assert.assertNull(
+            factory.create(pngRequestContext, pngFetchResult)
+        )
+
+        // data error
+        Assert.assertNotNull(
+            factory.create(
+                pngRequestContext,
+                pngFetchResult.copy(mimeType = "video/mp4")
+            )
+        )
     }
 
     @Test
@@ -164,18 +173,19 @@ class FFmpegVideoFrameDecoderTest {
         val factory = FFmpegVideoFrameDecoder.Factory()
 
         ImageRequest(context, MyImages.mp4.uri).run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+                val fetcher = sketch.components.newFetcherOrThrow(this@run)
+                val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                    .getOrThrow()
+            }
         }.apply {
             Assert.assertEquals(
                 "Bitmap(500x250,ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                "ImageInfo(500x250,'video/mp4')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -185,18 +195,18 @@ class FFmpegVideoFrameDecoderTest {
         ImageRequest(context, MyImages.mp4.uri) {
             resize(300, 300, LESS_PIXELS)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+                val fetchResult = sketch.components.newFetcherOrThrow(this@run).fetch().getOrThrow()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                    .getOrThrow()
+            }
         }.apply {
             Assert.assertEquals(
                 "Bitmap(250x125,ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             Assert.assertEquals(
-                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                "ImageInfo(500x250,'video/mp4')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -208,7 +218,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
                 runBlocking {
-                    factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!
+                    factory.create(this@run.toRequestContext(sketch), fetchResult)!!
                         .decode()
                 }.getOrThrow()
             }
@@ -234,7 +244,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         val bitmap11 = ImageRequest(context, MyImages.mp4.uri) {
@@ -245,7 +255,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, MyImages.mp4.uri) {
@@ -257,7 +267,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         Assert.assertEquals(bitmap1.corners(), bitmap11.corners())
@@ -283,7 +293,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         val bitmap11 = ImageRequest(context, MyImages.mp4.uri) {
@@ -294,7 +304,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, MyImages.mp4.uri) {
@@ -306,7 +316,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         Assert.assertEquals(bitmap1.corners(), bitmap11.corners())
@@ -332,7 +342,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrNull()
         }?.image?.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, MyImages.mp4.uri) {
@@ -344,7 +354,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
-                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
         Assert.assertNotEquals(bitmap1?.corners(), bitmap2.corners())

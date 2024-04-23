@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.test.utils.toRequestContextSync
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -120,10 +120,11 @@ class VideoFrameExtensionsTest {
         }.key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, MyImages.mp4.uri).toRequestContext(sketch).cacheKey
+        val cacheKey1 = ImageRequest(context, MyImages.mp4.uri)
+            .toRequestContextSync(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, MyImages.mp4.uri) {
             videoFrameMillis(500)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContextSync(sketch).cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
@@ -213,10 +214,10 @@ class VideoFrameExtensionsTest {
         }.key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, MyImages.mp4.uri).toRequestContext(sketch).cacheKey
+        val cacheKey1 = ImageRequest(context, MyImages.mp4.uri).toRequestContextSync(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, MyImages.mp4.uri) {
             videoFramePercent(0.45f)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContextSync(sketch).cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 
@@ -346,10 +347,10 @@ class VideoFrameExtensionsTest {
         }.key
         Assert.assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, MyImages.mp4.uri).toRequestContext(sketch).cacheKey
+        val cacheKey1 = ImageRequest(context, MyImages.mp4.uri).toRequestContextSync(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, MyImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContextSync(sketch).cacheKey
         Assert.assertNotEquals(cacheKey1, cacheKey2)
     }
 }

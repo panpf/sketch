@@ -23,7 +23,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
@@ -41,7 +41,7 @@ class BitmapRegionDecoderTest {
     @Test
     fun testMutable() {
         val context = getTestContext()
-        val imageName = AssetImages.jpeg.fileName
+        val imageName = MyImages.jpeg.fileName
         val imageSize = Size(1291, 1936)
 
         val options = BitmapFactory.Options()
@@ -62,7 +62,7 @@ class BitmapRegionDecoderTest {
     @Test
     fun testInPreferredConfig() {
         val context = getTestContext()
-        val imageName = AssetImages.jpeg.fileName
+        val imageName = MyImages.jpeg.fileName
         val imageSize = Size(1291, 1936)
 
         val options = BitmapFactory.Options()
@@ -91,7 +91,7 @@ class BitmapRegionDecoderTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                assetName = AssetImages.jpeg.fileName,
+                assetName = MyImages.jpeg.fileName,
                 size = Size(1291, 1936),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -99,7 +99,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 16,
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.png.fileName,
+                assetName = MyImages.png.fileName,
                 size = Size(750, 719),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -107,7 +107,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 16,
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.bmp.fileName,
+                assetName = MyImages.bmp.fileName,
                 size = Size(700, 1012),
                 minAPI = -1,
                 inSampleSizeMinAPI = -1,
@@ -115,7 +115,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1,
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.webp.fileName,
+                assetName = MyImages.webp.fileName,
                 size = Size(1080, 1344),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -123,7 +123,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 16,
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.heic.fileName,
+                assetName = MyImages.heic.fileName,
                 size = Size(750, 932),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

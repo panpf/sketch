@@ -300,7 +300,7 @@ class IconAnimatableStateImageTest {
     @Test
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val iconDrawable =
             context.getDrawableCompat(com.github.panpf.sketch.test.utils.R.drawable.ic_animated)
         val greenBgDrawable = ColorDrawable(Color.GREEN)

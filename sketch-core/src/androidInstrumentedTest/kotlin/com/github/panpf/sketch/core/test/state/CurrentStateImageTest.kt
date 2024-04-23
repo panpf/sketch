@@ -26,7 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.utils.TestTarget
@@ -42,7 +42,7 @@ class CurrentStateImageTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageView = ImageView(context)
-        val request = ImageRequest(imageView, AssetImages.jpeg.uri)
+        val request = ImageRequest(imageView, MyImages.jpeg.uri)
 
         CurrentStateImage().apply {
             Assert.assertNull(getImage(sketch, request, null)
@@ -70,7 +70,7 @@ class CurrentStateImageTest {
                 ?.asOrThrow<DrawableImage>()?.drawable is BitmapDrawable)
         }
 
-        val request1 = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request1 = ImageRequest(context, MyImages.jpeg.uri) {
             target(TestTarget())
         }
         CurrentStateImage(ColorDrawable(Color.RED)).apply {
@@ -83,7 +83,7 @@ class CurrentStateImageTest {
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndNewSketch()
         val imageView = ImageView(context)
-        val request = ImageRequest(imageView, AssetImages.jpeg.uri)
+        val request = ImageRequest(imageView, MyImages.jpeg.uri)
         val drawable1 = ColorDrawable(Color.BLUE)
         val drawable2 = ColorDrawable(Color.GREEN)
 

@@ -24,7 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
@@ -39,7 +39,7 @@ class BitmapFactoryTest {
     @Test
     fun testMutable() {
         val context = getTestContext()
-        val imageName = AssetImages.jpeg.fileName
+        val imageName = MyImages.jpeg.fileName
 
         val options = BitmapFactory.Options()
         Assert.assertFalse(options.inMutable)
@@ -59,7 +59,7 @@ class BitmapFactoryTest {
     @Test
     fun testInPreferredConfig() {
         val context = getTestContext()
-        val imageName = AssetImages.jpeg.fileName
+        val imageName = MyImages.jpeg.fileName
 
         val options = BitmapFactory.Options()
         Assert.assertEquals(Bitmap.Config.ARGB_8888, options.inPreferredConfig)
@@ -84,14 +84,14 @@ class BitmapFactoryTest {
     fun testHasAlpha() {
         val context = getTestContext()
 
-        context.assets.open(AssetImages.jpeg.fileName).use {
+        context.assets.open(MyImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
             Assert.assertFalse(hasAlpha())
         }
 
-        context.assets.open(AssetImages.png.fileName).use {
+        context.assets.open(MyImages.png.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
@@ -103,7 +103,7 @@ class BitmapFactoryTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                assetName = AssetImages.jpeg.fileName,
+                assetName = MyImages.jpeg.fileName,
                 size = Size(1291, 1936),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -111,7 +111,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.png.fileName,
+                assetName = MyImages.png.fileName,
                 size = Size(750, 719),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -119,7 +119,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.bmp.fileName,
+                assetName = MyImages.bmp.fileName,
                 size = Size(700, 1012),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -127,7 +127,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19,
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.webp.fileName,
+                assetName = MyImages.webp.fileName,
                 size = Size(1080, 1344),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -135,7 +135,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19,
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.heic.fileName,
+                assetName = MyImages.heic.fileName,
                 size = Size(750, 932),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

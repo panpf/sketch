@@ -22,7 +22,7 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -39,8 +39,8 @@ class ContentDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).getFile().let { Uri.fromFile(it) }
         val request = ImageRequest(context, contentUri.toString())
         ContentDataSource(
@@ -60,8 +60,8 @@ class ContentDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).getFile().let { Uri.fromFile(it) }
         ContentDataSource(
             sketch = sketch,
@@ -90,8 +90,8 @@ class ContentDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).getFile().let { Uri.fromFile(it) }
         ContentDataSource(
             sketch = sketch,
@@ -127,8 +127,8 @@ class ContentDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).getFile().let { Uri.fromFile(it) }
         ContentDataSource(
             sketch = sketch,

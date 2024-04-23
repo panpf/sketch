@@ -20,7 +20,7 @@ import android.graphics.Color
 import androidx.core.graphics.ColorUtils
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -78,10 +78,10 @@ class BlurTransformationTest {
     @Test
     fun testTransform() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
 
         // isMutable false
-        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
+        val inBitmap = context.assets.open(MyImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }.apply {
             Assert.assertNotEquals(
@@ -114,7 +114,7 @@ class BlurTransformationTest {
         }
 
         // isMutable true
-        val mutableInBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
+        val mutableInBitmap = context.assets.open(MyImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply {
                 inMutable = true
             })
@@ -128,7 +128,7 @@ class BlurTransformationTest {
         }
 
         // hasAlphaBitmapBgColor
-        val hasAlphaBitmap1 = context.assets.open(AssetImages.png.fileName).use {
+        val hasAlphaBitmap1 = context.assets.open(MyImages.png.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertTrue(this.hasAlpha())
@@ -139,7 +139,7 @@ class BlurTransformationTest {
             Assert.assertTrue(this.bitmap.hasAlpha())
         }.bitmap
 
-        val hasAlphaBitmap2 = context.assets.open(AssetImages.png.fileName).use {
+        val hasAlphaBitmap2 = context.assets.open(MyImages.png.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertTrue(this.hasAlpha())

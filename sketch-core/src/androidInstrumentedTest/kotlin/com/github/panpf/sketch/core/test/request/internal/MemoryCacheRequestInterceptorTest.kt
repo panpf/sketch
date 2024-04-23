@@ -38,7 +38,7 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -77,17 +77,17 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         /* ImageRequest */
-        executeRequest(ImageRequest(context, AssetImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>()
         Assert.assertEquals(0, memoryCache.size)
-        executeRequest(ImageRequest(context, AssetImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>()
         Assert.assertEquals(0, memoryCache.size)
 
         /* ImageRequest - ENABLED */
-        val request = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request = ImageRequest(context, MyImages.jpeg.uri) {
             target(TestCountTarget())
         }
         val countBitmapDrawable: SketchCountBitmapDrawable

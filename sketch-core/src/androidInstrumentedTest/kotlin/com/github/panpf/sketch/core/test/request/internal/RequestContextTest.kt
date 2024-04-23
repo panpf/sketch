@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.CountBitmap
 import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -42,7 +42,7 @@ class RequestContextTest {
     fun testRequest() {
         val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            val request0 = ImageRequest(context, AssetImages.jpeg.uri)
+            val request0 = ImageRequest(context, MyImages.jpeg.uri)
             request0.toRequestContext(sketch).apply {
                 Assert.assertSame(request0, request)
                 Assert.assertEquals(listOf(request0), requestList)
@@ -75,7 +75,7 @@ class RequestContextTest {
     fun testCacheKey() {
         val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            ImageRequest(context, AssetImages.jpeg.uri).toRequestContext(sketch).apply {
+            ImageRequest(context, MyImages.jpeg.uri).toRequestContext(sketch).apply {
                 val cacheKey0 = cacheKey
 
                 setNewRequest(request.newRequest())
@@ -133,7 +133,7 @@ class RequestContextTest {
                 disallowReuseBitmap = false,
             ),
         )
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
 
         request.toRequestContext(sketch).apply {
             assertThrow(IllegalStateException::class) {

@@ -21,7 +21,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.fastGaussianBlur
@@ -132,7 +132,7 @@ class BitmapUtilsTest {
     @Test
     fun testFastGaussianBlur() {
         val context = getTestContext()
-        val bitmap = context.assets.open(AssetImages.jpeg.fileName).use {
+        val bitmap = context.assets.open(MyImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }
         bitmap.fastGaussianBlur(15).apply {

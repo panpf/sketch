@@ -72,7 +72,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
@@ -343,7 +343,7 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { sketch.execute(it) } }
@@ -351,7 +351,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(ARGB_8888)
@@ -360,7 +360,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             @Suppress("DEPRECATION")
@@ -375,7 +375,7 @@ class ImageRequestExecuteTest {
                 }
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(ALPHA_8)
@@ -384,7 +384,7 @@ class ImageRequestExecuteTest {
                 Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(RGB_565)
@@ -394,7 +394,7 @@ class ImageRequestExecuteTest {
             }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 bitmapConfig(RGBA_F16)
@@ -405,7 +405,7 @@ class ImageRequestExecuteTest {
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 bitmapConfig(HARDWARE)
@@ -415,7 +415,7 @@ class ImageRequestExecuteTest {
                 }
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.LowQuality)
@@ -423,7 +423,7 @@ class ImageRequestExecuteTest {
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(RGB_565, image.getBitmapOrThrow().config)
             }
-        ImageRequest(context, AssetImages.png.uri) {
+        ImageRequest(context, MyImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.LowQuality)
@@ -437,7 +437,7 @@ class ImageRequestExecuteTest {
                 }
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.HighQuality)
@@ -449,7 +449,7 @@ class ImageRequestExecuteTest {
                     Assert.assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
                 }
             }
-        ImageRequest(context, AssetImages.png.uri) {
+        ImageRequest(context, MyImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.HighQuality)
@@ -470,7 +470,7 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { sketch.execute(it) } }
@@ -481,7 +481,7 @@ class ImageRequestExecuteTest {
                 )
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.get(ColorSpace.Named.ADOBE_RGB))
@@ -493,7 +493,7 @@ class ImageRequestExecuteTest {
                 )
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.get(ColorSpace.Named.DISPLAY_P3))
@@ -511,14 +511,14 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { sketch.execute(it) } }.apply {
             Assert.assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             preferQualityOverSpeed(true)
@@ -526,7 +526,7 @@ class ImageRequestExecuteTest {
             Assert.assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             preferQualityOverSpeed(false)
@@ -538,7 +538,7 @@ class ImageRequestExecuteTest {
     @Test
     fun testResize() {
         val (context, sketch) = getTestContextAndNewSketch()
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val imageSize = Size(1291, 1936)
         val displaySize = context.resources.displayMetrics.let {
             Size(it.widthPixels, it.heightPixels)
@@ -1008,7 +1008,7 @@ class ImageRequestExecuteTest {
     fun testTransformations() {
         val context = getTestContext()
         val sketch = newSketch()
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
@@ -1102,7 +1102,7 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
         val bitmapPool = sketch.bitmapPool
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
@@ -1169,7 +1169,7 @@ class ImageRequestExecuteTest {
         val sketch = newSketch()
         ExifOrientationTestFileHelper(
             context,
-            AssetImages.clockHor.fileName
+            MyImages.clockHor.fileName
         ).files()
             .forEach {
                 Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
@@ -1211,7 +1211,7 @@ class ImageRequestExecuteTest {
                     }
             }
 
-        ImageRequest(context, AssetImages.jpeg.uri)
+        ImageRequest(context, MyImages.jpeg.uri)
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!
             .apply {
@@ -1225,7 +1225,7 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
         val diskCache = sketch.resultCache
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             resizeSize(500, 500)
@@ -1332,7 +1332,7 @@ class ImageRequestExecuteTest {
     fun testPlaceholder() {
         val context = getTestContext()
         val sketch = newSketch()
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         var onStartDrawable: Image?
         val request = ImageRequest(context, imageUri) {
             resizeSize(500, 500)
@@ -1376,7 +1376,7 @@ class ImageRequestExecuteTest {
     fun testError() {
         val context = getTestContext()
         val sketch = newSketch()
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         var onErrorImage: Image?
         val request = ImageRequest(context, imageUri) {
             resizeSize(500, 500)
@@ -1431,7 +1431,7 @@ class ImageRequestExecuteTest {
     fun testTransition() {
         val context = getTestContext()
         val sketch = newSketch()
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val testTarget = TestTransitionViewTarget()
         val request = ImageRequest(context, imageUri) {
             resizeSize(500, 500)
@@ -1464,7 +1464,7 @@ class ImageRequestExecuteTest {
     fun testResizeApplyToDrawable() {
         val context = getTestContext()
         val sketch = newSketch()
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             resizeSize(500, 500)
         }
@@ -1501,7 +1501,7 @@ class ImageRequestExecuteTest {
         val context = getTestContext()
         val sketch = newSketch()
         val memoryCache = sketch.memoryCache
-        val imageUri = AssetImages.jpeg.uri
+        val imageUri = MyImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             resizeSize(500, 500)
@@ -1609,8 +1609,8 @@ class ImageRequestExecuteTest {
     fun testListener() {
         val context = getTestContext()
         val sketch = newSketch()
-        val imageUri = AssetImages.jpeg.uri
-        val errorImageUri = AssetImages.jpeg.uri + ".fake"
+        val imageUri = MyImages.jpeg.uri
+        val errorImageUri = MyImages.jpeg.uri + ".fake"
 
         ListenerSupervisor().let { listenerSupervisor ->
             Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
@@ -1641,7 +1641,7 @@ class ImageRequestExecuteTest {
         val listenerSupervisor = ListenerSupervisor {
             deferred?.cancel()
         }
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             listener(listenerSupervisor)
@@ -1693,11 +1693,11 @@ class ImageRequestExecuteTest {
     fun testComponents() {
         val context = getTestContext()
 
-        ImageRequest(context, AssetImages.jpeg.uri)
+        ImageRequest(context, MyImages.jpeg.uri)
             .let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
                 Assert.assertNull(request.parameters?.get("TestRequestInterceptor"))
             }
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             components {
                 addRequestInterceptor(TestRequestInterceptor())
             }
@@ -1705,13 +1705,13 @@ class ImageRequestExecuteTest {
             Assert.assertEquals("true", request.parameters?.get("TestRequestInterceptor"))
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
             Assert.assertFalse(transformedList?.contains("TestDecodeInterceptor") == true)
         }
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             components {
@@ -1721,13 +1721,13 @@ class ImageRequestExecuteTest {
             Assert.assertTrue(transformedList?.contains("TestDecodeInterceptor") == true)
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri.replace("asset", "test")) {
+        ImageRequest(context, MyImages.jpeg.uri.replace("asset", "test")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
         }.let { runBlocking { it.execute() } }.apply {
             Assert.assertTrue(this is ImageResult.Error)
         }
-        ImageRequest(context, AssetImages.jpeg.uri.replace("asset", "test")) {
+        ImageRequest(context, MyImages.jpeg.uri.replace("asset", "test")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
@@ -1737,13 +1737,13 @@ class ImageRequestExecuteTest {
             Assert.assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
         }.let { runBlocking { it.execute() } }.apply {
             Assert.assertTrue(this is ImageResult.Success)
         }
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
@@ -1766,7 +1766,7 @@ class ImageRequestExecuteTest {
         }
 
         TestTarget().let { testTarget ->
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 target(testTarget)
             }.let { request ->
                 runBlocking { sketch.execute(request) }
@@ -1777,7 +1777,7 @@ class ImageRequestExecuteTest {
         }
 
         TestTarget().let { testTarget ->
-            ImageRequest(context, AssetImages.jpeg.uri + ".fake") {
+            ImageRequest(context, MyImages.jpeg.uri + ".fake") {
                 placeholder(ColorDrawable(Color.BLUE))
                 error(android.R.drawable.btn_radio)
                 target(testTarget)
@@ -1796,7 +1796,7 @@ class ImageRequestExecuteTest {
             val listenerSupervisor = ListenerSupervisor {
                 deferred?.cancel()
             }
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 listener(listenerSupervisor)
@@ -1819,7 +1819,7 @@ class ImageRequestExecuteTest {
             val listenerSupervisor = ListenerSupervisor {
                 deferred?.cancel()
             }
-            ImageRequest(context, AssetImages.jpeg.uri + ".fake") {
+            ImageRequest(context, MyImages.jpeg.uri + ".fake") {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 listener(listenerSupervisor)
@@ -1851,7 +1851,7 @@ class ImageRequestExecuteTest {
             myLifecycle.currentState = CREATED
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri).let { request ->
+        ImageRequest(context, MyImages.jpeg.uri).let { request ->
             Assert.assertEquals(
                 DefaultLifecycleResolver(LifecycleResolver(GlobalTargetLifecycle)),
                 request.lifecycleResolver
@@ -1863,7 +1863,7 @@ class ImageRequestExecuteTest {
             Assert.assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, AssetImages.jpeg.uri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             lifecycle(myLifecycle)
         }.let { request ->
             Assert.assertEquals(LifecycleResolver(myLifecycle), request.lifecycleResolver)

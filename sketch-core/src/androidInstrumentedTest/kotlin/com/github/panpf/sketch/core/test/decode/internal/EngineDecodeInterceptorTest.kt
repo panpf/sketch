@@ -23,7 +23,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -37,7 +37,7 @@ class EngineDecodeInterceptorTest {
     fun testIntercept() {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(EngineDecodeInterceptor())
-        val request = ImageRequest(context, AssetImages.jpeg.uri) {
+        val request = ImageRequest(context, MyImages.jpeg.uri) {
             resizeSize(3000, 3000)
             resizePrecision(LESS_PIXELS)
         }

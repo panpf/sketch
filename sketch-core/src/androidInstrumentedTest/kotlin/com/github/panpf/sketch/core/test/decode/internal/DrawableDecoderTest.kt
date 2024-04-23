@@ -27,7 +27,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.ResDrawable
@@ -63,7 +63,7 @@ class DrawableDecoderTest {
         }
 
         // data error
-        ImageRequest(context, AssetImages.png.uri).let {
+        ImageRequest(context, MyImages.png.uri).let {
             val fetcher = sketch.components.newFetcherOrThrow(it)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(sketch, it.toRequestContext(sketch), fetchResult)

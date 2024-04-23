@@ -29,7 +29,7 @@ import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -51,7 +51,7 @@ class CrossfadeTransitionTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
@@ -89,7 +89,7 @@ class CrossfadeTransitionTest {
     @Test
     fun testTransition() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
 
         val imageView = ImageView(context)
@@ -189,7 +189,7 @@ class CrossfadeTransitionTest {
     @Test
     fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
         val factory = CrossfadeTransition.Factory()
 

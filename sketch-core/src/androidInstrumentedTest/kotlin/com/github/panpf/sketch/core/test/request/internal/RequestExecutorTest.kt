@@ -28,7 +28,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -46,7 +46,7 @@ class RequestExecutorTest {
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(
                 sketch,
-                ImageRequest(context, AssetImages.jpeg.uri),
+                ImageRequest(context, MyImages.jpeg.uri),
                 false
             ).apply {
                 Assert.assertTrue(this is ImageResult.Success)
@@ -74,7 +74,7 @@ class RequestExecutorTest {
     fun testGlobalImageOptions() {
         val (context, sketch) = getTestContextAndNewSketch {
         }
-        val request = ImageRequest(context, AssetImages.jpeg.uri).apply {
+        val request = ImageRequest(context, MyImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
             Assert.assertTrue(sizeResolver is DisplaySizeResolver)
@@ -94,7 +94,7 @@ class RequestExecutorTest {
                 resize(44, 67)
             })
         }
-        val request2 = ImageRequest(context2, AssetImages.jpeg.uri).apply {
+        val request2 = ImageRequest(context2, MyImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
             Assert.assertTrue(sizeResolver is DisplaySizeResolver)

@@ -20,7 +20,7 @@ import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -62,9 +62,9 @@ class CircleCropTransformationTest {
     @Test
     fun testTransform() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
 
-        val inBitmap = context.assets.open(AssetImages.jpeg.fileName).use {
+        val inBitmap = context.assets.open(MyImages.jpeg.fileName).use {
             BitmapFactory.decodeStream(it)
         }.apply {
             Assert.assertNotEquals(

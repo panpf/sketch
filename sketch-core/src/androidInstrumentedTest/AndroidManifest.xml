@@ -11,6 +11,6 @@
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.github.panpf.sketch.core.test.ImageViewExtensionsTest$TestActivity" />
+        <activity android:name="com.github.panpf.sketch.view.core.test.ImageViewExtensionsTest$TestActivity" />
     </application>
 </manifest>

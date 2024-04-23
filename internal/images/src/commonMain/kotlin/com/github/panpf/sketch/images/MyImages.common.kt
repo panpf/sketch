@@ -26,7 +26,7 @@ object MyImages {
     val heic: MyImage = MyResourceImage("sample.heic", "HEIC", Size(750, 931))
     val jpeg: MyImage = MyResourceImage("sample.jpeg", "JPEG", Size(1291, 1936))
     val png: MyImage = MyResourceImage("sample.png", "PNG", Size(750, 719))
-    val svg: MyImage = MyResourceImage("sample.svg", "SVG", Size(842, 595))
+    val svg: MyImage = MyResourceImage("sample.svg", "SVG", Size(256, 225))
     val webp: MyImage = MyResourceImage("sample.webp", "WEBP", Size(1080, 1344))
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic)
 

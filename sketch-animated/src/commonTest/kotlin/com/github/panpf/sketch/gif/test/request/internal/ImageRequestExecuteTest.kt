@@ -25,7 +25,7 @@ import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.newSketch
@@ -48,7 +48,7 @@ class ImageRequestExecuteTest {
             }
             httpStack(TestHttpStack(context))
         }
-        val imageUri = AssetImages.animGif.uri
+        val imageUri = MyImages.animGif.uri
         val request = ImageRequest(context, imageUri)
 
         request.let { runBlocking { sketch.execute(it) } }

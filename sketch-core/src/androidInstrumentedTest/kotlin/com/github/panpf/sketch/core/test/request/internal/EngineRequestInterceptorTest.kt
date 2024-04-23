@@ -22,7 +22,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -55,7 +55,7 @@ class EngineRequestInterceptorTest {
             }.getOrThrow()
         }
 
-        executeRequest(ImageRequest(context, AssetImages.jpeg.uri)).asOrThrow<ImageData>()
+        executeRequest(ImageRequest(context, MyImages.jpeg.uri)).asOrThrow<ImageData>()
 
         executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uriString))
             .asOrThrow<ImageData>()

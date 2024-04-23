@@ -21,7 +21,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.core.test.android.internal.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
 import com.github.panpf.sketch.test.utils.size
@@ -39,14 +39,14 @@ class ImageDecoderTest {
         if (Build.VERSION.SDK_INT < 28) return
         val context = getTestContext()
 
-        decodeImageUseImageDecoder(context, AssetImages.jpeg.fileName)
+        decodeImageUseImageDecoder(context, MyImages.jpeg.fileName)
             .also { bitmap ->
                 Assert.assertFalse(bitmap.isMutable)
             }
 
         decodeImageUseImageDecoder(
             context,
-            AssetImages.jpeg.fileName,
+            MyImages.jpeg.fileName,
             mutable = true
         ).also { bitmap ->
             Assert.assertTrue(bitmap.isMutable)
@@ -58,35 +58,35 @@ class ImageDecoderTest {
         if (Build.VERSION.SDK_INT < 28) return
         val context = getTestContext()
 
-        decodeImageUseImageDecoder(context, AssetImages.jpeg.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.jpeg.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.png.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.png.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.bmp.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.bmp.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.webp.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.webp.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.heic.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.heic.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.animGif.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.animGif.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.animWebp.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.animWebp.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.animHeif.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.animHeif.fileName).also { bitmap ->
             Assert.assertEquals(Bitmap.Config.HARDWARE, bitmap.config)
         }
     }
@@ -96,11 +96,11 @@ class ImageDecoderTest {
         if (Build.VERSION.SDK_INT < 28) return
         val context = getTestContext()
 
-        decodeImageUseImageDecoder(context, AssetImages.jpeg.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.jpeg.fileName).also { bitmap ->
             Assert.assertFalse(bitmap.hasAlpha())
         }
 
-        decodeImageUseImageDecoder(context, AssetImages.png.fileName).also { bitmap ->
+        decodeImageUseImageDecoder(context, MyImages.png.fileName).also { bitmap ->
             Assert.assertTrue(bitmap.hasAlpha())
         }
     }
@@ -109,7 +109,7 @@ class ImageDecoderTest {
     fun testInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                assetName = AssetImages.jpeg.fileName,
+                assetName = MyImages.jpeg.fileName,
                 size = Size(1291, 1936),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -117,7 +117,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.png.fileName,
+                assetName = MyImages.png.fileName,
                 size = Size(750, 719),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -125,7 +125,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.bmp.fileName,
+                assetName = MyImages.bmp.fileName,
                 size = Size(700, 1012),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -133,7 +133,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.webp.fileName,
+                assetName = MyImages.webp.fileName,
                 size = Size(1080, 1344),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -141,7 +141,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.heic.fileName,
+                assetName = MyImages.heic.fileName,
                 size = Size(750, 932),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -149,7 +149,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.animGif.fileName,
+                assetName = MyImages.animGif.fileName,
                 size = Size(480, 480),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -157,7 +157,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.animWebp.fileName,
+                assetName = MyImages.animWebp.fileName,
                 size = Size(480, 270),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,
@@ -165,7 +165,7 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
             ImageDecodeCompatibility(
-                assetName = AssetImages.animHeif.fileName,
+                assetName = MyImages.animHeif.fileName,
                 size = Size(256, 144),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

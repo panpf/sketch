@@ -12,5 +12,6 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.github.panpf.sketch.test.utils.TestActivity" />
+        <activity android:name="com.github.panpf.sketch.test.utils.MediumImageViewTestActivity" />
     </application>
 </manifest>

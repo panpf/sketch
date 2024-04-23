@@ -21,7 +21,7 @@ import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.source.FileDataSource
-import com.github.panpf.sketch.fetch.DefaultFetchResult
+import com.github.panpf.sketch.fetch.FetchResultImpl
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import org.junit.Assert
@@ -41,9 +41,11 @@ class FetchResultTest {
             FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
             "image/jpeg"
         ).apply {
-            Assert.assertTrue(this is DefaultFetchResult)
+            Assert.assertTrue(this is FetchResultImpl)
         }
     }
+
+    // TODO copy
 
     @Test
     fun testDataFrom() {

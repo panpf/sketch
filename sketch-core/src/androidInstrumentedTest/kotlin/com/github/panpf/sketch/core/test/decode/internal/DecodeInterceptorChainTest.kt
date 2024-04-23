@@ -26,7 +26,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
@@ -47,7 +47,7 @@ class DecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor2(this),
                 TestBitmapDecoderInterceptor3(this)
             )
-            val request = ImageRequest(context, AssetImages.jpeg.uri)
+            val request = ImageRequest(context, MyImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
                 sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )
@@ -70,7 +70,7 @@ class DecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor1(this),
                 TestBitmapDecoderInterceptor3(this),
             )
-            val request = ImageRequest(context, AssetImages.jpeg.uri)
+            val request = ImageRequest(context, MyImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
                 sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )

@@ -29,17 +29,14 @@ class TestRequestInterceptor2 : RequestInterceptor {
         return chain.proceed(chain.request)
     }
 
-    @Suppress("RedundantOverride")
-        override fun equals(other: Any?): Boolean {
-            // If you add construction parameters to this class, you need to change it here
-            return super.equals(other)
-        }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is TestRequestInterceptor2
+    }
 
-        @Suppress("RedundantOverride")
-        override fun hashCode(): Int {
-            // If you add construction parameters to this class, you need to change it here
-            return super.hashCode()
-        }
+    override fun hashCode(): Int {
+        return this@TestRequestInterceptor2::class.hashCode()
+    }
 
     override fun toString(): String {
         return "Test2RequestInterceptor(sortWeight=$sortWeight)"

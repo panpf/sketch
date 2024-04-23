@@ -21,7 +21,7 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -34,7 +34,7 @@ class AssetUriFetcherTest {
     fun testNewUri() {
         Assert.assertEquals(
             "asset://sample.jpeg",
-            AssetImages.jpeg.uri
+            MyImages.jpeg.uri
         )
         Assert.assertEquals(
             "asset://fd5717876ab046b8aa889c9aaac4b56c.png",
@@ -46,49 +46,49 @@ class AssetUriFetcherTest {
     fun testFactory() {
         val (context, sketch) = getTestContextAndNewSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
-        val assetUri = AssetImages.jpeg.uri
-        val assetUri2 = "${AssetImages.png.uri}?from=bing"
-        val assetUri3 = "${AssetImages.animGif.uri}#/main/"
+        val assetUri = MyImages.jpeg.uri
+        val assetUri2 = "${MyImages.png.uri}?from=bing"
+        val assetUri3 = "${MyImages.animGif.uri}#/main/"
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
         fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!.apply {
             Assert.assertEquals(assetUri, request.uriString)
-            Assert.assertEquals(AssetImages.jpeg.fileName, assetFileName)
+            Assert.assertEquals(MyImages.jpeg.fileName, assetFileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri2))!!.apply {
             Assert.assertEquals(assetUri2, request.uriString)
-            Assert.assertEquals(AssetImages.png.fileName, assetFileName)
+            Assert.assertEquals(MyImages.png.fileName, assetFileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri3))!!.apply {
             Assert.assertEquals(assetUri3, request.uriString)
-            Assert.assertEquals(AssetImages.animGif.fileName, assetFileName)
+            Assert.assertEquals(MyImages.animGif.fileName, assetFileName)
         }
 
         fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!.apply {
             Assert.assertEquals(assetUri, request.uriString)
-            Assert.assertEquals(AssetImages.jpeg.fileName, assetFileName)
+            Assert.assertEquals(MyImages.jpeg.fileName, assetFileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri2))!!.apply {
             Assert.assertEquals(assetUri2, request.uriString)
-            Assert.assertEquals(AssetImages.png.fileName, assetFileName)
+            Assert.assertEquals(MyImages.png.fileName, assetFileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri3))!!.apply {
             Assert.assertEquals(assetUri3, request.uriString)
-            Assert.assertEquals(AssetImages.animGif.fileName, assetFileName)
+            Assert.assertEquals(MyImages.animGif.fileName, assetFileName)
         }
 
         fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!.apply {
             Assert.assertEquals(assetUri, request.uriString)
-            Assert.assertEquals(AssetImages.jpeg.fileName, assetFileName)
+            Assert.assertEquals(MyImages.jpeg.fileName, assetFileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri2))!!.apply {
             Assert.assertEquals(assetUri2, request.uriString)
-            Assert.assertEquals(AssetImages.png.fileName, assetFileName)
+            Assert.assertEquals(MyImages.png.fileName, assetFileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri3))!!.apply {
             Assert.assertEquals(assetUri3, request.uriString)
-            Assert.assertEquals(AssetImages.animGif.fileName, assetFileName)
+            Assert.assertEquals(MyImages.animGif.fileName, assetFileName)
         }
 
         Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, httpUri)))
@@ -114,7 +114,7 @@ class AssetUriFetcherTest {
     fun testFetch() {
         val (context, sketch) = getTestContextAndNewSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
-        val assetUri = AssetImages.jpeg.uri
+        val assetUri = MyImages.jpeg.uri
 
         val fetcher = fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!
         val source = runBlocking {

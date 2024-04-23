@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
@@ -50,17 +50,17 @@ class ThumbnailMemoryCacheStateImageTest {
         Assert.assertEquals(0, memoryCache.keys().size)
 
         val requests1 = arrayOf(
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestCountTarget())
             },
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
                 target(TestCountTarget())
             },
-            ImageRequest(context, AssetImages.jpeg.uri) {
+            ImageRequest(context, MyImages.jpeg.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestCountTarget())
@@ -68,17 +68,17 @@ class ThumbnailMemoryCacheStateImageTest {
             },
         )
         val requests2 = arrayOf(
-            ImageRequest(context, AssetImages.png.uri) {
+            ImageRequest(context, MyImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestCountTarget())
             },
-            ImageRequest(context, AssetImages.png.uri) {
+            ImageRequest(context, MyImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(EXACTLY)
                 target(TestCountTarget())
             },
-            ImageRequest(context, AssetImages.png.uri) {
+            ImageRequest(context, MyImages.png.uri) {
                 resizeSize(100, 100)
                 resizePrecision(LESS_PIXELS)
                 target(TestCountTarget())
@@ -373,7 +373,7 @@ class ThumbnailMemoryCacheStateImageTest {
     @Test
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val request = ImageRequest(context, AssetImages.jpeg.uri)
+        val request = ImageRequest(context, MyImages.jpeg.uri)
         val uriString = request.uriString
 
         ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.BLUE))).apply {

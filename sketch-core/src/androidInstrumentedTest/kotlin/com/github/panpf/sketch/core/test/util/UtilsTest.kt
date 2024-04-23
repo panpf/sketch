@@ -30,8 +30,10 @@ import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.AssetImages
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.source.getDataSourceCacheFile
 import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.util.Logger.Companion.Assert
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.computeSizeMultiplier
@@ -170,19 +172,6 @@ class UtilsTest {
     }
 
     @Test
-    fun testFitScale() {
-        val context = getTestContext()
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_START }.scaleType.fitScale)
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_CENTER }.scaleType.fitScale)
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.FIT_END }.scaleType.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.FIT_XY }.scaleType.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER_CROP }.scaleType.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.CENTER }.scaleType.fitScale)
-        Assert.assertTrue(ImageView(context).apply { scaleType = ScaleType.CENTER_INSIDE }.scaleType.fitScale)
-        Assert.assertFalse(ImageView(context).apply { scaleType = ScaleType.MATRIX }.scaleType.fitScale)
-    }
-
-    @Test
     fun testIntMergedAndIntSplit() {
         intSplit(intMerged(39, 25)).apply {
             Assert.assertEquals(39, first)
@@ -212,8 +201,8 @@ class UtilsTest {
         val (context, sketch) = getTestContextAndNewSketch()
         AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, AssetImages.jpeg.uri),
-            assetFileName = AssetImages.jpeg.fileName
+            request = ImageRequest(context, MyImages.jpeg.uri),
+            assetFileName = MyImages.jpeg.fileName
         ).apply {
             val file = getDataSourceCacheFile(sketch, request, this)
             Assert.assertTrue(file.path.contains("/cache/"))
