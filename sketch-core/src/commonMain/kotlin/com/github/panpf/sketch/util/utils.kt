@@ -205,6 +205,21 @@ fun computeSizeMultiplier(
     }
 }
 
+fun computeSizeMultiplier2(sourceSize: SketchSize, targetSize: SketchSize): Float {
+    val scaleFactor: Float = when {
+        targetSize.isNotEmpty -> {
+            val widthScaleFactor = targetSize.width.toFloat() / sourceSize.width
+            val heightScaleFactor = targetSize.height.toFloat() / sourceSize.height
+            min(widthScaleFactor, heightScaleFactor)
+        }
+
+        targetSize.width > 0 -> targetSize.width.toFloat() / sourceSize.width
+        targetSize.height > 0 -> targetSize.height.toFloat() / sourceSize.height
+        else -> 1f
+    }
+    return scaleFactor
+}
+
 fun ImageRequest?.difference(other: ImageRequest?): String {
     if (this == null && other == null) return "Both are null"
     if (this == null) return "This is null"

@@ -7,7 +7,9 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.util.isNotEmpty
+import com.github.panpf.sketch.util.SketchSize
+import com.github.panpf.sketch.util.computeSizeMultiplier2
+import com.github.panpf.sketch.util.times
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.Bitmap
@@ -18,7 +20,6 @@ import org.jetbrains.skia.Rect
 import org.jetbrains.skia.svg.SVGDOM
 import org.jetbrains.skia.svg.SVGLength
 import org.jetbrains.skia.svg.SVGLengthUnit
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 
@@ -59,19 +60,14 @@ internal actual suspend fun decodeSvg(
         unit = SVGLengthUnit.PERCENTAGE,
     )
 
+    val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
     val targetSize = requestContext.size!!
-    val targetScale: Float = when {
-        targetSize.isNotEmpty -> min(targetSize.width / svgWidth, targetSize.height / svgHeight)
-        targetSize.width > 0 -> targetSize.width / svgHeight
-        targetSize.height > 0 -> targetSize.height / svgHeight
-        else -> 1f
-    }
-    val bitmapWidth: Int = (svgWidth * targetScale).roundToInt()
-    val bitmapHeight: Int = (svgHeight * targetScale).roundToInt()
-    svg.setContainerSize(bitmapWidth.toFloat(), bitmapHeight.toFloat())
+    val targetScale = computeSizeMultiplier2(sourceSize = svgSize, targetSize = targetSize)
+    val bitmapSize = svgSize.times(targetScale)
+    svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 
     val bitmap = Bitmap().apply {
-        allocN32Pixels(bitmapWidth, bitmapHeight)
+        allocN32Pixels(bitmapSize.width, bitmapSize.height)
     }
     val canvas = Canvas(bitmap)
     if (backgroundColor != null) {
