@@ -44,6 +44,7 @@ open class SketchImageView @JvmOverloads constructor(
         imageOptions = parseImageXmlAttributes(context, attrs)
         @Suppress("LeakingThis")
         registerListener(requestState)
+        registerProgressListener(requestState)
     }
 
     override fun getListener(): Listener? {

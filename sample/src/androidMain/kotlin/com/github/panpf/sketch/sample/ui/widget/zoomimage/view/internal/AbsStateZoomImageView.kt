@@ -43,6 +43,7 @@ open class AbsStateZoomImageView @JvmOverloads constructor(
     init {
         @Suppress("LeakingThis")
         registerListener(requestState)
+        registerProgressListener(requestState)
     }
 
     override fun getListener(): Listener? {
