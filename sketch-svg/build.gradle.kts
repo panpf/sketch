@@ -17,6 +17,9 @@ kotlin {
         commonTest.dependencies {
             implementation(projects.internal.testUtils)
         }
+        androidInstrumentedTest.dependencies {
+            implementation(projects.internal.testUtils)
+        }
     }
 }
 

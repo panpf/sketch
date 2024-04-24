@@ -9,10 +9,10 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class SvgDecodeUtilsTest {
+class SvgsTest {
 
     @Test
-    fun test() = runTest {
+    fun testIsSvg() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // normal

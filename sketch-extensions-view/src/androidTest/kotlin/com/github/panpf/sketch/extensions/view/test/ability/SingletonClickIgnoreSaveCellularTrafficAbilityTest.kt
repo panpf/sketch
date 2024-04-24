@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.extensions.view.test.viewability
+package com.github.panpf.sketch.extensions.view.test.ability
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -25,7 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ClickIgnoreSaveCellularTrafficAbilityTest {
+class SingletonClickIgnoreSaveCellularTrafficAbilityTest {
 
     @Test
     fun testExtensions() {

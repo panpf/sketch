@@ -243,4 +243,6 @@ class UtilsTest {
         Assert.assertEquals(3.3, computeSizeMultiplier(1000, 600, 4000, 2000, true), 0.1)
         Assert.assertEquals(4.0, computeSizeMultiplier(1000, 600, 4000, 2000, false), 0.1)
     }
+
+    // TODO computeSizeMultiplier2
 }
