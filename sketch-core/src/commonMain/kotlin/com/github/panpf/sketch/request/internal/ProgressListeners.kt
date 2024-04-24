@@ -19,7 +19,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
-class ProgressListeners(val list: List<ProgressListener>) : ProgressListener {
+class ProgressListeners constructor(val list: List<ProgressListener>) : ProgressListener {
 
     constructor(vararg listeners: ProgressListener) : this(listeners.toList())
 

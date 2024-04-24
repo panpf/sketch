@@ -44,6 +44,6 @@ class PairProgressListener(
     }
 
     override fun toString(): String {
-        return "ProgressListeners(first=$first, second=$second)"
+        return "PairProgressListener(first=$first, second=$second)"
     }
 }

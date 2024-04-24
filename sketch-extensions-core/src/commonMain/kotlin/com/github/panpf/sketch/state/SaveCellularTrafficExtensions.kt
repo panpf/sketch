@@ -35,7 +35,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
     addState(SaveCellularTrafficCondition to saveCellularTrafficImage)
 }
 
-object SaveCellularTrafficCondition : CombinedStateImage.Condition {
+data object SaveCellularTrafficCondition : CombinedStateImage.Condition {
 
     override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
         isCausedBySaveCellularTraffic(request, throwable)

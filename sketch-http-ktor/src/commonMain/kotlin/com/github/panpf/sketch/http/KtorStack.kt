@@ -11,9 +11,7 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.cancel
 
-class KtorStack(client: HttpClient? = null) : HttpStack {
-
-    private val client = client ?: HttpClient()
+class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
 
     override suspend fun getResponse(
         url: String,

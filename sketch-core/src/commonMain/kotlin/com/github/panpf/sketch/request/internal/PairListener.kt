@@ -59,6 +59,6 @@ class PairListener constructor(
     }
 
     override fun toString(): String {
-        return "Listeners(first=$first, second=$second)"
+        return "PairListener(first=$first, second=$second)"
     }
 }

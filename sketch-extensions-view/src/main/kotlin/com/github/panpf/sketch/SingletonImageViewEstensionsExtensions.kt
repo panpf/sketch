@@ -19,7 +19,6 @@ import android.widget.ImageView
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.enqueue
 
 /**
