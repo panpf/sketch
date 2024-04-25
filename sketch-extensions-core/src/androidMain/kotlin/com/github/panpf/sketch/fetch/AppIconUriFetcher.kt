@@ -100,6 +100,10 @@ class AppIconUriFetcher(
         override fun hashCode(): Int {
             return this@Factory::class.hashCode()
         }
+
+        override fun toString(): String {
+            return "AppIconUriFetcher"
+        }
     }
 
     class AppIconDrawableFetcher(

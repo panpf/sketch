@@ -320,7 +320,7 @@ class MovieDrawable constructor(
     }
 
     override fun toString(): String {
-        return "MovieDrawable(size=(${movie.width()}x${movie.height()}), config=$config)"
+        return "MovieDrawable(size=${movie.width()}x${movie.height()}, config=$config)"
     }
 
     private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }

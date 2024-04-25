@@ -2,9 +2,6 @@ package com.github.panpf.sketch
 
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.AndroidBitmapImage
-import com.github.panpf.sketch.AndroidDrawableImage
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.painter.asPainter
 
 

@@ -145,6 +145,7 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     }
 
     override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
+        requiredMainThread()    // Consistent with AnimatedImageDrawable
         return drawable.unregisterAnimationCallback(callback)
     }
 

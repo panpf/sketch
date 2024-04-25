@@ -31,7 +31,7 @@ class DiskCacheDataSource constructor(
     override val request: ImageRequest,
     override val dataFrom: DataFrom,
     val fileSystem: FileSystem,
-    val path: Path,
+    val path: Path, // TODO Should use snapshot
 ) : DataSource {
 
     @WorkerThread

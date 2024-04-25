@@ -41,7 +41,7 @@ enum class PixelOpacity {
     OPAQUE
 }
 
-internal val PixelOpacity.flag: Int
+val PixelOpacity.flag: Int
     get() = when (this) {
         PixelOpacity.UNCHANGED -> PixelFormat.UNKNOWN
         PixelOpacity.TRANSLUCENT -> PixelFormat.TRANSLUCENT
