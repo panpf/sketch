@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.github.panpf.sketch.core.android.test.target
+
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.transition.TransitionViewTarget
+import com.github.panpf.sketch.util.fitScale
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class TransitionTargetTest {
+
+    @Test
+    fun test() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, null)
+        val requestContext = RequestContext(sketch, request)
+        TestTransitionViewTarget(ImageView(context)).apply {
+            onStart(requestContext, null)
+            onError(requestContext, null)
+            onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
+        }
+    }
+
+    class TestTransitionViewTarget(private val view: ImageView) : TransitionViewTarget {
+        override val fitScale: Boolean
+            get() = view.scaleType.fitScale
+        override var drawable: Drawable
+            get() = view.drawable
+            set(value) {
+                view.setImageDrawable(value)
+            }
+    }
+}

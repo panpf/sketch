@@ -5,7 +5,7 @@ plugins {
 }
 
 addAllMultiplatformTargets()
-androidLibrary(nameSpace = "com.github.panpf.sketch.test.singleton")
+androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils")
 
 kotlin {
     sourceSets {

@@ -5,7 +5,7 @@ plugins {
 }
 
 addAllMultiplatformTargets()
-androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils")
+androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils.core")
 
 kotlin {
     sourceSets {

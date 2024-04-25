@@ -3,12 +3,14 @@ package com.github.panpf.sketch.compose.core.test.painter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.util.asEquality
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class IconPainterTest {
+    // TODO test
 
     @OptIn(ExperimentalResourceApi::class)
     @Composable
