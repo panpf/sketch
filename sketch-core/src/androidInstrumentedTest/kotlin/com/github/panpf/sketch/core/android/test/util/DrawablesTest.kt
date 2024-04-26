@@ -22,7 +22,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.cache.internal.LruBitmapPool
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.util.asOrThrow
@@ -34,7 +33,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DrawableUtilsTest {
+class DrawablesTest {
 
     @Test
     fun testFindLeafChildDrawable() {
@@ -93,7 +92,6 @@ class DrawableUtilsTest {
     @Test
     fun testToNewBitmap() {
         val context = getTestContext()
-        val bitmapPool = LruBitmapPool(1024 * 1024 * 100)
 
         val drawable = BitmapDrawable(
             context.resources,
@@ -101,7 +99,7 @@ class DrawableUtilsTest {
         )
 
         Assert.assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
-        drawable.toNewBitmap(false).apply {
+        drawable.toNewBitmap().apply {
             Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
             Assert.assertEquals("Bitmap(100x100,ARGB_8888)", toShortInfoString())
         }
@@ -109,7 +107,7 @@ class DrawableUtilsTest {
 
         drawable.setBounds(100, 100, 200, 200)
         Assert.assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
-        drawable.toNewBitmap(false, Bitmap.Config.RGB_565).apply {
+        drawable.toNewBitmap(Bitmap.Config.RGB_565).apply {
             Assert.assertEquals(Bitmap.Config.RGB_565, config)
             Assert.assertEquals("Bitmap(100x100,RGB_565)", toShortInfoString())
         }

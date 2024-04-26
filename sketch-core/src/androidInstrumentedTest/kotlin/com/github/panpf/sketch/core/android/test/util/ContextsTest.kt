@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.core.android.test.util
 
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
@@ -24,13 +23,8 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
-import com.github.panpf.tools4a.test.ktx.getActivitySync
-import com.github.panpf.tools4a.test.ktx.launchActivity
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
@@ -38,17 +32,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ContextsTest {
-
-    @Test
-    fun testFindLifecycle() {
-        val context = getTestContext()
-        Assert.assertNull(context.findLifecycle())
-
-        Assert.assertNull(context.applicationContext.findLifecycle())
-
-        val activity = TestActivity::class.launchActivity().getActivitySync()
-        Assert.assertSame(activity.lifecycle, activity.asOrThrow<Context>().findLifecycle())
-    }
 
     @Test
     fun testGetDrawableCompat() {
@@ -74,7 +57,7 @@ class ContextsTest {
         if (Build.VERSION.SDK_INT >= 21) {
             context.getXmlDrawableCompat(
                 context.resources,
-                com.github.panpf.sketch.test.utils.R.drawable.ic_cloudy
+                com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ).apply {
                 if (Build.VERSION.SDK_INT >= 24) {
                     Assert.assertTrue(this is VectorDrawable)
@@ -86,14 +69,14 @@ class ContextsTest {
             assertThrow(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
-                    com.github.panpf.sketch.test.utils.R.drawable.ic_cloudy
+                    com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
                 )
             }
         }
 
         context.getXmlDrawableCompat(
             context.resources,
-            com.github.panpf.sketch.test.utils.R.drawable.test_error
+            com.github.panpf.sketch.test.utils.core.R.drawable.test_error
         ).apply {
             Assert.assertTrue(this is GradientDrawable)
         }
@@ -101,7 +84,7 @@ class ContextsTest {
         if (Build.VERSION.SDK_INT >= 24) {
             context.getXmlDrawableCompat(
                 context.resources,
-                com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+                com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
             ).apply {
                 Assert.assertTrue(this is BitmapDrawable)
             }
@@ -109,7 +92,7 @@ class ContextsTest {
             assertThrow(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
-                    com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+                    com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
                 )
             }
         }

@@ -22,7 +22,6 @@ import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.ref.WeakReference
 
 @RunWith(AndroidJUnit4::class)
 class SystemCallbacksTest {
@@ -30,7 +29,7 @@ class SystemCallbacksTest {
     @Test
     fun test() {
         val (context, sketch) = getTestContextAndNewSketch()
-        SystemCallbacks(context, WeakReference(sketch)).apply {
+        SystemCallbacks(sketch).apply {
             Assert.assertEquals(context.isCellularNetworkConnected(), isCellularNetworkConnected)
 
             Assert.assertFalse(isShutdown)

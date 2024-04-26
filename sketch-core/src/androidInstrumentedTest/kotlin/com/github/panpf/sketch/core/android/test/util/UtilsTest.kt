@@ -41,6 +41,7 @@ import com.github.panpf.sketch.util.findLifecycle
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.getDataSourceCacheFile
 import com.github.panpf.sketch.util.getTrimLevelName
+import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.intSplit
 import com.github.panpf.sketch.util.isMainThread
@@ -60,6 +61,12 @@ import java.io.FileNotFoundException
 
 @RunWith(AndroidJUnit4::class)
 class UtilsTest {
+
+    @Test
+    fun testIfOrNull() {
+        org.junit.Assert.assertEquals("yes", ifOrNull(true) { "yes" })
+        org.junit.Assert.assertEquals(null, ifOrNull(false) { "yes" })
+    }
 
     @Test
     fun testIsMainThread() {
