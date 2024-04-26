@@ -11,6 +11,13 @@ import com.github.panpf.sketch.decode.internal.ImageFormat.GIF
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.size
 
 @RunWith(AndroidJUnit4::class)
 class BitmapFactoryTest {

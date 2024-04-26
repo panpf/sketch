@@ -15,14 +15,13 @@
  */
 package com.github.panpf.sketch.core.android.test.cache.internal
 
-import android.content.ComponentCallbacks2
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.cache.CountingBitmapImageValue
-import com.github.panpf.sketch.cache.internal.LruMemoryCache
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.cache.AndroidBitmapImageValue
+import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.test.utils.newSketch
@@ -49,8 +48,6 @@ class LruMemoryCacheTest {
     fun testSize() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
-            logger = sketch.logger
-
             Assert.assertEquals("0B", size.formatFileSize())
 
             putBitmap(sketch, "image1", 1)
@@ -65,8 +62,6 @@ class LruMemoryCacheTest {
     fun testPutRemoveGet() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
-            logger = sketch.logger
-
             Assert.assertNull(get("image1"))
             Assert.assertTrue(putBitmap(sketch, "image1", 1))
             Assert.assertNotNull(get("image1"))
@@ -91,7 +86,6 @@ class LruMemoryCacheTest {
     fun testLRU() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
-            logger = sketch.logger
             Assert.assertEquals("0B", size.formatFileSize())
 
             val bigBitmapSize = (sketch.memoryCache.maxSize.toFloat() / 1024 / 1024 * 0.8f).toInt()
@@ -153,8 +147,6 @@ class LruMemoryCacheTest {
     fun testTrim() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
-            logger = sketch.logger
-
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
@@ -166,7 +158,7 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(get("image4"))
             Assert.assertEquals("10MB", size.formatFileSize())
 
-            trim(ComponentCallbacks2.TRIM_MEMORY_MODERATE)
+            trim(0L)
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
             Assert.assertNull(get("image3"))
@@ -175,8 +167,6 @@ class LruMemoryCacheTest {
         }
 
         LruMemoryCache(10L * 1024 * 1024).apply {
-            logger = sketch.logger
-
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
@@ -188,7 +178,7 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(get("image4"))
             Assert.assertEquals("10MB", size.formatFileSize())
 
-            trim(ComponentCallbacks2.TRIM_MEMORY_BACKGROUND)
+            trim(4L)
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
             Assert.assertNull(get("image3"))
@@ -201,8 +191,6 @@ class LruMemoryCacheTest {
     fun testClear() {
         val sketch = newSketch()
         LruMemoryCache(10L * 1024 * 1024).apply {
-            logger = sketch.logger
-
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap(sketch, "image1", 1)
             putBitmap(sketch, "image2", 2)
@@ -263,19 +251,14 @@ class LruMemoryCacheTest {
         val width = 10
         val height = pixelCount / width
         val bitmap = Bitmap.createBitmap(width, height, ARGB_8888)
-        val countBitmap = CountBitmap(
-            originBitmap = bitmap,
-            bitmapPool = sketch.bitmapPool,
-            disallowReuseBitmap = false,
-        )
-        val newCacheValue = CountingBitmapImageValue(
-            image = countBitmap,
-            newCacheValueExtras(
-                imageInfo = ImageInfo(width, height, "image/jpeg", 0),
+        val newCacheValue = AndroidBitmapImageValue(
+            image = bitmap.asSketchImage(),
+            extras = newCacheValueExtras(
+                imageInfo = ImageInfo(width, height, "image/jpeg"),
                 transformedList = null,
                 extras = null,
             )
         )
-        return put(imageUri, newCacheValue)
+        return put(imageUri, newCacheValue) == 0
     }
 }

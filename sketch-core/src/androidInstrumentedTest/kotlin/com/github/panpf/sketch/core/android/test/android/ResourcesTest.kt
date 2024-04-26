@@ -2,6 +2,13 @@ package com.github.panpf.sketch.core.android.test.android
 
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build.VERSION
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.test.utils.alphaCompat
+import com.github.panpf.sketch.test.utils.getDrawableCompat
+import com.github.panpf.sketch.test.utils.getTestContext
 
 @RunWith(AndroidJUnit4::class)
 class ResourcesTest {

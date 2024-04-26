@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.core.android.test
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry.Builder
 import com.github.panpf.sketch.Components
 import com.github.panpf.sketch.decode.DecodeInterceptor
@@ -11,13 +12,31 @@ import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher.Factory
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.test.utils.AllFetcher
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
+import com.github.panpf.sketch.test.utils.TestDecoder
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.tools4j.test.Assertx.assertNoThrow
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import kotlin.test.assertFails
 
 @RunWith(AndroidJUnit4::class)
 class ComponentsTest {
@@ -213,14 +232,14 @@ class ComponentsTest {
     }
 
     @Test
-    fun testNewDecoder() {
+    fun testNewDecoder() = runTest {
         val context = getTestContext()
         val sketch = newSketch()
 
         Components(sketch, Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
-            assertThrow(IllegalStateException::class) {
+            assertFails {
                 val request = ImageRequest(context, MyImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
@@ -233,13 +252,13 @@ class ComponentsTest {
         Components(sketch, Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
-            assertThrow(IllegalArgumentException::class) {
+            assertFails {
                 val request = ImageRequest(context, MyImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDecoderOrThrow(requestContext, fetchResult)
             }
-            assertThrow(IllegalArgumentException::class) {
+            assertFails {
                 val request = ImageRequest(context, MyImages.jpeg.uri) {
                     components {
                         addDecoder(DrawableDecoder.Factory())
@@ -249,7 +268,7 @@ class ComponentsTest {
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDecoderOrThrow(requestContext, fetchResult)
             }
-            assertNoThrow {
+            assertFails {
                 val request = ImageRequest(context, MyImages.jpeg.uri) {
                     components {
                         addDecoder(BitmapFactoryDecoder.Factory())
@@ -265,7 +284,7 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
             addDecoder(BitmapFactoryDecoder.Factory())
         }.build()).apply {
-            assertNoThrow {
+            assertFails {
                 val request = ImageRequest(context, MyImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
@@ -274,7 +293,7 @@ class ComponentsTest {
                 )
             }
 
-            assertNoThrow {
+            assertFails {
                 val request = ImageRequest(context, MyImages.jpeg.uri) {
                     components {
                         addDecoder(TestDecoder.Factory())

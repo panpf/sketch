@@ -16,9 +16,7 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.platformDefaultDiskCacheOptions
+import com.github.panpf.sketch.util.appCacheDirectory
 import okio.Path
 
-actual fun PlatformContext.getTestDiskCacheDirectory(): Path? {
-    return platformDefaultDiskCacheOptions(this)!!.appCacheDirectory!!
-}
+actual fun PlatformContext.getTestDiskCacheDirectory(): Path? = appCacheDirectory()

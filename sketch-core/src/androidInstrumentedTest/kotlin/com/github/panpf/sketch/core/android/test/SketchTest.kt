@@ -1,9 +1,14 @@
 package com.github.panpf.sketch.core.android.test
 
 import android.widget.ImageView
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch.Builder
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.LruDiskCache
+import com.github.panpf.sketch.cache.LruMemoryCache
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
@@ -16,6 +21,7 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher.Factory
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.GlobalTargetLifecycle
 import com.github.panpf.sketch.request.ImageOptions
@@ -25,11 +31,28 @@ import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.test.utils.DelayTransformation
+import com.github.panpf.sketch.test.utils.ListenerSupervisor
+import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecoder
+import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import okio.FileSystem
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SketchTest {
@@ -38,7 +61,7 @@ class SketchTest {
 
     @Test
     fun testBuilder() {
-        val context1 = getTestContext()
+        val context = getTestContext()
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
         Builder(activity).build().apply {
@@ -46,96 +69,58 @@ class SketchTest {
             Assert.assertEquals(activity.applicationContext, context)
         }
 
-        Builder(context1).apply {
+        Builder(context).apply {
             build().apply {
                 Assert.assertEquals(Logger(), logger)
             }
-            logger(Logger(DEBUG))
+            logger(Logger(module = "TestModule"))
             build().apply {
-                Assert.assertEquals(Logger(DEBUG), logger)
+                Assert.assertEquals(Logger(module = "TestModule"), logger)
                 Assert.assertNotEquals(Logger(), logger)
             }
 
+            val defaultMemoryCache = MemoryCache.Builder(context).build()
             build().apply {
-                Assert.assertEquals(
-                    LruMemoryCache((context1.defaultMemoryCacheBytes() * 0.66f).roundToLong()),
-                    memoryCache
-                )
+                Assert.assertEquals(defaultMemoryCache, memoryCache)
             }
-            memoryCache(LruMemoryCache((context1.defaultMemoryCacheBytes() * 0.5f).roundToLong()))
+            val littleMemoryCacheBytes = defaultMemoryCache.maxSize / 2
+            memoryCache(LruMemoryCache(littleMemoryCacheBytes))
             build().apply {
-                Assert.assertEquals(
-                    LruMemoryCache((context1.defaultMemoryCacheBytes() * 0.5f).roundToLong()),
-                    memoryCache
-                )
-                Assert.assertNotEquals(
-                    LruMemoryCache((context1.defaultMemoryCacheBytes() * 0.66f).roundToLong()),
-                    memoryCache
-                )
+                Assert.assertEquals(LruMemoryCache(littleMemoryCacheBytes), memoryCache)
+                Assert.assertNotEquals(defaultMemoryCache, memoryCache)
             }
 
+            val defaultDownloadCache =
+                DiskCache.DownloadBuilder(context, FileSystem.SYSTEM).build()
+            val defaultResultCache =
+                DiskCache.ResultBuilder(context, FileSystem.SYSTEM).build()
             build().apply {
-                Assert.assertEquals(
-                    LruBitmapPool((context1.defaultMemoryCacheBytes() * 0.33f).roundToLong()),
-                    bitmapPool
-                )
+                Assert.assertEquals(defaultDownloadCache, downloadCache)
+                Assert.assertEquals(defaultResultCache, resultCache)
             }
-            bitmapPool(LruBitmapPool((context1.defaultMemoryCacheBytes() * 0.5f).roundToLong()))
-            build().apply {
-                Assert.assertEquals(
-                    LruBitmapPool((context1.defaultMemoryCacheBytes() * 0.5f).roundToLong()),
-                    bitmapPool
-                )
-                Assert.assertNotEquals(
-                    LruBitmapPool((context1.defaultMemoryCacheBytes() * 0.33f).roundToLong()),
-                    bitmapPool
-                )
-            }
-
-            build().apply {
-                Assert.assertEquals(
-                    LruDiskCache.ForDownloadBuilder(context1).build(),
-                    downloadCache
-                )
-            }
-            diskCache(
-                LruDiskCache.ForDownloadBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
-                    .build()
+            val littleDownloadDiskCache = LruDiskCache(
+                context = context,
+                fileSystem = FileSystem.SYSTEM,
+                maxSize = 50 * 1024 * 1024,
+                directory = defaultDownloadCache.directory,
+                appVersion = 10,
+                internalVersion = 0
             )
-            build().apply {
-                Assert.assertEquals(
-                    LruDiskCache.ForDownloadBuilder(context1)
-                        .maxSize(maxSize = 250 * 1024 * 1024)
-                        .build(),
-                    downloadCache
-                )
-                Assert.assertNotEquals(
-                    LruDiskCache.ForDownloadBuilder(context1).build(),
-                    downloadCache
-                )
-            }
-
-            build().apply {
-                Assert.assertEquals(
-                    LruDiskCache.ForResultBuilder(context1).build(),
-                    resultCache
-                )
-            }
-            resultCache(
-                LruDiskCache.ForResultBuilder(context1).maxSize(maxSize = 250 * 1024 * 1024)
-                    .build()
+            val littleResultDiskCache = LruDiskCache(
+                context = context,
+                fileSystem = FileSystem.SYSTEM,
+                maxSize = 150 * 1024 * 1024,
+                directory = defaultResultCache.directory,
+                appVersion = 10,
+                internalVersion = 0
             )
+            downloadCache(littleDownloadDiskCache)
+            // TODO downloadCacheOptions
+            resultCache(littleResultDiskCache)
+            // TODO resultCacheOptions
             build().apply {
-                Assert.assertEquals(
-                    LruDiskCache.ForResultBuilder(context1)
-                        .maxSize(maxSize = 250 * 1024 * 1024)
-                        .build(),
-                    resultCache
-                )
-                Assert.assertNotEquals(
-                    LruDiskCache.ForResultBuilder(context1).build(),
-                    resultCache
-                )
+                Assert.assertEquals(littleDownloadDiskCache, downloadCache)
+                Assert.assertEquals(littleResultDiskCache, resultCache)
             }
 
             build().apply {
@@ -205,9 +190,9 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(HurlStack.Builder().build(), httpStack)
             }
-            httpStack(TestHttpStack(context1))
+            httpStack(TestHttpStack(context))
             build().apply {
-                Assert.assertEquals(TestHttpStack(context1), httpStack)
+                Assert.assertEquals(TestHttpStack(context), httpStack)
                 Assert.assertNotEquals(HurlStack.Builder().build(), httpStack)
             }
 

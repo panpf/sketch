@@ -12,5 +12,8 @@ kotlin {
         commonMain.dependencies {
             api(projects.internal.testUtilsCore)
         }
+        androidMain.dependencies {
+            api(projects.internal.testUtilsCore)
+        }
     }
 }

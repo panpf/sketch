@@ -12,6 +12,15 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegi
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import java.io.IOException
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
+import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.tools4j.test.ktx.assertThrow
 
 @RunWith(AndroidJUnit4::class)
 class BitmapRegionDecoderTest {

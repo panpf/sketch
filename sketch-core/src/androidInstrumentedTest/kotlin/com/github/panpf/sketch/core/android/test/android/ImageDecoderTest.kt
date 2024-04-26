@@ -5,6 +5,15 @@ import android.graphics.ImageDecoder
 import android.os.Build.VERSION
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.util.Size
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.tools4j.test.ktx.assertThrow
 
 @RunWith(AndroidJUnit4::class)
 class ImageDecoderTest {

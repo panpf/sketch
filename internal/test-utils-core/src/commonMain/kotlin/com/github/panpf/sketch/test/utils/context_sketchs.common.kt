@@ -30,7 +30,8 @@ fun newSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Sketch 
     return Sketch.Builder(context).apply {
         logger(Logger(level = Logger.Verbose))
         val directory = context.newAloneTestDiskCacheDirectory()
-        diskCache(DiskCache.Options(appCacheDirectory = directory))
+        downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
+        resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         block.invoke(this, context)
     }.build()
 }

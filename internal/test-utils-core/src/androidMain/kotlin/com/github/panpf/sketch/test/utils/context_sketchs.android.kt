@@ -17,13 +17,11 @@ package com.github.panpf.sketch.test.utils
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.platformDefaultDiskCacheOptions
+import com.github.panpf.sketch.util.appCacheDirectory
 import okio.Path
 
 actual fun getTestContext(): PlatformContext {
     return InstrumentationRegistry.getInstrumentation().context
 }
 
-actual fun PlatformContext.getTestDiskCacheDirectory(): Path? {
-    return platformDefaultDiskCacheOptions(this)!!.appCacheDirectory!!
-}
+actual fun PlatformContext.getTestDiskCacheDirectory(): Path? = appCacheDirectory()
