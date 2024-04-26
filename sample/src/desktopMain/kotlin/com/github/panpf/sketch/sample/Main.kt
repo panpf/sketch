@@ -34,6 +34,7 @@ import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
+import com.github.panpf.sketch.sample.util.sha256String
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.Dispatchers
@@ -154,7 +155,7 @@ private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
     val fileExtension = MimeTypeMap.getExtensionFromUrl(imageUri)
         ?: MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
         ?: "jpeg"
-    val imageFile = File(outDir, "${imageUri.encodeUtf8().sha256().hex()}.$fileExtension")
+    val imageFile = File(outDir, "${imageUri.sha256String()}.$fileExtension")
     val result = withContext(Dispatchers.IO) {
         runCatching {
             fetchResult.dataSource.openSource().buffer().use { input ->

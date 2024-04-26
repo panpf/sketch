@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.util
 
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -19,3 +20,5 @@ fun String.formatLength(targetLength: Int, padChar: Char = ' '): String {
         this.padEnd(targetLength, padChar)
     }
 }
+
+fun String.sha256String() = encodeUtf8().sha256().hex()

@@ -4,26 +4,26 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.util.LruCache
-import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.sha256String
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import okio.ByteString.Companion.encodeUtf8
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.toPath
 
-class EmptyDiskCache(
-    override val fileSystem: FileSystem,
-    override val maxSize: Long,
-    override val directory: Path
-) : DiskCache {
-
-    companion object {
-        private const val MODULE = "EmptyDiskCache"
-    }
+class EmptyDiskCache constructor(override val fileSystem: FileSystem) : DiskCache {
 
     // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
-    private val keyMapperCache = KeyMapperCache { it.encodeUtf8().sha256().hex() }
+    private val keyMapperCache = KeyMapperCache { it.sha256String() }
+
+    override val maxSize: Long = 0L
+
+    override val directory: Path = "".toPath()
+
+    override val appVersion: Int get() = 0
+
+    override val internalVersion: Int get() = 0
 
     override val size: Long = 0L
 
@@ -51,5 +51,14 @@ class EmptyDiskCache(
 
     }
 
-    override fun toString(): String = "${MODULE}(${maxSize.formatFileSize()})"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is EmptyDiskCache
+    }
+
+    override fun hashCode(): Int {
+        return this@EmptyDiskCache::class.hashCode()
+    }
+
+    override fun toString(): String = "EmptyDiskCache"
 }

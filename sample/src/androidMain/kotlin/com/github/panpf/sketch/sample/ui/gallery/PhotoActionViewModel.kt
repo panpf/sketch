@@ -23,6 +23,7 @@ import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.ActionResult
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
+import com.github.panpf.sketch.sample.util.sha256String
 import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
@@ -99,7 +100,7 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
         val fileExtension = MimeTypeMap.getExtensionFromUrl(imageUri)
             ?: MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
             ?: "jpeg"
-        val imageFile = File(outDir, "${imageUri.encodeUtf8().sha256().hex()}.$fileExtension")
+        val imageFile = File(outDir, "${imageUri.sha256String()}.$fileExtension")
         val result = withContext(Dispatchers.IO) {
             runCatching {
                 fetchResult.dataSource.openSource().buffer().use { input ->

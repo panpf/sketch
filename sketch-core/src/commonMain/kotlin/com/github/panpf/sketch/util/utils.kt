@@ -21,6 +21,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageRequest.ImageRequestImpl
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
@@ -96,6 +97,8 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
         null
     }
 }
+
+internal fun String.sha256String() = encodeUtf8().sha256().hex()
 
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
