@@ -87,17 +87,20 @@ class LruMemoryCache constructor(
         cache.clear()
     }
 
-    override fun toString(): String =
-        "$MODULE(maxSize=${maxSize.formatFileSize()},valueLimitedSize=${valueLimitedSize.formatFileSize()})"
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is LruMemoryCache) return false
         if (maxSize != other.maxSize) return false
+        if (valueLimitedSize != other.valueLimitedSize) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return maxSize.hashCode()
+        var result = maxSize.hashCode()
+        result = 31 * result + valueLimitedSize.hashCode()
+        return result
     }
+
+    override fun toString(): String =
+        "$MODULE(maxSize=${maxSize.formatFileSize()},valueLimitedSize=${valueLimitedSize.formatFileSize()})"
 }

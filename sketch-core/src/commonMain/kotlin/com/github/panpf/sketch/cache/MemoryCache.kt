@@ -39,7 +39,7 @@ interface MemoryCache {
     /**
      * Caches [value] for [key]
      *
-     * @return 0: Success; -1: Exists; -2: Exceeds single cache size limit
+     * @return 0: Success; -1: Exists; -2: Exceeds single cache size limit; -3: failed
      */
     fun put(key: String, value: Value): Int
 
@@ -85,26 +85,40 @@ interface MemoryCache {
         fun checkValid(): Boolean
     }
 
-    data class Options(val maxSize: Long)
+    class Builder(val context: PlatformContext) {
+        private var maxSizeBytes: Long? = null
+        private var maxSizePercent: Double? = null
 
-    fun interface Factory {
-        fun create(context: PlatformContext): MemoryCache
-    }
-
-    class OptionsFactory(
-        private val lazyOptions: (PlatformContext) -> Options
-    ) : Factory {
-        override fun create(context: PlatformContext): MemoryCache {
-            val options = lazyOptions(context)
-            return LruMemoryCache(maxSize = options.maxSize)
+        /**
+         * Set the maximum size of the memory cache in bytes.
+         */
+        fun maxSizeBytes(size: Long) = apply {
+            require(size > 0L) { "size must be greater than 0L." }
+            this.maxSizeBytes = size
         }
-    }
 
-    class DefaultFactory : Factory {
-        override fun create(context: PlatformContext): MemoryCache {
-            val defaultMemoryCacheBytes =
-                context.totalAvailableMemoryBytes() * context.defaultMemoryCacheSizePercent()
-            return LruMemoryCache((defaultMemoryCacheBytes * 1f).roundToLong())
+        /**
+         * Set the maximum size of the memory cache as a percentage of this application's
+         * available memory.
+         */
+        fun maxSizePercent(
+            percent: Double = context.defaultMemoryCacheSizePercent()
+        ) = apply {
+            require(percent in 0.1..1.0) { "percent must be in the range [0.1, 1.0]." }
+            this.maxSizePercent = percent
+        }
+
+        fun build(): MemoryCache {
+            val maxSizeBytes = maxSizeBytes
+            val maxSizePercent = maxSizePercent
+            val finalMaxSizeBytes = if (maxSizeBytes != null) {
+                maxSizeBytes
+            } else {
+                val totalAvailableMemoryBytes = context.totalAvailableMemoryBytes()
+                val finalMaxSizePercent = maxSizePercent ?: context.defaultMemoryCacheSizePercent()
+                (totalAvailableMemoryBytes * finalMaxSizePercent).roundToLong()
+            }
+            return LruMemoryCache(finalMaxSizeBytes)
         }
     }
 }

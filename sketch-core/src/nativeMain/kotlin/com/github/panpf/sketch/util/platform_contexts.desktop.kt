@@ -1,19 +1,14 @@
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.PlatformContext
+import okio.Path
 import okio.Path.Companion.toPath
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 
-actual fun platformDefaultDiskCacheOptions(context: PlatformContext): DiskCache.Options? {
-    return DiskCache.Options(
-        appCacheDirectory = getCacheDirectory().toPath(),
-        downloadMaxSize = 300L * 1024 * 1024,
-        resultMaxSize = 200L * 1024 * 1024,
-        downloadAppVersion = null,
-        resultAppVersion = null,
-    )
+actual fun PlatformContext.appCacheDirectory(): Path? {
+    return getCacheDirectory().toPath()
 }
 
 private fun getCacheDirectory(): String {

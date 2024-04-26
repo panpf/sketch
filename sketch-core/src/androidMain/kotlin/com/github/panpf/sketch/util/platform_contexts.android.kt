@@ -21,6 +21,8 @@ import android.content.pm.ApplicationInfo
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.PlatformContext
+import okio.Path
+import okio.Path.Companion.toOkioPath
 
 private const val STANDARD_MEMORY_MULTIPLIER = 0.33
 private const val LOW_MEMORY_MULTIPLIER = 0.25
@@ -61,4 +63,9 @@ internal actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
         DEFAULT_MEMORY_CLASS_MEGABYTES
     }
     return memoryClassMegabytes * 1024L * 1024L
+}
+
+actual fun PlatformContext.appCacheDirectory(): Path? {
+    val appCacheDirectory = externalCacheDir ?: cacheDir
+    return appCacheDirectory.toOkioPath()
 }

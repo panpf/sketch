@@ -2,6 +2,5 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
 
-actual fun platformDefaultDiskCacheOptions(context: PlatformContext): DiskCache.Options? {
-    return null
-}
+// Disk caching is not supported
+actual fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long? = null

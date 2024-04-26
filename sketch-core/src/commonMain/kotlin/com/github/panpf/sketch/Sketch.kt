@@ -24,8 +24,8 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
@@ -39,8 +39,8 @@ import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
-import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
@@ -87,17 +87,13 @@ class Sketch private constructor(options: Options) {
     val fileSystem: FileSystem = options.fileSystem
 
     /** Memory cache of previously loaded images */
-    val memoryCache: MemoryCache by lazy { options.memoryCacheFactory.create(context) }
+    val memoryCache: MemoryCache by options.memoryCacheLazy
 
     /** Disk caching of http downloads images */
-    val downloadCache: DiskCache by lazy {
-        options.diskCacheFactory.create(context, fileSystem, DiskCache.Type.DOWNLOAD)
-    }
+    val downloadCache: DiskCache by options.downloadCacheLazy
 
     /** Disk caching of transformed images */
-    val resultCache: DiskCache by lazy {
-        options.diskCacheFactory.create(context, fileSystem, DiskCache.Type.RESULT)
-    }
+    val resultCache: DiskCache by options.resultCacheLazy
 
     /** Execute HTTP request */
     val httpStack: HttpStack = options.httpStack
@@ -202,8 +198,9 @@ class Sketch private constructor(options: Options) {
         val context: PlatformContext,
         val logger: Logger,
         val fileSystem: FileSystem,
-        val memoryCacheFactory: MemoryCache.Factory,
-        val diskCacheFactory: DiskCache.Factory,
+        val memoryCacheLazy: Lazy<MemoryCache>,
+        val downloadCacheLazy: Lazy<DiskCache>,
+        val resultCacheLazy: Lazy<DiskCache>,
         val httpStack: HttpStack,
         val componentRegistry: ComponentRegistry?,
         val globalImageOptions: ImageOptions?,
@@ -213,8 +210,11 @@ class Sketch private constructor(options: Options) {
 
         private var logger: Logger? = null
         private var fileSystem: FileSystem? = null
-        private var memoryCacheFactory: MemoryCache.Factory? = null
-        private var diskCacheFactory: DiskCache.Factory? = null
+        private var memoryCacheLazy: Lazy<MemoryCache>? = null
+        private var downloadCacheLazy: Lazy<DiskCache>? = null
+        private var downloadCacheOptionsLazy: Lazy<DiskCache.Options>? = null
+        private var resultCacheLazy: Lazy<DiskCache>? = null
+        private var resultCacheOptionsLazy: Lazy<DiskCache.Options>? = null
 
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
@@ -237,59 +237,77 @@ class Sketch private constructor(options: Options) {
         /**
          * Set the [MemoryCache]
          */
-        fun memoryCache(memoryCache: MemoryCache.Factory?): Builder = apply {
-            this.memoryCacheFactory = memoryCache
+        fun memoryCache(memoryCache: MemoryCache?): Builder = apply {
+            this.memoryCacheLazy = memoryCache?.let { lazyOf(it) }
         }
 
         /**
          * Set the [MemoryCache]
          */
-        fun memoryCache(memoryCache: MemoryCache): Builder = apply {
-            this.memoryCacheFactory = MemoryCache.Factory { memoryCache }
+        fun memoryCache(initializer: () -> MemoryCache): Builder = apply {
+            this.memoryCacheLazy = lazy { initializer() }
         }
 
         /**
-         * Set the [MemoryCache]
+         * Set the download [DiskCache]
          */
-        fun memoryCache(options: MemoryCache.Options): Builder = apply {
-            this.memoryCacheFactory = MemoryCache.OptionsFactory { options }
+        fun downloadCache(diskCache: DiskCache?): Builder = apply {
+            this.downloadCacheLazy = diskCache?.let { lazyOf(it) }
+            this.downloadCacheOptionsLazy = null
         }
 
         /**
-         * Set the [MemoryCache]
+         * Set the download [DiskCache]
          */
-        fun memoryCache(initializer: (PlatformContext) -> MemoryCache.Options): Builder = apply {
-            this.memoryCacheFactory = MemoryCache.OptionsFactory(initializer)
+        fun downloadCache(initializer: () -> DiskCache): Builder = apply {
+            this.downloadCacheLazy = lazy { initializer() }
+            this.downloadCacheOptionsLazy = null
         }
 
         /**
-         * Set the [DiskCache]
+         * Set the download [DiskCache]
          */
-        fun diskCache(diskCache: DiskCache.Factory?): Builder = apply {
-            this.diskCacheFactory = diskCache
+        fun downloadCacheOptions(options: DiskCache.Options): Builder = apply {
+            this.downloadCacheOptionsLazy = lazyOf(options)
+            this.downloadCacheLazy = null
         }
 
         /**
-         * Set the [DiskCache]
+         * Set the download [DiskCache]
          */
-        fun diskCache(downloadDiskCache: DiskCache, resultDiskCache: DiskCache): Builder = apply {
-            this.diskCacheFactory = DiskCache.Factory { _, _, type ->
-                if (type == DiskCache.Type.DOWNLOAD) downloadDiskCache else resultDiskCache
-            }
+        fun downloadCacheOptions(initializer: () -> DiskCache.Options): Builder = apply {
+            this.downloadCacheOptionsLazy = lazy { initializer() }
+            this.downloadCacheLazy = null
         }
 
         /**
-         * Set the [DiskCache]
+         * Set the result [DiskCache]
          */
-        fun diskCache(options: DiskCache.Options): Builder = apply {
-            this.diskCacheFactory = DiskCache.OptionsFactory { options }
+        fun resultCache(diskCache: DiskCache?): Builder = apply {
+            this.resultCacheLazy = diskCache?.let { lazyOf(it) }
         }
 
         /**
-         * Set the [DiskCache]
+         * Set the result [DiskCache]
          */
-        fun diskCache(initializer: (PlatformContext) -> DiskCache.Options): Builder = apply {
-            this.diskCacheFactory = DiskCache.OptionsFactory(initializer)
+        fun resultCache(initializer: () -> DiskCache): Builder = apply {
+            this.resultCacheLazy = lazy { initializer() }
+        }
+
+        /**
+         * Set the result [DiskCache]
+         */
+        fun resultCacheOptions(options: DiskCache.Options): Builder = apply {
+            this.resultCacheOptionsLazy = lazyOf(options)
+            this.resultCacheLazy = null
+        }
+
+        /**
+         * Set the result [DiskCache]
+         */
+        fun resultCacheOptions(initializer: () -> DiskCache.Options): Builder = apply {
+            this.resultCacheOptionsLazy = lazy { initializer() }
+            this.resultCacheLazy = null
         }
 
         /**
@@ -320,12 +338,28 @@ class Sketch private constructor(options: Options) {
         }
 
         fun build(): Sketch {
+            val finalFileSystem = fileSystem ?: defaultFileSystem()
             val options = Options(
                 context = context,
                 logger = this.logger ?: Logger(),
-                fileSystem = fileSystem ?: defaultFileSystem(),
-                memoryCacheFactory = memoryCacheFactory ?: MemoryCache.DefaultFactory(),
-                diskCacheFactory = diskCacheFactory ?: DiskCache.OptionsFactory(),
+                fileSystem = finalFileSystem,
+                memoryCacheLazy = memoryCacheLazy ?: lazy { MemoryCache.Builder(context).build() },
+                downloadCacheLazy = downloadCacheLazy ?: lazy {
+                    val options = downloadCacheOptionsLazy?.value
+                    DiskCache.DownloadBuilder(context, finalFileSystem).apply {
+                        if (options != null) {
+                            options(options)
+                        }
+                    }.build()
+                },
+                resultCacheLazy = resultCacheLazy ?: lazy {
+                    val options = resultCacheOptionsLazy?.value
+                    DiskCache.ResultBuilder(context, finalFileSystem).apply {
+                        if (options != null) {
+                            options(options)
+                        }
+                    }.build()
+                },
                 httpStack = httpStack ?: defaultHttpStack(),
                 componentRegistry = componentRegistry,
                 globalImageOptions = globalImageOptions,

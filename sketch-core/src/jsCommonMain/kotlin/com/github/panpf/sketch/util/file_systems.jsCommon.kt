@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.util
 
-import kotlinx.coroutines.Dispatchers
 import okio.FileHandle
 import okio.FileMetadata
 import okio.FileSystem

@@ -116,7 +116,8 @@ private fun initialSketch() {
                 /* appVersion = */ null,
                 /* appAuthor = */ null,
             )!!.let { File(it) }
-            diskCache(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
+            downloadCacheOptions(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
+            resultCacheOptions(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
             components {
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
                 supportSvg()

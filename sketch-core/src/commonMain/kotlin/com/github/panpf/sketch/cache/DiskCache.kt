@@ -16,17 +16,12 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.DiskCache.Options
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
+import com.github.panpf.sketch.util.appCacheDirectory
 import okio.Closeable
 import okio.FileSystem
 import okio.Path
-import okio.Path.Companion.toPath
-
-/**
- * @return The default disk cache options for this platform, null means disk caching is not supported
- */
-expect fun platformDefaultDiskCacheOptions(context: PlatformContext): Options?
+import kotlin.math.roundToLong
 
 /**
  * Disk cache for bitmap or uri data
@@ -138,79 +133,178 @@ interface DiskCache : Closeable {
         fun abort()
     }
 
-    enum class Type(val dirName: String, val internalVersion: Int) {
-        DOWNLOAD("download", 1),
-        RESULT("result", 1),
-    }
-
-    data class Options(
-        val appCacheDirectory: Path? = null,
-        val downloadMaxSize: Long? = null,
-        val resultMaxSize: Long? = null,
-        val downloadAppVersion: Int? = null,
-        val resultAppVersion: Int? = null,
+    class DownloadBuilder(
+        val context: PlatformContext,
+        val fileSystem: FileSystem
     ) {
-        init {
-            require(
-                downloadMaxSize == null || downloadMaxSize > 0
-                        || resultMaxSize == null || resultMaxSize > 0
-            ) {
-                "downloadMaxSize or resultMaxSize must be greater than 0"
-            }
-            require(
-                downloadAppVersion == null || downloadAppVersion in 1.rangeTo(Short.MAX_VALUE)
-                        || resultAppVersion == null || resultAppVersion in 1.rangeTo(Short.MAX_VALUE)
-            ) {
-                "downloadAppVersion or resultAppVersion must be in 1 to ${Short.MAX_VALUE} range"
-            }
+
+        companion object {
+            const val INTERNAL_VERSION = 1
+            const val DEFAULT_APP_VERSION = 1
+            const val DIRECTORY_NAME = "download"
+            const val DEFAULT_MAX_SIZE_PERCENT = 0.6
         }
-    }
 
-    fun interface Factory {
-        fun create(context: PlatformContext, fileSystem: FileSystem, type: Type): DiskCache
-    }
+        var directory: Path? = null
+        var appCacheDirectory: Path? = null
+        var maxSize: Long? = null
+        var appVersion: Int? = null
 
-    class OptionsFactory(
-        private val lazyOptions: ((PlatformContext) -> Options?)? = null
-    ) : Factory {
-        override fun create(
-            context: PlatformContext,
-            fileSystem: FileSystem,
-            type: Type
-        ): DiskCache {
-            val platformDefaultOptions = platformDefaultDiskCacheOptions(context)
-                ?: return EmptyDiskCache(fileSystem)
-            requireNotNull(platformDefaultOptions.downloadMaxSize) {
-                "The platform must provide a default downloadMaxSize"
+        fun directory(directory: Path? = null): DownloadBuilder = apply {
+            this.directory = directory
+        }
+
+        fun appCacheDirectory(appCacheDirectory: Path? = null): DownloadBuilder = apply {
+            this.appCacheDirectory = appCacheDirectory
+        }
+
+        fun maxSize(size: Long? = null): DownloadBuilder = apply {
+            require(size == null || size > 0L) {
+                "maxSize must be greater than 0L"
             }
-            requireNotNull(platformDefaultOptions.resultMaxSize) {
-                "The platform must provide a default resultMaxSize"
+            this.maxSize = size
+        }
+
+        fun appVersion(appVersion: Int? = null): DownloadBuilder = apply {
+            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
+                "appVersion must be in 1 to ${Short.MAX_VALUE} range"
             }
-            val userOptions = lazyOptions?.invoke(context)
-            val appCacheDirectory = requireNotNull(
-                userOptions?.appCacheDirectory ?: platformDefaultOptions.appCacheDirectory
-            ) {
-                "You must actively configure appCacheDirectory for DiskCache on this platform. Please refer to the documentation https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md"
+            this.appVersion = appVersion
+        }
+
+        fun options(options: Options): DownloadBuilder = apply {
+            this.directory = options.directory
+            this.appCacheDirectory = options.appCacheDirectory
+            this.maxSize = options.maxSize
+            this.appVersion = options.appVersion
+        }
+
+        fun mergeOptions(options: Options): DownloadBuilder = apply {
+            this.directory = this.directory ?: options.directory
+            this.appCacheDirectory = this.appCacheDirectory ?: options.appCacheDirectory
+            this.maxSize = this.maxSize ?: options.maxSize
+            this.appVersion = this.appVersion ?: options.appVersion
+        }
+
+        fun build(): DiskCache {
+            val platformDefaultMaxSize = platformDefaultDiskCacheMaxSize(context)
+            @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+            if (platformDefaultMaxSize == null) {
+                return EmptyDiskCache(fileSystem)
             }
-            val directory = appCacheDirectory.resolve(DEFAULT_DIR_NAME).resolve(type.dirName)
-            val maxSize = if (type == Type.DOWNLOAD) {
-                userOptions?.downloadMaxSize ?: platformDefaultOptions.downloadMaxSize
-            } else {
-                userOptions?.resultMaxSize ?: platformDefaultOptions.resultMaxSize
-            }
-            val appVersion = if (type == Type.DOWNLOAD) {
-                userOptions?.downloadAppVersion ?: platformDefaultOptions.downloadAppVersion ?: 1
-            } else {
-                userOptions?.resultAppVersion ?: platformDefaultOptions.resultAppVersion ?: 1
-            }
+
+            val directory = directory
+            val appCacheDirectory = appCacheDirectory
+            val maxSizeBytes = maxSize
+            val appVersion = appVersion
+            val finalDirectory = directory
+                ?: appCacheDirectory?.resolve(DEFAULT_DIR_NAME)?.resolve(DIRECTORY_NAME)
+                ?: requireNotNull(context.appCacheDirectory()) {
+                    "The current platform cannot automatically obtain the cache directory of the App. Please configure it proactively. Documentation url 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
+                }.resolve(DEFAULT_DIR_NAME).resolve(DIRECTORY_NAME)
+            val finalMaxSizeBytes = maxSizeBytes
+                ?: (platformDefaultMaxSize * DEFAULT_MAX_SIZE_PERCENT).roundToLong()
+            val finalAppVersion = appVersion ?: DEFAULT_APP_VERSION
             return LruDiskCache(
                 context = context,
                 fileSystem = fileSystem,
-                maxSize = maxSize,
-                directory = directory,
-                appVersion = appVersion,
-                internalVersion = type.internalVersion,
+                maxSize = finalMaxSizeBytes,
+                directory = finalDirectory,
+                appVersion = finalAppVersion,
+                internalVersion = INTERNAL_VERSION
             )
         }
     }
+
+    class ResultBuilder(
+        val context: PlatformContext,
+        val fileSystem: FileSystem
+    ) {
+
+        companion object {
+            const val INTERNAL_VERSION = 1
+            const val DEFAULT_APP_VERSION = 1
+            const val DIRECTORY_NAME = "result"
+            const val DEFAULT_MAX_SIZE_PERCENT = 0.4
+        }
+
+        var directory: Path? = null
+        var appCacheDirectory: Path? = null
+        var maxSize: Long? = null
+        var appVersion: Int? = null
+
+        fun directory(directory: Path? = null): ResultBuilder = apply {
+            this.directory = directory
+        }
+
+        fun appCacheDirectory(appCacheDirectory: Path? = null): ResultBuilder = apply {
+            this.appCacheDirectory = appCacheDirectory
+        }
+
+        fun maxSize(size: Long? = null): ResultBuilder = apply {
+            require(size == null || size > 0L) {
+                "maxSize must be greater than 0"
+            }
+            this.maxSize = size
+        }
+
+        fun appVersion(appVersion: Int? = null): ResultBuilder = apply {
+            require(appVersion == null || appVersion in 1.rangeTo(Short.MAX_VALUE)) {
+                "appVersion must be in 1 to ${Short.MAX_VALUE} range"
+            }
+            this.appVersion = appVersion
+        }
+
+        fun options(options: Options): ResultBuilder = apply {
+            this.directory = options.directory
+            this.appCacheDirectory = options.appCacheDirectory
+            this.maxSize = options.maxSize
+            this.appVersion = options.appVersion
+        }
+
+        fun mergeOptions(options: Options): ResultBuilder = apply {
+            this.directory = this.directory ?: options.directory
+            this.appCacheDirectory = this.appCacheDirectory ?: options.appCacheDirectory
+            this.maxSize = this.maxSize ?: options.maxSize
+            this.appVersion = this.appVersion ?: options.appVersion
+        }
+
+        fun build(): DiskCache {
+            val platformDefaultMaxSize = platformDefaultDiskCacheMaxSize(context)
+            @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+            if (platformDefaultMaxSize == null) {
+                return EmptyDiskCache(fileSystem)
+            }
+
+            val directory = directory
+            val appCacheDirectory = appCacheDirectory
+            val maxSizeBytes = maxSize
+            val appVersion = appVersion
+            val finalDirectory = directory
+                ?: appCacheDirectory?.resolve(DEFAULT_DIR_NAME)?.resolve(DIRECTORY_NAME)
+                ?: requireNotNull(context.appCacheDirectory()) {
+                    "The current platform cannot automatically obtain the cache directory of the App. Please configure it proactively. Documentation url 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
+                }.resolve(DEFAULT_DIR_NAME).resolve(DIRECTORY_NAME)
+            val finalMaxSizeBytes = maxSizeBytes
+                ?: (platformDefaultMaxSize * DEFAULT_MAX_SIZE_PERCENT).roundToLong()
+            val finalAppVersion = appVersion ?: DEFAULT_APP_VERSION
+            return LruDiskCache(
+                context = context,
+                fileSystem = fileSystem,
+                maxSize = finalMaxSizeBytes,
+                directory = finalDirectory,
+                appVersion = finalAppVersion,
+                internalVersion = INTERNAL_VERSION
+            )
+        }
+    }
+
+    data class Options(
+        val directory: Path? = null,
+        val appCacheDirectory: Path? = null,
+        val maxSize: Long? = null,
+        val appVersion: Int? = null,
+    )
 }
+
+expect fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long?
