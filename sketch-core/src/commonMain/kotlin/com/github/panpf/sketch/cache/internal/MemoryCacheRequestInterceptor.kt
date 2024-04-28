@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.request.internal
+package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.annotation.MainThread
-import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.source.DataFrom
-import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.cache.getExtras
+import com.github.panpf.sketch.cache.getImageInfo
+import com.github.panpf.sketch.cache.getTransformedList
+import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataFrom
 
 /**
  * Although LruMemoryCache is thread-unsafe, Sketch requests are executed in the main thread, so there is no need to do thread-safety processing here.
@@ -111,29 +114,3 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
 
 val RequestContext.memoryCacheKey: String
     get() = cacheKey
-
-fun MemoryCache.Value.getImageInfo(): ImageInfo? {
-    return extras["imageInfo"] as ImageInfo?
-}
-
-fun newCacheValueExtras(
-    imageInfo: ImageInfo,
-    transformedList: List<String>?,
-    extras: Map<String, String>?,
-): Map<String, Any?> {
-    return mapOf(
-        "imageInfo" to imageInfo,
-        "transformedList" to transformedList,
-        "extras" to extras,
-    )
-}
-
-fun MemoryCache.Value.getTransformedList(): List<String>? {
-    @Suppress("UNCHECKED_CAST")
-    return extras["transformedList"] as List<String>?
-}
-
-fun MemoryCache.Value.getExtras(): Map<String, String>? {
-    @Suppress("UNCHECKED_CAST")
-    return extras["extras"] as Map<String, String>?
-}

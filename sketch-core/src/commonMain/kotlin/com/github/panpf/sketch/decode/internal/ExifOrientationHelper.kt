@@ -28,7 +28,7 @@ import com.github.panpf.sketch.util.rotateInSpace
 import kotlin.math.abs
 
 // TODO Only android
-expect fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper?
+expect fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper
 
 /**
  * Rotate and flip the image according to the 'orientation' attribute of Exif so that the image is presented to the user at a normal angle

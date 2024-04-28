@@ -193,7 +193,7 @@ interface ImageRequest {
     /**
      * Bitmap memory caching policy
      *
-     * @see com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
+     * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
      */
     val memoryCachePolicy: CachePolicy
 
@@ -893,5 +893,5 @@ interface ImageRequest {
 val ImageRequest.crossfade: Crossfade?
     get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
 
-val ImageRequest.resizeOnDraw: Boolean?
-    get() = parameters?.value<Boolean>(RESIZE_ON_DRAW_KEY)
+val ImageRequest.resizeOnDraw: Boolean
+    get() = parameters?.value<Boolean>(RESIZE_ON_DRAW_KEY) ?: false

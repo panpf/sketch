@@ -42,7 +42,7 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
         sketch: Sketch,
         requestContext: RequestContext,
         input: Image
-    ): TransformResult? {
+    ): TransformResult {
         val newSize = min(input.width, input.height)
         val scale = scale ?: requestContext.request.scaleDecider.get(
             imageSize = Size(input.width, input.height),

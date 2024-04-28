@@ -29,9 +29,10 @@ import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 @Throws(IOException::class, CancellationException::class)
-internal suspend fun BufferedSink.writeAllWithProgress(
-    request: ImageRequest,
+internal suspend fun writeAllWithProgress(
+    sink: BufferedSink,
     content: Content,
+    request: ImageRequest,
     contentLength: Long,
     bufferSize: Int = 1024 * 8,
 ): Long = coroutineScope {
@@ -44,7 +45,7 @@ internal suspend fun BufferedSink.writeAllWithProgress(
     }
     var lastUpdateProgressBytesCopied = 0L
     while (bytes >= 0 && isActive) {
-        this@writeAllWithProgress.write(buffer, 0, bytes)
+        sink.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
             val inWholeMilliseconds = lastTimeMark?.elapsedNow()?.inWholeMilliseconds

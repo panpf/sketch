@@ -19,7 +19,6 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 
@@ -42,10 +41,6 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
 
             is AssetDataSource -> {
                 GifInfoHandle(context.assets.openFd(dataSource.assetFileName))
-            }
-
-            is DiskCacheDataSource -> {
-                GifInfoHandle(dataSource.getFile().toFile().path)
             }
 
             is FileDataSource -> {

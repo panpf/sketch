@@ -3,11 +3,11 @@ package com.github.panpf.sketch.state
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.getImageInfo
+import com.github.panpf.sketch.cache.getTransformedList
 import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.getImageInfo
-import com.github.panpf.sketch.request.internal.getTransformedList
 import com.github.panpf.sketch.util.format
 import kotlin.math.abs
 

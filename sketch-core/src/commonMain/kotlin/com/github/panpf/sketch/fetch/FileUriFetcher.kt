@@ -4,6 +4,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.toUri
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
@@ -47,7 +48,7 @@ class FileUriFetcher(
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val extension = MimeTypeMap.getExtensionFromUrl(path.name)
         val mimeType = extension?.let { MimeTypeMap.getMimeTypeFromExtension(it) }
-        FetchResult(FileDataSource(sketch, request, path), mimeType)
+        FetchResult(FileDataSource(sketch, request, path, LOCAL), mimeType)
     }
 
     class Factory : Fetcher.Factory {

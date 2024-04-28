@@ -26,6 +26,8 @@ import com.github.panpf.sketch.util.DrawableFetcher
 import com.github.panpf.sketch.util.RealEqualityDrawable
 import com.github.panpf.sketch.util.ResDrawable
 
+fun DrawableEqualizer.asStateImage(): DrawableStateImage = DrawableStateImage(this)
+
 fun DrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
     DrawableStateImageImpl(RealEqualityDrawable(drawable))
 

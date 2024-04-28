@@ -42,11 +42,11 @@ fun ImageOptions.Builder.allowNullImage(allow: Boolean = true): ImageOptions.Bui
 /**
  * Whether to allow setting null Drawable to ImageView
  */
-val ImageRequest.allowSetNullDrawable: Boolean
+val ImageRequest.allowNullImage: Boolean
     get() = parameters?.value(ALLOW_NULL_IMAGE_KEY) ?: false
 
 /**
  * Whether to allow setting null Drawable to ImageView
  */
-val ImageOptions.allowSetNullDrawable: Boolean
+val ImageOptions.allowNullImage: Boolean
     get() = parameters?.value(ALLOW_NULL_IMAGE_KEY) ?: false

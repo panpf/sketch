@@ -27,7 +27,7 @@ import com.github.panpf.sketch.util.rotated
 import java.awt.image.BufferedImage
 import kotlin.math.abs
 
-actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper? {
+actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper {
     return DesktopExifOrientationHelper(exifOrientation)
 }
 

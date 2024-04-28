@@ -49,7 +49,7 @@ fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
         ExifInterface.ORIENTATION_UNDEFINED
     }
 
-actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper? {
+actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper {
     return AndroidExifOrientationHelper(exifOrientation)
 }
 

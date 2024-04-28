@@ -20,7 +20,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.transition.TransitionComposeTarget
-import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.TargetLifecycle.Event
@@ -75,7 +75,7 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
         // 'image != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerComposeFragment#PagerBgImage() is an example.
-        if (image != null || requestContext.request.allowSetNullDrawable) {
+        if (image != null || requestContext.request.allowNullImage) {
             val newPainter = image?.asPainter()
             updatePainter(newPainter)
         }

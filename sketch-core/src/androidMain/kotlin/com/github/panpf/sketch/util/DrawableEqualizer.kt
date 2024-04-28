@@ -3,14 +3,16 @@ package com.github.panpf.sketch.util
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.Resources.Theme
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.drawable.internal.toLogString
 import java.lang.Deprecated
 
-
+// TODO rename getDrawableEqualizer
 fun Context.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
@@ -24,32 +26,21 @@ fun Context.getEqualityDrawableCompat(@DrawableRes resId: Int): DrawableEqualize
     return drawable.asEquality(resId)
 }
 
-fun AppCompatResources.getEqualityDrawable(
-    context: Context,
-    @DrawableRes resId: Int
-): DrawableEqualizer {
-    val drawable = AppCompatResources.getDrawable(context, resId)
-    checkNotNull(drawable) { "Invalid resource ID: $resId" }
-    return drawable.asEquality(resId)
-}
-
-fun ResourcesCompat.getEqualityDrawable(
-    resources: Resources,
+fun Resources.getEqualityDrawableCompat(
     @DrawableRes resId: Int,
     theme: Theme?
 ): DrawableEqualizer {
-    val drawable = ResourcesCompat.getDrawable(resources, resId, theme)
+    val drawable = ResourcesCompat.getDrawable(this, resId, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
     return drawable.asEquality(resId)
 }
 
-fun ResourcesCompat.getEqualityDrawableForDensity(
-    resources: Resources,
+fun Resources.getEqualityDrawableCompatForDensity(
     @DrawableRes resId: Int,
     density: Int,
     theme: Theme?
 ): DrawableEqualizer {
-    val drawable = ResourcesCompat.getDrawableForDensity(resources, resId, density, theme)
+    val drawable = ResourcesCompat.getDrawableForDensity(this, resId, density, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
     return drawable.asEquality(resId)
 }
@@ -93,6 +84,10 @@ fun Resources.getEqualityDrawableForDensity(
 
 fun Drawable.asEquality(equalKey: Any): DrawableEqualizer =
     DrawableEqualizer(wrapped = this, equalityKey = equalKey)
+
+fun ColorDrawableEqualizer(@ColorInt color: Int) : DrawableEqualizer {
+    return ColorDrawable(color).asEquality(color)
+}
 
 /**
  * Using Resources.getDrawable() for the same drawable resource and calling it twice in a row returns Drawable equals as false.

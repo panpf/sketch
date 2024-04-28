@@ -29,11 +29,9 @@ import okio.Source
 class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    private val path: Path
+    private val path: Path,
+    override val dataFrom: DataFrom = LOCAL,
 ) : DataSource {
-
-    override val dataFrom: DataFrom
-        get() = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)

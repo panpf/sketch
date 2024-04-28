@@ -17,19 +17,19 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.source.ByteArrayDataSource
-import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
-import com.github.panpf.sketch.source.DataFrom.NETWORK
-import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
+import com.github.panpf.sketch.source.DataFrom.NETWORK
+import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.CancellationException
@@ -153,12 +153,11 @@ open class HttpUriFetcher(
                     }
                 }.getOrNull()
                 val mimeType = getMimeType(request.uriString, contentType)
-                val dataSource = DiskCacheDataSource(
+                val dataSource = FileDataSource(
                     sketch = sketch,
                     request = request,
+                    path = snapshot.data,
                     dataFrom = DOWNLOAD_CACHE,
-                    fileSystem = downloadCache.fileSystem,
-                    path = snapshot.data
                 )
                 Result.success(FetchResult(dataSource, mimeType))
             }
@@ -179,7 +178,7 @@ open class HttpUriFetcher(
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
                 downloadCache.fileSystem.sink(editor.data).buffer().use { sink ->
-                    sink.writeAllWithProgress(request, content, contentLength)
+                    writeAllWithProgress(sink, content, request, contentLength)
                 }
             }
             // 'Transform-Encoding: chunked' contentLength is -1
@@ -203,12 +202,11 @@ open class HttpUriFetcher(
 
         // Build FetchResult
         val dataSource = if (request.downloadCachePolicy.readEnabled) {
-            DiskCacheDataSource(
+            FileDataSource(
                 sketch = sketch,
                 request = request,
+                path = cachePath,
                 dataFrom = NETWORK,
-                fileSystem = sketch.fileSystem,
-                path = cachePath
             )
         } else {
             try {
@@ -229,7 +227,7 @@ open class HttpUriFetcher(
         val contentLength = response.contentLength
         val buffer = Buffer()
         val readLength = response.content().use { content ->
-            buffer.writeAllWithProgress(request, content, contentLength)
+            writeAllWithProgress(buffer, content, request, contentLength)
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =

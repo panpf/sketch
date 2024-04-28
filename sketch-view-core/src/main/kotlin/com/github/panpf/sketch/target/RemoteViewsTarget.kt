@@ -24,7 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.allowSetNullDrawable
+import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.BaseRequestDelegate
 import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -53,7 +53,7 @@ class RemoteViewsTarget constructor(
         setDrawable(requestContext, error)
 
     private fun setDrawable(requestContext: RequestContext, result: Image?) {
-        if (result != null || requestContext.request.allowSetNullDrawable) {
+        if (result != null || requestContext.request.allowNullImage) {
             remoteViews.setImageViewBitmap(imageViewId, result?.toBitmap())
             onUpdated()
         }

@@ -21,11 +21,11 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
-import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.closeQuietly
 import com.github.panpf.sketch.util.ifOrNull
 import okio.buffer
@@ -73,12 +73,11 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val snapshot = runCatching { resultCache.openSnapshot(cacheKey) }.getOrNull()
         if (snapshot == null) return null
         val result = runCatching {
-            val dataSource = DiskCacheDataSource(
+            val dataSource = FileDataSource(
                 sketch = sketch,
                 request = requestContext.request,
+                path = snapshot.data,
                 dataFrom = RESULT_CACHE,
-                fileSystem = fileSystem,
-                path = snapshot.data
             )
             val metadataString = fileSystem.source(snapshot.metadata).buffer().use { it.readUtf8() }
             val metadata = Metadata.fromMetadataString(metadataString)

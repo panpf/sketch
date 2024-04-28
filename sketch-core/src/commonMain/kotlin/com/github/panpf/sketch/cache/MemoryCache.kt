@@ -17,6 +17,7 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.defaultMemoryCacheSizePercent
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong
@@ -121,4 +122,30 @@ interface MemoryCache {
             return LruMemoryCache(finalMaxSizeBytes)
         }
     }
+}
+
+fun MemoryCache.Value.getImageInfo(): ImageInfo? {
+    return extras["imageInfo"] as ImageInfo?
+}
+
+fun MemoryCache.Value.getTransformedList(): List<String>? {
+    @Suppress("UNCHECKED_CAST")
+    return extras["transformedList"] as List<String>?
+}
+
+fun MemoryCache.Value.getExtras(): Map<String, String>? {
+    @Suppress("UNCHECKED_CAST")
+    return extras["extras"] as Map<String, String>?
+}
+
+fun newCacheValueExtras(
+    imageInfo: ImageInfo,
+    transformedList: List<String>?,
+    extras: Map<String, String>?,
+): Map<String, Any?> {
+    return mapOf(
+        "imageInfo" to imageInfo,
+        "transformedList" to transformedList,
+        "extras" to extras,
+    )
 }
