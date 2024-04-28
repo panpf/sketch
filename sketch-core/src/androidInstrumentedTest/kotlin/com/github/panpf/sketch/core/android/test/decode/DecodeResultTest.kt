@@ -39,7 +39,7 @@ class DecodeResultTest {
     @Test
     fun testConstructor() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
-        val imageInfo = ImageInfo(3000, 500, "image/png", 0)
+        val imageInfo = ImageInfo(3000, 500, "image/png")
         val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
         DecodeResult(
             image = newBitmap.asSketchImage(),
@@ -70,7 +70,7 @@ class DecodeResultTest {
         val image = Bitmap.createBitmap(100, 100, RGB_565).asSketchImage()
         DecodeResult(
             image = image,
-            imageInfo = ImageInfo(3000, 500, "image/png", 0),
+            imageInfo = ImageInfo(3000, 500, "image/png"),
             dataFrom = LOCAL,
             transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
             extras = mapOf("age" to "16"),
@@ -94,13 +94,13 @@ class DecodeResultTest {
 
         val result = DecodeResult(
             image = bitmap1.asSketchImage(),
-            imageInfo = ImageInfo(3000, 500, "image/png", 0),
+            imageInfo = ImageInfo(3000, 500, "image/png"),
             dataFrom = LOCAL,
             transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
             extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
-            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -116,7 +116,7 @@ class DecodeResultTest {
             Assert.assertNotSame(result, this)
             Assert.assertEquals(result, this)
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
-            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -132,7 +132,7 @@ class DecodeResultTest {
             Assert.assertNotSame(result, this)
             Assert.assertNotEquals(result, this)
             Assert.assertEquals(bitmap2, image.getBitmapOrThrow())
-            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -149,7 +149,7 @@ class DecodeResultTest {
                 Assert.assertNotSame(result, this)
                 Assert.assertNotEquals(result, this)
                 Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
-                Assert.assertEquals(ImageInfo(200, 200, "image/png", 0), imageInfo)
+                Assert.assertEquals(ImageInfo(200, 200, "image/png"), imageInfo)
                 Assert.assertEquals(LOCAL, dataFrom)
                 Assert.assertEquals(
                     listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -165,7 +165,7 @@ class DecodeResultTest {
             Assert.assertNotSame(result, this)
             Assert.assertNotEquals(result, this)
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
-            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(MEMORY, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -183,7 +183,7 @@ class DecodeResultTest {
             Assert.assertNotSame(result, this)
             Assert.assertNotEquals(result, this)
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
-            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
@@ -205,7 +205,7 @@ class DecodeResultTest {
             Assert.assertNotSame(result, this)
             Assert.assertNotEquals(result, this)
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
-            Assert.assertEquals(ImageInfo(3000, 500, "image/png", 0), imageInfo)
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),

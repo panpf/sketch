@@ -16,17 +16,18 @@
 package com.github.panpf.sketch.core.android.test.state
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.asStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -39,34 +40,34 @@ class ErrorStateImageTest {
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "")
-        val colorDrawable = ColorDrawable(Color.BLUE)
-        val colorDrawable2 = ColorDrawable(Color.RED)
+        val colorDrawable = ColorDrawableEqualizer(Color.BLUE)
+        val colorDrawable2 = ColorDrawableEqualizer(Color.RED)
 
-        ErrorStateImage(DrawableStateImage(colorDrawable)).apply {
+        ErrorStateImage(colorDrawable.asStateImage()).apply {
             Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(
                 colorDrawable,
-                getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable
+                getImage(sketch, request, null)?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
             Assert.assertEquals(
                 colorDrawable,
                 getImage(sketch, request, UriInvalidException(""))
-                    ?.asOrThrow<DrawableImage>()?.drawable
+                    ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
         }
 
         ErrorStateImage(DrawableStateImage(colorDrawable)) {
-            uriEmptyError(colorDrawable2)
+            uriEmptyError(colorDrawable2.asStateImage())
         }.apply {
             Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(
                 colorDrawable,
-                getImage(sketch, request, null)?.asOrThrow<DrawableImage>()?.drawable
+                getImage(sketch, request, null)?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
             Assert.assertEquals(
                 colorDrawable2,
                 getImage(sketch, request, UriInvalidException(""))
-                    ?.asOrThrow<DrawableImage>()?.drawable
+                    ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
         }
 

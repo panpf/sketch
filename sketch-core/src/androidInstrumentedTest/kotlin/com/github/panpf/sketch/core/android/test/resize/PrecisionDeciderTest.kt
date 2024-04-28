@@ -24,6 +24,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.resize.PrecisionDecider
+import com.github.panpf.sketch.test.utils.get
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -2,7 +2,12 @@ package com.github.panpf.sketch.view.core.test.target
 
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Assert
 import org.junit.Test
@@ -12,6 +17,62 @@ import org.junit.runner.RunWith
 class ImageViewTargetTest {
 
     // TODO test fitScale, drawable
+
+//    @Test
+//    fun testTarget() {
+//        val context1 = getTestContext()
+//        val uriString1 = MyImages.jpeg.uri
+//        val imageView = TestOptionsImageView(context1)
+//
+//        ImageRequest(context1, uriString1).apply {
+//            Assert.assertNull(target)
+//        }
+//
+//        ImageRequest(imageView, uriString1).apply {
+//            Assert.assertEquals(ImageViewTarget(imageView), target)
+//        }
+//
+//        imageView.updateImageOptions {
+//            memoryCachePolicy(WRITE_ONLY)
+//        }
+//
+//        ImageRequest(imageView, uriString1).apply {
+//            Assert.assertEquals(ImageViewTarget(imageView), target)
+//            Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
+//        }
+//
+//        ImageRequest(imageView, uriString1) {
+//            target(null)
+//        }.apply {
+//            Assert.assertNull(target)
+//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//        }
+//
+//        ImageRequest(imageView, uriString1) {
+//            target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
+//        }.apply {
+//            Assert.assertNotNull(target)
+//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//        }
+//        ImageRequest(imageView, uriString1) {
+//            target(onStart = { _, _ -> })
+//        }.apply {
+//            Assert.assertNotNull(target)
+//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//        }
+//        ImageRequest(imageView, uriString1) {
+//            target(onSuccess = { _, _ -> })
+//        }.apply {
+//            Assert.assertNotNull(target)
+//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//        }
+//        ImageRequest(imageView, uriString1) {
+//            target(onError = { _, _ -> })
+//        }.apply {
+//            Assert.assertNotNull(target)
+//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//        }
+//    }
 
     @Test
     fun testEqualsAndHashCode() {

@@ -30,7 +30,6 @@ import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.sketch
@@ -80,12 +79,11 @@ class GifInfoHandlerHelperTest {
         }
 
         GifInfoHandleHelper(
-            DiskCacheDataSource(
+            FileDataSource(
                 sketch = sketch,
                 request = ImageRequest(context, MyImages.animGif.uri),
+                path = snapshot.data,
                 dataFrom = LOCAL,
-                fileSystem = sketch.fileSystem,
-                path = snapshot.data
             )
         ).apply {
             Assert.assertEquals(480, width)

@@ -22,14 +22,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -39,6 +39,7 @@ import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +48,7 @@ import org.junit.runner.RunWith
 class CrossfadeTransitionTest {
 
     @Test
-    fun testConstructor() {
+    fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
@@ -59,7 +60,7 @@ class CrossfadeTransitionTest {
             request = request,
             cacheKey = requestContext.cacheKey,
             image = resultDrawable.asSketchImage(),
-            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
+            imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
             transformedList = null,
             extras = null,
@@ -87,7 +88,7 @@ class CrossfadeTransitionTest {
     }
 
     @Test
-    fun testTransition() {
+    fun testTransition() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, MyImages.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
@@ -113,7 +114,7 @@ class CrossfadeTransitionTest {
             request = request,
             cacheKey = request.toRequestContext(sketch).cacheKey,
             image = resultDrawable.asSketchImage(),
-            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
+            imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
             transformedList = null,
             extras = null,
@@ -154,7 +155,7 @@ class CrossfadeTransitionTest {
                 request = request,
                 cacheKey = request.toRequestContext(sketch).cacheKey,
                 image = imageViewTarget.drawable!!.asSketchImage(),
-                imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
+                imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 dataFrom = LOCAL,
                 transformedList = null,
                 extras = null,
@@ -187,7 +188,7 @@ class CrossfadeTransitionTest {
     }
 
     @Test
-    fun testFactoryCreate() {
+    fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, MyImages.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
@@ -203,7 +204,7 @@ class CrossfadeTransitionTest {
             request = request,
             cacheKey = request.toRequestContext(sketch).cacheKey,
             image = resultDrawable.asSketchImage(),
-            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
+            imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
             transformedList = null,
             extras = null,
@@ -221,7 +222,7 @@ class CrossfadeTransitionTest {
             request = request,
             cacheKey = request.toRequestContext(sketch).cacheKey,
             image = resultDrawable.asSketchImage(),
-            imageInfo = ImageInfo(100, 200, "image/jpeg", 0),
+            imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = MEMORY_CACHE,
             transformedList = null,
             extras = null,

@@ -19,8 +19,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -78,7 +80,11 @@ class RotateTransformationTest {
         val inBitmapCorners = inBitmap.corners()
 
         runBlocking {
-            RotateTransformation(90).transform(sketch, request.toRequestContext(sketch), inBitmap)
+            RotateTransformation(90).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                inBitmap.asSketchImage()
+            )
         }.apply {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertEquals(
@@ -88,9 +94,9 @@ class RotateTransformationTest {
                     inBitmapCorners[1],
                     inBitmapCorners[2],
                 ),
-                bitmap.corners()
+                image.getBitmapOrThrow().corners()
             )
-            Assert.assertEquals(Size(1936, 1291), bitmap.size)
+            Assert.assertEquals(Size(1936, 1291), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 createRotateTransformed(RotateTransformation(90).degrees),
                 transformed
@@ -98,7 +104,11 @@ class RotateTransformationTest {
         }
 
         runBlocking {
-            RotateTransformation(450).transform(sketch, request.toRequestContext(sketch), inBitmap)
+            RotateTransformation(450).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                inBitmap.asSketchImage()
+            )
         }.apply {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertEquals(
@@ -108,9 +118,9 @@ class RotateTransformationTest {
                     inBitmapCorners[1],
                     inBitmapCorners[2],
                 ),
-                bitmap.corners()
+                image.getBitmapOrThrow().corners()
             )
-            Assert.assertEquals(Size(1936, 1291), bitmap.size)
+            Assert.assertEquals(Size(1936, 1291), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 createRotateTransformed(RotateTransformation(450).degrees),
                 transformed
@@ -118,14 +128,18 @@ class RotateTransformationTest {
         }
 
         runBlocking {
-            RotateTransformation(45).transform(sketch, request.toRequestContext(sketch), inBitmap)
+            RotateTransformation(45).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                inBitmap.asSketchImage()
+            )
         }.apply {
             Assert.assertNotSame(inBitmap, this)
             Assert.assertEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
-                bitmap.corners()
+                image.getBitmapOrThrow().corners()
             )
-            Assert.assertEquals(Size(2281, 2281), bitmap.size)
+            Assert.assertEquals(Size(2281, 2281), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 createRotateTransformed(RotateTransformation(45).degrees),
                 transformed
@@ -140,14 +154,22 @@ class RotateTransformationTest {
             Assert.assertEquals(Bitmap.Config.RGB_565, this.config)
         }
         runBlocking {
-            RotateTransformation(90).transform(sketch, request.toRequestContext(sketch), rgb565InBitmap)
+            RotateTransformation(90).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                rgb565InBitmap.asSketchImage()
+            )
         }.apply {
-            Assert.assertEquals(Bitmap.Config.RGB_565, this.bitmap.config)
+            Assert.assertEquals(Bitmap.Config.RGB_565, this.image.getBitmapOrThrow().config)
         }
         runBlocking {
-            RotateTransformation(45).transform(sketch, request.toRequestContext(sketch), rgb565InBitmap)
+            RotateTransformation(45).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                rgb565InBitmap.asSketchImage()
+            )
         }.apply {
-            Assert.assertEquals(Bitmap.Config.ARGB_8888, this.bitmap.config)
+            Assert.assertEquals(Bitmap.Config.ARGB_8888, this.image.getBitmapOrThrow().config)
         }
     }
 

@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.core.android.test.request
 
-import android.R.drawable
 import android.graphics.Bitmap.Config.ALPHA_8
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
@@ -23,7 +22,6 @@ import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
 import android.graphics.ColorSpace.Named.BT709
-import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.TextView
@@ -33,7 +31,6 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -43,9 +40,15 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.isNotEmpty
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -63,17 +66,20 @@ import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
+import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.util.ColorDrawableEqualizer
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -115,8 +121,6 @@ class ImageOptionsTest {
             Assert.assertNull(this.precisionDecider)
             Assert.assertNull(this.scaleDecider)
             Assert.assertNull(this.transformations)
-            Assert.assertNull(this.disallowReuseBitmap)
-            Assert.assertNull(this.ignoreExifOrientation)
             Assert.assertNull(this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
             Assert.assertNull(this.uriEmpty)
@@ -170,7 +174,7 @@ class ImageOptionsTest {
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             ImageOptions {
-                colorSpace(ColorSpace.get(BT709))
+                colorSpace(BT709)
             }.apply {
                 Assert.assertFalse(this.isEmpty())
                 Assert.assertTrue(this.isNotEmpty())
@@ -221,22 +225,6 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            disallowReuseBitmap(true)
-        }.apply {
-            Assert.assertFalse(this.isEmpty())
-            Assert.assertTrue(this.isNotEmpty())
-            Assert.assertNotNull(this.disallowReuseBitmap)
-        }
-
-        ImageOptions {
-            ignoreExifOrientation(true)
-        }.apply {
-            Assert.assertFalse(this.isEmpty())
-            Assert.assertTrue(this.isNotEmpty())
-            Assert.assertNotNull(this.ignoreExifOrientation)
-        }
-
-        ImageOptions {
             resultCachePolicy(ENABLED)
         }.apply {
             Assert.assertFalse(this.isEmpty())
@@ -253,7 +241,7 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            placeholder(ColorDrawable(Color.BLUE))
+            placeholder(ColorDrawableEqualizer(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
@@ -261,7 +249,7 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            uriEmpty(ColorDrawable(Color.BLUE))
+            uriEmpty(ColorDrawableEqualizer(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
@@ -269,7 +257,7 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            error(ColorDrawable(Color.BLUE))
+            error(ColorDrawableEqualizer(Color.BLUE))
         }.apply {
             Assert.assertFalse(this.isEmpty())
             Assert.assertTrue(this.isNotEmpty())
@@ -448,11 +436,11 @@ class ImageOptionsTest {
             ImageOptions().apply {
                 Assert.assertEquals(null, this.colorSpace)
             }.merged(ImageOptions {
-                colorSpace(ColorSpace.get(BT709))
+                colorSpace(BT709)
             }).apply {
                 Assert.assertEquals(ColorSpace.get(BT709), this.colorSpace)
             }.merged(ImageOptions {
-                colorSpace(ColorSpace.get(ACES))
+                colorSpace(ACES)
             }).apply {
                 Assert.assertEquals(ColorSpace.get(BT709), this.colorSpace)
             }
@@ -530,30 +518,6 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            Assert.assertEquals(null, this.disallowReuseBitmap)
-        }.merged(ImageOptions {
-            disallowReuseBitmap(true)
-        }).apply {
-            Assert.assertEquals(true, this.disallowReuseBitmap)
-        }.merged(ImageOptions {
-            disallowReuseBitmap(false)
-        }).apply {
-            Assert.assertEquals(true, this.disallowReuseBitmap)
-        }
-
-        ImageOptions().apply {
-            Assert.assertEquals(null, this.ignoreExifOrientation)
-        }.merged(ImageOptions {
-            ignoreExifOrientation(true)
-        }).apply {
-            Assert.assertEquals(true, this.ignoreExifOrientation)
-        }.merged(ImageOptions {
-            ignoreExifOrientation(false)
-        }).apply {
-            Assert.assertEquals(true, this.ignoreExifOrientation)
-        }
-
-        ImageOptions().apply {
             Assert.assertEquals(null, this.resultCachePolicy)
         }.merged(ImageOptions {
             resultCachePolicy(DISABLED)
@@ -619,14 +583,14 @@ class ImageOptionsTest {
             error(android.R.drawable.bottom_bar)
         }).apply {
             Assert.assertEquals(
-                ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
+                ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
                 this.error
             )
         }.merged(ImageOptions {
             error(android.R.drawable.arrow_up_float)
         }).apply {
             Assert.assertEquals(
-                ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
+                ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
                 this.error
             )
         }
@@ -729,7 +693,7 @@ class ImageOptionsTest {
                 }.apply { add(this) }.let { options ->
                     if (VERSION.SDK_INT >= VERSION_CODES.O) {
                         options.newOptions {
-                            colorSpace(ColorSpace.get(ACES))
+                            colorSpace(ACES)
                         }.apply { add(this) }
                     } else {
                         options
@@ -745,10 +709,6 @@ class ImageOptionsTest {
                     scale(FILL)
                 }.apply { add(this) }.newOptions {
                     transformations(RotateTransformation(40))
-                }.apply { add(this) }.newOptions {
-                    disallowReuseBitmap(false)
-                }.apply { add(this) }.newOptions {
-                    ignoreExifOrientation(true)
                 }.apply { add(this) }.newOptions {
                     resultCachePolicy(READ_ONLY)
                 }.apply { add(this) }.newOptions {
@@ -1023,12 +983,12 @@ class ImageOptionsTest {
                 Assert.assertNull(colorSpace)
             }
 
-            colorSpace(ColorSpace.get(ACES))
+            colorSpace(ACES)
             build().apply {
                 Assert.assertEquals(ColorSpace.get(ACES), colorSpace)
             }
 
-            colorSpace(ColorSpace.get(BT709))
+            colorSpace(BT709)
             build().apply {
                 Assert.assertEquals(ColorSpace.get(BT709), colorSpace)
             }
@@ -1244,7 +1204,10 @@ class ImageOptionsTest {
 
             scale(LongImageStartCropScaleDecider(START_CROP, END_CROP))
             build().apply {
-                Assert.assertEquals(LongImageStartCropScaleDecider(START_CROP, END_CROP), scaleDecider)
+                Assert.assertEquals(
+                    LongImageStartCropScaleDecider(START_CROP, END_CROP),
+                    scaleDecider
+                )
             }
 
             scale(FILL)
@@ -1345,54 +1308,6 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testDisallowReuseBitmap() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                Assert.assertNull(disallowReuseBitmap)
-            }
-
-            disallowReuseBitmap()
-            build().apply {
-                Assert.assertEquals(true, disallowReuseBitmap)
-            }
-
-            disallowReuseBitmap(false)
-            build().apply {
-                Assert.assertEquals(false, disallowReuseBitmap)
-            }
-
-            disallowReuseBitmap(null)
-            build().apply {
-                Assert.assertNull(disallowReuseBitmap)
-            }
-        }
-    }
-
-    @Test
-    fun testIgnoreExifOrientation() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                Assert.assertNull(ignoreExifOrientation)
-            }
-
-            ignoreExifOrientation()
-            build().apply {
-                Assert.assertEquals(true, ignoreExifOrientation)
-            }
-
-            ignoreExifOrientation(false)
-            build().apply {
-                Assert.assertEquals(false, ignoreExifOrientation)
-            }
-
-            ignoreExifOrientation(null)
-            build().apply {
-                Assert.assertNull(ignoreExifOrientation)
-            }
-        }
-    }
-
-    @Test
     fun testResultCachePolicy() {
         ImageOptions.Builder().apply {
             build().apply {
@@ -1452,7 +1367,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholder)
             }
 
-            placeholder(ColorDrawable(Color.GREEN))
+            placeholder(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
                 Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
@@ -1484,7 +1399,7 @@ class ImageOptionsTest {
                 Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), uriEmpty)
             }
 
-            uriEmpty(ColorDrawable(Color.GREEN))
+            uriEmpty(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
                 Assert.assertEquals(true, uriEmpty is DrawableStateImage)
             }
@@ -1519,7 +1434,7 @@ class ImageOptionsTest {
                 )
             }
 
-            error(ColorDrawable(Color.GREEN))
+            error(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
                 Assert.assertEquals(true, error is ErrorStateImage)
             }
@@ -1527,7 +1442,7 @@ class ImageOptionsTest {
             error(android.R.drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)),
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
                     error
                 )
             }
@@ -1537,8 +1452,8 @@ class ImageOptionsTest {
             }
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(DrawableStateImage(drawable.bottom_bar)) {
-                        uriEmptyError(drawable.alert_dark_frame)
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
+                        uriEmptyError(android.R.drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -1660,12 +1575,12 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testMergeComponents(){
+    fun testMergeComponents() {
         // TODO test mergeComponents
     }
 
     @Test
-    fun testSizeMultiplier(){
+    fun testSizeMultiplier() {
         // TODO test sizeMultiplier
     }
 }

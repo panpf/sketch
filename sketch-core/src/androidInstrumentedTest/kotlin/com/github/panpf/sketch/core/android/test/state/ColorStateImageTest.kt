@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.android.test.state
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
@@ -41,8 +41,8 @@ class ColorStateImageTest {
         ColorStateImage(Color.BLUE).apply {
             Assert.assertEquals(
                 Color.BLUE,
-                getImage(sketch, request, null)
-                    .asOrThrow<DrawableImage>().drawable
+                getImage(sketch, request, null)!!
+                    .asOrThrow<AndroidDrawableImage>().drawable
                     .asOrNull<ColorDrawable>()!!.color
             )
         }
@@ -50,8 +50,8 @@ class ColorStateImageTest {
         ColorStateImage(IntColor(Color.RED)).apply {
             Assert.assertEquals(
                 Color.RED,
-                getImage(sketch, request, null)
-                    .asOrThrow<DrawableImage>().drawable
+                getImage(sketch, request, null)!!
+                    .asOrThrow<AndroidDrawableImage>().drawable
                     .asOrNull<ColorDrawable>()!!.color
             )
         }
@@ -59,8 +59,8 @@ class ColorStateImageTest {
         ColorStateImage(IntColor(Color.GREEN)).apply {
             Assert.assertEquals(
                 Color.GREEN,
-                getImage(sketch, request, null)
-                    .asOrThrow<DrawableImage>().drawable
+                getImage(sketch, request, null)!!
+                    .asOrThrow<AndroidDrawableImage>().drawable
                     .asOrNull<ColorDrawable>()!!.color
             )
         }

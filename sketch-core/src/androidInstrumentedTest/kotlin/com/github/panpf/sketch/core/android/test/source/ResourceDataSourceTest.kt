@@ -5,6 +5,14 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.tools4j.test.ktx.assertThrow
+import okio.Closeable
 
 @RunWith(AndroidJUnit4::class)
 class ResourceDataSourceTest {
@@ -14,19 +22,19 @@ class ResourceDataSourceTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val request = ImageRequest(
             context,
-            newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
         )
         ResourceDataSource(
             sketch = sketch,
             request = request,
             packageName = context.packageName,
             resources = context.resources,
-            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
             Assert.assertEquals(
-                com.github.panpf.sketch.test.utils.R.drawable.ic_launcher,
+                com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher,
                 this.resId
             )
             Assert.assertEquals(LOCAL, this.dataFrom)
@@ -40,13 +48,13 @@ class ResourceDataSourceTest {
             sketch = sketch,
             request = ImageRequest(
                 context,
-                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
             ),
             packageName = context.packageName,
             resources = context.resources,
-            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
-            openSource().close()
+            openSource().asOrThrow<Closeable>().close()
         }
 
         assertThrow(NotFoundException::class) {
@@ -69,11 +77,11 @@ class ResourceDataSourceTest {
             sketch = sketch,
             request = ImageRequest(
                 context,
-                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
             ),
             packageName = context.packageName,
             resources = context.resources,
-            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             val file = getFile()
             Assert.assertEquals("0257c278c299ae9196d4e58fbf234e56.0", file.name)
@@ -87,14 +95,14 @@ class ResourceDataSourceTest {
             sketch = sketch,
             request = ImageRequest(
                 context,
-                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
             ),
             packageName = context.packageName,
             resources = context.resources,
-            resId = com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             Assert.assertEquals(
-                "ResourceDataSource(${com.github.panpf.sketch.test.utils.R.drawable.ic_launcher})",
+                "ResourceDataSource(${com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher})",
                 toString()
             )
         }

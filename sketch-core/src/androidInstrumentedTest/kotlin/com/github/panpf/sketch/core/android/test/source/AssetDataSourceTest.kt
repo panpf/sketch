@@ -5,6 +5,15 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import java.io.FileNotFoundException
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.tools4j.test.ktx.assertThrow
+import okio.Closeable
 
 @RunWith(AndroidJUnit4::class)
 class AssetDataSourceTest {
@@ -35,7 +44,7 @@ class AssetDataSourceTest {
             request = ImageRequest(context, MyImages.jpeg.uri),
             assetFileName = MyImages.jpeg.fileName
         ).apply {
-            openSource().close()
+            openSource().asOrThrow<Closeable>().close()
         }
 
         assertThrow(FileNotFoundException::class) {

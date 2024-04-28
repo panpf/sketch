@@ -15,21 +15,15 @@
  */
 package com.github.panpf.sketch.core.android.test.request.internal
 
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.cache.CountBitmap
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -83,7 +77,7 @@ class RequestContextTest {
                 Assert.assertSame(cacheKey0, cacheKey1)
 
                 setNewRequest(request.newRequest {
-                    resizeSize(100, 300)
+                    size(100, 300)
                 })
                 val cacheKey2 = cacheKey
                 Assert.assertNotEquals(cacheKey1, cacheKey2)
@@ -99,71 +93,17 @@ class RequestContextTest {
                 Assert.assertSame(cacheKey3, cacheKey4)
 
                 setNewRequest(request.newRequest {
-                    ignoreExifOrientation(false)
+//                    ignoreExifOrientation(false)
                 })
                 val cacheKey5 = cacheKey
                 Assert.assertNotSame(cacheKey4, cacheKey5)
                 Assert.assertEquals(cacheKey4, cacheKey5)
 
                 setNewRequest(request.newRequest {
-                    ignoreExifOrientation(true)
+//                    ignoreExifOrientation(true)
                 })
                 val cacheKey6 = cacheKey
                 Assert.assertNotEquals(cacheKey5, cacheKey6)
-            }
-        }
-    }
-
-    @Test
-    fun testPendingCountDrawable() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        val countDrawable = SketchCountBitmapDrawable(
-            resources = context.resources,
-            countingBitmapImage = CountBitmap(
-                originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                bitmapPool = sketch.bitmapPool,
-                disallowReuseBitmap = false,
-            ),
-        )
-        val countDrawable1 = SketchCountBitmapDrawable(
-            resources = context.resources,
-            countingBitmapImage = CountBitmap(
-                originBitmap = Bitmap.createBitmap(100, 100, ARGB_8888),
-                bitmapPool = sketch.bitmapPool,
-                disallowReuseBitmap = false,
-            ),
-        )
-        val request = ImageRequest(context, MyImages.jpeg.uri)
-
-        request.toRequestContext(sketch).apply {
-            assertThrow(IllegalStateException::class) {
-                pendingCountDrawable(countDrawable, "test")
-            }
-            assertThrow(IllegalStateException::class) {
-                completeCountDrawable("test")
-            }
-
-            runBlocking(Dispatchers.Main) {
-                completeCountDrawable("test")
-
-                Assert.assertEquals(0, countDrawable.countingBitmapImage.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
-
-                pendingCountDrawable(countDrawable, "test")
-                Assert.assertEquals(1, countDrawable.countingBitmapImage.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
-
-                pendingCountDrawable(countDrawable1, "test")
-                Assert.assertEquals(0, countDrawable.countingBitmapImage.getPendingCount())
-                Assert.assertEquals(1, countDrawable1.countingBitmapImage.getPendingCount())
-
-                pendingCountDrawable(countDrawable, "test")
-                Assert.assertEquals(1, countDrawable.countingBitmapImage.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
-
-                completeCountDrawable("test")
-                Assert.assertEquals(0, countDrawable.countingBitmapImage.getPendingCount())
-                Assert.assertEquals(0, countDrawable1.countingBitmapImage.getPendingCount())
             }
         }
     }

@@ -1,11 +1,20 @@
 package com.github.panpf.sketch.core.android.test.source
 
 import android.net.Uri
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
+import okio.Closeable
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -19,7 +28,7 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
             assetFileName = MyImages.jpeg.fileName
-        ).getFile().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it.toFile()) }
         val request = ImageRequest(context, contentUri.toString())
         ContentDataSource(
             sketch = sketch,
@@ -40,13 +49,13 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
             assetFileName = MyImages.jpeg.fileName
-        ).getFile().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
             sketch = sketch,
             request = ImageRequest(context, contentUri.toString()),
             contentUri = contentUri,
         ).apply {
-            openSource().close()
+            openSource().asOrThrow<Closeable>().close()
         }
 
         assertThrow(FileNotFoundException::class) {
@@ -70,7 +79,7 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
             assetFileName = MyImages.jpeg.fileName
-        ).getFile().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
             sketch = sketch,
             request = ImageRequest(context, contentUri.toString()),
@@ -87,7 +96,7 @@ class ContentDataSourceTest {
             contentUri = errorContentUri,
         ).apply {
             val file = getFile()
-            Assert.assertEquals("/sdcard/error.jpeg", file.path)
+            Assert.assertEquals("/sdcard/error.jpeg", file.toFile().path)
         }
 
         assertThrow(FileNotFoundException::class) {
@@ -107,7 +116,7 @@ class ContentDataSourceTest {
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
             assetFileName = MyImages.jpeg.fileName
-        ).getFile().let { Uri.fromFile(it) }
+        ).getFile().let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
             sketch = sketch,
             request = ImageRequest(context, contentUri.toString()),

@@ -18,18 +18,19 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +39,7 @@ import org.junit.runner.RunWith
 class DecodeInterceptorChainTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val (context, sketch) = getTestContextAndNewSketch()
 
         mutableListOf<String>().apply {
@@ -91,7 +92,7 @@ class DecodeInterceptorChainTest {
     private class TestBitmapDecoderInterceptor1(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
-        override val key: String = Key.INVALID_KEY
+        override val key: String? = null
 
         override val sortWeight: Int = 0
 
@@ -108,7 +109,7 @@ class DecodeInterceptorChainTest {
     private class TestBitmapDecoderInterceptor2(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
-        override val key: String = Key.INVALID_KEY
+        override val key: String? = null
 
         override val sortWeight: Int = 0
 
@@ -125,7 +126,7 @@ class DecodeInterceptorChainTest {
     private class TestBitmapDecoderInterceptor3(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
-        override val key: String = Key.INVALID_KEY
+        override val key: String? = null
 
         override val sortWeight: Int = 0
 
@@ -134,7 +135,7 @@ class DecodeInterceptorChainTest {
             return Result.success(
                 DecodeResult(
                     image = Bitmap.createBitmap(12, 45, RGB_565).asSketchImage(),
-                    imageInfo = ImageInfo(12, 45, "image/jpeg", 0),
+                    imageInfo = ImageInfo(12, 45, "image/jpeg"),
                     dataFrom = LOCAL,
                     transformedList = null,
                     extras = null,

@@ -18,12 +18,13 @@ package com.github.panpf.sketch.core.android.test.request.internal
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.DataFrom.MEMORY
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.CombinedListener
+import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Assert
 import org.junit.Test
@@ -143,7 +144,7 @@ class CombinedListenerTest {
                 request = request,
                 image = ColorDrawable(Color.BLACK).asSketchImage(),
                 cacheKey = "",
-                imageInfo = com.github.panpf.sketch.decode.ImageInfo(100, 100, "", 0),
+                imageInfo = ImageInfo(100, 100, ""),
                 dataFrom = MEMORY,
                 transformedList = null,
                 extras = null

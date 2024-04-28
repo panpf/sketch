@@ -16,14 +16,14 @@
 package com.github.panpf.sketch.core.android.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ALLOW_NULL_IMAGE_KEY
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.allowSetNullDrawable
 import com.github.panpf.sketch.request.allowNullImage
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,56 +32,56 @@ import org.junit.runner.RunWith
 class AllowNullImageExtensionsTest {
 
     @Test
-    fun testAllowNullImage() {
+    fun testAllowNullImage() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, MyImages.animGif.uri).apply {
-            Assert.assertFalse(allowSetNullDrawable)
+            Assert.assertFalse(allowNullImage)
         }
         ImageRequest(context, MyImages.animGif.uri) {
-            allowSetNullDrawable()
+            allowNullImage()
         }.apply {
-            Assert.assertTrue(allowSetNullDrawable)
+            Assert.assertTrue(allowNullImage)
         }
         ImageRequest(context, MyImages.animGif.uri) {
-            allowSetNullDrawable(false)
+            allowNullImage(false)
         }.apply {
-            Assert.assertFalse(allowSetNullDrawable)
+            Assert.assertFalse(allowNullImage)
         }
 
         ImageRequest(context, MyImages.animGif.uri).apply {
-            Assert.assertFalse(allowSetNullDrawable)
+            Assert.assertFalse(allowNullImage)
         }
         ImageRequest(context, MyImages.animGif.uri) {
-            allowSetNullDrawable()
+            allowNullImage()
         }.apply {
-            Assert.assertTrue(allowSetNullDrawable)
+            Assert.assertTrue(allowNullImage)
         }
         ImageRequest(context, MyImages.animGif.uri) {
-            allowSetNullDrawable(false)
+            allowNullImage(false)
         }.apply {
-            Assert.assertFalse(allowSetNullDrawable)
+            Assert.assertFalse(allowNullImage)
         }
 
         ImageOptions().apply {
-            Assert.assertFalse(allowSetNullDrawable)
+            Assert.assertFalse(allowNullImage)
         }
         ImageOptions {
             allowNullImage()
         }.apply {
-            Assert.assertTrue(allowSetNullDrawable)
+            Assert.assertTrue(allowNullImage)
         }
         ImageOptions {
             allowNullImage(false)
         }.apply {
-            Assert.assertFalse(allowSetNullDrawable)
+            Assert.assertFalse(allowNullImage)
         }
 
         ImageRequest(context, MyImages.animGif.uri).key.apply {
             Assert.assertFalse(contains(ALLOW_NULL_IMAGE_KEY))
         }
         ImageRequest(context, MyImages.animGif.uri) {
-            allowSetNullDrawable()
+            allowNullImage()
         }.key.apply {
             Assert.assertTrue(contains(ALLOW_NULL_IMAGE_KEY))
         }
@@ -90,7 +90,7 @@ class AllowNullImageExtensionsTest {
             Assert.assertFalse(contains(ALLOW_NULL_IMAGE_KEY))
         }
         ImageRequest(context, MyImages.animGif.uri) {
-            allowSetNullDrawable()
+            allowNullImage()
         }.toRequestContext(sketch).cacheKey.apply {
             Assert.assertFalse(contains(ALLOW_NULL_IMAGE_KEY))
         }

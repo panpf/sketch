@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.request.internal
+package com.github.panpf.sketch.core.android.test.cache.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.AndroidBitmapImage
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.cache.CountingBitmapImageValue
-import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.drawable.SketchCountBitmapDrawable
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.request.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
-import com.github.panpf.sketch.request.internal.newCacheValueExtras
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -46,6 +45,7 @@ import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,7 +54,7 @@ import org.junit.runner.RunWith
 class MemoryCacheRequestInterceptorTest {
 
     @Test
-    fun testIntercept() {
+    fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val memoryCache = sketch.memoryCache
 
@@ -90,7 +90,7 @@ class MemoryCacheRequestInterceptorTest {
         val request = ImageRequest(context, MyImages.jpeg.uri) {
             target(TestCountTarget())
         }
-        val countBitmapDrawable: SketchCountBitmapDrawable
+        val cacheImage: AndroidBitmapImage
         val imageData: ImageData
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
@@ -99,7 +99,7 @@ class MemoryCacheRequestInterceptorTest {
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
             imageData = this
-            countBitmapDrawable = image.asOrThrow<DrawableImage>().drawable.asOrThrow()
+            cacheImage = image.asOrThrow()
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -117,14 +117,14 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image.asOrThrow<DrawableImage>().drawable !is SketchCountBitmapDrawable)
+            Assert.assertTrue(image is AndroidBitmapImage)
         }
         Assert.assertEquals(0, memoryCache.size)
 
         memoryCache.put(
             request.toRequestContext(sketch).cacheKey,
-            CountingBitmapImageValue(
-                countBitmapDrawable.countingBitmapImage,
+            AndroidBitmapImageValue(
+                cacheImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
                     transformedList = imageData.transformedList,
@@ -147,14 +147,14 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image.asOrThrow<DrawableImage>().drawable !is SketchCountBitmapDrawable)
+            Assert.assertTrue(image is AndroidBitmapImage)
         }
         Assert.assertEquals(0, memoryCache.size)
 
         memoryCache.put(
             request.toRequestContext(sketch).cacheKey,
-            CountingBitmapImageValue(
-                countBitmapDrawable.countingBitmapImage,
+            AndroidBitmapImageValue(
+                cacheImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
                     transformedList = imageData.transformedList,
@@ -167,7 +167,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
-            Assert.assertTrue(image.asOrThrow<DrawableImage>().drawable is SketchCountBitmapDrawable)
+            Assert.assertTrue(image is AndroidBitmapImage)
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -178,7 +178,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image.asOrThrow<DrawableImage>().drawable !is SketchCountBitmapDrawable)
+            Assert.assertTrue(image is AndroidBitmapImage)
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -186,7 +186,7 @@ class MemoryCacheRequestInterceptorTest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image.asOrThrow<DrawableImage>().drawable !is SketchCountBitmapDrawable)
+            Assert.assertTrue(image is AndroidBitmapImage)
         }
         Assert.assertEquals(40000, memoryCache.size)
 
@@ -241,13 +241,13 @@ class MemoryCacheRequestInterceptorTest {
 
     class FakeRequestInterceptor : RequestInterceptor {
 
-        override val key: String = Key.INVALID_KEY
+        override val key: String? = null
 
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {
             val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
-            val imageInfo = ImageInfo(100, 100, "image/png", 0)
+            val imageInfo = ImageInfo(100, 100, "image/png")
             val drawable = BitmapDrawable(chain.sketch.context.resources, bitmap)
             ImageData(
                 drawable.asSketchImage(),

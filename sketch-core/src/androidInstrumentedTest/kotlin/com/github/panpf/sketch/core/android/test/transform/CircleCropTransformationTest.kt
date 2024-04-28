@@ -18,9 +18,11 @@ package com.github.panpf.sketch.core.android.test.transform
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -81,15 +83,15 @@ class CircleCropTransformationTest {
             CircleCropTransformation(Scale.START_CROP).transform(
                 sketch,
                 request.toRequestContext(sketch),
-                inBitmap
+                inBitmap.asSketchImage()
             )
         }.apply {
-            Assert.assertNotSame(inBitmap, bitmap)
+            Assert.assertNotSame(inBitmap, image.getBitmapOrThrow())
             Assert.assertEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
-                bitmap.corners()
+                image.getBitmapOrThrow().corners()
             )
-            Assert.assertEquals(Size(1291, 1291), bitmap.size)
+            Assert.assertEquals(Size(1291, 1291), image.getBitmapOrThrow().size)
             Assert.assertEquals(createCircleCropTransformed(Scale.START_CROP), transformed)
         }
     }

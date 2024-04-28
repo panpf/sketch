@@ -102,7 +102,7 @@ class ResourceUriFetcherTest {
         val androidResUriByName = newResourceUri(testAppPackage, "drawable", "ic_launcher")
         val androidResUriById = newResourceUri(
             testAppPackage,
-            com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+            com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         )
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
@@ -157,7 +157,7 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
+                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow()
@@ -174,7 +174,7 @@ class ResourceUriFetcherTest {
             runBlocking {
                 newResourceUri(
                     context.packageName,
-                    com.github.panpf.sketch.test.utils.R.drawable.ic_launcher
+                    com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
                 ).let {
                     ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
@@ -190,7 +190,7 @@ class ResourceUriFetcherTest {
         }
         assertNoThrow {
             runBlocking {
-                context.newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher)
+                context.newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
                     .let {
                         ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                     }.fetch()
@@ -239,14 +239,14 @@ class ResourceUriFetcherTest {
 
         Assert.assertTrue(
             runBlocking {
-                newResourceUri(com.github.panpf.sketch.test.utils.R.drawable.ic_launcher).let {
+                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher).let {
                     ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow().dataSource is DrawableDataSource
         )
         Assert.assertTrue(
             runBlocking {
-                newResourceUri(com.github.panpf.sketch.test.utils.R.raw.sample).let {
+                newResourceUri(com.github.panpf.sketch.test.utils.core.R.raw.sample).let {
                     ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it))
                 }.fetch()
             }.getOrThrow().dataSource is ResourceDataSource

@@ -16,16 +16,17 @@
 package com.github.panpf.sketch.core.android.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,12 +35,12 @@ import org.junit.runner.RunWith
 class EngineDecodeInterceptorTest {
 
     @Test
-    fun testIntercept() {
+    fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val interceptors = listOf(EngineDecodeInterceptor())
         val request = ImageRequest(context, MyImages.jpeg.uri) {
-            resizeSize(3000, 3000)
-            resizePrecision(LESS_PIXELS)
+            size(3000, 3000)
+            precision(LESS_PIXELS)
         }
         val chain = DecodeInterceptorChain(
             sketch = sketch,

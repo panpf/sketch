@@ -18,6 +18,7 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.util.SketchException
+import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +28,9 @@ class DecodeExceptionTest {
 
     @Test
     fun test() {
-        Assert.assertTrue(SketchException::class.java.isAssignableFrom(DecodeException::class.java))
+        Assert.assertTrue(
+            SketchException::class.java.asOrThrow<Class<*>>()
+                .isAssignableFrom(DecodeException::class.java)
+        )
     }
 }

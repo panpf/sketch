@@ -16,14 +16,17 @@
 package com.github.panpf.sketch.core.android.test.fetch.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.SlowInputStream
+import com.github.panpf.sketch.test.utils.content
+import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import okio.buffer
+import okio.sink
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,10 +34,10 @@ import java.io.ByteArrayOutputStream
 import kotlin.math.ceil
 
 @RunWith(AndroidJUnit4::class)
-class DownloadUtilsTest {
+class HttpUtilsTest {
 
     @Test
-    fun testCopyToWithActive() {
+    fun testWriteAllWithProgress() {
         val context = getTestContext()
         val string = "abcdefghijklmnopqrstuvwxyz"
         val progressListener = ProgressListenerSupervisor()
@@ -44,13 +47,13 @@ class DownloadUtilsTest {
         val outputStream = ByteArrayOutputStream()
         runBlocking {
             writeAllWithProgress(
+                sink = outputStream.sink().buffer(),
+                content = SlowInputStream(string.byteInputStream(), 100).content(),
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
-                content = SlowInputStream(string.byteInputStream(), 100),
-                sink = outputStream,
+                contentLength = string.length.toLong(),
                 bufferSize = ceil(string.length / 3f).toInt(),
-                contentLength = string.length.toLong()
             )
             delay(100)
         }
@@ -62,11 +65,11 @@ class DownloadUtilsTest {
         val outputStream2 = ByteArrayOutputStream()
         runBlocking {
             writeAllWithProgress(
+                sink = outputStream2.sink().buffer(),
+                content = SlowInputStream(string.byteInputStream(), 100).content(),
                 request = ImageRequest(context, "http://sample.com/sample.jpeg"),
-                content = SlowInputStream(string.byteInputStream(), 100),
-                sink = outputStream2,
+                contentLength = string.length.toLong(),
                 bufferSize = ceil(string.length / 3f).toInt(),
-                contentLength = string.length.toLong()
             )
             delay(100)
         }
@@ -78,11 +81,11 @@ class DownloadUtilsTest {
         val outputStream3 = ByteArrayOutputStream()
         runBlocking {
             writeAllWithProgress(
+                sink = outputStream3.sink().buffer(),
+                content = SlowInputStream(string.byteInputStream(), 100).content(),
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
-                content = SlowInputStream(string.byteInputStream(), 100),
-                sink = outputStream3,
                 bufferSize = ceil(string.length / 3f).toInt(),
                 contentLength = 0
             )
@@ -96,11 +99,11 @@ class DownloadUtilsTest {
         val outputStream4 = ByteArrayOutputStream()
         runBlocking {
             writeAllWithProgress(
+                sink = outputStream4.sink().buffer(),
+                content = SlowInputStream(string.byteInputStream(), 400).content(),
                 request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                     progressListener(progressListener)
                 },
-                content = SlowInputStream(string.byteInputStream(), 400),
-                sink = outputStream4,
                 bufferSize = ceil(string.length / 3f).toInt(),
                 contentLength = string.length.toLong()
             )

@@ -15,20 +15,12 @@
  */
 package com.github.panpf.sketch.core.android.test.request
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
-import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -41,11 +33,13 @@ class DisposableTest {
 
     @Test
     fun testOneShotDisposable() {
+        val context = getTestContext()
         runBlocking {
             val job = async {
                 delay(100)
                 delay(100)
                 delay(100)
+                ImageResult.Error(ImageRequest(context, MyImages.jpeg.uri), null, Exception("test"))
             }
             val disposable = OneShotDisposable(job)
             Assert.assertFalse(disposable.isDisposed)
@@ -55,40 +49,6 @@ class DisposableTest {
             delay(100)
             Assert.assertTrue(disposable.isDisposed)
             disposable.dispose()
-        }
-    }
-
-    @Test
-    fun testViewTargetDisposable() {
-        val (context, sketch) = getTestContextAndSketch()
-        runBlocking {
-            val view = ImageView(context)
-            val job = async<ImageResult> {
-                delay(100)
-                delay(100)
-                delay(100)
-                val requestContext = ImageRequest(view, MyImages.jpeg.uri).toRequestContext(sketch)
-                ImageResult.Success(
-                    request = requestContext.request,
-                    cacheKey = requestContext.cacheKey,
-                    image = ColorDrawable(Color.BLACK).asSketchImage(),
-                    imageInfo = ImageInfo(100, 100, "image/jpeg", 0),
-                    dataFrom = DOWNLOAD_CACHE,
-                    transformedList = null,
-                    extras = null,
-                )
-            }
-
-            val disposable = view.requestManager.getDisposable(job)
-            Assert.assertFalse(disposable.isDisposed)
-            delay(100)
-            Assert.assertFalse(disposable.isDisposed)
-            disposable.dispose()
-            delay(100)
-            Assert.assertTrue(disposable.isDisposed)
-            disposable.dispose()
-
-            disposable.job = job
         }
     }
 }

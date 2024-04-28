@@ -18,6 +18,7 @@ package com.github.panpf.sketch.core.android.test.resize
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.LongImageDecider
+import com.github.panpf.sketch.test.utils.isLongImage
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

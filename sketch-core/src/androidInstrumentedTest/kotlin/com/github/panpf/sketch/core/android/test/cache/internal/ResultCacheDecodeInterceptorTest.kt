@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.decode.internal
+package com.github.panpf.sketch.core.android.test.cache.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
-import com.github.panpf.sketch.decode.internal.ResultCacheDecodeInterceptor
-import com.github.panpf.sketch.cache.internal.resultCacheDataKey
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,7 +43,7 @@ import org.junit.runner.RunWith
 class ResultCacheDecodeInterceptorTest {
 
     @Test
-    fun testIntercept() {
+    fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndNewSketch()
         val resultCache = sketch.resultCache
 
@@ -66,13 +67,13 @@ class ResultCacheDecodeInterceptorTest {
         }
 
         val request = ImageRequest(context, MyImages.jpeg.uri) {
-            resizeSize(500, 500)
-            resizePrecision(LESS_PIXELS)
+            size(500, 500)
+            precision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
         }
 
         resultCache.clear()
-        Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).cacheKey))
         executeRequest(request).also { result ->
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
@@ -91,7 +92,7 @@ class ResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(request.toRequestContext(sketch).cacheKey))
         executeRequest(request).also { result ->
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
@@ -110,7 +111,7 @@ class ResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(request.toRequestContext(sketch).cacheKey))
         executeRequest(request.newRequest {
             resultCachePolicy(DISABLED)
         }).also { result ->
@@ -131,7 +132,7 @@ class ResultCacheDecodeInterceptorTest {
             )
         }
 
-        Assert.assertTrue(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertTrue(resultCache.exist(request.toRequestContext(sketch).cacheKey))
         executeRequest(request.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }).also { result ->
@@ -153,7 +154,7 @@ class ResultCacheDecodeInterceptorTest {
         }
 
         resultCache.clear()
-        Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).cacheKey))
         executeRequest(request.newRequest {
             resultCachePolicy(READ_ONLY)
         }).also { result ->
@@ -173,15 +174,15 @@ class ResultCacheDecodeInterceptorTest {
                 result.extras
             )
         }
-        Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).cacheKey))
 
         val request1 = ImageRequest(context, MyImages.jpeg.uri) {
-            resizeSize(2000, 2000)
-            resizePrecision(LESS_PIXELS)
+            size(2000, 2000)
+            precision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
         }
         resultCache.clear()
-        Assert.assertFalse(resultCache.exist(request1.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(request1.toRequestContext(sketch).cacheKey))
         executeRequest(request1).also { result ->
             Assert.assertEquals(1291, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(1936, result.image.getBitmapOrThrow().height)
@@ -196,7 +197,7 @@ class ResultCacheDecodeInterceptorTest {
                 result.extras
             )
         }
-        Assert.assertFalse(resultCache.exist(request1.toRequestContext(sketch).resultCacheDataKey))
+        Assert.assertFalse(resultCache.exist(request1.toRequestContext(sketch).cacheKey))
     }
 
     @Test
@@ -239,7 +240,7 @@ class ResultCacheDecodeInterceptorTest {
 
     class ExtrasTestDecodeInterceptor : DecodeInterceptor {
 
-        override val key: String = Key.INVALID_KEY
+        override val key: String? = null
 
         override val sortWeight: Int = 0
 

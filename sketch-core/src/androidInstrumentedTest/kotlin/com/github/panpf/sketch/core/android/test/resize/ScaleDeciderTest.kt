@@ -24,6 +24,7 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.ScaleDecider
+import com.github.panpf.sketch.test.utils.get
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

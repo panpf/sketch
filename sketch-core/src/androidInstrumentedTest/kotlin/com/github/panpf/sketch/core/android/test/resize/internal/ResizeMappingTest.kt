@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.core.android.test.resize.internal
 
-import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -27,6 +26,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
+import com.github.panpf.sketch.util.Rect
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

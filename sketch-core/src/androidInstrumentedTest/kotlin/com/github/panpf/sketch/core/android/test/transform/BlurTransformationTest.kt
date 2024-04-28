@@ -19,8 +19,10 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.graphics.ColorUtils
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -99,11 +101,11 @@ class BlurTransformationTest {
             BlurTransformation(
                 30,
                 maskColor = ColorUtils.setAlphaComponent(Color.BLUE, 80)
-            ).transform(sketch, request.toRequestContext(sketch), inBitmap)
+            ).transform(sketch, request.toRequestContext(sketch), inBitmap.asSketchImage())
         }.apply {
-            Assert.assertNotSame(inBitmap, this)
-            Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
-            Assert.assertEquals(Size(1291, 1936), bitmap.size)
+            Assert.assertNotSame(inBitmap, image.getBitmapOrThrow())
+            Assert.assertNotEquals(inBitmapCorners, image.getBitmapOrThrow().corners())
+            Assert.assertEquals(Size(1291, 1936), image.getBitmapOrThrow().size)
             Assert.assertEquals(
                 createBlurTransformed(
                     30,
@@ -122,9 +124,13 @@ class BlurTransformationTest {
             Assert.assertTrue(this.isMutable)
         }
         runBlocking {
-            BlurTransformation(30).transform(sketch, request.toRequestContext(sketch), mutableInBitmap)
+            BlurTransformation(30).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                mutableInBitmap.asSketchImage()
+            )
         }.apply {
-            Assert.assertSame(mutableInBitmap, this.bitmap)
+            Assert.assertSame(mutableInBitmap, this.image.getBitmapOrThrow())
         }
 
         // hasAlphaBitmapBgColor
@@ -134,10 +140,14 @@ class BlurTransformationTest {
             Assert.assertTrue(this.hasAlpha())
         }
         val hasAlphaBitmapBlurred1 = runBlocking {
-            BlurTransformation(30).transform(sketch, request.toRequestContext(sketch), hasAlphaBitmap1)
+            BlurTransformation(30).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                hasAlphaBitmap1.asSketchImage()
+            )
         }.apply {
-            Assert.assertTrue(this.bitmap.hasAlpha())
-        }.bitmap
+            Assert.assertTrue(this.image.getBitmapOrThrow().hasAlpha())
+        }.image.getBitmapOrThrow()
 
         val hasAlphaBitmap2 = context.assets.open(MyImages.png.fileName).use {
             BitmapFactory.decodeStream(it, null, null)
@@ -146,10 +156,14 @@ class BlurTransformationTest {
         }
         val hasAlphaBitmapBlurred2 = runBlocking {
             BlurTransformation(30, hasAlphaBitmapBgColor = null)
-                .transform(sketch, request.toRequestContext(sketch), hasAlphaBitmap2)
+                .transform(
+                    sketch,
+                    request.toRequestContext(sketch),
+                    hasAlphaBitmap2.asSketchImage()
+                )
         }.apply {
-            Assert.assertTrue(this.bitmap.hasAlpha())
-        }.bitmap
+            Assert.assertTrue(this.image.getBitmapOrThrow().hasAlpha())
+        }.image.getBitmapOrThrow()
         Assert.assertNotEquals(hasAlphaBitmapBlurred1.corners(), hasAlphaBitmapBlurred2.corners())
     }
 

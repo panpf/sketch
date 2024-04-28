@@ -24,6 +24,7 @@ import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.fetch.FetchResultImpl
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
+import okio.Path.Companion.toOkioPath
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +39,7 @@ class FetchResultTest {
         val request = ImageRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
+            FileDataSource(sketch, request, File("/sdcard/sample.jpeg").toOkioPath()),
             "image/jpeg"
         ).apply {
             Assert.assertTrue(this is FetchResultImpl)
@@ -53,7 +54,7 @@ class FetchResultTest {
         val request = ImageRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
+            FileDataSource(sketch, request, File("/sdcard/sample.jpeg").toOkioPath()),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
@@ -73,7 +74,7 @@ class FetchResultTest {
         val request = ImageRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg")),
+            FileDataSource(sketch, request, File("/sdcard/sample.jpeg").toOkioPath()),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(

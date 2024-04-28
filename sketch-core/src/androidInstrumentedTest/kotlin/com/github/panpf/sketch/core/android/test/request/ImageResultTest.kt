@@ -17,19 +17,19 @@ package com.github.panpf.sketch.core.android.test.request
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Scale.END_CROP
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.util.asOrThrow
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class ImageResultTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request1 = ImageRequest(context, "http://sample.com/sample.jpeg")
 
@@ -46,20 +46,15 @@ class ImageResultTest {
             request = request1,
             cacheKey = request1.toRequestContext(sketch).cacheKey,
             image = ColorDrawable(Color.BLACK).asSketchImage(),
-            imageInfo = ImageInfo(100, 100, "image/jpeg", ExifInterface.ORIENTATION_ROTATE_90),
+            imageInfo = ImageInfo(100, 100, "image/jpeg"),
             dataFrom = LOCAL,
             transformedList = listOf(createCircleCropTransformed(END_CROP)),
             extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertSame(request1, request)
-            Assert.assertTrue(image.asOrThrow<DrawableImage>().drawable is ColorDrawable)
+            Assert.assertTrue(image.asOrThrow<AndroidDrawableImage>().drawable is ColorDrawable)
             Assert.assertEquals(
-                ImageInfo(
-                    width = 100,
-                    height = 100,
-                    mimeType = "image/jpeg",
-                    exifOrientation = ExifInterface.ORIENTATION_ROTATE_90
-                ),
+                ImageInfo(width = 100, height = 100, mimeType = "image/jpeg"),
                 imageInfo
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -70,7 +65,7 @@ class ImageResultTest {
         ImageResult.Error(request1, ColorDrawable(Color.BLACK).asSketchImage(), Exception(""))
             .apply {
                 Assert.assertSame(request1, request)
-                Assert.assertTrue(image?.asOrThrow<DrawableImage>()?.drawable is ColorDrawable)
+                Assert.assertTrue(image?.asOrThrow<AndroidDrawableImage>()?.drawable is ColorDrawable)
                 Assert.assertTrue(throwable is Exception)
             }
     }

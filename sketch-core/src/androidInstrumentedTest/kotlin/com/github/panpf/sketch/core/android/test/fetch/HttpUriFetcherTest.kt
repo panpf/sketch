@@ -22,11 +22,12 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
-import com.github.panpf.sketch.source.DiskCacheDataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.exist
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -142,15 +143,8 @@ class HttpUriFetcherTest {
                         null
                     }
                 }
-                val message = buildString {
-                    append("The results are as follows")
-                    appendLine()
-                    append(fromNetworkList.joinToString { "${it.first}:${it.second}" })
-                    appendLine()
-                    append(fromDiskCacheList.joinToString { "${it.first}:${it.second}" })
-                }
                 Assert.assertTrue(
-                    message,
+                    "The results are as follows\n${fromNetworkList.joinToString { "${it.first}:${it.second}" }}\n${fromDiskCacheList.joinToString { "${it.first}:${it.second}" }}",
                     fromNetworkList.size == 1 && fromDiskCacheList.size == 99
                 )
             }
@@ -184,7 +178,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.NETWORK, this.dataFrom)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is DiskCacheDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
+                    this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.NETWORK
                 )
             }
             Assert.assertTrue(diskCache.exist(diskCacheKey))
@@ -194,7 +188,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.DOWNLOAD_CACHE, this.dataFrom)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is DiskCacheDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE
+                    this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE
                 )
             }
             Assert.assertTrue(diskCache.exist(diskCacheKey))
@@ -284,7 +278,7 @@ class HttpUriFetcherTest {
                 Assert.assertEquals(this.toString(), DataFrom.DOWNLOAD_CACHE, this.dataFrom)
                 Assert.assertTrue(
                     this.toString(),
-                    this.dataSource is DiskCacheDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE
+                    this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE
                 )
             }
             Assert.assertTrue(diskCache.exist(diskCacheKey))

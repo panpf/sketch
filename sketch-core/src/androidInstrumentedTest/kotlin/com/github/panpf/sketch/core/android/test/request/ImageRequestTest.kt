@@ -24,12 +24,8 @@ import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
 import android.graphics.ColorSpace.Named.ADOBE_RGB
 import android.graphics.ColorSpace.Named.BT709
-import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.widget.ImageView
-import android.widget.ImageView.ScaleType
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -43,6 +39,7 @@ import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -54,10 +51,16 @@ import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.ViewLifecycleResolver
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.CombinedListener
 import com.github.panpf.sketch.request.internal.CombinedProgressListener
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.resizeOnDraw
+import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -72,35 +75,35 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IconStateImage
-import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.MemoryCacheStateImage
-import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
-import com.github.panpf.sketch.target.ImageViewTarget
-import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestListenerImageView
 import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.util.ColorDrawableEqualizer
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.tools4a.test.ktx.getActivitySync
-import com.github.panpf.tools4a.test.ktx.launchActivity
+import com.github.panpf.sketch.util.getEqualityDrawableCompat
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -132,21 +135,18 @@ class ImageRequestTest {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 Assert.assertNull(this.colorSpace)
             }
-            @Suppress("DEPRECATION")
             Assert.assertFalse(this.preferQualityOverSpeed)
-            Assert.assertEquals(DisplaySizeResolver(context1), this.resizeSizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.resizePrecisionDecider)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.resizeScaleDecider)
+            Assert.assertEquals(DisplaySizeResolver(context1), this.sizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.precisionDecider)
+            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.scaleDecider)
             Assert.assertNull(this.transformations)
-            Assert.assertFalse(this.disallowReuseBitmap)
-            Assert.assertFalse(this.ignoreExifOrientation)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
             Assert.assertNull(this.uriEmpty)
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
-            Assert.assertFalse(this.resizeApplyToDrawable)
+            Assert.assertFalse(this.resizeOnDraw)
             Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
     }
@@ -266,45 +266,38 @@ class ImageRequestTest {
             Assert.assertNull(target)
         }
 
-        ImageRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewTarget(imageView), target)
-        }
-
-        imageView.updateImageOptions {
-            memoryCachePolicy(WRITE_ONLY)
-        }
-
-        ImageRequest(imageView, uriString1).apply {
-            Assert.assertEquals(ImageViewTarget(imageView), target)
-            Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
+        ImageRequest(context1, uriString1) {
+            target(TestTarget())
+        }.apply {
+            Assert.assertTrue(target is TestTarget)
         }
 
         ImageRequest(imageView, uriString1) {
+            target(TestTarget())
             target(null)
         }.apply {
             Assert.assertNull(target)
-            Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
 
-        ImageRequest(imageView, uriString1) {
+        ImageRequest(context1, uriString1) {
             target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
-        ImageRequest(imageView, uriString1) {
+        ImageRequest(context1, uriString1) {
             target(onStart = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
-        ImageRequest(imageView, uriString1) {
+        ImageRequest(context1, uriString1) {
             target(onSuccess = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
-        ImageRequest(imageView, uriString1) {
+        ImageRequest(context1, uriString1) {
             target(onError = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
@@ -330,32 +323,7 @@ class ImageRequestTest {
             )
         }
 
-        ImageRequest(context1, uriString1) {
-            lifecycle(lifecycle1)
-        }.apply {
-            Assert.assertEquals(LifecycleResolver(lifecycle1), this.lifecycleResolver)
-        }
-
-        val activity = TestActivity::class.launchActivity().getActivitySync()
-
-        val imageView = TestOptionsImageView(activity)
-        ImageRequest(imageView, uriString1).apply {
-            Assert.assertEquals(
-                DefaultLifecycleResolver(
-                    com.github.panpf.sketch.request.ViewLifecycleResolver(
-                        imageView
-                    )
-                ),
-                this.lifecycleResolver
-            )
-        }
-
-        ImageRequest(activity, uriString1).apply {
-            Assert.assertEquals(
-                DefaultLifecycleResolver(LifecycleResolver(activity.lifecycle)),
-                this.lifecycleResolver
-            )
-        }
+        // TODO test lifecycle
     }
 
     @Test
@@ -368,7 +336,7 @@ class ImageRequestTest {
         }
 
         ImageRequest(context1, uriString1) {
-            resizeSize(100, 50)
+            size(100, 50)
             addTransformations(CircleCropTransformation())
             crossfade()
         }.apply {
@@ -679,12 +647,12 @@ class ImageRequestTest {
                 Assert.assertNull(colorSpace)
             }
 
-            colorSpace(ColorSpace.get(ACES))
+            colorSpace(ACES)
             build().apply {
                 Assert.assertEquals(ColorSpace.get(ACES), colorSpace)
             }
 
-            colorSpace(ColorSpace.get(BT709))
+            colorSpace(BT709)
             build().apply {
                 Assert.assertEquals(ColorSpace.get(BT709), colorSpace)
             }
@@ -946,30 +914,30 @@ class ImageRequestTest {
         }
 
         val request = ImageRequest(context, uriString1).apply {
-            Assert.assertEquals(DisplaySizeResolver(context), resizeSizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+            Assert.assertEquals(DisplaySizeResolver(context), sizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
         }
         val size = runBlocking {
             DisplaySizeResolver(context).size()
         }
         val request1 = request.newRequest {
-            resizeSize(size)
+            size(size)
         }.apply {
-            Assert.assertEquals(FixedSizeResolver(size), resizeSizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+            Assert.assertEquals(FixedSizeResolver(size), sizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
         }
         request1.newRequest().apply {
-            Assert.assertEquals(FixedSizeResolver(size), resizeSizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+            Assert.assertEquals(FixedSizeResolver(size), sizeResolver)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
         }
 
         request.apply {
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), resizePrecisionDecider)
+            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
         }
         runBlocking { sketch.execute(request) }.apply {
             Assert.assertEquals(
                 FixedPrecisionDecider(LESS_PIXELS),
-                this.request.resizePrecisionDecider
+                this.request.precisionDecider
             )
         }
     }
@@ -985,7 +953,10 @@ class ImageRequestTest {
 
             scale(LongImageStartCropScaleDecider(START_CROP, END_CROP))
             build().apply {
-                Assert.assertEquals(LongImageStartCropScaleDecider(START_CROP, END_CROP), scaleDecider)
+                Assert.assertEquals(
+                    LongImageStartCropScaleDecider(START_CROP, END_CROP),
+                    scaleDecider
+                )
             }
 
             scale(FILL)
@@ -996,67 +967,6 @@ class ImageRequestTest {
             scale(null)
             build().apply {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1))
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.CENTER_CROP
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.CENTER
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.CENTER_INSIDE
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.FIT_END
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.FIT_CENTER
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.FIT_START
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(START_CROP), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.FIT_XY
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(FILL), scaleDecider)
-            }
-
-            target(ImageView(context1).apply {
-                scaleType = ScaleType.MATRIX
-            })
-            build().apply {
-                Assert.assertEquals(FixedScaleDecider(FILL), scaleDecider)
             }
         }
     }
@@ -1149,58 +1059,6 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testDisallowReuseBitmap() {
-        val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
-            build().apply {
-                Assert.assertFalse(disallowReuseBitmap)
-            }
-
-            disallowReuseBitmap()
-            build().apply {
-                Assert.assertEquals(true, disallowReuseBitmap)
-            }
-
-            disallowReuseBitmap(false)
-            build().apply {
-                Assert.assertEquals(false, disallowReuseBitmap)
-            }
-
-            disallowReuseBitmap(null)
-            build().apply {
-                Assert.assertFalse(disallowReuseBitmap)
-            }
-        }
-    }
-
-    @Test
-    fun testIgnoreExifOrientation() {
-        val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
-            build().apply {
-                Assert.assertFalse(ignoreExifOrientation)
-            }
-
-            ignoreExifOrientation(true)
-            build().apply {
-                Assert.assertEquals(true, ignoreExifOrientation)
-            }
-
-            ignoreExifOrientation(false)
-            build().apply {
-                Assert.assertEquals(false, ignoreExifOrientation)
-            }
-
-            ignoreExifOrientation(null)
-            build().apply {
-                Assert.assertFalse(ignoreExifOrientation)
-            }
-        }
-    }
-
-    @Test
     fun testResultCachePolicy() {
         val context1 = getTestContext()
         val uriString1 = MyImages.jpeg.uri
@@ -1266,7 +1124,7 @@ class ImageRequestTest {
                 Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholder)
             }
 
-            placeholder(ColorDrawable(Color.GREEN))
+            placeholder(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
                 Assert.assertEquals(true, placeholder is DrawableStateImage)
             }
@@ -1300,7 +1158,7 @@ class ImageRequestTest {
                 Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), uriEmpty)
             }
 
-            uriEmpty(ColorDrawable(Color.GREEN))
+            uriEmpty(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
                 Assert.assertEquals(true, uriEmpty is DrawableStateImage)
             }
@@ -1337,7 +1195,7 @@ class ImageRequestTest {
                 )
             }
 
-            error(ColorDrawable(Color.GREEN))
+            error(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
                 Assert.assertEquals(true, error is ErrorStateImage)
             }
@@ -1398,27 +1256,27 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testResizeApplyToDrawable() {
+    fun testResizeOnDraw() {
         val context1 = getTestContext()
         val uriString1 = MyImages.jpeg.uri
         ImageRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertFalse(resizeOnDrawHelper)
+                Assert.assertFalse(resizeOnDraw)
             }
 
             resizeOnDraw()
             build().apply {
-                Assert.assertEquals(true, resizeOnDrawHelper)
+                Assert.assertEquals(true, resizeOnDraw)
             }
 
             resizeOnDraw(false)
             build().apply {
-                Assert.assertEquals(false, resizeOnDrawHelper)
+                Assert.assertEquals(false, resizeOnDraw)
             }
 
             resizeOnDraw(null)
             build().apply {
-                Assert.assertFalse(resizeOnDrawHelper)
+                Assert.assertFalse(resizeOnDraw)
             }
         }
     }
@@ -1499,11 +1357,6 @@ class ImageRequestTest {
                 Assert.assertNull(listener)
             }
 
-            target(ImageView(context1))
-            build().apply {
-                Assert.assertNull(listener)
-            }
-
             listener(onSuccess = { _, _ -> })
             build().apply {
                 Assert.assertNotNull(listener)
@@ -1514,20 +1367,6 @@ class ImageRequestTest {
             target(null)
             build().apply {
                 Assert.assertNull(listener)
-            }
-
-            target(TestListenerImageView(context1))
-            build().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNull(fromBuilderListener)
-                Assert.assertNull(fromBuilderListeners)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
-            build().newRequest().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNull(fromBuilderListener)
-                Assert.assertNull(fromBuilderListeners)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
             }
 
             listener(onSuccess = { _, _ -> })
@@ -1614,11 +1453,6 @@ class ImageRequestTest {
                 Assert.assertNull(progressListener)
             }
 
-            target(ImageView(context1))
-            build().apply {
-                Assert.assertNull(progressListener)
-            }
-
             progressListener { _, _ -> }
             build().apply {
                 Assert.assertNotNull(progressListener)
@@ -1630,21 +1464,6 @@ class ImageRequestTest {
             build().apply {
                 Assert.assertNull(progressListener)
             }
-
-            target(TestListenerImageView(context1))
-            build().progressListener!!.asOrThrow<CombinedProgressListener>().apply {
-                Assert.assertNull(fromBuilderProgressListener)
-                Assert.assertNull(fromBuilderProgressListeners)
-                Assert.assertNotNull(fromTargetProgressListener)
-                Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-            }
-            build().newRequest().progressListener!!.asOrThrow<CombinedProgressListener>()
-                .apply {
-                    Assert.assertNull(fromBuilderProgressListener)
-                    Assert.assertNull(fromBuilderProgressListeners)
-                    Assert.assertNotNull(fromTargetProgressListener)
-                    Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-                }
 
             progressListener { _, _ -> }
             build().progressListener!!.asOrThrow<CombinedProgressListener>().apply {
@@ -1773,10 +1592,6 @@ class ImageRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            target(imageView)
-        }.apply {
-            Assert.assertEquals(this, this.newRequest())
-        }.newRequest {
             default(ImageOptions())
         }.apply {
             Assert.assertEquals(this, this.newRequest())
@@ -1805,7 +1620,7 @@ class ImageRequestTest {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                colorSpace(ColorSpace.get(ADOBE_RGB))
+                colorSpace(ADOBE_RGB)
             }
         }.apply {
             Assert.assertEquals(this, this.newRequest())
@@ -1815,27 +1630,27 @@ class ImageRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizeSize(300, 200)
+            size(300, 200)
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizeSize(ViewSizeResolver(imageView))
+            size(ViewSizeResolver(imageView))
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizePrecision(EXACTLY)
+            precision(EXACTLY)
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizePrecision(LongImageClipPrecisionDecider())
+            precision(LongImageClipPrecisionDecider())
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizeScale(END_CROP)
+            scale(END_CROP)
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizeScale(LongImageStartCropScaleDecider())
+            scale(LongImageStartCropScaleDecider())
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
@@ -1843,21 +1658,16 @@ class ImageRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            disallowReuseBitmap(true)
-        }.apply {
-            Assert.assertEquals(this, this.newRequest())
-        }.newRequest {
-            ignoreExifOrientation(true)
-        }.apply {
-            Assert.assertEquals(this, this.newRequest())
-        }.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            placeholder(IconStateImage(drawable.ic_delete) {
-                resColorBackground(color.background_dark)
-            })
+            placeholder(
+                IconStateImage(
+                    icon = drawable.ic_delete,
+                    background = color.background_dark
+                )
+            )
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
@@ -1869,8 +1679,8 @@ class ImageRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            val drawable = ResourcesCompat.getDrawable(context.resources, drawable.ic_delete, null)
-            placeholder(DrawableStateImage(drawable!!))
+            val drawable = context.resources.getEqualityDrawableCompat(drawable.ic_delete, null)
+            placeholder(DrawableStateImage(drawable))
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
@@ -1912,7 +1722,7 @@ class ImageRequestTest {
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
-            resizeApplyToDrawable(true)
+            resizeOnDraw(true)
         }.apply {
             Assert.assertEquals(this, this.newRequest())
         }.newRequest {
@@ -1932,12 +1742,12 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testMergeComponents(){
+    fun testMergeComponents() {
         // TODO test mergeComponents
     }
 
     @Test
-    fun testSizeMultiplier(){
+    fun testSizeMultiplier() {
         // TODO test sizeMultiplier
     }
 }

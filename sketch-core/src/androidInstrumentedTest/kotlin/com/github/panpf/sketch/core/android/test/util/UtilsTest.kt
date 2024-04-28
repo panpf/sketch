@@ -16,30 +16,14 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.content.ComponentCallbacks2
-import android.content.Context
-import android.widget.ImageView
-import android.widget.ImageView.ScaleType
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.source.AssetDataSource
-import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.source.getDataSourceCacheFile
-import com.github.panpf.sketch.test.utils.TestActivity
-import com.github.panpf.sketch.util.Logger.Companion.Assert
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.computeSizeMultiplier
-import com.github.panpf.sketch.util.findLifecycle
-import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.util.getDataSourceCacheFile
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.intMerged
@@ -47,8 +31,6 @@ import com.github.panpf.sketch.util.intSplit
 import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
-import com.github.panpf.tools4a.test.ktx.getActivitySync
-import com.github.panpf.tools4a.test.ktx.launchActivity
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -57,15 +39,14 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.FileNotFoundException
 
 @RunWith(AndroidJUnit4::class)
 class UtilsTest {
 
     @Test
     fun testIfOrNull() {
-        org.junit.Assert.assertEquals("yes", ifOrNull(true) { "yes" })
-        org.junit.Assert.assertEquals(null, ifOrNull(false) { "yes" })
+        Assert.assertEquals("yes", ifOrNull(true) { "yes" })
+        Assert.assertEquals(null, ifOrNull(false) { "yes" })
     }
 
     @Test
@@ -95,15 +76,6 @@ class UtilsTest {
                 requiredWorkThread()
             }
         }
-    }
-
-    @Test
-    fun testFindLifecycle() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        Assert.assertNull(context.findLifecycle())
-
-        val activity = TestActivity::class.launchActivity().getActivitySync()
-        Assert.assertNotNull((activity as Context).findLifecycle())
     }
 
     @Test
@@ -204,32 +176,7 @@ class UtilsTest {
     }
 
     @Test
-    fun testGetCacheFileFromStreamDataSource() {
-        val (context, sketch) = getTestContextAndNewSketch()
-        AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, MyImages.jpeg.uri),
-            assetFileName = MyImages.jpeg.fileName
-        ).apply {
-            val file = getDataSourceCacheFile(sketch, request, this)
-            Assert.assertTrue(file.path.contains("/cache/"))
-            val file1 = getDataSourceCacheFile(sketch, request, this)
-            Assert.assertEquals(file.path, file1.path)
-        }
-
-        assertThrow(FileNotFoundException::class) {
-            AssetDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, newAssetUri("not_found.jpeg")),
-                assetFileName = "not_found.jpeg"
-            ).apply {
-                getDataSourceCacheFile(sketch, request, this)
-            }
-        }
-    }
-
-    @Test
-    fun testCalculateBounds(){
+    fun testCalculateBounds() {
         // TODO Test calculateBounds
     }
 

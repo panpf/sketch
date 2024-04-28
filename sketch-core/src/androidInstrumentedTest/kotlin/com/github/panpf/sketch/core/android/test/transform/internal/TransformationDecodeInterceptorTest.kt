@@ -15,20 +15,20 @@
  */
 package com.github.panpf.sketch.core.android.test.transform.internal
 
-import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -54,8 +54,8 @@ class TransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(3000, 3000)
-                resizePrecision(LESS_PIXELS)
+                size(3000, 3000)
+                precision(LESS_PIXELS)
             }
             val chain = DecodeInterceptorChain(
                 sketch,
@@ -77,8 +77,8 @@ class TransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(3000, 3000)
-                resizePrecision(LESS_PIXELS)
+                size(3000, 3000)
+                precision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
             }
             val chain = DecodeInterceptorChain(
@@ -101,8 +101,8 @@ class TransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(3000, 3000)
-                resizePrecision(LESS_PIXELS)
+                size(3000, 3000)
+                precision(LESS_PIXELS)
                 transformations(object : Transformation {
                     override val key: String
                         get() = "TestTransformation"
@@ -110,7 +110,7 @@ class TransformationDecodeInterceptorTest {
                     override suspend fun transform(
                         sketch: Sketch,
                         requestContext: RequestContext,
-                        input: Bitmap
+                        input: Image
                     ): TransformResult = TransformResult(input, "TestTransformation")
                 })
             }
@@ -134,8 +134,8 @@ class TransformationDecodeInterceptorTest {
 
         runBlocking {
             val request = ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(3000, 3000)
-                resizePrecision(LESS_PIXELS)
+                size(3000, 3000)
+                precision(LESS_PIXELS)
                 transformations(object : Transformation {
                     override val key: String
                         get() = "TestTransformation"
@@ -143,7 +143,7 @@ class TransformationDecodeInterceptorTest {
                     override suspend fun transform(
                         sketch: Sketch,
                         requestContext: RequestContext,
-                        input: Bitmap
+                        input: Image
                     ): TransformResult? = null
                 })
             }
@@ -175,11 +175,8 @@ class TransformationDecodeInterceptorTest {
                         override suspend fun transform(
                             sketch: Sketch,
                             requestContext: RequestContext,
-                            input: Bitmap
-                        ): TransformResult = TransformResult(
-                            input.apply { input.recycle() },
-                            "TestTransformation"
-                        )
+                            input: Image
+                        ): TransformResult = TransformResult(input, "TestTransformation")
                     })
                 }
                 val chain = DecodeInterceptorChain(

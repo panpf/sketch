@@ -19,8 +19,10 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.graphics.ColorUtils
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.size
@@ -80,11 +82,15 @@ class MaskTransformationTest {
 
         val maskColor = ColorUtils.setAlphaComponent(Color.GREEN, 100)
         runBlocking {
-            MaskTransformation(maskColor).transform(sketch, request.toRequestContext(sketch), inBitmap)
+            MaskTransformation(maskColor).transform(
+                sketch,
+                request.toRequestContext(sketch),
+                inBitmap.asSketchImage()
+            )
         }.apply {
             Assert.assertNotSame(inBitmap, this)
-            Assert.assertNotEquals(inBitmapCorners, bitmap.corners())
-            Assert.assertEquals(Size(1291, 1936), bitmap.size)
+            Assert.assertNotEquals(inBitmapCorners, image.getBitmapOrThrow().corners())
+            Assert.assertEquals(Size(1291, 1936), image.getBitmapOrThrow().size)
             Assert.assertEquals(createMaskTransformed(maskColor), transformed)
         }
 
@@ -100,10 +106,10 @@ class MaskTransformationTest {
             MaskTransformation(maskColor).transform(
                 sketch,
                 request.toRequestContext(sketch),
-                mutableInBitmap
+                mutableInBitmap.asSketchImage()
             )
         }.apply {
-            Assert.assertSame(mutableInBitmap, this.bitmap)
+            Assert.assertSame(mutableInBitmap, this.image.getBitmapOrThrow())
         }
     }
 

@@ -18,22 +18,23 @@ package com.github.panpf.sketch.core.android.test.state
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.memoryCacheKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.ColorStateImage
-import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
+import com.github.panpf.sketch.util.IntColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,7 +43,7 @@ import org.junit.runner.RunWith
 class ThumbnailMemoryCacheStateImageTest {
 
     @Test
-    fun testGetDrawable() {
+    fun testGetDrawable() = runTest {
         val (context, sketch) = getTestContextAndNewSketch()
 
         val memoryCache = sketch.memoryCache
@@ -51,36 +52,36 @@ class ThumbnailMemoryCacheStateImageTest {
 
         val requests1 = arrayOf(
             ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(100, 100)
-                resizePrecision(LESS_PIXELS)
+                size(100, 100)
+                precision(LESS_PIXELS)
                 target(TestCountTarget())
             },
             ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(100, 100)
-                resizePrecision(EXACTLY)
+                size(100, 100)
+                precision(EXACTLY)
                 target(TestCountTarget())
             },
             ImageRequest(context, MyImages.jpeg.uri) {
-                resizeSize(100, 100)
-                resizePrecision(LESS_PIXELS)
+                size(100, 100)
+                precision(LESS_PIXELS)
                 target(TestCountTarget())
                 transformations(CircleCropTransformation())
             },
         )
         val requests2 = arrayOf(
             ImageRequest(context, MyImages.png.uri) {
-                resizeSize(100, 100)
-                resizePrecision(LESS_PIXELS)
+                size(100, 100)
+                precision(LESS_PIXELS)
                 target(TestCountTarget())
             },
             ImageRequest(context, MyImages.png.uri) {
-                resizeSize(100, 100)
-                resizePrecision(EXACTLY)
+                size(100, 100)
+                precision(EXACTLY)
                 target(TestCountTarget())
             },
             ImageRequest(context, MyImages.png.uri) {
-                resizeSize(100, 100)
-                resizePrecision(LESS_PIXELS)
+                size(100, 100)
+                precision(LESS_PIXELS)
                 target(TestCountTarget())
                 transformations(CircleCropTransformation())
             },
