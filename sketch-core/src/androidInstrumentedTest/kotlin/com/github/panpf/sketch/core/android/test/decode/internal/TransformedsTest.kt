@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.core.android.test.decode.internal
 
-import android.graphics.Rect
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.createExifOrientationTransformed
@@ -29,6 +28,7 @@ import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.getScaledTransformed
 import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.util.Rect
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

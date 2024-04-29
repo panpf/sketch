@@ -30,25 +30,22 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.decode.internal.exifOrientationName
-import com.github.panpf.sketch.cache.internal.resultCacheDataKey
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
@@ -62,8 +59,8 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.request.internal.memoryCacheKey
+import com.github.panpf.sketch.cache.memoryCacheKey
+import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -73,9 +70,14 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.lifecycle
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.test.singleton.request.execute
-import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
@@ -87,12 +89,13 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransitionViewTarget
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
-import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -101,6 +104,7 @@ import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
@@ -109,6 +113,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.Assert
 import org.junit.Test
@@ -484,7 +489,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            colorSpace(ColorSpace.get(ColorSpace.Named.ADOBE_RGB))
+            colorSpace(ColorSpace.Named.ADOBE_RGB)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(
@@ -496,7 +501,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            colorSpace(ColorSpace.get(ColorSpace.Named.DISPLAY_P3))
+            colorSpace(ColorSpace.Named.DISPLAY_P3)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(
@@ -1098,130 +1103,7 @@ class ImageRequestExecuteTest {
     }
 
     @Test
-    fun testDisallowReuseBitmap() {
-        val context = getTestContext()
-        val sketch = newSketch()
-        val bitmapPool = sketch.bitmapPool
-        val imageUri = MyImages.jpeg.uri
-        val request = ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            size(500, 500)
-            precision(LESS_PIXELS)
-        }
-
-        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
-        Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
-
-        request.newRequest {
-            disallowReuseBitmap(true)
-        }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
-
-        request.newRequest {
-            disallowReuseBitmap(false)
-        }.let { runBlocking { sketch.execute(it) } }
-        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            Assert.assertFalse(bitmapPool.exist(323, 484, ARGB_8888))
-        } else {
-            Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
-        }
-
-        bitmapPool.clear()
-        bitmapPool.put(Bitmap.createBitmap(323, 484, ARGB_8888))
-        request.newRequest {
-            disallowReuseBitmap(null)
-        }.let { runBlocking { sketch.execute(it) } }
-        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            Assert.assertFalse(bitmapPool.exist(323, 484, ARGB_8888))
-        } else {
-            Assert.assertTrue(bitmapPool.exist(323, 484, ARGB_8888))
-        }
-
-        bitmapPool.clear()
-        Assert.assertTrue(bitmapPool.size == 0L)
-        request.newRequest {
-            disallowReuseBitmap(false)
-            transformations(
-                RoundedCornersTransformation(30f),
-                CircleCropTransformation(),
-                RotateTransformation(90),
-            )
-        }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertTrue(bitmapPool.size > 0L)
-
-        bitmapPool.clear()
-        Assert.assertTrue(bitmapPool.size == 0L)
-        request.newRequest {
-            disallowReuseBitmap(true)
-            transformations(
-                RoundedCornersTransformation(30f),
-                CircleCropTransformation(),
-                RotateTransformation(90),
-            )
-        }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertTrue(bitmapPool.size == 0L)
-    }
-
-    @Test
-    fun testIgnoreExifOrientation() {
-        val context = getTestContext()
-        val sketch = newSketch()
-        ExifOrientationTestFileHelper(
-            context,
-            MyImages.clockHor.fileName
-        ).files()
-            .forEach {
-                Assert.assertNotEquals(ExifInterface.ORIENTATION_UNDEFINED, it.exifOrientation)
-
-                ImageRequest(context, it.file.path)
-                    .let { runBlocking { sketch.execute(it) } }
-                    .asOrNull<ImageResult.Success>()!!
-                    .apply {
-                        Assert.assertEquals(it.exifOrientation, imageInfo.exifOrientation)
-                        Assert.assertEquals(Size(1500, 750), imageInfo.size)
-                    }
-
-                ImageRequest(context, it.file.path) {
-                    ignoreExifOrientation(true)
-                }.let { runBlocking { sketch.execute(it) } }
-                    .asOrNull<ImageResult.Success>()!!
-                    .apply {
-                        Assert.assertEquals(
-                            ExifInterface.ORIENTATION_UNDEFINED,
-                            imageInfo.exifOrientation
-                        )
-                        if (it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90
-                            || it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_270
-                            || it.exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE
-                            || it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE
-                        ) {
-                            Assert.assertEquals(
-                                exifOrientationName(it.exifOrientation),
-                                Size(750, 1500),
-                                imageInfo.size
-                            )
-                        } else {
-                            Assert.assertEquals(
-                                exifOrientationName(it.exifOrientation),
-                                Size(1500, 750),
-                                imageInfo.size
-                            )
-                        }
-                    }
-            }
-
-        ImageRequest(context, MyImages.jpeg.uri)
-            .let { runBlocking { sketch.execute(it) } }
-            .asOrNull<ImageResult.Success>()!!
-            .apply {
-                Assert.assertEquals(ExifInterface.ORIENTATION_NORMAL, imageInfo.exifOrientation)
-                Assert.assertEquals(Size(1291, 1936), imageInfo.size)
-            }
-    }
-
-    @Test
-    fun testResultCachePolicy() {
+    fun testResultCachePolicy() = runTest {
         val context = getTestContext()
         val sketch = newSketch()
         val diskCache = sketch.resultCache
@@ -1230,11 +1112,11 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             size(500, 500)
         }
-        val resultCacheDataKey = request.toRequestContext(sketch).resultCacheDataKey
+        val resultCacheKey = request.toRequestContext(sketch).resultCacheKey
 
         /* ENABLED */
         diskCache.clear()
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(ENABLED)
         }.let {
@@ -1243,7 +1125,7 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertTrue(diskCache.exist(resultCacheDataKey))
+        Assert.assertTrue(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(ENABLED)
         }.let {
@@ -1254,7 +1136,7 @@ class ImageRequestExecuteTest {
 
         /* DISABLED */
         diskCache.clear()
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(DISABLED)
         }.let {
@@ -1263,7 +1145,7 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(DISABLED)
         }.let {
@@ -1274,7 +1156,7 @@ class ImageRequestExecuteTest {
 
         /* READ_ONLY */
         diskCache.clear()
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(READ_ONLY)
         }.let {
@@ -1283,7 +1165,7 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(READ_ONLY)
         }.let {
@@ -1292,13 +1174,13 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(ENABLED)
         }.let {
             runBlocking { sketch.execute(it) }
         }
-        Assert.assertTrue(diskCache.exist(resultCacheDataKey))
+        Assert.assertTrue(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(READ_ONLY)
         }.let {
@@ -1309,7 +1191,7 @@ class ImageRequestExecuteTest {
 
         /* WRITE_ONLY */
         diskCache.clear()
-        Assert.assertFalse(diskCache.exist(resultCacheDataKey))
+        Assert.assertFalse(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }.let {
@@ -1318,7 +1200,7 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
-        Assert.assertTrue(diskCache.exist(resultCacheDataKey))
+        Assert.assertTrue(diskCache.exist(resultCacheKey))
         request.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }.let {
@@ -1329,47 +1211,45 @@ class ImageRequestExecuteTest {
     }
 
     @Test
-    fun testPlaceholder() {
+    fun testPlaceholder() = runTest {
         val context = getTestContext()
         val sketch = newSketch()
         val imageUri = MyImages.jpeg.uri
-        var onStartDrawable: Image?
+        var onStartImage: Image?
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
-            target(object : Target {
-                override fun onStart(requestContext: RequestContext, placeholder: Image?) {
-                    super.onStart(requestContext, placeholder)
-                    onStartDrawable = placeholder
-                }
-            })
+            target(onStart =  { _, placeholder: Image? ->
+                onStartImage = placeholder
+            }
+            )
         }
         val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val memoryCache = sketch.memoryCache
-        val colorDrawable = ColorDrawable(Color.BLUE)
+        val colorDrawable = ColorDrawableEqualizer(Color.BLUE)
 
         memoryCache.clear()
-        onStartDrawable = null
+        onStartImage = null
         Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newRequest()
             .let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(onStartDrawable)
+        Assert.assertNull(onStartImage)
 
-        onStartDrawable = null
+        onStartImage = null
         Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newRequest {
             placeholder(colorDrawable)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNull(onStartDrawable)
-        Assert.assertFalse(onStartDrawable?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable)
+        Assert.assertNull(onStartImage)
+        Assert.assertFalse(onStartImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable.wrapped)
 
-        onStartDrawable = null
+        onStartImage = null
         Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newRequest {
             memoryCachePolicy(DISABLED)
             placeholder(colorDrawable)
         }.let { runBlocking { sketch.execute(it) } }
-        Assert.assertNotNull(onStartDrawable)
-        Assert.assertTrue(onStartDrawable?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable)
+        Assert.assertNotNull(onStartImage)
+        Assert.assertTrue(onStartImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable.wrapped)
     }
 
     @Test
@@ -1394,7 +1274,7 @@ class ImageRequestExecuteTest {
                 }
             )
         }
-        val colorDrawable = ColorDrawable(Color.BLUE)
+        val colorDrawable = ColorDrawableEqualizer(Color.BLUE)
 
         onErrorImage = null
         request.newRequest()
@@ -1417,18 +1297,18 @@ class ImageRequestExecuteTest {
             error(colorDrawable)
         }.let { runBlocking { sketch.execute(it) } }
         Assert.assertNotNull(onErrorImage)
-        Assert.assertTrue(onErrorImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable)
+        Assert.assertTrue(onErrorImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable.wrapped)
 
         onErrorImage = null
         errorRequest.newRequest {
             placeholder(colorDrawable)
         }.let { runBlocking { sketch.execute(it) } }
         Assert.assertNotNull(onErrorImage)
-        Assert.assertTrue(onErrorImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable)
+        Assert.assertTrue(onErrorImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable.wrapped)
     }
 
     @Test
-    fun testTransition() {
+    fun testTransition() = runTest {
         val context = getTestContext()
         val sketch = newSketch()
         val imageUri = MyImages.jpeg.uri
@@ -1461,7 +1341,7 @@ class ImageRequestExecuteTest {
     }
 
     @Test
-    fun testResizeApplyToDrawable() {
+    fun testResizeOnDraw() {
         val context = getTestContext()
         val sketch = newSketch()
         val imageUri = MyImages.jpeg.uri
@@ -1471,25 +1351,25 @@ class ImageRequestExecuteTest {
 
         request.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(this.image is BitmapImage)
+                Assert.assertTrue(this.image is AndroidBitmapImage)
             }
 
         request.newRequest {
-            resizeApplyToDrawable(false)
+            resizeOnDraw(false)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(this.image is BitmapImage)
+                Assert.assertTrue(this.image is AndroidBitmapImage)
             }
 
         request.newRequest {
-            resizeApplyToDrawable(null)
+            resizeOnDraw(null)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(this.image is BitmapImage)
+                Assert.assertTrue(this.image is AndroidBitmapImage)
             }
 
         request.newRequest {
-            resizeApplyToDrawable(true)
+            resizeOnDraw(true)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertTrue(image.asOrThrow<AndroidDrawableImage>().drawable is ResizeDrawable)
@@ -1497,7 +1377,7 @@ class ImageRequestExecuteTest {
     }
 
     @Test
-    fun testMemoryCachePolicy() {
+    fun testMemoryCachePolicy() = runTest {
         val context = getTestContext()
         val sketch = newSketch()
         val memoryCache = sketch.memoryCache
@@ -1778,7 +1658,7 @@ class ImageRequestExecuteTest {
 
         TestTarget().let { testTarget ->
             ImageRequest(context, MyImages.jpeg.uri + ".fake") {
-                placeholder(ColorDrawable(Color.BLUE))
+                placeholder(ColorDrawableEqualizer(Color.BLUE))
                 error(android.R.drawable.btn_radio)
                 target(testTarget)
             }.let { request ->
@@ -1866,7 +1746,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, MyImages.jpeg.uri) {
             lifecycle(myLifecycle)
         }.let { request ->
-            Assert.assertEquals(LifecycleResolver(myLifecycle), request.lifecycleResolver)
+            Assert.assertEquals(LifecycleResolver(AndroidTargetLifecycle(myLifecycle)), request.lifecycleResolver)
             runBlocking {
                 val deferred = async {
                     sketch.execute(request)
