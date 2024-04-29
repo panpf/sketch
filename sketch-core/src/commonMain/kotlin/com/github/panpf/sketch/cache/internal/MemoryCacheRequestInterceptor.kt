@@ -19,6 +19,7 @@ import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.cache.getExtras
 import com.github.panpf.sketch.cache.getImageInfo
 import com.github.panpf.sketch.cache.getTransformedList
+import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
@@ -111,6 +112,3 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
 
     override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"
 }
-
-val RequestContext.memoryCacheKey: String
-    get() = cacheKey

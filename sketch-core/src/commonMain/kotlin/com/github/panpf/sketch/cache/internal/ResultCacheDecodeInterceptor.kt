@@ -20,11 +20,12 @@ package com.github.panpf.sketch.cache.internal
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
+import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.closeQuietly
 import com.github.panpf.sketch.util.ifOrNull
@@ -68,9 +69,9 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
     ): DecodeResult? {
         val resultCache = sketch.resultCache
         val fileSystem = resultCache.fileSystem
-        val cacheKey = requestContext.cacheKey
+        val resultCacheKey = requestContext.resultCacheKey
         val imageSerializer = createImageSerializer() ?: return null
-        val snapshot = runCatching { resultCache.openSnapshot(cacheKey) }.getOrNull()
+        val snapshot = runCatching { resultCache.openSnapshot(resultCacheKey) }.getOrNull()
         if (snapshot == null) return null
         val result = runCatching {
             val dataSource = FileDataSource(
@@ -97,7 +98,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             sketch.logger.w {
                 "ResultCacheDecodeInterceptor. read result cache error. $it. '${requestContext.logKey}'"
             }
-            resultCache.remove(cacheKey)
+            resultCache.remove(resultCacheKey)
         }
         return result.getOrNull()
     }
@@ -114,8 +115,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val imageSerializer =
             createImageSerializer()?.takeIf { it.supportImage(image) } ?: return false
         val resultCache = sketch.resultCache
-        val cacheKey = requestContext.cacheKey
-        val editor = resultCache.openEditor(cacheKey)
+        val resultCacheKey = requestContext.resultCacheKey
+        val editor = resultCache.openEditor(resultCacheKey)
         if (editor == null) return false
         val result = runCatching {
             resultCache.fileSystem.sink(editor.data).buffer().use {

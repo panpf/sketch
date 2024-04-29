@@ -18,6 +18,7 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.defaultMemoryCacheSizePercent
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong
@@ -123,6 +124,9 @@ interface MemoryCache {
         }
     }
 }
+
+val RequestContext.memoryCacheKey: String
+    get() = cacheKey
 
 fun MemoryCache.Value.getImageInfo(): ImageInfo? {
     return extras["imageInfo"] as ImageInfo?

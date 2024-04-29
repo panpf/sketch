@@ -19,6 +19,7 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.cache.downloadCacheKey
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
@@ -60,8 +61,8 @@ open class HttpUriFetcher(
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
 
-    private val cacheKey = request.uriString
-    private val downloadCacheLockKey = request.uriString
+    private val downloadCacheKey = request.downloadCacheKey
+    private val downloadCacheLockKey = request.downloadCacheKey
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> {
@@ -133,7 +134,7 @@ open class HttpUriFetcher(
     private fun readCache(): Result<FetchResult>? {
         val downloadCache = sketch.downloadCache
         try {
-            return downloadCache.openSnapshot(cacheKey)?.use { snapshot ->
+            return downloadCache.openSnapshot(downloadCacheKey)?.use { snapshot ->
                 val contentType: String? = runCatching {
                     if (downloadCache.fileSystem.exists(snapshot.metadata)) {
                         downloadCache.fileSystem.source(snapshot.metadata).use {
@@ -144,11 +145,11 @@ open class HttpUriFetcher(
                     }
                 }.onFailure {
                     it.printStackTrace()
-                    downloadCache.remove(cacheKey)
+                    downloadCache.remove(downloadCacheKey)
                     sketch.logger.w {
                         "HttpUriFetcher. Read contentType disk cache failed, removed cache file. " +
                                 "message='${it.message}', " +
-                                "cacheKey=$cacheKey. " +
+                                "cacheKey=$downloadCacheKey. " +
                                 "'${request.uriString}'"
                     }
                 }.getOrNull()
@@ -173,7 +174,7 @@ open class HttpUriFetcher(
         val downloadCache = sketch.downloadCache
 
         // Save image data
-        val editor = downloadCache.openEditor(cacheKey) ?: return null
+        val editor = downloadCache.openEditor(downloadCacheKey) ?: return null
         val cachePath: Path = try {
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
@@ -194,7 +195,7 @@ open class HttpUriFetcher(
             }
 
             editor.commitAndOpenSnapshot()?.use { it.data }
-                ?: return Result.failure(IOException("Disk cache loss after write. dataKey='$cacheKey'. ${request.uriString}"))
+                ?: return Result.failure(IOException("Disk cache loss after write. dataKey='$downloadCacheKey'. ${request.uriString}"))
         } catch (e: Throwable) {
             editor.abort()
             return Result.failure(e)

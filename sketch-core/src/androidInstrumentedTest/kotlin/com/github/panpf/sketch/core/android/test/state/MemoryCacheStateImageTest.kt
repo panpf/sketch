@@ -24,10 +24,10 @@ import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
+import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.newCacheValueExtras
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
