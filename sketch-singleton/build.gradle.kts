@@ -21,4 +21,4 @@ kotlin {
     }
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch")
+androidLibrary(nameSpace = "com.github.panpf.sketch.singleton")
