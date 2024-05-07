@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.compose.core.test.painter
+package com.github.panpf.sketch.compose.core.android.test.painter
 
 import android.graphics.Color
 import androidx.compose.runtime.Composable

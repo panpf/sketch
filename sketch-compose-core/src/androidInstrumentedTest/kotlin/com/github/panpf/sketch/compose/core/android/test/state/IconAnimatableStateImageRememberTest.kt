@@ -10,7 +10,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asEquality
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class IconAnimatableStateImageRememberTest {
     // TODO test
 
