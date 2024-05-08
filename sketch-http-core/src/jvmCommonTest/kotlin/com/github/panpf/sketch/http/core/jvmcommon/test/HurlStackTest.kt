@@ -2,13 +2,12 @@ package com.github.panpf.sketch.http.core.jvmcommon.test
 
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.http.HttpStack.Companion
 import com.github.panpf.sketch.http.HurlStack.Builder
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import java.io.IOException
+import kotlin.test.assertFailsWith
 
 class HurlStackTest {
 
@@ -117,7 +116,7 @@ class HurlStackTest {
             }
         }
 
-        assertThrow(IOException::class) {
+        assertFailsWith(IOException::class) {
             Builder().build().let {
                 runBlocking {
                     it.getResponse("", null, null)
