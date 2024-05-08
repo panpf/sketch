@@ -175,10 +175,7 @@ class UtilsTest {
         }
     }
 
-    @Test
-    fun testCalculateBounds() {
-        // TODO Test calculateBounds
-    }
+    // TODO Test calculateBounds
 
     @Test
     fun testComputeSizeMultiplier() {

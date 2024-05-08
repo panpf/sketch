@@ -15,39 +15,37 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionTarget
 
-class TestTransition : Transition {
+class TestDecoder2 : Decoder {
 
-    override fun transition() {
-
+    override suspend fun decode(): Result<DecodeResult> {
+        throw UnsupportedOperationException()
     }
 
-    class Factory : Transition.Factory {
+    class Factory : Decoder.Factory {
+
+        override val key: String = "TestDecoder2"
 
         override fun create(
             requestContext: RequestContext,
-            target: TransitionTarget,
-            result: ImageResult,
-        ): Transition {
-            return TestTransition()
+            fetchResult: FetchResult
+        ): Decoder {
+            return TestDecoder2()
         }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other == null || this::class != other::class) return false
-            return true
+            return other is Factory
         }
 
         override fun hashCode(): Int {
-            return this::class.hashCode()
+            return this@Factory::class.hashCode()
         }
 
-        override fun toString(): String {
-            return "TestTransition"
-        }
+        override fun toString(): String = "TestDecoder2"
     }
 }
