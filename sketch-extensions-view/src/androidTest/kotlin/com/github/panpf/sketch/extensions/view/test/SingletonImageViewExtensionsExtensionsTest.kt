@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
 import com.github.panpf.sketch.test.utils.TestGlobalTargetLifecycle
+import com.github.panpf.sketch.test.utils.versionCodeCompat
 import com.github.panpf.sketch.view.core.R
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import org.junit.Assert
@@ -31,14 +32,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SingletonImageViewExtensionsEstensionsTest {
+class SingletonImageViewExtensionsExtensionsTest {
 
     @Test
     fun testDisplayAppIconImage() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = ImageView(context)
 
-        val versionCode = context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+        val versionCode =
+            context.packageManager.getPackageInfo(context.packageName, 0).versionCodeCompat
         imageView.displayAppIconImage(context.packageName, versionCode) {
             lifecycle(TestGlobalTargetLifecycle)
         }

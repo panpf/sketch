@@ -41,14 +41,14 @@ class LoggerTest {
             w { "messageTest1" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Warn, tag=Sketch, msg=messageTest1, tr=null)",
+                "LogEntry(level=Warn, tag=Sketch, msg=messageTest1, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
             e { "messageTest2" }
             Assert.assertEquals(2, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Error, tag=Sketch, msg=messageTest2, tr=null)",
+                "LogEntry(level=Error, tag=Sketch, msg=messageTest2, tr=null)",
                 testPipeline.logList[1].toString()
             )
         }
@@ -132,7 +132,7 @@ class LoggerTest {
             v { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Verbose, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Verbose, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -148,7 +148,7 @@ class LoggerTest {
             v(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Verbose, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Verbose, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
         }
@@ -168,7 +168,7 @@ class LoggerTest {
             d { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Debug, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Debug, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -184,7 +184,7 @@ class LoggerTest {
             d(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Debug, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Debug, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
         }
@@ -204,7 +204,7 @@ class LoggerTest {
             i { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Info, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Info, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -220,7 +220,7 @@ class LoggerTest {
             i(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Info, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Info, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
         }
@@ -240,7 +240,7 @@ class LoggerTest {
             w { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Warn, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Warn, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -254,7 +254,7 @@ class LoggerTest {
             w("message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Warn, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Warn, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -270,7 +270,7 @@ class LoggerTest {
             w(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Warn, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Warn, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
 
@@ -284,7 +284,7 @@ class LoggerTest {
             w(Exception("exception"), "message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Warn, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Warn, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
         }
@@ -304,7 +304,7 @@ class LoggerTest {
             e { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Error, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Error, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -318,7 +318,7 @@ class LoggerTest {
             e("message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Error, tag=Sketch, msg=message, tr=null)",
+                "LogEntry(level=Error, tag=Sketch, msg=message, tr=null)",
                 testPipeline.logList[0].toString()
             )
 
@@ -334,7 +334,7 @@ class LoggerTest {
             e(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Error, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Error, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
 
@@ -348,7 +348,7 @@ class LoggerTest {
             e(Exception("exception"), "message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Error, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
+                "LogEntry(level=Error, tag=Sketch, msg=message, tr=java.lang.Exception: exception)",
                 testPipeline.logList[0].toString()
             )
         }
@@ -364,7 +364,7 @@ class LoggerTest {
             flush()
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
-                "LogEntry(level=Logger.Assert, tag=Sketch, msg=flush, tr=null)",
+                "LogEntry(level=Assert, tag=Sketch, msg=flush, tr=null)",
                 testPipeline.logList[0].toString()
             )
         }
@@ -375,7 +375,9 @@ class LoggerTest {
         val logList = LinkedList<LogEntry>()
 
         override fun log(level: Int, tag: String, msg: String, tr: Throwable?) {
-            logList.add(LogEntry(level, tag, msg, tr))
+            if (!msg.contains("setLevel")) {
+                logList.add(LogEntry(level, tag, msg, tr))
+            }
         }
 
         override fun flush() {
@@ -387,6 +389,10 @@ class LoggerTest {
             val tag: String,
             val msg: String,
             val tr: Throwable?
-        )
+        ) {
+            override fun toString(): String {
+                return "LogEntry(level=${Logger.levelName(level)}, tag=$tag, msg=$msg, tr=$tr)"
+            }
+        }
     }
 }

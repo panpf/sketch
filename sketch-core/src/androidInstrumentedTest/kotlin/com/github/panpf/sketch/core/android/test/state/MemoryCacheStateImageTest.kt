@@ -155,19 +155,19 @@ class MemoryCacheStateImageTest {
 
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
+                "MemoryCacheStateImage(cacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
                 toString()
             )
         }
         MemoryCacheStateImage(memoryCacheKey, ColorStateImage(IntColor(Color.GREEN))).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(memoryCacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
+                "MemoryCacheStateImage(cacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }
         MemoryCacheStateImage(null, null).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(memoryCacheKey=null, defaultImage=null)",
+                "MemoryCacheStateImage(cacheKey=null, defaultImage=null)",
                 toString()
             )
         }

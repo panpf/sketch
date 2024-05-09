@@ -33,6 +33,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.GridItemExifOrientationBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
@@ -102,13 +103,11 @@ class ExifOrientationGridItemFactory :
         data: MyImage
     ) {
         binding.root.updateLayoutParams<LayoutParams> {
-            val photoWidth = data.size.width
-            val photoHeight = data.size.height
             val itemSize = itemSize!!
-            if (photoWidth != null && photoHeight != null) {
+            if (data.size.isNotEmpty) {
                 width = itemSize.x
                 height = if (itemSize.y == -1) {
-                    val previewAspectRatio = photoWidth.toFloat() / photoHeight.toFloat()
+                    val previewAspectRatio = data.size.width.toFloat() / data.size.height.toFloat()
                     (itemSize.x / previewAspectRatio).roundToInt()
                 } else {
                     itemSize.y

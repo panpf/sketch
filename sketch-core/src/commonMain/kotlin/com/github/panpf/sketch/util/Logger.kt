@@ -371,25 +371,25 @@ class Logger(
          * Get the name of the level
          */
         fun levelName(level: Int): String = when (level) {
-            Verbose -> "VERBOSE"
-            Debug -> "DEBUG"
-            Info -> "INFO"
-            Warn -> "WARN"
-            Error -> "ERROR"
-            Assert -> "ASSERT"
-            else -> "UNKNOWN"
+            Verbose -> "Verbose"
+            Debug -> "Debug"
+            Info -> "Info"
+            Warn -> "Warn"
+            Error -> "Error"
+            Assert -> "Assert"
+            else -> "Unknown"
         }
 
         /**
          * Get the level of the name
          */
         fun level(levelName: String): Int = when (levelName) {
-            "VERBOSE" -> Verbose
-            "DEBUG" -> Debug
-            "INFO" -> Info
-            "WARN" -> Warn
-            "ERROR" -> Error
-            "ASSERT" -> Assert
+            "Verbose" -> Verbose
+            "Debug" -> Debug
+            "Info" -> Info
+            "Warn" -> Warn
+            "Error" -> Error
+            "Assert" -> Assert
             else -> throw IllegalArgumentException("Unknown level name: $levelName")
         }
 

@@ -1,18 +1,19 @@
 package com.github.panpf.sketch.core.android.test.source
 
 import android.content.res.Resources.NotFoundException
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
+import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.util.sha256String
+import com.github.panpf.tools4j.test.ktx.assertThrow
+import okio.Closeable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.tools4j.test.ktx.assertThrow
-import okio.Closeable
 
 @RunWith(AndroidJUnit4::class)
 class ResourceDataSourceTest {
@@ -84,7 +85,10 @@ class ResourceDataSourceTest {
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             val file = getFile()
-            Assert.assertEquals("0257c278c299ae9196d4e58fbf234e56.0", file.name)
+            Assert.assertEquals(
+                (request.uriString + "_data_source").sha256String() + ".0",
+                file.name
+            )
         }
     }
 

@@ -86,7 +86,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             val file = getFile()
-            Assert.assertEquals("01d95711e2e30d06b88b93f82e3e1bde.0", file.name)
+            Assert.assertEquals("68782106a6216d308b14bd1e41c21f0873de090313a6885531b405582e224ec3.0", file.name)
         }
 
         val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))

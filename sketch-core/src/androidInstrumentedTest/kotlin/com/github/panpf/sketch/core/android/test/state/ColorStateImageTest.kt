@@ -98,10 +98,10 @@ class ColorStateImageTest {
 
     @Test
     fun testToString() {
-        ColorStateImage(Color.RED).apply {
+        ColorStateImage(IntColor(Color.RED)).apply {
             Assert.assertEquals("ColorStateImage(IntColor(${Color.RED}))", toString())
         }
-        ColorStateImage(Color.GREEN).apply {
+        ColorStateImage(IntColor(Color.GREEN)).apply {
             Assert.assertEquals("ColorStateImage(IntColor(${Color.GREEN}))", toString())
         }
     }

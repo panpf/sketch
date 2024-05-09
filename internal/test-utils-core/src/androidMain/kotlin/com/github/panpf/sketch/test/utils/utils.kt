@@ -15,15 +15,12 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import android.content.Context
+import android.content.pm.PackageInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
@@ -32,16 +29,12 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
-import java.io.File
 import java.io.InputStream
 import kotlin.math.pow
 import kotlin.math.round
 
 val Drawable.intrinsicSize: Size
     get() = Size(intrinsicWidth, intrinsicHeight)
-
-val ImageInfo.size: Size
-    get() = Size(width, height)
 
 val Size.ratio: Float
     get() = (width / height.toFloat()).format(1)
@@ -50,7 +43,7 @@ val Bitmap.size: Size
     get() = Size(width, height)
 
 fun InputStream.newBitmapRegionDecoderInstanceCompat(): BitmapRegionDecoder? =
-    if (VERSION.SDK_INT >= VERSION_CODES.S) {
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
         BitmapRegionDecoder.newInstance(this)
     } else {
         @Suppress("DEPRECATION")
@@ -103,3 +96,11 @@ fun Float.format(newScale: Int): Float {
 inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
+
+@Suppress("DEPRECATION")
+val PackageInfo.versionCodeCompat: Int
+    get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        longVersionCode.toInt()
+    } else {
+        versionCode
+    }

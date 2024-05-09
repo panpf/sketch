@@ -101,7 +101,7 @@ class DrawablesTest {
         Assert.assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
         drawable.toNewBitmap().apply {
             Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
-            Assert.assertEquals("Bitmap(100x100,ARGB_8888)", toShortInfoString())
+            Assert.assertEquals("AndroidBitmap(100x100,ARGB_8888)", toShortInfoString())
         }
         Assert.assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
 
@@ -109,7 +109,7 @@ class DrawablesTest {
         Assert.assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
         drawable.toNewBitmap(Bitmap.Config.RGB_565).apply {
             Assert.assertEquals(Bitmap.Config.RGB_565, config)
-            Assert.assertEquals("Bitmap(100x100,RGB_565)", toShortInfoString())
+            Assert.assertEquals("AndroidBitmap(100x100,RGB_565)", toShortInfoString())
         }
         Assert.assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
     }

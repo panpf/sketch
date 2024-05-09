@@ -20,8 +20,9 @@ class PlatformContextsAndroidTest {
         val isLowRamDevice =
             VERSION.SDK_INT < VERSION_CODES.KITKAT || activityManager?.isLowRamDevice == true
         Assert.assertEquals(
-            if (isLowRamDevice) 0.25f else 0.33f,
-            context.defaultMemoryCacheSizePercent()
+            /* expected = */ if (isLowRamDevice) 0.25 else 0.33,
+            /* actual = */ context.defaultMemoryCacheSizePercent(),
+            /* delta = */ 0.0
         )
     }
 
@@ -32,9 +33,9 @@ class PlatformContextsAndroidTest {
         val isLargeHeap =
             (context.applicationInfo.flags and ApplicationInfo.FLAG_LARGE_HEAP) != 0
         val appMemoryClassBytes = when {
-            activityManager != null && isLargeHeap -> activityManager.largeMemoryClass * 1024 * 1024
-            activityManager != null && !isLargeHeap -> activityManager.memoryClass * 1024 * 1024
-            else -> 16 * 1024 * 1024
+            activityManager != null && isLargeHeap -> activityManager.largeMemoryClass * 1024L * 1024L
+            activityManager != null && !isLargeHeap -> activityManager.memoryClass * 1024L * 1024L
+            else -> 16 * 1024L * 1024L
         }
         Assert.assertEquals(appMemoryClassBytes, context.totalAvailableMemoryBytes())
     }

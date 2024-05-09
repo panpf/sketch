@@ -28,6 +28,7 @@ import com.github.panpf.sketch.state.asStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -113,15 +114,15 @@ class ErrorStateImageTest {
 
     @Test
     fun testToString() {
-        ErrorStateImage(ColorStateImage(Color.RED)).apply {
+        ErrorStateImage(ColorStateImage(IntColor(Color.RED))).apply {
             Assert.assertEquals(
                 "ErrorStateImage([(DefaultCondition, ColorStateImage(IntColor(${Color.RED})))])",
                 toString()
             )
         }
 
-        ErrorStateImage(ColorStateImage(Color.GREEN)) {
-            uriEmptyError(ColorStateImage(Color.YELLOW))
+        ErrorStateImage(ColorStateImage(IntColor(Color.GREEN))) {
+            uriEmptyError(ColorStateImage(IntColor(Color.YELLOW)))
         }.apply {
             Assert.assertEquals(
                 "ErrorStateImage([(UriEmptyCondition, ColorStateImage(IntColor(${Color.YELLOW}))), (DefaultCondition, ColorStateImage(IntColor(${Color.GREEN})))])",

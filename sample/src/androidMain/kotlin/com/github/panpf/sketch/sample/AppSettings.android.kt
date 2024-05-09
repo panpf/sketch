@@ -41,5 +41,6 @@ actual fun ImageOptions.Builder.platformBuildImageOptions(appSettings: AppSettin
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         colorSpace(appSettings.colorSpaceValue)
     }
+    @Suppress("DEPRECATION")
     preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && appSettings.inPreferQualityOverSpeed.value)
 }
