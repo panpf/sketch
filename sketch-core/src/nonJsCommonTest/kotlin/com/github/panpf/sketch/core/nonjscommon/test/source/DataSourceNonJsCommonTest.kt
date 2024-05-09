@@ -21,7 +21,7 @@ class DataSourceNonJsCommonTest {
         val (context, sketch) = getTestContextAndNewSketch()
         ImageRequest(context, MyImages.jpeg.uri).fetch(sketch).dataSource.apply {
             val file = getDataSourceCacheFile(sketch, request, this)
-            assertTrue(file.toString().contains("/cache/"))
+            assertTrue(file.toString().contains("/sketch4/result/"))
             val file1 = getDataSourceCacheFile(sketch, request, this)
             assertEquals(file, file1)
         }

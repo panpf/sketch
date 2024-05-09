@@ -227,7 +227,7 @@ class ImageOptionsTest {
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertNotNull(this.resizeOnDrawHelper)
+            assertNull(this.resizeOnDrawHelper)
         }
 
         ImageOptions {
@@ -489,14 +489,14 @@ class ImageOptionsTest {
         ImageOptions().apply {
             assertEquals(null, this.error)
         }.merged(ImageOptions {
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            error(FakeStateImage(FakeImage(SketchSize(100, 100))))
         }).apply {
             assertEquals(
                 ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))),
                 this.error
             )
         }.merged(ImageOptions {
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))))
+            error(FakeStateImage(FakeImage(SketchSize(200, 200))))
         }).apply {
             assertEquals(
                 ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))),
@@ -1247,7 +1247,7 @@ class ImageOptionsTest {
                 assertNull(error)
             }
 
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            error(FakeStateImage(FakeImage(SketchSize(100, 100))))
             build().apply {
                 assertEquals(
                     ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))),
@@ -1255,7 +1255,7 @@ class ImageOptionsTest {
                 )
             }
 
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))))
+            error(FakeStateImage(FakeImage(SketchSize(200, 200))))
             build().apply {
                 assertEquals(
                     ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))),
@@ -1263,9 +1263,9 @@ class ImageOptionsTest {
                 )
             }
 
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
+            error(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
                 uriEmptyError(FakeStateImage(FakeImage(SketchSize(300, 300))))
-            })
+            }
             build().apply {
                 assertEquals(
                     ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
