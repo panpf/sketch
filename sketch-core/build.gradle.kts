@@ -10,9 +10,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchHttpCore)
-            api(libs.kotlin.stdlib)
-            api(libs.kotlinx.coroutines.core)
-            api(libs.okio)
 //                compileOnly(libs.composeStableMarker)
         }
         androidMain.dependencies {

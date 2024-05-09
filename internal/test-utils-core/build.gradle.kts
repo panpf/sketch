@@ -10,10 +10,9 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils.core")
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(kotlin("test-junit"))
             api(projects.sketchCore)
             api(projects.internal.images)
-            api(libs.kotlinx.coroutines.core)
+            api(libs.kotlin.test.junit)
             api(libs.kotlinx.coroutines.test)
         }
         jvmCommonMain.dependencies {

@@ -28,12 +28,27 @@ tasks.register("cleanRootBuild", Delete::class) {
 }
 
 allprojects {
+    kotlinDependenciesConfig()
     jvmTargetConfig()
     composeCompilerVersionConfig()
     composeStabilityConfig()
     composeReportsConfig()
     publishConfig()
     applyOkioJsTestWorkaround()
+    androidTestConfig()
+}
+
+fun Project.kotlinDependenciesConfig() {
+    dependencies {
+        modules {
+            module("org.jetbrains.kotlin:kotlin-stdlib-jdk7") {
+                replacedBy("org.jetbrains.kotlin:kotlin-stdlib")
+            }
+            module("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
+                replacedBy("org.jetbrains.kotlin:kotlin-stdlib")
+            }
+        }
+    }
 }
 
 fun Project.jvmTargetConfig() {
@@ -112,6 +127,11 @@ fun Project.publishConfig() {
 
 // https://github.com/square/okio/issues/1163
 fun Project.applyOkioJsTestWorkaround() {
+    if (":sample" in displayName) {
+        // The polyfills cause issues with the sample.
+        return
+    }
+
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         val applyNodePolyfillPlugin by lazy {
             tasks.register("applyNodePolyfillPlugin") {
@@ -147,6 +167,15 @@ fun Project.applyOkioJsTestWorkaround() {
                     }
                 }
             }
+        }
+    }
+}
+
+fun Project.androidTestConfig() {
+    // Uninstall test APKs after running instrumentation tests.
+    tasks.configureEach {
+        if (name == "connectedDebugAndroidTest") {
+            finalizedBy("uninstallDebugAndroidTest")
         }
     }
 }
