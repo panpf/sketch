@@ -252,29 +252,29 @@ interface ImageOptions {
 
         constructor()
 
-        internal constructor(request: ImageOptions) {
-            this.depth = request.depth
-            this.parametersBuilder = request.parameters?.newBuilder()
+        internal constructor(options: ImageOptions) {
+            this.depth = options.depth
+            this.parametersBuilder = options.parameters?.newBuilder()
 
-            this.httpHeadersBuilder = request.httpHeaders?.newBuilder()
-            this.downloadCachePolicy = request.downloadCachePolicy
+            this.httpHeadersBuilder = options.httpHeaders?.newBuilder()
+            this.downloadCachePolicy = options.downloadCachePolicy
 
-            this.sizeResolver = request.sizeResolver
-            this.sizeMultiplier = request.sizeMultiplier
-            this.precisionDecider = request.precisionDecider
-            this.scaleDecider = request.scaleDecider
-            this.transformations = request.transformations?.toMutableList()
-            this.resultCachePolicy = request.resultCachePolicy
+            this.sizeResolver = options.sizeResolver
+            this.sizeMultiplier = options.sizeMultiplier
+            this.precisionDecider = options.precisionDecider
+            this.scaleDecider = options.scaleDecider
+            this.transformations = options.transformations?.toMutableList()
+            this.resultCachePolicy = options.resultCachePolicy
 
-            this.placeholder = request.placeholder
-            this.uriEmpty = request.uriEmpty
-            this.error = request.error
-            this.transitionFactory = request.transitionFactory
-            this.disallowAnimatedImage = request.disallowAnimatedImage
-            this.resizeOnDrawHelper = request.resizeOnDrawHelper
-            this.memoryCachePolicy = request.memoryCachePolicy
+            this.placeholder = options.placeholder
+            this.uriEmpty = options.uriEmpty
+            this.error = options.error
+            this.transitionFactory = options.transitionFactory
+            this.disallowAnimatedImage = options.disallowAnimatedImage
+            this.resizeOnDrawHelper = options.resizeOnDrawHelper
+            this.memoryCachePolicy = options.memoryCachePolicy
 
-            this.componentRegistry = request.componentRegistry
+            this.componentRegistry = options.componentRegistry
         }
 
 
@@ -301,6 +301,7 @@ interface ImageOptions {
         /**
          * Set a parameter for this request.
          */
+        // TODO All parameters that depend on this parameter should be set to null for easy purging and merging
         fun setParameter(
             key: String,
             value: Any?,

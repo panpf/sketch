@@ -8,12 +8,12 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
-import com.github.panpf.sketch.util.DrawableEqualizer
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.util.DrawableEqualizer
 
 actual fun createCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
     return CrossfadeTransition.Factory(
@@ -147,11 +147,11 @@ val ImageOptions.colorSpace: ColorSpace?
 @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
 fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageOptions.Builder =
     apply {
-        if (inPreferQualityOverSpeed == true) {
+        if (inPreferQualityOverSpeed != null) {
             setParameter(
                 key = PREFER_QUALITY_OVER_SPEED_KEY,
                 value = inPreferQualityOverSpeed.toString(),
-                cacheKey = inPreferQualityOverSpeed.toString()
+                cacheKey = if (inPreferQualityOverSpeed == true) inPreferQualityOverSpeed.toString() else null
             )
         } else {
             removeParameter(PREFER_QUALITY_OVER_SPEED_KEY)
