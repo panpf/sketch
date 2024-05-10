@@ -9,6 +9,7 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.LruDiskCache
 import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
@@ -17,7 +18,7 @@ import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.fetch.HttpUriFetcher.Factory
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
@@ -30,7 +31,8 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestActivity
@@ -40,7 +42,6 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
@@ -61,14 +62,13 @@ class SketchTest {
 
     @Test
     fun testBuilder() {
-        val context = getTestContext()
-
         val activity = TestActivity::class.launchActivity().getActivitySync()
         Builder(activity).build().apply {
             Assert.assertNotEquals(activity, context)
             Assert.assertEquals(activity.applicationContext, context)
         }
 
+        val context = getTestContext()
         Builder(context).apply {
             build().apply {
                 Assert.assertEquals(Logger(), logger)
@@ -126,15 +126,16 @@ class SketchTest {
             build().apply {
                 Assert.assertEquals(
                     ComponentRegistry.Builder().apply {
-                        addFetcher(Factory())
-                        addFetcher(FileUriFetcher.Factory())
                         addFetcher(ContentUriFetcher.Factory())
                         addFetcher(ResourceUriFetcher.Factory())
                         addFetcher(AssetUriFetcher.Factory())
+                        addFetcher(HttpUriFetcher.Factory())
+                        addFetcher(FileUriFetcher.Factory())
                         addFetcher(Base64UriFetcher.Factory())
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
+                        addRequestInterceptor(PlaceholderRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
                         addDecodeInterceptor(TransformationDecodeInterceptor())
@@ -152,15 +153,16 @@ class SketchTest {
                     ComponentRegistry.Builder().apply {
                         addFetcher(TestFetcher.Factory())
                         addDecoder(TestDecoder.Factory())
-                        addFetcher(Factory())
-                        addFetcher(FileUriFetcher.Factory())
                         addFetcher(ContentUriFetcher.Factory())
                         addFetcher(ResourceUriFetcher.Factory())
                         addFetcher(AssetUriFetcher.Factory())
+                        addFetcher(HttpUriFetcher.Factory())
+                        addFetcher(FileUriFetcher.Factory())
                         addFetcher(Base64UriFetcher.Factory())
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
+                        addRequestInterceptor(PlaceholderRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
                         addDecodeInterceptor(TransformationDecodeInterceptor())
@@ -170,7 +172,7 @@ class SketchTest {
                 )
                 Assert.assertNotEquals(
                     ComponentRegistry.Builder().apply {
-                        addFetcher(Factory())
+                        addFetcher(HttpUriFetcher.Factory())
                         addFetcher(FileUriFetcher.Factory())
                         addFetcher(ContentUriFetcher.Factory())
                         addFetcher(ResourceUriFetcher.Factory())
@@ -178,6 +180,8 @@ class SketchTest {
                         addFetcher(Base64UriFetcher.Factory())
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
+                        addRequestInterceptor(MemoryCacheRequestInterceptor())
+                        addRequestInterceptor(PlaceholderRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
                         addDecodeInterceptor(TransformationDecodeInterceptor())
@@ -200,7 +204,8 @@ class SketchTest {
                 Assert.assertEquals(
                     listOf(
                         MemoryCacheRequestInterceptor(),
-                        EngineRequestInterceptor()
+                        PlaceholderRequestInterceptor(),
+                        EngineRequestInterceptor(),
                     ),
                     components.getRequestInterceptorList(ImageRequest(context, ""))
                 )
@@ -213,6 +218,7 @@ class SketchTest {
                     listOf(
                         TestRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
+                        PlaceholderRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -220,6 +226,7 @@ class SketchTest {
                 Assert.assertNotEquals(
                     listOf(
                         MemoryCacheRequestInterceptor(),
+                        PlaceholderRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -272,7 +279,7 @@ class SketchTest {
 
     @Test
     fun testEnqueue() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
@@ -317,7 +324,7 @@ class SketchTest {
 
     @Test
     fun testExecute() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()

@@ -24,7 +24,7 @@ import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -91,7 +91,7 @@ class AppIconUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AppIconUriFetcher.Factory()
 
         Assert.assertEquals("AppIconUriFetcher", fetcherFactory.toString())
@@ -158,7 +158,7 @@ class AppIconUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AppIconUriFetcher.Factory()
 
         val packageName = context.packageName

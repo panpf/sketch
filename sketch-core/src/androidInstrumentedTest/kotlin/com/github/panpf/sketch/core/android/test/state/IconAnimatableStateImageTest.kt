@@ -329,8 +329,8 @@ class IconAnimatableStateImageTest {
             getImage(sketch, request, null)
                 ?.asOrThrow<AndroidDrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable, icon)
-                    Assert.assertEquals(greenBgDrawable, background)
+                    Assert.assertEquals(iconDrawable.wrapped, icon)
+                    Assert.assertEquals(greenBgDrawable.wrapped, background)
                     Assert.assertNull(iconSize)
                 }
         }
@@ -343,7 +343,7 @@ class IconAnimatableStateImageTest {
             getImage(sketch, request, null)
                 ?.asOrThrow<AndroidDrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertEquals(iconDrawable.wrapped, icon)
                     Assert.assertTrue(background is BitmapDrawable)
                     Assert.assertEquals(Size(40, 40), iconSize)
                 }
@@ -356,7 +356,7 @@ class IconAnimatableStateImageTest {
             getImage(sketch, request, null)
                 ?.asOrThrow<AndroidDrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertEquals(iconDrawable.wrapped, icon)
                     Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
                     Assert.assertNull(iconSize)
                 }
@@ -366,7 +366,7 @@ class IconAnimatableStateImageTest {
             getImage(sketch, request, null)
                 ?.asOrThrow<AndroidDrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable, icon)
+                    Assert.assertEquals(iconDrawable.wrapped, icon)
                     Assert.assertNull(background)
                     Assert.assertNull(iconSize)
                 }

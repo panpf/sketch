@@ -28,24 +28,43 @@ import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.math.roundToLong
 
 @RunWith(AndroidJUnit4::class)
 class LruMemoryCacheTest {
 
     @Test
+    fun testConstructor() {
+        LruMemoryCache(maxSize = 10L * 1024 * 1024).apply {
+            Assert.assertEquals("10MB", maxSize.formatFileSize())
+            Assert.assertEquals("3MB", valueLimitedSize.formatFileSize())
+        }
+
+        LruMemoryCache(maxSize = 100L * 1024 * 1024).apply {
+            Assert.assertEquals("100MB", maxSize.formatFileSize())
+            Assert.assertEquals("30MB", valueLimitedSize.formatFileSize())
+        }
+
+        LruMemoryCache(maxSize = 100L * 1024 * 1024, valueLimitedSize = 80L * 1024 * 1024).apply {
+            Assert.assertEquals("100MB", maxSize.formatFileSize())
+            Assert.assertEquals("80MB", valueLimitedSize.formatFileSize())
+        }
+    }
+
+    @Test
     fun testMaxSize() {
-        LruMemoryCache(10L * 1024 * 1024).apply {
+        LruMemoryCache(maxSize = 10L * 1024 * 1024).apply {
             Assert.assertEquals("10MB", maxSize.formatFileSize())
         }
 
-        LruMemoryCache(100L * 1024 * 1024).apply {
+        LruMemoryCache(maxSize = 100L * 1024 * 1024).apply {
             Assert.assertEquals("100MB", maxSize.formatFileSize())
         }
     }
 
     @Test
     fun testSize() {
-        LruMemoryCache(10L * 1024 * 1024).apply {
+        LruMemoryCache(maxSize = 10L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
             putBitmap("image1", 1)
@@ -58,11 +77,11 @@ class LruMemoryCacheTest {
 
     @Test
     fun testPutRemoveGet() {
-        LruMemoryCache(10L * 1024 * 1024).apply {
+        LruMemoryCache(maxSize = 10L * 1024 * 1024).apply {
             Assert.assertNull(get("image1"))
-            Assert.assertTrue(putBitmap("image1", 1))
+            Assert.assertEquals(0, putBitmap("image1", 1))
             Assert.assertNotNull(get("image1"))
-            Assert.assertFalse(putBitmap("image1", 1))
+            Assert.assertEquals(-1, putBitmap("image1", 1))
 
             Assert.assertNull(get("image2"))
             putBitmap("image2", 2)
@@ -82,36 +101,39 @@ class LruMemoryCacheTest {
     @Test
     fun testLRU() {
         val sketch = newSketch()
-        LruMemoryCache(10L * 1024 * 1024).apply {
+        LruMemoryCache(
+            maxSize = 10L * 1024 * 1024,
+            valueLimitedSize = (10L * 1024 * 1024 * 0.8f).roundToLong()
+        ).apply {
             Assert.assertEquals("0B", size.formatFileSize())
 
             val bigBitmapSize = (sketch.memoryCache.maxSize.toFloat() / 1024 / 1024 * 0.8f).toInt()
-            Assert.assertFalse(putBitmap("image0", bigBitmapSize))
+            Assert.assertEquals(-2, putBitmap("image0", bigBitmapSize))
             Assert.assertEquals("0B", size.formatFileSize())
 
-            Assert.assertTrue(putBitmap("image1", 1))
+            Assert.assertEquals(0, putBitmap("image1", 1))
             Assert.assertEquals("1MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
 
-            Assert.assertTrue(putBitmap("image2", 2))
+            Assert.assertEquals(0, putBitmap("image2", 2))
             Assert.assertEquals("3MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
 
-            Assert.assertTrue(putBitmap("image3", 3))
+            Assert.assertEquals(0, putBitmap("image3", 3))
             Assert.assertEquals("6MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
 
-            Assert.assertTrue(putBitmap("image4", 4))
+            Assert.assertEquals(0, putBitmap("image4", 4))
             Assert.assertEquals("10MB", size.formatFileSize())
             Assert.assertNotNull(get("image1"))
             Assert.assertNotNull(get("image2"))
             Assert.assertNotNull(get("image3"))
             Assert.assertNotNull(get("image4"))
 
-            Assert.assertTrue(putBitmap("image5", 5))
+            Assert.assertEquals(0, putBitmap("image5", 5))
             Assert.assertEquals("9MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -119,7 +141,7 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(get("image4"))
             Assert.assertNotNull(get("image5"))
 
-            Assert.assertTrue(putBitmap("image6", 6))
+            Assert.assertEquals(0, putBitmap("image6", 6))
             Assert.assertEquals("6MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -128,7 +150,7 @@ class LruMemoryCacheTest {
             Assert.assertNull(get("image5"))
             Assert.assertNotNull(get("image6"))
 
-            Assert.assertTrue(putBitmap("image7", 7))
+            Assert.assertEquals(0, putBitmap("image7", 7))
             Assert.assertEquals("7MB", size.formatFileSize())
             Assert.assertNull(get("image1"))
             Assert.assertNull(get("image2"))
@@ -142,7 +164,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testTrim() {
-        LruMemoryCache(10L * 1024 * 1024).apply {
+        LruMemoryCache(maxSize = 10L * 1024 * 1024, valueLimitedSize = 5L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap("image1", 1)
             putBitmap("image2", 2)
@@ -153,6 +175,20 @@ class LruMemoryCacheTest {
             Assert.assertNotNull(get("image3"))
             Assert.assertNotNull(get("image4"))
             Assert.assertEquals("10MB", size.formatFileSize())
+
+            trim(7L * 1024 * 1024)
+            Assert.assertNull(get("image1"))
+            Assert.assertNull(get("image2"))
+            Assert.assertNotNull(get("image3"))
+            Assert.assertNotNull(get("image4"))
+            Assert.assertEquals("7MB", size.formatFileSize())
+
+            trim(4L * 1024 * 1024)
+            Assert.assertNull(get("image1"))
+            Assert.assertNull(get("image2"))
+            Assert.assertNull(get("image3"))
+            Assert.assertNotNull(get("image4"))
+            Assert.assertEquals("4MB", size.formatFileSize())
 
             trim(0L)
             Assert.assertNull(get("image1"))
@@ -161,31 +197,11 @@ class LruMemoryCacheTest {
             Assert.assertNull(get("image4"))
             Assert.assertEquals("0B", size.formatFileSize())
         }
-
-        LruMemoryCache(10L * 1024 * 1024).apply {
-            Assert.assertEquals("0B", size.formatFileSize())
-            putBitmap("image1", 1)
-            putBitmap("image2", 2)
-            putBitmap("image3", 3)
-            putBitmap("image4", 4)
-            Assert.assertNotNull(get("image1"))
-            Assert.assertNotNull(get("image2"))
-            Assert.assertNotNull(get("image3"))
-            Assert.assertNotNull(get("image4"))
-            Assert.assertEquals("10MB", size.formatFileSize())
-
-            trim(4L)
-            Assert.assertNull(get("image1"))
-            Assert.assertNull(get("image2"))
-            Assert.assertNull(get("image3"))
-            Assert.assertNotNull(get("image4"))
-            Assert.assertEquals("4MB", size.formatFileSize())
-        }
     }
 
     @Test
     fun testClear() {
-        LruMemoryCache(10L * 1024 * 1024).apply {
+        LruMemoryCache(maxSize = 10L * 1024 * 1024, valueLimitedSize = 5L * 1024 * 1024).apply {
             Assert.assertEquals("0B", size.formatFileSize())
             putBitmap("image1", 1)
             putBitmap("image2", 2)
@@ -232,15 +248,15 @@ class LruMemoryCacheTest {
     @Test
     fun testToString() {
         LruMemoryCache(10L * 1024 * 1024).apply {
-            Assert.assertEquals("LruMemoryCache(10MB)", toString())
+            Assert.assertEquals("LruMemoryCache(maxSize=10MB,valueLimitedSize=3MB)", toString())
         }
 
         LruMemoryCache(100L * 1024 * 1024).apply {
-            Assert.assertEquals("LruMemoryCache(100MB)", toString())
+            Assert.assertEquals("LruMemoryCache(maxSize=100MB,valueLimitedSize=30MB)", toString())
         }
     }
 
-    private fun LruMemoryCache.putBitmap(imageUri: String, sizeMb: Int): Boolean {
+    private fun LruMemoryCache.putBitmap(imageUri: String, sizeMb: Int): Int {
         val bytes = sizeMb * 1024 * 1024
         val pixelCount = bytes / 4
         val width = 10
@@ -254,6 +270,6 @@ class LruMemoryCacheTest {
                 extras = null,
             )
         )
-        return put(imageUri, newCacheValue) == 0
+        return put(imageUri, newCacheValue)
     }
 }

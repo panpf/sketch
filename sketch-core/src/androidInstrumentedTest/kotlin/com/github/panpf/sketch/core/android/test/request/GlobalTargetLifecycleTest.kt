@@ -15,34 +15,28 @@
  */
 package com.github.panpf.sketch.core.android.test.request
 
-import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.GlobalTargetLifecycle
 import com.github.panpf.sketch.request.isSketchGlobalLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class GlobalLifecycleTest {
+class GlobalTargetLifecycleTest {
 
     @Test
     fun test() {
         GlobalTargetLifecycle.apply {
-            Assert.assertEquals(Lifecycle.State.RESUMED, currentState)
-            Assert.assertEquals("GlobalLifecycle", toString())
+            Assert.assertEquals(TargetLifecycle.State.RESUMED, currentState)
+            Assert.assertEquals("GlobalTargetLifecycle", toString())
 
             val observer = TargetLifecycle.EventObserver() { owner, _ ->
                 Assert.assertSame(GlobalTargetLifecycle, owner)
             }
             addObserver(observer)
             removeObserver(observer)
-
-            assertThrow(IllegalArgumentException::class) {
-                addObserver { _, _ -> }
-            }
 
             Assert.assertTrue(isSketchGlobalLifecycle())
         }

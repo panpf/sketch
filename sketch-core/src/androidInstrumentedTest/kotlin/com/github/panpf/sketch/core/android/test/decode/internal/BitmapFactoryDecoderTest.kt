@@ -45,10 +45,10 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.format
@@ -66,7 +66,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testDefault() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, MyImages.jpeg.uri) {
             size(3000, 3000)
@@ -75,7 +75,7 @@ class BitmapFactoryDecoderTest {
             val bitmap = image.getBitmapOrThrow()
             Assert.assertEquals("AndroidBitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -111,7 +111,10 @@ class BitmapFactoryDecoderTest {
                     precision(LESS_PIXELS)
                 }.decode(sketch).apply {
                     val bitmap = image.getBitmapOrThrow()
-                    Assert.assertEquals("AndroidBitmap(1500x750,ARGB_8888)", bitmap.toShortInfoString())
+                    Assert.assertEquals(
+                        "AndroidBitmap(1500x750,ARGB_8888)",
+                        bitmap.toShortInfoString()
+                    )
                     Assert.assertEquals(
                         "ImageInfo(1500x750,'image/jpeg')",
                         imageInfo.toShortString()
@@ -124,7 +127,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testBitmapConfig() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, MyImages.jpeg.uri) {
             size(3000, 3000)
@@ -134,7 +137,7 @@ class BitmapFactoryDecoderTest {
             val bitmap = image.getBitmapOrThrow()
             Assert.assertEquals("AndroidBitmap(1291x1936,RGB_565)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -165,7 +168,7 @@ class BitmapFactoryDecoderTest {
     fun testColorSpace() {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, MyImages.jpeg.uri) {
             size(3000, 3000)
@@ -174,7 +177,7 @@ class BitmapFactoryDecoderTest {
             val bitmap = image.getBitmapOrThrow()
             Assert.assertEquals("AndroidBitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -209,7 +212,7 @@ class BitmapFactoryDecoderTest {
             val bitmap = image.getBitmapOrThrow()
             Assert.assertEquals("AndroidBitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -240,7 +243,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
         ImageRequest(context, MyImages.jpeg.uri) {
@@ -258,7 +261,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -281,7 +284,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -306,7 +309,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -329,7 +332,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -350,7 +353,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -369,7 +372,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',NORMAL)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -428,7 +431,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testResizeNoRegion() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
         ImageRequest(context, MyImages.bmp.uri) {
@@ -609,7 +612,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testResizeExif() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         val testFile = ExifOrientationTestFileHelper(
             context,
@@ -633,7 +636,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -657,7 +660,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -683,7 +686,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -707,7 +710,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -729,7 +732,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -749,7 +752,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -778,7 +781,7 @@ class BitmapFactoryDecoderTest {
             )
             Assert.assertEquals("AndroidBitmap(161x215,ARGB_8888)", bitmap.toShortInfoString())
             Assert.assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg',TRANSPOSE)",
+                "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -838,7 +841,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testResizeExifIgnore() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         val testFile = ExifOrientationTestFileHelper(
             context,
@@ -1090,7 +1093,7 @@ class BitmapFactoryDecoderTest {
 
     @Test
     fun testError() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         /* full */
         assertFails {

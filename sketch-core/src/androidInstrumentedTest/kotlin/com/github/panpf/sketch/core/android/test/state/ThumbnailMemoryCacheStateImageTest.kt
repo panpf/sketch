@@ -25,8 +25,8 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestCountTarget
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -44,7 +44,7 @@ class ThumbnailMemoryCacheStateImageTest {
 
     @Test
     fun testGetDrawable() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         val memoryCache = sketch.memoryCache
         memoryCache.clear()

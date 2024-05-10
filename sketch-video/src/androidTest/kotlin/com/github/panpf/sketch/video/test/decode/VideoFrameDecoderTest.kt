@@ -197,7 +197,7 @@ class VideoFrameDecoderTest {
                 )
             }
             Assert.assertEquals(
-                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                "ImageInfo(500x250,'video/mp4')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -219,7 +219,7 @@ class VideoFrameDecoderTest {
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 Assert.assertEquals(
-                    "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                    "ImageInfo(500x250,'video/mp4')",
                     imageInfo.toShortString()
                 )
                 Assert.assertEquals(LOCAL, dataFrom)
@@ -259,7 +259,7 @@ class VideoFrameDecoderTest {
                 )
             }
             Assert.assertEquals(
-                "ImageInfo(500x250,'video/mp4',UNDEFINED)",
+                "ImageInfo(500x250,'video/mp4')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)

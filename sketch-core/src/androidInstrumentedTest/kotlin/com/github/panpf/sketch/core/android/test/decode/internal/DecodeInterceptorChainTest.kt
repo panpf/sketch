@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -40,7 +40,7 @@ class DecodeInterceptorChainTest {
 
     @Test
     fun test() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         mutableListOf<String>().apply {
             val interceptors = listOf(

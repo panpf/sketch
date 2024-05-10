@@ -31,8 +31,8 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.exist
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -45,7 +45,7 @@ class ResultCacheDecodeInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
 
         val interceptors =
@@ -79,7 +79,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
@@ -98,7 +98,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.RESULT_CACHE, result.dataFrom)
@@ -119,7 +119,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
@@ -140,7 +140,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
@@ -162,7 +162,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(323, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(484, result.image.getBitmapOrThrow().height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
@@ -188,7 +188,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(1291, result.image.getBitmapOrThrow().width)
             Assert.assertEquals(1936, result.image.getBitmapOrThrow().height)
             Assert.assertEquals(
-                "ImageInfo(width=1291, height=1936, mimeType='image/jpeg', exifOrientation=NORMAL)",
+                "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)

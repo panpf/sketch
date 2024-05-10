@@ -38,7 +38,7 @@ class ColorStateImageTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, MyImages.jpeg.uri)
 
-        ColorStateImage(Color.BLUE).apply {
+        ColorStateImage(IntColor(Color.BLUE)).apply {
             Assert.assertEquals(
                 Color.BLUE,
                 getImage(sketch, request, null)!!
@@ -68,10 +68,10 @@ class ColorStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ColorStateImage(Color.RED)
-        val element11 = ColorStateImage(Color.RED)
-        val element2 = ColorStateImage(Color.GREEN)
-        val element3 = ColorStateImage(Color.BLUE)
+        val element1 = ColorStateImage(IntColor(Color.RED))
+        val element11 = ColorStateImage(IntColor(Color.RED))
+        val element2 = ColorStateImage(IntColor(Color.GREEN))
+        val element3 = ColorStateImage(IntColor(Color.BLUE))
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

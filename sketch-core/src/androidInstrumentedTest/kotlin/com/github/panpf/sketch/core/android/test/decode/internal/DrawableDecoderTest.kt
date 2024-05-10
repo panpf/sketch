@@ -111,7 +111,7 @@ class DrawableDecoderTest {
 //                bitmap.toShortInfoString()
 //            )
 //            Assert.assertEquals(
-//                "ImageInfo(${imageWidth}x${imageHeight},'text/xml',UNDEFINED)",
+//                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
 //                imageInfo.toShortString()
 //            )
 //            Assert.assertEquals(LOCAL, dataFrom)
@@ -132,7 +132,7 @@ class DrawableDecoderTest {
 //                bitmap.toShortInfoString()
 //            )
 //            Assert.assertEquals(
-//                "ImageInfo(${imageWidth}x${imageHeight},'text/xml',UNDEFINED)",
+//                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
 //                imageInfo.toShortString()
 //            )
 //            Assert.assertEquals(LOCAL, dataFrom)
@@ -161,7 +161,7 @@ class DrawableDecoderTest {
             )
             Assert.assertEquals(listOf(createScaledTransformed(scale)), transformedList)
             Assert.assertEquals(
-                "ImageInfo(${imageWidth}x${imageHeight},'text/xml',UNDEFINED)",
+                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
@@ -189,7 +189,7 @@ class DrawableDecoderTest {
             )
             Assert.assertEquals(listOf(createScaledTransformed(2.0f)), transformedList)
             Assert.assertEquals(
-                "ImageInfo(${imageWidth}x${imageHeight},'text/xml',UNDEFINED)",
+                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)

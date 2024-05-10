@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.MEMORY
@@ -24,6 +23,7 @@ import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.fetch.FetchResultImpl
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import okio.Path.Companion.toOkioPath
 import org.junit.Assert
 import org.junit.Test
@@ -35,7 +35,7 @@ class FetchResultTest {
 
     @Test
     fun testCreateFunction() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "")
 
         FetchResult(
@@ -50,7 +50,7 @@ class FetchResultTest {
 
     @Test
     fun testDataFrom() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "")
 
         FetchResult(
@@ -70,7 +70,7 @@ class FetchResultTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "")
 
         FetchResult(
@@ -96,7 +96,7 @@ class FetchResultTest {
 
     @Test
     fun testHeaderBytes() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "")
 
         val bytes = buildList {

@@ -1,29 +1,29 @@
 package com.github.panpf.sketch.core.android.test.source
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.newFileUri
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.FileDataSource
-import java.io.File
-import java.io.FileNotFoundException
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
 import okio.Path.Companion.toOkioPath
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.File
+import java.io.FileNotFoundException
 
 @RunWith(AndroidJUnit4::class)
 class FileDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
@@ -44,7 +44,7 @@ class FileDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
@@ -71,7 +71,7 @@ class FileDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
@@ -89,7 +89,7 @@ class FileDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),

@@ -6,8 +6,8 @@ import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.sha256String
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
@@ -20,7 +20,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(
             context,
             newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
@@ -44,7 +44,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         ResourceDataSource(
             sketch = sketch,
             request = ImageRequest(
@@ -73,7 +73,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         ResourceDataSource(
             sketch = sketch,
             request = ImageRequest(
@@ -94,7 +94,7 @@ class ResourceDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         ResourceDataSource(
             sketch = sketch,
             request = ImageRequest(

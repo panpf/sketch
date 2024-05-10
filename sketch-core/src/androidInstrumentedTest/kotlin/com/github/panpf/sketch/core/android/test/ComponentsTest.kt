@@ -17,6 +17,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
@@ -24,7 +25,6 @@ import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
@@ -43,7 +43,7 @@ class ComponentsTest {
 
     @Test
     fun testRequestInterceptors() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val emptyRequest = ImageRequest(context, "")
         val notEmptyRequest = ImageRequest(context, "") {
             components {
@@ -85,7 +85,7 @@ class ComponentsTest {
 
     @Test
     fun testDecodeInterceptors() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val emptyRequest = ImageRequest(context, "")
         val notEmptyRequest = ImageRequest(context, "") {
             components {
@@ -268,43 +268,39 @@ class ComponentsTest {
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDecoderOrThrow(requestContext, fetchResult)
             }
-            assertFails {
-                val request = ImageRequest(context, MyImages.jpeg.uri) {
-                    components {
-                        addDecoder(BitmapFactoryDecoder.Factory())
-                    }
+            val request = ImageRequest(context, MyImages.jpeg.uri) {
+                components {
+                    addDecoder(BitmapFactoryDecoder.Factory())
                 }
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                newDecoderOrThrow(requestContext, fetchResult)
             }
+            val requestContext = request.toRequestContext(sketch)
+            val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
+            Assert.assertTrue(
+                newDecoderOrThrow(requestContext, fetchResult) is BitmapFactoryDecoder
+            )
         }
 
         Components(sketch, Builder().apply {
             addFetcher(AssetUriFetcher.Factory())
             addDecoder(BitmapFactoryDecoder.Factory())
         }.build()).apply {
-            assertFails {
-                val request = ImageRequest(context, MyImages.jpeg.uri)
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                Assert.assertTrue(
-                    newDecoderOrThrow(requestContext, fetchResult) is BitmapFactoryDecoder
-                )
-            }
+            val request = ImageRequest(context, MyImages.jpeg.uri)
+            val requestContext = request.toRequestContext(sketch)
+            val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
+            Assert.assertTrue(
+                newDecoderOrThrow(requestContext, fetchResult) is BitmapFactoryDecoder
+            )
 
-            assertFails {
-                val request = ImageRequest(context, MyImages.jpeg.uri) {
-                    components {
-                        addDecoder(TestDecoder.Factory())
-                    }
+            val request2 = ImageRequest(context, MyImages.jpeg.uri) {
+                components {
+                    addDecoder(TestDecoder.Factory())
                 }
-                val requestContext = request.toRequestContext(sketch)
-                val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
-                Assert.assertTrue(
-                    newDecoderOrThrow(requestContext, fetchResult) is TestDecoder
-                )
             }
+            val requestContext2 = request2.toRequestContext(sketch)
+            val fetchResult2 = runBlocking { newFetcherOrThrow(request2).fetch() }.getOrThrow()
+            Assert.assertTrue(
+                newDecoderOrThrow(requestContext2, fetchResult2) is TestDecoder
+            )
         }
     }
 

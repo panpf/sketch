@@ -16,10 +16,10 @@
 package com.github.panpf.sketch.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -30,7 +30,7 @@ class ContentUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
         val httpUri = "http://sample.com/sample.jpg"
@@ -64,7 +64,7 @@ class ContentUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
 

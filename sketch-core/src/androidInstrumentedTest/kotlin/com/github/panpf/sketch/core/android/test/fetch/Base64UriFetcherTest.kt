@@ -15,19 +15,19 @@
  */
 package com.github.panpf.sketch.core.android.test.fetch
 
-import android.util.Base64
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.newBase64Uri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 @RunWith(AndroidJUnit4::class)
 class Base64UriFetcherTest {
@@ -44,24 +44,26 @@ class Base64UriFetcherTest {
         )
     }
 
+    // TODO base64Specification
+
     @Test
     fun testFactory() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = Base64UriFetcher.Factory()
         val base64Uri = "data:image/png;base64,4y2u1412421089084901240129"
         val contentUri = "content://sample_app/sample"
 
         fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
-            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
+            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64String)
         }
         fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
-            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
+            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64String)
         }
         fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!.apply {
             Assert.assertEquals("image/png", mimeType)
-            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64StringLazy.value)
+            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64String)
         }
         Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, contentUri)))
 
@@ -94,12 +96,14 @@ class Base64UriFetcherTest {
         Assert.assertEquals(element1.hashCode(), element11.hashCode())
     }
 
+    @OptIn(ExperimentalEncodingApi::class)
     @Test
     fun testFetch() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = Base64UriFetcher.Factory()
         val imageData = "4y2u1412421089084901240129".toByteArray()
-        val base64Uri = "data:image/png;base64,${Base64.encodeToString(imageData, Base64.DEFAULT)}"
+        val base64Uri =
+            "data:image/png;base64,${kotlin.io.encoding.Base64.Default.encode(imageData)}"
 
         val fetcher = fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!
         val source = runBlocking {

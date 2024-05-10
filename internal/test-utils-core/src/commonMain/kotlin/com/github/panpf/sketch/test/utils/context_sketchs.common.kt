@@ -40,11 +40,6 @@ fun newSketch(): Sketch {
     return newSketch {}
 }
 
-fun getTestContextAndNewSketch(): Pair<PlatformContext, Sketch> {
-    val context = getTestContext()
-    return context to newSketch()
-}
-
 fun getTestContextAndNewSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Pair<PlatformContext, Sketch> {
     val context = getTestContext()
     return context to newSketch(block)

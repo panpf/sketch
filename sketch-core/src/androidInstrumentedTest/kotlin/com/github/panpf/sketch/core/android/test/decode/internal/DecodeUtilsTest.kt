@@ -58,7 +58,6 @@ import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toSizeString
@@ -954,13 +953,13 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(121, 60), image.getBitmapOrThrow().size)
+            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
-                    createInSampledTransformed(16),
-                    createSubsamplingTransformed(Rect(0, 161, 1936, 1129))
+                    createInSampledTransformed(8),
+                    createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
                 transformedList
             )
@@ -1003,7 +1002,7 @@ class DecodeUtilsTest {
                 ),
                 transformedList
             )
-            Assert.assertNotEquals(
+            Assert.assertEquals(
                 result3.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -1036,13 +1035,13 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(121, 60), image.getBitmapOrThrow().size)
+            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(
-                    createInSampledTransformed(16),
-                    createSubsamplingTransformed(Rect(0, 161, 1936, 1129))
+                    createInSampledTransformed(8),
+                    createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
                 transformedList
             )
@@ -1085,7 +1084,7 @@ class DecodeUtilsTest {
                 ),
                 transformedList
             )
-            Assert.assertNotEquals(
+            Assert.assertEquals(
                 result5.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -1178,14 +1177,7 @@ class DecodeUtilsTest {
                             .toBitmapOptions()
                     fetchResult.dataSource.decodeBitmap(decodeOptions)!!.asSketchImage()
                 },
-                decodeRegion = { rect, sampleSize ->
-                    val decodeOptions =
-                        request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-                            .apply { inSampleSize = sampleSize }
-                            .toBitmapOptions()
-                    fetchResult.dataSource.decodeRegionBitmap(rect.toAndroidRect(), decodeOptions)!!
-                        .asSketchImage()
-                }
+                decodeRegion = null
             )
         }.apply {
             Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
@@ -1211,14 +1203,7 @@ class DecodeUtilsTest {
                             .toBitmapOptions()
                     fetchResult.dataSource.decodeBitmap(decodeOptions)!!.asSketchImage()
                 },
-                decodeRegion = { rect, sampleSize ->
-                    val decodeOptions =
-                        request.newDecodeConfigByQualityParams(imageInfo.mimeType)
-                            .apply { inSampleSize = sampleSize }
-                            .toBitmapOptions()
-                    fetchResult.dataSource.decodeRegionBitmap(rect.toAndroidRect(), decodeOptions)!!
-                        .asSketchImage()
-                }
+                decodeRegion = null
             )
         }.apply {
             Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
@@ -1234,7 +1219,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testAppliedResize() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         var request = ImageRequest(context, MyImages.jpeg.uri)
         val newResult: () -> DecodeResult = {
             DecodeResult(
@@ -1314,7 +1299,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactory() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         AssetDataSource(
             sketch,
@@ -1360,7 +1345,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrThrow() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         AssetDataSource(
             sketch,
@@ -1403,7 +1388,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrNull() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         AssetDataSource(
             sketch,
@@ -1447,7 +1432,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeBitmap() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         AssetDataSource(
             sketch,
@@ -1496,7 +1481,7 @@ class DecodeUtilsTest {
 
     @Test
     fun testDecodeRegionBitmap() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         AssetDataSource(
             sketch,

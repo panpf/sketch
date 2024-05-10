@@ -83,6 +83,7 @@ import com.github.panpf.sketch.state.IconStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.state.uriEmptyError
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ScopeAction
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
@@ -92,7 +93,6 @@ import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -888,7 +888,7 @@ class ImageRequestTest {
 
     @Test
     fun testResizePrecision() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val uriString1 = MyImages.jpeg.uri
         ImageRequest.Builder(context, uriString1).apply {
             build().apply {
@@ -1651,7 +1651,7 @@ class ImageRequestTest {
                 )
             },
             ScopeAction {
-                placeholder(ColorStateImage(Color.BLUE))
+                placeholder(ColorStateImage(IntColor(Color.BLUE)))
             },
             ScopeAction {
                 placeholder(ColorStateImage(ResColor(color.background_dark)))
@@ -1667,17 +1667,17 @@ class ImageRequestTest {
                 placeholder(CurrentStateImage(drawable.ic_delete))
             },
             ScopeAction {
-                placeholder(MemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+                placeholder(MemoryCacheStateImage("uri", ColorStateImage(IntColor(Color.BLUE))))
             },
             ScopeAction {
-                placeholder(ThumbnailMemoryCacheStateImage("uri", ColorStateImage(Color.BLUE)))
+                placeholder(ThumbnailMemoryCacheStateImage("uri", ColorStateImage(IntColor(Color.BLUE))))
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete))
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete)) {
-                    uriEmptyError(ColorStateImage(Color.BLUE))
+                    uriEmptyError(ColorStateImage(IntColor(Color.BLUE)))
                 }
             },
             ScopeAction {

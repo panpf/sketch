@@ -50,7 +50,7 @@ class DecodeResultTest {
         ).apply {
             Assert.assertTrue(newBitmap === image.getBitmapOrThrow())
             Assert.assertEquals(
-                "ImageInfo(width=3000, height=500, mimeType='image/png', exifOrientation=UNDEFINED)",
+                "ImageInfo(size=3000x500, mimeType='image/png')",
                 imageInfo.toString()
             )
             Assert.assertEquals(LOCAL, dataFrom)

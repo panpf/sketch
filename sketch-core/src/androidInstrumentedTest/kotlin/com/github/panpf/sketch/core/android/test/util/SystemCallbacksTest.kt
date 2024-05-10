@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 import org.junit.Assert
@@ -28,7 +28,7 @@ class SystemCallbacksTest {
 
     @Test
     fun test() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         SystemCallbacks(sketch).apply {
             Assert.assertEquals(context.isCellularNetworkConnected(), isCellularNetworkConnected)
 

@@ -77,6 +77,7 @@ import com.github.panpf.sketch.request.lifecycle
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.target.AndroidTargetLifecycle
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
@@ -91,7 +92,6 @@ import com.github.panpf.sketch.test.utils.TestTransitionViewTarget
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
@@ -542,7 +542,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResize() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = MyImages.jpeg.uri
         val imageSize = Size(1291, 1936)
         val displaySize = context.resources.displayMetrics.let {

@@ -37,6 +37,7 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
@@ -44,7 +45,6 @@ import com.github.panpf.sketch.test.utils.cornerC
 import com.github.panpf.sketch.test.utils.cornerD
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import okio.Path.Companion.toOkioPath
@@ -68,7 +68,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientation() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -116,7 +116,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientationWithMimeType() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         Assert.assertEquals(
             ExifInterface.ORIENTATION_NORMAL,
@@ -626,6 +626,8 @@ class ExifOrientationHelperTest {
             Assert.assertEquals(Size(100, 50), applyToSize(Size(100, 50), reverse = true))
         }
     }
+
+    // TODO This needs to be tested well
 
     @Test
     fun testAddToResize() {

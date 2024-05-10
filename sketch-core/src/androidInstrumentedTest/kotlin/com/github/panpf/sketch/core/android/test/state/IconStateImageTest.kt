@@ -327,8 +327,8 @@ class IconStateImageTest {
             .getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
-                Assert.assertEquals(greenBgDrawable, background)
+                Assert.assertEquals(iconDrawable.wrapped, icon)
+                Assert.assertEquals(greenBgDrawable.wrapped, background)
                 Assert.assertNull(iconSize)
             }
 
@@ -339,7 +339,7 @@ class IconStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
+                Assert.assertEquals(iconDrawable.wrapped, icon)
                 Assert.assertTrue(background is BitmapDrawable)
                 Assert.assertEquals(Size(40, 40), iconSize)
             }
@@ -350,7 +350,7 @@ class IconStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
+                Assert.assertEquals(iconDrawable.wrapped, icon)
                 Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
                 Assert.assertNull(iconSize)
             }
@@ -359,7 +359,7 @@ class IconStateImageTest {
             .getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable, icon)
+                Assert.assertEquals(iconDrawable.wrapped, icon)
                 Assert.assertNull(background)
                 Assert.assertNull(iconSize)
             }
@@ -372,7 +372,7 @@ class IconStateImageTest {
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 Assert.assertTrue(icon is BitmapDrawable)
-                Assert.assertEquals(greenBgDrawable, background)
+                Assert.assertEquals(greenBgDrawable.wrapped, background)
                 Assert.assertNull(iconSize)
             }
 

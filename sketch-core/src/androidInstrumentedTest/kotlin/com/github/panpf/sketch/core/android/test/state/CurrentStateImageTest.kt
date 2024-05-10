@@ -28,8 +28,8 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestTarget
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
@@ -41,7 +41,7 @@ class CurrentStateImageTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val request = ImageRequest(imageView, MyImages.jpeg.uri)
 
@@ -92,7 +92,7 @@ class CurrentStateImageTest {
 
     @Test
     fun testGetDrawable() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val request = ImageRequest(imageView, MyImages.jpeg.uri)
         val drawable1 = ColorDrawableEqualizer(Color.BLUE)
@@ -103,7 +103,8 @@ class CurrentStateImageTest {
             Assert.assertNull(getImage(sketch, request, null))
             imageView.setImageDrawable(drawable1.wrapped)
             Assert.assertSame(
-                drawable1, getImage(sketch, request, null)
+                drawable1.wrapped,
+                getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
         }
@@ -112,12 +113,14 @@ class CurrentStateImageTest {
         Assert.assertNull(imageView.drawable)
         CurrentStateImage(DrawableStateImage(drawable2)).apply {
             Assert.assertSame(
-                drawable2, getImage(sketch, request, null)
+                drawable2.wrapped,
+                getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
             imageView.setImageDrawable(drawable1.wrapped)
             Assert.assertSame(
-                drawable1, getImage(sketch, request, null)
+                drawable1.wrapped,
+                getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
         }

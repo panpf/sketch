@@ -86,14 +86,14 @@ class ImageInfoTest {
     fun testToString() {
         ImageInfo(57, 34, "image/jpeg").apply {
             Assert.assertEquals(
-                "ImageInfo(width=57, height=34, mimeType='image/jpeg')",
+                "ImageInfo(size=57x34, mimeType='image/jpeg')",
                 toString()
             )
         }
 
         ImageInfo(570, 340, "image/png").apply {
             Assert.assertEquals(
-                "ImageInfo(width=570, height=340, mimeType='image/png')",
+                "ImageInfo(size=570x340, mimeType='image/png')",
                 toString()
             )
         }
@@ -110,7 +110,7 @@ class ImageInfoTest {
 
         ImageInfo(570, 340, "image/png").apply {
             Assert.assertEquals(
-                "ImageInfo(570x340,'image/png',ROTATE_90)",
+                "ImageInfo(570x340,'image/png')",
                 toShortString()
             )
         }

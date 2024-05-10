@@ -29,6 +29,7 @@ import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -41,7 +42,7 @@ class RequestExecutorTest {
 
     @Test
     fun testErrorUri() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(

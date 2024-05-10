@@ -17,7 +17,6 @@ package com.github.panpf.sketch.core.android.test.cache.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.asSketchImage
@@ -38,8 +37,8 @@ import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestCountTarget
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -55,7 +54,7 @@ class MemoryCacheRequestInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
         val requestInterceptorList =
@@ -80,20 +79,17 @@ class MemoryCacheRequestInterceptorTest {
         executeRequest(ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>()
-        Assert.assertEquals(0, memoryCache.size)
-        executeRequest(ImageRequest(context, MyImages.jpeg.uri) {
-            memoryCachePolicy(ENABLED)
-        }).asOrThrow<ImageData>()
+        Assert.assertEquals(40000, memoryCache.size)
+
+        memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
 
         /* ImageRequest - ENABLED */
+        val cacheImage: AndroidBitmapImage
+        val imageData: ImageData
         val request = ImageRequest(context, MyImages.jpeg.uri) {
             target(TestCountTarget())
         }
-        val cacheImage: AndroidBitmapImage
-        val imageData: ImageData
-        memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
         executeRequest(request.newRequest {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>().apply {
@@ -110,9 +106,10 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(40000, memoryCache.size)
 
-        /* ImageRequest - DISABLED */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
+
+        /* ImageRequest - DISABLED */
         executeRequest(request.newRequest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<ImageData>().apply {
@@ -140,9 +137,10 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(40000, memoryCache.size)
 
-        /* ImageRequest - READ_ONLY */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
+
+        /* ImageRequest - READ_ONLY */
         executeRequest(request.newRequest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
@@ -171,9 +169,10 @@ class MemoryCacheRequestInterceptorTest {
         }
         Assert.assertEquals(40000, memoryCache.size)
 
-        /* ImageRequest - WRITE_ONLY */
         memoryCache.clear()
         Assert.assertEquals(0, memoryCache.size)
+
+        /* ImageRequest - WRITE_ONLY */
         executeRequest(request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
@@ -189,10 +188,11 @@ class MemoryCacheRequestInterceptorTest {
             Assert.assertTrue(image is AndroidBitmapImage)
         }
         Assert.assertEquals(40000, memoryCache.size)
+
+        memoryCache.clear()
+        Assert.assertEquals(0, memoryCache.size)
 
         /* Depth.MEMORY */
-        memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
         assertThrow(DepthException::class) {
             executeRequest(request.newRequest {
                 memoryCachePolicy(ENABLED)
@@ -248,9 +248,8 @@ class MemoryCacheRequestInterceptorTest {
         override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {
             val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
             val imageInfo = ImageInfo(100, 100, "image/png")
-            val drawable = BitmapDrawable(chain.sketch.context.resources, bitmap)
             ImageData(
-                drawable.asSketchImage(),
+                bitmap.asSketchImage(),
                 imageInfo = imageInfo,
                 dataFrom = DataFrom.LOCAL,
                 transformedList = null,

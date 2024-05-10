@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
@@ -110,7 +111,7 @@ class ResizeAnimatableDrawableTest {
             CENTER_CROP
         ).apply {
             Assert.assertEquals(
-                "ResizeAnimatableDrawable(wrapped=$sketchAnimatableDrawable, size=100x500, scale=CENTER_CROP)",
+                "ResizeAnimatableDrawable(drawable=${sketchAnimatableDrawable.toLogString()}, size=100x500, scale=CENTER_CROP)",
                 toString()
             )
         }

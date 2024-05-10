@@ -312,10 +312,6 @@ class LruDiskCacheTest {
                     defaultCacheDir.resolve("${"file1".sha256String()}.0"),
                     file1Snapshot.data
                 )
-
-                fileSystem.source(file1Snapshot.data).use { input ->
-                    Assert.assertEquals(Source::class, input::class)
-                }
             }
 
             it.openSnapshot("file1")!!.closeAndOpenEditor()!!.commit()

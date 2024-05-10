@@ -47,11 +47,11 @@ class ErrorStateImageTest {
         ErrorStateImage(colorDrawable.asStateImage()).apply {
             Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(
-                colorDrawable,
+                colorDrawable.wrapped,
                 getImage(sketch, request, null)?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
             Assert.assertEquals(
-                colorDrawable,
+                colorDrawable.wrapped,
                 getImage(sketch, request, UriInvalidException(""))
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
@@ -62,11 +62,11 @@ class ErrorStateImageTest {
         }.apply {
             Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(
-                colorDrawable,
+                colorDrawable.wrapped,
                 getImage(sketch, request, null)?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
             Assert.assertEquals(
-                colorDrawable2,
+                colorDrawable2.wrapped,
                 getImage(sketch, request, UriInvalidException(""))
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable
             )
@@ -84,10 +84,10 @@ class ErrorStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ErrorStateImage(ColorStateImage(Color.RED))
-        val element11 = ErrorStateImage(ColorStateImage(Color.RED))
-        val element2 = ErrorStateImage(ColorStateImage(Color.GREEN))
-        val element3 = ErrorStateImage(ColorStateImage(Color.BLUE))
+        val element1 = ErrorStateImage(ColorStateImage(IntColor(Color.RED)))
+        val element11 = ErrorStateImage(ColorStateImage(IntColor(Color.RED)))
+        val element2 = ErrorStateImage(ColorStateImage(IntColor(Color.GREEN)))
+        val element3 = ErrorStateImage(ColorStateImage(IntColor(Color.BLUE)))
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

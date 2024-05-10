@@ -4,8 +4,8 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.getDataSourceCacheFile
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.fetch
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import kotlin.test.Test
@@ -18,7 +18,7 @@ class DataSourceNonJsCommonTest {
 
     @Test
     fun testGetCacheFileFromStreamDataSource() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         ImageRequest(context, MyImages.jpeg.uri).fetch(sketch).dataSource.apply {
             val file = getDataSourceCacheFile(sketch, request, this)
             assertTrue(file.toString().contains("/sketch4/result/"))

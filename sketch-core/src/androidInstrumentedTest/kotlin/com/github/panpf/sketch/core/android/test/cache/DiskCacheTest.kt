@@ -29,14 +29,15 @@ class DiskCacheTest {
 
         DiskCache.DownloadBuilder(context, fileSystem).apply {
             // for desktop platform
-            if (defaultAppCacheDirectory != null) {
+            if (defaultAppCacheDirectory == null) {
                 appCacheDirectory(appCacheDir)
             }
         }.build().use {
             if (platformDefaultDiskCacheMaxSize != null) {
                 Assert.assertEquals(
-                    (defaultAppCacheDirectory
-                        ?: appCacheDir).resolve(DiskCache.DownloadBuilder.DIRECTORY_NAME),
+                    (defaultAppCacheDirectory ?: appCacheDir)
+                        .resolve(DiskCache.DIRECTORY_NAME)
+                        .resolve(DiskCache.DownloadBuilder.DIRECTORY_NAME),
                     it.directory
                 )
                 Assert.assertEquals(
@@ -70,7 +71,7 @@ class DiskCacheTest {
         }.build().use {
             if (platformDefaultDiskCacheMaxSize != null) {
                 Assert.assertEquals(
-                    appCacheDir3.resolve(DiskCache.DownloadBuilder.DIRECTORY_NAME),
+                    appCacheDir3.resolve(DiskCache.DIRECTORY_NAME).resolve(DiskCache.DownloadBuilder.DIRECTORY_NAME),
                     it.directory
                 )
             } else {
@@ -115,18 +116,19 @@ class DiskCacheTest {
 
         DiskCache.ResultBuilder(context, fileSystem).apply {
             // for desktop platform
-            if (defaultAppCacheDirectory != null) {
+            if (defaultAppCacheDirectory == null) {
                 appCacheDirectory(appCacheDir)
             }
         }.build().use {
             if (platformDefaultDiskCacheMaxSize != null) {
                 Assert.assertEquals(
-                    (defaultAppCacheDirectory
-                        ?: appCacheDir).resolve(DiskCache.ResultBuilder.DIRECTORY_NAME),
+                    (defaultAppCacheDirectory ?: appCacheDir)
+                        .resolve(DiskCache.DIRECTORY_NAME)
+                        .resolve(DiskCache.ResultBuilder.DIRECTORY_NAME),
                     it.directory
                 )
                 Assert.assertEquals(
-                    (platformDefaultDiskCacheMaxSize * DiskCache.DownloadBuilder.DEFAULT_MAX_SIZE_PERCENT).roundToLong()
+                    (platformDefaultDiskCacheMaxSize * DiskCache.ResultBuilder.DEFAULT_MAX_SIZE_PERCENT).roundToLong()
                         .formatFileSize(),
                     it.maxSize.formatFileSize()
                 )
@@ -156,7 +158,7 @@ class DiskCacheTest {
         }.build().use {
             if (platformDefaultDiskCacheMaxSize != null) {
                 Assert.assertEquals(
-                    appCacheDir3.resolve(DiskCache.ResultBuilder.DIRECTORY_NAME),
+                    appCacheDir3.resolve(DiskCache.DIRECTORY_NAME).resolve(DiskCache.ResultBuilder.DIRECTORY_NAME),
                     it.directory
                 )
             } else {

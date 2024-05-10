@@ -7,8 +7,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import okio.Closeable
@@ -23,7 +23,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
@@ -44,7 +44,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
@@ -74,7 +74,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),
@@ -111,7 +111,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, MyImages.jpeg.uri),

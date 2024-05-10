@@ -19,12 +19,12 @@ import android.content.res.Resources
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertNoThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -96,7 +96,7 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
         val androidResUriByName = newResourceUri(testAppPackage, "drawable", "ic_launcher")
@@ -146,7 +146,7 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         assertNoThrow {
             runBlocking {

@@ -75,13 +75,13 @@ class ResizeTest {
     fun testToString() {
         Resize(100, 100, LESS_PIXELS, CENTER_CROP).apply {
             Assert.assertEquals(
-                "Resize(width=100, height=100, precision=LESS_PIXELS, scale=CENTER_CROP)",
+                "Resize(size=100x100, precision=LESS_PIXELS, scale=CENTER_CROP)",
                 toString()
             )
         }
         Resize(414, 786, SAME_ASPECT_RATIO, END_CROP).apply {
             Assert.assertEquals(
-                "Resize(width=414, height=786, precision=SAME_ASPECT_RATIO, scale=END_CROP)",
+                "Resize(size=414x786, precision=SAME_ASPECT_RATIO, scale=END_CROP)",
                 toString()
             )
         }

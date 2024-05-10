@@ -16,12 +16,12 @@
 package com.github.panpf.sketch.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -44,7 +44,7 @@ class AssetUriFetcherTest {
 
     @Test
     fun testFactory() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = MyImages.jpeg.uri
         val assetUri2 = "${MyImages.png.uri}?from=bing"
@@ -112,7 +112,7 @@ class AssetUriFetcherTest {
 
     @Test
     fun testFetch() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = MyImages.jpeg.uri
 

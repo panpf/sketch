@@ -27,8 +27,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -48,7 +48,7 @@ class TransformationDecodeInterceptorTest {
 
     @Test
     fun testIntercept() {
-        val (context, sketch) = getTestContextAndNewSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val interceptors =
             listOf(EngineDecodeInterceptor())
 

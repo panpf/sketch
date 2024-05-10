@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable2
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
@@ -314,7 +315,7 @@ class AnimatableDrawableTest {
 
         val animatableDrawable = AnimatableDrawable(drawable)
         Assert.assertEquals(
-            "SketchAnimatableDrawable($drawable)",
+            "AnimatableDrawable(drawable=${drawable.toLogString()})",
             animatableDrawable.toString()
         )
     }
