@@ -153,7 +153,7 @@ class VideoFrameDecodeHelper(
     }
 
     override fun toString(): String {
-        return "VideoFrameDecodeHelper(uri=${request.uriString}, imageInfo=$imageInfo, exifOrientation=$exifOrientation, supportRegion=$supportRegion)"
+        return "VideoFrameDecodeHelper(uri=${request.uriString}, dataSource=$dataSource, mimeType=$mimeType)"
     }
 
     override fun close() {

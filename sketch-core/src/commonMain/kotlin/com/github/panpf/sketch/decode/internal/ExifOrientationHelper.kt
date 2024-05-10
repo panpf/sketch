@@ -95,6 +95,7 @@ interface ExifOrientationHelper {
     }
 
     fun applyToScale(scale: Scale, imageSize: Size, reverse: Boolean = false): Scale {
+        // TODO This needs to be tested well
         val rotationDegrees = getRotationDegrees()
         val horImage = imageSize.width > imageSize.height
         return if (!reverse) {

@@ -338,6 +338,7 @@ class Sketch private constructor(options: Options) {
         }
 
         fun build(): Sketch {
+            val context = context.application
             val finalFileSystem = fileSystem ?: defaultFileSystem()
             val options = Options(
                 context = context,

@@ -29,7 +29,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.round
-import kotlin.math.roundToLong
 
 
 internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (value) block() else null
@@ -111,45 +110,46 @@ internal fun Float.format(newScale: Int): Float {
     }
 }
 
+internal fun Double.format(newScale: Int): Double {
+    return if (this.isNaN()) {
+        this
+    } else {
+        val multiplier = 10.0.pow(newScale)
+        (round(this * multiplier) / multiplier)
+    }
+}
+
 /**
  * Returns the this size in human-readable format.
  */
 internal fun Long.formatFileSize(decimals: Int = 1): String {
-    val bytes = this
-    return when {
-        bytes < 1024 -> {
-            "$bytes B"
-        }
-
-        bytes < 1_048_576 -> {
-            "${(bytes / 1_024f).formatWithDecimals(decimals)} KB"
-        }
-
-        bytes < 1.07374182E9f -> {
-            "${(bytes / 1_048_576f).formatWithDecimals(decimals)} MB"
-        }
-
-        bytes < 1.09951163E12f -> {
-            "${(bytes / 1.07374182E9f).formatWithDecimals(decimals)} GB"
-        }
-
-        else -> {
-            "${(bytes / 1.09951163E12f).formatWithDecimals(decimals)} TB"
+    val doubleString: (Double) -> String = { number ->
+        if (number % 1 == 0.0) {
+            number.toLong().toString()
+        } else {
+            number.toString()
         }
     }
+    val finalFileSize: Double = this.coerceAtLeast(0L).toDouble()
+    if (finalFileSize < 1000.0) return "${doubleString(finalFileSize)}B"
+    val units = listOf("KB", "MB", "GB", "TB", "PB")
+    units.forEachIndexed { index, suffix ->
+        val powValue: Double = 1024.0.pow(index + 1)
+        val powMaxValue: Double = powValue * 1000
+        if (finalFileSize < powMaxValue || index == units.size - 1) {
+            val value: Double = finalFileSize / powValue
+            val formattedValue = value.format(decimals)
+            return "${doubleString(formattedValue)}${suffix}"
+        }
+    }
+    throw IllegalStateException("Can't format file size: $this")
 }
 
-private fun Float.formatWithDecimals(decimals: Int): String {
-    val multiplier = 10.0.pow(decimals)
-    val numberAsString = (this * multiplier).roundToLong().toString()
-    val decimalIndex = numberAsString.length - decimals - 1
-    val mainRes = numberAsString.substring(0..decimalIndex)
-    val fractionRes = numberAsString.substring(decimalIndex + 1)
-    return if (fractionRes.isEmpty()) {
-        mainRes
-    } else {
-        "$mainRes.$fractionRes"
-    }
+/**
+ * Returns the this size in human-readable format.
+ */
+internal fun Int.formatFileSize(decimals: Int = 1): String {
+    return toLong().formatFileSize(decimals)
 }
 
 internal fun Int.formatFileSize(): String = toLong().formatFileSize()
@@ -236,8 +236,16 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (progressListener != other.progressListener) return "progressListener different: '${progressListener}' vs '${other.progressListener}'"
     if (target != other.target) return "target different: '${target}' vs '${other.target}'"
     if (lifecycleResolver != other.lifecycleResolver) return "lifecycleResolver different: '${lifecycleResolver}' vs '${other.lifecycleResolver}'"
-    if (definedOptions != other.definedOptions) return "definedOptions different: '${definedOptions.difference(other.definedOptions)}'"
-    if (defaultOptions != other.defaultOptions) return "defaultOptions different: '${defaultOptions.difference(other.defaultOptions)}'"
+    if (definedOptions != other.definedOptions) return "definedOptions different: '${
+        definedOptions.difference(
+            other.definedOptions
+        )
+    }'"
+    if (defaultOptions != other.defaultOptions) return "defaultOptions different: '${
+        defaultOptions.difference(
+            other.defaultOptions
+        )
+    }'"
     if (definedRequestOptions != other.definedRequestOptions) return "definedRequestOptions different: '${definedRequestOptions}' vs '${other.definedRequestOptions}'"
     if (depth != other.depth) return "depth different: '${depth}' vs '${other.depth}'"
     if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"

@@ -31,7 +31,7 @@ data class ImageInfo constructor(
         mimeType: String,
     ) : this(Size(width, height), mimeType)
 
-    override fun toString(): String = "ImageInfo(size=$size, mimeType='$mimeType'"
+    override fun toString(): String = "ImageInfo(size=$size, mimeType='$mimeType')"
 
     fun toShortString(): String = "ImageInfo(${width}x$height,'$mimeType')"
 }

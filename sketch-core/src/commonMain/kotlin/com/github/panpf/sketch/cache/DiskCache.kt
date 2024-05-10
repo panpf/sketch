@@ -31,7 +31,7 @@ import kotlin.math.roundToLong
 interface DiskCache : Closeable {
 
     companion object {
-        const val DEFAULT_DIR_NAME = "sketch4"
+        const val DIRECTORY_NAME = "sketch4"
     }
 
     val fileSystem: FileSystem
@@ -200,10 +200,10 @@ interface DiskCache : Closeable {
             val maxSizeBytes = maxSize
             val appVersion = appVersion
             val finalDirectory = directory
-                ?: appCacheDirectory?.resolve(DEFAULT_DIR_NAME)?.resolve(DIRECTORY_NAME)
+                ?: appCacheDirectory?.resolve(DiskCache.DIRECTORY_NAME)?.resolve(DIRECTORY_NAME)
                 ?: requireNotNull(context.appCacheDirectory()) {
                     "The current platform cannot automatically obtain the cache directory of the App. Please configure it proactively. Documentation url 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
-                }.resolve(DEFAULT_DIR_NAME).resolve(DIRECTORY_NAME)
+                }.resolve(DiskCache.DIRECTORY_NAME).resolve(DIRECTORY_NAME)
             val finalMaxSizeBytes = maxSizeBytes
                 ?: (platformDefaultMaxSize * DEFAULT_MAX_SIZE_PERCENT).roundToLong()
             val finalAppVersion = appVersion ?: DEFAULT_APP_VERSION
@@ -283,10 +283,10 @@ interface DiskCache : Closeable {
             val maxSizeBytes = maxSize
             val appVersion = appVersion
             val finalDirectory = directory
-                ?: appCacheDirectory?.resolve(DEFAULT_DIR_NAME)?.resolve(DIRECTORY_NAME)
+                ?: appCacheDirectory?.resolve(DiskCache.DIRECTORY_NAME)?.resolve(DIRECTORY_NAME)
                 ?: requireNotNull(context.appCacheDirectory()) {
                     "The current platform cannot automatically obtain the cache directory of the App. Please configure it proactively. Documentation url 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
-                }.resolve(DEFAULT_DIR_NAME).resolve(DIRECTORY_NAME)
+                }.resolve(DiskCache.DIRECTORY_NAME).resolve(DIRECTORY_NAME)
             val finalMaxSizeBytes = maxSizeBytes
                 ?: (platformDefaultMaxSize * DEFAULT_MAX_SIZE_PERCENT).roundToLong()
             val finalAppVersion = appVersion ?: DEFAULT_APP_VERSION

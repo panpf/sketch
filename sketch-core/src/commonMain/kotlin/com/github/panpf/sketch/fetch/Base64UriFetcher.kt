@@ -15,14 +15,15 @@
  */
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.source.ByteArrayDataSource
-import com.github.panpf.sketch.source.DataFrom.MEMORY
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.BASE64_IDENTIFIER
 import com.github.panpf.sketch.fetch.Base64UriFetcher.Companion.SCHEME
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.util.ifOrNull
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
@@ -33,14 +34,54 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 fun newBase64Uri(mimeType: String, imageDataBase64String: String): String =
     "$SCHEME:$mimeType;${BASE64_IDENTIFIER}$imageDataBase64String"
 
+enum class Base64Specification {
+    Default, Mime, UrlSafe
+}
+
+const val BASE64_SPECIFICATION_KEY = "sketch#base64Specification"
+
+fun ImageOptions.Builder.base64Specification(specification: Base64Specification?): ImageOptions.Builder =
+    apply {
+        if (specification != null) {
+            setParameter(
+                key = BASE64_SPECIFICATION_KEY,
+                value = specification.name,
+                cacheKey = null
+            )
+        } else {
+            removeParameter(BASE64_SPECIFICATION_KEY)
+        }
+    }
+
+fun ImageRequest.Builder.base64Specification(specification: Base64Specification?): ImageRequest.Builder =
+    apply {
+        if (specification != null) {
+            setParameter(
+                key = BASE64_SPECIFICATION_KEY,
+                value = specification.name,
+                cacheKey = null
+            )
+        } else {
+            removeParameter(BASE64_SPECIFICATION_KEY)
+        }
+    }
+
+val ImageOptions.base64Specification: Base64Specification?
+    get() = parameters?.value<String>(BASE64_SPECIFICATION_KEY)
+        ?.let { Base64Specification.valueOf(it) }
+
+val ImageRequest.base64Specification: Base64Specification?
+    get() = parameters?.value<String>(BASE64_SPECIFICATION_KEY)
+        ?.let { Base64Specification.valueOf(it) }
+
 /**
  * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
  */
-class Base64UriFetcher(
+class Base64UriFetcher constructor(
     val sketch: Sketch,
     val request: ImageRequest,
     val mimeType: String,
-    val imageDataBase64StringLazy: Lazy<String>,
+    val imageDataBase64String: String,
 ) : Fetcher {
 
     companion object {
@@ -51,7 +92,13 @@ class Base64UriFetcher(
     @OptIn(ExperimentalEncodingApi::class)
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> {
-        val bytes = Base64.Default.decode(imageDataBase64StringLazy.value)
+        val base64Specification = request.base64Specification
+        val base64 = when (base64Specification) {
+            Base64Specification.Mime -> Base64.Mime
+            Base64Specification.UrlSafe -> Base64.UrlSafe
+            else -> Base64.Default
+        }
+        val bytes = base64.decode(imageDataBase64String)
         return Result.success(
             FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
         )
@@ -71,9 +118,14 @@ class Base64UriFetcher(
                 if (mimeTypeEndSymbolIndex != -1 && base64IdentifierIndex != -1) {
                     val mimeType =
                         uriString.substring(SCHEME.length + 1, mimeTypeEndSymbolIndex)
-                    Base64UriFetcher(sketch, request, mimeType, lazy {
+                    val imageDataBase64String =
                         uriString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
-                    })
+                    Base64UriFetcher(
+                        sketch = sketch,
+                        request = request,
+                        mimeType = mimeType,
+                        imageDataBase64String = imageDataBase64String
+                    )
                 } else {
                     throw UriInvalidException("Invalid base64 image: $uriString")
                 }
