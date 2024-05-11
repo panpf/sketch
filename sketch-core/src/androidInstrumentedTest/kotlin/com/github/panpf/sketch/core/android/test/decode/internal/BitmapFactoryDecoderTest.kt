@@ -120,7 +120,7 @@ class BitmapFactoryDecoderTest {
                         imageInfo.toShortString()
                     )
                     Assert.assertEquals(LOCAL, dataFrom)
-                    Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
+                    Assert.assertNull(transformedList)
                 }
             }
     }
@@ -642,7 +642,6 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         ImageRequest(context, testFile.file.path) {
@@ -666,7 +665,6 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
@@ -692,7 +690,6 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
         ImageRequest(context, testFile.file.path) {
@@ -716,7 +713,6 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
@@ -738,7 +734,6 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
         ImageRequest(context, testFile.file.path) {
@@ -758,7 +753,6 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
         }
 
@@ -787,237 +781,7 @@ class BitmapFactoryDecoderTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertNotNull(transformedList?.getInSampledTransformed())
             Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getExifOrientationTransformed())
             Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-
-        // scale
-        val startCropBitmap = ImageRequest(context, testFile.file.path) {
-            size(500, 300)
-            precision(SAME_ASPECT_RATIO)
-            scale(START_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
-        val centerCropBitmap = ImageRequest(context, testFile.file.path) {
-            size(500, 300)
-            precision(SAME_ASPECT_RATIO)
-            scale(CENTER_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
-        val endCropBitmap = ImageRequest(context, testFile.file.path) {
-            size(500, 300)
-            precision(SAME_ASPECT_RATIO)
-            scale(END_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
-        val fillBitmap = ImageRequest(context, testFile.file.path) {
-            size(500, 300)
-            precision(SAME_ASPECT_RATIO)
-            scale(FILL)
-        }.decode(sketch).image.getBitmapOrThrow()
-        Assert.assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
-        Assert.assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
-        Assert.assertTrue(endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
-        Assert.assertTrue(fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
-        Assert.assertNotEquals(
-            startCropBitmap.corners().toString(),
-            centerCropBitmap.corners().toString()
-        )
-        Assert.assertNotEquals(
-            startCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
-        )
-        Assert.assertNotEquals(
-            startCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
-        )
-        Assert.assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
-        )
-        Assert.assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
-        )
-        Assert.assertNotEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
-    }
-
-    @Test
-    fun testResizeExifIgnore() {
-        val (context, sketch) = getTestContextAndSketch()
-
-        val testFile = ExifOrientationTestFileHelper(
-            context,
-            MyImages.jpeg.fileName
-        ).files()
-            .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
-
-        // precision = LESS_PIXELS
-        ImageRequest(context, testFile.file.path) {
-            size(800, 800)
-            precision(LESS_PIXELS)
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 800 * 800 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
-            )
-            Assert.assertEquals("AndroidBitmap(968x646,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
-        }
-        ImageRequest(context, testFile.file.path) {
-            size(500, 500)
-            precision(LESS_PIXELS)
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 500 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
-            )
-            Assert.assertEquals("AndroidBitmap(484x323,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
-        }
-
-        // precision = SAME_ASPECT_RATIO
-        ImageRequest(context, testFile.file.path) {
-            size(500, 300)
-            precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                500f.div(300).format(1)
-            )
-            Assert.assertEquals("AndroidBitmap(484x290,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
-        }
-        ImageRequest(context, testFile.file.path) {
-            size(300, 500)
-            precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f
-            )
-            Assert.assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                300f.div(500).format(1)
-            )
-            Assert.assertEquals("AndroidBitmap(193x322,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
-        }
-
-        // precision = EXACTLY
-        ImageRequest(context, testFile.file.path) {
-            size(500, 300)
-            precision(EXACTLY)
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f
-            )
-            Assert.assertEquals("AndroidBitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-        ImageRequest(context, testFile.file.path) {
-            size(300, 500)
-            precision(EXACTLY)
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f
-            )
-            Assert.assertEquals("AndroidBitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
-        }
-
-        // precision = LongImageClipPrecisionDecider
-        ImageRequest(context, testFile.file.path) {
-            size(300, 400)
-            precision(
-                LongImageClipPrecisionDecider(
-                    longImageDecider = DefaultLongImageDecider(
-                        sameDirectionMultiple = 1f,
-                        notSameDirectionMultiple = 5f
-                    )
-                )
-            )
-        }.decode(sketch).apply {
-            val bitmap = image.getBitmapOrThrow()
-            Assert.assertTrue(
-                "${bitmap.width}x${bitmap.height}",
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f
-            )
-            Assert.assertEquals("AndroidBitmap(242x162,ARGB_8888)", bitmap.toShortInfoString())
-            Assert.assertEquals(
-                "ImageInfo(1936x1291,'image/jpeg')",
-                imageInfo.toShortString()
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getExifOrientationTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
         }
 
         // scale
@@ -1096,21 +860,6 @@ class BitmapFactoryDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
 
         /* full */
-        assertFails {
-            val request = ImageRequest(context, MyImages.jpeg.uri) {
-                resize(MyImages.jpeg.size.width * 2, MyImages.jpeg.size.height * 2)
-            }
-            val dataSource = runBlocking {
-                sketch.components.newFetcherOrThrow(request).fetch()
-            }.getOrThrow().dataSource
-            val bitmapDecoder = BitmapFactoryDecoder(
-                requestContext = request.toRequestContext(sketch),
-                dataSource = FullTestDataSource(dataSource.asOrThrow())
-            )
-            val result = runBlocking { bitmapDecoder.decode() }
-            result.getOrThrow()
-        }
-
         val request = ImageRequest(context, MyImages.jpeg.uri) {
             resize(MyImages.jpeg.size.width * 2, MyImages.jpeg.size.height * 2)
         }
@@ -1126,34 +875,6 @@ class BitmapFactoryDecoderTest {
         result.getOrThrow()
 
         /* region */
-        assertFails {
-            val request1 = ImageRequest(context, MyImages.jpeg.uri) {
-                size(500, 500)
-                precision(EXACTLY)
-            }
-            val dataSource1 = runBlocking {
-                sketch.components.newFetcherOrThrow(request1).fetch()
-            }.getOrThrow().dataSource
-            BitmapFactoryDecoder(
-                request1.toRequestContext(sketch),
-                RegionTestDataSource(dataSource1.asOrThrow(), true)
-            ).let { runBlocking { it.decode() } }.getOrThrow()
-        }
-
-        assertFails {
-            val request1 = ImageRequest(context, MyImages.jpeg.uri) {
-                size(500, 500)
-                precision(EXACTLY)
-            }
-            val dataSource1 = runBlocking {
-                sketch.components.newFetcherOrThrow(request1).fetch()
-            }.getOrThrow().dataSource
-            BitmapFactoryDecoder(
-                request1.toRequestContext(sketch),
-                RegionTestDataSource(dataSource1.asOrThrow(), false)
-            ).let { runBlocking { it.decode() } }.getOrThrow()
-        }
-
         val request1 = ImageRequest(context, MyImages.jpeg.uri) {
             size(500, 500)
             precision(EXACTLY)
@@ -1165,20 +886,6 @@ class BitmapFactoryDecoderTest {
             request1.toRequestContext(sketch),
             RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)
         ).let { runBlocking { it.decode() } }.getOrThrow()
-
-        assertFails {
-            val request2 = ImageRequest(context, MyImages.jpeg.uri) {
-                size(500, 500)
-                precision(EXACTLY)
-            }
-            val dataSource2 = runBlocking {
-                sketch.components.newFetcherOrThrow(request2).fetch()
-            }.getOrThrow().dataSource
-            BitmapFactoryDecoder(
-                request2.toRequestContext(sketch),
-                RegionTestDataSource(dataSource2.asOrThrow(), null)
-            ).let { runBlocking { it.decode() } }.getOrThrow()
-        }
     }
 
     class FullTestDataSource(

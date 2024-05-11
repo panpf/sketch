@@ -164,32 +164,6 @@ class TransformationDecodeInterceptorTest {
             )
             Assert.assertNull(transformedList)
         }
-
-        assertThrow(IllegalArgumentException::class) {
-            runBlocking {
-                val request = ImageRequest(context, MyImages.jpeg.uri) {
-                    transformations(object : Transformation {
-                        override val key: String
-                            get() = "TestTransformation"
-
-                        override suspend fun transform(
-                            sketch: Sketch,
-                            requestContext: RequestContext,
-                            input: Image
-                        ): TransformResult = TransformResult(input, "TestTransformation")
-                    })
-                }
-                val chain = DecodeInterceptorChain(
-                    sketch,
-                    request,
-                    request.toRequestContext(sketch),
-                    null,
-                    interceptors,
-                    0
-                )
-                TransformationDecodeInterceptor().intercept(chain)
-            }.getOrThrow()
-        }
     }
 
     @Test

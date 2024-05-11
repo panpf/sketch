@@ -132,9 +132,9 @@ class ParametersTest {
             set("key2", "value2", null)
             set("key3", "value3", "cacheKey3")
         }.build().apply {
-            assertEquals("value1", cacheKey("key1"))
-            assertNull(cacheKey("key2"))
-            assertEquals("cacheKey3", cacheKey("key3"))
+            assertEquals("value1", entry("key1")?.cacheKey)
+            assertNull(entry("key2")?.cacheKey)
+            assertEquals("cacheKey3", entry("key3")?.cacheKey)
 
             assertEquals("Parameters(key1:value1,key3:cacheKey3)", cacheKey)
             assertEquals(
@@ -147,9 +147,9 @@ class ParametersTest {
         }
 
         Parameters.Builder().build().apply {
-            assertNull(cacheKey("key1"))
-            assertNull(cacheKey("key2"))
-            assertNull(cacheKey("key3"))
+            assertNull(entry("key1")?.cacheKey)
+            assertNull(entry("key2")?.cacheKey)
+            assertNull(entry("key3")?.cacheKey)
 
             assertNull(cacheKey)
             assertEquals(mapOf(), cacheKeys())
@@ -444,6 +444,19 @@ class ParametersTest {
         }
         null.merged(parameters1).apply {
             assertSame(parameters1, this)
+        }
+    }
+
+    /** Returns a map of keys to non-null cache keys. Keys with a null cache key are filtered. */
+    private fun Parameters.cacheKeys(): Map<String, String> {
+        return if (isEmpty()) {
+            emptyMap()
+        } else {
+            entries.mapNotNull {
+                it.value.cacheKey?.let { cacheKey ->
+                    it.key to cacheKey
+                }
+            }.toMap()
         }
     }
 }

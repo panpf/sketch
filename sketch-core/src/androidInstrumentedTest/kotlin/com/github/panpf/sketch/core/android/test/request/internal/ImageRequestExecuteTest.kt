@@ -80,6 +80,7 @@ import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
+import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -108,6 +109,8 @@ import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -1342,10 +1345,11 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResizeOnDraw() {
-        val context = getTestContext()
         val sketch = newSketch()
         val imageUri = MyImages.jpeg.uri
-        val request = ImageRequest(context, imageUri) {
+        val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
+        val imageView = activity.imageView
+        val request = ImageRequest(imageView, imageUri) {
             size(500, 500)
         }
 
@@ -1496,7 +1500,7 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, imageUri) {
-                listener(listenerSupervisor)
+                registerListener(listenerSupervisor)
             }.let { request ->
                 runBlocking { sketch.execute(request) }
             }
@@ -1510,7 +1514,7 @@ class ImageRequestExecuteTest {
             Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, errorImageUri) {
-                listener(listenerSupervisor)
+                registerListener(listenerSupervisor)
             }.let { request ->
                 runBlocking { sketch.execute(request) }
             }
@@ -1524,7 +1528,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            listener(listenerSupervisor)
+            registerListener(listenerSupervisor)
         }.let { request ->
             runBlocking {
                 deferred = async {
@@ -1551,7 +1555,7 @@ class ImageRequestExecuteTest {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)
-                progressListener(listenerSupervisor)
+                registerProgressListener(listenerSupervisor)
             }.let { request ->
                 runBlocking { sketch.execute(request) }
             }
@@ -1679,7 +1683,7 @@ class ImageRequestExecuteTest {
             ImageRequest(context, MyImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                listener(listenerSupervisor)
+                registerListener(listenerSupervisor)
                 target(testTarget)
             }.let { request ->
                 runBlocking {
@@ -1702,7 +1706,7 @@ class ImageRequestExecuteTest {
             ImageRequest(context, MyImages.jpeg.uri + ".fake") {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                listener(listenerSupervisor)
+                registerListener(listenerSupervisor)
                 error(android.R.drawable.btn_radio)
                 target(testTarget)
             }.let { request ->

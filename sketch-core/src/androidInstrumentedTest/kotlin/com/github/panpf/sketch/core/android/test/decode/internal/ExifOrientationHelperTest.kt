@@ -631,6 +631,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddToResize() {
+        // TODO The assToScale that addToResize depends on may have bugs and need to be tested
         ExifOrientationHelper(ExifInterface.ORIENTATION_ROTATE_90).apply {
             Assert.assertEquals(Resize(5, 10), addToResize(Resize(10, 5), Size(100, 50)))
             Assert.assertEquals(

@@ -284,7 +284,7 @@ class SketchTest {
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
         val request1 = ImageRequest(context, MyImages.jpeg.uri) {
-            listener(listenerSupervisor1)
+            registerListener(listenerSupervisor1)
         }
         val result1 = runBlocking {
             sketch.enqueue(request1).job.await()
@@ -295,7 +295,7 @@ class SketchTest {
         /* error */
         val listenerSupervisor2 = ListenerSupervisor()
         val request2 = ImageRequest(context, errorUri) {
-            listener(listenerSupervisor2)
+            registerListener(listenerSupervisor2)
         }
         val result2 = runBlocking {
             sketch.enqueue(request2).job.await()
@@ -313,7 +313,7 @@ class SketchTest {
             addTransformations(DelayTransformation {
                 disposable3?.job?.cancel()
             })
-            listener(listenerSupervisor3)
+            registerListener(listenerSupervisor3)
         }
         runBlocking {
             disposable3 = sketch.enqueue(request3)
@@ -329,7 +329,7 @@ class SketchTest {
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
         val request1 = ImageRequest(context, MyImages.jpeg.uri) {
-            listener(listenerSupervisor1)
+            registerListener(listenerSupervisor1)
         }
         val result1 = runBlocking {
             sketch.execute(request1)
@@ -340,7 +340,7 @@ class SketchTest {
         /* error */
         val listenerSupervisor2 = ListenerSupervisor()
         val request2 = ImageRequest(context, errorUri) {
-            listener(listenerSupervisor2)
+            registerListener(listenerSupervisor2)
         }
         val result2 = runBlocking {
             sketch.execute(request2)
@@ -356,7 +356,7 @@ class SketchTest {
         val request3 = ImageRequest(context, MyImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            listener(listenerSupervisor3)
+            registerListener(listenerSupervisor3)
         }
         runBlocking {
             deferred3 = async {
@@ -370,7 +370,7 @@ class SketchTest {
         val imageView = ImageView(context)
         val listenerSupervisor4 = ListenerSupervisor()
         val request4 = ImageRequest(imageView, MyImages.jpeg.uri) {
-            listener(listenerSupervisor4)
+            registerListener(listenerSupervisor4)
             lifecycle(GlobalTargetLifecycle)
         }
         val result4 = runBlocking {

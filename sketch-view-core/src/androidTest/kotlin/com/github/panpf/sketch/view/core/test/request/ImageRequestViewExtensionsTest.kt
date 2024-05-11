@@ -64,7 +64,7 @@ class ImageRequestViewExtensionsTest {
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
-            Assert.assertNull(this.resizeOnDrawHelper)
+            Assert.assertNull(this.resizeOnDraw)
             Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
     }

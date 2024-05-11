@@ -53,13 +53,15 @@ import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.request.internal.CombinedListener
-import com.github.panpf.sketch.request.internal.CombinedProgressListener
+import com.github.panpf.sketch.request.internal.Listeners
+import com.github.panpf.sketch.request.internal.PairListener
+import com.github.panpf.sketch.request.internal.PairProgressListener
+import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
@@ -83,6 +85,7 @@ import com.github.panpf.sketch.state.IconStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.state.uriEmptyError
+import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ScopeAction
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -98,12 +101,12 @@ import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
+import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getEqualityDrawableCompat
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -147,7 +150,7 @@ class ImageRequestTest {
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
-            Assert.assertFalse(this.resizeOnDraw)
+            Assert.assertFalse(this.resizeOnDraw ?: false)
             Assert.assertEquals(ENABLED, this.memoryCachePolicy)
         }
     }
@@ -193,7 +196,7 @@ class ImageRequestTest {
         }
         ImageRequest(context1, uriString1).newBuilder {
             depth(LOCAL)
-            listener(
+            registerListener(
                 onStart = { request: ImageRequest ->
 
                 },
@@ -207,7 +210,7 @@ class ImageRequestTest {
 
                 },
             )
-            progressListener { _, _ ->
+            registerProgressListener() { _, _ ->
 
             }
         }.build().apply {
@@ -223,7 +226,7 @@ class ImageRequestTest {
         }
         ImageRequest(context1, uriString1).newRequest {
             depth(LOCAL)
-            listener(
+            registerListener(
                 onStart = { request: ImageRequest ->
 
                 },
@@ -237,7 +240,7 @@ class ImageRequestTest {
 
                 },
             )
-            progressListener { _, _ ->
+            registerProgressListener() { _, _ ->
 
             }
         }.apply {
@@ -364,7 +367,7 @@ class ImageRequestTest {
             crossfade()
         }
         ImageRequest(context1, uriString1) {
-            default(options)
+            defaultOptions(options)
         }.apply {
             Assert.assertSame(options, defaultOptions)
         }
@@ -390,7 +393,7 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedSizeResolver(100, 50), sizeResolver)
                 Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
-                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
+                Assert.assertEquals(Crossfade(), crossfade)
             }
 
             merge(ImageOptions {
@@ -400,7 +403,7 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedSizeResolver(100, 50), sizeResolver)
                 Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
-                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
+                Assert.assertEquals(Crossfade(), crossfade)
             }
         }
     }
@@ -1262,7 +1265,7 @@ class ImageRequestTest {
         val uriString1 = MyImages.jpeg.uri
         ImageRequest.Builder(context1, uriString1).apply {
             build().apply {
-                Assert.assertFalse(resizeOnDraw)
+                Assert.assertFalse(resizeOnDraw ?: false)
             }
 
             resizeOnDraw()
@@ -1277,7 +1280,7 @@ class ImageRequestTest {
 
             resizeOnDraw(null)
             build().apply {
-                Assert.assertFalse(resizeOnDraw)
+                Assert.assertFalse(resizeOnDraw ?: false)
             }
         }
     }
@@ -1312,119 +1315,105 @@ class ImageRequestTest {
     fun testListener() {
         val context1 = getTestContext()
         val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
-            build().apply {
-                Assert.assertNull(listener)
-                Assert.assertNull(target)
-            }
+        ImageRequest(context1, uriString1).apply {
+            Assert.assertNull(listener)
+            Assert.assertNull(target)
+        }
 
-            listener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
-            build().newRequest().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
+        val listener1 = object : Listener {}
+        val listener2 = object : Listener {}
+        val listener3 = object : Listener {}
 
-            listener(onStart = {})
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
+        ImageRequest(context1, uriString1){
+            registerListener(listener1)
+        }.apply {
+            Assert.assertEquals(listener1, listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(listener1)
+            registerListener(listener2)
+        }.apply {
+            Assert.assertEquals(Listeners(listOf(listener1, listener2)), listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(listener1)
+            registerListener(listener2)
+            registerListener(listener3)
+        }.apply {
+            Assert.assertEquals(Listeners(listOf(listener1, listener2, listener3)), listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(listener1)
+            registerListener(listener2)
+            registerListener(listener3)
+            unregisterListener(listener2)
+        }.apply {
+            Assert.assertEquals(Listeners(listOf(listener1, listener3)), listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(listener1)
+            registerListener(listener2)
+            registerListener(listener3)
+            unregisterListener(listener2)
+            unregisterListener(listener1)
+        }.apply {
+            Assert.assertEquals(listener3, listener)
+            Assert.assertNull(target)
+        }
 
-            listener(onCancel = {})
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
+        val imageView = TestListenerImageView(context1)
 
-            listener(onError = { _, _ -> })
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
+        ImageRequest(imageView, uriString1).apply {
+            Assert.assertEquals(imageView.myListener, listener)
+            Assert.assertEquals(ImageViewTarget(imageView), target)
+        }
+        ImageRequest(imageView, uriString1){
+            registerListener(listener1)
+        }.apply {
+            Assert.assertEquals(PairListener(first = listener1, second = imageView.myListener), listener)
+            Assert.assertEquals(ImageViewTarget(imageView), target)
+        }
+        ImageRequest(imageView, uriString1){
+            registerListener(listener1)
+            registerListener(listener2)
+        }.apply {
+            Assert.assertEquals(PairListener(first = Listeners(listOf(listener1, listener2)), second = imageView.myListener), listener)
+            Assert.assertEquals(ImageViewTarget(imageView), target)
+        }
 
-            listener(onSuccess = { _, _ -> })
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
-
-            listener(null)
-            target(null)
-            build().apply {
-                Assert.assertNull(listener)
-            }
-
-            listener(onSuccess = { _, _ -> })
-            build().apply {
-                Assert.assertNotNull(listener)
-                Assert.assertTrue(listener !is CombinedListener)
-            }
-
-            listener(null)
-            target(null)
-            build().apply {
-                Assert.assertNull(listener)
-            }
-
-            listener(onSuccess = { _, _ -> })
-            build().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNotNull(fromBuilderListener)
-                Assert.assertNull(fromBuilderListeners)
-                Assert.assertTrue(fromBuilderListener !is CombinedListener)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
-            build().newRequest().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNotNull(fromBuilderListener)
-                Assert.assertNull(fromBuilderListeners)
-                Assert.assertTrue(fromBuilderListener !is CombinedListener)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
-
-            val listener2 = object : Listener {}
-            val listener3 = object : Listener {}
-            addListener(listener2)
-            addListener(listener3)
-            addListener(listener2)
-            build().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNotNull(fromBuilderListener)
-                Assert.assertNotNull(fromBuilderListeners)
-                Assert.assertTrue(fromBuilderListeners!!.size == 2)
-                Assert.assertTrue(fromBuilderListener !is CombinedListener)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
-            build().newRequest().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNotNull(fromBuilderListener)
-                Assert.assertNotNull(fromBuilderListeners)
-                Assert.assertTrue(fromBuilderListeners!!.size == 2)
-                Assert.assertTrue(fromBuilderListener !is CombinedListener)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
-
-            removeListener(listener2)
-            build().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNotNull(fromBuilderListener)
-                Assert.assertNotNull(fromBuilderListeners)
-                Assert.assertTrue(fromBuilderListeners!!.size == 1)
-                Assert.assertTrue(fromBuilderListener !is CombinedListener)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
-            build().newRequest().listener!!.asOrThrow<CombinedListener>().apply {
-                Assert.assertNotNull(fromBuilderListener)
-                Assert.assertNotNull(fromBuilderListeners)
-                Assert.assertTrue(fromBuilderListeners!!.size == 1)
-                Assert.assertTrue(fromBuilderListener !is CombinedListener)
-                Assert.assertNotNull(fromTargetListener)
-                Assert.assertTrue(fromTargetListener !is CombinedListener)
-            }
+        ImageRequest(context1, uriString1){
+            registerListener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
+        }.apply {
+            Assert.assertTrue(listener is Listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(onStart = {})
+        }.apply {
+            Assert.assertTrue(listener is Listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(onCancel = {})
+        }.apply {
+            Assert.assertTrue(listener is Listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(onError = { _, _ -> })
+        }.apply {
+            Assert.assertTrue(listener is Listener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerListener(onSuccess = { _, _ -> })
+        }.apply {
+            Assert.assertTrue(listener is Listener)
+            Assert.assertNull(target)
         }
     }
 
@@ -1432,98 +1421,74 @@ class ImageRequestTest {
     fun testProgressListener() {
         val context1 = getTestContext()
         val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
-            build().apply {
-                Assert.assertNull(progressListener)
-                Assert.assertNull(target)
-            }
+        ImageRequest(context1, uriString1).apply {
+            Assert.assertNull(progressListener)
+            Assert.assertNull(target)
+        }
 
-            progressListener { _, _ -> }
-            build().apply {
-                Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener !is CombinedProgressListener)
-            }
-            build().newRequest().apply {
-                Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener !is CombinedProgressListener)
-            }
+        val listener1 = ProgressListener {_, _, ->}
+        val listener2 = ProgressListener {_, _, ->}
+        val listener3 = ProgressListener {_, _, ->}
 
-            progressListener(null)
-            target(null)
-            build().apply {
-                Assert.assertNull(progressListener)
-            }
+        ImageRequest(context1, uriString1){
+            registerProgressListener(listener1)
+        }.apply {
+            Assert.assertEquals(listener1, progressListener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerProgressListener(listener1)
+            registerProgressListener(listener2)
+        }.apply {
+            Assert.assertEquals(ProgressListeners(listOf(listener1, listener2)), progressListener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerProgressListener(listener1)
+            registerProgressListener(listener2)
+            registerProgressListener(listener3)
+        }.apply {
+            Assert.assertEquals(ProgressListeners(listOf(listener1, listener2, listener3)), progressListener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerProgressListener(listener1)
+            registerProgressListener(listener2)
+            registerProgressListener(listener3)
+            unregisterProgressListener(listener2)
+        }.apply {
+            Assert.assertEquals(ProgressListeners(listOf(listener1, listener3)), progressListener)
+            Assert.assertNull(target)
+        }
+        ImageRequest(context1, uriString1){
+            registerProgressListener(listener1)
+            registerProgressListener(listener2)
+            registerProgressListener(listener3)
+            unregisterProgressListener(listener2)
+            unregisterProgressListener(listener1)
+        }.apply {
+            Assert.assertEquals(listener3, progressListener)
+            Assert.assertNull(target)
+        }
 
-            progressListener { _, _ -> }
-            build().apply {
-                Assert.assertNotNull(progressListener)
-                Assert.assertTrue(progressListener !is CombinedProgressListener)
-            }
+        val imageView = TestListenerImageView(context1)
 
-            progressListener(null)
-            target(null)
-            build().apply {
-                Assert.assertNull(progressListener)
-            }
-
-            progressListener { _, _ -> }
-            build().progressListener!!.asOrThrow<CombinedProgressListener>().apply {
-                Assert.assertNotNull(fromBuilderProgressListener)
-                Assert.assertNull(fromBuilderProgressListeners)
-                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener)
-                Assert.assertNotNull(fromTargetProgressListener)
-                Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-            }
-            build().newRequest().progressListener!!.asOrThrow<CombinedProgressListener>()
-                .apply {
-                    Assert.assertNotNull(fromBuilderProgressListener)
-                    Assert.assertNull(fromBuilderProgressListeners)
-                    Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener)
-                    Assert.assertNotNull(fromTargetProgressListener)
-                    Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-                }
-
-            val progressListener2 = ProgressListener { _, _ -> }
-            val progressListener3 = ProgressListener { _, _ -> }
-            addProgressListener(progressListener2)
-            addProgressListener(progressListener3)
-            addProgressListener(progressListener2)
-            build().progressListener!!.asOrThrow<CombinedProgressListener>().apply {
-                Assert.assertNotNull(fromBuilderProgressListener)
-                Assert.assertNotNull(fromBuilderProgressListeners)
-                Assert.assertTrue(fromBuilderProgressListeners!!.size == 2)
-                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener)
-                Assert.assertNotNull(fromTargetProgressListener)
-                Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-            }
-            build().newRequest().progressListener!!.asOrThrow<CombinedProgressListener>()
-                .apply {
-                    Assert.assertNotNull(fromBuilderProgressListener)
-                    Assert.assertNotNull(fromBuilderProgressListeners)
-                    Assert.assertTrue(fromBuilderProgressListeners!!.size == 2)
-                    Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener)
-                    Assert.assertNotNull(fromTargetProgressListener)
-                    Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-                }
-
-            removeProgressListener(progressListener2)
-            build().progressListener!!.asOrThrow<CombinedProgressListener>().apply {
-                Assert.assertNotNull(fromBuilderProgressListener)
-                Assert.assertNotNull(fromBuilderProgressListeners)
-                Assert.assertTrue(fromBuilderProgressListeners!!.size == 1)
-                Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener)
-                Assert.assertNotNull(fromTargetProgressListener)
-                Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-            }
-            build().newRequest().progressListener!!.asOrThrow<CombinedProgressListener>()
-                .apply {
-                    Assert.assertNotNull(fromBuilderProgressListener)
-                    Assert.assertNotNull(fromBuilderProgressListeners)
-                    Assert.assertTrue(fromBuilderProgressListeners!!.size == 1)
-                    Assert.assertTrue(fromBuilderProgressListener !is CombinedProgressListener)
-                    Assert.assertNotNull(fromTargetProgressListener)
-                    Assert.assertTrue(fromTargetProgressListener !is CombinedProgressListener)
-                }
+        ImageRequest(imageView, uriString1).apply {
+            Assert.assertEquals(imageView.myProgressListener, progressListener)
+            Assert.assertEquals(ImageViewTarget(imageView), target)
+        }
+        ImageRequest(imageView, uriString1){
+            registerProgressListener(listener1)
+        }.apply {
+            Assert.assertEquals(PairProgressListener(first = listener1, second = imageView.myProgressListener), progressListener)
+            Assert.assertEquals(ImageViewTarget(imageView), target)
+        }
+        ImageRequest(imageView, uriString1){
+            registerProgressListener(listener1)
+            registerProgressListener(listener2)
+        }.apply {
+            Assert.assertEquals(PairProgressListener(first = ProgressListeners(listOf(listener1, listener2)), second = imageView.myProgressListener), progressListener)
+            Assert.assertEquals(ImageViewTarget(imageView), target)
         }
     }
 
@@ -1584,13 +1549,15 @@ class ImageRequestTest {
         val imageView = TestListenerImageView(context)
         val scopeActions = listOfNotNull<ScopeAction<ImageRequest.Builder>>(
             ScopeAction {
-                listener(onStart = {})
+                registerListener(onStart = {})
             },
             ScopeAction {
-                progressListener { _, _ -> }
+                registerProgressListener() { _, _ -> }
             },
             ScopeAction {
-                default(ImageOptions())
+                defaultOptions(ImageOptions(){
+                    size(100, 100)
+                })
             },
             ScopeAction {
                 depth(LOCAL, "test")
@@ -1729,11 +1696,7 @@ class ImageRequestTest {
                     /* unexpected = */ lastRequest,
                     /* actual = */ newRequest
                 )
-                Assert.assertNotEquals(
-                    /* message = */ "itemIndex=$itemIndex, lastRequestIndex=$lastRequestIndex, lastRequest=$lastRequest, newRequest=$newRequest",
-                    /* unexpected = */ lastRequest.hashCode(),
-                    /* actual = */ newRequest.hashCode()
-                )
+                // equals is not the same, hashCode may be the same
             }
             requests.add(newRequest)
         }

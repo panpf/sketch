@@ -26,13 +26,14 @@ class TestListenerImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ImageView(context, attrs), ListenerProvider {
 
-    override fun getListener(): Listener {
-        return object : Listener {
+    var myListener = object : Listener {}
+    var myProgressListener = ProgressListener { _, _ -> }
 
-        }
+    override fun getListener(): Listener {
+        return myListener
     }
 
     override fun getProgressListener(): ProgressListener {
-        return ProgressListener { _, _ -> }
+        return myProgressListener
     }
 }

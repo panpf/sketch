@@ -49,6 +49,7 @@ class LongImageDeciderTest {
 
     @Test
     fun test() {
+        // TODO Because the format function has changed, the test cases here need to change as well
         val longImageDecider = DefaultLongImageDecider()
 
         /* Either one is a square */

@@ -14,9 +14,12 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -29,24 +32,26 @@ class ResizeOnDrawTest {
     fun testResizeOnDraw() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val resources = context.resources
+        val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
+        val imageView = activity.imageView
 
         val imageUri = MyImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
-        val request = ImageRequest(context, imageUri)
+        val request = ImageRequest(imageView, imageUri)
         val bitmapDrawableImage = bitmapDrawable.asSketchImage()
         Assert.assertSame(
             bitmapDrawableImage,
             bitmapDrawableImage.resizeOnDraw(request, null)
         )
-        val request1 = ImageRequest(context, imageUri) {
+        val request1 = ImageRequest(imageView, imageUri) {
             resizeOnDraw(true)
         }
         Assert.assertSame(
             bitmapDrawableImage,
             bitmapDrawableImage.resizeOnDraw(request1, null)
         )
-        val request2 = ImageRequest(context, imageUri) {
+        val request2 = ImageRequest(imageView, imageUri) {
             size(500, 300)
             precision(EXACTLY)
         }
@@ -56,7 +61,7 @@ class ResizeOnDrawTest {
                 .resizeOnDraw(request2, request2.toRequestContext(sketch).size)
                 .asDrawableOrThrow()
         )
-        val request3 = ImageRequest(context, imageUri) {
+        val request3 = ImageRequest(imageView, imageUri) {
             resizeOnDraw(true)
             size(500, 300)
             precision(EXACTLY)

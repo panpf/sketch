@@ -91,19 +91,6 @@ class RequestContextTest {
                 setNewRequest(request.newRequest())
                 val cacheKey4 = cacheKey
                 Assert.assertSame(cacheKey3, cacheKey4)
-
-                setNewRequest(request.newRequest {
-//                    ignoreExifOrientation(false)
-                })
-                val cacheKey5 = cacheKey
-                Assert.assertNotSame(cacheKey4, cacheKey5)
-                Assert.assertEquals(cacheKey4, cacheKey5)
-
-                setNewRequest(request.newRequest {
-//                    ignoreExifOrientation(true)
-                })
-                val cacheKey6 = cacheKey
-                Assert.assertNotEquals(cacheKey5, cacheKey6)
             }
         }
     }

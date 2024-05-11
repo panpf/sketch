@@ -30,7 +30,6 @@ import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.isNotEmpty
-import com.github.panpf.sketch.request.resizeOnDraw
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -105,7 +104,7 @@ class ImageOptionsTest {
             assertNull(this.error)
             assertNull(this.transitionFactory)
             assertNull(this.disallowAnimatedImage)
-            assertNull(this.resizeOnDrawHelper)
+            assertNull(this.resizeOnDraw)
             assertNull(this.memoryCachePolicy)
             assertNull(this.componentRegistry)
         }
@@ -227,7 +226,7 @@ class ImageOptionsTest {
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertNull(this.resizeOnDrawHelper)
+            assertTrue(this.resizeOnDraw ?: false)
         }
 
         ImageOptions {
@@ -1311,25 +1310,21 @@ class ImageOptionsTest {
         ImageOptions.Builder().apply {
             build().apply {
                 assertFalse(resizeOnDraw ?: false)
-                assertNull(resizeOnDrawHelper)
             }
 
             resizeOnDraw()
             build().apply {
                 assertTrue(resizeOnDraw ?: false)
-                assertNull(resizeOnDrawHelper)
             }
 
             resizeOnDraw(false)
             build().apply {
                 assertFalse(resizeOnDraw ?: false)
-                assertNull(resizeOnDrawHelper)
             }
 
             resizeOnDraw(null)
             build().apply {
                 assertFalse(resizeOnDraw ?: false)
-                assertNull(resizeOnDrawHelper)
             }
         }
     }

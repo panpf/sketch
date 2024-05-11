@@ -16,8 +16,8 @@
 package com.github.panpf.sketch.core.android.test.fetch.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
+import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.SlowInputStream
@@ -46,70 +46,86 @@ class HttpUtilsTest {
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream = ByteArrayOutputStream()
         runBlocking {
-            writeAllWithProgress(
-                sink = outputStream.sink().buffer(),
-                content = SlowInputStream(string.byteInputStream(), 100).content(),
-                request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                    progressListener(progressListener)
-                },
-                contentLength = string.length.toLong(),
-                bufferSize = ceil(string.length / 3f).toInt(),
-            )
+            outputStream.sink().buffer().use { sink ->
+                SlowInputStream(string.byteInputStream(), 100).content().use { content ->
+                    writeAllWithProgress(
+                        sink = sink,
+                        content = content,
+                        request = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                            registerProgressListener(progressListener)
+                        },
+                        contentLength = string.length.toLong(),
+                        bufferSize = ceil(string.length / 3f).toInt(),
+                    )
+                }
+            }
             delay(100)
         }
-        Assert.assertEquals(outputStream.toString(), string)
+        Assert.assertEquals(string, outputStream.toString())
         Assert.assertEquals(listOf("9", "26"), progressListener.callbackActionList)
 
         progressListener.callbackActionList.clear()
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream2 = ByteArrayOutputStream()
         runBlocking {
-            writeAllWithProgress(
-                sink = outputStream2.sink().buffer(),
-                content = SlowInputStream(string.byteInputStream(), 100).content(),
-                request = ImageRequest(context, "http://sample.com/sample.jpeg"),
-                contentLength = string.length.toLong(),
-                bufferSize = ceil(string.length / 3f).toInt(),
-            )
+            outputStream2.sink().buffer().use { sink ->
+                SlowInputStream(string.byteInputStream(), 100).content().use { content ->
+                    writeAllWithProgress(
+                        sink = sink,
+                        content = content,
+                        request = ImageRequest(context, "http://sample.com/sample.jpeg"),
+                        contentLength = string.length.toLong(),
+                        bufferSize = ceil(string.length / 3f).toInt(),
+                    )
+                }
+            }
             delay(100)
         }
-        Assert.assertEquals(outputStream2.toString(), string)
+        Assert.assertEquals(string, outputStream2.toString())
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
 
         progressListener.callbackActionList.clear()
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream3 = ByteArrayOutputStream()
         runBlocking {
-            writeAllWithProgress(
-                sink = outputStream3.sink().buffer(),
-                content = SlowInputStream(string.byteInputStream(), 100).content(),
-                request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                    progressListener(progressListener)
-                },
-                bufferSize = ceil(string.length / 3f).toInt(),
-                contentLength = 0
-            )
+            outputStream3.sink().buffer().use { sink ->
+                SlowInputStream(string.byteInputStream(), 100).content().use { content ->
+                    writeAllWithProgress(
+                        sink = sink,
+                        content = content,
+                        request = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                            registerProgressListener(progressListener)
+                        },
+                        bufferSize = ceil(string.length / 3f).toInt(),
+                        contentLength = 0
+                    )
+                }
+            }
             delay(100)
         }
-        Assert.assertEquals(outputStream3.toString(), string)
+        Assert.assertEquals(string, outputStream3.toString())
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
 
         progressListener.callbackActionList.clear()
         Assert.assertEquals(listOf<String>(), progressListener.callbackActionList)
         val outputStream4 = ByteArrayOutputStream()
         runBlocking {
-            writeAllWithProgress(
-                sink = outputStream4.sink().buffer(),
-                content = SlowInputStream(string.byteInputStream(), 400).content(),
-                request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                    progressListener(progressListener)
-                },
-                bufferSize = ceil(string.length / 3f).toInt(),
-                contentLength = string.length.toLong()
-            )
+            outputStream4.sink().buffer().use { sink ->
+                SlowInputStream(string.byteInputStream(), 400).content().use { content ->
+                    writeAllWithProgress(
+                        sink = sink,
+                        content = content,
+                        request = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                            registerProgressListener(progressListener)
+                        },
+                        bufferSize = ceil(string.length / 3f).toInt(),
+                        contentLength = string.length.toLong()
+                    )
+                }
+            }
             delay(100)
         }
-        Assert.assertEquals(outputStream4.toString(), string)
+        Assert.assertEquals(string, outputStream4.toString())
         Assert.assertEquals(listOf("9", "18", "26"), progressListener.callbackActionList)
     }
 
