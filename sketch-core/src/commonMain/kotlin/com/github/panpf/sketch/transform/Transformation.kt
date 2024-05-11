@@ -50,7 +50,7 @@ interface Transformation {
      * The key is added to the image request's memory cache key and should contain any params that
      * are part of this transformation (e.g. size, scale, color, radius, etc.).
      */
-    val key: String
+    val key: String    // TODO Implement the Key interface
 
     /**
      * Apply the transformation to [input] and return the transformed [Image].

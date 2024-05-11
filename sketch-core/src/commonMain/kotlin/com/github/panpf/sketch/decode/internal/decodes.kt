@@ -170,6 +170,7 @@ private fun Size.checkAreaLimit(limitSize: Size): Boolean {
 
 /* **************************************** decode ********************************************* */
 
+// TODO Merge to HelperDecoder
 @WorkerThread
 fun realDecode(
     requestContext: RequestContext,

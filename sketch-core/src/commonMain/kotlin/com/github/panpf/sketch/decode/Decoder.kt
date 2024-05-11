@@ -42,7 +42,7 @@ fun interface Decoder {
      */
     interface Factory {
 
-        val key: String
+        val key: String    // TODO Implement the Key interface
 
         /**
          * If the current [Factory]'s [Decoder] can decode Image from the current [fetchResult],

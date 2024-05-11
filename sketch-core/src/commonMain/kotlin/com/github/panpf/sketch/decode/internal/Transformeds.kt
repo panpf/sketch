@@ -40,12 +40,15 @@ fun List<String>.getSubsamplingTransformed(): String? =
     find { isSubsamplingTransformed(it) }
 
 
+// TODO remove
 fun createExifOrientationTransformed(exifOrientation: Int): String =
     "ExifOrientationTransformed(${ExifOrientation.name(exifOrientation)})"
 
+// TODO remove
 fun isExifOrientationTransformed(transformed: String): Boolean =
     transformed.startsWith("ExifOrientationTransformed(")
 
+// TODO remove
 fun List<String>.getExifOrientationTransformed(): String? =
     find { isExifOrientationTransformed(it) }
 

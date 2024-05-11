@@ -34,7 +34,7 @@ expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
  */
 interface SizeResolver {
 
-    val key: String
+    val key: String    // TODO Implement the Key interface
 
     /** Return the [Size] that the image should be loaded at. */
     @MainThread

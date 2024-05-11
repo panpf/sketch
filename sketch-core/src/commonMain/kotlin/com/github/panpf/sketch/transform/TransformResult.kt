@@ -27,7 +27,7 @@ class TransformResult constructor(
     val image: Image,
 
     /**
-     * Store the information of this transformation to record the transformation history of Bitmap
+     * Store the information of this transformation to record the transformation history of Image
      */
     val transformed: String
 )

@@ -38,7 +38,7 @@ enum class Base64Specification {
     Default, Mime, UrlSafe
 }
 
-const val BASE64_SPECIFICATION_KEY = "sketch#base64Specification"
+const val BASE64_SPECIFICATION_KEY = "sketch#base64_specification"
 
 fun ImageOptions.Builder.base64Specification(specification: Base64Specification?): ImageOptions.Builder =
     apply {

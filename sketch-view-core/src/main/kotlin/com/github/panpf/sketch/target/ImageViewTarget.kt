@@ -58,6 +58,10 @@ open class ImageViewTarget constructor(
     override val fitScale: Boolean
         get() = view?.scaleType?.fitScale ?: true
 
+    override fun getScale(): Scale? {
+        return view?.scaleType?.toScale()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ImageViewTarget) return false
@@ -65,16 +69,12 @@ open class ImageViewTarget constructor(
         return true
     }
 
-    override fun getScale(): Scale? {
-        return view?.scaleType?.toScale()
-    }
-
     override fun hashCode(): Int {
         return view.hashCode()
     }
 
     override fun toString(): String {
-        return "ImageViewDisplayTarget($view)"
+        return "ImageViewTarget($view)"
     }
 
     private fun ScaleType.toScale(): Scale = when (this) {

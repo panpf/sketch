@@ -30,7 +30,7 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
  */
 interface PrecisionDecider {
 
-    val key: String
+    val key: String    // TODO Implement the Key interface
 
     fun get(imageSize: Size, targetSize: Size): Precision
 }

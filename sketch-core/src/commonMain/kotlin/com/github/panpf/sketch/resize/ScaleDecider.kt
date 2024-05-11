@@ -32,7 +32,7 @@ fun ScaleDecider(scale: Scale): ScaleDecider {
  */
 interface ScaleDecider {
 
-    val key: String
+    val key: String    // TODO Implement the Key interface
 
     fun get(imageSize: Size, targetSize: Size): Scale
 }

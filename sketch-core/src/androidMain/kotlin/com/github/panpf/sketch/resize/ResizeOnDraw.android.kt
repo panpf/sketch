@@ -8,6 +8,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size
 
+// TODO move view-core
 object AndroidResizeOnDrawHelper : ResizeOnDrawHelper {
 
     override val key: String = "AndroidResizeOnDrawHelper"

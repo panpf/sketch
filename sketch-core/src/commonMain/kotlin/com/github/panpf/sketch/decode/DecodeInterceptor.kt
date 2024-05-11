@@ -36,7 +36,7 @@ interface DecodeInterceptor {
      * If the current DecodeInterceptor will change the DecodeResult,
      * please provide a valid key to build request key and cache key, otherwise return null
      */
-    val key: String?
+    val key: String?    // TODO Implement the NullableKey interface
 
     /**
      * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.

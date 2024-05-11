@@ -133,7 +133,7 @@ val ImageRequest.colorSpace: ColorSpace?
     get() = parameters?.value<String>(COLOR_SPACE_NAMED_KEY)
         ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
-const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_Quality_Over_Speed"
+const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"
 
 /**
  * From Android N (API 24), this is ignored.  The output will always be high quality.
