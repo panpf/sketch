@@ -27,9 +27,7 @@ import com.github.panpf.sketch.target.TargetLifecycle
  */
 data class RequestOptions(
     val listener: Listener?,
-    val listeners: Set<Listener>?,
     val progressListener: ProgressListener?,
-    val progressListeners: Set<ProgressListener>?,
     val lifecycleResolver: LifecycleResolver?,
 ) {
 
@@ -38,35 +36,34 @@ data class RequestOptions(
     }
 
     class Builder {
-        private var listener: Listener? = null
         private var listeners: MutableSet<Listener>? = null
-        private var progressListener: ProgressListener? = null
         private var progressListeners: MutableSet<ProgressListener>? = null
         private var lifecycleResolver: LifecycleResolver? = null
 
         constructor()
 
         constructor(requestOptions: RequestOptions) {
-            listeners = requestOptions.listeners?.toMutableSet()
-            listener = requestOptions.listener
-            progressListeners = requestOptions.progressListeners?.toMutableSet()
-            progressListener = requestOptions.progressListener
+            listeners = requestOptions.listener?.let {
+                if (it is Listeners) {
+                    it.list.toMutableSet()
+                } else {
+                    mutableSetOf(it)
+                }
+            }
+            progressListeners = requestOptions.progressListener?.let {
+                if (it is ProgressListeners) {
+                    it.list.toMutableSet()
+                } else {
+                    mutableSetOf(it)
+                }
+            }
             lifecycleResolver = requestOptions.lifecycleResolver
-        }
-
-        /**
-         * Set the [Listener]
-         */
-        fun listener(
-            listener: Listener?
-        ): Builder = apply {
-            this.listener = listener
         }
 
         /**
          * Add the [Listener] to set
          */
-        fun addListener(
+        fun registerListener(
             listener: Listener
         ): Builder = apply {
             val listeners = listeners
@@ -79,25 +76,16 @@ data class RequestOptions(
         /**
          * Remove the [Listener] from set
          */
-        fun removeListener(
+        fun unregisterListener(
             listener: Listener
         ): Builder = apply {
             listeners?.remove(listener)
         }
 
         /**
-         * Set the [ProgressListener]
-         */
-        fun progressListener(
-            progressListener: ProgressListener?
-        ): Builder = apply {
-            this.progressListener = progressListener
-        }
-
-        /**
          * Add the [ProgressListener] to set
          */
-        fun addProgressListener(
+        fun registerProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
             val progressListeners =
@@ -110,7 +98,7 @@ data class RequestOptions(
         /**
          * Remove the [ProgressListener] from set
          */
-        fun removeProgressListener(
+        fun unregisterProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
             progressListeners?.remove(progressListener)
@@ -144,10 +132,24 @@ data class RequestOptions(
 
         fun build(): RequestOptions {
             return RequestOptions(
-                listener = listener,
-                listeners = listeners,
-                progressListener = progressListener,
-                progressListeners = progressListeners,
+                listener = listeners
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let {
+                        if (it.size > 1) {
+                            Listeners(it.toList())
+                        } else {
+                            it.first()
+                        }
+                    },
+                progressListener = progressListeners
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let {
+                        if (it.size > 1) {
+                            ProgressListeners(it.toList())
+                        } else {
+                            it.first()
+                        }
+                    },
                 lifecycleResolver = lifecycleResolver
             )
         }

@@ -21,8 +21,8 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.request.internal.CombinedListener
-import com.github.panpf.sketch.request.internal.CombinedProgressListener
+import com.github.panpf.sketch.request.internal.PairListener
+import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision
@@ -251,54 +251,24 @@ interface ImageRequest {
         }
 
         /**
-         * Set the [Listener]
-         */
-        fun listener(
-            listener: Listener?
-        ): Builder = apply {
-            definedRequestOptionsBuilder.listener(listener)
-        }
-
-        /**
-         * Convenience function to create and set the [Listener].
-         */
-        inline fun listener(
-            crossinline onStart: (request: ImageRequest) -> Unit = {},
-            crossinline onCancel: (request: ImageRequest) -> Unit = {},
-            crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
-            crossinline onSuccess: (request: ImageRequest, result: ImageResult.Success) -> Unit = { _, _ -> }
-        ): Builder = listener(object :
-            Listener {
-            override fun onStart(request: ImageRequest) = onStart(request)
-            override fun onCancel(request: ImageRequest) = onCancel(request)
-            override fun onError(
-                request: ImageRequest, error: ImageResult.Error
-            ) = onError(request, error)
-
-            override fun onSuccess(
-                request: ImageRequest, result: ImageResult.Success
-            ) = onSuccess(request, result)
-        })
-
-        /**
          * Add the [Listener] to set
          */
-        fun addListener(
+        fun registerListener(
             listener: Listener
         ): Builder = apply {
-            definedRequestOptionsBuilder.addListener(listener)
+            definedRequestOptionsBuilder.registerListener(listener)
         }
 
         /**
          * Add the [Listener] to set
          */
         @Suppress("unused")
-        inline fun addListener(
+        inline fun registerListener(
             crossinline onStart: (request: ImageRequest) -> Unit = {},
             crossinline onCancel: (request: ImageRequest) -> Unit = {},
             crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: ImageRequest, result: ImageResult.Success) -> Unit = { _, _ -> }
-        ): Builder = addListener(object :
+        ): Builder = registerListener(object :
             Listener {
             override fun onStart(request: ImageRequest) = onStart(request)
             override fun onCancel(request: ImageRequest) = onCancel(request)
@@ -314,37 +284,28 @@ interface ImageRequest {
         /**
          * Remove the [Listener] from set
          */
-        fun removeListener(
+        fun unregisterListener(
             listener: Listener
         ): Builder = apply {
-            definedRequestOptionsBuilder.removeListener(listener)
-        }
-
-        /**
-         * Set the [ProgressListener]
-         */
-        fun progressListener(
-            progressListener: ProgressListener?
-        ): Builder = apply {
-            definedRequestOptionsBuilder.progressListener(progressListener)
+            definedRequestOptionsBuilder.unregisterListener(listener)
         }
 
         /**
          * Add the [ProgressListener] to set
          */
-        fun addProgressListener(
+        fun registerProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
-            definedRequestOptionsBuilder.addProgressListener(progressListener)
+            definedRequestOptionsBuilder.registerProgressListener(progressListener)
         }
 
         /**
          * Remove the [ProgressListener] from set
          */
-        fun removeProgressListener(
+        fun unregisterProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
-            definedRequestOptionsBuilder.removeProgressListener(progressListener)
+            definedRequestOptionsBuilder.unregisterProgressListener(progressListener)
         }
 
         /**
@@ -822,17 +783,12 @@ interface ImageRequest {
             definedRequestOptions: RequestOptions,
             target: Target?
         ): Listener? {
-            val listener = definedRequestOptions.listener
-            val listeners = definedRequestOptions.listeners?.takeIf { it.isNotEmpty() }?.toList()
+            val builderListener = definedRequestOptions.listener
             val targetListener = target?.getListener()
-            return if (listeners != null || targetListener != null) {
-                CombinedListener(
-                    fromTargetListener = targetListener,
-                    fromBuilderListener = listener,
-                    fromBuilderListeners = listeners
-                )
+            return if (builderListener != null && targetListener != null) {
+                PairListener(first = builderListener, second = targetListener)
             } else {
-                listener
+                builderListener ?: targetListener
             }
         }
 
@@ -840,18 +796,12 @@ interface ImageRequest {
             definedRequestOptions: RequestOptions,
             target: Target?
         ): ProgressListener? {
-            val progressListener = definedRequestOptions.progressListener
-            val progressListeners =
-                definedRequestOptions.progressListeners?.takeIf { it.isNotEmpty() }?.toList()
+            val builderProgressListener = definedRequestOptions.progressListener
             val targetProgressListener = target?.getProgressListener()
-            return if (progressListeners != null || targetProgressListener != null) {
-                CombinedProgressListener(
-                    fromTargetProgressListener = targetProgressListener,
-                    fromBuilderProgressListener = progressListener,
-                    fromBuilderProgressListeners = progressListeners
-                )
+            return if (builderProgressListener != null && targetProgressListener != null) {
+                PairProgressListener(first = builderProgressListener, second = targetProgressListener)
             } else {
-                progressListener
+                builderProgressListener ?: targetProgressListener
             }
         }
     }

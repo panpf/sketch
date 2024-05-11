@@ -19,14 +19,14 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
-class PairProgressListener(
-    val first: ProgressListener?,
-    val second: ProgressListener?,
+class PairProgressListener constructor(
+    val first: ProgressListener,
+    val second: ProgressListener,
 ) : ProgressListener {
 
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
-        first?.onUpdateProgress(request, progress)
-        second?.onUpdateProgress(request, progress)
+        first.onUpdateProgress(request, progress)
+        second.onUpdateProgress(request, progress)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -38,8 +38,8 @@ class PairProgressListener(
     }
 
     override fun hashCode(): Int {
-        var result = first?.hashCode() ?: 0
-        result = 31 * result + (second?.hashCode() ?: 0)
+        var result = first.hashCode()
+        result = 31 * result + second.hashCode()
         return result
     }
 

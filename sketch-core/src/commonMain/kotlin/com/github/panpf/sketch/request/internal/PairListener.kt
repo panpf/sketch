@@ -20,28 +20,28 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
 class PairListener constructor(
-    val first: Listener?,
-    val second: Listener?
+    val first: Listener,
+    val second: Listener,
 ) : Listener {
 
     override fun onStart(request: ImageRequest) {
-        first?.onStart(request)
-        second?.onStart(request)
+        first.onStart(request)
+        second.onStart(request)
     }
 
     override fun onCancel(request: ImageRequest) {
-        first?.onCancel(request)
-        second?.onCancel(request)
+        first.onCancel(request)
+        second.onCancel(request)
     }
 
     override fun onError(request: ImageRequest, error: ImageResult.Error) {
-        first?.onError(request, error)
-        second?.onError(request, error)
+        first.onError(request, error)
+        second.onError(request, error)
     }
 
     override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
-        first?.onSuccess(request, result)
-        second?.onSuccess(request, result)
+        first.onSuccess(request, result)
+        second.onSuccess(request, result)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -53,8 +53,8 @@ class PairListener constructor(
     }
 
     override fun hashCode(): Int {
-        var result = first?.hashCode() ?: 0
-        result = 31 * result + (second?.hashCode() ?: 0)
+        var result = first.hashCode()
+        result = 31 * result + second.hashCode()
         return result
     }
 
