@@ -79,7 +79,10 @@ internal suspend fun writeAllWithProgress(
  * Attempt to guess a better MIME type from the file extension.
  */
 internal fun getMimeType(url: String, contentType: String?): String? {
-    if (contentType == null || contentType.startsWith(HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)) {
+    if (contentType == null
+        || contentType.trim().isEmpty()
+        || contentType.startsWith(HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)
+    ) {
         MimeTypeMap.getMimeTypeFromUrl(url)?.let { return it }
     }
     return contentType?.substringBefore(';')
