@@ -37,6 +37,11 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.internal.ComposeTargetRequestDelegate
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestDelegate
+import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
+import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
+import com.github.panpf.sketch.transition.Crossfade
+import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 
 interface ComposeTarget : Target {
@@ -48,6 +53,15 @@ interface ComposeTarget : Target {
 
     override val currentImage: Image?
         get() = painter?.asSketchImage()
+
+    override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? {
+        // TODO rename to PainterImageSizeWrapper
+        return ComposeResizeOnDrawHelper
+    }
+
+    override fun getCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
+        return ComposeCrossfadeTransition.Factory(crossfade)
+    }
 
     override fun newRequestDelegate(
         sketch: Sketch,

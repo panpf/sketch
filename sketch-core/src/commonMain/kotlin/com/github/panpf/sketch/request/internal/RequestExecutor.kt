@@ -28,7 +28,6 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.awaitStarted
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.Size.Companion
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.requiredMainThread
@@ -115,7 +114,7 @@ class RequestExecutor {
                 } else {
                     globalImageOptions
                 }
-            request.newBuilder().default(newDefaultOptions).build()
+            request.newBuilder().defaultOptions(newDefaultOptions).build()
         } else {
             request
         }

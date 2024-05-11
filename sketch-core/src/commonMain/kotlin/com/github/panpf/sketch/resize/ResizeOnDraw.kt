@@ -3,11 +3,16 @@ package com.github.panpf.sketch.resize
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.isNotEmpty
 
 fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
-    val resizeOnDrawHelper = request.resizeOnDrawHelper
-    if (resizeOnDrawHelper == null || size == null || size.isEmpty) return this
-    return resizeOnDrawHelper.resize(request, size, this)
+    if (size?.isNotEmpty == true && request.resizeOnDraw == true) {
+        val resizeOnDrawHelper = request.target?.getResizeOnDrawHelper()
+        if (resizeOnDrawHelper != null) {
+            return resizeOnDrawHelper.resize(request, size, this)
+        }
+    }
+    return this
 }
 
 /**

@@ -27,7 +27,6 @@ import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
@@ -189,7 +188,7 @@ interface ImageRequest {
     /**
      * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
      */
-    val resizeOnDrawHelper: ResizeOnDrawHelper?
+    val resizeOnDraw: Boolean?
 
     /**
      * Bitmap memory caching policy
@@ -632,7 +631,7 @@ interface ImageRequest {
         /**
          * Sets the transition that crossfade
          */
-        fun crossfade(apply: Boolean): Builder = apply {
+        fun crossfade(apply: Boolean?): Builder = apply {
             definedOptionsBuilder.crossfade(apply)
         }
 
@@ -646,14 +645,7 @@ interface ImageRequest {
         /**
          * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
          */
-        fun resizeOnDraw(resizeOnDrawHelper: ResizeOnDrawHelper?): Builder = apply {
-            definedOptionsBuilder.resizeOnDraw(resizeOnDrawHelper)
-        }
-
-        /**
-         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
-         */
-        fun resizeOnDraw(apply: Boolean = true): Builder = apply {
+        fun resizeOnDraw(apply: Boolean? = true): Builder = apply {
             definedOptionsBuilder.resizeOnDraw(apply)
         }
 
@@ -675,7 +667,7 @@ interface ImageRequest {
         /**
          * Set a final [ImageOptions] to complement properties not set
          */
-        fun default(options: ImageOptions?): Builder = apply {
+        fun defaultOptions(options: ImageOptions?): Builder = apply {
             this.defaultOptions = options
         }
 
@@ -724,19 +716,19 @@ interface ImageRequest {
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
-            val sizeResolver = finalOptions.sizeResolver
-                ?: resolveSizeResolver()
+            val sizeResolver = finalOptions.sizeResolver ?: resolveSizeResolver()
             val sizeMultiplier = finalOptions.sizeMultiplier
-            val precisionDecider = finalOptions.precisionDecider
-                ?: PrecisionDecider(Precision.LESS_PIXELS)
+            val precisionDecider =
+                finalOptions.precisionDecider ?: PrecisionDecider(Precision.LESS_PIXELS)
             val scaleDecider = finalOptions.scaleDecider ?: ScaleDecider(resolveScale())
             val transformations = finalOptions.transformations
             val placeholder = finalOptions.placeholder
             val uriEmpty = finalOptions.uriEmpty
             val error = finalOptions.error
-            val transitionFactory = finalOptions.transitionFactory
+            val transitionFactory =
+                finalOptions.transitionFactory ?: resolveCrossfadeTransitionFactory(finalOptions)
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
-            val resizeOnDrawHelper = finalOptions.resizeOnDrawHelper
+            val resizeOnDraw = finalOptions.resizeOnDraw
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
@@ -765,7 +757,7 @@ interface ImageRequest {
                 error = error,
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,
-                resizeOnDrawHelper = resizeOnDrawHelper,
+                resizeOnDraw = resizeOnDraw,
                 memoryCachePolicy = memoryCachePolicy,
                 componentRegistry = componentRegistry,
             )
@@ -779,6 +771,11 @@ interface ImageRequest {
 
         private fun resolveScale(): Scale =
             target?.getScale() ?: Scale.CENTER_CROP
+
+        private fun resolveCrossfadeTransitionFactory(finalOptions: ImageOptions): Transition.Factory? {
+            val crossfade = finalOptions.crossfade ?: return null
+            return target?.getCrossfadeTransitionFactory(crossfade)
+        }
 
         private fun combinationListener(
             definedRequestOptions: RequestOptions,
@@ -832,7 +829,7 @@ interface ImageRequest {
         override val error: ErrorStateImage?,
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean,
-        override val resizeOnDrawHelper: ResizeOnDrawHelper?,
+        override val resizeOnDraw: Boolean?,
         override val memoryCachePolicy: CachePolicy,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageRequest {
@@ -843,6 +840,3 @@ interface ImageRequest {
 
 val ImageRequest.crossfade: Crossfade?
     get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
-
-val ImageRequest.resizeOnDraw: Boolean
-    get() = parameters?.value<Boolean>(RESIZE_ON_DRAW_KEY) ?: false

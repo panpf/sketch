@@ -22,7 +22,7 @@ import com.github.panpf.sketch.util.Size
 
 internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendDepth()
-    .appendParameters()
+    .appendRequestParameters()
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
     .appendSize()
@@ -34,6 +34,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendDisallowAnimatedImage()
     .appendResizeOnDraw()
     .appendMemoryCachePolicy()
+    // TODO Transition
     .appendDecoders()
     .appendDecodeInterceptors()
     .appendRequestInterceptors()
@@ -41,10 +42,8 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
 
 internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
     .appendCacheParameters()
-//    .appendBitmapConfig()
-//    .appendColorSpace()
-//    .appendPreferQualityOverSpeed()
     .appendSize(size)
+    .appendSizeMultiplier()
     .appendPrecision()
     .appendScale()
     .appendTransformations()
@@ -77,7 +76,7 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         }
     }
 
-    fun appendParameters(): ImageRequestKeyBuilder = apply {
+    fun appendRequestParameters(): ImageRequestKeyBuilder = apply {
         request.parameters?.requestKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
             appendQueryParameter("_parameters", parameterKey)
         }
@@ -100,27 +99,6 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
             appendQueryParameter("_downloadCachePolicy", cachePolicy.name)
         }
     }
-
-//    fun appendBitmapConfig(): ImageRequestKeyBuilder = apply {
-//        request.bitmapConfig?.also { bitmapConfig ->
-//            appendQueryParameter("_bitmapConfig", bitmapConfig.key)
-//        }
-//    }
-//
-//    fun appendColorSpace(): ImageRequestKeyBuilder = apply {
-//        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-//            request.colorSpace?.also { colorSpace ->
-//                appendQueryParameter("_colorSpace", colorSpace.name.replace(" ", "_"))
-//            }
-//        }
-//    }
-//
-//    fun appendPreferQualityOverSpeed(): ImageRequestKeyBuilder = apply {
-//        @Suppress("DEPRECATION")
-//        if (VERSION.SDK_INT <= VERSION_CODES.M && request.preferQualityOverSpeed) {
-//            appendQueryParameter("_preferQualityOverSpeed", true.toString())
-//        }
-//    }
 
     fun appendSize(size: Size? = null): ImageRequestKeyBuilder = apply {
         if (size != null) {
@@ -189,9 +167,9 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     }
 
     fun appendResizeOnDraw(): ImageRequestKeyBuilder = apply {
-        val resizeOnDrawHelper = request.resizeOnDrawHelper
-        if (resizeOnDrawHelper != null) {
-            appendQueryParameter("_resizeOnDraw", resizeOnDrawHelper.key)
+        val resizeOnDraw = request.resizeOnDraw
+        if (resizeOnDraw == true) {
+            appendQueryParameter("_resizeOnDraw", true.toString())
         }
     }
 

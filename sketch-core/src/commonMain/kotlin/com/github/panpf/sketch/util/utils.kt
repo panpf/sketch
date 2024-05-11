@@ -262,7 +262,7 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (error != other.error) return "error different: '${error}' vs '${other.error}'"
     if (transitionFactory != other.transitionFactory) return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
     if (disallowAnimatedImage != other.disallowAnimatedImage) return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
-    if (resizeOnDrawHelper != other.resizeOnDrawHelper) return "resizeOnDrawHelper different: '${resizeOnDrawHelper}' vs '${other.resizeOnDrawHelper}'"
+    if (resizeOnDraw != other.resizeOnDraw) return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
     if (memoryCachePolicy != other.memoryCachePolicy) return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
     if (componentRegistry != other.componentRegistry) return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
 
@@ -290,10 +290,8 @@ fun ImageOptions?.difference(other: ImageOptions?): String {
     if (error != other.error) return "error different: '${error}' vs '${other.error}'"
     if (transitionFactory != other.transitionFactory) return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
     if (disallowAnimatedImage != other.disallowAnimatedImage) return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
-    if (resizeOnDrawHelper != other.resizeOnDrawHelper) return "resizeOnDrawHelper different: '${resizeOnDrawHelper}' vs '${other.resizeOnDrawHelper}'"
+    if (resizeOnDraw != other.resizeOnDraw) return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
     if (memoryCachePolicy != other.memoryCachePolicy) return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
     if (componentRegistry != other.componentRegistry) return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
     return "Same content"
 }
-
-//'ImageOptionsImpl(depth=null, parameters=Parameters({sketch#crossfade=Entry(value=Crossfade(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=false), cacheKey=null, notJoinRequestKey=true), sketch#resizeOnDraw=Entry(value=true, cacheKey=null, notJoinRequestKey=true)}), httpHeaders=null, downloadCachePolicy=ENABLED, sizeResolver=null, sizeMultiplier=2, precisionDecider=LongImageClipPrecisionDecider(precision=SAME_ASPECT_RATIO, otherPrecision=LESS_PIXELS, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5)), scaleDecider=LongImageScaleDecider(longImage=START_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5)), transformations=null, resultCachePolicy=ENABLED, placeholder=[object Object], uriEmpty=null, error=ErrorStateImage([(SaveCellularTrafficCondition, [object Object]), (DefaultCondition, [object Object])]), transition=null, disallowAnimatedImage=false, resizeOnDraw=nullmemoryCachePolicy=ENABLED, componentRegistry=null, )'

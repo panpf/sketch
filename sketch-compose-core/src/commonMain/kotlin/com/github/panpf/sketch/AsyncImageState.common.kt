@@ -146,7 +146,7 @@ class AsyncImageState internal constructor(
                     val sketch = it[1] as Sketch
                     val globalImageOptions = sketch.globalImageOptions
                     val mergedOptions = request.defaultOptions?.merged(globalImageOptions)
-                    val updatedRequest = request.newBuilder().default(mergedOptions).build()
+                    val updatedRequest = request.newBuilder().defaultOptions(mergedOptions).build()
                     val placeholderImage = updatedRequest.placeholder
                         ?.getImage(sketch, updatedRequest, null)
                     painterState = Loading(placeholderImage?.asPainter())

@@ -45,8 +45,13 @@ import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
+import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
+import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
+import com.github.panpf.sketch.transition.Crossfade
+import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.Job
 
@@ -77,6 +82,15 @@ interface ViewTarget<T : View> : Target {
 
     override fun getSizeResolver(): SizeResolver? =
         view?.let { ViewSizeResolver(it) }
+
+    override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? {
+        // TODO rename to DrawableImageSizeWrapper
+        return AndroidResizeOnDrawHelper
+    }
+
+    override fun getCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
+        return CrossfadeTransition.Factory(crossfade)
+    }
 
     override fun getLifecycleResolver(): LifecycleResolver? =
         view?.let { com.github.panpf.sketch.request.ViewLifecycleResolver(it) }

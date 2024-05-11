@@ -72,6 +72,13 @@ class ComposeCrossfadeTransition constructor(
         val alwaysUse: Boolean = false,
     ) : Transition.Factory {
 
+        constructor(crossfade: Crossfade): this(
+            durationMillis = crossfade.durationMillis,
+            fadeStart = crossfade.fadeStart,
+            preferExactIntrinsicSize = crossfade.preferExactIntrinsicSize,
+            alwaysUse = crossfade.alwaysUse
+        )
+
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }
         }

@@ -6,27 +6,9 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
-import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
-import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.transition.Crossfade
-import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.DrawableEqualizer
-
-actual fun createCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
-    return CrossfadeTransition.Factory(
-        durationMillis = crossfade.durationMillis,
-        fadeStart = crossfade.fadeStart,
-        preferExactIntrinsicSize = crossfade.preferExactIntrinsicSize,
-        alwaysUse = crossfade.alwaysUse
-    )
-}
-
-actual fun createResizeOnDrawHelper(): ResizeOnDrawHelper? {
-    return AndroidResizeOnDrawHelper
-}
 
 
 /**
