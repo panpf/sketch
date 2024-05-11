@@ -57,7 +57,7 @@ import kotlin.time.TimeSource
  */
 @Stable
 class CrossfadePainter(
-    @JsName("startPainter") var start: Painter?,
+    @JsName("startPainter") val start: Painter?,
     @JsName("endPainter") val end: Painter?,
     private val fitScale: Boolean = true,
     private val durationMillis: Int,
@@ -71,22 +71,14 @@ class CrossfadePainter(
         private const val STATE_DONE = 2
     }
 
-    // Because start will be released at the end of the transition, this can only be done
-    private val toString = "CrossfadePainter(" +
-            "start=${start?.toLogString()}, " +
-            "end=${end?.toLogString()}, " +
-            "fitScale=$fitScale, " +
-            "durationMillis=$durationMillis, " +
-            "fadeStart=$fadeStart, " +
-            "preferExactIntrinsicSize=$preferExactIntrinsicSize" +
-            ")"
-
     private var invalidateTick by mutableIntStateOf(0)
 
     private var startTime: TimeSource.Monotonic.ValueTimeMark? = null
     private var maxAlpha: Float by mutableFloatStateOf(DefaultAlpha)
     private var colorFilter: ColorFilter? by mutableStateOf(null)
     private var state = STATE_START
+    private var startPainter1: Painter? = start
+    private val endPainter1: Painter? = end
 
     override val intrinsicSize: Size = computeIntrinsicSize()
 
@@ -98,11 +90,11 @@ class CrossfadePainter(
         invalidateTick // Invalidate the scope when invalidateTick changes.
 
         if (state == STATE_START) {
-            drawPainter(start, maxAlpha)
+            drawPainter(startPainter1, maxAlpha)
             return
         }
         if (state == STATE_DONE) {
-            drawPainter(end, maxAlpha)
+            drawPainter(endPainter1, maxAlpha)
             return
         }
 
@@ -118,11 +110,11 @@ class CrossfadePainter(
 
         // Draw the start painter.
         if (!isDone) {
-            drawPainter(start, startAlpha)
+            drawPainter(startPainter1, startAlpha)
         }
 
         // Draw the end painter.
-        drawPainter(end, endAlpha)
+        drawPainter(endPainter1, endAlpha)
 
         if (isDone) {
             markDone()
@@ -150,9 +142,9 @@ class CrossfadePainter(
     }
 
     private fun computeIntrinsicSize(): Size {
-        if (start == null && end == null) return Size.Unspecified
-        val startSize = start?.intrinsicSize ?: Size.Zero
-        val endSize = end?.intrinsicSize ?: Size.Zero
+        if (startPainter1 == null && endPainter1 == null) return Size.Unspecified
+        val startSize = startPainter1?.intrinsicSize ?: Size.Zero
+        val endSize = endPainter1?.intrinsicSize ?: Size.Zero
 
         val isStartSpecified = startSize.isSpecified
         val isEndSpecified = endSize.isSpecified
@@ -202,24 +194,24 @@ class CrossfadePainter(
     }
 
     override fun onRemembered() {
-        (start as? RememberObserver)?.onRemembered()
-        (end as? RememberObserver)?.onRemembered()
+        (startPainter1 as? RememberObserver)?.onRemembered()
+        (endPainter1 as? RememberObserver)?.onRemembered()
         start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (start as? RememberObserver)?.onForgotten()
-        (end as? RememberObserver)?.onForgotten()
+        (startPainter1 as? RememberObserver)?.onForgotten()
+        (endPainter1 as? RememberObserver)?.onForgotten()
         stop()
     }
 
     override fun isRunning() = state == STATE_RUNNING
 
     override fun start() {
-        (start as? AnimatablePainter)?.start()
-        (end as? AnimatablePainter)?.start()
+        (startPainter1 as? AnimatablePainter)?.start()
+        (endPainter1 as? AnimatablePainter)?.start()
 
         if (state != STATE_START) {
             return
@@ -232,8 +224,8 @@ class CrossfadePainter(
     }
 
     override fun stop() {
-        (start as? AnimatablePainter)?.stop()
-        (end as? AnimatablePainter)?.stop()
+        (startPainter1 as? AnimatablePainter)?.stop()
+        (endPainter1 as? AnimatablePainter)?.stop()
 
         if (state != STATE_DONE) {
             markDone()
@@ -242,9 +234,9 @@ class CrossfadePainter(
 
     private fun markDone() {
         state = STATE_DONE
-        (start as? AnimatablePainter)?.stop()
-        (start as? RememberObserver)?.onForgotten()
-        start = null
+        (startPainter1 as? AnimatablePainter)?.stop()
+        (startPainter1 as? RememberObserver)?.onForgotten()
+        startPainter1 = null
     }
 
     override fun equals(other: Any?): Boolean {
@@ -257,5 +249,12 @@ class CrossfadePainter(
         return super.hashCode()
     }
 
-    override fun toString(): String = toString
+    override fun toString(): String = "CrossfadePainter(" +
+            "start=${start?.toLogString()}, " +
+            "end=${end?.toLogString()}, " +
+            "fitScale=$fitScale, " +
+            "durationMillis=$durationMillis, " +
+            "fadeStart=$fadeStart, " +
+            "preferExactIntrinsicSize=$preferExactIntrinsicSize" +
+            ")"
 }
