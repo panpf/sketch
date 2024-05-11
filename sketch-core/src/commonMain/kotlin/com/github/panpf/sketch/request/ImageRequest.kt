@@ -40,6 +40,7 @@ import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.keyOrNull
 
 /**
  * Build and set the [ImageRequest]
@@ -362,10 +363,10 @@ interface ImageRequest {
         fun setParameter(
             key: String,
             value: Any?,
-            cacheKey: String? = value?.toString(),
-            notJoinRequestKey: Boolean = false
+            cacheKey: String? = keyOrNull(value),
+            requestKey: String? = keyOrNull(value),
         ): Builder = apply {
-            definedOptionsBuilder.setParameter(key, value, cacheKey, notJoinRequestKey)
+            definedOptionsBuilder.setParameter(key, value, cacheKey, requestKey)
         }
 
         /**

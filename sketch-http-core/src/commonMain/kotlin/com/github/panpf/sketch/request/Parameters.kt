@@ -31,6 +31,8 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.request.Parameters.Entry
+import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.keyOrNull
 import kotlin.jvm.JvmField
 
 /**
@@ -38,55 +40,51 @@ import kotlin.jvm.JvmField
  */
 // TODO rename Extras
 class Parameters private constructor(
-    private val entries: Map<String, Entry>
-) : Iterable<Pair<String, Entry>> {
+    val entries: Map<String, Entry>
+) : Iterable<Pair<String, Entry>>, Key {
 
     constructor() : this(emptyMap())
 
     /** Returns the number of parameters in this object. */
     val size: Int get() = entries.size
 
-    val key: String? by lazy {
+    override val key: String by lazy {
         val keys = entries
-            .mapNotNull {
-                it.value.value?.let { value -> "${it.key}:$value" }
-            }.sorted()
+            .map { "${it.key}:${it.value.value}" }
+            .sorted()
             .joinToString(separator = ",")
-        if (keys.isNotEmpty()) "Parameters($keys)" else null
+        "Parameters($keys)"
     }
 
     val requestKey: String? by lazy {
-        val keys = entries
-            .mapNotNull {
-                it.value
-                    .takeIf { entry -> !entry.notJoinRequestKey }
-                    ?.value?.let { value -> "${it.key}:$value" }
-            }.sorted()
+        val keys = entries.asSequence()
+            .filter { it.value.requestKey != null }
+            .map { "${it.key}:${it.value.requestKey}" }
+            .sorted()
             .joinToString(separator = ",")
         if (keys.isNotEmpty()) "Parameters($keys)" else null
     }
 
     val cacheKey: String? by lazy {
-        val keys = entries
-            .mapNotNull {
-                it.value.cacheKey?.let { cacheKey -> "${it.key}:$cacheKey" }
-            }.sorted()
+        val keys = entries.asSequence()
+            .filter { it.value.cacheKey != null }
+            .map { "${it.key}:${it.value.cacheKey}" }
+            .sorted()
             .joinToString(separator = ",")
         if (keys.isNotEmpty()) "Parameters($keys)" else null
     }
 
-    /** Returns the value associated with [key] or null if [key] has no mapping. */
-    @Suppress("UNCHECKED_CAST")
-    fun <T> value(key: String): T? = entries[key]?.value as T?
-
-    /** Returns the cache key associated with [key] or null if [key] has no mapping. */
-    fun cacheKey(key: String): String? = entries[key]?.cacheKey
-
     /** Returns the entry associated with [key] or null if [key] has no mapping. */
     fun entry(key: String): Entry? = entries[key]
 
+    /** Returns the value associated with [key] or null if [key] has no mapping. */
+    @Suppress("UNCHECKED_CAST")
+    fun <T> value(key: String): T? = entry(key)?.value as T?
+
     /** Returns 'true' if this object has no parameters. */
     fun isEmpty(): Boolean = entries.isEmpty()
+
+    fun keys(): Set<String> = entries.keys
 
     /** Returns a map of keys to values. */
     fun values(): Map<String, Any?> {
@@ -94,19 +92,6 @@ class Parameters private constructor(
             emptyMap()
         } else {
             entries.mapValues { it.value.value }
-        }
-    }
-
-    /** Returns a map of keys to non-null cache keys. Keys with a null cache key are filtered. */
-    fun cacheKeys(): Map<String, String> {
-        return if (isEmpty()) {
-            emptyMap()
-        } else {
-            entries.mapNotNull {
-                it.value.cacheKey?.let { cacheKey ->
-                    it.key to cacheKey
-                }
-            }.toMap()
         }
     }
 
@@ -145,7 +130,7 @@ class Parameters private constructor(
     data class Entry(
         val value: Any?,
         val cacheKey: String?,
-        val notJoinRequestKey: Boolean = false,
+        val requestKey: String? = cacheKey,
     )
 
     class Builder {
@@ -171,10 +156,10 @@ class Parameters private constructor(
         fun set(
             key: String,
             value: Any?,
-            cacheKey: String? = value?.toString(),
-            notJoinRequestKey: Boolean = false
+            cacheKey: String? = keyOrNull(value),
+            requestKey: String? = keyOrNull(value),
         ) = apply {
-            entries[key] = Entry(value, cacheKey, notJoinRequestKey)
+            entries[key] = Entry(value, cacheKey, requestKey)
         }
 
         /**

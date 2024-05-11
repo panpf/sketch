@@ -36,6 +36,7 @@ import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.keyOrNull
 
 const val DEPTH_FROM_KEY = "sketch#depth_from"
 const val CROSSFADE_KEY = "sketch#crossfade"
@@ -305,11 +306,11 @@ interface ImageOptions {
         fun setParameter(
             key: String,
             value: Any?,
-            cacheKey: String? = value?.toString(),
-            notJoinRequestKey: Boolean = false
+            cacheKey: String? = keyOrNull(value),
+            requestKey: String? = keyOrNull(value),
         ): Builder = apply {
             this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
-                set(key, value, cacheKey, notJoinRequestKey)
+                set(key, value, cacheKey, requestKey)
             }
         }
 
@@ -586,7 +587,6 @@ interface ImageOptions {
                     alwaysUse = alwaysUse
                 ),
                 cacheKey = null,
-                notJoinRequestKey = true,
             )
             this.transitionFactory = null
         }
