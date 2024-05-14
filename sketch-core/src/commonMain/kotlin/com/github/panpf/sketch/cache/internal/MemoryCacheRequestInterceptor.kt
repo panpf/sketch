@@ -53,6 +53,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             }
         }
 
+        // TODO merge PlaceholderRequestInterceptor and block repeat request
+
         val result = chain.proceed(request)
         val imageData = result.getOrNull()
         if (imageData != null && memoryCachePolicy.writeEnabled) {

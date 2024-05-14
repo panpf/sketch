@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.annotation.MainThread
+import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.resize.resizeOnDraw
