@@ -219,6 +219,7 @@ class AsyncImageState internal constructor(
         request: ImageRequest,
         @Suppress("UNUSED_PARAMETER") contentScale: ContentScale
     ) {
+        // TODO show placeholder in preview mode
         val coroutineScope = coroutineScope ?: return
         val fullRequest = request.newRequest {
             target(target)
