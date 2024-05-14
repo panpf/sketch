@@ -24,14 +24,15 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
-import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -41,9 +42,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
@@ -59,7 +58,6 @@ import okio.Source
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.test.assertFails
 
 @RunWith(AndroidJUnit4::class)
 class BitmapFactoryDecoderTest {
