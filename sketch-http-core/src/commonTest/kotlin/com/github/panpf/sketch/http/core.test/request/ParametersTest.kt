@@ -92,13 +92,13 @@ class ParametersTest {
     @Test
     fun testKey() {
         Parameters.Builder().build().apply {
-            assertNull(key)
+            assertEquals("Parameters()", key)
         }
 
         Parameters.Builder().apply {
             set("key1", null)
         }.build().apply {
-            assertNull(key)
+            assertEquals("Parameters(key1:null)", key)
         }
 
         Parameters.Builder().apply {
@@ -159,13 +159,13 @@ class ParametersTest {
     @Test
     fun testEntry() {
         Parameters.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2", null)
-            set("key3", "value3", "cacheKey3")
+            set(key = "key1", value = "value1")
+            set(key = "key2", value = "value2", cacheKey = null)
+            set(key = "key3", value = "value3", cacheKey = "cacheKey3")
         }.build().apply {
-            assertEquals(Entry("value1", "value1"), entry("key1"))
-            assertEquals(Entry("value2", null), entry("key2"))
-            assertEquals(Entry("value3", "cacheKey3"), entry("key3"))
+            assertEquals(Entry(value = "value1", cacheKey = "value1", requestKey = "value1"), entry("key1"))
+            assertEquals(Entry(value = "value2", cacheKey = null, requestKey = "value2"), entry("key2"))
+            assertEquals(Entry(value = "value3", cacheKey = "cacheKey3", requestKey = "value3"), entry("key3"))
             assertNull(entry("key4"))
         }
 
@@ -303,7 +303,7 @@ class ParametersTest {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
@@ -313,7 +313,7 @@ class ParametersTest {
             set("key2", "value2")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false), key2=Entry(value=value2, cacheKey=value2, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
                 toString()
             )
         }
@@ -329,14 +329,14 @@ class ParametersTest {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }.newBuilder {
             set("key2", "value2")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false), key2=Entry(value=value2, cacheKey=value2, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
                 toString()
             )
         }
@@ -352,14 +352,14 @@ class ParametersTest {
             set("key1", "value1")
         }.apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }.newParameters {
             set("key2", "value2", "value2")
         }.apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false), key2=Entry(value=value2, cacheKey=value2, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
                 toString()
             )
         }
@@ -375,7 +375,7 @@ class ParametersTest {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
@@ -384,7 +384,7 @@ class ParametersTest {
             set("key1", "value11")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value11, cacheKey=value11, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value11, cacheKey=value11, requestKey=value11)})",
                 toString()
             )
         }
@@ -394,7 +394,7 @@ class ParametersTest {
             set("key22", "value22")
         }.build().apply {
             assertEquals(
-                "Parameters({key21=Entry(value=value21, cacheKey=value21, notJoinRequestKey=false), key22=Entry(value=value22, cacheKey=value22, notJoinRequestKey=false)})",
+                "Parameters({key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
                 toString()
             )
         }
@@ -404,20 +404,20 @@ class ParametersTest {
         }
         parameters0.merged(parameters1).apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
         parameters0.merged(parameters2).apply {
             assertEquals(
-                "Parameters({key21=Entry(value=value21, cacheKey=value21, notJoinRequestKey=false), key22=Entry(value=value22, cacheKey=value22, notJoinRequestKey=false)})",
+                "Parameters({key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
                 toString()
             )
         }
 
         parameters1.merged(parameters2).apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false), key21=Entry(value=value21, cacheKey=value21, notJoinRequestKey=false), key22=Entry(value=value22, cacheKey=value22, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
                 toString()
             )
         }
@@ -428,13 +428,13 @@ class ParametersTest {
 
         parameters1.merged(parameters11).apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
         parameters11.merged(parameters1).apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value11, cacheKey=value11, notJoinRequestKey=false)})",
+                "Parameters({key1=Entry(value=value11, cacheKey=value11, requestKey=value11)})",
                 toString()
             )
         }

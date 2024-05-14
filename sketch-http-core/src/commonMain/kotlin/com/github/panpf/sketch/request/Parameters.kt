@@ -127,10 +127,10 @@ class Parameters private constructor(
         configBlock?.invoke(this)
     }.build()
 
-    data class Entry(
+    data class Entry constructor(
         val value: Any?,
         val cacheKey: String?,
-        val requestKey: String? = cacheKey,
+        val requestKey: String?,
     )
 
     class Builder {
