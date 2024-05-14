@@ -1,3 +1,3 @@
-package com.github.panpf.sketch.cache.internal
-
-actual fun createImageSerializer(): ImageSerializer? = SkiaBitmapImageSerializer()
+//package com.github.panpf.sketch.cache.internal
+//
+//actual fun createImageSerializer(): ImageSerializer? = SkiaBitmapImageSerializer()
