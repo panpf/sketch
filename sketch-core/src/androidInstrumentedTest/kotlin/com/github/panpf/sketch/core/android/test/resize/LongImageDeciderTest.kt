@@ -49,7 +49,6 @@ class LongImageDeciderTest {
 
     @Test
     fun test() {
-        // TODO Because the format function has changed, the test cases here need to change as well
         val longImageDecider = DefaultLongImageDecider()
 
         /* Either one is a square */
@@ -82,8 +81,8 @@ class LongImageDeciderTest {
         Assert.assertTrue(longImageDecider.isLongImage(200, 61, 50, 80))
         Assert.assertTrue(longImageDecider.isLongImage(200, 62, 50, 80))
         Assert.assertTrue(longImageDecider.isLongImage(200, 63, 50, 80))
-        Assert.assertFalse(longImageDecider.isLongImage(200, 64, 50, 80))
         Assert.assertFalse(longImageDecider.isLongImage(200, 65, 50, 80))
+        Assert.assertFalse(longImageDecider.isLongImage(200, 66, 50, 80))
 
         Assert.assertTrue(longImageDecider.isLongImage(63, 200, 80, 50))
         Assert.assertTrue(longImageDecider.isLongImage(64, 200, 80, 50))

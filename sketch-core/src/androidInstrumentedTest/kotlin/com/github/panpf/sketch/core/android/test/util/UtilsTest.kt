@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.computeSizeMultiplier
+import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.intMerged
@@ -39,6 +40,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class UtilsTest {
@@ -196,4 +198,54 @@ class UtilsTest {
     }
 
     // TODO computeSizeMultiplier2
+
+    @Test
+    fun testFloatFormat() {
+        listOf(
+            FormatItem(number = 6.2517f, newScale = 3, expected = 6.252f),
+            FormatItem(number = 6.2517f, newScale = 2, expected = 6.25f),
+            FormatItem(number = 6.2517f, newScale = 1, expected = 6.3f),
+            FormatItem(number = 6.251f, newScale = 2, expected = 6.25f),
+            FormatItem(number = 6.251f, newScale = 1, expected = 6.3f),
+
+            FormatItem(number = 0.6253f, newScale = 3, expected = 0.625f),
+            FormatItem(number = 0.6253f, newScale = 2, expected = 0.63f),
+            FormatItem(number = 0.6253f, newScale = 1, expected = 0.6f),
+            FormatItem(number = 0.625f, newScale = 2, expected = 0.62f),
+            FormatItem(number = 0.625f, newScale = 1, expected = 0.6f),
+        ).forEach {
+            assertEquals(
+                expected = it.expected,
+                actual = it.number.format(it.newScale),
+                absoluteTolerance = 0f,
+                message = "format. number=${it.number}, newScale=${it.newScale}"
+            )
+        }
+    }
+
+    @Test
+    fun testDoubleFormat() {
+        listOf(
+            FormatItem(number = 6.2517, newScale = 3, expected = 6.252),
+            FormatItem(number = 6.2517, newScale = 2, expected = 6.25),
+            FormatItem(number = 6.2517, newScale = 1, expected = 6.3),
+            FormatItem(number = 6.251, newScale = 2, expected = 6.25),
+            FormatItem(number = 6.251, newScale = 1, expected = 6.3),
+
+            FormatItem(number = 0.6253, newScale = 3, expected = 0.625),
+            FormatItem(number = 0.6253, newScale = 2, expected = 0.63),
+            FormatItem(number = 0.6253, newScale = 1, expected = 0.6),
+            FormatItem(number = 0.625, newScale = 2, expected = 0.62),
+            FormatItem(number = 0.625, newScale = 1, expected = 0.6),
+        ).forEach {
+            assertEquals(
+                expected = it.expected,
+                actual = it.number.format(it.newScale),
+                absoluteTolerance = 0.0,
+                message = "format. number=${it.number}, newScale=${it.newScale}"
+            )
+        }
+    }
+
+    class FormatItem<T>(val number: T, val newScale: Int, val expected: T)
 }

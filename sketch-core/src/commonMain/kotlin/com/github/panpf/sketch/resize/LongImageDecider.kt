@@ -68,7 +68,8 @@ open class DefaultLongImageDecider constructor(
         return if (ratioMultiple > 0) {
             val maxAspectRatio = targetAspectRatio.coerceAtLeast(imageAspectRatio)
             val minAspectRatio = targetAspectRatio.coerceAtMost(imageAspectRatio)
-            maxAspectRatio >= (minAspectRatio * ratioMultiple)
+            val multipleMinAspectRatio = (minAspectRatio * ratioMultiple).format(2)
+            maxAspectRatio >= multipleMinAspectRatio
         } else {
             false
         }
