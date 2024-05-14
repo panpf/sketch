@@ -21,13 +21,12 @@ import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.util.flipped
 import com.github.panpf.sketch.util.rotated
 import java.awt.image.BufferedImage
 import kotlin.math.abs
 
-actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper {
+actual fun ExifOrientationHelper(exifOrientation: Int): ExifOrientationHelper {
     return DesktopExifOrientationHelper(exifOrientation)
 }
 
@@ -35,15 +34,19 @@ actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOri
  * Rotate and flip the image according to the 'orientation' attribute of Exif so that the image is presented to the user at a normal angle
  */
 class DesktopExifOrientationHelper constructor(
-    @ExifOrientation override val exifOrientation: Int
+    override val exifOrientation: Int
 ) : ExifOrientationHelper {
+
+    init {
+        require(ExifOrientationHelper.values.any { it == exifOrientation }) { "Invalid exifOrientation: $exifOrientation" }
+    }
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
         val rotationDegrees = getRotationDegrees()
-        val isFlipped = isFlipped()
+        val isFlipHorizontally = isFlipHorizontally()
         val isRotated = abs(rotationDegrees % 360) != 0
-        if (!isFlipped && !isRotated) {
+        if (!isFlipHorizontally && !isRotated) {
             return null
         }
         return when (image) {
@@ -52,7 +55,7 @@ class DesktopExifOrientationHelper constructor(
                 val flippedBitmap: BufferedImage
                 val rotatedBitmap: BufferedImage
                 if (!reverse) {
-                    flippedBitmap = if (isFlipped) {
+                    flippedBitmap = if (isFlipHorizontally) {
                         inBitmap.flipped(horizontal = true)
                     } else {
                         inBitmap
@@ -68,7 +71,7 @@ class DesktopExifOrientationHelper constructor(
                     } else {
                         inBitmap
                     }
-                    rotatedBitmap = if (isFlipped) {
+                    rotatedBitmap = if (isFlipHorizontally) {
                         flippedBitmap.flipped(horizontal = true)
                     } else {
                         flippedBitmap
@@ -82,7 +85,7 @@ class DesktopExifOrientationHelper constructor(
                 val flippedBitmap: SkiaBitmap
                 val rotatedBitmap: SkiaBitmap
                 if (!reverse) {
-                    flippedBitmap = if (isFlipped) {
+                    flippedBitmap = if (isFlipHorizontally) {
                         inBitmap.flipped(horizontal = true)
                     } else {
                         inBitmap
@@ -98,7 +101,7 @@ class DesktopExifOrientationHelper constructor(
                     } else {
                         inBitmap
                     }
-                    rotatedBitmap = if (isFlipped) {
+                    rotatedBitmap = if (isFlipHorizontally) {
                         flippedBitmap.flipped(horizontal = true)
                     } else {
                         flippedBitmap

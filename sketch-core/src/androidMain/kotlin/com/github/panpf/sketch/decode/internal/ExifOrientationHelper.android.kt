@@ -26,7 +26,6 @@ import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.util.safeConfig
 import okio.buffer
 import java.io.IOException
@@ -49,7 +48,7 @@ fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
         ExifInterface.ORIENTATION_UNDEFINED
     }
 
-actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOrientationHelper {
+actual fun ExifOrientationHelper(exifOrientation: Int): ExifOrientationHelper {
     return AndroidExifOrientationHelper(exifOrientation)
 }
 
@@ -57,8 +56,12 @@ actual fun ExifOrientationHelper(@ExifOrientation exifOrientation: Int): ExifOri
  * Rotate and flip the image according to the 'orientation' attribute of Exif so that the image is presented to the user at a normal angle
  */
 class AndroidExifOrientationHelper constructor(
-    @ExifOrientation override val exifOrientation: Int
+    override val exifOrientation: Int
 ) : ExifOrientationHelper {
+
+    init {
+        require(ExifOrientationHelper.values.any { it == exifOrientation }) { "Invalid exifOrientation: $exifOrientation" }
+    }
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
@@ -69,7 +72,7 @@ class AndroidExifOrientationHelper constructor(
         }
         val outBitmap = applyFlipAndRotation(
             inBitmap = inBitmap,
-            isFlipped = isFlipped(),
+            isFlipHorizontally = isFlipHorizontally(),
             rotationDegrees = rotationDegrees,
             apply = !reverse
         ) ?: return null
@@ -79,17 +82,17 @@ class AndroidExifOrientationHelper constructor(
     @WorkerThread
     private fun applyFlipAndRotation(
         inBitmap: Bitmap,
-        isFlipped: Boolean,
+        isFlipHorizontally: Boolean,
         rotationDegrees: Int,
         apply: Boolean,
     ): Bitmap? {
         val isRotated = abs(rotationDegrees % 360) != 0
-        if (!isFlipped && !isRotated) {
+        if (!isFlipHorizontally && !isRotated) {
             return null
         }
 
         val matrix = Matrix().apply {
-            applyFlipAndRotationToMatrix(this, isFlipped, rotationDegrees, apply)
+            applyFlipAndRotationToMatrix(this, isFlipHorizontally, rotationDegrees, apply)
         }
         val newRect = RectF(0f, 0f, inBitmap.width.toFloat(), inBitmap.height.toFloat())
         matrix.mapRect(newRect)

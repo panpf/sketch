@@ -21,7 +21,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.navArgs
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.DialogImageInfoBinding

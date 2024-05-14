@@ -15,7 +15,6 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.format
@@ -38,19 +37,6 @@ fun isSubsamplingTransformed(transformed: String): Boolean =
 
 fun List<String>.getSubsamplingTransformed(): String? =
     find { isSubsamplingTransformed(it) }
-
-
-// TODO remove
-fun createExifOrientationTransformed(exifOrientation: Int): String =
-    "ExifOrientationTransformed(${ExifOrientation.name(exifOrientation)})"
-
-// TODO remove
-fun isExifOrientationTransformed(transformed: String): Boolean =
-    transformed.startsWith("ExifOrientationTransformed(")
-
-// TODO remove
-fun List<String>.getExifOrientationTransformed(): String? =
-    find { isExifOrientationTransformed(it) }
 
 
 fun createResizeTransformed(resize: Resize): String =

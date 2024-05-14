@@ -5,7 +5,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.getImageInfo
 import com.github.panpf.sketch.cache.getTransformedList
-import com.github.panpf.sketch.decode.internal.isExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.format
@@ -69,9 +68,7 @@ private class ThumbnailMemoryCacheStateImageImpl(
                     val transformedList = it.getTransformedList()
                     val noOtherTransformed =
                         transformedList == null || transformedList.all { transformed ->
-                            isInSampledTransformed(transformed) || isExifOrientationTransformed(
-                                transformed
-                            )
+                            isInSampledTransformed(transformed)
                         }
 
                     sizeSame && noOtherTransformed

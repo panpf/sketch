@@ -15,14 +15,11 @@
  */
 package com.github.panpf.sketch.core.android.test.decode.internal
 
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.internal.createExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
-import com.github.panpf.sketch.decode.internal.getExifOrientationTransformed
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.getScaledTransformed
@@ -89,40 +86,6 @@ class TransformedsTest {
                 createInSampledTransformed(16),
                 "disruptive2"
             ).getInSampledTransformed()
-        )
-    }
-
-    @Test
-    fun testExifOrientationTransformed() {
-        Assert.assertEquals(
-            "ExifOrientationTransformed(NORMAL)",
-            createExifOrientationTransformed(ExifInterface.ORIENTATION_NORMAL)
-        )
-        Assert.assertEquals(
-            "ExifOrientationTransformed(ROTATE_90)",
-            createExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_90)
-        )
-        Assert.assertEquals(
-            "ExifOrientationTransformed(ROTATE_180)",
-            createExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_180)
-        )
-        Assert.assertEquals(
-            "ExifOrientationTransformed(TRANSVERSE)",
-            createExifOrientationTransformed(ExifInterface.ORIENTATION_TRANSVERSE)
-        )
-
-        Assert.assertEquals(null, listOf<String>().getExifOrientationTransformed())
-        Assert.assertEquals(
-            "ExifOrientationTransformed(NORMAL)",
-            listOf(createExifOrientationTransformed(ExifInterface.ORIENTATION_NORMAL)).getExifOrientationTransformed()
-        )
-        Assert.assertEquals(
-            "ExifOrientationTransformed(ROTATE_180)",
-            listOf(
-                "disruptive1",
-                createExifOrientationTransformed(ExifInterface.ORIENTATION_ROTATE_180),
-                "disruptive2"
-            ).getExifOrientationTransformed()
         )
     }
 

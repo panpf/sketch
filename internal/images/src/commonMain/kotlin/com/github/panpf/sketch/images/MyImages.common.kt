@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.images
 
-import com.github.panpf.sketch.decode.ExifOrientation
+import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.util.Size
 
 expect fun nameToUri(name: String): String
@@ -44,55 +44,55 @@ object MyImages {
         "clock_exif_flip_horizontal.jpeg",
         "FLIP_HOR",
         Size(1500, 750),
-        ExifOrientation.FLIP_HORIZONTAL
+        ExifOrientationHelper.FLIP_HORIZONTAL
     )
     val clockExifFlipVertical: MyResourceImage = MyResourceImage(
         "clock_exif_flip_vertical.jpeg",
         "FLIP_VER",
         Size(1500, 750),
-        ExifOrientation.FLIP_VERTICAL
+        ExifOrientationHelper.FLIP_VERTICAL
     )
     val clockExifNormal: MyResourceImage = MyResourceImage(
         "clock_exif_normal.jpeg",
         "NORMAL",
         Size(1500, 750),
-        ExifOrientation.NORMAL
+        ExifOrientationHelper.NORMAL
     )
     val clockExifRotate90: MyResourceImage = MyResourceImage(
         "clock_exif_rotate_90.jpeg",
         "ROTATE_90",
         Size(750, 1500),
-        ExifOrientation.ROTATE_90
+        ExifOrientationHelper.ROTATE_90
     )
     val clockExifRotate180: MyResourceImage = MyResourceImage(
         "clock_exif_rotate_180.jpeg",
         "ROTATE_180",
         Size(1500, 750),
-        ExifOrientation.ROTATE_180
+        ExifOrientationHelper.ROTATE_180
     )
     val clockExifRotate270: MyResourceImage = MyResourceImage(
         "clock_exif_rotate_270.jpeg",
         "ROTATE_270",
         Size(750, 1500),
-        ExifOrientation.ROTATE_270
+        ExifOrientationHelper.ROTATE_270
     )
     val clockExifTranspose: MyResourceImage = MyResourceImage(
         "clock_exif_transpose.jpeg",
         "TRANSPOSE",
         Size(750, 1500),
-        ExifOrientation.TRANSPOSE
+        ExifOrientationHelper.TRANSPOSE
     )
     val clockExifTransverse: MyResourceImage = MyResourceImage(
         "clock_exif_transverse.jpeg",
         "TRANSVERSE",
         Size(750, 1500),
-        ExifOrientation.TRANSVERSE
+        ExifOrientationHelper.TRANSVERSE
     )
     val clockExifUndefined: MyResourceImage = MyResourceImage(
         "clock_exif_undefined.jpeg",
         "UNDEFINED",
         Size(1500, 750),
-        ExifOrientation.UNDEFINED
+        ExifOrientationHelper.UNDEFINED
     )
     val clockExifs = arrayOf(
         clockExifFlipHorizontal,

@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.github.panpf.sketch.decode.ExifOrientation
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.ui.setting.getSettingsDialogHeight
 import com.github.panpf.sketch.sample.ui.util.toStringFormat
