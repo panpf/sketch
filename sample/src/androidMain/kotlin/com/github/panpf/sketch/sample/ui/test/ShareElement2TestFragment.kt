@@ -58,7 +58,7 @@ class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2B
             postponeEnterTransition(100, MILLISECONDS)
             displayImage(MyImages.jpeg.uri) {
                 placeholder(ThumbnailMemoryCacheStateImage())
-                listener(
+                registerListener(
                     onSuccess = { _, _ ->
                         startPostponedEnterTransition()
                     },
