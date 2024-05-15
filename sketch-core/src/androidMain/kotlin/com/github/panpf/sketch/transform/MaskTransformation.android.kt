@@ -9,7 +9,7 @@ import com.github.panpf.sketch.util.mask
 
 internal actual fun maskTransformation(image: Image, maskColor: Int): Image {
     require(image is AndroidBitmapImage) {
-        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+        "Only AndroidBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = image.bitmap
     val outBitmap = inputBitmap.getMutableCopy().apply { mask(maskColor) }

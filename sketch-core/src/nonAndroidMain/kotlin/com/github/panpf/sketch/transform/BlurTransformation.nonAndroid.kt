@@ -16,7 +16,7 @@ internal actual fun blurTransformation(
     maskColor: Int?
 ): Image {
     require(image is SkiaBitmapImage) {
-        "Only SkiaBitmapImage is supported: ${image::class.qualifiedName}"
+        "Only SkiaBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = image.bitmap
     // Transparent pixels cannot be blurred

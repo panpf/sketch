@@ -65,7 +65,7 @@ class AndroidExifOrientationHelper constructor(
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
-        require(image is AndroidBitmapImage) { "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}" }
+        require(image is AndroidBitmapImage) { "Only AndroidBitmapImage is supported: ${image::class}" }
         val inBitmap = image.bitmap
         val rotationDegrees = getRotationDegrees().let {
             if (reverse) it * -1 else it

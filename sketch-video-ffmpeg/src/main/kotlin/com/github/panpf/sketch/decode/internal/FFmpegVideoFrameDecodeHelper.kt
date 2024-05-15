@@ -34,7 +34,7 @@ class FFmpegVideoFrameDecodeHelper(
                 setDataSource(request.context, dataSource.contentUri)
             } else {
                 dataSource.getFileOrNull()?.let { setDataSource(it.toFile().path) }
-                    ?: throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
+                    ?: throw Exception("Unsupported DataSource: ${dataSource::class}")
             }
         }
     }

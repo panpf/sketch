@@ -26,7 +26,7 @@ import com.github.panpf.sketch.util.roundedCornered
  */
 internal actual fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image {
     require(image is AndroidBitmapImage) {
-        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+        "Only AndroidBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = image.bitmap
     val outBitmap = inputBitmap.roundedCornered(radiusArray)

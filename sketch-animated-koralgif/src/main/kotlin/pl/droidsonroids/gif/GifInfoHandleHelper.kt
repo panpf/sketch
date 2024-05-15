@@ -51,7 +51,7 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
                 // This line of code will cause the memory to continue to be full under 6.0, so comment it out.
 //                dataSource.openSourceOrNull()?.let { GifInfoHandle(it.buffer().inputStream().buffered()) }
                 dataSource.getFileOrNull()?.let { GifInfoHandle(it.toFile().path) }
-                    ?: throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
+                    ?: throw Exception("Unsupported DataSource: ${dataSource::class}")
             }
         }
     }

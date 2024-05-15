@@ -23,7 +23,7 @@ import com.github.panpf.sketch.util.rotated
 
 internal actual fun rotateTransformation(image: Image, degrees: Int): Image {
     require(image is SkiaBitmapImage) {
-        "Only SkiaBitmapImage is supported: ${image::class.qualifiedName}"
+        "Only SkiaBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = image.bitmap
     val outBitmap: SkiaBitmap = inputBitmap.rotated(degrees)

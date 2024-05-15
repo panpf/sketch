@@ -23,7 +23,7 @@ import com.github.panpf.sketch.util.circleCropped
 
 internal actual fun circleCropTransformation(image: Image, scale: Scale): Image {
     require(image is AndroidBitmapImage) {
-        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+        "Only AndroidBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = image.bitmap
     val outBitmap = inputBitmap.circleCropped(scale)

@@ -90,7 +90,7 @@ open class AnimatedImageDecoderDecoder(
             else -> {
                 dataSource.getFileOrNull()
                     ?.let { ImageDecoder.createSource(it.toFile()) }
-                    ?: throw Exception("Unsupported DataSource: ${dataSource::class.qualifiedName}")
+                    ?: throw Exception("Unsupported DataSource: ${dataSource::class}")
             }
         }
 

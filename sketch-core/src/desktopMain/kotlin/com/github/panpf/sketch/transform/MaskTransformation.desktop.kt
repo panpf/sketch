@@ -22,6 +22,6 @@
 //    }
 //
 //    else -> {
-//        throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class.qualifiedName}")
+//        throw IllegalArgumentException("Only JvmBitmapImage or SkiaBitmapImage is supported: ${image::class}")
 //    }
 //}

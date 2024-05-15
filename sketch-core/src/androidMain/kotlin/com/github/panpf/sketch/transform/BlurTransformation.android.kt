@@ -30,7 +30,7 @@ internal actual fun blurTransformation(
     maskColor: Int?
 ): Image {
     require(image is AndroidBitmapImage) {
-        "Only AndroidBitmapImage is supported: ${image::class.qualifiedName}"
+        "Only AndroidBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = image.bitmap
     // Transparent pixels cannot be blurred

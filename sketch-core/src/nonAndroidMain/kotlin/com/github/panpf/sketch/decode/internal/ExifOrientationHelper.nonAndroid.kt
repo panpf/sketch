@@ -41,7 +41,7 @@ class SkiaExifOrientationHelper constructor(
 
     @WorkerThread
     override fun applyToImage(image: Image, reverse: Boolean): Image? {
-        require(image is SkiaBitmapImage) { "Only SkiaBitmapImage is supported: ${image::class.qualifiedName}" }
+        require(image is SkiaBitmapImage) { "Only SkiaBitmapImage is supported: ${image::class}" }
         val inBitmap = image.bitmap
         val rotationDegrees = getRotationDegrees()
         val isFlipHorizontally = isFlipHorizontally()
