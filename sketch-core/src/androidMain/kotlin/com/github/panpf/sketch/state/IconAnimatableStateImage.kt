@@ -257,7 +257,7 @@ class IconAnimatableStateImageImpl internal constructor(
 ) : IconAnimatableStateImage {
 
     override val key: String =
-        "IconAnimatableStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+        "IconAnimatableStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize)"
 
     override fun getImage(
         sketch: Sketch,

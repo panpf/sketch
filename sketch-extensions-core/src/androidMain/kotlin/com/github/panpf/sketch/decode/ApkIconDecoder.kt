@@ -92,6 +92,8 @@ class ApkIconDecoder(
 
     class ApkIconDrawableFetcher(private val file: File) : DrawableFetcher {
 
+        override val key: String = "ApkIconDrawableFetcher($file)"
+
         override fun getDrawable(context: Context): Drawable {
             val packageManager = context.packageManager
             val packageInfo =

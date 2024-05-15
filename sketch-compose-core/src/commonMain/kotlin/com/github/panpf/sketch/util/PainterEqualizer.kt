@@ -23,7 +23,7 @@ fun Painter.asEquality(equalKey: Any): PainterEqualizer =
     PainterEqualizer(wrapped = this, equalityKey = equalKey)
 
 fun ColorPainter.asEquality(): PainterEqualizer =
-    PainterEqualizer(wrapped = this, equalityKey = this)
+    PainterEqualizer(wrapped = this, equalityKey = this.color.value)
 
 fun BrushPainter.asEquality(): PainterEqualizer =
     PainterEqualizer(wrapped = this, equalityKey = this)
@@ -44,8 +44,11 @@ fun SketchPainter.asEquality(): PainterEqualizer =
 @Stable
 class PainterEqualizer(
     override val wrapped: Painter,
-    override val equalityKey: Any
-) : Equalizer<Painter> {
+    override val equalityKey: Any,
+    private val equalityKeyString: String = key(equalityKey)
+) : Equalizer<Painter>, Key {
+
+    override val key: String = equalityKeyString
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -59,6 +62,6 @@ class PainterEqualizer(
     }
 
     override fun toString(): String {
-        return "PainterEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKey)"
+        return "PainterEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKeyString)"
     }
 }

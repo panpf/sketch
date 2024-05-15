@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.internal.DrawInvalidate
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.PainterEqualizer
 import com.github.panpf.sketch.util.asEquality
 import com.github.panpf.sketch.util.equalityPainterResource
@@ -190,10 +191,13 @@ open class IconPainter(
     val background: PainterEqualizer? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
-) : Painter(), RememberObserver, SketchPainter {
+) : Painter(), RememberObserver, SketchPainter, Key {
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
+
+    override val key: String =
+        "IconPainter(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.value})"
 
     override fun applyAlpha(alpha: Float): Boolean {
         this.alpha = alpha

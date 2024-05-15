@@ -34,11 +34,13 @@ fun ColorFetcher.toDrawableFetcher(): DrawableFetcher {
 /**
  * For getting the color
  */
-interface ColorFetcher {
+interface ColorFetcher : Key {
     fun getColor(context: Context): Int
 }
 
 class IntColor(@ColorInt val color: Int) : ColorFetcher {
+
+    override val key: String = "IntColor($color)"
 
     override fun getColor(context: Context): Int = color
 
@@ -58,6 +60,8 @@ class IntColor(@ColorInt val color: Int) : ColorFetcher {
  * Get color from resource
  */
 class ResColor(@ColorRes val resId: Int) : ColorFetcher {
+
+    override val key: String = "ResColor($resId)"
 
     override fun getColor(context: Context): Int =
         ResourcesCompat.getColor(context.resources, resId, null)

@@ -45,7 +45,7 @@ private class DrawableStateImageImpl(
     override val drawableFetcher: DrawableFetcher
 ) : DrawableStateImage {
 
-    override val key: String = "DrawableStateImage($drawableFetcher)"
+    override val key: String = "DrawableStateImage(${drawableFetcher.key})"
 
     override fun getImage(
         sketch: Sketch,

@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.util.NullableKey
 
 /**
  * Intercept the execution of Image decode, you can change the output, register to [ComponentRegistry] to take effect
@@ -30,13 +31,13 @@ import com.github.panpf.sketch.request.internal.RequestContext
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface DecodeInterceptor {
+interface DecodeInterceptor : NullableKey {
 
     /**
      * If the current DecodeInterceptor will change the DecodeResult,
      * please provide a valid key to build request key and cache key, otherwise return null
      */
-    val key: String?    // TODO Implement the NullableKey interface
+    override val key: String?
 
     /**
      * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.

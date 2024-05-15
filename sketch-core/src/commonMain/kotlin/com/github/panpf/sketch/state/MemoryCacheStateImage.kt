@@ -40,7 +40,8 @@ private class MemoryCacheStateImageImpl(
     override val defaultImage: StateImage? = null
 ) : MemoryCacheStateImage {
 
-    override val key: String = "MemoryCacheStateImage(cacheKey=$cacheKey,defaultImage=$defaultImage)"
+    override val key: String =
+        "MemoryCacheStateImage(cacheKey=$cacheKey,defaultImage=${defaultImage?.key})"
 
     override fun getImage(
         sketch: Sketch,

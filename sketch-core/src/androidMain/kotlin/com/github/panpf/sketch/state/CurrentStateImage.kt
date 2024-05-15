@@ -42,7 +42,7 @@ private class CurrentStateImageImpl(
     override val defaultImage: StateImage? = null
 ) : CurrentStateImage {
 
-    override val key: String = "CurrentStateImage($defaultImage)"
+    override val key: String = "CurrentStateImage(${defaultImage?.key})"
 
     override fun getImage(
         sketch: Sketch,

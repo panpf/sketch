@@ -20,6 +20,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.util.NullableKey
 
 /**
  * Intercept the execution of [ImageRequest], you can change the input and output, register to [ComponentRegistry] to take effect
@@ -28,13 +29,13 @@ import com.github.panpf.sketch.request.internal.RequestContext
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface RequestInterceptor {
+interface RequestInterceptor : NullableKey {
 
     /**
      * If the current RequestInterceptor will change the ImageData,
      * please provide a valid key to build request key and cache key, otherwise return null
      */
-    val key: String?    // TODO Implement the NullableKey interface
+    override val key: String?
 
     /**
      * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.

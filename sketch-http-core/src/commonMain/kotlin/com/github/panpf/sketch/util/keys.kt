@@ -11,7 +11,7 @@ interface NullableKey {
 fun key(it: Any): String {
     return when (it) {
         is Key -> it.key
-        is NullableKey -> requireNotNull(it.key) { "Key is null" }
+        is NullableKey -> it.key ?: it.toString()
         else -> it.toString()
     }
 }

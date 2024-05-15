@@ -116,7 +116,7 @@ class ErrorStateImageTest {
     fun testToString() {
         ErrorStateImage(ColorStateImage(IntColor(Color.RED))).apply {
             Assert.assertEquals(
-                "ErrorStateImage([(DefaultCondition, ColorStateImage(IntColor(${Color.RED})))])",
+                "ErrorStateImage([DefaultCondition:ColorStateImage(IntColor(${Color.RED}))])",
                 toString()
             )
         }
@@ -125,7 +125,7 @@ class ErrorStateImageTest {
             uriEmptyError(ColorStateImage(IntColor(Color.YELLOW)))
         }.apply {
             Assert.assertEquals(
-                "ErrorStateImage([(UriEmptyCondition, ColorStateImage(IntColor(${Color.YELLOW}))), (DefaultCondition, ColorStateImage(IntColor(${Color.GREEN})))])",
+                "ErrorStateImage([UriEmptyCondition:ColorStateImage(IntColor(${Color.YELLOW})), DefaultCondition:ColorStateImage(IntColor(${Color.GREEN}))])",
                 toString()
             )
         }

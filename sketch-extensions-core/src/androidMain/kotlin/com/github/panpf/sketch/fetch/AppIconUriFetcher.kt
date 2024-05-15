@@ -111,6 +111,9 @@ class AppIconUriFetcher(
         private val versionCode: Int,
     ) : DrawableFetcher {
 
+        override val key: String =
+            "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)"
+
         override fun getDrawable(context: Context): Drawable {
             val packageManager = context.packageManager
             val packageInfo: PackageInfo = try {

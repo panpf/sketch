@@ -30,19 +30,20 @@
  */
 package com.github.panpf.sketch.transform
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.util.Key
 
 /**
  * An interface for making transformations to an image's pixel data.
- * 
+ *
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface Transformation {
+interface Transformation : Key {
 
     /**
      * The unique cache key for this transformation.
@@ -50,7 +51,7 @@ interface Transformation {
      * The key is added to the image request's memory cache key and should contain any params that
      * are part of this transformation (e.g. size, scale, color, radius, etc.).
      */
-    val key: String    // TODO Implement the Key interface
+    override val key: String
 
     /**
      * Apply the transformation to [input] and return the transformed [Image].

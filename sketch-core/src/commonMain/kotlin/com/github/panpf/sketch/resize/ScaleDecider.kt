@@ -17,6 +17,7 @@ package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
 fun ScaleDecider(scale: Scale): ScaleDecider {
@@ -25,14 +26,14 @@ fun ScaleDecider(scale: Scale): ScaleDecider {
 
 /**
  * Determines which scale to use dynamically based on image size and resizing
- * 
+ *
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface ScaleDecider {
+interface ScaleDecider : Key {
 
-    val key: String    // TODO Implement the Key interface
+    override val key: String
 
     fun get(imageSize: Size, targetSize: Size): Scale
 }

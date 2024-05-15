@@ -169,6 +169,9 @@ class IconAnimatablePainter(
     private val animatablePainterIcon: AnimatablePainter?
     private val animatablePainterBackground: AnimatablePainter?
 
+    override val key: String =
+        "IconAnimatablePainter(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.value})"
+
     init {
         require(icon.wrapped is AnimatablePainter || background?.wrapped is AnimatablePainter) {
             "painter must be AnimatablePainter"

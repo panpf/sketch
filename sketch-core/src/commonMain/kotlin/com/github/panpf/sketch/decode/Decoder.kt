@@ -20,6 +20,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.util.Key
 
 /**
  * Decode Image from [DataSource].
@@ -40,9 +41,9 @@ fun interface Decoder {
      * that is, the equals() and hashCode() methods of instances created with the same
      * construction parameters return consistent results. This is important in Compose
      */
-    interface Factory {
+    interface Factory : Key {
 
-        val key: String    // TODO Implement the Key interface
+        override val key: String
 
         /**
          * If the current [Factory]'s [Decoder] can decode Image from the current [fetchResult],

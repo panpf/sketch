@@ -80,7 +80,13 @@ private class ErrorStateImageImpl(
     override val stateList: List<Pair<CombinedStateImage.Condition, StateImage?>>
 ) : ErrorStateImage {
     override val key: String =
-        "ErrorStateImage(${stateList.joinToString(prefix = "[", postfix = "]")})"
+        "ErrorStateImage(${
+            stateList.joinToString(
+                prefix = "[",
+                postfix = "]",
+                separator = ",",
+                transform = { it.first.toString() + ":" + it.second?.key })
+        })"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -94,6 +100,12 @@ private class ErrorStateImageImpl(
     }
 
     override fun toString(): String {
-        return "ErrorStateImage(${stateList.joinToString(prefix = "[", postfix = "]")})"
+        return "ErrorStateImage(${
+            stateList.joinToString(
+                prefix = "[",
+                postfix = "]",
+                separator = ", ",
+                transform = { it.first.toString() + ":" + it.second?.key })
+        })"
     }
 }

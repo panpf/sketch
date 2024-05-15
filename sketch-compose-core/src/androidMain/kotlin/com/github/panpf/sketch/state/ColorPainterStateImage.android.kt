@@ -50,9 +50,9 @@ private class ColorFetcherPainterStateImageImpl(
     override val colorFetcher: ColorFetcher
 ) : ColorFetcherPainterStateImage {
 
-    override val key: String = "ColorFetcherPainterStateImage($colorFetcher)"
+    override val key: String = "ColorFetcherPainterStateImage(${colorFetcher.key})"
 
-    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
+    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return ColorPainter(Color(colorFetcher.getColor(request.context))).asSketchImage()
     }
 

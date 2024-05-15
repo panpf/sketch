@@ -15,8 +15,9 @@
  */
 package com.github.panpf.sketch.resize
 
-import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.annotation.MainThread
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
 fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
@@ -32,9 +33,9 @@ expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
  *
  * @see com.github.panpf.sketch.request.ImageRequest.Builder.size
  */
-interface SizeResolver {
+interface SizeResolver : Key {
 
-    val key: String    // TODO Implement the Key interface
+    override val key: String
 
     /** Return the [Size] that the image should be loaded at. */
     @MainThread

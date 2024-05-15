@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.resize
 
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
 fun PrecisionDecider(precision: Precision): PrecisionDecider {
@@ -23,14 +24,14 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
 
 /**
  * Determines which precision to use dynamically based on image size and resizing
- * 
+ *
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface PrecisionDecider {
+interface PrecisionDecider : Key {
 
-    val key: String    // TODO Implement the Key interface
+    override val key: String
 
     fun get(imageSize: Size, targetSize: Size): Precision
 }

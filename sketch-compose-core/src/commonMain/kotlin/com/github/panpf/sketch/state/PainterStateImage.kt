@@ -31,10 +31,9 @@ interface PainterStateImage : StateImage {
     val painter: PainterEqualizer
 }
 
-private class PainterStateImageImpl(override val painter: PainterEqualizer) :
-    PainterStateImage {
+private class PainterStateImageImpl(override val painter: PainterEqualizer) : PainterStateImage {
 
-    override val key: String = "PainterStateImage(painter=$painter)"
+    override val key: String = "PainterStateImage(${painter.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return painter.wrapped.asSketchImage()

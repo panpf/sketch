@@ -98,8 +98,11 @@ fun ColorDrawableEqualizer(@ColorInt color: Int) : DrawableEqualizer {
  */
 class DrawableEqualizer(
     override val wrapped: Drawable,
-    override val equalityKey: Any
-) : Equalizer<Drawable> {
+    override val equalityKey: Any,
+    private val equalityKeyString: String = key(equalityKey)
+) : Equalizer<Drawable>, Key {
+
+    override val key: String = equalityKeyString
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -113,6 +116,6 @@ class DrawableEqualizer(
     }
 
     override fun toString(): String {
-        return "DrawableEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKey)"
+        return "DrawableEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKeyString)"
     }
 }

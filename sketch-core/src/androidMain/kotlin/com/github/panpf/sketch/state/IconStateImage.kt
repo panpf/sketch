@@ -257,7 +257,7 @@ private class IconStateImageImpl(
 ) : IconStateImage {
 
     override val key: String =
-        "IconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+        "IconStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize)"
 
     override fun getImage(
         sketch: Sketch,

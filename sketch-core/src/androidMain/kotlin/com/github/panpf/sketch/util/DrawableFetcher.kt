@@ -28,7 +28,7 @@ import com.github.panpf.sketch.util.ColorFetcher
 /**
  * For getting the Drawable
  */
-interface DrawableFetcher {
+interface DrawableFetcher : Key {
 
     fun getDrawable(context: Context): Drawable
 }
@@ -41,6 +41,12 @@ class ResDrawable constructor(
     val resources: Resources? = null,
     @DrawableRes val resId: Int
 ) : DrawableFetcher {
+
+    override val key: String = if (packageName != null && resources != null) {
+        "ResDrawable(packageName=$packageName,resources=$resources,resId=$resId)"
+    } else {
+        "ResDrawable($resId)"
+    }
 
     constructor(@DrawableRes resId: Int) : this(null, null, resId)
 
@@ -80,7 +86,10 @@ class ResDrawable constructor(
     }
 }
 
+// TODO Remove this class
 class RealDrawable(val drawable: Drawable) : DrawableFetcher {
+
+    override val key: String = "RealDrawable($drawable)"
 
     override fun getDrawable(context: Context): Drawable {
         return drawable
@@ -104,6 +113,8 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
 class RealEqualityDrawable(val wrapper: DrawableEqualizer) : DrawableFetcher {
 
+    override val key: String = "RealEqualityDrawable(${wrapper.key})"
+
     override fun getDrawable(context: Context): Drawable {
         return wrapper.wrapped
     }
@@ -125,6 +136,8 @@ class RealEqualityDrawable(val wrapper: DrawableEqualizer) : DrawableFetcher {
 }
 
 class RealColorDrawable(@ColorInt val color: Int) : DrawableFetcher {
+
+    override val key: String = "RealColorDrawable($color)"
 
     override fun getDrawable(context: Context): Drawable {
         return ColorDrawable(color)
@@ -148,6 +161,8 @@ class RealColorDrawable(@ColorInt val color: Int) : DrawableFetcher {
 
 class ColorFetcherDrawable(val color: ColorFetcher) : DrawableFetcher {
 
+    override val key: String = "ColorFetcherDrawable(${color.key})"
+
     override fun getDrawable(context: Context): Drawable {
         return ColorDrawable(color.getColor(context))
     }
@@ -169,6 +184,8 @@ class ColorFetcherDrawable(val color: ColorFetcher) : DrawableFetcher {
 }
 
 class ResColorDrawable(@ColorRes val resId: Int) : DrawableFetcher {
+
+    override val key: String = "ResColorDrawable($resId)"
 
     override fun getDrawable(context: Context): Drawable {
         return context.resources.getDrawableCompat(resId, null)
