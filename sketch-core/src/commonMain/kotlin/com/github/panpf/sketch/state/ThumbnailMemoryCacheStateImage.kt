@@ -36,6 +36,8 @@ private class ThumbnailMemoryCacheStateImageImpl(
     override val defaultImage: StateImage? = null
 ) : ThumbnailMemoryCacheStateImage {
 
+    override val key: String = "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=$defaultImage)"
+
     override fun getImage(
         sketch: Sketch,
         request: ImageRequest,

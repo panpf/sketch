@@ -256,6 +256,9 @@ class IconAnimatableStateImageImpl internal constructor(
     override val iconTint: ColorFetcher?
 ) : IconAnimatableStateImage {
 
+    override val key: String =
+        "IconAnimatableStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+
     override fun getImage(
         sketch: Sketch,
         request: ImageRequest,

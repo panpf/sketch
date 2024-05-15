@@ -37,7 +37,10 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.test.utils.FakeImage
+import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
@@ -46,6 +49,7 @@ import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
+import com.github.panpf.sketch.util.SketchSize
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -148,8 +152,7 @@ class RequestKeysTest {
         _precision = "&_precision=${request.precisionDecider.key}"
         _scale = "&_scale=${request.scaleDecider.key}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
-                    _size + _precision + _scale
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
         )
 
         request = request.newRequest {
@@ -177,29 +180,6 @@ class RequestKeysTest {
             resultCachePolicy(WRITE_ONLY)
         }
         val _resultCachePolicy = "&_resultCachePolicy=WRITE_ONLY"
-        verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
-                    _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy
-        )
-
-        request = request.newRequest {
-            placeholder(
-                IconStateImage(
-                    icon = drawable.ic_delete,
-                    background = color.background_dark
-                )
-            )
-        }
-        verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
-                    _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy
-        )
-
-        request = request.newRequest {
-            error(DrawableStateImage(drawable.ic_delete))
-        }
         verifyKey(
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
@@ -248,6 +228,45 @@ class RequestKeysTest {
                     _memoryCachePolicy + _transitionFactory
         )
 
+        val placeholder = IconStateImage(
+            icon = drawable.ic_delete,
+            background = color.background_dark
+        )
+        request = request.newRequest {
+            placeholder(placeholder)
+        }
+        val _placeholder = "&_placeholder=${placeholder.key}"
+        verifyKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _size + _sizeMultiplier + _precision + _scale +
+                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _memoryCachePolicy + _transitionFactory + _placeholder
+        )
+
+        val uriEmpty = FakeStateImage(FakeImage(SketchSize(200, 200)))
+        request = request.newRequest {
+            uriEmpty(uriEmpty)
+        }
+        val _uriEmpty = "&_uriEmpty=${uriEmpty.key}"
+        verifyKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _size + _sizeMultiplier + _precision + _scale +
+                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty
+        )
+
+        val error = DrawableStateImage(drawable.ic_delete)
+        request = request.newRequest {
+            error(error)
+        }
+        val _error = "&_error=${ErrorStateImage(error).key}"
+        verifyKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _size + _sizeMultiplier + _precision + _scale +
+                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty + _error
+        )
+
         request = request.newRequest {
             components {
                 addFetcher(TestFetcher.Factory())
@@ -263,7 +282,8 @@ class RequestKeysTest {
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _transitionFactory + _decoders + _decodeInterceptors + _requestInterceptors
+                    _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty + _error +
+                    _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 
@@ -306,32 +326,28 @@ class RequestKeysTest {
         }
         var _parameters = "&_parameters=${request.parameters!!.cacheKey}"
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _precision + _scale
+            uriString + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
             setParameter(key = "big", value = "true", cacheKey = null)
         }
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _precision + _scale
+            uriString + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
             setHttpHeader("from", "china")
         }
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _precision + _scale
+            uriString + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
             downloadCachePolicy(READ_ONLY)
         }
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _precision + _scale
+            uriString + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
@@ -371,8 +387,7 @@ class RequestKeysTest {
         _precision = "&_precision=${request.precisionDecider.key}"
         _scale = "&_scale=${request.scaleDecider.key}"
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _precision + _scale
+            uriString + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
@@ -380,8 +395,7 @@ class RequestKeysTest {
         }
         val _sizeMultiplier = "&_sizeMultiplier=${request.sizeMultiplier}"
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _sizeMultiplier + _precision + _scale
+            uriString + _parameters + _size + _sizeMultiplier + _precision + _scale
         )
 
         request = request.newRequest {
@@ -392,45 +406,14 @@ class RequestKeysTest {
                 it.key.replace("Transformation", "")
             }.let { "&_transformations=$it" }
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations
+            uriString + _parameters + _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         request = request.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }
         verifyCacheKey(
-            uriString + _parameters +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations
-        )
-
-        request = request.newRequest {
-            placeholder(
-                IconStateImage(
-                    icon = drawable.ic_delete,
-                    background = color.background_dark
-                )
-            )
-        }
-        verifyCacheKey(
-            uriString + _parameters +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations
-        )
-
-        request = request.newRequest {
-            error(DrawableStateImage(drawable.ic_delete))
-        }
-        verifyCacheKey(
-            uriString + _parameters +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations
-        )
-
-        request = request.newRequest {
-            transitionFactory(ViewCrossfadeTransition.Factory())
-        }
-        verifyCacheKey(
-            uriString + _parameters +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations
+            uriString + _parameters + _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         request = request.newRequest {
@@ -452,6 +435,44 @@ class RequestKeysTest {
 
         request = request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+        )
+
+        request = request.newRequest {
+            transitionFactory(ViewCrossfadeTransition.Factory())
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+        )
+
+        val placeholder = IconStateImage(
+            icon = drawable.ic_delete,
+            background = color.background_dark
+        )
+        request = request.newRequest {
+            placeholder(placeholder)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+        )
+
+        val uriEmpty = FakeStateImage(FakeImage(SketchSize(200, 200)))
+        request = request.newRequest {
+            uriEmpty(uriEmpty)
+        }
+        verifyCacheKey(
+            uriString + _parameters +
+                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+        )
+
+        val error = DrawableStateImage(drawable.ic_delete)
+        request = request.newRequest {
+            error(error)
         }
         verifyCacheKey(
             uriString + _parameters +

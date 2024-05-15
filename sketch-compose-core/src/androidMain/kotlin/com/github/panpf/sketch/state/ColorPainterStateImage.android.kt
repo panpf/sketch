@@ -28,7 +28,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ColorFetcher
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
-import com.github.panpf.sketch.state.StateImage
 
 @Composable
 fun rememberColorPainterStateImage(colorFetcher: ColorFetcher): ColorFetcherPainterStateImage =
@@ -50,6 +49,8 @@ interface ColorFetcherPainterStateImage : StateImage {
 private class ColorFetcherPainterStateImageImpl(
     override val colorFetcher: ColorFetcher
 ) : ColorFetcherPainterStateImage {
+
+    override val key: String = "ColorFetcherPainterStateImage($colorFetcher)"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
         return ColorPainter(Color(colorFetcher.getColor(request.context))).asSketchImage()

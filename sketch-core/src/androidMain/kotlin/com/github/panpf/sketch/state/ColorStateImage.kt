@@ -45,6 +45,8 @@ interface ColorStateImage : StateImage {
  */
 private class ColorStateImageImpl(override val color: ColorFetcher) : ColorStateImage {
 
+    override val key: String = "ColorStateImage($color)"
+
     override fun getImage(
         sketch: Sketch,
         request: ImageRequest,

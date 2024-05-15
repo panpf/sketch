@@ -31,11 +31,13 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendScale()
     .appendTransformations()
     .appendResultCachePolicy()
-    // TODO placeholder, uriEmpty, error
     .appendDisallowAnimatedImage()
     .appendResizeOnDraw()
     .appendMemoryCachePolicy()
     .appendTransitionFactory()
+    .appendPlaceholder()
+    .appendUriEmpty()
+    .appendError()
     .appendDecoders()
     .appendDecodeInterceptors()
     .appendRequestInterceptors()
@@ -202,6 +204,20 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         val placeholder = request.placeholder
         if (placeholder != null) {
             appendQueryParameter("_placeholder", placeholder.key)
+        }
+    }
+
+    fun appendUriEmpty(): ImageRequestKeyBuilder = apply {
+        val uriEmpty = request.uriEmpty
+        if (uriEmpty != null) {
+            appendQueryParameter("_uriEmpty", uriEmpty.key)
+        }
+    }
+
+    fun appendError(): ImageRequestKeyBuilder = apply {
+        val error = request.error
+        if (error != null) {
+            appendQueryParameter("_error", error.key)
         }
     }
 

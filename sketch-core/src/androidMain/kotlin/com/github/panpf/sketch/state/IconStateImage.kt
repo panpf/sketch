@@ -256,6 +256,9 @@ private class IconStateImageImpl(
     override val iconTint: ColorFetcher?
 ) : IconStateImage {
 
+    override val key: String =
+        "IconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+
     override fun getImage(
         sketch: Sketch,
         request: ImageRequest,
