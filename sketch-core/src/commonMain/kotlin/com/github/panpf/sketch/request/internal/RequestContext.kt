@@ -44,6 +44,7 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
     val logKey: String = initialRequest.key
 
     /** Used to cache bitmaps in memory and on disk */
+    // TODO hidden
     val cacheKey: String
         get() = synchronized(lock) {
             _cacheKey ?: request.newCacheKey(size!!).apply {

@@ -28,7 +28,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.closeQuietly
-import com.github.panpf.sketch.util.ifOrNull
 import okio.buffer
 import okio.use
 
@@ -47,13 +46,15 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
         return if (resultCachePolicy.isReadOrWrite) {
             resultCache.withLock(requestContext.cacheKey) {
-                ifOrNull(resultCachePolicy.readEnabled) {
-                    readCache(sketch, requestContext)
-                        ?.let { Result.success(it) }
-                } ?: chain.proceed().apply {
-                    val result = this.getOrNull()
-                    if (result != null && resultCachePolicy.writeEnabled) {
-                        writeCache(sketch, requestContext, decodeResult = result)
+                val decodeResultFromCache = readCache(sketch, requestContext)
+                if (decodeResultFromCache != null) {
+                    Result.success(decodeResultFromCache)
+                } else {
+                    chain.proceed().apply {
+                        val newDecodeResult = getOrNull()
+                        if (newDecodeResult != null) {
+                            writeCache(sketch, requestContext, decodeResult = newDecodeResult)
+                        }
                     }
                 }
             }
@@ -67,6 +68,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         sketch: Sketch,
         requestContext: RequestContext,
     ): DecodeResult? {
+        if (!requestContext.request.resultCachePolicy.readEnabled) return null
         val resultCache = sketch.resultCache
         val fileSystem = resultCache.fileSystem
         val resultCacheKey = requestContext.resultCacheKey
@@ -109,6 +111,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         requestContext: RequestContext,
         decodeResult: DecodeResult,
     ): Boolean {
+        if (!requestContext.request.resultCachePolicy.writeEnabled) return false
         val transformedList = decodeResult.transformedList
         if (transformedList.isNullOrEmpty()) return false
         val image = decodeResult.image

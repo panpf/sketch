@@ -18,6 +18,11 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.requiredMainThread
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.math.roundToLong
 
 /**
@@ -33,6 +38,8 @@ class LruMemoryCache constructor(
     companion object {
         private const val MODULE = "LruMemoryCache"
     }
+
+    private val mutexMap = LruCache<String, Mutex>(200)
 
     private val cache = object : LruCache<String, Value>(maxSize) {
         override fun sizeOf(key: String, value: Value): Long {
@@ -85,6 +92,16 @@ class LruMemoryCache constructor(
 
     override fun clear() {
         cache.clear()
+    }
+
+    override suspend fun <R> withLock(key: String, action: suspend MemoryCache.() -> R): R {
+        requiredMainThread()    // Can save synchronization overhead
+        val lock = mutexMap[key] ?: Mutex().apply {
+            this@LruMemoryCache.mutexMap.put(key, this)
+        }
+        return lock.withLock {
+            action(this@LruMemoryCache)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

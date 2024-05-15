@@ -69,10 +69,7 @@ open class HttpUriFetcher(
         requiredWorkThread()
         val result = if (request.downloadCachePolicy.isReadOrWrite) {
             sketch.downloadCache.withLock(downloadCacheLockKey) {
-                request.downloadCachePolicy
-                    .takeIf { it.readEnabled }
-                    ?.let { readCache() }
-                    ?: executeFetch()
+                readCache() ?: executeFetch()
             }
         } else {
             executeFetch()
@@ -132,6 +129,7 @@ open class HttpUriFetcher(
 
     @WorkerThread
     private fun readCache(): Result<FetchResult>? {
+        if (!request.downloadCachePolicy.readEnabled) return null
         val downloadCache = sketch.downloadCache
         try {
             return downloadCache.openSnapshot(downloadCacheKey)?.use { snapshot ->

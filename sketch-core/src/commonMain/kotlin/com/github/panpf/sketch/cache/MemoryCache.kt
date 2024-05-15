@@ -76,6 +76,11 @@ interface MemoryCache {
      */
     fun clear()
 
+    /**
+     * Executes the given [action] under this mutex's lock.
+     */
+    suspend fun <R> withLock(key: String, action: suspend MemoryCache.() -> R): R
+
     interface Value {
 
         val image: Image

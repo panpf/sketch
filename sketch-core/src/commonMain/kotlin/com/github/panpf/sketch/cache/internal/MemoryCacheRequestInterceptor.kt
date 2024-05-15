@@ -19,6 +19,7 @@ import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.cache.getExtras
 import com.github.panpf.sketch.cache.getImageInfo
 import com.github.panpf.sketch.cache.getTransformedList
+import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.request.Depth
@@ -27,6 +28,7 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.source.DataFrom
 
 /**
@@ -44,34 +46,34 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val requestContext = chain.requestContext
         val memoryCachePolicy = request.memoryCachePolicy
 
-        if (memoryCachePolicy.readEnabled) {
-            val imageDataFromCache = readFromMemoryCache(requestContext)
-            if (imageDataFromCache != null) {
-                return Result.success(imageDataFromCache)
-            } else if (request.depth >= Depth.MEMORY) {
-                return Result.failure(DepthException("Request depth limited to ${request.depth}. ${request.key}"))
-            }
-        }
-
-        // TODO merge PlaceholderRequestInterceptor and block repeat request
-
-        val result = chain.proceed(request)
-        val imageData = result.getOrNull()
-        if (imageData != null && memoryCachePolicy.writeEnabled) {
-            val saveSuccess = saveToMemoryCache(requestContext, imageData)
-            if (saveSuccess && memoryCachePolicy.readEnabled) {
+        if (memoryCachePolicy.isReadOrWrite) {
+            val memoryCache = chain.sketch.memoryCache
+            val memoryCacheKey = requestContext.memoryCacheKey
+            return memoryCache.withLock(memoryCacheKey) {
                 val imageDataFromCache = readFromMemoryCache(requestContext)
                 if (imageDataFromCache != null) {
-                    return Result.success(imageDataFromCache.copy(dataFrom = imageData.dataFrom))
+                    Result.success(imageDataFromCache)
+                } else if (memoryCachePolicy.readEnabled && request.depth >= Depth.MEMORY) {
+                    Result.failure(DepthException("Request depth limited to ${request.depth}. ${request.key}"))
+                } else {
+                    callbackPlaceholder(chain)
+                    chain.proceed(request).apply {
+                        val newImageData = getOrNull()
+                        if (newImageData != null) {
+                            saveToMemoryCache(requestContext, newImageData)
+                        }
+                    }
                 }
             }
+        } else {
+            callbackPlaceholder(chain)
+            return chain.proceed(request)
         }
-
-        return result
     }
 
     @MainThread
     private fun readFromMemoryCache(requestContext: RequestContext): ImageData? {
+        if (!requestContext.request.memoryCachePolicy.readEnabled) return null
         val memoryCache = requestContext.sketch.memoryCache
         val cachedValue = memoryCache[requestContext.memoryCacheKey] ?: return null
         return ImageData(
@@ -83,8 +85,23 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         )
     }
 
+    private fun callbackPlaceholder(chain: Chain) {
+        val sketch = chain.sketch
+        val request = chain.request
+        val requestContext = chain.requestContext
+        val target = request.target
+        if (target != null) {
+            val placeholderDrawable = request.placeholder
+                ?.getImage(sketch, request, null)
+                ?.resizeOnDraw(request, requestContext.size)
+            target.onStart(requestContext, placeholderDrawable)
+        }
+    }
+
     @MainThread
     private fun saveToMemoryCache(requestContext: RequestContext, imageData: ImageData): Boolean {
+        val request = requestContext.request
+        if (!request.memoryCachePolicy.writeEnabled) return false
         val newCacheValue = imageData.image.cacheValue(
             requestContext = requestContext,
             extras = newCacheValueExtras(
@@ -92,12 +109,16 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 transformedList = imageData.transformedList,
                 extras = imageData.extras,
             )
-        ) ?: return false
+        )
+        if (newCacheValue == null) {
+            // Usually AnimatedDrawable
+            return false
+        }
         val saveState =
             requestContext.sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
         if (saveState != 0) {
             requestContext.sketch.logger.w(
-                "MemoryCacheRequestInterceptor. Memory cache save failed. state is $saveState. ${imageData.image}. ${requestContext.request.key}"
+                "MemoryCacheRequestInterceptor. Memory cache save failed. state is $saveState. ${imageData.image}. ${request.key}"
             )
         }
         return saveState == 0
