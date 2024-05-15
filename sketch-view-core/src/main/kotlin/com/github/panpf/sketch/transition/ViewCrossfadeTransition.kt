@@ -32,10 +32,12 @@ package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.asDrawableOrThrow
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.target.TransitionViewTarget
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -44,13 +46,13 @@ import com.github.panpf.sketch.util.asOrNull
  * @param durationMillis The duration of the animation in milliseconds.
  * @param preferExactIntrinsicSize See [CrossfadeDrawable.preferExactIntrinsicSize].
  */
-class CrossfadeTransition @JvmOverloads constructor(
+class ViewCrossfadeTransition @JvmOverloads constructor(
     private val requestContext: RequestContext,
     private val target: TransitionViewTarget,
     private val result: ImageResult,
-    val durationMillis: Int = Transition.DEFAULT_DURATION,
-    val fadeStart: Boolean = true,
-    val preferExactIntrinsicSize: Boolean = false,
+    val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+    val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+    val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
     val fitScale: Boolean = true,
 ) : Transition {
 
@@ -87,18 +89,11 @@ class CrossfadeTransition @JvmOverloads constructor(
     }
 
     class Factory @JvmOverloads constructor(
-        val durationMillis: Int = Transition.DEFAULT_DURATION,
-        val fadeStart: Boolean = true,
-        val preferExactIntrinsicSize: Boolean = false,
-        val alwaysUse: Boolean = false,
+        val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+        val alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
     ) : Transition.Factory {
-
-        constructor(crossfade: Crossfade): this(
-            durationMillis = crossfade.durationMillis,
-            fadeStart = crossfade.fadeStart,
-            preferExactIntrinsicSize = crossfade.preferExactIntrinsicSize,
-            alwaysUse = crossfade.alwaysUse
-        )
 
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }
@@ -117,7 +112,7 @@ class CrossfadeTransition @JvmOverloads constructor(
                 return null
             }
             val fitScale = target.fitScale
-            return CrossfadeTransition(
+            return ViewCrossfadeTransition(
                 requestContext = requestContext,
                 target = target,
                 result = result,
@@ -127,6 +122,8 @@ class CrossfadeTransition @JvmOverloads constructor(
                 fitScale = fitScale
             )
         }
+
+        override val key: String ="ViewCrossfadeTransition.Factory(durationMillis=$durationMillis,fadeStart=$fadeStart,preferExactIntrinsicSize=$preferExactIntrinsicSize,alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -146,7 +143,7 @@ class CrossfadeTransition @JvmOverloads constructor(
         }
 
         override fun toString(): String {
-            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
+            return "ViewCrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
         }
     }
 }

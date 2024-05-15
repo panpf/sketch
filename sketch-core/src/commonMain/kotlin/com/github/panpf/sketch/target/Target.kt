@@ -15,9 +15,9 @@
  */
 package com.github.panpf.sketch.target
 
-import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
@@ -29,7 +29,7 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.transition.Crossfade
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 
@@ -52,7 +52,9 @@ interface Target {
     // TODO rename getImageSizeWrapper
     fun getResizeOnDrawHelper(): ResizeOnDrawHelper? = null
 
-    fun getCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? = null
+    fun getTargetCrossfadeTransitionFactory(
+        factory: CrossfadeTransition.Factory
+    ): Transition.Factory? = null
 
     fun getScale(): Scale? = null
 

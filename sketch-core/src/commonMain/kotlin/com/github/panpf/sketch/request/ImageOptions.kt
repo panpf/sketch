@@ -31,14 +31,13 @@ import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transform.Transformation
-import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.keyOrNull
 
 const val DEPTH_FROM_KEY = "sketch#depth_from"
-const val CROSSFADE_KEY = "sketch#crossfade"
 
 /**
  * Build and set the [ImageOptions]
@@ -562,41 +561,33 @@ interface ImageOptions {
          */
         fun transitionFactory(transitionFactory: Transition.Factory?): Builder = apply {
             this.transitionFactory = transitionFactory
-            if (transitionFactory != null) {
-                removeParameter(CROSSFADE_KEY)
-            }
         }
 
         /**
          * Sets the transition that crossfade
          */
         fun crossfade(
-            durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
-            fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
-            preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-            alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
+            durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+            fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+            preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+            alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
         ): Builder = apply {
-            setParameter(
-                key = CROSSFADE_KEY,
-                value = Crossfade(
-                    durationMillis = durationMillis,
-                    fadeStart = fadeStart,
-                    preferExactIntrinsicSize = preferExactIntrinsicSize,
-                    alwaysUse = alwaysUse
-                ),
-                cacheKey = null,
+            this.transitionFactory = CrossfadeTransition.Factory(
+                durationMillis = durationMillis,
+                fadeStart = fadeStart,
+                preferExactIntrinsicSize = preferExactIntrinsicSize,
+                alwaysUse = alwaysUse
             )
-            this.transitionFactory = null
         }
 
         /**
          * Sets the transition that crossfade
          */
-        fun crossfade(apply: Boolean?): Builder = apply {
-            if (apply == true) {
+        fun crossfade(enable: Boolean): Builder = apply {
+            if (enable) {
                 crossfade()
             } else {
-                removeParameter(CROSSFADE_KEY)
+                this.transitionFactory = null
             }
         }
 
@@ -766,6 +757,3 @@ interface ImageOptions {
  * Returns true as long as any property is not empty
  */
 fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()
-
-val ImageOptions.crossfade: Crossfade?
-    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)

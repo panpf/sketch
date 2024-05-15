@@ -34,13 +34,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.request.internal.ComposeTargetRequestDelegate
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.ComposeTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
-import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 
@@ -59,8 +59,15 @@ interface ComposeTarget : Target {
         return ComposeResizeOnDrawHelper
     }
 
-    override fun getCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
-        return ComposeCrossfadeTransition.Factory(crossfade)
+    override fun getTargetCrossfadeTransitionFactory(
+        factory: CrossfadeTransition.Factory
+    ): Transition.Factory? {
+        return ComposeCrossfadeTransition.Factory(
+            durationMillis = factory.durationMillis,
+            fadeStart = factory.fadeStart,
+            preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
+            alwaysUse = factory.alwaysUse,
+        )
     }
 
     override fun newRequestDelegate(

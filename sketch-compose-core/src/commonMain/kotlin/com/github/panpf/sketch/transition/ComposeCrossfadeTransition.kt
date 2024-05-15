@@ -19,9 +19,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.painter.CrossfadePainter
-import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 
@@ -29,9 +30,9 @@ class ComposeCrossfadeTransition constructor(
     private val requestContext: RequestContext,
     private val target: TransitionComposeTarget,
     private val result: ImageResult,
-    val durationMillis: Int = Transition.DEFAULT_DURATION,
-    val fadeStart: Boolean = true,
-    val preferExactIntrinsicSize: Boolean = false,
+    val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+    val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+    val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
     val fitScale: Boolean = true,
 ) : Transition {
 
@@ -66,18 +67,11 @@ class ComposeCrossfadeTransition constructor(
     }
 
     class Factory @JvmOverloads constructor(
-        val durationMillis: Int = Transition.DEFAULT_DURATION,
-        val fadeStart: Boolean = true,
-        val preferExactIntrinsicSize: Boolean = false,
-        val alwaysUse: Boolean = false,
+        val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+        val alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
     ) : Transition.Factory {
-
-        constructor(crossfade: Crossfade): this(
-            durationMillis = crossfade.durationMillis,
-            fadeStart = crossfade.fadeStart,
-            preferExactIntrinsicSize = crossfade.preferExactIntrinsicSize,
-            alwaysUse = crossfade.alwaysUse
-        )
 
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }
@@ -106,6 +100,8 @@ class ComposeCrossfadeTransition constructor(
                 fitScale = fitScale
             )
         }
+
+        override val key: String = "ComposeCrossfadeTransition.Factory(durationMillis=$durationMillis,fadeStart=$fadeStart,preferExactIntrinsicSize=$preferExactIntrinsicSize,alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

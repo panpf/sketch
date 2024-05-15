@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.transition.TransitionViewTarget
+import com.github.panpf.sketch.target.TransitionViewTarget
 import kotlinx.coroutines.Job
 
 class TestTransitionViewTarget : Target, TransitionViewTarget {

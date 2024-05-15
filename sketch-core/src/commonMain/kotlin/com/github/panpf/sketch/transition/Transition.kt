@@ -34,6 +34,7 @@ import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.util.Key
 
 /**
  * A class to animate between a [Target]'s current drawable and the result of an image request.
@@ -60,7 +61,7 @@ fun interface Transition {
      * that is, the equals() and hashCode() methods of instances created with the same
      * construction parameters return consistent results. This is important in Compose
      */
-    fun interface Factory {
+    interface Factory: Key {
 
         fun create(
             requestContext: RequestContext,

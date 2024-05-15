@@ -1389,4 +1389,5 @@ class ImageOptionsTest {
 
     // TODO test mergeComponents
     // TODO test sizeMultiplier
+    // TODO test crossfade
 }

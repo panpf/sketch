@@ -49,9 +49,9 @@ import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
-import com.github.panpf.sketch.transition.Crossfade
-import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.Job
 
@@ -88,8 +88,15 @@ interface ViewTarget<T : View> : Target {
         return AndroidResizeOnDrawHelper
     }
 
-    override fun getCrossfadeTransitionFactory(crossfade: Crossfade): Transition.Factory? {
-        return CrossfadeTransition.Factory(crossfade)
+    override fun getTargetCrossfadeTransitionFactory(
+        factory: CrossfadeTransition.Factory
+    ): Transition.Factory? {
+        return ViewCrossfadeTransition.Factory(
+            durationMillis = factory.durationMillis,
+            fadeStart = factory.fadeStart,
+            preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
+            alwaysUse = factory.alwaysUse,
+        )
     }
 
     override fun getLifecycleResolver(): LifecycleResolver? =

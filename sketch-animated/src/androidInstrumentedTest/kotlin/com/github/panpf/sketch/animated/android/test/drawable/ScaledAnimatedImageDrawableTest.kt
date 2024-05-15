@@ -80,7 +80,9 @@ class ScaledAnimatedImageDrawableTest {
             runBlocking(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
-            unregisterAnimationCallback(callback)
+            runBlocking(Dispatchers.Main) {
+                unregisterAnimationCallback(callback)
+            }
 
             runBlocking(Dispatchers.Main) {
                 registerAnimationCallback(callback)
@@ -350,9 +352,7 @@ class ScaledAnimatedImageDrawableTest {
             )
         ) as AnimatedImageDrawable
         Assert.assertEquals(
-            "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(480x480)@${
-                Integer.toHexString(animatedImageDrawable.hashCode())
-            },fitScale=true)",
+            "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(480x480), fitScale=true)",
             com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(animatedImageDrawable)
                 .toString()
         )

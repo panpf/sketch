@@ -31,10 +31,11 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendScale()
     .appendTransformations()
     .appendResultCachePolicy()
+    // TODO placeholder, uriEmpty, error
     .appendDisallowAnimatedImage()
     .appendResizeOnDraw()
     .appendMemoryCachePolicy()
-    // TODO Transition
+    .appendTransitionFactory()
     .appendDecoders()
     .appendDecodeInterceptors()
     .appendRequestInterceptors()
@@ -179,6 +180,13 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         }
     }
 
+    fun appendTransitionFactory(): ImageRequestKeyBuilder = apply {
+        val transitionFactory = request.transitionFactory
+        if (transitionFactory != null) {
+            appendQueryParameter("_transitionFactory", transitionFactory.key)
+        }
+    }
+
     fun appendRequestInterceptors(): ImageRequestKeyBuilder = apply {
         request.componentRegistry?.requestInterceptorList.orEmpty()
             .mapNotNull { it.key }
@@ -188,6 +196,13 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
                     list.joinToString(prefix = "[", postfix = "]", separator = ",")
                 appendQueryParameter("_requestInterceptors", requestInterceptorKeys)
             }
+    }
+
+    fun appendPlaceholder(): ImageRequestKeyBuilder = apply {
+        val placeholder = request.placeholder
+        if (placeholder != null) {
+            appendQueryParameter("_placeholder", placeholder.key)
+        }
     }
 
     fun build(): String = keyBuilder.toString()

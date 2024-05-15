@@ -104,7 +104,7 @@ import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
-import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
@@ -1331,14 +1331,14 @@ class ImageRequestExecuteTest {
 
         Assert.assertTrue(memoryCache.exist(memoryCacheKey))
         request.newRequest {
-            transitionFactory(CrossfadeTransition.Factory())
+            transitionFactory(ViewCrossfadeTransition.Factory())
         }.let { runBlocking { sketch.enqueue(it).job.join() } }
         Assert.assertFalse(testTarget.drawable!! is CrossfadeDrawable)
 
         memoryCache.clear()
         Assert.assertFalse(memoryCache.exist(memoryCacheKey))
         request.newRequest {
-            transitionFactory(CrossfadeTransition.Factory())
+            transitionFactory(ViewCrossfadeTransition.Factory())
         }.let { runBlocking { sketch.enqueue(it).job.join() } }
         Assert.assertTrue(testTarget.drawable!! is CrossfadeDrawable)
     }

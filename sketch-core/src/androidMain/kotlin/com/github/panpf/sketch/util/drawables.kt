@@ -32,6 +32,7 @@ import com.github.panpf.sketch.drawable.CrossfadeDrawable
 /**
  * Find the last child [Drawable] from the specified Drawable
  */
+// TODO remove
 fun Drawable.findLeafChildDrawable(): Drawable? {
     return when (val drawable = this) {
         is CrossfadeDrawable -> {
@@ -58,6 +59,7 @@ fun Drawable.findLeafChildDrawable(): Drawable? {
     message = "Please use findLeafChildDrawable()",
     replaceWith = ReplaceWith(expression = "findLeafChildDrawable()")
 )
+// TODO remove
 fun Drawable.getLastChildDrawable(): Drawable? {
     return findLeafChildDrawable()
 }

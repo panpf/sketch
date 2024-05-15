@@ -18,6 +18,8 @@ class FakeTransition : Transition {
             result: ImageResult
         ): Transition = FakeTransition()
 
+        override val key: String = "FakeTransition.Factory"
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false

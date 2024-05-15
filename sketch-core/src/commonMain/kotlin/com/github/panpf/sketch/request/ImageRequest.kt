@@ -35,8 +35,8 @@ import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.TargetLifecycle
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transform.Transformation
-import com.github.panpf.sketch.transition.Crossfade
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.keyOrNull
@@ -51,9 +51,6 @@ fun ImageRequest(
 ): ImageRequest = ImageRequest.Builder(context, uriString).apply {
     configBlock?.invoke(this)
 }.build()
-
-//val ImageRequest.crossfade: Crossfade?
-//    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)
 
 /**
  * An immutable image request that contains all the required parameters,
@@ -615,10 +612,10 @@ interface ImageRequest {
          * Sets the transition that crossfade
          */
         fun crossfade(
-            durationMillis: Int = Crossfade.DEFAULT_DURATION_MILLIS,
-            fadeStart: Boolean = Crossfade.DEFAULT_FADE_START,
-            preferExactIntrinsicSize: Boolean = Crossfade.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-            alwaysUse: Boolean = Crossfade.DEFAULT_ALWAYS_USE,
+            durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+            fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+            preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+            alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
         ): Builder = apply {
             definedOptionsBuilder.crossfade(
                 durationMillis = durationMillis,
@@ -631,8 +628,8 @@ interface ImageRequest {
         /**
          * Sets the transition that crossfade
          */
-        fun crossfade(apply: Boolean?): Builder = apply {
-            definedOptionsBuilder.crossfade(apply)
+        fun crossfade(enable: Boolean): Builder = apply {
+            definedOptionsBuilder.crossfade(enable)
         }
 
         /**
@@ -725,8 +722,7 @@ interface ImageRequest {
             val placeholder = finalOptions.placeholder
             val uriEmpty = finalOptions.uriEmpty
             val error = finalOptions.error
-            val transitionFactory =
-                finalOptions.transitionFactory ?: resolveCrossfadeTransitionFactory(finalOptions)
+            val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeOnDraw = finalOptions.resizeOnDraw
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
@@ -772,11 +768,6 @@ interface ImageRequest {
         private fun resolveScale(): Scale =
             target?.getScale() ?: Scale.CENTER_CROP
 
-        private fun resolveCrossfadeTransitionFactory(finalOptions: ImageOptions): Transition.Factory? {
-            val crossfade = finalOptions.crossfade ?: return null
-            return target?.getCrossfadeTransitionFactory(crossfade)
-        }
-
         private fun combinationListener(
             definedRequestOptions: RequestOptions,
             target: Target?
@@ -797,7 +788,10 @@ interface ImageRequest {
             val builderProgressListener = definedRequestOptions.progressListener
             val targetProgressListener = target?.getProgressListener()
             return if (builderProgressListener != null && targetProgressListener != null) {
-                PairProgressListener(first = builderProgressListener, second = targetProgressListener)
+                PairProgressListener(
+                    first = builderProgressListener,
+                    second = targetProgressListener
+                )
             } else {
                 builderProgressListener ?: targetProgressListener
             }
@@ -837,6 +831,3 @@ interface ImageRequest {
         override val key: String by lazy { newKey() }
     }
 }
-
-val ImageRequest.crossfade: Crossfade?
-    get() = parameters?.value<Crossfade>(CROSSFADE_KEY)

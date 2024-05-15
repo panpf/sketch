@@ -41,7 +41,6 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.TargetLifecycle.Event
-import com.github.panpf.sketch.transition.TransitionViewTarget
 import com.github.panpf.sketch.util.asOrNull
 
 /**

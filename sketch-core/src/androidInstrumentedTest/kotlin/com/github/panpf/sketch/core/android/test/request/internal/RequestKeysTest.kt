@@ -43,8 +43,9 @@ import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
-import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -206,15 +207,6 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
-            transitionFactory(CrossfadeTransition.Factory())
-        }
-        verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
-                    _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy
-        )
-
-        request = request.newRequest {
             disallowAnimatedImage(true)
         }
         val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
@@ -246,6 +238,17 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
+            transitionFactory(CrossfadeTransition.Factory())
+        }
+        val _transitionFactory = "&_transitionFactory=${CrossfadeTransition.Factory().key}"
+        verifyKey(
+            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _size + _sizeMultiplier + _precision + _scale +
+                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _memoryCachePolicy + _transitionFactory
+        )
+
+        request = request.newRequest {
             components {
                 addFetcher(TestFetcher.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
@@ -260,7 +263,7 @@ class RequestKeysTest {
             uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _decoders + _decodeInterceptors + _requestInterceptors
+                    _memoryCachePolicy + _transitionFactory + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 
@@ -423,7 +426,7 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
-            transitionFactory(CrossfadeTransition.Factory())
+            transitionFactory(ViewCrossfadeTransition.Factory())
         }
         verifyCacheKey(
             uriString + _parameters +

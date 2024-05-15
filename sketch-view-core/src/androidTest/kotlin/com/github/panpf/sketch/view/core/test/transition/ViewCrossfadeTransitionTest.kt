@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.transition
+package com.github.panpf.sketch.view.core.test.transition
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
@@ -33,7 +33,7 @@ import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import com.github.panpf.tools4j.test.ktx.assertThrow
@@ -45,7 +45,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CrossfadeTransitionTest {
+class ViewCrossfadeTransitionTest {
 
     @Test
     fun testConstructor() = runTest {
@@ -65,12 +65,12 @@ class CrossfadeTransitionTest {
             transformedList = null,
             extras = null,
         )
-        CrossfadeTransition(requestContext, imageViewTarget, result).apply {
+        ViewCrossfadeTransition(requestContext, imageViewTarget, result).apply {
             Assert.assertEquals(200, durationMillis)
             Assert.assertEquals(false, preferExactIntrinsicSize)
             Assert.assertEquals(true, fitScale)
         }
-        CrossfadeTransition(
+        ViewCrossfadeTransition(
             requestContext = requestContext,
             target = imageViewTarget,
             result = result,
@@ -83,7 +83,7 @@ class CrossfadeTransitionTest {
             Assert.assertEquals(false, fitScale)
         }
         assertThrow(IllegalArgumentException::class) {
-            CrossfadeTransition(requestContext, imageViewTarget, result, durationMillis = 0)
+            ViewCrossfadeTransition(requestContext, imageViewTarget, result, durationMillis = 0)
         }
     }
 
@@ -119,7 +119,7 @@ class CrossfadeTransitionTest {
             transformedList = null,
             extras = null,
         )
-        CrossfadeTransition(requestContext, imageViewTarget, success).transition()
+        ViewCrossfadeTransition(requestContext, imageViewTarget, success).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
             Assert.assertEquals(Color.GREEN, (start as ColorDrawable).color)
             Assert.assertTrue(end is BitmapDrawable)
@@ -137,7 +137,7 @@ class CrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             throwable = Exception(""),
         )
-        CrossfadeTransition(requestContext, imageViewTarget, error).transition()
+        ViewCrossfadeTransition(requestContext, imageViewTarget, error).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
             Assert.assertEquals(Color.GREEN, (start as ColorDrawable).color)
             Assert.assertTrue(end is BitmapDrawable)
@@ -148,7 +148,7 @@ class CrossfadeTransitionTest {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
         Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
-        CrossfadeTransition(
+        ViewCrossfadeTransition(
             requestContext = requestContext,
             target = imageViewTarget,
             result = ImageResult.Success(
@@ -166,17 +166,17 @@ class CrossfadeTransitionTest {
 
     @Test
     fun testFactoryConstructor() {
-        CrossfadeTransition.Factory().apply {
+        ViewCrossfadeTransition.Factory().apply {
             Assert.assertEquals(200, durationMillis)
             Assert.assertEquals(false, preferExactIntrinsicSize)
             Assert.assertEquals(false, alwaysUse)
         }
 
         assertThrow(IllegalArgumentException::class) {
-            CrossfadeTransition.Factory(0)
+            ViewCrossfadeTransition.Factory(0)
         }
 
-        CrossfadeTransition.Factory(
+        ViewCrossfadeTransition.Factory(
             durationMillis = 300,
             preferExactIntrinsicSize = true,
             alwaysUse = true
@@ -192,7 +192,7 @@ class CrossfadeTransitionTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, MyImages.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val factory = CrossfadeTransition.Factory()
+        val factory = ViewCrossfadeTransition.Factory()
 
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
@@ -235,7 +235,7 @@ class CrossfadeTransitionTest {
             )
         )
 
-        val alwaysUseFactory = CrossfadeTransition.Factory(alwaysUse = true)
+        val alwaysUseFactory = ViewCrossfadeTransition.Factory(alwaysUse = true)
         Assert.assertNotNull(
             alwaysUseFactory.create(requestContext, imageViewTarget, fromMemoryCacheSuccessResult)
         )
@@ -243,12 +243,12 @@ class CrossfadeTransitionTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = CrossfadeTransition.Factory()
-        val element11 = CrossfadeTransition.Factory()
-        val element2 = CrossfadeTransition.Factory(durationMillis = 300)
-        val element3 = CrossfadeTransition.Factory(preferExactIntrinsicSize = true)
-        val element4 = CrossfadeTransition.Factory(alwaysUse = true)
-        val element5 = CrossfadeTransition.Factory(fadeStart = false)
+        val element1 = ViewCrossfadeTransition.Factory()
+        val element11 = ViewCrossfadeTransition.Factory()
+        val element2 = ViewCrossfadeTransition.Factory(durationMillis = 300)
+        val element3 = ViewCrossfadeTransition.Factory(preferExactIntrinsicSize = true)
+        val element4 = ViewCrossfadeTransition.Factory(alwaysUse = true)
+        val element5 = ViewCrossfadeTransition.Factory(fadeStart = false)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -289,25 +289,25 @@ class CrossfadeTransitionTest {
 
     @Test
     fun testFactoryToString() {
-        val element1 = CrossfadeTransition.Factory()
-        val element2 = CrossfadeTransition.Factory(preferExactIntrinsicSize = true)
-        val element3 = CrossfadeTransition.Factory(alwaysUse = true)
-        val element4 = CrossfadeTransition.Factory(fadeStart = false)
+        val element1 = ViewCrossfadeTransition.Factory()
+        val element2 = ViewCrossfadeTransition.Factory(preferExactIntrinsicSize = true)
+        val element3 = ViewCrossfadeTransition.Factory(alwaysUse = true)
+        val element4 = ViewCrossfadeTransition.Factory(fadeStart = false)
 
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=false)",
+            "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=false)",
             element1.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=true, alwaysUse=false)",
+            "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=true, alwaysUse=false)",
             element2.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=true)",
+            "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=true)",
             element3.toString()
         )
         Assert.assertEquals(
-            "CrossfadeTransition.Factory(durationMillis=200, fadeStart=false, preferExactIntrinsicSize=false, alwaysUse=false)",
+            "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=false, preferExactIntrinsicSize=false, alwaysUse=false)",
             element4.toString()
         )
     }

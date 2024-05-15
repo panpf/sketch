@@ -28,10 +28,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.transition
+package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.transition.TransitionTarget
 
 /**
  * A [Target] that supports applying [Transition]s.

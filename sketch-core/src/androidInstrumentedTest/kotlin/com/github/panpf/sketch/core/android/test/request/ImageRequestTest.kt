@@ -53,7 +53,6 @@ import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
-import com.github.panpf.sketch.request.crossfade
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.Listeners
@@ -99,10 +98,10 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import com.github.panpf.sketch.transition.Crossfade
-import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
@@ -393,7 +392,7 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedSizeResolver(100, 50), sizeResolver)
                 Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
-                Assert.assertEquals(Crossfade(), crossfade)
+                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
             }
 
             merge(ImageOptions {
@@ -403,7 +402,7 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedSizeResolver(100, 50), sizeResolver)
                 Assert.assertEquals(DISABLED, memoryCachePolicy)
                 Assert.assertEquals(listOf(CircleCropTransformation()), transformations)
-                Assert.assertEquals(Crossfade(), crossfade)
+                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
             }
         }
     }
@@ -1247,9 +1246,9 @@ class ImageRequestTest {
                 Assert.assertNull(transitionFactory)
             }
 
-            transitionFactory(CrossfadeTransition.Factory())
+            transitionFactory(ViewCrossfadeTransition.Factory())
             build().apply {
-                Assert.assertEquals(CrossfadeTransition.Factory(), transitionFactory)
+                Assert.assertEquals(ViewCrossfadeTransition.Factory(), transitionFactory)
             }
 
             transitionFactory(null)
@@ -1648,10 +1647,10 @@ class ImageRequestTest {
                 }
             },
             ScopeAction {
-                transitionFactory(CrossfadeTransition.Factory())
+                transitionFactory(ViewCrossfadeTransition.Factory())
             },
             ScopeAction {
-                transitionFactory(CrossfadeTransition.Factory(fadeStart = false, alwaysUse = true))
+                transitionFactory(ViewCrossfadeTransition.Factory(fadeStart = false, alwaysUse = true))
             },
             ScopeAction {
                 disallowAnimatedImage(true)
@@ -1704,4 +1703,5 @@ class ImageRequestTest {
 
     // TODO test mergeComponents
     // TODO test sizeMultiplier
+    // TODO test crossfade
 }

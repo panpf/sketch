@@ -21,6 +21,9 @@ import android.view.LayoutInflater
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
+import com.github.panpf.sketch.ability.removeProgressIndicator
+import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.showMaskProgressIndicator
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
@@ -28,27 +31,24 @@ import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.Listeners
+import com.github.panpf.sketch.request.internal.PairListener
+import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
+import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.ErrorStateImage.UriEmptyCondition
 import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import com.github.panpf.sketch.ability.removeProgressIndicator
-import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.ability.showMaskProgressIndicator
-import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.internal.PairListener
-import com.github.panpf.sketch.request.internal.PairProgressListener
-import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4j.reflect.ktx.callMethod
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import org.junit.Assert
@@ -178,7 +178,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is PairListener)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
-                (this as PairListener).first!!.asOrThrow<Listeners>().list
+                (this as PairListener).first.asOrThrow<Listeners>().list
             )
             Assert.assertSame(
                 viewAbilityListener,
@@ -191,7 +191,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is PairListener)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener2),
-                (this as PairListener).first!!.asOrThrow<Listeners>().list
+                (this as PairListener).first.asOrThrow<Listeners>().list
             )
             Assert.assertSame(
                 viewAbilityListener,
@@ -204,7 +204,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is PairListener)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as PairListener).first!!.asOrThrow<Listeners>().list
+                (this as PairListener).first.asOrThrow<Listeners>().list
             )
             Assert.assertSame(
                 viewAbilityListener,
@@ -241,13 +241,19 @@ class SketchImageViewTest {
         sketchImageView.registerProgressListener(listener1)
         sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState, listener1), (this as ProgressListeners).list)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState, listener1),
+                (this as ProgressListeners).list
+            )
         }
 
         sketchImageView.unregisterProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(listOf(sketchImageView.requestState, listener1), (this as ProgressListeners).list)
+            Assert.assertEquals(
+                listOf(sketchImageView.requestState, listener1),
+                (this as ProgressListeners).list
+            )
         }
 
         sketchImageView.registerProgressListener(listener2)
@@ -266,8 +272,8 @@ class SketchImageViewTest {
         sketchImageView.getProgressListener()!!.apply {
             Assert.assertTrue(this is PairProgressListener)
             Assert.assertEquals(
-                listOf(sketchImageView.requestState, listener1, listener2, ),
-                (this as PairProgressListener).first!!.asOrThrow<ProgressListeners>().list
+                listOf(sketchImageView.requestState, listener1, listener2),
+                (this as PairProgressListener).first.asOrThrow<ProgressListeners>().list
             )
             Assert.assertSame(
                 viewAbilityProgressListener,
@@ -280,7 +286,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is PairProgressListener)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState, listener2),
-                (this as PairProgressListener).first!!.asOrThrow<ProgressListeners>().list
+                (this as PairProgressListener).first.asOrThrow<ProgressListeners>().list
             )
             Assert.assertSame(
                 viewAbilityProgressListener,
@@ -293,7 +299,7 @@ class SketchImageViewTest {
             Assert.assertTrue(this is PairProgressListener)
             Assert.assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as PairProgressListener).first!!.asOrThrow<ProgressListeners>().list
+                (this as PairProgressListener).first.asOrThrow<ProgressListeners>().list
             )
             Assert.assertSame(
                 viewAbilityProgressListener,
