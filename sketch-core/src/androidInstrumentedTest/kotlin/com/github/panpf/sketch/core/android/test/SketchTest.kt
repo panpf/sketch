@@ -31,7 +31,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
@@ -135,7 +134,6 @@ class SketchTest {
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
-                        addRequestInterceptor(PlaceholderRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
                         addDecodeInterceptor(TransformationDecodeInterceptor())
@@ -162,7 +160,6 @@ class SketchTest {
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
-                        addRequestInterceptor(PlaceholderRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
                         addDecodeInterceptor(TransformationDecodeInterceptor())
@@ -181,7 +178,6 @@ class SketchTest {
                         addDecoder(DrawableDecoder.Factory())
                         addDecoder(BitmapFactoryDecoder.Factory())
                         addRequestInterceptor(MemoryCacheRequestInterceptor())
-                        addRequestInterceptor(PlaceholderRequestInterceptor())
                         addRequestInterceptor(EngineRequestInterceptor())
                         addDecodeInterceptor(ResultCacheDecodeInterceptor())
                         addDecodeInterceptor(TransformationDecodeInterceptor())
@@ -204,7 +200,6 @@ class SketchTest {
                 Assert.assertEquals(
                     listOf(
                         MemoryCacheRequestInterceptor(),
-                        PlaceholderRequestInterceptor(),
                         EngineRequestInterceptor(),
                     ),
                     components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -218,7 +213,6 @@ class SketchTest {
                     listOf(
                         TestRequestInterceptor(),
                         MemoryCacheRequestInterceptor(),
-                        PlaceholderRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -226,7 +220,6 @@ class SketchTest {
                 Assert.assertNotEquals(
                     listOf(
                         MemoryCacheRequestInterceptor(),
-                        PlaceholderRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     components.getRequestInterceptorList(ImageRequest(context, ""))
