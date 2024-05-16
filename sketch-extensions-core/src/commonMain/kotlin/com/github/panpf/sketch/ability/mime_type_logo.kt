@@ -10,7 +10,7 @@ fun getMimeTypeFromImageResult(result: ImageResult?, uri: String? = null): Strin
     }
     if (mimeType == null && result is ImageResult.Error) {
         mimeType =
-            MimeTypeMap.getMimeTypeFromUrl(result.request.uriString)?.takeIf { it.isNotEmpty() }
+            MimeTypeMap.getMimeTypeFromUrl(result.request.uri)?.takeIf { it.isNotEmpty() }
     }
     if (mimeType == null && uri != null) {
         mimeType = MimeTypeMap.getMimeTypeFromUrl(uri)?.takeIf { it.isNotEmpty() }

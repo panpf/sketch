@@ -50,7 +50,7 @@ class AssetUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {
-            val uri = request.uriString.toUri()
+            val uri = request.uri.toUri()
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
                 AssetUriFetcher(sketch, request, resourcePath)

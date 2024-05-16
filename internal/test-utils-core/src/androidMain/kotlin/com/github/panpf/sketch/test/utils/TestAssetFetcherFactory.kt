@@ -24,8 +24,8 @@ import com.github.panpf.sketch.request.ImageRequest
 class TestAssetFetcherFactory : Fetcher.Factory {
 
     override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
-        if (request.uriString.toUri().scheme == "test") {
-            return AssetUriFetcher(sketch, request, request.uriString.replace("test://", ""))
+        if (request.uri.toUri().scheme == "test") {
+            return AssetUriFetcher(sketch, request, request.uri.replace("test://", ""))
         }
         return null
     }

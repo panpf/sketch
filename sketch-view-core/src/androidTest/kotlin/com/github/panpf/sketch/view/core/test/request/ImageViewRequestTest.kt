@@ -7,8 +7,8 @@ class ImageViewRequestTest {
 //    @Test
 //    fun testListener() {
 //        val context1 = getTestContext()
-//        val uriString1 = MyImages.jpeg.uri
-//        ImageRequest.Builder(context1, uriString1).apply {
+//        val uri = MyImages.jpeg.uri
+//        ImageRequest.Builder(context1, uri).apply {
 //            build().apply {
 //                Assert.assertNull(listener)
 //                Assert.assertNull(target)
@@ -146,8 +146,8 @@ class ImageViewRequestTest {
 //    @Test
 //    fun testProgressListener() {
 //        val context1 = getTestContext()
-//        val uriString1 = MyImages.jpeg.uri
-//        ImageRequest.Builder(context1, uriString1).apply {
+//        val uri = MyImages.jpeg.uri
+//        ImageRequest.Builder(context1, uri).apply {
 //            build().apply {
 //                Assert.assertNull(progressListener)
 //                Assert.assertNull(target)

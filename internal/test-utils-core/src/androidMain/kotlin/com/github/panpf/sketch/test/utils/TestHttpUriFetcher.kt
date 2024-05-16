@@ -38,12 +38,12 @@ class TestHttpUriFetcher(sketch: Sketch, request: ImageRequest, url: String) :
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
-            val scheme = request.uriString.toUri().scheme
+            val scheme = request.uri.toUri().scheme
             return if (
                 SCHEME.equals(scheme, ignoreCase = true)
                 || SCHEME_HTTPS.equals(scheme, ignoreCase = true)
             ) {
-                TestHttpUriFetcher(sketch, request, request.uriString)
+                TestHttpUriFetcher(sketch, request, request.uri)
             } else {
                 null
             }

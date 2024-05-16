@@ -27,7 +27,6 @@ import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.ability.getMimeTypeFromImageResult
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.name
@@ -82,7 +81,7 @@ internal class MimeTypeLogoNode(
     override fun ContentDrawScope.draw() {
         drawContent()
 
-        val mimeType = getMimeTypeFromImageResult(state.result, state.request?.uriString)
+        val mimeType = getMimeTypeFromImageResult(state.result, state.request?.uri)
         if (mimeType != null) {
             val painter = mimeTypeIconMap[mimeType]
             if (painter != null) {

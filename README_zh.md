@@ -117,7 +117,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 ```kotlin
 AsyncImage(
-    imageUri = "https://www.sample.com/image.jpg",
+  uri = "https://www.sample.com/image.jpg",
     modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
     contentDescription = ""

@@ -231,7 +231,7 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (this::class != other::class) return "Different class"
     other as ImageRequestImpl
     if (context != other.context) return "context different: '${context}' vs '${other.context}'"
-    if (uriString != other.uriString) return "uriString different: '${uriString}' vs '${other.uriString}'"
+    if (uri != other.uri) return "uri different: '${uri}' vs '${other.uri}'"
     if (listener != other.listener) return "listener different: '${listener}' vs '${other.listener}'"
     if (progressListener != other.progressListener) return "progressListener different: '${progressListener}' vs '${other.progressListener}'"
     if (target != other.target) return "target different: '${target}' vs '${other.target}'"

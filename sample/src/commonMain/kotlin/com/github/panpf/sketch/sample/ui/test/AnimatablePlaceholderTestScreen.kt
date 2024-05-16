@@ -52,13 +52,13 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                     val images = remember {
                         arrayOf(MyImages.jpeg.uri, MyImages.webp.uri, MyImages.bmp.uri)
                     }
-                    val uriString = images[urlIndexState % images.size]
+                    val uri = images[urlIndexState % images.size]
                     val colorScheme = MaterialTheme.colorScheme
                     val placeholderStateImage = rememberIconAnimatablePainterStateImage(
                         icon = eclipseAnimatedPainter,
                         background = colorScheme.primaryContainer
                     )
-                    val request = ImageRequest(context, uriString) {
+                    val request = ImageRequest(context, uri) {
                         memoryCachePolicy(DISABLED)
                         resultCachePolicy(DISABLED)
                         placeholder(placeholderStateImage)

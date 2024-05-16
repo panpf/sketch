@@ -13,7 +13,7 @@ setting placeholder, error and onLoading, onSuccess, onError callbacks
 
 ```kotlin
 AsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     contentDescription = stringResource(R.string.description),
     contentScale = ContentScale.Crop,
     modifier = Modifier.clip(CircleShape)
@@ -43,7 +43,7 @@ Below is an example:
 
 ```kotlin
 SubcomposeAsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     loading = {
         CircularProgressIndicator()
     },
@@ -56,7 +56,7 @@ content parameter and rendering the current state:
 
 ```kotlin
 SubcomposeAsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     contentDescription = stringResource(R.string.description),
     content = {
         val state = painter.state
@@ -83,7 +83,7 @@ AsyncImage and SubcomposeAsyncImage use AsyncImagePainter to load images. If you
 can't use AsyncImage, you can use rememberAsyncImagePainter() to load the image:
 
 ```kotlin
-val painter = rememberAsyncImagePainter(imageUri = "https://example.com/image.jpg")
+val painter = rememberAsyncImagePainter(uri = "https://example.com/image.jpg")
 
 // config params
 val painter = rememberAsyncImagePainter(
@@ -117,7 +117,7 @@ The state of the painter, you can also reload the image through its restart meth
 ```kotlin
 val state = rememberAsyncImageState()
 AsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     contentDescription = stringResource(R.string.description),
     contentScale = ContentScale.Crop,
     modifier = Modifier.clip(CircleShape),

@@ -118,10 +118,10 @@ class ImageRequestTest {
     @Test
     fun testFun() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest(context1, uri).apply {
             Assert.assertSame(context1, this.context)
-            Assert.assertEquals("asset://sample.jpeg", uriString)
+            Assert.assertEquals("asset://sample.jpeg", uri)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertNull(this.target)
@@ -158,42 +158,42 @@ class ImageRequestTest {
     @Test
     fun testNewBuilder() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
+        val uri = MyImages.jpeg.uri
 
-        ImageRequest(context1, uriString1).newBuilder().build().apply {
+        ImageRequest(context1, uri).newBuilder().build().apply {
             Assert.assertEquals(NETWORK, depth)
         }
-        ImageRequest(context1, uriString1).newBuilder {
+        ImageRequest(context1, uri).newBuilder {
             depth(LOCAL)
         }.build().apply {
             Assert.assertEquals(LOCAL, depth)
         }
-        ImageRequest(context1, uriString1).newBuilder {
+        ImageRequest(context1, uri).newBuilder {
             depth(LOCAL)
         }.build().apply {
             Assert.assertEquals(LOCAL, depth)
         }
 
-        ImageRequest(context1, uriString1).newRequest().apply {
+        ImageRequest(context1, uri).newRequest().apply {
             Assert.assertEquals(NETWORK, depth)
         }
-        ImageRequest(context1, uriString1).newRequest {
+        ImageRequest(context1, uri).newRequest {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
         }
-        ImageRequest(context1, uriString1).newRequest {
+        ImageRequest(context1, uri).newRequest {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
         }
 
-        ImageRequest(context1, uriString1).newBuilder().build().apply {
+        ImageRequest(context1, uri).newBuilder().build().apply {
             Assert.assertEquals(NETWORK, depth)
             Assert.assertNull(listener)
             Assert.assertNull(progressListener)
         }
-        ImageRequest(context1, uriString1).newBuilder {
+        ImageRequest(context1, uri).newBuilder {
             depth(LOCAL)
             registerListener(
                 onStart = { request: ImageRequest ->
@@ -218,12 +218,12 @@ class ImageRequestTest {
             Assert.assertNotNull(progressListener)
         }
 
-        ImageRequest(context1, uriString1).newRequest().apply {
+        ImageRequest(context1, uri).newRequest().apply {
             Assert.assertEquals(NETWORK, depth)
             Assert.assertNull(listener)
             Assert.assertNull(progressListener)
         }
-        ImageRequest(context1, uriString1).newRequest {
+        ImageRequest(context1, uri).newRequest {
             depth(LOCAL)
             registerListener(
                 onStart = { request: ImageRequest ->
@@ -252,8 +252,8 @@ class ImageRequestTest {
     @Test
     fun testContext() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest(context1, uri).apply {
             Assert.assertEquals(context1, context)
             Assert.assertNotEquals(context1, context.applicationContext)
         }
@@ -262,45 +262,45 @@ class ImageRequestTest {
     @Test
     fun testTarget() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
+        val uri = MyImages.jpeg.uri
         val imageView = TestOptionsImageView(context1)
 
-        ImageRequest(context1, uriString1).apply {
+        ImageRequest(context1, uri).apply {
             Assert.assertNull(target)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             target(TestTarget())
         }.apply {
             Assert.assertTrue(target is TestTarget)
         }
 
-        ImageRequest(imageView, uriString1) {
+        ImageRequest(imageView, uri) {
             target(TestTarget())
             target(null)
         }.apply {
             Assert.assertNull(target)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             target(onStart = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             target(onSuccess = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
             Assert.assertEquals(ENABLED, memoryCachePolicy)
         }
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             target(onError = { _, _ -> })
         }.apply {
             Assert.assertNotNull(target)
@@ -311,7 +311,7 @@ class ImageRequestTest {
     @Test
     fun testLifecycle() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
+        val uri = MyImages.jpeg.uri
         var lifecycle1: Lifecycle? = null
         val lifecycleOwner = object : LifecycleOwner {
             override val lifecycle: Lifecycle
@@ -319,7 +319,7 @@ class ImageRequestTest {
         }
         lifecycle1 = LifecycleRegistry(lifecycleOwner)
 
-        ImageRequest(context1, uriString1).apply {
+        ImageRequest(context1, uri).apply {
             Assert.assertEquals(
                 DefaultLifecycleResolver(LifecycleResolver(GlobalTargetLifecycle)),
                 this.lifecycleResolver
@@ -332,13 +332,13 @@ class ImageRequestTest {
     @Test
     fun testDefinedOptions() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
+        val uri = MyImages.jpeg.uri
 
-        ImageRequest(context1, uriString1).apply {
+        ImageRequest(context1, uri).apply {
             Assert.assertEquals(ImageOptions(), definedOptions)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             size(100, 50)
             addTransformations(CircleCropTransformation())
             crossfade()
@@ -354,9 +354,9 @@ class ImageRequestTest {
     @Test
     fun testDefault() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
+        val uri = MyImages.jpeg.uri
 
-        ImageRequest(context1, uriString1).apply {
+        ImageRequest(context1, uri).apply {
             Assert.assertNull(defaultOptions)
         }
 
@@ -365,7 +365,7 @@ class ImageRequestTest {
             addTransformations(CircleCropTransformation())
             crossfade()
         }
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             defaultOptions(options)
         }.apply {
             Assert.assertSame(options, defaultOptions)
@@ -375,8 +375,8 @@ class ImageRequestTest {
     @Test
     fun testMerge() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertEquals(NETWORK, depth)
                 Assert.assertNull(parameters)
@@ -410,41 +410,41 @@ class ImageRequestTest {
     @Test
     fun testDepth() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest(context1, uri).apply {
             Assert.assertEquals(NETWORK, depth)
             Assert.assertNull(depthFrom)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             depth(LOCAL)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
             Assert.assertNull(depthFrom)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             depth(null)
         }.apply {
             Assert.assertEquals(NETWORK, depth)
             Assert.assertNull(depthFrom)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             depth(LOCAL, null)
         }.apply {
             Assert.assertEquals(LOCAL, depth)
             Assert.assertNull(depthFrom)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             depth(null, "TestDepthFrom")
         }.apply {
             Assert.assertEquals(NETWORK, depth)
             Assert.assertNull(depthFrom)
         }
 
-        ImageRequest(context1, uriString1) {
+        ImageRequest(context1, uri) {
             depth(LOCAL, "TestDepthFrom")
         }.apply {
             Assert.assertEquals(LOCAL, depth)
@@ -455,8 +455,8 @@ class ImageRequestTest {
     @Test
     fun testParameters() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(parameters)
             }
@@ -510,8 +510,8 @@ class ImageRequestTest {
     @Test
     fun testHttpHeaders() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(httpHeaders)
             }
@@ -580,8 +580,8 @@ class ImageRequestTest {
     @Test
     fun testDownloadCachePolicy() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertEquals(ENABLED, downloadCachePolicy)
             }
@@ -606,8 +606,8 @@ class ImageRequestTest {
     @Test
     fun testBitmapConfig() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(bitmapConfig)
             }
@@ -644,8 +644,8 @@ class ImageRequestTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return
 
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(colorSpace)
             }
@@ -671,8 +671,8 @@ class ImageRequestTest {
     @Suppress("DEPRECATION")
     fun testPreferQualityOverSpeed() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertFalse(preferQualityOverSpeed)
             }
@@ -697,8 +697,8 @@ class ImageRequestTest {
     @Test
     fun testResize() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(definedOptions.sizeResolver)
                 Assert.assertNull(definedOptions.precisionDecider)
@@ -855,8 +855,8 @@ class ImageRequestTest {
     @Test
     fun testResizeSize() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(definedOptions.sizeResolver)
                 Assert.assertEquals(DisplaySizeResolver(context1), sizeResolver)
@@ -891,8 +891,8 @@ class ImageRequestTest {
     @Test
     fun testResizePrecision() {
         val (context, sketch) = getTestContextAndSketch()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context, uri).apply {
             build().apply {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
             }
@@ -916,7 +916,7 @@ class ImageRequestTest {
             }
         }
 
-        val request = ImageRequest(context, uriString1).apply {
+        val request = ImageRequest(context, uri).apply {
             Assert.assertEquals(DisplaySizeResolver(context), sizeResolver)
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
         }
@@ -948,8 +948,8 @@ class ImageRequestTest {
     @Test
     fun testResizeScale() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
             }
@@ -977,8 +977,8 @@ class ImageRequestTest {
     @Test
     fun testTransformations() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(transformations)
             }
@@ -1064,8 +1064,8 @@ class ImageRequestTest {
     @Test
     fun testResultCachePolicy() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertEquals(ENABLED, resultCachePolicy)
             }
@@ -1090,8 +1090,8 @@ class ImageRequestTest {
     @Test
     fun testDisallowAnimatedImage() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertFalse(disallowAnimatedImage)
             }
@@ -1116,8 +1116,8 @@ class ImageRequestTest {
     @Test
     fun testPlaceholder() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(placeholder)
             }
@@ -1150,8 +1150,8 @@ class ImageRequestTest {
     @Test
     fun testUriEmpty() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(uriEmpty)
             }
@@ -1184,8 +1184,8 @@ class ImageRequestTest {
     @Test
     fun testError() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(error)
             }
@@ -1240,8 +1240,8 @@ class ImageRequestTest {
     @Test
     fun testTransitionFactory() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(transitionFactory)
             }
@@ -1261,8 +1261,8 @@ class ImageRequestTest {
     @Test
     fun testResizeOnDraw() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertFalse(resizeOnDraw ?: false)
             }
@@ -1287,8 +1287,8 @@ class ImageRequestTest {
     @Test
     fun testMemoryCachePolicy() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest.Builder(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertEquals(ENABLED, memoryCachePolicy)
             }
@@ -1313,8 +1313,8 @@ class ImageRequestTest {
     @Test
     fun testListener() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest(context1, uri).apply {
             Assert.assertNull(listener)
             Assert.assertNull(target)
         }
@@ -1323,20 +1323,20 @@ class ImageRequestTest {
         val listener2 = object : Listener {}
         val listener3 = object : Listener {}
 
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(listener1)
         }.apply {
             Assert.assertEquals(listener1, listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(listener1)
             registerListener(listener2)
         }.apply {
             Assert.assertEquals(Listeners(listOf(listener1, listener2)), listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(listener1)
             registerListener(listener2)
             registerListener(listener3)
@@ -1344,7 +1344,7 @@ class ImageRequestTest {
             Assert.assertEquals(Listeners(listOf(listener1, listener2, listener3)), listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(listener1)
             registerListener(listener2)
             registerListener(listener3)
@@ -1353,7 +1353,7 @@ class ImageRequestTest {
             Assert.assertEquals(Listeners(listOf(listener1, listener3)), listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(listener1)
             registerListener(listener2)
             registerListener(listener3)
@@ -1366,17 +1366,17 @@ class ImageRequestTest {
 
         val imageView = TestListenerImageView(context1)
 
-        ImageRequest(imageView, uriString1).apply {
+        ImageRequest(imageView, uri).apply {
             Assert.assertEquals(imageView.myListener, listener)
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
-        ImageRequest(imageView, uriString1){
+        ImageRequest(imageView, uri) {
             registerListener(listener1)
         }.apply {
             Assert.assertEquals(PairListener(first = listener1, second = imageView.myListener), listener)
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
-        ImageRequest(imageView, uriString1){
+        ImageRequest(imageView, uri) {
             registerListener(listener1)
             registerListener(listener2)
         }.apply {
@@ -1384,31 +1384,31 @@ class ImageRequestTest {
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
 
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
         }.apply {
             Assert.assertTrue(listener is Listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(onStart = {})
         }.apply {
             Assert.assertTrue(listener is Listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(onCancel = {})
         }.apply {
             Assert.assertTrue(listener is Listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(onError = { _, _ -> })
         }.apply {
             Assert.assertTrue(listener is Listener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerListener(onSuccess = { _, _ -> })
         }.apply {
             Assert.assertTrue(listener is Listener)
@@ -1419,8 +1419,8 @@ class ImageRequestTest {
     @Test
     fun testProgressListener() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
-        ImageRequest(context1, uriString1).apply {
+        val uri = MyImages.jpeg.uri
+        ImageRequest(context1, uri).apply {
             Assert.assertNull(progressListener)
             Assert.assertNull(target)
         }
@@ -1429,20 +1429,20 @@ class ImageRequestTest {
         val listener2 = ProgressListener {_, _, ->}
         val listener3 = ProgressListener {_, _, ->}
 
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerProgressListener(listener1)
         }.apply {
             Assert.assertEquals(listener1, progressListener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerProgressListener(listener1)
             registerProgressListener(listener2)
         }.apply {
             Assert.assertEquals(ProgressListeners(listOf(listener1, listener2)), progressListener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerProgressListener(listener1)
             registerProgressListener(listener2)
             registerProgressListener(listener3)
@@ -1450,7 +1450,7 @@ class ImageRequestTest {
             Assert.assertEquals(ProgressListeners(listOf(listener1, listener2, listener3)), progressListener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerProgressListener(listener1)
             registerProgressListener(listener2)
             registerProgressListener(listener3)
@@ -1459,7 +1459,7 @@ class ImageRequestTest {
             Assert.assertEquals(ProgressListeners(listOf(listener1, listener3)), progressListener)
             Assert.assertNull(target)
         }
-        ImageRequest(context1, uriString1){
+        ImageRequest(context1, uri) {
             registerProgressListener(listener1)
             registerProgressListener(listener2)
             registerProgressListener(listener3)
@@ -1472,17 +1472,17 @@ class ImageRequestTest {
 
         val imageView = TestListenerImageView(context1)
 
-        ImageRequest(imageView, uriString1).apply {
+        ImageRequest(imageView, uri).apply {
             Assert.assertEquals(imageView.myProgressListener, progressListener)
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
-        ImageRequest(imageView, uriString1){
+        ImageRequest(imageView, uri) {
             registerProgressListener(listener1)
         }.apply {
             Assert.assertEquals(PairProgressListener(first = listener1, second = imageView.myProgressListener), progressListener)
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
-        ImageRequest(imageView, uriString1){
+        ImageRequest(imageView, uri) {
             registerProgressListener(listener1)
             registerProgressListener(listener2)
         }.apply {

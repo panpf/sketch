@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Constraints
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -40,10 +39,10 @@ import com.github.panpf.sketch.request.ImageRequest
  *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.size] value
  *   (e.g. `size(Size(100, 100))`) if you need this.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param state [AsyncImageState] that will be used to store the state of the request.
  * @param contentScale Used to determine the aspect ratio scaling to be used if the canvas bounds
- *  are a different size from the intrinsic size of the image loaded by [imageUri]. This should be set
+ *  are a different size from the intrinsic size of the image loaded by [uri]. This should be set
  *  to the same value that's passed to [Image].
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
@@ -51,12 +50,12 @@ import com.github.panpf.sketch.request.ImageRequest
 @Composable
 @NonRestartableComposable
 fun rememberAsyncImagePainter(
-    imageUri: String?,
+    uri: String?,
     state: AsyncImageState = rememberAsyncImageState(),
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
 ): AsyncImagePainter = rememberAsyncImagePainter(
-    imageUri = imageUri,
+    uri = uri,
     sketch = SingletonSketch.get(LocalPlatformContext.current),
     state = state,
     contentScale = contentScale,

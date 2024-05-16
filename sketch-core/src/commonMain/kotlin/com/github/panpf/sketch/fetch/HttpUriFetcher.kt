@@ -81,7 +81,7 @@ open class HttpUriFetcher(
         /* Check depth */
         val depth = request.depth
         if (depth >= Depth.LOCAL) {
-            val message = "Request depth limited to $depth. ${request.uriString}"
+            val message = "Request depth limited to $depth. ${request.uri}"
             return Result.failure(DepthException(message))
         }
 
@@ -108,12 +108,12 @@ open class HttpUriFetcher(
             val httpCode = response.code
             if (httpCode != 200) {
                 val httpMessage = response.message
-                val message = "HTTP code error. $httpCode $httpMessage. ${request.uriString}"
+                val message = "HTTP code error. $httpCode $httpMessage. ${request.uri}"
                 return@withContext Result.failure(IOException(message))
             }
 
             // Save to download cache
-            val mimeType = getMimeType(request.uriString, response.contentType)
+            val mimeType = getMimeType(request.uri, response.contentType)
             if (request.downloadCachePolicy.writeEnabled) {
                 val result = writeCache(response, mimeType)
                 if (result != null) {
@@ -148,10 +148,10 @@ open class HttpUriFetcher(
                         "HttpUriFetcher. Read contentType disk cache failed, removed cache file. " +
                                 "message='${it.message}', " +
                                 "cacheKey=$downloadCacheKey. " +
-                                "'${request.uriString}'"
+                                "'${request.uri}'"
                     }
                 }.getOrNull()
-                val mimeType = getMimeType(request.uriString, contentType)
+                val mimeType = getMimeType(request.uri, contentType)
                 val dataSource = FileDataSource(
                     sketch = sketch,
                     request = request,
@@ -182,7 +182,7 @@ open class HttpUriFetcher(
             }
             // 'Transform-Encoding: chunked' contentLength is -1
             if (contentLength > 0 && readLength != contentLength) {
-                throw IOException("readLength error. readLength=$readLength, contentLength=$contentLength. ${request.uriString}")
+                throw IOException("readLength error. readLength=$readLength, contentLength=$contentLength. ${request.uri}")
             }
 
             val contentType = response.contentType?.takeIf { it.isNotEmpty() && it.isNotBlank() }
@@ -193,7 +193,7 @@ open class HttpUriFetcher(
             }
 
             editor.commitAndOpenSnapshot()?.use { it.data }
-                ?: return Result.failure(IOException("Disk cache loss after write. dataKey='$downloadCacheKey'. ${request.uriString}"))
+                ?: return Result.failure(IOException("Disk cache loss after write. dataKey='$downloadCacheKey'. ${request.uri}"))
         } catch (e: Throwable) {
             editor.abort()
             return Result.failure(e)
@@ -230,7 +230,7 @@ open class HttpUriFetcher(
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =
-                "readLength error. readLength=$readLength, contentLength=$contentLength. ${request.uriString}"
+                "readLength error. readLength=$readLength, contentLength=$contentLength. ${request.uri}"
             return Result.failure(IOException(message))
         }
         val bytes = buffer.readByteArray()
@@ -242,12 +242,12 @@ open class HttpUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
-            val scheme = request.uriString.toUri().scheme
+            val scheme = request.uri.toUri().scheme
             return if (
                 SCHEME.equals(scheme, ignoreCase = true)
                 || SCHEME_HTTPS.equals(scheme, ignoreCase = true)
             ) {
-                HttpUriFetcher(sketch, request, request.uriString)
+                HttpUriFetcher(sketch, request, request.uri)
             } else {
                 null
             }

@@ -57,7 +57,7 @@ import com.github.panpf.sketch.util.toIntSizeOrNull
 /**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -81,7 +81,7 @@ import com.github.panpf.sketch.util.toIntSizeOrNull
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    imageUri: String?,
+    uri: String?,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -96,7 +96,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = SubcomposeAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, imageUri),
+    request = ImageRequest(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -112,7 +112,7 @@ fun SubcomposeAsyncImage(
 /**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -134,7 +134,7 @@ fun SubcomposeAsyncImage(
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    imageUri: String?,
+    uri: String?,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -146,7 +146,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
 ) = SubcomposeAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, imageUri),
+    request = ImageRequest(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,

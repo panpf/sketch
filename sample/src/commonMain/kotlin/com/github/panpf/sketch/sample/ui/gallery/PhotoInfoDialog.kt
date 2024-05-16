@@ -33,12 +33,12 @@ fun PhotoInfoDialog(imageResult: ImageResult?, onDismissRequest: () -> Unit) {
                 .padding(20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            val uri: String? = imageResult?.request?.uriString
+            val uri: String? = imageResult?.request?.uri
             PhotoInfoItem(null, uri.orEmpty())
 
             if (imageResult is ImageResult.Success) {
                 val optionsInfo = imageResult.cacheKey
-                    .replace(imageResult.request.uriString, "")
+                    .replace(imageResult.request.uri, "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")
                     .filter { it.trim().isNotEmpty() }

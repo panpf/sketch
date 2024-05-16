@@ -12,7 +12,7 @@ placeholder, error 和 onLoading, onSuccess, onError 回调
 
 ```kotlin
 AsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     contentDescription = stringResource(R.string.description),
     contentScale = ContentScale.Crop,
     modifier = Modifier.clip(CircleShape)
@@ -42,7 +42,7 @@ API，而不是使用 Painters
 
 ```kotlin
 SubcomposeAsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     loading = {
         CircularProgressIndicator()
     },
@@ -54,7 +54,7 @@ SubcomposeAsyncImage(
 
 ```kotlin
 SubcomposeAsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     contentDescription = stringResource(R.string.description),
     content = {
         val state = painter.state
@@ -78,7 +78,7 @@ AsyncImage 和 SubcomposeAsyncImage 使用 AsyncImagePainter 来加载图像。�
 AsyncImage，你可以使用 rememberAsyncImagePainter() 加载图像：
 
 ```kotlin
-val painter = rememberAsyncImagePainter(imageUri = "https://example.com/image.jpg")
+val painter = rememberAsyncImagePainter(uri = "https://example.com/image.jpg")
 
 // 配置参数
 val painter = rememberAsyncImagePainter(
@@ -108,7 +108,7 @@ painter 的状态，你还可以通过其 restart 方法重新加载图像
 ```kotlin
 val state = rememberAsyncImageState()
 AsyncImage(
-    imageUri = "https://example.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     contentDescription = stringResource(R.string.description),
     contentScale = ContentScale.Crop,
     modifier = Modifier.clip(CircleShape),

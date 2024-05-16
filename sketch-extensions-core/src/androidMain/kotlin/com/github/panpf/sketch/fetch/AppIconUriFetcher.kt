@@ -77,15 +77,15 @@ class AppIconUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
-            val uri = request.uriString.toUri()
+            val uri = request.uri.toUri()
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val packageName = uri.authority
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-                    ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uriString}")
+                    ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uri}")
                 val versionCode = uri.lastPathSegment
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                     ?.toIntOrNull()
-                    ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uriString}")
+                    ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uri}")
                 AppIconUriFetcher(sketch, request, packageName, versionCode)
             } else {
                 null

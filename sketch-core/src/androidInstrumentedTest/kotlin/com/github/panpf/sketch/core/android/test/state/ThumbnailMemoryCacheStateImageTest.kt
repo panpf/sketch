@@ -95,8 +95,8 @@ class ThumbnailMemoryCacheStateImageTest {
 
         runBlocking(Dispatchers.Main) {
             val inexactlyStateImage = ThumbnailMemoryCacheStateImage()
-            val inexactlyStateImage1 = ThumbnailMemoryCacheStateImage(requests1[0].uriString)
-            val inexactlyStateImage2 = ThumbnailMemoryCacheStateImage(requests2[0].uriString)
+            val inexactlyStateImage1 = ThumbnailMemoryCacheStateImage(requests1[0].uri)
+            val inexactlyStateImage2 = ThumbnailMemoryCacheStateImage(requests2[0].uri)
 
             Assert.assertEquals(0, memoryCache.keys().size)
             requests1.plus(requests2).forEach { request ->
@@ -375,17 +375,17 @@ class ThumbnailMemoryCacheStateImageTest {
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val request = ImageRequest(context, MyImages.jpeg.uri)
-        val uriString = request.uriString
+        val uri = request.uri
 
-        ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.BLUE))).apply {
+        ThumbnailMemoryCacheStateImage(uri, ColorStateImage(IntColor(Color.BLUE))).apply {
             Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri=$uriString, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
+                "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
                 toString()
             )
         }
-        ThumbnailMemoryCacheStateImage(uriString, ColorStateImage(IntColor(Color.GREEN))).apply {
+        ThumbnailMemoryCacheStateImage(uri, ColorStateImage(IntColor(Color.GREEN))).apply {
             Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri=$uriString, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
+                "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }

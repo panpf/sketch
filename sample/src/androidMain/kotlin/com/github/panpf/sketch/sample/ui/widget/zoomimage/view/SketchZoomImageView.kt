@@ -91,7 +91,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
         return SketchImageSource(
             context = context,
             sketch = context.sketch,
-            imageUri = result.request.uriString,
+            imageUri = result.request.uri,
         )
     }
 }

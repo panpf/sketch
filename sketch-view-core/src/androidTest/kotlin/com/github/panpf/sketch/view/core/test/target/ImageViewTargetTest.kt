@@ -21,14 +21,14 @@ class ImageViewTargetTest {
 //    @Test
 //    fun testTarget() {
 //        val context1 = getTestContext()
-//        val uriString1 = MyImages.jpeg.uri
+//        val uri = MyImages.jpeg.uri
 //        val imageView = TestOptionsImageView(context1)
 //
-//        ImageRequest(context1, uriString1).apply {
+//        ImageRequest(context1, uri).apply {
 //            Assert.assertNull(target)
 //        }
 //
-//        ImageRequest(imageView, uriString1).apply {
+//        ImageRequest(imageView, uri).apply {
 //            Assert.assertEquals(ImageViewTarget(imageView), target)
 //        }
 //
@@ -36,37 +36,37 @@ class ImageViewTargetTest {
 //            memoryCachePolicy(WRITE_ONLY)
 //        }
 //
-//        ImageRequest(imageView, uriString1).apply {
+//        ImageRequest(imageView, uri).apply {
 //            Assert.assertEquals(ImageViewTarget(imageView), target)
 //            Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
 //        }
 //
-//        ImageRequest(imageView, uriString1) {
+//        ImageRequest(imageView, uri) {
 //            target(null)
 //        }.apply {
 //            Assert.assertNull(target)
 //            Assert.assertEquals(ENABLED, memoryCachePolicy)
 //        }
 //
-//        ImageRequest(imageView, uriString1) {
+//        ImageRequest(imageView, uri) {
 //            target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
 //        }.apply {
 //            Assert.assertNotNull(target)
 //            Assert.assertEquals(ENABLED, memoryCachePolicy)
 //        }
-//        ImageRequest(imageView, uriString1) {
+//        ImageRequest(imageView, uri) {
 //            target(onStart = { _, _ -> })
 //        }.apply {
 //            Assert.assertNotNull(target)
 //            Assert.assertEquals(ENABLED, memoryCachePolicy)
 //        }
-//        ImageRequest(imageView, uriString1) {
+//        ImageRequest(imageView, uri) {
 //            target(onSuccess = { _, _ -> })
 //        }.apply {
 //            Assert.assertNotNull(target)
 //            Assert.assertEquals(ENABLED, memoryCachePolicy)
 //        }
-//        ImageRequest(imageView, uriString1) {
+//        ImageRequest(imageView, uri) {
 //            target(onError = { _, _ -> })
 //        }.apply {
 //            Assert.assertNotNull(target)

@@ -43,7 +43,7 @@ val progressPainter = rememberDrawableProgressPainter(remember {
 })
 val state = rememberAsyncImageState()
 AsyncImage(
-    imageUri = "https://www.sample.com/image.jpg",
+    uri = "https://www.sample.com/image.jpg",
     modifier = Modifier
         .size(200.dp)
         .progressIndicator(state, progressPainter),
@@ -126,7 +126,7 @@ val progressPainter = rememberDrawableProgressPainter(remember {
 })
 val state = rememberAsyncImageState()
 AsyncImage(
-    imageUri = "https://www.sample.com/image.jpg",
+    uri = "https://www.sample.com/image.jpg",
     modifier = Modifier
         .size(200.dp)
         .progressIndicator(state, progressPainter),

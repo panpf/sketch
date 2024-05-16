@@ -51,7 +51,7 @@ class SingletonImageViewExtensionsExtensionsTest {
             .getFieldValue<ImageRequest>("initialRequest")!!
         Assert.assertEquals(
             newAppIconUri(context.packageName, versionCode),
-            request.uriString
+            request.uri
         )
     }
 }

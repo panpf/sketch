@@ -54,11 +54,11 @@ import com.github.panpf.sketch.util.toIntSizeOrNull
  *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.size] value
  *   (e.g. `size(Size(100, 100))`) if you need this.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param sketch The [Sketch] that will be used to execute the request.
  * @param state [AsyncImageState] that will be used to store the state of the request.
  * @param contentScale Used to determine the aspect ratio scaling to be used if the canvas bounds
- *  are a different size from the intrinsic size of the image loaded by [imageUri]. This should be set
+ *  are a different size from the intrinsic size of the image loaded by [uri]. This should be set
  *  to the same value that's passed to [Image].
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
@@ -66,13 +66,13 @@ import com.github.panpf.sketch.util.toIntSizeOrNull
 @Composable
 @NonRestartableComposable
 fun rememberAsyncImagePainter(
-    imageUri: String?,
+    uri: String?,
     sketch: Sketch,
     state: AsyncImageState = rememberAsyncImageState(),
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
 ): AsyncImagePainter = rememberAsyncImagePainter(
-    request = ImageRequest(LocalPlatformContext.current, imageUri),
+    request = ImageRequest(LocalPlatformContext.current, uri),
     sketch = sketch,
     state = state,
     contentScale = contentScale,

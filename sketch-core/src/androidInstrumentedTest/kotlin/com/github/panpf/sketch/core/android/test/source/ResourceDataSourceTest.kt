@@ -86,7 +86,7 @@ class ResourceDataSourceTest {
         ).apply {
             val file = getFile()
             Assert.assertEquals(
-                (request.uriString + "_data_source").sha256String() + ".0",
+                (request.uri + "_data_source").sha256String() + ".0",
                 file.name
             )
         }

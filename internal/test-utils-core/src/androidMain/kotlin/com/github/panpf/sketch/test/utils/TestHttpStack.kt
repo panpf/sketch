@@ -50,7 +50,7 @@ class TestHttpStack constructor(
             Thread.sleep(it)
         }
         val testImage = testImages.plus(errorImage).plus(chunkedErrorImage).plus(lengthErrorImage)
-            .find { it.uriString == url }
+            .find { it.uri == url }
         return if (testImage != null) {
             TestResponse(context, testImage, readDelayMillis)
         } else {
@@ -108,7 +108,7 @@ class TestHttpStack constructor(
 
         override suspend fun content(): HttpStack.Content {
             val assetFileName =
-                testImage.uriString.substring(testImage.uriString.lastIndexOf("/") + 1)
+                testImage.uri.substring(testImage.uri.lastIndexOf("/") + 1)
             val inputStream = context.assets.open(assetFileName).run {
                 if (readDelayMillis != null) {
                     SlowInputStream(this, readDelayMillis)
@@ -121,7 +121,7 @@ class TestHttpStack constructor(
     }
 
     class TestImage constructor(
-        val uriString: String,
+        val uri: String,
         val contentLength: Long,
         val headerMap: Map<String, String>? = null
     )

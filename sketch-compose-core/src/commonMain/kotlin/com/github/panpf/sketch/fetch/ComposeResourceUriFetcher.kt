@@ -3,8 +3,6 @@ package com.github.panpf.sketch.fetch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.toUri
@@ -38,7 +36,7 @@ class ComposeResourceUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ComposeResourceUriFetcher? {
-            val uri = request.uriString.toUri()
+            val uri = request.uri.toUri()
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
                 ComposeResourceUriFetcher(sketch, request, resourcePath)

@@ -156,7 +156,7 @@ class ResourceUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
-            val uri = request.uriString.toUri()
+            val uri = request.uri.toUri()
             return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 ResourceUriFetcher(sketch, request, uri)
             }

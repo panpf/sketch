@@ -46,9 +46,9 @@ import com.github.panpf.sketch.util.keyOrNull
  */
 fun ImageRequest(
     context: PlatformContext,
-    uriString: String?,
+    uri: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): ImageRequest = ImageRequest.Builder(context, uriString).apply {
+): ImageRequest = ImageRequest.Builder(context, uri).apply {
     configBlock?.invoke(this)
 }.build()
 
@@ -67,7 +67,7 @@ interface ImageRequest {
     val context: PlatformContext
 
     /** The uri of the image to be loaded. */
-    val uriString: String
+    val uri: String
 
     /**
      * The [TargetLifecycle] resolver for this request.
@@ -223,7 +223,7 @@ interface ImageRequest {
     class Builder {
 
         private val context: PlatformContext
-        private val uriString: String
+        private val uri: String
 
         private var target: Target? = null
 
@@ -231,16 +231,16 @@ interface ImageRequest {
         private val definedOptionsBuilder: ImageOptions.Builder
         private val definedRequestOptionsBuilder: RequestOptions.Builder
 
-        constructor(context: PlatformContext, uriString: String?) {
+        constructor(context: PlatformContext, uri: String?) {
             this.context = context
-            this.uriString = uriString.orEmpty()
+            this.uri = uri.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
             this.definedRequestOptionsBuilder = RequestOptions.Builder()
         }
 
         constructor(request: ImageRequest) {
             this.context = request.context
-            this.uriString = request.uriString
+            this.uri = request.uri
             this.target = request.target
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()
@@ -730,7 +730,7 @@ interface ImageRequest {
 
             return ImageRequestImpl(
                 context = context,
-                uriString = uriString,
+                uri = uri,
                 listener = listener,
                 progressListener = progressListener,
                 target = target,
@@ -800,7 +800,7 @@ interface ImageRequest {
 
     data class ImageRequestImpl internal constructor(
         override val context: PlatformContext,
-        override val uriString: String,
+        override val uri: String,
         override val listener: Listener?,
         override val progressListener: ProgressListener?,
         override val target: Target?,

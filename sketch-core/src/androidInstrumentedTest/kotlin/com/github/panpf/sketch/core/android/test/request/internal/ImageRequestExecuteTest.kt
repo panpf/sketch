@@ -131,7 +131,7 @@ class ImageRequestExecuteTest {
         val sketch = newSketch {
             httpStack(TestHttpStack(context))
         }
-        val imageUri = TestHttpStack.testImages.first().uriString
+        val imageUri = TestHttpStack.testImages.first().uri
 
         // default
         sketch.downloadCache.clear()
@@ -228,7 +228,7 @@ class ImageRequestExecuteTest {
             httpStack(TestHttpStack(context))
         }
         val diskCache = sketch.downloadCache
-        val imageUri = TestHttpStack.testImages.first().uriString
+        val imageUri = TestHttpStack.testImages.first().uri
 
         /* ENABLED */
         diskCache.clear()
@@ -1551,7 +1551,7 @@ class ImageRequestExecuteTest {
         ProgressListenerSupervisor().let { listenerSupervisor ->
             Assert.assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
 
-            ImageRequest(context, testImage.uriString) {
+            ImageRequest(context, testImage.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)

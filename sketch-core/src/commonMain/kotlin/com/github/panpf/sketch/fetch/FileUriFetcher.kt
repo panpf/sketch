@@ -33,10 +33,10 @@ class FileUriFetcher(
     companion object {
         const val SCHEME = "file"
 
-        fun parseFilePathFromFileUri(uriString: String): String? {
-            val uri = uriString.toUri()
-            return if (SCHEME.equals(uri.scheme, ignoreCase = true) || uriString.startsWith("/")) {
-                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
+        fun parseFilePathFromFileUri(uri: String): String? {
+            val uri1 = uri.toUri()
+            return if (SCHEME.equals(uri1.scheme, ignoreCase = true) || uri.startsWith("/")) {
+                val resourcePath = "${uri1.authority.orEmpty()}${uri1.path.orEmpty()}"
                 UrlEncoderUtil.decode(resourcePath)
             } else {
                 null
@@ -54,7 +54,7 @@ class FileUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
-            val path = parseFilePathFromFileUri(request.uriString) ?: return null
+            val path = parseFilePathFromFileUri(request.uri) ?: return null
             return FileUriFetcher(sketch, request, path.toPath())
         }
 

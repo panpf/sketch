@@ -27,11 +27,11 @@ class ImageRequestViewExtensionsTest {
     @Test
     fun testFun() {
         val context1 = getTestContext()
-        val uriString1 = MyImages.jpeg.uri
+        val uri = MyImages.jpeg.uri
         val imageView1 = ImageView(context1)
-        ImageRequest(imageView1, uriString1).apply {
+        ImageRequest(imageView1, uri).apply {
             Assert.assertSame(context1, this.context)
-            Assert.assertEquals("asset://sample.jpeg", uriString)
+            Assert.assertEquals("asset://sample.jpeg", uri)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertEquals(ImageViewTarget(imageView1), this.target)

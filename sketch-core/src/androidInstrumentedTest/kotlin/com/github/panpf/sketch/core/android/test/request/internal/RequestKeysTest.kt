@@ -61,9 +61,9 @@ class RequestKeysTest {
     @Test
     fun newRequestKey() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val uriString = "http://sample.com/sample.jpeg?from=sketch"
+        val uri = "http://sample.com/sample.jpeg?from=sketch"
 
-        var request = ImageRequest(context, uriString)
+        var request = ImageRequest(context, uri)
 
         val verifyKey: (String) -> Unit = { expectKey ->
             val key = request.newKey()
@@ -73,55 +73,55 @@ class RequestKeysTest {
         var _size = "&_size=${request.sizeResolver.key}"
         var _precision = "&_precision=${request.precisionDecider.key}"
         var _scale = "&_scale=${request.scaleDecider.key}"
-        verifyKey(uriString + _size + _precision + _scale)
+        verifyKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             registerListener(onStart = {})
         }
-        verifyKey(uriString + _size + _precision + _scale)
+        verifyKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             registerProgressListener { _, _ -> }
         }
-        verifyKey(uriString + _size + _precision + _scale)
+        verifyKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             depth(LOCAL, "test")
         }
         val _depth = "&_depth=LOCAL"
         var _parameters = "&_parameters=${request.parameters!!.requestKey}"
-        verifyKey(uriString + _depth + _parameters + _size + _precision + _scale)
+        verifyKey(uri + _depth + _parameters + _size + _precision + _scale)
 
         request = request.newRequest {
             setParameter(key = "type", value = "list")
         }
         _parameters = "&_parameters=${request.parameters!!.requestKey}"
-        verifyKey(uriString + _depth + _parameters + _size + _precision + _scale)
+        verifyKey(uri + _depth + _parameters + _size + _precision + _scale)
 
         request = request.newRequest {
             setParameter(key = "big", value = "true", cacheKey = null)
         }
         _parameters = "&_parameters=${request.parameters!!.requestKey}"
-        verifyKey(uriString + _depth + _parameters + _size + _precision + _scale)
+        verifyKey(uri + _depth + _parameters + _size + _precision + _scale)
 
         request = request.newRequest {
             setHttpHeader("from", "china")
         }
         val _httpHeaders = "&_httpHeaders=${request.httpHeaders!!}"
-        verifyKey(uriString + _depth + _parameters + _httpHeaders + _size + _precision + _scale)
+        verifyKey(uri + _depth + _parameters + _httpHeaders + _size + _precision + _scale)
 
         request = request.newRequest {
             downloadCachePolicy(READ_ONLY)
         }
         val _downloadCachePolicy = "&_downloadCachePolicy=READ_ONLY"
-        verifyKey(uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale)
+        verifyKey(uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale)
 
         request = request.newRequest {
             bitmapConfig(RGB_565)
         }
         _parameters = "&_parameters=${request.parameters!!.requestKey}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
         )
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -130,7 +130,7 @@ class RequestKeysTest {
             }
             _parameters = "&_parameters=${request.parameters!!.requestKey}"
             verifyKey(
-                uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
+                uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
             )
         }
 
@@ -141,7 +141,7 @@ class RequestKeysTest {
             }
             _parameters = "&_parameters=${request.parameters!!.requestKey}"
             verifyKey(
-                uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
+                uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
             )
         }
 
@@ -152,7 +152,7 @@ class RequestKeysTest {
         _precision = "&_precision=${request.precisionDecider.key}"
         _scale = "&_scale=${request.scaleDecider.key}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
         )
 
         request = request.newRequest {
@@ -160,7 +160,7 @@ class RequestKeysTest {
         }
         val _sizeMultiplier = "&_sizeMultiplier=${request.sizeMultiplier}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale
         )
 
@@ -172,7 +172,7 @@ class RequestKeysTest {
                 it.key.replace("Transformation", "")
             }.let { "&_transformations=$it" }
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
@@ -181,7 +181,7 @@ class RequestKeysTest {
         }
         val _resultCachePolicy = "&_resultCachePolicy=WRITE_ONLY"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy
         )
@@ -191,7 +191,7 @@ class RequestKeysTest {
         }
         val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage
         )
@@ -201,7 +201,7 @@ class RequestKeysTest {
         }
         val _resizeOnDraw = "&_resizeOnDraw=true"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw
         )
@@ -211,7 +211,7 @@ class RequestKeysTest {
         }
         val _memoryCachePolicy = "&_memoryCachePolicy=WRITE_ONLY"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _memoryCachePolicy
@@ -222,7 +222,7 @@ class RequestKeysTest {
         }
         val _transitionFactory = "&_transitionFactory=${CrossfadeTransition.Factory().key}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _memoryCachePolicy + _transitionFactory
@@ -237,7 +237,7 @@ class RequestKeysTest {
         }
         val _placeholder = "&_placeholder=${placeholder.key}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _memoryCachePolicy + _transitionFactory + _placeholder
@@ -249,7 +249,7 @@ class RequestKeysTest {
         }
         val _uriEmpty = "&_uriEmpty=${uriEmpty.key}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty
@@ -261,7 +261,7 @@ class RequestKeysTest {
         }
         val _error = "&_error=${ErrorStateImage(error).key}"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty + _error
@@ -279,7 +279,7 @@ class RequestKeysTest {
         val _decodeInterceptors = "&_decodeInterceptors=[TestDecodeInterceptor]"
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
         verifyKey(
-            uriString + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty + _error +
@@ -290,9 +290,9 @@ class RequestKeysTest {
     @Test
     fun newCacheKey() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val uriString = "http://sample.com/sample.jpeg?from=sketch"
+        val uri = "http://sample.com/sample.jpeg?from=sketch"
 
-        var request = ImageRequest(context, uriString)
+        var request = ImageRequest(context, uri)
 
         val verifyCacheKey: (String) -> Unit = { expectCacheKey ->
             val resizeSize = runBlocking { request.sizeResolver.size() }
@@ -304,50 +304,50 @@ class RequestKeysTest {
         var _size = "&_size=${resizeSize}"
         var _precision = "&_precision=${request.precisionDecider.key}"
         var _scale = "&_scale=${request.scaleDecider.key}"
-        verifyCacheKey(uriString + _size + _precision + _scale)
+        verifyCacheKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             registerListener(onStart = {})
         }
-        verifyCacheKey(uriString + _size + _precision + _scale)
+        verifyCacheKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             registerProgressListener { _, _ -> }
         }
-        verifyCacheKey(uriString + _size + _precision + _scale)
+        verifyCacheKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             depth(LOCAL, "test")
         }
-        verifyCacheKey(uriString + _size + _precision + _scale)
+        verifyCacheKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
             setParameter(key = "type", value = "list")
         }
         var _parameters = "&_parameters=${request.parameters!!.cacheKey}"
         verifyCacheKey(
-            uriString + _parameters + _size + _precision + _scale
+            uri + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
             setParameter(key = "big", value = "true", cacheKey = null)
         }
         verifyCacheKey(
-            uriString + _parameters + _size + _precision + _scale
+            uri + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
             setHttpHeader("from", "china")
         }
         verifyCacheKey(
-            uriString + _parameters + _size + _precision + _scale
+            uri + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
             downloadCachePolicy(READ_ONLY)
         }
         verifyCacheKey(
-            uriString + _parameters + _size + _precision + _scale
+            uri + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
@@ -355,7 +355,7 @@ class RequestKeysTest {
         }
         _parameters = "&_parameters=${request.parameters!!.cacheKey}"
         verifyCacheKey(
-            uriString + _parameters + _size + _precision + _scale
+            uri + _parameters + _size + _precision + _scale
         )
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -364,7 +364,7 @@ class RequestKeysTest {
             }
             _parameters = "&_parameters=${request.parameters!!.cacheKey}"
             verifyCacheKey(
-                uriString + _parameters + _size + _precision + _scale
+                uri + _parameters + _size + _precision + _scale
             )
         }
 
@@ -375,7 +375,7 @@ class RequestKeysTest {
             }
             _parameters = "&_parameters=${request.parameters!!.cacheKey}"
             verifyCacheKey(
-                uriString + _parameters + _size + _precision + _scale
+                uri + _parameters + _size + _precision + _scale
             )
         }
 
@@ -387,7 +387,7 @@ class RequestKeysTest {
         _precision = "&_precision=${request.precisionDecider.key}"
         _scale = "&_scale=${request.scaleDecider.key}"
         verifyCacheKey(
-            uriString + _parameters + _size + _precision + _scale
+            uri + _parameters + _size + _precision + _scale
         )
 
         request = request.newRequest {
@@ -395,7 +395,7 @@ class RequestKeysTest {
         }
         val _sizeMultiplier = "&_sizeMultiplier=${request.sizeMultiplier}"
         verifyCacheKey(
-            uriString + _parameters + _size + _sizeMultiplier + _precision + _scale
+            uri + _parameters + _size + _sizeMultiplier + _precision + _scale
         )
 
         request = request.newRequest {
@@ -406,14 +406,14 @@ class RequestKeysTest {
                 it.key.replace("Transformation", "")
             }.let { "&_transformations=$it" }
         verifyCacheKey(
-            uriString + _parameters + _size + _sizeMultiplier + _precision + _scale + _transformations
+            uri + _parameters + _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         request = request.newRequest {
             resultCachePolicy(WRITE_ONLY)
         }
         verifyCacheKey(
-            uriString + _parameters + _size + _sizeMultiplier + _precision + _scale + _transformations
+            uri + _parameters + _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         request = request.newRequest {
@@ -421,7 +421,7 @@ class RequestKeysTest {
         }
         val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -429,7 +429,7 @@ class RequestKeysTest {
             resizeOnDraw(true)
         }
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -437,7 +437,7 @@ class RequestKeysTest {
             memoryCachePolicy(WRITE_ONLY)
         }
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -445,7 +445,7 @@ class RequestKeysTest {
             transitionFactory(ViewCrossfadeTransition.Factory())
         }
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -457,7 +457,7 @@ class RequestKeysTest {
             placeholder(placeholder)
         }
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -466,7 +466,7 @@ class RequestKeysTest {
             uriEmpty(uriEmpty)
         }
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -475,7 +475,7 @@ class RequestKeysTest {
             error(error)
         }
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
@@ -491,7 +491,7 @@ class RequestKeysTest {
         val _decodeInterceptors = "&_decodeInterceptors=[TestDecodeInterceptor]"
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
         verifyCacheKey(
-            uriString + _parameters +
+            uri + _parameters +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }

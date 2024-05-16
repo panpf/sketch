@@ -12,7 +12,7 @@ import kotlin.math.abs
 
 /**
  * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
- * @param uri The uri of the image, if null use ImageRequest.uriString
+ * @param uri The uri of the image, if null use ImageRequest.uri
  */
 fun ThumbnailMemoryCacheStateImage(
     uri: String? = null,
@@ -29,7 +29,7 @@ interface ThumbnailMemoryCacheStateImage : StateImage {
 
 /**
  * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
- * @param uri The uri of the image, if null use ImageRequest.uriString
+ * @param uri The uri of the image, if null use ImageRequest.uri
  */
 private class ThumbnailMemoryCacheStateImageImpl(
     override val uri: String? = null,
@@ -44,7 +44,7 @@ private class ThumbnailMemoryCacheStateImageImpl(
         request: ImageRequest,
         throwable: Throwable?
     ): Image? {
-        val uri = uri ?: request.uriString
+        val uri = uri ?: request.uri
         val keys = sketch.memoryCache.keys()
         var targetCachedValue: MemoryCache.Value? = null
         var count = 0

@@ -17,7 +17,7 @@ internal actual fun getDataSourceCacheFile(
     dataSource: DataSource,
 ): Path? = runBlocking {
     val resultCache = sketch.resultCache
-    val resultCacheKey = request.uriString + "_data_source"
+    val resultCacheKey = request.uri + "_data_source"
     val snapshot = resultCache.withLock(resultCacheKey) {
         val snapshot = resultCache.openSnapshot(resultCacheKey)
         if (snapshot != null) {

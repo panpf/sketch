@@ -33,7 +33,7 @@ class MyFetcher : Fetcher {
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): MyFetcher? {
-          return if (request.uriString.startWith("$MY_SCHEME://")) {
+          return if (request.uri.startWith("$MY_SCHEME://")) {
                 MyFetcher()
             } else {
                 null

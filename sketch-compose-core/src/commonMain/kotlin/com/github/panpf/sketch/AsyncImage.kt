@@ -25,14 +25,13 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.internal.AsyncImageContent
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -53,7 +52,7 @@ import com.github.panpf.sketch.request.ImageRequest
 @Composable
 @NonRestartableComposable
 fun AsyncImage(
-    imageUri: String?,
+    uri: String?,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
@@ -65,7 +64,7 @@ fun AsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = AsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, imageUri),
+    request = ImageRequest(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,

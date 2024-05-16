@@ -65,6 +65,6 @@ class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataS
     }
 
     override fun toString(): String {
-        return "BitmapFactoryDecodeHelper(uri=${request.uriString}, dataSource=$dataSource)"
+        return "BitmapFactoryDecodeHelper(uri=${request.uri}, dataSource=$dataSource)"
     }
 }

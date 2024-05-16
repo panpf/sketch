@@ -55,7 +55,7 @@ expect fun createTileBitmapCache(
  * )
  * ```
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param imageUri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -197,7 +197,7 @@ private fun onPainterState(
     loadState: PainterState,
 ) {
     state.zoomable.logger.d {
-        "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uriString}'"
+        "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uri}'"
     }
     val zoomableState = state.zoomable
     val subsamplingState = state.subsampling
@@ -212,7 +212,7 @@ private fun onPainterState(
         is PainterState.Success -> {
             subsamplingState.disabledTileBitmapCache =
                 request.memoryCachePolicy != CachePolicy.ENABLED
-            val imageSource = SketchImageSource(context, sketch, request.uriString)
+            val imageSource = SketchImageSource(context, sketch, request.uri)
             subsamplingState.setImageSource(imageSource)
         }
 

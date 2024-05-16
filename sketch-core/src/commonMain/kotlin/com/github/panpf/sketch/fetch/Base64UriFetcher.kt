@@ -110,16 +110,16 @@ class Base64UriFetcher constructor(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? {
-            val uriString = request.uriString
-            val index = uriString.indexOf(":").takeIf { it != -1 } ?: return null
-            return ifOrNull(SCHEME.equals(uriString.substring(0, index), ignoreCase = true)) {
-                val mimeTypeEndSymbolIndex = uriString.indexOf(";")
-                val base64IdentifierIndex = uriString.indexOf(BASE64_IDENTIFIER)
+            val uri = request.uri
+            val index = uri.indexOf(":").takeIf { it != -1 } ?: return null
+            return ifOrNull(SCHEME.equals(uri.substring(0, index), ignoreCase = true)) {
+                val mimeTypeEndSymbolIndex = uri.indexOf(";")
+                val base64IdentifierIndex = uri.indexOf(BASE64_IDENTIFIER)
                 if (mimeTypeEndSymbolIndex != -1 && base64IdentifierIndex != -1) {
                     val mimeType =
-                        uriString.substring(SCHEME.length + 1, mimeTypeEndSymbolIndex)
+                        uri.substring(SCHEME.length + 1, mimeTypeEndSymbolIndex)
                     val imageDataBase64String =
-                        uriString.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
+                        uri.substring(base64IdentifierIndex + BASE64_IDENTIFIER.length)
                     Base64UriFetcher(
                         sketch = sketch,
                         request = request,
@@ -127,7 +127,7 @@ class Base64UriFetcher constructor(
                         imageDataBase64String = imageDataBase64String
                     )
                 } else {
-                    throw UriInvalidException("Invalid base64 image: $uriString")
+                    throw UriInvalidException("Invalid base64 image: $uri")
                 }
             }
         }

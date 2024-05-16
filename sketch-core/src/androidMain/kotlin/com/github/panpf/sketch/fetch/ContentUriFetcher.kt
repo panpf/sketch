@@ -44,7 +44,7 @@ class ContentUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {
-            val uri = request.uriString.toUri()
+            val uri = request.uri.toUri()
             return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
                 ContentUriFetcher(sketch, request, uri)
             } else {

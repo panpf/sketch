@@ -71,7 +71,7 @@ interface ErrorStateImage : CombinedStateImage {
     data object UriEmptyCondition : CombinedStateImage.Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
-            throwable is UriInvalidException && (request.uriString.isEmpty() || request.uriString.isBlank())
+            throwable is UriInvalidException && (request.uri.isEmpty() || request.uri.isBlank())
 
     }
 }

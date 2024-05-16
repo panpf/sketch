@@ -82,12 +82,12 @@ fun PhotoPager(
             photos.size
         }
 
-        val uriString = photos[pagerState.currentPage].let {
+        val uri = photos[pagerState.currentPage].let {
             it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl
         }
         val colorScheme = MaterialTheme.colorScheme
         val buttonBgColorState = remember { mutableStateOf(colorScheme.primary) }
-        PagerBackground(uriString, buttonBgColorState)
+        PagerBackground(uri, buttonBgColorState)
 
         HorizontalPager(
             state = pagerState,

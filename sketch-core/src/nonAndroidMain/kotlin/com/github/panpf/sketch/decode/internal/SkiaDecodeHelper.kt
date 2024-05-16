@@ -49,6 +49,6 @@ class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : 
     }
 
     override fun toString(): String {
-        return "SkiaDecodeHelper(uri=${request.uriString}, imageInfo=$imageInfo, supportRegion=$supportRegion)"
+        return "SkiaDecodeHelper(uri=${request.uri}, imageInfo=$imageInfo, supportRegion=$supportRegion)"
     }
 }

@@ -24,13 +24,12 @@ import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.layout.ContentScale
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -53,7 +52,7 @@ import com.github.panpf.sketch.request.ImageRequest
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    imageUri: String?,
+    uri: String?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -67,7 +66,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = SubcomposeAsyncImage(
-    imageUri = imageUri,
+    uri = uri,
     contentDescription = contentDescription,
     sketch = SingletonSketch.get(LocalPlatformContext.current),
     modifier = modifier,
@@ -86,7 +85,7 @@ fun SubcomposeAsyncImage(
 /**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
  *
- * @param imageUri [ImageRequest.uriString] value.
+ * @param uri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -107,7 +106,7 @@ fun SubcomposeAsyncImage(
 @Composable
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
-    imageUri: String?,
+    uri: String?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -118,7 +117,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
 ) = SubcomposeAsyncImage(
-    imageUri = imageUri,
+    uri = uri,
     contentDescription = contentDescription,
     sketch = SingletonSketch.get(LocalPlatformContext.current),
     modifier = modifier,

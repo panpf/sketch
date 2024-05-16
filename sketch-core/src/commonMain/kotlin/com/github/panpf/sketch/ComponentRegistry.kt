@@ -94,7 +94,7 @@ open class ComponentRegistry private constructor(
     internal fun newFetcherOrThrow(sketch: Sketch, request: ImageRequest): Fetcher {
         return newFetcherOrNull(sketch, request)
             ?: throw IllegalArgumentException(
-                "No Fetcher can handle this uri '${request.uriString}', " +
+                "No Fetcher can handle this uri '${request.uri}', " +
                         "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
             )
     }
@@ -123,7 +123,7 @@ open class ComponentRegistry private constructor(
     ): Decoder {
         return newDecoderOrNull(requestContext, fetchResult)
             ?: throw IllegalArgumentException(
-                "No Decoder can handle this uri '${requestContext.request.uriString}', " +
+                "No Decoder can handle this uri '${requestContext.request.uri}', " +
                         "please pass ComponentRegistry.Builder.addDecoder() function to add a new Decoder to support it"
             )
     }

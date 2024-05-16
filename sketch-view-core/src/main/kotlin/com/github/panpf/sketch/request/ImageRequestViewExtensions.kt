@@ -25,9 +25,9 @@ import com.github.panpf.sketch.target.ImageViewTarget
  */
 fun ImageRequest(
     imageView: ImageView,
-    uriString: String?,
+    uri: String?,
     configBlock: (Builder.() -> Unit)? = null
-): ImageRequest = Builder(imageView.context, uriString).apply {
+): ImageRequest = Builder(imageView.context, uri).apply {
     target(imageView)
     configBlock?.invoke(this)
 }.build()

@@ -57,7 +57,7 @@ class EngineRequestInterceptorTest {
 
         executeRequest(ImageRequest(context, MyImages.jpeg.uri)).asOrThrow<ImageData>()
 
-        executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uriString))
+        executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uri))
             .asOrThrow<ImageData>()
 
         val sketch1 = newSketch {
