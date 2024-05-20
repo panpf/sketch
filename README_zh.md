@@ -1,29 +1,41 @@
 # ![logo_image] Sketch Image Loader
 
 ![Platform][platform_image]
-[![API][min_api_image]][min_api_link]
 [![License][license_image]][license_link]
 [![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
 翻译：[English](README.md)
 
-Sketch 是 Android 上的一个强大且全面的图片加载库，除了基础功能外，还支持 Jetpack
-Compose、GIF、SVG、视频缩略图、超大图采样、ExifInterface 等功能。
+Sketch 是一个强大且全面的图片加载库，它支持 Compose Multiplatform 以及 Android View，除了基础功能外还支持
+GIF、SVG、视频帧等功能。
 
 ## 特点
 
-* 支持 http、asset、content、android.resource 等多种 URI
-* 支持播放 gif、webp、heif 等动图
-* 支持下载、转换结果、内存三级缓存
-* 支持通过 Exif 纠正图片方向
-* 支持 Base64、视频帧、SVG 图片
-* 支持 Jetpack Compose
-* 支持根据 view 大小自动调整图片尺寸
-* 支持仅加载图片到内存或仅下载图片到磁盘
-* 支持节省蜂窝流量等各种实用功能
-* 支持对 URI、缓存、解码、转换、显示、占位图等各个环节的扩展
-* 基于 Kotlin 及 Kotlin 协程编写
+* `多平台`：支持 Compose Multiplatform 以及 Android View
+* `丰富的 Fetcher`：支持从 http、file、compose.resource、android asset/content/resource 等多种 URI 加载图片
+* `支持动图`：支持播放 gif、webp、heif 等动图
+* `多级缓存`：支持下载、转换结果、内存三级缓存
+* `功能丰富`：支持 Base64 图片、视频帧、SVG 图片、读取 Exif
+* `易于使用`：自动根据 target 大小调整图片尺寸
+* `易于扩展`：支持对 URI、缓存、解码、转换、显示、占位图等各个环节的扩展
+* `现代化`：完全基于 Kotlin 及 Kotlin 协程编写
+* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章等各种实用扩展
+
+## 多平台支持
+
+| 功能/平台  | Android<br>Compose | Android<br>View | iOS | 桌面      | Web |
+|:-------|:-------------------|:----------------|:----|:--------|:----|
+| 内存缓存   | ✅                  | ✅               | ✅   | ✅       | ✅   |
+| 结果缓存   | ✅                  | ✅               | ✅   | ✅       | ✅   |
+| 磁盘缓存   | ✅                  | ✅               | ✅   | ✅       | ❌   |
+| 动图     | ✅                  | ✅               | ✅   | ✅       | ✅   |
+| SVG    | ✅                  | ✅               | ✅   | ✅       | ✅   |
+| 视频帧    | ✅                  | ✅               | ❌   | ❌       | ❌   |
+| Exif   | ✅                  | ✅               | ✅   | ✅       | ✅   |
+| 最低 API | API 21             | API 21          | -   | JDK 1.8 | -   |
+
+> 最低 API 是 '-' 表示和 Compose Multiplatform 同步
 
 ## 导入
 
@@ -223,19 +235,16 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [logo_image]: docs/res/logo.png
 
-[platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
+[platform_image]: https://img.shields.io/badge/Platform-ComposeMultiplatform-brightgreen.svg
 
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 
-[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch3/sketch
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
 
-[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch3/
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
-[min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
-
-[min_api_link]: https://android-arsenal.com/api?level=16
 
 [qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
 
