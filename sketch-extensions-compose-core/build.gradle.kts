@@ -9,8 +9,9 @@ addAllMultiplatformTargets()
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.sketchExtensionsComposeCore)
-            api(projects.sketchCompose)
+            api(projects.sketchComposeCore)
+            api(projects.sketchExtensionsCore)
+            api(compose.foundation)
         }
 
         commonTest.dependencies {
@@ -19,4 +20,4 @@ kotlin {
     }
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.compose")
+androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.compose.core")
