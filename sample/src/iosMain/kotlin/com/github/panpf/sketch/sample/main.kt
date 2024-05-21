@@ -16,8 +16,8 @@ import cafe.adriel.voyager.transitions.ScaleTransition
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
-import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
+import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
+import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
@@ -70,8 +70,8 @@ private fun initialSketch() {
             logger(Logger(level = Logger.level(appSettings.logLevel.value)))
             components {
                 supportSvg()
-                addDecoder(GifAnimatedSkiaDecoder.Factory())
-                addDecoder(WebpAnimatedSkiaDecoder.Factory())
+                addDecoder(GifSkiaAnimatedDecoder.Factory())
+                addDecoder(WebpSkiaAnimatedDecoder.Factory())
             }
         }.build().apply {
             @Suppress("OPT_IN_USAGE")

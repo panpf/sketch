@@ -13,7 +13,7 @@ import okio.buffer
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 
-open class AnimatedSkiaDecoder(
+open class SkiaAnimatedDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : Decoder {

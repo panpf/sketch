@@ -22,8 +22,8 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
-import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
+import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
+import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.http.HurlStack
@@ -42,7 +42,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.harawata.appdirs.AppDirsFactory
-import okio.ByteString.Companion.encodeUtf8
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.sink
@@ -121,8 +120,8 @@ private fun initialSketch() {
             components {
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
                 supportSvg()
-                addDecoder(GifAnimatedSkiaDecoder.Factory())
-                addDecoder(WebpAnimatedSkiaDecoder.Factory())
+                addDecoder(GifSkiaAnimatedDecoder.Factory())
+                addDecoder(WebpSkiaAnimatedDecoder.Factory())
             }
             logger(Logger(level = Logger.level(appSettings.logLevel.value)))
         }.build().apply {

@@ -5,12 +5,10 @@ import androidx.compose.ui.window.CanvasBasedWindow
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.decode.GifAnimatedSkiaDecoder
-import com.github.panpf.sketch.decode.WebpAnimatedSkiaDecoder
+import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
+import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.util.Logger
-import io.ktor.http.LinkHeader.Parameters.Title
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.skiko.wasm.onWasmReady
@@ -30,8 +28,8 @@ private fun initialSketch() {
         Sketch.Builder(context).apply {
             components {
                 supportSvg()
-                addDecoder(GifAnimatedSkiaDecoder.Factory())
-                addDecoder(WebpAnimatedSkiaDecoder.Factory())
+                addDecoder(GifSkiaAnimatedDecoder.Factory())
+                addDecoder(WebpSkiaAnimatedDecoder.Factory())
             }
             logger(Logger(level = Logger.level(appSettings.logLevel.value)))
         }.build().apply {

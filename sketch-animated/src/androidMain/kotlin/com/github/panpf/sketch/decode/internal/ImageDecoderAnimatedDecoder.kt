@@ -58,7 +58,7 @@ import java.nio.ByteBuffer
  * * onAnimationEnd
  */
 @RequiresApi(Build.VERSION_CODES.P)
-open class AnimatedImageDecoderDecoder(
+open class ImageDecoderAnimatedDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
 ) : Decoder {

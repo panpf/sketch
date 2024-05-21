@@ -19,7 +19,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.decode.internal.AnimatedImageDecoderDecoder
+import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.FetchResult
@@ -48,7 +48,7 @@ fun ComponentRegistry.Builder.supportAnimatedHeif(): ComponentRegistry.Builder =
 class HeifAnimatedDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,
-) : AnimatedImageDecoderDecoder(requestContext, dataSource) {
+) : ImageDecoderAnimatedDecoder(requestContext, dataSource) {
 
     class Factory : Decoder.Factory {
 

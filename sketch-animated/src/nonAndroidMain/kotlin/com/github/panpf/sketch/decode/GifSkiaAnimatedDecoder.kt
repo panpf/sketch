@@ -1,27 +1,27 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.decode.internal.AnimatedSkiaDecoder
+import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 
-class GifAnimatedSkiaDecoder(
+class GifSkiaAnimatedDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,
-) : AnimatedSkiaDecoder(requestContext, dataSource) {
+) : SkiaAnimatedDecoder(requestContext, dataSource) {
 
     class Factory : Decoder.Factory {
 
-        override val key: String = "GifAnimatedSkiaDecoder"
+        override val key: String = "GifSkiaAnimatedDecoder"
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
             if (!requestContext.request.disallowAnimatedImage) {
                 val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
                 val isGif = imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()
                 if (isGif) {
-                    return GifAnimatedSkiaDecoder(requestContext, fetchResult.dataSource)
+                    return GifSkiaAnimatedDecoder(requestContext, fetchResult.dataSource)
                 }
             }
             return null
@@ -36,6 +36,6 @@ class GifAnimatedSkiaDecoder(
             return this@Factory::class.hashCode()
         }
 
-        override fun toString(): String = "GifAnimatedSkiaDecoder"
+        override fun toString(): String = "GifSkiaAnimatedDecoder"
     }
 }

@@ -19,7 +19,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.decode.internal.AnimatedImageDecoderDecoder
+import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
@@ -48,7 +48,7 @@ fun ComponentRegistry.Builder.supportAnimatedGif(): ComponentRegistry.Builder = 
 class GifAnimatedDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,
-) : AnimatedImageDecoderDecoder(requestContext, dataSource) {
+) : ImageDecoderAnimatedDecoder(requestContext, dataSource) {
 
     class Factory : Decoder.Factory {
 

@@ -1,5 +1,5 @@
 package com.github.panpf.sketch.animated.nonandroid.test
 
-class WebpAnimatedSkiaDecoderTest {
+class WebpSkiaAnimatedDecoderTest {
     // TODO test
 }
