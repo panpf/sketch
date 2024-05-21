@@ -35,7 +35,7 @@ dependencies {
     // The core functionality of Sketch is provided as well as a singleton and some 
     // handy extension functions that depend on this singleton implementation, 
     // and if you don't need a singleton, you can use the sketch-core module
-    implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch:${LAST_VERSION}")
 }
 ```
 
@@ -48,37 +48,37 @@ dependencies {
     // Support for Jetpack Compose.
     // It relies on the singletons provided by the sketch module, 
     // and you can use the sketch-compose-core module if you don't need the singleton pattern
-    implementation("io.github.panpf.sketch3:sketch-compose:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
 
     // Provides View with practical functions such as download progress, 
     // pausing loading during list sliding, saving cellular data, 
     // image type corner icons, loading apk files and installed app icons, etc.
     // It relies on the singleton provided by the sketch module. 
     // If you do not need the singleton mode, you can use the sketch-view-core module.
-    implementation("io.github.panpf.sketch3:sketch-extensions-view:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
     // Provide Compose with practical functions such as download progress, 
     // pausing loading during list sliding, saving cellular data, 
     // image type corner icons, loading apk files and installed app icons, etc.
-    implementation("io.github.panpf.sketch3:sketch-extensions-compose:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
 
     // GIF playback is achieved through Android's built-in ImageDecoder and Movie class
-    implementation("io.github.panpf.sketch3:sketch-gif:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 
     // GifDrawable through Koral's android-gif-drawable library
-    implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
 
     // Support for OkHttp
-    implementation("io.github.panpf.sketch3:sketch-okhttp:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-okhttp:${LAST_VERSION}")
 
     // SVG images are supported
-    implementation("io.github.panpf.sketch3:sketch-svg:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
     // Video frames are read through Android's built-in MediaMetadataRetriever class
-    implementation("io.github.panpf.sketch3:sketch-video:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
 
     // Video frames are read through wseemann's FFmpegMediaMetadataRetriever library
-    implementation("io.github.panpf.sketch3:sketch-video-ffmpeg:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 }
 ```
 
@@ -192,7 +192,7 @@ Please review the [CHANGELOG.md] file
 
 ### About version 3.0
 
-* The maven groupId was changed to 'io.github.panpf.sketch3', so version 2.\* will not prompt for an
+* The maven groupId was changed to 'io.github.panpf.sketch4', so version 2.\* will not prompt for an
   upgrade
 * The package name was changed to 'com.github.panpf.sketch' so it does not conflict with version
   2.\*
@@ -214,7 +214,8 @@ Please review the [CHANGELOG.md] file
 
 ## Special thanks
 
-* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose, sketch-gif-movie
+* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose,
+  sketch-animated-movie
   parts
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral
@@ -249,9 +250,9 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 
-[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch3/sketch
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch
 
-[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch3/
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
 

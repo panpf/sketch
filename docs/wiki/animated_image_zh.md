@@ -4,19 +4,19 @@
 
 Sketch 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [Decoder] 提供支持，如下：
 
-| Type          | Decoder               | APi Limit    | Additional Module |
-|:--------------|:----------------------|:-------------|:------------------|
-| GIF           | [GifAnimatedDecoder]  | Android 9+   | sketch-gif        |
-| GIF           | [GifMovieDecoder]     | Android 4.4+ | sketch-gif        |
-| GIF           | [GifDrawableDecoder]  | Android 4.1+ | sketch-gif-koral  |
-| WEBP Animated | [WebPAnimatedDecoder] | Android 9+   | sketch-gif        |
-| HEIF Animated | [HeifAnimatedDecoder] | Android 11+  | sketch-gif        |
+| Type          | Decoder               | APi Limit    | Additional Module        |
+|:--------------|:----------------------|:-------------|:-------------------------|
+| GIF           | [GifAnimatedDecoder]  | Android 9+   | sketch-animated          |
+| GIF           | [GifMovieDecoder]     | Android 4.4+ | sketch-animated          |
+| GIF           | [GifDrawableDecoder]  | Android 4.1+ | sketch-animated-koralgif |
+| WEBP Animated | [WebPAnimatedDecoder] | Android 9+   | sketch-animated          |
+| HEIF Animated | [HeifAnimatedDecoder] | Android 11+  | sketch-animated          |
 
 > 注意：
 > 1. GIF 提供了三种 [Decoder] 可以根据 app 支持的最低版本选择合适的
-> 2. `sketch-gif` 模块使用 Android 自带的 [ImageDecoder] 和 [Movie] 类实现播放
+> 2. `sketch-animated` 模块使用 Android 自带的 [ImageDecoder] 和 [Movie] 类实现播放
      GIF、WEBP、HEIF，不会额外增加包体积
-> 3. `sketch-gif-koral` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放
+> 3. `sketch-animated-koralgif` 模块使用 [koral--]/[android-gif-drawable] 库的 [GifDrawable] 类实现播放
      gif，库体积大概 250 KB
 
 ## 注册动图解码器
@@ -121,15 +121,15 @@ ImageRequest.lifecycle 的状态，如果 lifecycle 的状态大于 start 就开
 
 [Decoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
-[GifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
+[GifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
-[HeifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
+[HeifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
 
-[WebpAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
+[WebpAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
 
-[GifDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
+[GifDrawableDecoder]: ../../sketch-animated-koralgif/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
 
-[GifMovieDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
+[GifMovieDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

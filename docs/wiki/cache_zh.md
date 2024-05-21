@@ -12,7 +12,7 @@ Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、�
 
 * 根据最少使用原则清除旧的缓存
 * 默认最大容量是 300MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`，另外为了兼容多进程，当在非主进程使用
+* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/download`，另外为了兼容多进程，当在非主进程使用
   Sketch
   时缓存目录名称后会加上进程名，例如 "download:push"
 
@@ -91,7 +91,7 @@ try {
 
 * 根据最少使用原则清除旧的缓存
 * 默认最大容量是 200MB
-* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`，另外为了兼容多进程，当在非主进程使用
+* 默认缓存目录是 `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/result`，另外为了兼容多进程，当在非主进程使用
   Sketch
   时缓存目录名称后会加上进程名，例如 "result:push"
 

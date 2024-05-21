@@ -14,7 +14,7 @@ is [LruDiskCache]:
 
 * Purge old caches based on the principle of least use
 * The default maximum size is 300MB
-* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/download`,
+* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/download`,
   and in order to be multi-process-compatible, Sketch is used in a non-primary process
   When cache the directory name, the process name is appended, e.g. "download:push"
 
@@ -97,7 +97,7 @@ is [LruDiskCache]:
 
 * Purge old caches based on the principle of least use
 * The default maximum size is 200MB
-* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch3/result`, and
+* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/result`, and
   in order to be compatible with multiple processes, it should be used in non-primary processes
   When cache Sketch, the process name is appended to the directory name, e.g. "result:push"
 

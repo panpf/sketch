@@ -37,54 +37,61 @@ GIF、SVG、视频帧等功能。
 
 > 最低 API 是 '-' 表示和 Compose Multiplatform 同步
 
-## 导入
+## 下载
 
-`已发布到 mavenCentral`
-
-```kotlin
-dependencies {
-    // 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数，
-    // 如果不需要单例可以使用 sketch-core 模块
-    implementation("io.github.panpf.sketch3:sketch:${LAST_VERSION}")
-}
-```
+`Sketch 已发布到 mavenCentral`
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+
+Compose Multiplatform:
+
+```kotlin
+// 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数
+implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
+```
+
+Android View:
+
+```kotlin
+// 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数
+implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
+```
 
 还有一些可选的模块用来扩展 sketch 的功能：
 
 ```kotlin
 dependencies {
-    // 支持 Jetpack Compose
-    // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-compose-core 模块
-    implementation("io.github.panpf.sketch3:sketch-compose:${LAST_VERSION}")
+    // 通过 Android 或 Skia 内置的解码器实现解码 gif、webp、heif 等动图并播放
+    implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 
-    // 为 View 提供下载进度、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
-    // 它依赖 sketch 模块提供的单例，如果不需要单例模式可以使用 sketch-view-core 模块
-    implementation("io.github.panpf.sketch3:sketch-extensions-view:${LAST_VERSION}")
+    // [仅 Android] 通过 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
+    implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
+    
+    // 提供下载进度、列表滚动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk icon 和已安装 app icon 等实用功能
+    implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
-    // 为 Compose 提供下载进度、列表滑动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk 文件和已安装 app 图标等实用功能
-    implementation("io.github.panpf.sketch3:sketch-extensions-compose:${LAST_VERSION}")
+    // [仅 JVM] 支持通过 OkHttp 来下载图片
+    implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
 
-    // 通过 Android 内置的 ImageDecoder 和 Movie 类实现 gif 播放
-    implementation("io.github.panpf.sketch3:sketch-gif:${LAST_VERSION}")
-
-    // 通过 koral 的 android-gif-drawable 库的 GifDrawable 实现 gif 播放
-    implementation("io.github.panpf.sketch3:sketch-gif-koral:${LAST_VERSION}")
-
-    // 支持 OkHttp
-    implementation("io.github.panpf.sketch3:sketch-okhttp:${LAST_VERSION}")
+    // [仅 JVM] 支持通过 ktor 来下载图片
+    implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
 
     // 支持 SVG 图片
-    implementation("io.github.panpf.sketch3:sketch-svg:${LAST_VERSION}")
+    implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
-    // 通过 Android 内置的 MediaMetadataRetriever 类实现读取视频帧
-    implementation("io.github.panpf.sketch3:sketch-video:${LAST_VERSION}")
+    // [仅 Android] 通过 Android 内置的 MediaMetadataRetriever 类实现解码视频帧
+    implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
 
-    // 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现读取视频帧
-    implementation("io.github.panpf.sketch3:sketch-video-ffmpeg:${LAST_VERSION}")
+    // [仅 Android] 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现解码视频帧
+    implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 }
 ```
+
+> [!TIP]
+> * `sketch-compose`、`sketch-view`、`sketch-extensions-compose`、`sketch-extensions-view`
+    模块都依赖 `sketch-singleton` 模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
+> * 在 Android 上 sketch-compose 和 sketch-view 可以一起使用
 
 #### R8 / Proguard
 
@@ -92,6 +99,12 @@ Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 添加混淆配置
 
 ## 快速上手
+
+#### 初始化 Sketch
+
+直接依赖 `sketch-compose`、`sketch-view` 模块时，由于已经间接依赖了 `sketch-singleton`
+模块，拥有了单例，所以不需要初始化即可通过提供的
+AsyncImage 函数和 displayImage 函数直接加载图片，但在桌面平台上由于无法确定磁盘缓存的位置
 
 #### ImageView
 
@@ -195,7 +208,7 @@ AsyncImage(
 
 ### 关于 3.0 版本
 
-* maven groupId 改为 `io.github.panpf.sketch3`，因此 2.\* 版本不会提示升级
+* maven groupId 改为 `io.github.panpf.sketch4`，因此 2.\* 版本不会提示升级
 * 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
 * 基于 kotlin 协程重写，API、功能实现全部重构，当一个新的库用
 * 不再要求必须使用 SketchImageView，任何 ImageView 及其子类都可以，结合自定义 Target 可以支持任意 View
@@ -211,7 +224,8 @@ AsyncImage(
 
 ## 特别感谢
 
-* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose、sketch-gif-movie 部分
+* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose、sketch-animated-movie
+  部分
 * [chrisbanes]/[PhotoView]: Zoom
 * [koral--]/[android-gif-drawable]: gif-koral
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg

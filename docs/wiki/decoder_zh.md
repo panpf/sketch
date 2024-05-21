@@ -120,15 +120,15 @@ class MyDecoder : Decoder {
 
 [DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
 
-[GifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
+[GifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
-[HeifAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
+[HeifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
 
-[WebpAnimatedDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
+[WebpAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
 
-[GifDrawableDecoder]: ../../sketch-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
+[GifDrawableDecoder]: ../../sketch-animated-koralgif/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
 
-[GifMovieDecoder]: ../../sketch-gif/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
+[GifMovieDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
