@@ -5,3 +5,4 @@ import okio.Path
 
 // Unable to build the cache directory because we don’t know the package name of the desktop app.
 actual fun PlatformContext.appCacheDirectory(): Path? = null
+// TODO Give a default cache directory, or do not support caching and cannot crash.

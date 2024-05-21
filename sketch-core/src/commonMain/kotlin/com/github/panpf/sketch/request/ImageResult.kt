@@ -22,7 +22,6 @@ import com.github.panpf.sketch.decode.ImageInfo
 /**
  * Result of [ImageRequest]
  */
-//@Stable // TODO
 interface ImageResult {
 
     val request: ImageRequest

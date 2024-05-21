@@ -66,7 +66,6 @@ import okio.FileSystem
  * Sketch is designed to be sharable and works best when the same instance is used throughout the
  * application via the built-in extension function `Context.sketch`
  */
-//@Stable // TODO
 class Sketch private constructor(options: Options) {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->

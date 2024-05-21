@@ -55,7 +55,6 @@ fun ImageRequest(
 /**
  * An immutable image request that contains all the required parameters,
  */
-//@Stable // TODO
 interface ImageRequest {
 
     /**

@@ -23,7 +23,6 @@ import com.github.panpf.sketch.util.Size
 val Image.size: Size
     get() = Size(width, height)
 
-//@Stable // TODO
 interface Image {
 
     /** The width of the image in pixels. */
