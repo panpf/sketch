@@ -19,7 +19,6 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.defaultMemoryCacheSizePercent
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong
 
@@ -109,7 +108,7 @@ interface MemoryCache {
          * available memory.
          */
         fun maxSizePercent(
-            percent: Double = context.defaultMemoryCacheSizePercent()
+            percent: Double = context.platformDefaultMemoryCacheSizePercent()
         ) = apply {
             require(percent in 0.1..1.0) { "percent must be in the range [0.1, 1.0]." }
             this.maxSizePercent = percent
@@ -122,13 +121,17 @@ interface MemoryCache {
                 maxSizeBytes
             } else {
                 val totalAvailableMemoryBytes = context.totalAvailableMemoryBytes()
-                val finalMaxSizePercent = maxSizePercent ?: context.defaultMemoryCacheSizePercent()
+                val finalMaxSizePercent =
+                    maxSizePercent ?: context.platformDefaultMemoryCacheSizePercent()
                 (totalAvailableMemoryBytes * finalMaxSizePercent).roundToLong()
             }
             return LruMemoryCache(finalMaxSizeBytes)
         }
     }
 }
+
+/** Return the default percent of the application's total memory to use for the memory cache. */
+internal expect fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double
 
 val RequestContext.memoryCacheKey: String
     get() = cacheKey
