@@ -119,7 +119,6 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(compose.preview)
-            implementation(libs.appdirs)
         }
         jvmCommonMain.dependencies {
             implementation(projects.sketchHttpOkhttp)

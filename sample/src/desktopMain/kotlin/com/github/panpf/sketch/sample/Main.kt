@@ -17,11 +17,10 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSvg
@@ -35,14 +34,12 @@ import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.sample.util.sha256String
-import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.harawata.appdirs.AppDirsFactory
-import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.sink
 import java.io.File
@@ -110,13 +107,6 @@ private fun initialSketch() {
                 else -> throw IllegalArgumentException("Unknown httpClient: ${appSettings.httpClient.value}")
             }
             httpStack(httpStack)
-            val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
-                /* appName = */ appId,
-                /* appVersion = */ null,
-                /* appAuthor = */ null,
-            )!!.let { File(it) }
-            downloadCacheOptions(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
-            resultCacheOptions(DiskCache.Options(appCacheDirectory = cacheDir.toOkioPath()))
             components {
                 addRequestInterceptor(PexelsCompatibleRequestInterceptor())
                 supportSvg()

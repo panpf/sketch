@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.DiskCache.ResultBuilder.Companion.INTERNAL_VERSION
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -198,17 +197,17 @@ interface DiskCache : Closeable {
 
             val directory = directory
             val appCacheDirectory = appCacheDirectory
-            val maxSizeBytes = maxSize
-            val appVersion = appVersion
             val finalDirectory = directory
-                ?: appCacheDirectory?.resolve(DIRECTORY_NAME)
+                ?: (appCacheDirectory ?: context.appCacheDirectory())
+                    ?.resolve(DIRECTORY_NAME)
                     ?.let { if (subDirectoryName != null) it.resolve(subDirectoryName) else it }
-                ?: requireNotNull(context.appCacheDirectory()) {
-                    "The current platform cannot automatically obtain the cache directory of the App. Please configure it proactively. Documentation url 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
-                }.resolve(DIRECTORY_NAME)
-                    .let { if (subDirectoryName != null) it.resolve(subDirectoryName) else it }
+                ?: return EmptyDiskCache(fileSystem)
+
+            val maxSizeBytes = maxSize
             val finalMaxSizeBytes = maxSizeBytes
                 ?: (platformDefaultMaxSize * maxSizePercent).roundToLong()
+
+            val appVersion = appVersion
             val finalAppVersion = appVersion ?: DEFAULT_APP_VERSION
             return LruDiskCache(
                 context = context,

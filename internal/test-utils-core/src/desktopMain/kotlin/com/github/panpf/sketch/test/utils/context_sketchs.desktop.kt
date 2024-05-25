@@ -16,16 +16,7 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.PlatformContext
-import net.harawata.appdirs.AppDirsFactory
+import com.github.panpf.sketch.util.appCacheDirectory
 import okio.Path
-import okio.Path.Companion.toOkioPath
-import java.io.File
 
-actual fun PlatformContext.getTestDiskCacheDirectory(): Path? {
-    val cacheDir = AppDirsFactory.getInstance().getUserCacheDir(
-        /* appName = */ "com.github.panpf.sketch.test",
-        /* appVersion = */ null,
-        /* appAuthor = */ null,
-    )!!.let { File(it) }
-    return cacheDir.toOkioPath()
-}
+actual fun PlatformContext.getTestDiskCacheDirectory(): Path? = appCacheDirectory()

@@ -22,6 +22,7 @@ kotlin {
         }
         desktopMain.dependencies {
             api(libs.kotlinx.coroutines.swing)
+            api(libs.appdirs)
         }
         nonAndroidMain.dependencies {
             api(libs.skiko)
