@@ -2,59 +2,38 @@
 
 翻译：[English](getting_started.md)
 
-## 支持的 URI
+Sketch 加载图片的流程一句话概括就是创建一个 ImageRequest，然后把 ImageRequest 交给 Sketch 执行，如下：
 
-| 协议                     | 描述               | 创建函数             |
-|:-----------------------|:-----------------|:-----------------|
-| http://, https://      | File in network  | _                |
-| /, file://             | File in SDCard   | newFileUri()     |
-| content://             | Content Resolver | _                |
-| asset://               | Asset Resource   | newAssetUri()    |
-| android.resource://    | Android Resource | newResourceUri() |
-| data:image/, data:img/ | Base64           | newBase64Uri()   |
-| app.icon://            | App Icon         | newAppIconUri()  |
+```
+val imageRequest = ImageRequest(context, "https://www.example.com/image.jpg") {
+    // config params
+}
+sketch.enqueue(imageRequest)
+```
 
-> 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
+各自的职责如下：
 
-每一种 URI 都有对应的 Fetcher 对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
+* [Sketch] 用来执行 [ImageRequest]，并处理下载、缓存、解码、转换以及请求管理、内存管理等工作
+* [ImageRequest] 用来定义图片的 uri、占位图、转换、过渡、新的尺寸、Target 以及 Listener
 
-## 支持的图片类型
-
-| 类型            | API 限制      | 额外依赖模块                                      |
-|:--------------|:------------|:--------------------------------------------|
-| jpeg          | _           | _                                           |
-| png           | _           | _                                           |
-| bmp           | _           | _                                           |
-| webp          | _           | _                                           |
-| svg           | _           | sketch-svg                                  |
-| heif          | Android 9+  | _                                           |
-| gif           | _           | sketch-animated<br>sketch-animated-koralgif |
-| webp Animated | Android 9+  | _                                           |
-| heif Animated | Android 11+ | _                                           |
-| video frames  | _           | sketch-video<br>sketch-video-ffmpeg         |
-
-每一种图片类型都有对应的 Decoder
-对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
-
-## Sketch
-
-[Sketch] 类用来执行 [ImageRequest]，并处理图片下载、缓存、解码、转换、请求管理、内存管理等工作。
+## 创建 Sketch
 
 ### 单例模式
 
-默认情况下推荐依赖 `sketch` 模块，它提供了 Sketch 的单例以及一些便捷的扩展函数
-
-单例模式下可以通过 Context 的扩展函数获取 Sketch，如下：
+单例模式下不需要主动创建 Sketch，可以通过以下方式获取共享的 Sketch 实例：
 
 ```kotlin
+// Android
 val sketch = context.sketch
+
+// Non Android
+val sketch = SingletonSketch.get()
 ```
 
-#### 自定义 Sketch
-
-方法 1：在 Application 类上实现 [SketchFactory] 接口来创建并配置 Sketch ，如下：
+需要自定义 Sketch 时可以通过以下方式主动创建 Sketch 并配置它：
 
 ```kotlin
+// Android
 class MyApplication : Application(), SketchFactory {
 
     override fun createSketch(): Sketch {
@@ -64,32 +43,22 @@ class MyApplication : Application(), SketchFactory {
         }.build()
     }
 }
-```
 
-方法 2：创建并配置 Sketch 然后通过 `SketchSingleton.setSketch()` 方法设置为单例，如下：
-
-```kotlin
-val sketch = Sketch.Builder(context).apply {
-    logger(Logger(Logger.DEBUG))
-    httpStack(OkHttpStack.Builder().build())
-}.build()
-
-SketchSingleton.setSketch(sketch)
-
-// 或者
-
-SketchSingleton.setSketch(SketchFactory {
+// Non Android
+SketchSingleton.setSafe {
     Sketch.Builder(context).apply {
         logger(Logger(Logger.DEBUG))
         httpStack(OkHttpStack.Builder().build())
-    }.build()
-})
+    }.build()    
+}
 ```
+
+> [!TIP]
+> 使用 SketchSingleton.setSafe() 方式自定义 Sketch 时需要尽可能早的调用它，最好是在 App 的入口函数中
 
 ### 非单例模式
 
-如果不想使用单例模式，可以依赖 `sketch-core` 模块，然后通过 [Sketch].Builder 创建一个 [Sketch]
-实例，如下：
+非单例模式下需要你在合适的时候创建 Sketch 并记住它，然后在需要的时候使用你创建的实例，如下：
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
@@ -97,8 +66,6 @@ val sketch = Sketch.Builder(context).apply {
     httpStack(OkHttpStack.Builder().build())
 }.build()
 ```
-
-> 更多可配置参数请参考 [Sketch].Builder 类
 
 ## ImageRequest
 

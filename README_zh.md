@@ -7,20 +7,15 @@
 
 翻译：[English](README.md)
 
-Sketch 是一个强大且全面的图片加载库，它支持 Compose Multiplatform 以及 Android View，除了基础功能外还支持
-GIF、SVG、视频帧等功能。
-
-## 特点
+Sketch 是一个专为 Compose Multiplatform 和 Android View 设计的图片加载库，它有以下特点：
 
 * `多平台`：支持 Compose Multiplatform 以及 Android View
-* `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种 URI 加载图片
-* `支持动图`：支持播放 gif、webp、heif 等动图
-* `多级缓存`：支持下载、转换结果、内存三级缓存
-* `功能丰富`：支持 Base64 图片、视频帧、SVG 图片、Exif Orientation
-* `易于使用`：自动根据 Target 大小调整图片尺寸
-* `易于扩展`：支持对 URI、缓存、解码、转换、显示、占位图等各个环节的扩展
-* `现代化`：完全基于 Kotlin 及 Kotlin 协程编写
-* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章等各种实用扩展
+* `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种来源加载图片
+* `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸等功能、自动根据 Exif Orientation 旋转图片
+* `功能丰富`：支持动图、SVG 图片、Base64 图片、视频帧
+* `易于扩展`：支持对缓存、解码、转换、过渡、占位图等各个环节的扩展
+* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等各种实用扩展
+* `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
 ## 多平台支持
 
@@ -39,18 +34,23 @@ GIF、SVG、视频帧等功能。
 
 ## 下载
 
-`Sketch 已发布到 mavenCentral`
+`已发布到 mavenCentral`
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
-Compose Multiplatform:
+### Compose Multiplatform:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数
 implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
 ```
 
-Android View:
+> [!TIP]
+> 稳定性配置：
+> 请拷贝 `sketch-core` 模块下的 [compose_compiler_config.conf]
+> 文件到您的项目中，然后按照  [Compose Stability Configuration][stability_configuration] 文档配置它
+
+### Android View:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数
@@ -91,7 +91,7 @@ dependencies {
 > [!TIP]
 > * `sketch-compose`、`sketch-view`、`sketch-extensions-compose`、`sketch-extensions-view`
     模块都依赖 `sketch-singleton` 模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
-> * 在 Android 上 sketch-compose 和 sketch-view 可以一起使用
+> * 在 Android 上 `sketch-compose` 和 `sketch-view` 可以一起使用
 
 #### R8 / Proguard
 
@@ -189,13 +189,12 @@ imageView.displayImage(imageUri) {
 
 请查看 [CHANGELOG.md] 文件
 
-### 关于 4.0 版本
+## 关于 4.0 版本
 
-* maven groupId 改为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
+* maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 * 4.0 版本专为 Compose Multiplatform 打造所以 API 有很多破坏性改动，请谨慎升级
-* 4.0 版本简化了整体的复杂性，比 3.0 版本简单很多，例如 DisplayRequest、LoadRequest、DownloadRequest
-  合并为一个
-  ImageRequest，移除了 BitmapPool 等
+* 4.0 版本做了大量的简化，比 3.0 版本简单很多，例如 DisplayRequest、LoadRequest、DownloadRequest
+  合并为一个 ImageRequest，移除了 BitmapPool 等
 * Android 最低 API 升到了 API 21
 
 ## 特别感谢
@@ -276,8 +275,6 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [decode_interceptor]: docs/wiki/decode_interceptor_zh.md
 
-[bitmap_pool]: docs/wiki/bitmap_pool_zh.md
-
 [preloading]: docs/wiki/preloading_zh.md
 
 [download_request]: docs/wiki/download_request_zh.md
@@ -336,6 +333,10 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [OkHttp]: https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro
 
 [Okio]: https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro
+
+[compose_compiler_config.conf]: sketch-core/compose_compiler_config.conf
+
+[stability_configuration]: https://developer.android.google.cn/develop/ui/compose/performance/stability/fix#configuration-file
 
 
 [comment]: <> (footer)
