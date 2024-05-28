@@ -18,3 +18,5 @@ package com.github.panpf.sketch
 internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory? {
     return null
 }
+
+fun SingletonSketch.get(): Sketch = get(PlatformContext.INSTANCE)
