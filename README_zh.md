@@ -13,27 +13,27 @@ GIF、SVG、视频帧等功能。
 ## 特点
 
 * `多平台`：支持 Compose Multiplatform 以及 Android View
-* `丰富的 Fetcher`：支持从 http、file、compose.resource、android asset/content/resource 等多种 URI 加载图片
+* `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种 URI 加载图片
 * `支持动图`：支持播放 gif、webp、heif 等动图
 * `多级缓存`：支持下载、转换结果、内存三级缓存
-* `功能丰富`：支持 Base64 图片、视频帧、SVG 图片、读取 Exif
-* `易于使用`：自动根据 target 大小调整图片尺寸
+* `功能丰富`：支持 Base64 图片、视频帧、SVG 图片、Exif Orientation
+* `易于使用`：自动根据 Target 大小调整图片尺寸
 * `易于扩展`：支持对 URI、缓存、解码、转换、显示、占位图等各个环节的扩展
 * `现代化`：完全基于 Kotlin 及 Kotlin 协程编写
 * `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章等各种实用扩展
 
 ## 多平台支持
 
-| 功能/平台  | Android<br>Compose | Android<br>View | iOS | 桌面      | Web |
-|:-------|:-------------------|:----------------|:----|:--------|:----|
-| 内存缓存   | ✅                  | ✅               | ✅   | ✅       | ✅   |
-| 结果缓存   | ✅                  | ✅               | ✅   | ✅       | ✅   |
-| 磁盘缓存   | ✅                  | ✅               | ✅   | ✅       | ❌   |
-| 动图     | ✅                  | ✅               | ✅   | ✅       | ✅   |
-| SVG    | ✅                  | ✅               | ✅   | ✅       | ✅   |
-| 视频帧    | ✅                  | ✅               | ❌   | ❌       | ❌   |
-| Exif   | ✅                  | ✅               | ✅   | ✅       | ✅   |
-| 最低 API | API 21             | API 21          | -   | JDK 1.8 | -   |
+| 功能/平台            | Android | iOS | Desktop | Web |
+|:-----------------|---------|:----|:--------|:----|
+| 内存缓存             | ✅       | ✅   | ✅       | ✅   |
+| 结果缓存             | ✅       | ✅   | ✅       | ✅   |
+| 磁盘缓存             | ✅       | ✅   | ✅       | ❌   |
+| 动图               | ✅       | ✅   | ✅       | ✅   |
+| SVG              | ✅       | ✅   | ✅       | ✅   |
+| 视频帧              | ✅       | ❌   | ❌       | ❌   |
+| Exif Orientation | ✅       | ✅   | ✅       | ✅   |
+| 最低 API           | API 21  | -   | JDK 1.8 | -   |
 
 > 最低 API 是 '-' 表示和 Compose Multiplatform 同步
 
@@ -100,49 +100,14 @@ Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 
 ## 快速上手
 
-#### 初始化 Sketch
-
-直接依赖 `sketch-compose`、`sketch-view` 模块时，由于已经间接依赖了 `sketch-singleton`
-模块，拥有了单例，所以不需要初始化即可通过提供的
-AsyncImage 函数和 displayImage 函数直接加载图片，但在桌面平台上由于无法确定磁盘缓存的位置
-
-#### ImageView
-
-Sketch 为 ImageView 提供了一系列的名为 displayImage 的扩展函数，可以方便的显示图片
+#### Compose Multiplatform
 
 ```kotlin
-// http
-imageView.displayImage("https://www.sample.com/image.jpg")
-
-// File
-imageView.displayImage("/sdcard/download/image.jpg")
-
-// asset
-imageView.displayImage("asset://image.jpg")
-
-// There is a lot more...
-```
-
-还可以通过尾随的 lambda 函数配置参数：
-
-```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    error(R.drawable.error)
-    transformations(CircleCropTransformation())
-    crossfade()
-    // There is a lot more...
-}
-```
-
-#### Jetpack Compose
-
-> [!IMPORTANT]
-> 必须导入 `sketch-compose` 模块
-
-```kotlin
+// val imageUri = "/sdcard/download/image.jpg"
+// val imageUri = "compose.resource://drawable/sample.png"
+val imageUri = "https://www.sample.com/image.jpg"
 AsyncImage(
-  uri = "https://www.sample.com/image.jpg",
+    uri = imageUri,
     modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
     contentDescription = ""
@@ -150,9 +115,9 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(LocalContext.current, "https://www.sample.com/image.jpg") {
-        placeholder(R.drawable.placeholder)
-        error(R.drawable.error)
+    rqeuest = ImageRequest("https://www.sample.com/image.jpg") {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
         transformations(BlurTransformation())
         crossfade()
         // There is a lot more...
@@ -161,6 +126,24 @@ AsyncImage(
     contentScale = ContentScale.Crop,
     contentDescription = ""
 )
+```
+
+#### Android View
+
+```kotlin
+// val imageUri = "/sdcard/download/image.jpg"
+// val imageUri = "asset://image.jpg"
+val imageUri = "https://www.sample.com/image.jpg"
+imageView.displayImage(imageUri)
+
+// config params
+imageView.displayImage(imageUri) {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    transformations(CircleCropTransformation())
+    crossfade()
+    // There is a lot more...
+}
 ```
 
 ## 文档
@@ -181,7 +164,7 @@ AsyncImage(
 * [HttpStack：了解 http 部分及使用 okhttp][http_stack]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
-* [Exif：纠正图片方向][exif]
+* [ExifOrientation：纠正图片方向][exif]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
 * [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
@@ -206,28 +189,20 @@ AsyncImage(
 
 请查看 [CHANGELOG.md] 文件
 
-### 关于 3.0 版本
+### 关于 4.0 版本
 
-* maven groupId 改为 `io.github.panpf.sketch4`，因此 2.\* 版本不会提示升级
-* 包名改为 `com.github.panpf.sketch` 因此与 2.\* 版本不会冲突
-* 基于 kotlin 协程重写，API、功能实现全部重构，当一个新的库用
-* 不再要求必须使用 SketchImageView，任何 ImageView 及其子类都可以，结合自定义 Target 可以支持任意 View
-* Zoom 功能拆分成独立的可单独依赖的模块并且超大图采样功能重构且支持多线程解码速度更快
-* gif 模块现在直接依赖 [android-gif-drawable] 库不再二次修改，可自行升级
-* 支持 Jetpack Compose
-* 支持请求和解码拦截器
-* 参考 [coil] 并结合 sketch 原有功能实现，对比 [coil] 有以下区别：
-    * sketch 最低支持 API 16，而 [coil] 最低仅支持 API 21
-    * sketch 支持 bitmap 复用，而 [coil] 不支持
-    * sketch 支持更加精细化的调整图片大小
-    * sketch 明确区分显示、加载、下载请求
+* maven groupId 改为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
+* 4.0 版本专为 Compose Multiplatform 打造所以 API 有很多破坏性改动，请谨慎升级
+* 4.0 版本简化了整体的复杂性，比 3.0 版本简单很多，例如 DisplayRequest、LoadRequest、DownloadRequest
+  合并为一个
+  ImageRequest，移除了 BitmapPool 等
+* Android 最低 API 升到了 API 21
 
 ## 特别感谢
 
 * [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose、sketch-animated-movie
   部分
-* [chrisbanes]/[PhotoView]: Zoom
-* [koral--]/[android-gif-drawable]: gif-koral
+* [koral--]/[android-gif-drawable]: animated-koralgif
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
 
@@ -235,8 +210,8 @@ AsyncImage(
 
 以下是我的其它开源项目，感兴趣的可以了解一下：
 
-* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Android View、Compose 以及
-  Compose Multiplatform；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
+* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Android View 以及 Compose
+  Multiplatform；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
 * [assembly-adapter](https://github.com/panpf/assembly-adapter)：Android 上的一个为各种 Adapter 提供多类型
   Item 实现的库。还顺带为 RecyclerView 提供了最强大的 divider。
 * [sticky-item-decoration](https://github.com/panpf/stickyitemdecoration)：RecyclerView 黏性 item 实现
