@@ -10,10 +10,10 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import org.jetbrains.compose.resources.readResourceBytes
 
 /**
- * Sample: 'compose.resource://test.png'
+ * Sample: 'compose.resource://drawable/sample.png'
  */
-fun newComposeResourceUri(resourceName: String): String =
-    "${ComposeResourceUriFetcher.SCHEME}://$resourceName"
+fun newComposeResourceUri(resourcePath: String): String =
+    "${ComposeResourceUriFetcher.SCHEME}://$resourcePath"
 
 class ComposeResourceUriFetcher(
     val sketch: Sketch,
