@@ -9,7 +9,6 @@
 
 Sketch 是一个专为 Compose Multiplatform 和 Android View 设计的图片加载库，它有以下特点：
 
-* `多平台`：支持 Compose Multiplatform 以及 Android View
 * `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种来源加载图片
 * `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸等功能、自动根据 Exif Orientation 旋转图片
 * `功能丰富`：支持动图、SVG 图片、Base64 图片、视频帧
@@ -41,19 +40,18 @@ Sketch 是一个专为 Compose Multiplatform 和 Android View 设计的图片加
 ### Compose Multiplatform:
 
 ```kotlin
-// 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数
+// 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
 implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
 ```
 
-> [!TIP]
-> 稳定性配置：
-> 请拷贝 `sketch-core` 模块下的 [compose_compiler_config.conf]
+> [!IMPORTANT]
+> 为提升 compose 的性能请拷贝 `sketch-core` 模块下的 [compose_compiler_config.conf]
 > 文件到您的项目中，然后按照  [Compose Stability Configuration][stability_configuration] 文档配置它
 
 ### Android View:
 
 ```kotlin
-// 提供了 Sketch 的核心功能以及单例和依赖此单例实现的一些便捷的扩展函数
+// 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
 implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
 ```
 
