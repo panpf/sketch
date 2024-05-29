@@ -38,6 +38,7 @@ import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.CrossfadeTransition
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.keyOrNull
 
@@ -55,18 +56,13 @@ fun ImageRequest(
 /**
  * An immutable image request that contains all the required parameters,
  */
-interface ImageRequest {
-
-    /**
-     * The unique identifier for this request.
-     */
-    val key: String
+data class ImageRequest(
 
     /** App Context */
-    val context: PlatformContext
+    val context: PlatformContext,
 
     /** The uri of the image to be loaded. */
-    val uri: String
+    val uri: String,
 
     /**
      * The [TargetLifecycle] resolver for this request.
@@ -77,35 +73,31 @@ interface ImageRequest {
      * Sketch first obtains the TargetLifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
      * Secondly, get the [TargetLifecycle] of Activity through context, and finally use [GlobalTargetLifecycle]
      */
-    val lifecycleResolver: LifecycleResolver
+    val lifecycleResolver: LifecycleResolver,
 
     /** [Target] is used to receive Drawable and draw it */
-    val target: Target?
+    val target: Target?,
 
     /** [Listener] is used to receive the state and result of the request */
-    val listener: Listener?
+    val listener: Listener?,
 
     /** [ProgressListener] is used to receive the download progress of the request */
-    val progressListener: ProgressListener?
+    val progressListener: ProgressListener?,
 
     /** User-provided ImageOptions */
-    val definedOptions: ImageOptions
+    val definedOptions: ImageOptions,
 
     /** Default ImageOptions */
-    val defaultOptions: ImageOptions?
+    val defaultOptions: ImageOptions?,
 
-    val definedRequestOptions: RequestOptions
+    val definedRequestOptions: RequestOptions,
 
 
     /** The processing depth of the request. */
-    val depth: Depth
-
-    /** where does this depth come from */
-    val depthFrom: String?
-        get() = parameters?.value(DEPTH_FROM_KEY)
+    val depth: Depth,
 
     /** A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder]. */
-    val parameters: Parameters?
+    val parameters: Parameters?,
 
 
     /**
@@ -113,89 +105,99 @@ interface ImageRequest {
      *
      * @see com.github.panpf.sketch.http.HurlStack.getResponse
      */
-    val httpHeaders: HttpHeaders?
+    val httpHeaders: HttpHeaders?,
 
     /**
      * Http download cache policy
      *
      * @see com.github.panpf.sketch.fetch.HttpUriFetcher
      */
-    val downloadCachePolicy: CachePolicy
+    val downloadCachePolicy: CachePolicy,
 
 
     /**
      * Lazy calculation of resize size. If size is null at runtime, size is calculated and assigned to size
      */
-    val sizeResolver: SizeResolver
+    val sizeResolver: SizeResolver,
 
     /**
      * val finalSize = sizeResolver.size() * sizeMultiplier
      */
-    val sizeMultiplier: Float?
+    val sizeMultiplier: Float?,
 
     /**
      * Decide what Precision to use with [sizeResolver] to calculate the size of the final Bitmap
      */
-    val precisionDecider: PrecisionDecider
+    val precisionDecider: PrecisionDecider,
 
     /**
      * Which part of the original image to keep when [precisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
-    val scaleDecider: ScaleDecider
+    val scaleDecider: ScaleDecider,
 
     /**
      * The list of [Transformation]s to be applied to this request
      */
-    val transformations: List<Transformation>?
+    val transformations: List<Transformation>?,
 
     /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
      */
-    val resultCachePolicy: CachePolicy
+    val resultCachePolicy: CachePolicy,
 
 
     /**
      * Placeholder image when loading
      */
-    val placeholder: StateImage?
+    val placeholder: StateImage?,
 
     /**
      * Image to display when uri is empty
      */
-    val uriEmpty: StateImage?
+    val uriEmpty: StateImage?,
 
     /**
      * Image to display when loading fails
      */
-    val error: ErrorStateImage?
+    val error: ErrorStateImage?,
 
     /**
      * How the current image and the new image transition
      */
-    val transitionFactory: Transition.Factory?
+    val transitionFactory: Transition.Factory?,
 
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
      */
-    val disallowAnimatedImage: Boolean
+    val disallowAnimatedImage: Boolean,
 
     /**
      * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
      */
-    val resizeOnDraw: Boolean?
+    val resizeOnDraw: Boolean?,
 
     /**
      * Bitmap memory caching policy
      *
      * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
      */
-    val memoryCachePolicy: CachePolicy
+    val memoryCachePolicy: CachePolicy,
 
 
     /** Components that are only valid for the current request */
-    val componentRegistry: ComponentRegistry?
+    val componentRegistry: ComponentRegistry?,
+) : Key {
+
+    /**
+     * The unique identifier for this request.
+     */
+    override val key: String by lazy { newKey() }
+
+    /** where does this depth come from */
+    val depthFrom: String?
+        get() = parameters?.value(DEPTH_FROM_KEY)
 
     /**
      * Create a new [ImageRequest.Builder] based on the current [ImageRequest].
@@ -727,7 +729,7 @@ interface ImageRequest {
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val componentRegistry = finalOptions.componentRegistry
 
-            return ImageRequestImpl(
+            return ImageRequest(
                 context = context,
                 uri = uri,
                 listener = listener,
@@ -795,38 +797,5 @@ interface ImageRequest {
                 builderProgressListener ?: targetProgressListener
             }
         }
-    }
-
-    data class ImageRequestImpl internal constructor(
-        override val context: PlatformContext,
-        override val uri: String,
-        override val listener: Listener?,
-        override val progressListener: ProgressListener?,
-        override val target: Target?,
-        override val lifecycleResolver: LifecycleResolver,
-        override val definedOptions: ImageOptions,
-        override val defaultOptions: ImageOptions?,
-        override val definedRequestOptions: RequestOptions,
-        override val depth: Depth,
-        override val parameters: Parameters?,
-        override val httpHeaders: HttpHeaders?,
-        override val downloadCachePolicy: CachePolicy,
-        override val sizeResolver: SizeResolver,
-        override val sizeMultiplier: Float?,
-        override val precisionDecider: PrecisionDecider,
-        override val scaleDecider: ScaleDecider,
-        override val transformations: List<Transformation>?,
-        override val resultCachePolicy: CachePolicy,
-        override val placeholder: StateImage?,
-        override val uriEmpty: StateImage?,
-        override val error: ErrorStateImage?,
-        override val transitionFactory: Transition.Factory?,
-        override val disallowAnimatedImage: Boolean,
-        override val resizeOnDraw: Boolean?,
-        override val memoryCachePolicy: CachePolicy,
-        override val componentRegistry: ComponentRegistry?,
-    ) : ImageRequest {
-
-        override val key: String by lazy { newKey() }
     }
 }

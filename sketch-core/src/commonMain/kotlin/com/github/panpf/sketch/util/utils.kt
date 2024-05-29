@@ -18,7 +18,6 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptions.ImageOptionsImpl
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageRequest.ImageRequestImpl
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okio.ByteString.Companion.encodeUtf8
@@ -232,7 +231,6 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (other == null) return "Other is null"
     if (this === other) return "Same instance"
     if (this::class != other::class) return "Different class"
-    other as ImageRequestImpl
     if (context != other.context) return "context different: '${context}' vs '${other.context}'"
     if (uri != other.uri) return "uri different: '${uri}' vs '${other.uri}'"
     if (listener != other.listener) return "listener different: '${listener}' vs '${other.listener}'"
