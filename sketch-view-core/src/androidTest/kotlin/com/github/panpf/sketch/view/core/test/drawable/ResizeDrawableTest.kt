@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.drawable
+package com.github.panpf.sketch.view.core.test.drawable
 
 import android.R.drawable
 import android.graphics.Bitmap
@@ -29,10 +29,10 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
+import com.github.panpf.sketch.test.utils.getDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
