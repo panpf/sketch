@@ -45,7 +45,7 @@ import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
-import com.github.panpf.sketch.resize.AndroidResizeOnDrawHelper
+import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
@@ -84,8 +84,7 @@ interface ViewTarget<T : View> : Target {
         view?.let { ViewSizeResolver(it) }
 
     override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? {
-        // TODO rename to DrawableImageSizeWrapper
-        return AndroidResizeOnDrawHelper
+        return ViewResizeOnDrawHelper
     }
 
     override fun getTargetCrossfadeTransitionFactory(

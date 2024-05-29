@@ -49,7 +49,6 @@ interface Target {
 
     fun getSizeResolver(): SizeResolver? = null
 
-    // TODO rename getImageSizeWrapper
     fun getResizeOnDrawHelper(): ResizeOnDrawHelper? = null
 
     fun getTargetCrossfadeTransitionFactory(

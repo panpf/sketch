@@ -55,7 +55,6 @@ interface ComposeTarget : Target {
         get() = painter?.asSketchImage()
 
     override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? {
-        // TODO rename to PainterImageSizeWrapper
         return ComposeResizeOnDrawHelper
     }
 
