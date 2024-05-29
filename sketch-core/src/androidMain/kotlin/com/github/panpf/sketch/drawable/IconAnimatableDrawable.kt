@@ -221,7 +221,7 @@ class IconAnimatableDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconDrawable) return false
+        if (other !is IconAnimatableDrawable) return false
         if (icon != other.icon) return false
         if (background != other.background) return false
         if (iconSize != other.iconSize) return false
