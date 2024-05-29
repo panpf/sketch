@@ -10,10 +10,10 @@
 Sketch 是一个专为 Compose Multiplatform 和 Android View 设计的图片加载库，它有以下特点：
 
 * `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种来源加载图片
-* `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸等功能、自动根据 Exif Orientation 旋转图片
+* `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸、自动根据 Exif Orientation 旋转图片等
 * `功能丰富`：支持动图、SVG 图片、Base64 图片、视频帧
 * `易于扩展`：支持对缓存、解码、转换、过渡、占位图等各个环节的扩展
-* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等各种实用扩展
+* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
 * `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
 ## 多平台支持
@@ -101,7 +101,7 @@ Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 #### Compose Multiplatform
 
 ```kotlin
-// val imageUri = "/sdcard/download/image.jpg"
+// val imageUri = "/Users/my/Downloads/image.jpg"
 // val imageUri = "compose.resource://drawable/sample.png"
 val imageUri = "https://www.sample.com/image.jpg"
 AsyncImage(
@@ -116,7 +116,6 @@ AsyncImage(
     rqeuest = ImageRequest("https://www.sample.com/image.jpg") {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
-        transformations(BlurTransformation())
         crossfade()
         // There is a lot more...
     },
@@ -138,7 +137,6 @@ imageView.displayImage(imageUri)
 imageView.displayImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
-    transformations(CircleCropTransformation())
     crossfade()
     // There is a lot more...
 }
@@ -334,7 +332,7 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [compose_compiler_config.conf]: sketch-core/compose_compiler_config.conf
 
-[stability_configuration]: https://developer.android.google.cn/develop/ui/compose/performance/stability/fix#configuration-file
+[stability_configuration]: https://developer.android.com/develop/ui/compose/performance/stability/fix#configuration-file
 
 
 [comment]: <> (footer)

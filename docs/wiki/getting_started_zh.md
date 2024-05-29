@@ -13,8 +13,8 @@ sketch.enqueue(imageRequest)
 
 各自的职责如下：
 
+* [ImageRequest] 用来定义图片的 uri、占位图、转换、过渡、新的尺寸、Target 以及 Listener 等
 * [Sketch] 用来执行 [ImageRequest]，并处理下载、缓存、解码、转换以及请求管理、内存管理等工作
-* [ImageRequest] 用来定义图片的 uri、占位图、转换、过渡、新的尺寸、Target 以及 Listener
 
 ## 创建 Sketch
 
@@ -67,58 +67,63 @@ val sketch = Sketch.Builder(context).apply {
 }.build()
 ```
 
-## ImageRequest
+## 创建 ImageRequest
 
-[ImageRequest] 接口定义了显示图片所需的全部参数，例如 uri、Target、转换配置、调整尺寸等。
-
-### 创建 ImageRequest
-
-Builder 方式：
+Compose Multiplatform:
 
 ```kotlin
-val request = ImageRequest.Builder(context, "https://www.example.com/image.jpg")
-    .placeholder(R.drawable.image)
-    .transformations(CircleCropTransformation())
+// Use a function with the same name
+val request = ImageRequest("https://www.example.com/image.jpg") {
+    placeholder(Res.drawable.placeholder)
+    error(Res.drawable.error)
+    crossfade()
+    // There is a lot more...
+}
+
+// Use Builder
+val context = LocalPlatformContext.current
+val request1 = ImageRequest.Builder(context, "https://www.example.com/image.jpg")
+    .placeholder(Res.drawable.placeholder)
+    .error(Res.drawable.error)
+    .crossfade()
+    .build()
+// There is a lot more...
+```
+
+Android View：
+
+```kotlin
+// Use a function with the same name
+val request = ImageRequest(imageView, "https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    // There is a lot more...
+}
+
+// Use Builder
+val request1 = ImageRequest.Builder(context, "https://www.example.com/image.jpg")
+    .placeholder(Res.drawable.placeholder)
+    .error(Res.drawable.error)
+    .crossfade()
     .target(imageView)
     .build()
+// There is a lot more...
 ```
 
-同名函数方式：
+## 执行 ImageRequest
+
+### 单例模式
+
+单例模式下可以通过为 ImageRequest 提供的扩展函数 enqueue() 或 execute() 直接将 [ImageRequest]
+交给共享的 [Sketch] 执行：
 
 ```kotlin
-val request = ImageRequest(context, "https://www.example.com/image.jpg") {
-    placeholder(R.drawable.image)
-    transformations(CircleCropTransformation())
-    target(imageView)
-}
-
-// 或者
-
-val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg") {
-    placeholder(R.drawable.image)
-    transformations(CircleCropTransformation())
-}
-```
-
-可以通过 ImageRequest.Builder 提供的链式方法或同名函数提供的尾随 lambda
-配置请求，更多配置参数请参考 [ImageRequest].Builder 类
-
-### 执行 ImageRequest
-
-#### 单例模式
-
-单例模式下可以通过提供的扩展函数 enqueue() 或 execute() 将 [ImageRequest] 交给 [Sketch] 执行：
-
-```kotlin
-/*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
- */
+// 将 ImageRequest 放入任务队列在后台线程上异步执行
 val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg")
-request1.enqueue()
+val disposable: Disposable = request1.enqueue()
 
-/*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
- */
+// 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
 val request2 = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
     val result: ImageResult = request2.execute()
@@ -126,22 +131,18 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-#### 非单例模式
+### 非单例模式
 
 非单例模式下需要自行创建 Sketch 实例并通过其 enqueue() 或 execute() 方法执行请求：
 
 ```kotlin
 val sketch = Sketch.Builder(context).build()
 
-/*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并返回一个 Disposable
- */
+// 将 ImageRequest 放入任务队列在后台线程上异步执行
 val request1 = ImageRequest(imageView, "https://www.example.com/image.jpg")
-sketch.enqueue(request1)
+val disposable: Disposable = sketch.enqueue(request1)
 
-/*
- * 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
- */
+// 将 ImageRequest 放入任务队列在后台线程上异步执行并在当前协程中等待返回结果
 val request2 = ImageRequest(context, "https://www.example.com/image.jpg")
 coroutineScope.launch(Dispatchers.Main) {
     val result: ImageResult = sketch.execute(request2)
@@ -149,7 +150,7 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-### 获取结果
+## 获取结果
 
 [Sketch] 会将结果交给 [ImageRequest] 的 target 去显示 [Image]，如果没有设置 target 就需要主动获取结果来处理它了
 
