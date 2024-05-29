@@ -36,60 +36,6 @@ import org.junit.runner.RunWith
 class DrawablesTest {
 
     @Test
-    fun testFindLeafChildDrawable() {
-        LayerDrawable(
-            arrayOf(
-                ColorDrawable(Color.BLUE),
-                ColorDrawable(Color.RED),
-                ColorDrawable(Color.GREEN)
-            )
-        ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        LayerDrawable(
-            arrayOf(
-                ColorDrawable(Color.RED),
-                ColorDrawable(Color.GREEN),
-                ColorDrawable(Color.BLUE),
-            )
-        ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.BLUE, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        LayerDrawable(arrayOf()).findLeafChildDrawable().apply {
-            Assert.assertEquals(null, this)
-        }
-
-
-        CrossfadeDrawable(
-            ColorDrawable(Color.BLUE),
-            ColorDrawable(Color.RED),
-        ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        CrossfadeDrawable(
-            ColorDrawable(Color.RED),
-            ColorDrawable(Color.GREEN),
-        ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        CrossfadeDrawable(null, null).findLeafChildDrawable().apply {
-            Assert.assertEquals(null, this)
-        }
-
-        ColorDrawable(Color.GREEN).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        ColorDrawable(Color.RED).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
-        }
-    }
-
-    @Test
     fun testToNewBitmap() {
         val context = getTestContext()
 

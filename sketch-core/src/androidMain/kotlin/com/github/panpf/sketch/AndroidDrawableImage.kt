@@ -7,8 +7,8 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.allocationByteCountCompat
-import com.github.panpf.sketch.util.height
-import com.github.panpf.sketch.util.width
+import com.github.panpf.sketch.util.heightWithBitmapFirst
+import com.github.panpf.sketch.util.widthWithBitmapFirst
 
 fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): AndroidDrawableImage {
     return AndroidDrawableImage(this, shareable)
@@ -44,13 +44,13 @@ data class AndroidDrawableImage internal constructor(
     override val byteCount: Long = when (drawable) {
         is ByteCountProvider -> drawable.byteCount
         is BitmapDrawable -> drawable.bitmap.byteCount.toLong()
-        else -> 4L * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
+        else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
     }
 
     override val allocationByteCount: Long = when (drawable) {
         is ByteCountProvider -> drawable.allocationByteCount
         is BitmapDrawable -> drawable.bitmap.allocationByteCountCompat.toLong()
-        else -> 4L * drawable.width * drawable.height    // Estimate 4 bytes per pixel.
+        else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
     }
 
     override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? =

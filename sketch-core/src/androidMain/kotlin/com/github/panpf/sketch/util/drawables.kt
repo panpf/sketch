@@ -21,48 +21,11 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import androidx.annotation.WorkerThread
 import androidx.core.graphics.component1
 import androidx.core.graphics.component2
 import androidx.core.graphics.component3
 import androidx.core.graphics.component4
-import com.github.panpf.sketch.drawable.CrossfadeDrawable
-
-/**
- * Find the last child [Drawable] from the specified Drawable
- */
-// TODO remove
-fun Drawable.findLeafChildDrawable(): Drawable? {
-    return when (val drawable = this) {
-        is CrossfadeDrawable -> {
-            drawable.end?.findLeafChildDrawable()
-        }
-
-        is LayerDrawable -> {
-            val layerCount = drawable.numberOfLayers
-            if (layerCount > 0) {
-                drawable.getDrawable(layerCount - 1).findLeafChildDrawable()
-            } else {
-                null
-            }
-        }
-
-        else -> drawable
-    }
-}
-
-/**
- * Find the last child [Drawable] from the specified Drawable
- */
-@Deprecated(
-    message = "Please use findLeafChildDrawable()",
-    replaceWith = ReplaceWith(expression = "findLeafChildDrawable()")
-)
-// TODO remove
-fun Drawable.getLastChildDrawable(): Drawable? {
-    return findLeafChildDrawable()
-}
 
 /**
  * Drawable into new Bitmap. Each time a new bitmap is drawn
@@ -90,8 +53,8 @@ internal fun Drawable.toNewBitmap(
     return bitmap
 }
 
-internal val Drawable.width: Int
+internal val Drawable.widthWithBitmapFirst: Int
     get() = (this as? BitmapDrawable)?.bitmap?.width ?: intrinsicWidth
 
-internal val Drawable.height: Int
+internal val Drawable.heightWithBitmapFirst: Int
     get() = (this as? BitmapDrawable)?.bitmap?.height ?: intrinsicHeight

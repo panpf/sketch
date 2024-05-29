@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.drawable
+package com.github.panpf.sketch.view.core.test.drawable
 
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -34,10 +34,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
+import com.github.panpf.sketch.test.utils.getDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.getDrawableCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert

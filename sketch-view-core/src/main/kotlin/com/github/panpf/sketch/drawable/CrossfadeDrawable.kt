@@ -72,7 +72,6 @@ import kotlin.math.roundToInt
  *  be -1 if [start] **or** [end] return -1 for that dimension. This is useful for views that
  *  require an exact intrinsic size to scale the drawable.
  */
-// TODO move to sketch-view-core module
 class CrossfadeDrawable @JvmOverloads constructor(
     val start: Drawable?,
     val end: Drawable?,
