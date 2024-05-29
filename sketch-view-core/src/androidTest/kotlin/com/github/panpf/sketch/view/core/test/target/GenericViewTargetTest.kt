@@ -126,7 +126,7 @@ class GenericViewTargetTest {
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
             Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
 
-            val animatableDrawable = AnimatableDrawable(Color.RED)
+            val animatableDrawable = TestAnimatableColorDrawable(Color.RED)
             Assert.assertFalse(animatableDrawable.running)
 
             onSuccess(requestContext, animatableDrawable.asSketchImage())
@@ -184,7 +184,7 @@ class GenericViewTargetTest {
             get() = view.scaleType.fitScale
     }
 
-    class AnimatableDrawable(color: Int) : ColorDrawable(color), Animatable {
+    class TestAnimatableColorDrawable(color: Int) : ColorDrawable(color), Animatable {
         var running = false
 
         override fun start() {
