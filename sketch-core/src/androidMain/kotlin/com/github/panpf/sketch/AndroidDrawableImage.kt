@@ -23,11 +23,14 @@ fun Image.getDrawableOrNull(): Drawable? = when (this) {
 fun Image.getDrawableOrThrow(): Drawable = getDrawableOrNull()
     ?: throw IllegalArgumentException("Unable to get Drawable from Image '$this'")
 
-fun Image.asDrawableOrThrow(): Drawable = when (this) {
+fun Image.asDrawableOrNull(): Drawable? = when (this) {
     is AndroidBitmapImage -> BitmapDrawable(resources, bitmap)
     is AndroidDrawableImage -> drawable
-    else -> throw IllegalArgumentException("'$this' can't be converted to Drawable")
+    else -> null
 }
+
+fun Image.asDrawableOrThrow(): Drawable = asDrawableOrNull()
+    ?: throw IllegalArgumentException("'$this' can't be converted to Drawable")
 
 data class AndroidDrawableImage internal constructor(
     val drawable: Drawable,
