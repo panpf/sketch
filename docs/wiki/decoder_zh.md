@@ -2,21 +2,6 @@
 
 翻译：[English](decoder.md)
 
-## 支持的图片类型
-
-| 类型            | API 限制      | 额外依赖模块                                      |
-|:--------------|:------------|:--------------------------------------------|
-| jpeg          | _           | _                                           |
-| png           | _           | _                                           |
-| bmp           | _           | _                                           |
-| webp          | _           | _                                           |
-| svg           | _           | sketch-svg                                  |
-| heif          | Android 9+  | _                                           |
-| gif           | _           | sketch-animated<br>sketch-animated-koralgif |
-| webp Animated | Android 9+  | _                                           |
-| heif Animated | Android 11+ | _                                           |
-| video frames  | _           | sketch-video<br>sketch-video-ffmpeg         |
-
 每一种图片类型都有对应的 Decoder
 对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
 

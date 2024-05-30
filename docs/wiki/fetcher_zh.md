@@ -2,18 +2,6 @@
 
 翻译：[English](fetcher.md)
 
-## 支持的 URI
-
-| 协议                     | 描述               | 创建函数             |
-|:-----------------------|:-----------------|:-----------------|
-| http://, https://      | File in network  | _                |
-| /, file://             | File in SDCard   | newFileUri()     |
-| content://             | Content Resolver | _                |
-| asset://               | Asset Resource   | newAssetUri()    |
-| android.resource://    | Android Resource | newResourceUri() |
-| data:image/, data:img/ | Base64           | newBase64Uri()   |
-| app.icon://            | App Icon         | newAppIconUri()  |
-
 > 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]

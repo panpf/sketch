@@ -92,7 +92,7 @@ AsyncImage(
     uri = imageUri,
     modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
-    contentDescription = ""
+    contentDescription = "photo"
 )
 
 // config params
@@ -105,7 +105,22 @@ AsyncImage(
     },
     modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
-    contentDescription = ""
+    contentDescription = "photo"
+)
+
+Image(
+    painter = rememberAsyncImagePainter(
+        request = ImageRequest(imageUri) {
+            placeholder(Res.drawable.placeholder)
+            error(Res.drawable.error)
+            crossfade()
+            // There is a lot more...
+        },
+        contentScale = ContentScale.Crop
+    ),
+    modifier = Modifier.size(300.dp, 200.dp),
+    contentScale = ContentScale.Crop,
+    contentDescription = "photo"
 )
 ```
 
@@ -173,15 +188,14 @@ imageView.displayImage(imageUri) {
 ## 关于 4.0 版本
 
 * maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
-* 4.0 版本专为 Compose Multiplatform 打造所以 API 有很多破坏性改动，请谨慎升级
+* 4.0 版本专为 Compose Multiplatform 打造，所以 API 有很多破坏性改动，请谨慎升级
 * 4.0 版本做了大量的简化，比 3.0 版本简单很多，例如 DisplayRequest、LoadRequest、DownloadRequest
   合并为一个 ImageRequest，移除了 BitmapPool 等
 * Android 最低 API 升到了 API 21
 
 ## 特别感谢
 
-* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose、sketch-animated-movie
-  部分
+* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及 sketch-animated 的 movie 部分
 * [koral--]/[android-gif-drawable]: animated-koralgif
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
@@ -190,8 +204,8 @@ imageView.displayImage(imageUri) {
 
 以下是我的其它开源项目，感兴趣的可以了解一下：
 
-* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Android View 以及 Compose
-  Multiplatform；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
+* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Compose Multiplatform 和 Android
+  View；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
 * [assembly-adapter](https://github.com/panpf/assembly-adapter)：Android 上的一个为各种 Adapter 提供多类型
   Item 实现的库。还顺带为 RecyclerView 提供了最强大的 divider。
 * [sticky-item-decoration](https://github.com/panpf/stickyitemdecoration)：RecyclerView 黏性 item 实现
