@@ -16,28 +16,13 @@ Sketch 是一个专为 Compose Multiplatform 和 Android View 设计的图片加
 * `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
 * `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
-## 多平台支持
-
-| 功能/平台            | Android | iOS | Desktop | Web |
-|:-----------------|---------|:----|:--------|:----|
-| 内存缓存             | ✅       | ✅   | ✅       | ✅   |
-| 结果缓存             | ✅       | ✅   | ✅       | ✅   |
-| 磁盘缓存             | ✅       | ✅   | ✅       | ❌   |
-| 动图               | ✅       | ✅   | ✅       | ✅   |
-| SVG              | ✅       | ✅   | ✅       | ✅   |
-| 视频帧              | ✅       | ❌   | ❌       | ❌   |
-| Exif Orientation | ✅       | ✅   | ✅       | ✅   |
-| 最低 API           | API 21  | -   | JDK 1.8 | -   |
-
-> 最低 API 是 '-' 表示和 Compose Multiplatform 同步
-
 ## 下载
 
 `已发布到 mavenCentral`
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
-### Compose Multiplatform:
+Compose Multiplatform:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
@@ -48,42 +33,40 @@ implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
 > 为提升 compose 的性能请拷贝 `sketch-core` 模块下的 [compose_compiler_config.conf]
 > 文件到您的项目中，然后按照  [Compose Stability Configuration][stability_configuration] 文档配置它
 
-### Android View:
+Android View:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
 implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
 ```
 
-还有一些可选的模块用来扩展 sketch 的功能：
+还有一些可选的模块：
 
 ```kotlin
-dependencies {
-    // 通过 Android 或 Skia 内置的解码器实现解码 gif、webp、heif 等动图并播放
-    implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
+// 通过 Android 或 Skia 内置的解码器实现解码 gif、webp、heif 等动图并播放
+implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 
-    // [仅 Android] 通过 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
-    implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
-    
-    // 提供下载进度、列表滚动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk icon 和已安装 app icon 等实用功能
-    implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
-    implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+// [仅 Android] 通过 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
+implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
 
-    // [仅 JVM] 支持通过 OkHttp 来下载图片
-    implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
+// 提供下载进度、列表滚动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk icon 和已安装 app icon 等实用功能
+implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
-    // [仅 JVM] 支持通过 ktor 来下载图片
-    implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
+// [仅 JVM] 支持通过 OkHttp 来下载图片
+implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
 
-    // 支持 SVG 图片
-    implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
+// [仅 JVM] 支持通过 ktor 来下载图片
+implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
 
-    // [仅 Android] 通过 Android 内置的 MediaMetadataRetriever 类实现解码视频帧
-    implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
+// 支持 SVG 图片
+implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
-    // [仅 Android] 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现解码视频帧
-    implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
-}
+// [仅 Android] 通过 Android 内置的 MediaMetadataRetriever 类实现解码视频帧
+implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
+
+// [仅 Android] 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现解码视频帧
+implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
 
 > [!TIP]
@@ -98,12 +81,13 @@ Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 
 ## 快速上手
 
-#### Compose Multiplatform
+Compose Multiplatform：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
 // val imageUri = "compose.resource://drawable/sample.png"
 val imageUri = "https://www.sample.com/image.jpg"
+
 AsyncImage(
     uri = imageUri,
     modifier = Modifier.size(300.dp, 200.dp),
@@ -113,7 +97,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest("https://www.sample.com/image.jpg") {
+    rqeuest = ImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -125,12 +109,13 @@ AsyncImage(
 )
 ```
 
-#### Android View
+Android View：
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
 // val imageUri = "asset://image.jpg"
 val imageUri = "https://www.sample.com/image.jpg"
+
 imageView.displayImage(imageUri)
 
 // config params

@@ -2,6 +2,54 @@
 
 翻译：[English](getting_started.md)
 
+用 Sketch 加载并显示图片非常简单，如下：
+
+#### Compose Multiplatform
+
+```kotlin
+// val imageUri = "/Users/my/Downloads/image.jpg"
+// val imageUri = "compose.resource://drawable/sample.png"
+val imageUri = "https://www.sample.com/image.jpg"
+
+AsyncImage(
+    uri = imageUri,
+    modifier = Modifier.size(300.dp, 200.dp),
+    contentScale = ContentScale.Crop,
+    contentDescription = ""
+)
+
+// config params
+AsyncImage(
+    rqeuest = ImageRequest(imageUri) {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
+        // There is a lot more...
+    },
+    modifier = Modifier.size(300.dp, 200.dp),
+    contentScale = ContentScale.Crop,
+    contentDescription = ""
+)
+```
+
+#### Android View
+
+```kotlin
+// val imageUri = "/sdcard/download/image.jpg"
+// val imageUri = "asset://image.jpg"
+val imageUri = "https://www.sample.com/image.jpg"
+
+imageView.displayImage("https://www.sample.com/image.jpg")
+
+// config params
+imageView.displayImage("https://www.sample.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    // There is a lot more...
+}
+```
+
 Sketch 加载图片的流程一句话概括就是创建一个 ImageRequest，然后把 ImageRequest 交给 Sketch 执行，如下：
 
 ```
@@ -284,6 +332,29 @@ when (imageResult) {
     }
 }
 ```
+
+## 多平台差异
+
+| 功能/平台                                                                               | Android       | iOS                     | Desktop                 | Web                     |
+|:------------------------------------------------------------------------------------|---------------|:------------------------|:------------------------|:------------------------|
+| 内存缓存                                                                                | ✅             | ✅                       | ✅                       | ✅                       |
+| 结果缓存                                                                                | ✅             | ✅                       | ✅                       | ❌                       |
+| 下载缓存                                                                                | ✅             | ✅                       | ✅                       | ❌                       |
+| JPEG<br/>PNG<br/>WEBP<br/>BMP                                                       | ✅             | ✅                       | ✅                       | ✅                       |
+| HEIF                                                                                | ✅ (API 28)    | ❌                       | ❌                       | ❌                       |
+| GIF 动图                                                                              | ✅             | ✅                       | ✅                       | ✅                       |
+| WEBP 动图                                                                             | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
+| HEIF 动图                                                                             | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
+| SVG                                                                                 | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
+| 视频帧                                                                                 | ✅             | ❌                       | ❌                       | ❌                       |
+| http://<br/>https://<br/>file://<br/>compose.resource://<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
+| asset://<br/>content://<br/>android.resource://                                     | ✅             | ❌                       | ❌                       | ❌                       |
+| kotlin.resource://                                                                  | ❌             | ✅                       | ✅                       | ❌                       |
+| Exif Orientation                                                                    | ✅             | ✅                       | ✅                       | ✅                       |
+| 默认图片解码器                                                                             | BitmapFactory | Skia Image              | Skia Image              | Skia Image              |
+| 最低 API                                                                              | API 21        | -                       | JDK 1.8                 | -                       |
+
+> 最低 API 是 '-' 表示和 Compose Multiplatform 同步
 
 ## 文档
 
