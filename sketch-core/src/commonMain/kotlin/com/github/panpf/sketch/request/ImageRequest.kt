@@ -25,12 +25,12 @@ import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
+import com.github.panpf.sketch.resize.OriginSizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.resize.defaultSizeResolver
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.target.Target
@@ -760,8 +760,9 @@ data class ImageRequest(
             )
         }
 
+        // 有 target 时，target 的保底size 是屏幕或窗口 size，无 target 时是原图 size
         private fun resolveSizeResolver(): SizeResolver =
-            target?.getSizeResolver() ?: defaultSizeResolver(context)
+            target?.getSizeResolver() ?: OriginSizeResolver
 
         private fun resolveLifecycleResolver(): LifecycleResolver =
             target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalTargetLifecycle)

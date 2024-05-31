@@ -548,9 +548,6 @@ class ImageRequestExecuteTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = MyImages.jpeg.uri
         val imageSize = Size(1291, 1936)
-        val displaySize = context.resources.displayMetrics.let {
-            Size(it.widthPixels, it.heightPixels)
-        }
 
         // default
         ImageRequest(context, imageUri) {
@@ -561,7 +558,7 @@ class ImageRequestExecuteTest {
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(imageSize, imageInfo.size)
                 Assert.assertEquals(
-                    samplingByTarget(imageSize, displaySize),
+                    imageSize,
                     image.size
                 )
                 Assert.assertEquals(

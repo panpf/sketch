@@ -45,7 +45,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
-import com.github.panpf.sketch.util.computeSizeMultiplier
+import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlin.math.roundToInt
@@ -106,7 +106,7 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
 
         val targetWidth = bounds.width()
         val targetHeight = bounds.height()
-        val multiplier = computeSizeMultiplier(width, height, targetWidth, targetHeight, fitScale)
+        val multiplier = computeScaleMultiplierWithFit(width, height, targetWidth, targetHeight, fitScale)
 
         val left = ((targetWidth - multiplier * width) / 2).roundToInt()
         val top = ((targetHeight - multiplier * height) / 2).roundToInt()

@@ -23,10 +23,10 @@ import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.OriginSizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.defaultSizeResolver
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -35,7 +35,7 @@ import com.github.panpf.sketch.test.utils.fetch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
-import com.github.panpf.sketch.util.computeSizeMultiplier2
+import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -168,8 +168,8 @@ class SvgDecoderTest {
                     "ImageInfo(256x225,'image/svg+xml')",
                     imageInfo.toShortString()
                 )
-                val resizeSize = defaultSizeResolver(context).size()
-                val sizeMultiplier = computeSizeMultiplier2(imageInfo.size, resizeSize)
+                val resizeSize = OriginSizeResolver.size()
+                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, resizeSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(bitmapSize, image.size)
                 assertEquals(LOCAL, dataFrom)

@@ -15,14 +15,11 @@
  */
 package com.github.panpf.sketch.resize
 
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
 fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
-
-expect fun defaultSizeResolver(context: PlatformContext): SizeResolver
 
 /**
  * An interface for measuring the target size for an image request.

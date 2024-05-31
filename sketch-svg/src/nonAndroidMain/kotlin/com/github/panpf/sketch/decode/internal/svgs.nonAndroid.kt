@@ -8,7 +8,7 @@ import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.SketchSize
-import com.github.panpf.sketch.util.computeSizeMultiplier2
+import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
 import okio.buffer
 import okio.use
@@ -62,7 +62,7 @@ internal actual suspend fun decodeSvg(
 
     val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
     val targetSize = requestContext.size!!
-    val targetScale = computeSizeMultiplier2(sourceSize = svgSize, targetSize = targetSize)
+    val targetScale = computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 

@@ -50,7 +50,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.util.computeSizeMultiplier
+import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.requiredMainThread
@@ -329,7 +329,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
         val targetWidth = targetBounds.width()
         val targetHeight = targetBounds.height()
-        val multiplier = computeSizeMultiplier(
+        val multiplier = computeScaleMultiplierWithFit(
             srcWidth = width,
             srcHeight = height,
             dstWidth = targetWidth,

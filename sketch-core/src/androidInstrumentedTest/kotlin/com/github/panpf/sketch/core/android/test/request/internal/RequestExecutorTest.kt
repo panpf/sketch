@@ -20,6 +20,7 @@ package com.github.panpf.sketch.core.android.test.request.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.ImageOptions
@@ -27,8 +28,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resize.FixedSizeResolver
-import com.github.panpf.sketch.resize.internal.DisplaySizeResolver
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.resize.OriginSizeResolver
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.Dispatchers
@@ -78,13 +78,13 @@ class RequestExecutorTest {
         val request = ImageRequest(context, MyImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
-            Assert.assertTrue(sizeResolver is DisplaySizeResolver)
+            Assert.assertTrue(sizeResolver is OriginSizeResolver)
         }
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(sketch, request, false).apply {
                 Assert.assertEquals(Depth.NETWORK, this.request.depth)
                 Assert.assertEquals(CachePolicy.ENABLED, this.request.downloadCachePolicy)
-                Assert.assertTrue(this.request.sizeResolver is DisplaySizeResolver)
+                Assert.assertTrue(this.request.sizeResolver is OriginSizeResolver)
             }
         }
 
@@ -98,7 +98,7 @@ class RequestExecutorTest {
         val request2 = ImageRequest(context2, MyImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
-            Assert.assertTrue(sizeResolver is DisplaySizeResolver)
+            Assert.assertTrue(sizeResolver is OriginSizeResolver)
         }
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(sketch2, request2, false).apply {

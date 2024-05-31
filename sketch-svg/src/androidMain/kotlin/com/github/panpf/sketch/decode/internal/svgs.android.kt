@@ -30,7 +30,7 @@ import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.SketchSize
-import com.github.panpf.sketch.util.computeSizeMultiplier2
+import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
 import okio.buffer
 import kotlin.math.roundToInt
@@ -67,7 +67,7 @@ internal actual suspend fun decodeSvg(
 
     val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
     val targetSize = requestContext.size!!
-    val targetScale = computeSizeMultiplier2(sourceSize = svgSize, targetSize = targetSize)
+    val targetScale = computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
     val request = requestContext.request
     val bitmapConfig = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware()

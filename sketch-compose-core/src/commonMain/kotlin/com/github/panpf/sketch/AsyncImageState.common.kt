@@ -32,8 +32,6 @@ import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
-import com.github.panpf.sketch.request.internal.ComposeTargetRequestManager
-import com.github.panpf.sketch.target.GenericComposeTarget
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -44,10 +42,12 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.internal.ComposeTargetRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.target.GenericComposeTarget
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.fitScale
@@ -63,16 +63,25 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @Composable
+expect fun getWindowContainerSize(): IntSize
+
+internal expect fun ImageRequest.Builder.platformConfig()
+
+@Composable
 fun rememberAsyncImageState(): AsyncImageState {
     val lifecycle = resolveTargetLifecycle()
     val inspectionMode = LocalInspectionMode.current
-    return remember { AsyncImageState(lifecycle, inspectionMode) }
+    val containerSize = getWindowContainerSize()
+    return remember(containerSize) {
+        AsyncImageState(lifecycle, inspectionMode, containerSize)
+    }
 }
 
 @Stable
 class AsyncImageState internal constructor(
     private val lifecycle: TargetLifecycle?,
     private val inspectionMode: Boolean,
+    private val containerSize: IntSize,
 ) : RememberObserver {
 
     private val target = AsyncImageTarget()
@@ -87,6 +96,7 @@ class AsyncImageState internal constructor(
         internal set
     var request: ImageRequest? by mutableStateOf(null)
         internal set
+    private var sourceSize: IntSize? = null
     var size: IntSize? by mutableStateOf(null)
         private set
     var contentScale: ContentScale? by mutableStateOf(null)
@@ -114,8 +124,13 @@ class AsyncImageState internal constructor(
             // because the first size can accurately represent the width and height of AsyncImage.
             return
         }
-        this.size = size
-        this.sizeResolver.sizeState.value = size
+        val limitSize = IntSize(
+            if (size.width > 0) size.width else containerSize.width,
+            if (size.height > 0) size.height else containerSize.height
+        )
+        this.sourceSize = size
+        this.size = limitSize
+        this.sizeResolver.sizeState.value = limitSize
     }
 
     /**
@@ -226,7 +241,7 @@ class AsyncImageState internal constructor(
             mergeComponents {
                 addFetcher(ComposeResourceUriFetcher.Factory())
             }
-            updateRequestBuilder(request, this)
+            platformConfig()
         }
         loadImageJob = coroutineScope.launch {
             sketch.execute(fullRequest)
@@ -363,5 +378,3 @@ sealed interface PainterState {
         override val painter: Painter?,
     ) : PainterState
 }
-
-expect fun updateRequestBuilder(request: ImageRequest, builder: ImageRequest.Builder)

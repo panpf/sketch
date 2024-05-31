@@ -142,6 +142,8 @@ class ViewSizeResolverTest {
                     )
                 }
             }
+
+        // TODO Testing and handling when reaching the drawing stage
     }
 
     class MatchParentTestFragment : Fragment() {

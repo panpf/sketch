@@ -32,6 +32,7 @@
  */
 package com.github.panpf.sketch.resize.internal
 
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -65,6 +66,8 @@ internal class RealViewSizeResolver<T : View>(
     override val view: T?
         get() = viewReference.get()
 
+    override val displayMetrics: DisplayMetrics = view1.resources.displayMetrics
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is RealViewSizeResolver<*>) return false
@@ -96,9 +99,11 @@ interface ViewSizeResolver<T : View> : SizeResolver {
     /** If true, the [view]'s padding will be subtracted from its size. */
     val subtractPadding: Boolean
 
+    val displayMetrics: DisplayMetrics
+
     override suspend fun size(): Size {
         // Fast path: the view is already measured.
-        getSize()?.let { return it }
+        getSizeOrNull()?.let { return it }
 
         // Slow path: wait for the view to be measured.
         return suspendCancellableCoroutine { continuation ->
@@ -108,14 +113,11 @@ interface ViewSizeResolver<T : View> : SizeResolver {
                 private var isResumed = false
 
                 override fun onPreDraw(): Boolean {
-                    val size = getSize()
-                    if (size != null) {
+                    if (!isResumed) {
+                        isResumed = true
                         viewTreeObserver.removePreDrawListenerSafe(this)
-
-                        if (!isResumed) {
-                            isResumed = true
-                            continuation.resumeWith(Result.success(size))
-                        }
+                        val size: Size = getSize()
+                        continuation.resumeWith(Result.success(size))
                     }
                     return true
                 }
@@ -129,10 +131,17 @@ interface ViewSizeResolver<T : View> : SizeResolver {
         }
     }
 
-    private fun getSize(): Size? {
+    private fun getSizeOrNull(): Size? {
         val view = view ?: return null
         val width = getWidth(view) ?: return null
         val height = getHeight(view) ?: return null
+        return Size(width, height)
+    }
+
+    private fun getSize(): Size {
+        val view = view ?: return Size(displayMetrics.widthPixels, displayMetrics.heightPixels)
+        val width = getWidth(view) ?: displayMetrics.widthPixels
+        val height = getHeight(view) ?: displayMetrics.heightPixels
         return Size(width, height)
     }
 
@@ -140,41 +149,35 @@ interface ViewSizeResolver<T : View> : SizeResolver {
         paramSize = view.layoutParams?.width ?: ViewGroup.LayoutParams.WRAP_CONTENT,
         viewSize = view.width,
         paddingSize = if (subtractPadding) view.paddingLeft + view.paddingRight else 0,
-        wrapMaxSize = view.resources.displayMetrics.widthPixels
+        displaySize = displayMetrics.widthPixels
     )
 
     private fun getHeight(view: View): Int? = getDimension(
         paramSize = view.layoutParams?.height ?: ViewGroup.LayoutParams.WRAP_CONTENT,
         viewSize = view.height,
         paddingSize = if (subtractPadding) view.paddingTop + view.paddingBottom else 0,
-        wrapMaxSize = view.resources.displayMetrics.heightPixels
+        displaySize = displayMetrics.heightPixels
     )
 
     private fun getDimension(
         paramSize: Int,
         viewSize: Int,
         paddingSize: Int,
-        wrapMaxSize: Int
-    ): Int? {
-        // If the dimension is set to WRAP_CONTENT, use the display dimension.
-        if (paramSize == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            return wrapMaxSize
+        displaySize: Int
+    ): Int? = when (paramSize) {
+        ViewGroup.LayoutParams.WRAP_CONTENT -> {
+            displaySize
         }
 
-        // Assume the dimension will match the value in the view's layout params.
-        val insetParamSize = paramSize - paddingSize
-        if (insetParamSize > 0) {
-            return insetParamSize
+        ViewGroup.LayoutParams.MATCH_PARENT -> {
+            val insetViewSize = viewSize - paddingSize
+            insetViewSize.takeIf { it > 0 }
         }
 
-        // Fallback to the view's current dimension.
-        val insetViewSize = viewSize - paddingSize
-        if (insetViewSize > 0) {
-            return insetViewSize
+        else -> {
+            val insetParamSize = paramSize - paddingSize
+            insetParamSize.takeIf { it > 0 }
         }
-
-        // Unable to resolve the dimension's value.
-        return null
     }
 
     private fun ViewTreeObserver.removePreDrawListenerSafe(victim: OnPreDrawListener) {

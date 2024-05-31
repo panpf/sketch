@@ -29,12 +29,23 @@ class SystemCallbacksTest {
     @Test
     fun test() {
         val (context, sketch) = getTestContextAndSketch()
-        SystemCallbacks(sketch).apply {
-            Assert.assertEquals(context.isCellularNetworkConnected(), isCellularNetworkConnected)
+        val systemCallbacks = SystemCallbacks(sketch)
+        try {
+            systemCallbacks.apply {
+                Assert.assertEquals(false, isCellularNetworkConnected)
 
-            Assert.assertFalse(isShutdown)
-            shutdown()
-            Assert.assertTrue(isShutdown)
+                systemCallbacks.register()
+                Assert.assertEquals(
+                    context.isCellularNetworkConnected(),
+                    isCellularNetworkConnected
+                )
+
+                Assert.assertFalse(isShutdown)
+                shutdown()
+                Assert.assertTrue(isShutdown)
+            }
+        } finally {
+            systemCallbacks.shutdown()
         }
     }
 }

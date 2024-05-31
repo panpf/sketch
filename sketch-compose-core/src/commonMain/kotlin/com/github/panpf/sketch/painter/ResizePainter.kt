@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.painter.internal.toLogString
-import com.github.panpf.sketch.util.computeSizeMultiplier
+import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import kotlin.math.roundToInt
@@ -92,7 +92,7 @@ open class ResizePainter(
     private fun computeScaledSize(srcSize: Size, dstSize: Size): Size {
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
-        val sizeMultiplier = computeSizeMultiplier(
+        val sizeMultiplier = computeScaleMultiplierWithFit(
             srcWidth = srcSize.width.roundToInt(),
             srcHeight = srcSize.height.roundToInt(),
             dstWidth = dstSize.width.roundToInt(),

@@ -49,7 +49,7 @@ import android.os.SystemClock
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.util.computeSizeMultiplier
+import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
@@ -247,7 +247,7 @@ class MovieDrawable constructor(
         if (movieWidth <= 0 || movieHeight <= 0) return
 
         softwareScale =
-            computeSizeMultiplier(movieWidth, movieHeight, boundsWidth, boundsHeight, true)
+            computeScaleMultiplierWithFit(movieWidth, movieHeight, boundsWidth, boundsHeight, true)
                 .run { if (isSoftwareScalingEnabled) this else coerceAtMost(1.0) }
                 .toFloat()
         val bitmapWidth = (softwareScale * movieWidth).toInt()
@@ -264,7 +264,7 @@ class MovieDrawable constructor(
             hardwareDy = 0f
         } else {
             hardwareScale =
-                computeSizeMultiplier(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
+                computeScaleMultiplierWithFit(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
                     .toFloat()
             hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2
             hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2
