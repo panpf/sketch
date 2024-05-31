@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
-import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -65,14 +64,12 @@ import kotlinx.coroutines.launch
 @Composable
 expect fun getWindowContainerSize(): IntSize
 
-internal expect fun ImageRequest.Builder.platformConfig()
-
 @Composable
 fun rememberAsyncImageState(): AsyncImageState {
     val lifecycle = resolveTargetLifecycle()
     val inspectionMode = LocalInspectionMode.current
     val containerSize = getWindowContainerSize()
-    return remember(containerSize) {
+    return remember(lifecycle, inspectionMode, containerSize) {
         AsyncImageState(lifecycle, inspectionMode, containerSize)
     }
 }
@@ -238,10 +235,6 @@ class AsyncImageState internal constructor(
         val coroutineScope = coroutineScope ?: return
         val fullRequest = request.newRequest {
             target(target)
-            mergeComponents {
-                addFetcher(ComposeResourceUriFetcher.Factory())
-            }
-            platformConfig()
         }
         loadImageJob = coroutineScope.launch {
             sketch.execute(fullRequest)

@@ -31,10 +31,13 @@
 package com.github.panpf.sketch.target
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.ComposeTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
@@ -74,4 +77,14 @@ interface ComposeTarget : Target {
         initialRequest: ImageRequest,
         job: Job
     ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
+
+    override fun getComponents(): ComponentRegistry? = ComponentRegistry.Builder().apply {
+        addFetcher(ComposeResourceUriFetcher.Factory())
+        val toComposeBitmapInterceptor = getToComposeBitmapRequestInterceptor()
+        if (toComposeBitmapInterceptor != null) {
+            addRequestInterceptor(toComposeBitmapInterceptor)
+        }
+    }.build()
 }
+
+expect fun getToComposeBitmapRequestInterceptor(): RequestInterceptor?

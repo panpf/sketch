@@ -94,8 +94,7 @@ open class ComponentRegistry private constructor(
     internal fun newFetcherOrThrow(sketch: Sketch, request: ImageRequest): Fetcher {
         return newFetcherOrNull(sketch, request)
             ?: throw IllegalArgumentException(
-                "No Fetcher can handle this uri '${request.uri}', " +
-                        "please pass ComponentRegistry. Builder addFetcher () function to add a new Fetcher to support it"
+                "No Fetcher can handle this uri '${request.uri}', Please add a new Fetcher to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/fetcher.md"
             )
     }
 
@@ -123,8 +122,7 @@ open class ComponentRegistry private constructor(
     ): Decoder {
         return newDecoderOrNull(requestContext, fetchResult)
             ?: throw IllegalArgumentException(
-                "No Decoder can handle this uri '${requestContext.request.uri}', " +
-                        "please pass ComponentRegistry.Builder.addDecoder() function to add a new Decoder to support it"
+                "No Decoder can handle this uri '${requestContext.request.uri}', Please add a new Decoder to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/decoder.md"
             )
     }
 

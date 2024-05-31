@@ -21,6 +21,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.RequestOptions
@@ -727,7 +728,8 @@ data class ImageRequest(
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeOnDraw = finalOptions.resizeOnDraw
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
-            val componentRegistry = finalOptions.componentRegistry
+            val targetComponents = target?.getComponents()
+            val componentRegistry = finalOptions.componentRegistry.merged(targetComponents)
 
             return ImageRequest(
                 context = context,

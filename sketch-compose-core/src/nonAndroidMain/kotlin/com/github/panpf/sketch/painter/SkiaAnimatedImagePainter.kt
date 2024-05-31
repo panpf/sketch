@@ -7,13 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
+import com.github.panpf.sketch.ComposeBitmap
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
@@ -44,7 +44,7 @@ class SkiaAnimatedImagePainter(
     private var coroutineScope: CoroutineScope? = null
     private val decodeFlow = MutableSharedFlow<Int>()
     private val skiaBitmap: SkiaBitmap = SkiaBitmap().apply { allocPixels(codec.imageInfo) }
-    private val composeBitmap: ImageBitmap = skiaBitmap.asComposeImageBitmap()
+    private val composeBitmap: ComposeBitmap = skiaBitmap.asComposeImageBitmap()
     private var running = false
     private var frameIndex = -1
     private var alpha: Float = 1.0f

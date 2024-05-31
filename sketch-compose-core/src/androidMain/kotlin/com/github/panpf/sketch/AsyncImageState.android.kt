@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
-import com.github.panpf.sketch.request.ImageRequest
 
 @Composable
 actual fun getWindowContainerSize(): IntSize {
@@ -12,8 +11,4 @@ actual fun getWindowContainerSize(): IntSize {
     return remember(displayMetrics) {
         IntSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
-}
-
-internal actual fun ImageRequest.Builder.platformConfig() {
-
 }

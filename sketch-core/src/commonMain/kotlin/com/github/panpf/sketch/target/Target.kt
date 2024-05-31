@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.target
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.MainThread
@@ -62,6 +63,8 @@ interface Target {
     fun getListener(): Listener? = null
 
     fun getProgressListener(): ProgressListener? = null
+    
+    fun getComponents(): ComponentRegistry? = null
 
     /**
      * Called when the request starts.

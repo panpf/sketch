@@ -8,7 +8,7 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 
-class SkiaBitmapToComposeBitmapRequestInterceptor : RequestInterceptor {
+object SkiaBitmapToComposeBitmapRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
 
