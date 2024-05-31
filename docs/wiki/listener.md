@@ -49,21 +49,6 @@ It also supports kotlin function monitoring status:
 
 ```kotlin
 ImageRequest(context, "https://www.sample.com/image.jpg") {
-    listener(
-        onStart = { request: ImageRequest ->
-            // ...
-        },
-        onSuccess = { request: ImageRequest, result: ImageResult.Success ->
-            // ...
-        },
-        onError = { request: ImageRequest, error: ImageResult.Error ->
-            // ...
-        },
-        onCancel = { request: ImageRequest ->
-            // ...
-        },
-    ) 
-    // or
     addListener(
         onStart = { request: ImageRequest ->
             // ...
@@ -85,10 +70,6 @@ Monitor download progress:
 
 ```kotlin
 ImageRequest(context, "https://www.sample.com/image.jpg") {
-    progressListener { request: ImageRequest, progress: Progress ->
-        // ...
-    }
-    // 或 
     addProgressListener { request: ImageRequest, progress: Progress ->
         // ...
     }

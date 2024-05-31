@@ -85,12 +85,11 @@ Compose Multiplatform：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
-// val imageUri = "compose.resource://drawable/sample.png"
+// val imageUri = "compose.resource://files/sample.png"
 val imageUri = "https://www.sample.com/image.jpg"
 
 AsyncImage(
     uri = imageUri,
-    modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
@@ -103,7 +102,6 @@ AsyncImage(
         crossfade()
         // There is a lot more...
     },
-    modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
@@ -118,7 +116,6 @@ Image(
         },
         contentScale = ContentScale.Crop
     ),
-    modifier = Modifier.size(300.dp, 200.dp),
     contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
@@ -129,6 +126,7 @@ Android View：
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
 // val imageUri = "asset://image.jpg"
+// val imageUri = "content://media/external/images/media/88484"
 val imageUri = "https://www.sample.com/image.jpg"
 
 imageView.displayImage(imageUri)
@@ -140,6 +138,15 @@ imageView.displayImage(imageUri) {
     crossfade()
     // There is a lot more...
 }
+
+val request = ImageRequest(context, imageUri) {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    target(imageView)
+    // There is a lot more...
+}
+context.sketch.enqueue(request)
 ```
 
 ## 文档
