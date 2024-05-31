@@ -69,7 +69,7 @@ class AndroidSystemCallbacks(sketch: Sketch) : SystemCallbacks {
     override val isShutdown: Boolean by _isShutdown
 
     override val isCellularNetworkConnected: Boolean
-        get() = networkObserver?.isCellularNetworkConnected != false
+        get() = networkObserver?.isCellularNetworkConnected == true
 
     override fun register() {
         val sketch = sketchReference.get() ?: return
