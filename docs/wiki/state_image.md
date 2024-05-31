@@ -126,24 +126,24 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 > The standard for thumbnails is images with the same aspect ratio and without any Transformation
 > modification.
 
-[StateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/StateImage.kt
+[StateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/StateImage.kt
 
-[ColorStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/ColorStateImage.kt
+[ColorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ColorStateImage.kt
 
-[DrawableStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
+[DrawableStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
 
-[ErrorStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
+[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
 
-[CombinedStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/internal/CombinedStateImage.kt
+[CombinedStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/internal/CombinedStateImage.kt
 
-[IconStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/IconStateImage.kt
+[IconStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/IconStateImage.kt
 
-[MemoryCacheStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
+[MemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
 
-[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/ThumbnailMemoryCacheStateImage.kt
+[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ThumbnailMemoryCacheStateImage.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CurrentStateImage]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/stateimage/CurrentStateImage.kt
+[CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/CurrentStateImage.kt

@@ -236,16 +236,16 @@ The memory cache is released in the following situations:
 * The low available memory of the device triggers the application's `onLowMemory()` method
 * The system trim memory triggers the application's `onTrimMemory(int)` method
 
-[MemoryCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
+[MemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
 
-[LruMemoryCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
+[LruMemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
 
-[DiskCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
+[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
-[LruDiskCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
+[LruDiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
 [reference_article]: http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html

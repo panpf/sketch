@@ -60,7 +60,7 @@ Method 1: Implement the [SketchFactory] interface on the Application class to cr
 Sketch as follows:
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -72,7 +72,7 @@ class MyApplication : Application(), SketchFactory {
 ```
 
 Method 2: Create and configure Sketch and set it up as a singleton via the '
-SketchSingleton.setSketch()' method, as follows:
+SingletonSketch.setSketch()' method, as follows:
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
@@ -80,11 +80,11 @@ val sketch = Sketch.Builder(context).apply {
     httpStack(OkHttpStack.Builder().build())
 }.build()
 
-SketchSingleton.setSketch(sketch)
+SingletonSketch.setSketch(sketch)
 
 // or
 
-SketchSingleton.setSketch(SketchFactory {
+SingletonSketch.setSketch(SketchFactory {
     Sketch.Builder(context).apply {
         logger(Logger(Logger.DEBUG))
         httpStack(OkHttpStack.Builder().build())
@@ -374,21 +374,21 @@ Featured functions:
 
 [comment]: <> (class)
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [SketchFactory]: ../../sketch/src/main/kotlin/com/github/panpf/sketch/SketchFactory.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
-[Disposable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Disposable.kt
+[Disposable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Disposable.kt
 
-[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[DiskCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
+[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
 
 [comment]: <> (wiki)

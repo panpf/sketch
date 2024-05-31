@@ -10,7 +10,7 @@
 [HurlStack] 采用 HttpURLConnection 实现，支持以下配置：
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -46,7 +46,7 @@ Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先
 Sketch 时通过 `httpStack()` 方法注册即可，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -85,7 +85,7 @@ class MyApplication : Application(), SketchFactory {
 Android 4.1 到 4.4 版本支持 TLS 1.1 和 1.2 但是默认没有开启，HurlStack 和 OkHttpStack 开启方式如下：
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -111,7 +111,7 @@ class MyApplication : Application(), SketchFactory {
 实现 [HttpStack] 接口定义自己的 HttpStack，然后在初始化 Sketch 时通过 `httpStack()` 方法注册即可：
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -121,10 +121,10 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-[HttpStack]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/http/HttpStack.kt
+[HttpStack]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HttpStack.kt
 
-[HurlStack]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/http/HurlStack.kt
+[HurlStack]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
 
 [OkHttpStack]: ../../sketch-okhttp/src/main/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
 
-[HttpUriFetcher]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+[HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt

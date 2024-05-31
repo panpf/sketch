@@ -98,8 +98,8 @@ ImageRequest(context, "https://www.sample.com/image.jpg") {
 > 1. 所有方法都将在主线程执行
 
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[Listener]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Listener.kt
+[Listener]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Listener.kt
 
-[ProgressListener]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ProgressListener.kt
+[ProgressListener]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ProgressListener.kt

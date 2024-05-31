@@ -55,14 +55,14 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 
 > Android 自带的 TransitionDrawable 也是以 start 和 end 图片的最大尺寸作为新 Drawable 的尺寸，也有一样的问题
 
-[Transition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/Transition.kt
+[Transition]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transition/Transition.kt
 
-[CrossfadeTransition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
+[CrossfadeTransition]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CrossfadeDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/internal/CrossfadeDrawable.kt
+[CrossfadeDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/CrossfadeDrawable.kt
 
 [resize]: resize.md

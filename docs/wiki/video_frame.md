@@ -22,7 +22,7 @@ Select the appropriate Decoder according to the situation, and then register it 
 
 ```kotlin
 /* Register for all ImageRequests */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -71,6 +71,6 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 
 [FFmpegVideoFrameDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameDecoder.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt

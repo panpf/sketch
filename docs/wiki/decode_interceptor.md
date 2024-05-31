@@ -42,7 +42,7 @@ addDrawableDecodeInterceptor() methods as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -61,8 +61,8 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 }
 ```
 
-[DecodeInterceptor]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DecodeInterceptor.kt
+[DecodeInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/DecodeInterceptor.kt
 
-[DecodeResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/DecodeResult.kt
+[DecodeResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/DecodeResult.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

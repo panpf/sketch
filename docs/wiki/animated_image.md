@@ -30,7 +30,7 @@ actively register [Decoder] with Sketch to play the animated image, as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -127,7 +127,7 @@ automatically control playback
 
 [GifDrawable]: https://github.com/koral--/android-gif-drawable/blob/dev/android-gif-drawable/src/main/kotlin/pl/droidsonroids/gif/GifDrawable.java
 
-[Decoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/Decoder.kt
+[Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
 [GifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
@@ -139,18 +139,18 @@ automatically control playback
 
 [GifMovieDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [SketchFactory]: ../../sketch/src/main/kotlin/com/github/panpf/sketch/SketchFactory.kt
 
-[SketchAnimatableDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
+[SketchAnimatableDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
 
 [Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
 
 [ImageDecoder]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/ImageDecoder.java
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[GenericViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt
+[GenericViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt

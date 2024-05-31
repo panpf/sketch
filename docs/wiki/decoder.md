@@ -38,7 +38,7 @@ to be registered manually according to your needs, as follows:
 
 ```kotlin
 /* Register for all ImageRequest */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -106,15 +106,15 @@ class MyDecoder : Decoder {
 
 [comment]: <> (class)
 
-[Decoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/Decoder.kt
+[Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
-[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
-[FetchResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/fetch/FetchResult.kt
+[FetchResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/FetchResult.kt
 
-[BitmapFactoryDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/BitmapFactoryDecoder.kt
+[BitmapFactoryDecoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/BitmapFactoryDecoder.kt
 
-[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
+[DrawableDecoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
 
 [FFmpegVideoFrameDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameDecoder.kt
 
@@ -124,7 +124,7 @@ class MyDecoder : Decoder {
 
 [SvgDecoder]: ../../sketch-svg/src/main/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 
-[DrawableDecoder]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
+[DrawableDecoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
 
 [GifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
@@ -136,7 +136,7 @@ class MyDecoder : Decoder {
 
 [GifMovieDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [wseemann]: https://github.com/wseemann
 

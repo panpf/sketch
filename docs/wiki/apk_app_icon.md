@@ -11,7 +11,7 @@ First, register [ApkIconDecoder] as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -42,7 +42,7 @@ First, register [AppIconUriFetcher] as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -72,10 +72,10 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCo
   you only use it packageName is used as the cache key, so the icon will not be refreshed even if
   the app version is updated, even if it changes
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [ApkIconDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconDecoder.kt
 
 [AppIconUriFetcher]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

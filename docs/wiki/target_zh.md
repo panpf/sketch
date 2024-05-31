@@ -85,18 +85,18 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
    setImageViewBitmap 方法设置 Bitmap
 2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
 
-[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
-[Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[ImageViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
+[ImageViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
-[RemoteViewsTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt
+[RemoteViewsTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt

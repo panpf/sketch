@@ -116,41 +116,41 @@ internally using [Resize]'s scale for Drawable Zoom
 This function can be used with [CrossfadeTransition] to achieve a perfect
 transition, [View introduction to perfect transition][transition]
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[Resize]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Resize.kt
+[Resize]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Resize.kt
 
-[Scale]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Scale.kt
+[Scale]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Scale.kt
 
-[ScaleDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
+[ScaleDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
 
-[FixedScaleDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
+[FixedScaleDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
 
-[LongImageScaleDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
+[LongImageScaleDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
 
-[FixedPrecisionDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[FixedPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[LongImageClipPrecisionDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[LongImageClipPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[PrecisionDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[PrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[Precision]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Precision.kt
+[Precision]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Precision.kt
 
-[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CrossfadeTransition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
+[CrossfadeTransition]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
 
-[Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[ResizeDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+[ResizeDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
 
-[ResizeAnimatableDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+[ResizeAnimatableDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
 
-[DefaultLongImageDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/LongImageDecider.kt
+[DefaultLongImageDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/LongImageDecider.kt
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md
 

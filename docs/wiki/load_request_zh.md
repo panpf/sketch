@@ -37,4 +37,4 @@ coroutineScope.launch(Dispatchers.Main) {
 > 注意：LoadRequest 不会从内存缓存中获取 Bitmap，也不会将得到的 Bitmap 放入内存缓存中，因为 LoadRequest
 > 返回的 Bitmap 完全交给用户使用，不受 Sketch 控制
 
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
+[LoadRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LoadRequest.kt

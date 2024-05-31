@@ -11,7 +11,7 @@
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -42,7 +42,7 @@ imageView.displayImage("/sdcard/sample.apk")
 
 ```kotlin
 /* 为所有 ImageRequest 注册 */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -71,10 +71,10 @@ imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCo
   packageName 作为缓存 key 那么 App
   版本更新后图标即使改变了缓存也不会刷新
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [ApkIconDecoder]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconDecoder.kt
 
 [AppIconUriFetcher]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

@@ -163,7 +163,7 @@ val sketch = SingletonSketch.get()
 
 ```kotlin
 // Android
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -175,7 +175,7 @@ class MyApplication : Application(), SketchFactory {
 }
 
 // Non Android
-SketchSingleton.setSafe {
+SingletonSketch.setSafe {
     Sketch.Builder(PlatformContext.INSTANCE).apply {
         logger(Logger(Logger.DEBUG))
         httpStack(OkHttpStack.Builder().build())
@@ -185,7 +185,7 @@ SketchSingleton.setSafe {
 ```
 
 > [!TIP]
-> 使用 SketchSingleton.setSafe() 方式自定义 Sketch 时需要尽可能早的调用它，最好是在 App 的入口函数中
+> 使用 SingletonSketch.setSafe() 方式自定义 Sketch 时需要尽可能早的调用它，最好是在 App 的入口函数中
 
 ### 非单例模式
 
@@ -221,6 +221,9 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
      // There is a lot more...
 }
 ```
+
+> [!TIP]
+> 关于 ImageRequest 的更多配置请参考 ImageRequest.Builder 类
 
 #### 配置 Target
 
@@ -276,9 +279,6 @@ imageView.displayImage(){
     // There is a lot more...
 }
 ```
-
-> [!TIP]
-> 关于 ImageRequest 的更多配置请参考 ImageRequest.Builder 类
 
 ### 执行 ImageRequest
 
@@ -353,49 +353,48 @@ job.cancel()
 
 ## ImageView 扩展
 
-Sketch 给 ImageView 提供了一系列的扩展，如下:
+Sketch 为 ImageView 提供了一系列的扩展，如下:
 
-### 显示图片
+#### 显示图片
 
 > 仅单例模式下可用
 
 displayImage() 扩展函数，用于将 URI 指向的图片显示到 ImageView 上
 
 ```kotlin
-imageView.displayImage("https://www.example.com/image.jpg")
+imageView.displayImage("https://www.example.com/image.jpg"){
+     placeholder(R.drawable.placeholder)
+     error(R.drawable.error)
+     crossfade(true)
+}
 ```
 
 上述调用等价于：
 
 ```kotlin
-ImageRequest(imageView, "https://www.example.com/image.jpg").enqueue()
-```
-
-还可以通过 displayImage 函数尾随的 lambda 配置参数：
-
-```kotlin
-imageView.displayImage("https://www.example.com/image.jpg") {
-    placeholder(R.drawable.image)
-    transformations(CircleCropTransformation())
-    crossfade(true)
+val request = ImageRequest(context, "https://www.example.com/image.jpg") {
+     placeholder(R.drawable.placeholder)
+     error(R.drawable.error)
+     crossfade(true)
+     target(imageView)
 }
+sketch.enqueue(request)
 ```
 
-### 取消请求
+#### 取消请求
 
 ```kotlin
 imageView.disposeDisplay()
 ```
 
-### 获取结果
+#### 获取结果
 
 ```kotlin
 val imageResult = imageView.imageResult
 when (imageResult) {
     is ImageResult.Success -> {
         val request: ImageRequest = imageResult.request
-        val requestKey: String = imageResult.requestKey
-        val requestCacheKey: String = imageResult.requestCacheKey
+        val cacheKey: String = imageResult.cacheKey
         val image: Image = imageResult.image
         when (image) {
             is BitmapImage -> {
@@ -468,21 +467,21 @@ when (imageResult) {
 
 [comment]: <> (class)
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[SketchFactory]: ../../sketch/src/main/kotlin/com/github/panpf/sketch/SketchFactory.kt
+[SingletonSketch]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/SingletonSketch.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
-[Disposable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/Disposable.kt
+[Disposable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Disposable.kt
 
-[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[DiskCache]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
+[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
 
 [comment]: <> (wiki)

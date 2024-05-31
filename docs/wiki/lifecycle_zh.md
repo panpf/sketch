@@ -36,8 +36,8 @@ imageView.displayImage("https://www.example.com/image.gif") {
 }
 ```
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ViewTargetRequestDelegate]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/internal/RequestDelegate.kt
+[ViewTargetRequestDelegate]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/internal/RequestDelegate.kt
 
-[GenericViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt
+[GenericViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt

@@ -36,7 +36,7 @@ Then register your RequestInterceptor as follows:
 
 ```kotlin
 /* Register for all ImageRequests */
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -55,10 +55,10 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-[RequestInterceptor]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/RequestInterceptor.kt
+[RequestInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/RequestInterceptor.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[ImageData]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageData.kt
+[ImageData]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageData.kt

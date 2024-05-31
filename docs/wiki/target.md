@@ -87,18 +87,18 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 2. So you still need to refresh the notification or AppWidget in the onUpdated function to display
    the Bitmap on the screen.
 
-[Image]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Image.kt
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
-[Target]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/Target.kt
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[ViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[ImageViewTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
+[ImageViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageResult]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageResult.kt
+[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
-[RemoteViewsTarget]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt
+[RemoteViewsTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt

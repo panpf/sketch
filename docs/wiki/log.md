@@ -12,7 +12,7 @@ Like android.util.Log, [Logger] also supports Level, the default is `INFO`
 You can modify it when initializing [Sketch], as follows:
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -65,7 +65,7 @@ class MyProxy : Logger.Proxy {
     override fun toString(): String = "MyProxy"
 }
 
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -75,6 +75,6 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[Logger]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/util/Logger.kt
+[Logger]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Logger.kt

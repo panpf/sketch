@@ -11,7 +11,7 @@
 你可以在初始化 [Sketch] 时修改，如下：
 
 ```kotlin
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -63,7 +63,7 @@ class MyProxy : Logger.Proxy {
     override fun toString(): String = "MyProxy"
 }
 
-class MyApplication : Application(), SketchFactory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
@@ -73,6 +73,6 @@ class MyApplication : Application(), SketchFactory {
 }
 ```
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[Logger]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/util/Logger.kt
+[Logger]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Logger.kt

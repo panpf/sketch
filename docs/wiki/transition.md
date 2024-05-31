@@ -62,14 +62,14 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 > The TransitionDrawable that comes with Android also uses the maximum size of the start and end
 > images as the size of the new Drawable, which also has the same problem.
 
-[Transition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/Transition.kt
+[Transition]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transition/Transition.kt
 
-[CrossfadeTransition]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
+[CrossfadeTransition]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transition/CrossfadeTransition.kt
 
-[ImageRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageOptions]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CrossfadeDrawable]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/drawable/internal/CrossfadeDrawable.kt
+[CrossfadeDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/CrossfadeDrawable.kt
 
 [resize]: resize.md

@@ -28,12 +28,12 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 }
 ```
 
-[Sketch]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[Resize]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Resize.kt
+[Resize]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Resize.kt
 
-[Precision]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/Precision.kt
+[Precision]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Precision.kt
 
-[LongImageClipPrecisionDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[LongImageClipPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[DefaultLongImageDecider]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/resize/LongImageDecider.kt
+[DefaultLongImageDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/LongImageDecider.kt

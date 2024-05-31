@@ -39,4 +39,4 @@ coroutineScope.launch(Dispatchers.Main) {
 > Bitmap into the memory cache, because the Bitmap returned by LoadRequest is completely handed over
 > to the user and is not controlled by Sketch.
 
-[LoadRequest]: ../../sketch-core/src/main/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
+[LoadRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
