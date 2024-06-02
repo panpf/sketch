@@ -2,41 +2,159 @@
 
 Translations: [简体中文](getting_started_zh.md)
 
+## Display Image
+
+Loading and displaying images with Sketch is very simple, as follows:
+
+Compose Multiplatform：
+
+```kotlin
+// val imageUri = "/Users/my/Downloads/image.jpg"
+// val imageUri = "compose.resource://files/sample.png"
+val imageUri = "https://www.sample.com/image.jpg"
+
+AsyncImage(
+    uri = imageUri,
+    contentScale = ContentScale.Crop,
+    contentDescription = "photo"
+)
+
+// config params
+AsyncImage(
+    rqeuest = ImageRequest(imageUri) {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
+        // There is a lot more...
+    },
+    contentScale = ContentScale.Crop,
+    contentDescription = "photo"
+)
+
+Image(
+    painter = rememberAsyncImagePainter(
+        request = ImageRequest(imageUri) {
+            placeholder(Res.drawable.placeholder)
+            error(Res.drawable.error)
+            crossfade()
+            // There is a lot more...
+        },
+        contentScale = ContentScale.Crop
+    ),
+    contentScale = ContentScale.Crop,
+    contentDescription = "photo"
+)
+```
+
+> [!TIP]
+> 1. On Compose Multiplatform you can use AsyncImage directly Components can also
+     use `Image + AsyncImagePainter` to display the image.
+> 2. But it is more recommended to use the AsyncImage component because AsyncImage is slightly
+     faster.
+> 3. This is because Sketch relies on the exact size of the component to start loading images,
+     AsyncImage The size of the component can be obtained during the layout stage,
+     while `Image + AsyncImagePainter` cannot obtain the component size until the drawing stage.
+
+Android View：
+
+```kotlin
+// val imageUri = "/sdcard/download/image.jpg"
+// val imageUri = "asset://image.jpg"
+// val imageUri = "content://media/external/images/media/88484"
+val imageUri = "https://www.sample.com/image.jpg"
+
+imageView.displayImage(imageUri)
+
+// config params
+imageView.displayImage(imageUri) {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    // There is a lot more...
+}
+
+val request = ImageRequest(context, imageUri) {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    target(imageView)
+    // There is a lot more...
+}
+context.sketch.enqueue(request)
+```
+
+By default, Sketch will automatically adjust the size of the image according to the size of the
+component to prevent the size of the image loaded into memory from exceeding the size of the
+component itself and causing memory waste.
+
+Sketch will also automatically cancel the request when the component is destroyed.
+
+## Supported Image Formats
+
+Sketch supports a variety of static and dynamic image types, as follows:
+
+| Format        | Dependent Modules                           |
+|:--------------|:--------------------------------------------|
+| jpeg          | _                                           |
+| png           | _                                           |
+| bmp           | _                                           |
+| webp          | _                                           |
+| heif          | _                                           |
+| svg           | sketch-svg                                  |
+| gif           | sketch-animated<br>sketch-animated-koralgif |
+| Animated webp | sketch-animated                             |
+| Animated heif | sketch-animated                             |
+| Video frames  | sketch-video<br>sketch-video-ffmpeg         |
+| Apk icon      | sketch-extensions-core                      |
+
+Each image type has a corresponding Decoder support for
+it, [see more about Decoder and how to extend new image types][decoder]
+
 ## Supported URIs
 
-| Scheme                 | Description      | Create Function  |
-|:-----------------------|:-----------------|:-----------------|
-| http://, https://      | File in network  | _                |
-| /, file://             | File in SDCard   | newFileUri()     |
-| content://             | Content Resolver | _                |
-| asset://               | Asset Resource   | newAssetUri()    |
-| android.resource://    | Android Resource | newResourceUri() |
-| data:image/, data:img/ | Base64           | newBase64Uri()   |
-| app.icon://            | App Icon         | newAppIconUri()  |
+Sketch supports loading images from different data sources such as the network, local machine, and
+resources, as follows:
 
-> The `Create Function` column in the table above shows the convenient creation function that Sketch
-> provides for some URIs
+| URI                    | Describe                 | Create Function         | Dependent Modules      |
+|:-----------------------|:-------------------------|:------------------------|:-----------------------|
+| http://, https://      | File in network          | _                       | _                      |
+| /, file://             | File in SDCard           | newFileUri()            | _                      |
+| content://             | Android Content Resolver | _                       | _                      |
+| asset://               | Android Asset            | newAssetUri()           | _                      |
+| android.resource://    | Android Resource         | newResourceUri()        | _                      |
+| data:image/, data:img/ | Base64                   | newBase64Uri()          | _                      |
+| compose.resource://    | Compose Resource         | newComposeResourceUri() | _                      |
+| kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                      |
+| app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core |
 
 Each URI has its own Fetcher to support
 it, [see more about Fetcher and how to extend new URIs][fetcher]
 
-## Supported Image Formats
+## Platform differences
 
-| Format        | API Limit   | Dependency module                           |
-|:--------------|:------------|:--------------------------------------------|
-| jpeg          | _           | _                                           |
-| png           | _           | _                                           |
-| bmp           | _           | _                                           |
-| webp          | _           | _                                           |
-| svg           | _           | sketch-svg                                  |
-| heif          | Android 9+  | _                                           |
-| gif           | _           | sketch-animated<br>sketch-animated-koralgif |
-| webp Animated | Android 9+  | _                                           |
-| heif Animated | Android 11+ | _                                           |
-| video frames  | _           | sketch-video<br>sketch-video-ffmpeg         |
+Due to limitations of platform characteristics, the functions on different platforms are also
+different, as follows:
 
-Each image type has a corresponding Decoder support for
-it, [see more about Decoder and how to extend new image types][decoder]
+| Feature                                                                                | Android       | iOS                     | Desktop                 | Web                     |
+|:---------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|
+| jpeg<br/>png<br/>webp<br/>bmp                                                          | ✅             | ✅                       | ✅                       | ✅                       |
+| heif                                                                                   | ✅ (API 28)    | ❌                       | ❌                       | ❌                       |
+| gif                                                                                    | ✅             | ✅                       | ✅                       | ✅                       |
+| Animated webp                                                                          | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
+| Animated heif                                                                          | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
+| svg                                                                                    | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
+| Video frames                                                                           | ✅             | ❌                       | ❌                       | ❌                       |
+| http://<br/>https://<br/>/, file://<br/>compose.resource://<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
+| asset://<br/>content://<br/>android.resource://                                        | ✅             | ❌                       | ❌                       | ❌                       |
+| kotlin.resource://                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
+| Exif Orientation                                                                       | ✅             | ✅                       | ✅                       | ✅                       |
+| Memory Cache                                                                           | ✅             | ✅                       | ✅                       | ✅                       |
+| Result Cache                                                                           | ✅             | ✅                       | ✅                       | ❌                       |
+| Download Cache                                                                         | ✅             | ✅                       | ✅                       | ❌                       |
+| Default image decoder                                                                  | BitmapFactory | Skia Image              | Skia Image              | Skia Image              |
+| Minimum API                                                                            | API 21        | -                       | JDK 1.8                 | -                       |
+
+> The minimum API is '-' to synchronize with Compose Multiplatform
 
 ## Sketch
 

@@ -7,13 +7,13 @@
 
 翻译：[English](README.md)
 
-Sketch 是一个专为 Compose Multiplatform 和 Android View 设计的图片加载库，它有以下特点：
+Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库，它有以下特点：
 
 * `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种来源加载图片
 * `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸、自动根据 Exif Orientation 旋转图片等
 * `功能丰富`：支持动图、SVG 图片、Base64 图片、视频帧
 * `易于扩展`：支持对缓存、解码、转换、过渡、占位图等各个环节的扩展
-* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
+* `特殊功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
 * `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
 ## 下载
@@ -149,6 +149,8 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
+更多有关 Uri、图片类型、平台差异、Sketch 自定义、ImageRequest 等内容请查看 [《开始使用》][getting_started] 文档
+
 ## 文档
 
 基础功能：
@@ -202,7 +204,8 @@ context.sketch.enqueue(request)
 
 ## 特别感谢
 
-* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及 sketch-animated 的 movie 部分
+* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及 sketch-animated 的
+  movie 部分
 * [koral--]/[android-gif-drawable]: animated-koralgif
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
@@ -211,7 +214,8 @@ context.sketch.enqueue(request)
 
 以下是我的其它开源项目，感兴趣的可以了解一下：
 
-* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Compose Multiplatform 和 Android
+* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Compose Multiplatform 和
+  Android
   View；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
 * [assembly-adapter](https://github.com/panpf/assembly-adapter)：Android 上的一个为各种 Adapter 提供多类型
   Item 实现的库。还顺带为 RecyclerView 提供了最强大的 divider。

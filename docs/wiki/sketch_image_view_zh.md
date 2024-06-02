@@ -3,7 +3,7 @@
 翻译：[English](sketch_image_view.md)
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-view` 模块
+> 必须导入 `sketch-extensions-view` 或 `sketch-extensions-view-core` 模块
 
 ### XML 属性
 

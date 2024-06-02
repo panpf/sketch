@@ -1,151 +1,169 @@
 # ![logo_image] Sketch Image Loader
 
 ![Platform][platform_image]
-[![API][min_api_image]][min_api_link]
 [![License][license_image]][license_link]
 [![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
 Translations: [简体中文](README_zh.md)
 
-Sketch is a powerful and comprehensive image load library on Android, in addition to the basic
-functions, it also supports Jetpack Compose, GIF, SVG, video thumbnails, huge images
-sampling, ExifInterface and other functions.
+Sketch is an image loading library specially designed for Compose Multiplatform and Android View. It
+has the following features:
 
-## Features
+* `Multiple loading sources`: Supports loading images from multiple sources such as http, file,
+  compose.resource, android asset/content/resource, etc.
+* `Powerful functions`: Supports three-level caching, automatically cancels requests, automatically
+  adjusts image size, automatically rotates images according to Exif Orientation, etc.
+* `Rich functions`: Supports Animated image, SVG images, Base64 images, and video frames
+* `Easy to Expand`: Supports expansion of various aspects such as caching, decoding, transformation,
+  transition, placeholder, etc.
+* `Special functions`: Practical extensions such as pausing downloads when cellular data is
+  provided, pausing loading during list scrolling, image type badges, download progress indicators,
+  etc.
+* `Modern`: Completely based on Kotlin and Kotlin coroutine design
 
-* Support http, asset, content, android.resource and other URIs
-* Support playing GIFs, WebP, HEIF and other animated image
-* Supports download, conversion results, and memory L3 cache
-* Support for correcting image orientation via Exif
-* Supports Base64, video frames, SVG images
-* Support for Jetpack Compose
-* Supports automatic resizing of images according to the size of the view
-* Supports loading only pictures to memory or downloading only pictures to disk
-* Supports various useful features such as saving cellular data
-* Support the extension of URI, cache, decoding, conversion, display, placeholder and other links
-* Based on Kotlin and Kotlin coroutines
-
-## Import
+## Download
 
 `Published to mavenCentral`
 
-```kotlin
-dependencies {
-    // The core functionality of Sketch is provided as well as a singleton and some 
-    // handy extension functions that depend on this singleton implementation, 
-    // and if you don't need a singleton, you can use the sketch-core module
-    implementation("io.github.panpf.sketch4:sketch:${LAST_VERSION}")
-}
-```
-
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
-There are also optional modules to extend the functionality of sketch:
+Compose Multiplatform:
 
 ```kotlin
-dependencies {
-    // Support for Jetpack Compose.
-    // It relies on the singletons provided by the sketch module, 
-    // and you can use the sketch-compose-core module if you don't need the singleton pattern
-    implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
-
-    // Provides View with practical functions such as download progress, 
-    // pausing loading during list sliding, saving cellular data, 
-    // image type corner icons, loading apk files and installed app icons, etc.
-    // It relies on the singleton provided by the sketch module. 
-    // If you do not need the singleton mode, you can use the sketch-view-core module.
-    implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
-
-    // Provide Compose with practical functions such as download progress, 
-    // pausing loading during list sliding, saving cellular data, 
-    // image type corner icons, loading apk files and installed app icons, etc.
-    implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
-
-    // GIF playback is achieved through Android's built-in ImageDecoder and Movie class
-    implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
-
-    // GifDrawable through Koral's android-gif-drawable library
-    implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
-
-    // Support for OkHttp
-    implementation("io.github.panpf.sketch4:sketch-okhttp:${LAST_VERSION}")
-
-    // SVG images are supported
-    implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
-
-    // Video frames are read through Android's built-in MediaMetadataRetriever class
-    implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
-
-    // Video frames are read through wseemann's FFmpegMediaMetadataRetriever library
-    implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
-}
+// Provides the core functions of Sketch as well as singletons and extension 
+// functions that rely on singleton implementations
+implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
 ```
+
+> [!IMPORTANT]
+> To improve the performance of compose, please copy [compose_compiler_config.conf] under
+> the `sketch-core` module file to your project and configure it according to
+> the [Compose Stability Configuration][stability_configuration] documentation
+
+Android View:
+
+```kotlin
+// Provides the core functions of Sketch as well as singletons and extension 
+// functions that rely on singleton implementations
+implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
+```
+
+There are also some optional modules:
+
+```kotlin
+// Use Android or Skia's built-in decoder to decode gif, webp, heif and other animated images and play them
+implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
+
+// [Android only] Decode gif and play it through GifDrawable of android-gif-drawable library
+implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
+
+// Provides practical functions such as download progress, pausing loading during list scrolling, 
+// saving cellular data, image type badge, loading apk icons and installed app icons, etc.
+implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+
+// [JVM only] Support image downloading via OkHttp
+implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
+
+// [JVM only] Support downloading images via ktor
+implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
+
+// Support SVG images
+implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
+
+// [Android only] Decoding video frames through Android's built-in MediaMetadataRetriever class
+implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
+
+// [Android only] Decoding video frames via wseemann's FFmpegMediaMetadataRetriever library
+implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
+```
+
+> [!TIP]
+> * `sketch-compose`, `sketch-view`, `sketch-extensions-compose`, `sketch-extensions-view`
+    Modules all depend on the singleton provided by the `sketch-singleton` module. If you don’t need
+    the singleton, you can directly rely on their `*-core` version.
+> * On Android `sketch-compose` and `sketch-view` can be used together
 
 #### R8 / Proguard
 
-Sketch doesn't need to configure any obfuscation rules itself, but you may need to add obfuscation
-configurations for indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio].
+Sketch itself does not need to configure any obfuscation rules, but you may need to configure it for
+the indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio] Add obfuscation configuration
 
 ## Quickly Started
 
-#### ImageView
-
-Sketch provides a series of extended functions called displayImage for ImageView, which can easily
-display images
+Compose Multiplatform：
 
 ```kotlin
-// http
-imageView.displayImage("https://www.sample.com/image.jpg")
+// val imageUri = "/Users/my/Downloads/image.jpg"
+// val imageUri = "compose.resource://files/sample.png"
+val imageUri = "https://www.sample.com/image.jpg"
 
-// File
-imageView.displayImage("/sdcard/download/image.jpg")
-
-// asset
-imageView.displayImage("asset://image.jpg")
-
-// There is a lot more...
-```
-
-You can also configure parameters through a trailing lambda function:
-
-```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    error(R.drawable.error)
-    transformations(CircleCropTransformation())
-    crossfade()
-    // There is a lot more...
-}
-```
-
-#### Jetpack Compose
-
-> [!IMPORTANT]
-> Required import `sketch-compose` module
-
-```kotlin
 AsyncImage(
-    uri = "https://www.sample.com/image.jpg",
+    uri = imageUri,
     contentScale = ContentScale.Crop,
-    contentDescription = ""
+    contentDescription = "photo"
 )
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(LocalContext.current, "https://www.sample.com/image.jpg") {
-        placeholder(R.drawable.placeholder)
-        error(R.drawable.error)
-        transformations(BlurTransformation())
+    rqeuest = ImageRequest(imageUri) {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
         crossfade()
         // There is a lot more...
     },
     contentScale = ContentScale.Crop,
-    contentDescription = ""
+    contentDescription = "photo"
+)
+
+Image(
+    painter = rememberAsyncImagePainter(
+        request = ImageRequest(imageUri) {
+            placeholder(Res.drawable.placeholder)
+            error(Res.drawable.error)
+            crossfade()
+            // There is a lot more...
+        },
+        contentScale = ContentScale.Crop
+    ),
+    contentScale = ContentScale.Crop,
+    contentDescription = "photo"
 )
 ```
 
-## Document
+Android View：
+
+```kotlin
+// val imageUri = "/sdcard/download/image.jpg"
+// val imageUri = "asset://image.jpg"
+// val imageUri = "content://media/external/images/media/88484"
+val imageUri = "https://www.sample.com/image.jpg"
+
+imageView.displayImage(imageUri)
+
+// config params
+imageView.displayImage(imageUri) {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    // There is a lot more...
+}
+
+val request = ImageRequest(context, imageUri) {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade()
+    target(imageView)
+    // There is a lot more...
+}
+context.sketch.enqueue(request)
+```
+
+For more information about Uri, image types, platform differences, Sketch customization,
+ImageRequest, etc., please view the [《Getting Started》][getting_started] document
+
+## Documents
 
 Basic functions：
 
@@ -184,39 +202,26 @@ Featured functions：
 * [The list slides to pause the loading of images][pause_load_when_scrolling]
 * [Displays an icon for an apk file or installed app][apk_app_icon]
 
-## Changelog
+## Change log
 
 Please review the [CHANGELOG.md] file
 
-### About version 3.0
+## About version 4.0
 
-* The maven groupId was changed to 'io.github.panpf.sketch4', so version 2.\* will not prompt for an
-  upgrade
-* The package name was changed to 'com.github.panpf.sketch' so it does not conflict with version
-  2.\*
-* Based on the kotlin coroutine rewrite, APIs and functions are all refactored as a new library
-* There is no longer a requirement to use a SketchImageView, any ImageView and its subclasses will
-  do, and any View can be supported in combination with a custom Target
-* The Zoom function is split into independent modules that can be relied on separately, and the
-  large image sampling function is refactored and supports multi-threaded decoding, which is faster
-* The gif module now directly depends on the [android-gif-drawable] library, no longer modified
-  twice, and can be upgraded by itself
-* Support for Jetpack Compose
-* Support for request and decode interceptors
-* Referring to [coil] and combining with the original functionality of sketch, there are the
-  following differences compared to [coil]:
-    * sketch supports a minimum of API 16, while [coil] supports only API 21
-    * Sketch supports bitmap reuse, while [coil] does not
-    * Sketch supports more granular resizing of images
-    * sketch clearly distinguishes between display, load, and download requests
+* The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
+  prompt for upgrade
+* Version 4.0 is specially built for Compose Multiplatform, so there are many breaking changes in
+  the API, please upgrade with caution
+* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, such as
+  DisplayRequest, LoadRequest, DownloadRequest
+  Merged into one ImageRequest, removed BitmapPool, etc.
+* Android minimum API raised to API 21
 
 ## Special thanks
 
-* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose,
-  sketch-animated-movie
-  parts
-* [chrisbanes]/[PhotoView]: Zoom
-* [koral--]/[android-gif-drawable]: gif-koral
+* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose and
+  sketch-animated movie part
+* [koral--]/[android-gif-drawable]: animated-koralgif
 * [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom]/[androidsvg]: svg
 
@@ -242,88 +247,83 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [logo_image]: docs/res/logo.png
 
-[platform_image]: https://img.shields.io/badge/Platform-Android-brightgreen.svg
+[platform_image]: https://img.shields.io/badge/Platform-ComposeMultiplatform-brightgreen.svg
 
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 
-[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
 
 [version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
-[min_api_image]: https://img.shields.io/badge/API-16%2B-orange.svg
-
-[min_api_link]: https://android-arsenal.com/api?level=16
 
 [qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
 
 
 [comment]: <> (wiki)
 
-[getting_started]: docs/wiki/getting_started.md
+[getting_started]: docs/wiki/getting_started_zh.md
 
-[fetcher]: docs/wiki/fetcher.md
+[fetcher]: docs/wiki/fetcher_zh.md
 
-[decoder]: docs/wiki/decoder.md
+[decoder]: docs/wiki/decoder_zh.md
 
-[animated_image]: docs/wiki/animated_image.md
+[animated_image]: docs/wiki/animated_image_zh.md
 
-[resize]: docs/wiki/resize.md
+[resize]: docs/wiki/resize_zh.md
 
-[transformation]: docs/wiki/transformation.md
+[transformation]: docs/wiki/transformation_zh.md
 
-[transition]: docs/wiki/transition.md
+[transition]: docs/wiki/transition_zh.md
 
-[state_image]: docs/wiki/state_image.md
+[state_image]: docs/wiki/state_image_zh.md
 
-[listener]: docs/wiki/listener.md
+[listener]: docs/wiki/listener_zh.md
 
-[cache]: docs/wiki/cache.md
+[cache]: docs/wiki/cache_zh.md
 
-[target]: docs/wiki/target.md
+[target]: docs/wiki/target_zh.md
 
-[http_stack]: docs/wiki/http_stack.md
+[http_stack]: docs/wiki/http_stack_zh.md
 
-[svg]: docs/wiki/svg.md
+[svg]: docs/wiki/svg_zh.md
 
-[video_frame]: docs/wiki/video_frame.md
+[video_frame]: docs/wiki/video_frame_zh.md
 
-[exif]: docs/wiki/exif.md
+[exif]: docs/wiki/exif_zh.md
 
-[image_options]: docs/wiki/image_options.md
+[image_options]: docs/wiki/image_options_zh.md
 
-[request_interceptor]: docs/wiki/request_interceptor.md
+[request_interceptor]: docs/wiki/request_interceptor_zh.md
 
-[decode_interceptor]: docs/wiki/decode_interceptor.md
+[decode_interceptor]: docs/wiki/decode_interceptor_zh.md
 
-[bitmap_pool]: docs/wiki/bitmap_pool.md
+[preloading]: docs/wiki/preloading_zh.md
 
-[preloading]: docs/wiki/preloading.md
+[download_request]: docs/wiki/download_request_zh.md
 
-[download_request]: docs/wiki/download_request.md
+[load_request]: docs/wiki/load_request_zh.md
 
-[load_request]: docs/wiki/load_request.md
+[long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails_zh.md
 
-[long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails.md
+[mime_type_logo]: docs/wiki/mime_type_logo_zh.md
 
-[mime_type_logo]: docs/wiki/mime_type_logo.md
+[download_progress_indicator]: docs/wiki/download_progress_indicator_zh.md
 
-[download_progress_indicator]: docs/wiki/download_progress_indicator.md
+[sketch_image_view]: docs/wiki/sketch_image_view_zh.md
 
-[sketch_image_view]: docs/wiki/sketch_image_view.md
+[save_cellular_traffic]: docs/wiki/save_cellular_traffic_zh.md
 
-[save_cellular_traffic]: docs/wiki/save_cellular_traffic.md
+[pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling_zh.md
 
-[pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling.md
+[apk_app_icon]: docs/wiki/apk_app_icon_zh.md
 
-[apk_app_icon]: docs/wiki/apk_app_icon.md
+[log]: docs/wiki/log_zh.md
 
-[log]: docs/wiki/log.md
+[lifecycle]: docs/wiki/lifecycle_zh.md
 
-[lifecycle]: docs/wiki/lifecycle.md
-
-[jetpack_compose]: docs/wiki/jetpack_compose.md
+[jetpack_compose]: docs/wiki/jetpack_compose_zh.md
 
 
 [comment]: <> (links)
@@ -357,6 +357,10 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [OkHttp]: https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro
 
 [Okio]: https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro
+
+[compose_compiler_config.conf]: sketch-core/compose_compiler_config.conf
+
+[stability_configuration]: https://developer.android.com/develop/ui/compose/performance/stability/fix#configuration-file
 
 
 [comment]: <> (footer)

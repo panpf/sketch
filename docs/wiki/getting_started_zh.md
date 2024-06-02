@@ -2,7 +2,7 @@
 
 翻译：[English](image_request_zh.md)
 
-## 快速上手
+## 显示图片
 
 用 Sketch 加载并显示图片非常简单，如下：
 
@@ -47,9 +47,10 @@ Image(
 ```
 
 > [!TIP]
-> 1. 在 Compose Multiplatform 上你既可以直接使用 AsyncImage 组件也可以使用 `Image + AsyncImagePainter`
+> 1. 在 Compose Multiplatform 上你既可以直接使用 AsyncImage
+     组件也可以使用 `Image + AsyncImagePainter`
      来显示图片。
-> 2. 但更推荐直接使用 AsyncImage 组件，因为 AsyncImage 会略快一些。
+> 2. 但更推荐使用 AsyncImage 组件，因为 AsyncImage 会略快一些。
 > 3. 这是由于 Sketch 依赖组件的确切大小才会开始加载图片，AsyncImage
      在布局阶段就可以获取到组件的大小，而 `Image + AsyncImagePainter` 则是要等到绘制阶段才能获取到组件大小。
 
@@ -81,27 +82,34 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-Sketch 会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费。Sketch还会在组件销毁时自动取消请求
+Sketch 默认情况下会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费
+
+Sketch 还会在组件销毁时自动取消请求
 
 ## 支持的图片类型
 
-| 类型           | 依赖模块                                        |
-|:-------------|---------------------------------------------|
-| jpeg         | _                                           |
-| png          | _                                           |
-| bmp          | _                                           |
-| webp         | _                                           |
-| heif         | _                                           |
-| svg          | sketch-svg                                  |
-| gif 动图       | sketch-animated<br>sketch-animated-koralgif |
-| webp 动图      | sketch-animated                             |
-| heif 动图      | sketch-animated                             |
-| video frames | sketch-video<br>sketch-video-ffmpeg         |
-| apk icon     | sketch-extensions-core                      |
+Sketch 支持多种静态图片和动态图片类型，如下：
 
-每一种图片类型都有对应的 Decoder 对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型](decoder_zh.md)
+| 类型      | 依赖模块                                        |
+|:--------|---------------------------------------------|
+| jpeg    | _                                           |
+| png     | _                                           |
+| bmp     | _                                           |
+| webp    | _                                           |
+| heif    | _                                           |
+| svg     | sketch-svg                                  |
+| gif     | sketch-animated<br>sketch-animated-koralgif |
+| webp 动图 | sketch-animated                             |
+| heif 动图 | sketch-animated                             |
+| 视频帧     | sketch-video<br>sketch-video-ffmpeg         |
+| Apk 图标  | sketch-extensions-core                      |
+
+每一种图片类型都有对应的 Decoder
+对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型](decoder_zh.md)
 
 ## 支持的 URI
+
+Sketch 支持从网络、本机、资源等不同的数据源加载图片，如下：
 
 | URI                    | 描述                       | 创建函数                    | 依赖模块                   |
 |:-----------------------|:-------------------------|:------------------------|:-----------------------|
@@ -115,15 +123,18 @@ Sketch 会自动根据组件的大小来调整图片的尺寸，防止加载到�
 | kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                      |
 | app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core |
 
-每一种 URI 都有对应的 Fetcher 对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI](fetcher_zh.md)
+每一种 URI 都有对应的 Fetcher
+对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI](fetcher_zh.md)
 
 ## 平台差异
 
-| 功能/平台                                                                                  | Android       | iOS             | Desktop         | Web             |
+由于受平台特性所限，在不同平台上的功能也有所不同，如下：
+
+| 功能                                                                                     | Android       | iOS             | Desktop         | Web             |
 |:---------------------------------------------------------------------------------------|---------------|:----------------|:----------------|:----------------|
 | jpeg<br/>png<br/>webp<br/>bmp                                                          | ✅             | ✅               | ✅               | ✅               |
 | heif                                                                                   | ✅ (API 28)    | ❌               | ❌               | ❌               |
-| gif 动图                                                                                 | ✅             | ✅               | ✅               | ✅               |
+| gif                                                                                    | ✅             | ✅               | ✅               | ✅               |
 | webp 动图                                                                                | ✅ (API 28)    | ✅               | ✅               | ✅               |
 | heif 动图                                                                                | ✅ (API 30)    | ❌               | ❌               | ❌               |
 | svg                                                                                    | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
@@ -148,7 +159,7 @@ Sketch 会自动根据组件的大小来调整图片的尺寸，防止加载到�
 
 sketch-compose 和 sketch-view 模块依赖了 sketch-singleton 模块，因此直接依赖他们就可以使用单例模式
 
-单例模式下不需要主动创建 Sketch 实例，可以通过以下方式获取共享的 Sketch 实例：
+单例模式下不需要主动创建 Sketch 实例，你可以直接获取共享的 Sketch 实例，如下：
 
 ```kotlin
 // Android
@@ -180,7 +191,7 @@ SingletonSketch.setSafe {
         logger(Logger(Logger.DEBUG))
         httpStack(OkHttpStack.Builder().build())
         // There is a lot more...
-    }.build()    
+    }.build()
 }
 ```
 
@@ -198,9 +209,10 @@ val sketch = Sketch.Builder(context).apply {
     // There is a lot more...
 }.build()
 
+val imageUri = "https://www.example.com/image.jpg"
+val request = ImageRequest(context, imageUri)
 GloablScope.launch {
-    val imageUri = "https://www.example.com/image.jpg"
-    val result: ImageResult = sketch.execute(ImageRequest(context, imageUri))
+    val result: ImageResult = sketch.execute(request)
 }
 ```
 
@@ -209,7 +221,8 @@ GloablScope.launch {
 
 ## ImageRequest
 
-[ImageRequest] 用来描述一次图片加载请求，它包含图片的 uri 以及占位图、转换、过渡、新的尺寸、Target、Listener 等配置
+[ImageRequest] 用来描述一次图片加载请求，它包含图片的 uri 以及占位图、转换、过渡、新的尺寸、Target、Listener
+等配置
 
 ### 创建 ImageRequest
 
@@ -217,8 +230,8 @@ GloablScope.launch {
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg") {
-     size(300, 300)
-     // There is a lot more...
+    size(300, 300)
+    // There is a lot more...
 }
 ```
 
@@ -229,13 +242,14 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 
 要想将加载结果直接显示到组件上还需要配置 Target
 
-在 Compose 上 Target 由 AsyncImage 或 AsyncImagePainter 背后的 AsyncImageState 来配置，你只需将 ImageRequest 交给
+在 Compose 上 Target 由 AsyncImage 或 AsyncImagePainter 背后的 AsyncImageState 来配置，你只需将
+ImageRequest 交给
 AsyncImage 或 AsyncImagePainter 即可，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg") {
-     size(300, 300)
-     // There is a lot more...
+    size(300, 300)
+    // There is a lot more...
 }
 
 AsyncImage(
@@ -257,8 +271,7 @@ Image(
 > [!CAUTION]
 > 你不能调用 target() 函数，这会导致 App 崩溃
 
-在 Android View 系统中则需要你主动调用 target() 函数传入 ImageView，你可以使用 ImageRequest(ImageView, String) 或
-ImageView.displayImage() 扩展函数，它们会帮你调用 target()，如下：
+在 Android View 系统中则需要你主动调用 target() 函数传入 ImageView，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg") {
@@ -267,30 +280,35 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
     // There is a lot more...
 }
 context.sketch.enqueue(request)
+```
 
+你还可以使用 ImageRequest(ImageView, String) 或 ImageView.displayImage() 扩展函数，它们会帮你调用
+target()，如下：
+
+```kotlin
 val request = ImageRequest(imageView, "https://www.example.com/image.jpg") {
     size(300, 300)
     // There is a lot more...
 }
 context.sketch.enqueue(request)
 
-imageView.displayImage(){
-     size(300, 300)
+imageView.displayImage() {
+    size(300, 300)
     // There is a lot more...
 }
 ```
 
 ### 执行 ImageRequest
 
-ImageRequest 创建好后需要交由 Sketch 去执行，Sketch 支持异步和同步两种方式执行 ImageRequest，如下：
+ImageRequest 创建好后要交由 Sketch 去执行，Sketch 支持异步和同步两种方式执行 ImageRequest，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg")
 
-// 异步执行 ImageRequest 不阻塞当前线程或协程
+// 异步执行 ImageRequest 不阻塞当前线程，也不会挂起当前协程
 val disposable: Disposable = sketch.enqueue(request)
 
-// 同步执行 ImageRequest 阻塞当前协程直到返回结果
+// 同步执行 ImageRequest 挂起当前协程直到返回结果
 coroutineScope.launch(Dispatchers.Main) {
     val result: ImageResult = sketch.execute(request)
     val image: Image = result.image
@@ -302,24 +320,21 @@ coroutineScope.launch(Dispatchers.Main) {
 
 #### 获取结果
 
-配置了 Target 时 [Sketch] 会将结果交给 Target 去显示，但有时候需要通过结果做一些事情或者没有配置 Target 就需要主动获取结果了
-
-使用 enqueue() 方法异步执行请求时可以通过返回的 [Disposable].job 获取结果，如下:
+配置了 Target 时 [Sketch] 会将结果交给 Target 去显示，但有时候需要通过结果做一些事情或者没有配置
+Target 时就需要主动获取结果了，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg")
+
+// 使用 enqueue() 方法异步执行请求时可以通过返回的 Disposable.job 获取结果
 val disposable = sketch.enqueue(request)
 coroutineScope.launch(Dispatchers.Main) {
     val result: ImageResult = disposable.job.await()
     val image: Image = result.image
     // Your logic
 }
-```
 
-使用 execute() 方法同步执行请求时可以直接获取结果，如下：
-
-```kotlin
-val request = ImageRequest(context, "https://www.example.com/image.jpg")
+// 使用 execute() 方法同步执行请求时可以直接获取结果
 coroutineScope.launch(Dispatchers.Main) {
     val result: ImageResult = sketch.execute(request)
     val image: Image = result.image
@@ -332,21 +347,21 @@ coroutineScope.launch(Dispatchers.Main) {
 配置了 Target 时 [ImageRequest] 会在下列情况下自动取消:
 
 * AsyncImage 组件被忘记
-* lifecycle 变为 DESTROYED 状态
-* Target 是 [ViewTarget] 并且 View 的 onViewDetachedFromWindow() 方法被执行
+* ImageView 的 onViewDetachedFromWindow() 方法被执行
+* Lifecycle 变为 DESTROYED 状态
 
 未配置 Target 时或需要主动取消时可以通过 Disposable 或 Job 来取消，如下：
 
 ```kotlin
-// 使用 enqueue() 方法异步执行请求时会返回一个 [Disposable], 可以用来它在需要的时候取消请求
+// 使用 enqueue() 方法异步执行请求时会返回一个 Disposable, 可以用来它在需要的时候取消请求
 val request = ImageRequest(context, "https://www.example.com/image.jpg")
 val disposable = sketch.enqueue(request)
 disposable.dispose()
 
 // 使用 execute() 方法同步执行请求时可以通过其协程的 Job 在需要的时候取消请求
 val job = coroutineScope.launch(Dispatchers.Main) {
-     val request = ImageRequest(context, "https://www.example.com/image.jpg")
-     val result: ImageResult = sketch.execute(request)
+    val request = ImageRequest(context, "https://www.example.com/image.jpg")
+    val result: ImageResult = sketch.execute(request)
 }
 job.cancel()
 ```
@@ -355,17 +370,17 @@ job.cancel()
 
 Sketch 为 ImageView 提供了一系列的扩展，如下:
 
-#### 显示图片
+### 显示图片
 
 > 仅单例模式下可用
 
 displayImage() 扩展函数，用于将 URI 指向的图片显示到 ImageView 上
 
 ```kotlin
-imageView.displayImage("https://www.example.com/image.jpg"){
-     placeholder(R.drawable.placeholder)
-     error(R.drawable.error)
-     crossfade(true)
+imageView.displayImage("https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade(true)
 }
 ```
 
@@ -373,21 +388,21 @@ imageView.displayImage("https://www.example.com/image.jpg"){
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg") {
-     placeholder(R.drawable.placeholder)
-     error(R.drawable.error)
-     crossfade(true)
-     target(imageView)
+    placeholder(R.drawable.placeholder)
+    error(R.drawable.error)
+    crossfade(true)
+    target(imageView)
 }
 sketch.enqueue(request)
 ```
 
-#### 取消请求
+### 取消请求
 
 ```kotlin
 imageView.disposeDisplay()
 ```
 
-#### 获取结果
+### 获取结果
 
 ```kotlin
 val imageResult = imageView.imageResult
