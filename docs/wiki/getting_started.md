@@ -103,7 +103,7 @@ component is destroyed.
 | Apk icon      | sketch-extensions-core                      |
 
 Each image type has a corresponding Decoder support for
-it, [see more about Decoder and how to extend new image types][decoder]
+it, [see more about Decoder and how to extend new image types][decode]
 
 ## Supported URIs
 

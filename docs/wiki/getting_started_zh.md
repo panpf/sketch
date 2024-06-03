@@ -98,7 +98,7 @@ context.sketch.enqueue(request)
 | Apk 图标  | sketch-extensions-core                      |
 
 每一种图片类型都有对应的 Decoder
-对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型](decode_zh)
+对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decode]
 
 ## 支持的 URI
 
@@ -117,7 +117,7 @@ context.sketch.enqueue(request)
 | app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core |
 
 每一种 URI 都有对应的 Fetcher
-对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI](fetcher_zh.md)
+对其提供支持，[查看更多 Fetcher 介绍以及如何扩展新的 URI][fetcher]
 
 ## 平台差异
 
