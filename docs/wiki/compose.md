@@ -1,6 +1,6 @@
 # Jetpack Compose
 
-Translations: [简体中文](jetpack_compose_zh.md)
+Translations: [简体中文](compose_zh)
 
 > [!IMPORTANT]
 > Required import `sketch-compose` module

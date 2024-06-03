@@ -1,39 +1,39 @@
-# 下载进度指示器
+# Download progress indicator
 
-翻译：[English](download_progress_indicator.md)
+Translations: [简体中文](progress_indicator_zh)
 
-Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下：
+Sketch provides extended functions for view and Compose to display download progress, as follows:
 
 ![sample_progress_indicator.png](../res/sample_progress_indicator.png)
 
-提供了三种样式可供选择，如下：
+Three styles are provided to choose from, as follows:
 
 ![sample_progress_drawable.png](../res/sample_progress_drawable.png)
 
-> 它们还可以调整颜色、尺寸和行为
+> They can also adjust color, size and behavior
 
 ### View
 
 > [!IMPORTANT]
-> * 必须导入 `sketch-extensions-view` 模块
-> * 必须使用 [SketchImageView]
+> * Required import `sketch-extensions-view` module
+> * Required [SketchImageView]
 
 ```kotlin
 val sketchImageView = SketchImageView(context)
 
 sketchImageView.showMaskProgressIndicator()
-// 或
+// or
 sketchImageView.showSectorProgressIndicator()
-// 或
+// or
 sketchImageView.showRingProgressIndicator()
 ```
 
-> View 版本功能由 [ProgressIndicatorAbility] 实现
+> View version functionality is implemented by [ProgressIndicatorAbility]
 
 ### Compose
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-compose` 模块
+> Required import `sketch-extensions-compose` module
 
 ```kotlin
 val progressPainter = rememberDrawableProgressPainter(remember {
@@ -52,11 +52,11 @@ AsyncImage(
 )
 ```
 
-> Compose 版本功能由 [ProgressIndicatorModifier] 实现
+> Compose version function is implemented by [ProgressIndicatorModifier]
 
-### 自定义指示器样式
+### Custom indicator style
 
-你可以继承 [AbsProgressDrawable] 实现你自己的进度指示器，如下：
+You can extends [AbsProgressDrawable] to implement your own progress indicator, as follows:
 
 ```kotlin
 class MyProgressDrawable(
@@ -81,7 +81,7 @@ class MyProgressDrawable(
     override fun drawProgress(canvas: Canvas, drawProgress: Float) {
         val bounds = bounds.takeIf { !it.isEmpty } ?: return
         canvas.withSave {
-            // 绘制你的指示器
+            // Draw your indicator
         }
     }
 
@@ -109,7 +109,7 @@ class MyProgressDrawable(
 }
 ```
 
-然后使用你自己的指示器，如下：
+Then use your own indicator like this:
 
 View:
 

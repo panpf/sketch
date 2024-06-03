@@ -1,10 +1,10 @@
 # 开始使用
 
-翻译：[English](image_request_zh.md)
+翻译：[English](getting_started.md)
 
 ## 显示图片
 
-用 Sketch 加载并显示图片非常简单，如下：
+用 [Sketch] 加载并显示图片非常简单，如下：
 
 Compose Multiplatform：
 
@@ -47,11 +47,10 @@ Image(
 ```
 
 > [!TIP]
-> 1. 在 Compose Multiplatform 上你既可以直接使用 AsyncImage
-     组件也可以使用 `Image + AsyncImagePainter`
-     来显示图片。
-> 2. 但更推荐使用 AsyncImage 组件，因为 AsyncImage 会略快一些。
-> 3. 这是由于 Sketch 依赖组件的确切大小才会开始加载图片，AsyncImage
+> 1. 在 Compose Multiplatform 上你既可以直接使用 [AsyncImage]
+     组件也可以使用 `Image + AsyncImagePainter` 来显示图片。
+> 2. 但更推荐使用 [AsyncImage] 组件，因为 [AsyncImage] 会略快一些。
+> 3. 这是由于 [Sketch] 依赖组件的确切大小才会开始加载图片，[AsyncImage]
      在布局阶段就可以获取到组件的大小，而 `Image + AsyncImagePainter` 则是要等到绘制阶段才能获取到组件大小。
 
 Android View：
@@ -82,13 +81,13 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-Sketch 默认情况下会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费
+[Sketch] 默认情况下会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费
 
-Sketch 还会在组件销毁时自动取消请求
+[Sketch] 还会在组件销毁时自动取消请求
 
 ## 支持的图片类型
 
-Sketch 支持多种静态图片和动态图片类型，如下：
+[Sketch] 支持多种静态图片和动态图片类型，如下：
 
 | 类型      | 依赖模块                                        |
 |:--------|---------------------------------------------|
@@ -105,11 +104,11 @@ Sketch 支持多种静态图片和动态图片类型，如下：
 | Apk 图标  | sketch-extensions-core                      |
 
 每一种图片类型都有对应的 Decoder
-对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型](decoder_zh.md)
+对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型](decode_zh)
 
 ## 支持的 URI
 
-Sketch 支持从网络、本机、资源等不同的数据源加载图片，如下：
+[Sketch] 支持从网络、本机、资源等不同的数据源加载图片，如下：
 
 | URI                    | 描述                       | 创建函数                    | 依赖模块                   |
 |:-----------------------|:-------------------------|:------------------------|:-----------------------|
@@ -157,9 +156,9 @@ Sketch 支持从网络、本机、资源等不同的数据源加载图片，如�
 
 ### 单例模式
 
-sketch-compose 和 sketch-view 模块依赖了 sketch-singleton 模块，因此直接依赖他们就可以使用单例模式
+`sketch-compose` 和 `sketch-view` 模块依赖了 `sketch-singleton` 模块，因此直接依赖他们就可以使用单例模式
 
-单例模式下不需要主动创建 Sketch 实例，你可以直接获取共享的 Sketch 实例，如下：
+单例模式下不需要主动创建 [Sketch] 实例，你可以直接获取共享的 [Sketch] 实例，如下：
 
 ```kotlin
 // Android
@@ -170,7 +169,7 @@ val sketch = SingletonSketch.get(context)
 val sketch = SingletonSketch.get()
 ```
 
-需要自定义 Sketch 时可以通过以下方式创建 Sketch 并配置它：
+需要自定义 [Sketch] 时可以通过以下方式创建 [Sketch] 并配置它：
 
 ```kotlin
 // Android
@@ -196,11 +195,11 @@ SingletonSketch.setSafe {
 ```
 
 > [!TIP]
-> 使用 SingletonSketch.setSafe() 方式自定义 Sketch 时需要尽可能早的调用它，最好是在 App 的入口函数中
+> 使用 [SingletonSketch].setSafe() 方式自定义 [Sketch] 时需要尽可能早的调用它，最好是在 App 的入口函数中
 
 ### 非单例模式
 
-非单例模式下需要你自己创建 Sketch 并记住它，然后在需要的时候使用你创建的实例，如下：
+非单例模式下需要你自己创建 [Sketch] 并记住它，然后在需要的时候使用你创建的实例，如下：
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
@@ -212,21 +211,21 @@ val sketch = Sketch.Builder(context).apply {
 val imageUri = "https://www.example.com/image.jpg"
 val request = ImageRequest(context, imageUri)
 GloablScope.launch {
-    val result: ImageResult = sketch.execute(request)
+    val imageResult: ImageResult = sketch.execute(request)
 }
 ```
 
 > [!TIP]
-> 关于 Sketch 的更多自定义配置请参考 Sketch.Builder 类
+> 关于 [Sketch] 的更多自定义配置请参考 [Sketch].Builder 类
 
 ## ImageRequest
 
-[ImageRequest] 用来描述一次图片加载请求，它包含图片的 uri 以及占位图、转换、过渡、新的尺寸、Target、Listener
-等配置
+[ImageRequest] 用来描述一次图片加载请求，它包含图片的 uri 以及占位图、转换、过渡、新的尺寸、[Target]
+、Listener 等配置
 
 ### 创建 ImageRequest
 
-创建一个简单的 ImageRequest，它限制图片的最大像素数为 300x300
+创建一个简单的 [ImageRequest]，它限制图片的最大像素数为 300x300
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg") {
@@ -236,15 +235,14 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 ```
 
 > [!TIP]
-> 关于 ImageRequest 的更多配置请参考 ImageRequest.Builder 类
+> 关于 [ImageRequest] 的更多配置请参考 [ImageRequest].Builder 类
 
 #### 配置 Target
 
-要想将加载结果直接显示到组件上还需要配置 Target
+要想将加载结果直接显示到组件上还需要配置 [Target]
 
-在 Compose 上 Target 由 AsyncImage 或 AsyncImagePainter 背后的 AsyncImageState 来配置，你只需将
-ImageRequest 交给
-AsyncImage 或 AsyncImagePainter 即可，如下：
+在 Compose 上 [Target] 由 [AsyncImage] 和 [AsyncImagePainter] 的基石 [AsyncImageState] 来配置，你只需将
+[ImageRequest] 交给 [AsyncImage] 或 [AsyncImagePainter] 即可，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg") {
@@ -269,7 +267,7 @@ Image(
 ```
 
 > [!CAUTION]
-> 你不能调用 target() 函数，这会导致 App 崩溃
+> 在 AsyncImage 和 AsyncImagePainter 中你不能调用 target() 函数，这会导致 App 崩溃
 
 在 Android View 系统中则需要你主动调用 target() 函数传入 ImageView，如下：
 
@@ -282,8 +280,8 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 context.sketch.enqueue(request)
 ```
 
-你还可以使用 ImageRequest(ImageView, String) 或 ImageView.displayImage() 扩展函数，它们会帮你调用
-target()，如下：
+你还可以使用 [ImageRequest][ImageRequest_ViewExtensions](ImageView, String) 或
+ImageView.[displayImage()][displayImage] 扩展函数，它们会帮你调用 target()，如下：
 
 ```kotlin
 val request = ImageRequest(imageView, "https://www.example.com/image.jpg") {
@@ -300,7 +298,7 @@ imageView.displayImage() {
 
 ### 执行 ImageRequest
 
-ImageRequest 创建好后要交由 Sketch 去执行，Sketch 支持异步和同步两种方式执行 ImageRequest，如下：
+[ImageRequest] 创建好后要交由 [Sketch] 去执行，[Sketch] 支持异步和同步两种方式执行 [ImageRequest]，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg")
@@ -310,18 +308,19 @@ val disposable: Disposable = sketch.enqueue(request)
 
 // 同步执行 ImageRequest 挂起当前协程直到返回结果
 coroutineScope.launch(Dispatchers.Main) {
-    val result: ImageResult = sketch.execute(request)
-    val image: Image = result.image
+    val imageResult: ImageResult = sketch.execute(request)
+    val image: Image = imageResult.image
 }
 ```
 
 > [!NOTE]
-> 单例模式下为 ImageRequest 提供了 ImageRequest.enqueue() 和 ImageRequest.execute() 扩展函数，方便顺序书写
+> 单例模式为 [ImageRequest] 提供了 [ImageRequest][ImageRequest_SingletonExtensions].enqueue()
+> 和 [ImageRequest][ImageRequest_SingletonExtensions].execute() 扩展函数，方便顺序书写
 
 #### 获取结果
 
-配置了 Target 时 [Sketch] 会将结果交给 Target 去显示，但有时候需要通过结果做一些事情或者没有配置
-Target 时就需要主动获取结果了，如下：
+配置了 [Target] 时 [Sketch] 会将结果交给 [Target] 去显示，但有时候需要通过结果做一些事情或者没有配置
+[Target] 时就需要主动获取结果了，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg")
@@ -329,28 +328,58 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg")
 // 使用 enqueue() 方法异步执行请求时可以通过返回的 Disposable.job 获取结果
 val disposable = sketch.enqueue(request)
 coroutineScope.launch(Dispatchers.Main) {
-    val result: ImageResult = disposable.job.await()
-    val image: Image = result.image
-    // Your logic
+    val imageResult: ImageResult = disposable.job.await()
 }
 
 // 使用 execute() 方法同步执行请求时可以直接获取结果
 coroutineScope.launch(Dispatchers.Main) {
-    val result: ImageResult = sketch.execute(request)
-    val image: Image = result.image
-    // Your logic
+    val imageResult: ImageResult = sketch.execute(request)
+}
+```
+
+ImageResult 包含了很多有用的信息，如下：
+
+```kotlin
+val imageResult: ImageResult = ...
+val request: ImageRequest = imageResult.request
+val image: Image = imageResult.image
+when (image) {
+     is AndroidBitmapImage -> {
+          val bitmap: Bitmap = image.bitmap
+     }
+     is AndroidDrawableImage -> {
+          val drawable: Drawable = image.drawable
+     }
+     is ComposeBitmapImage -> {
+          val bitmap: ComposeBitmap = image.bitmap
+     }
+     is PainterImage -> {
+          val painter: Painter = image.painter
+     }
+     is SkiaAnimatedImage -> {
+          val codec: Codec = image.codec
+     }
+}
+if (imageResult is ImageResult.Success) {
+     val cacheKey: String = imageResult.cacheKey
+     val imageInfo: ImageInfo = imageResult.imageInfo
+     val dataFrom: DataFrom = imageResult.dataFrom
+     val transformedList: List<String>? = imageResult.transformedList
+     val extras: Map<String, String>? = imageResult.extras
+} else if (imageResult is ImageResult.Error) {
+     val throwable: Throwable = imageResult.throwable
 }
 ```
 
 #### 取消请求
 
-配置了 Target 时 [ImageRequest] 会在下列情况下自动取消:
+配置了 [Target] 时 [ImageRequest] 会在下列情况下自动取消请求:
 
-* AsyncImage 组件被忘记
+* [AsyncImage] 或 [AsyncImagePainter] 组件被忘记
 * ImageView 的 onViewDetachedFromWindow() 方法被执行
 * Lifecycle 变为 DESTROYED 状态
 
-未配置 Target 时或需要主动取消时可以通过 Disposable 或 Job 来取消，如下：
+未配置 [Target] 时或需要主动取消时可以通过 [Disposable] 或 Job 来取消，如下：
 
 ```kotlin
 // 使用 enqueue() 方法异步执行请求时会返回一个 Disposable, 可以用来它在需要的时候取消请求
@@ -361,91 +390,37 @@ disposable.dispose()
 // 使用 execute() 方法同步执行请求时可以通过其协程的 Job 在需要的时候取消请求
 val job = coroutineScope.launch(Dispatchers.Main) {
     val request = ImageRequest(context, "https://www.example.com/image.jpg")
-    val result: ImageResult = sketch.execute(request)
+    val imageResult: ImageResult = sketch.execute(request)
 }
 job.cancel()
 ```
 
 ## ImageView 扩展
 
-Sketch 为 ImageView 提供了一系列的扩展，如下:
-
-### 显示图片
-
-> 仅单例模式下可用
-
-displayImage() 扩展函数，用于将 URI 指向的图片显示到 ImageView 上
+[Sketch] 为 ImageView 提供了一系列的扩展，如下:
 
 ```kotlin
+// display
 imageView.displayImage("https://www.example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
     crossfade(true)
 }
-```
 
-上述调用等价于：
-
-```kotlin
-val request = ImageRequest(context, "https://www.example.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    error(R.drawable.error)
-    crossfade(true)
-    target(imageView)
-}
-sketch.enqueue(request)
-```
-
-### 取消请求
-
-```kotlin
+// cancel
 imageView.disposeDisplay()
-```
 
-### 获取结果
-
-```kotlin
+// result
 val imageResult = imageView.imageResult
-when (imageResult) {
-    is ImageResult.Success -> {
-        val request: ImageRequest = imageResult.request
-        val cacheKey: String = imageResult.cacheKey
-        val image: Image = imageResult.image
-        when (image) {
-            is BitmapImage -> {
-                val bitmap: Bitmap = image.bitmap
-            }
-            is DrawableImage -> {
-                val drawable: Drawable = image.drawable
-            }
-        }
-        val imageInfo: ImageInfo = imageResult.imageInfo
-        val dataFrom: DataFrom = imageResult.dataFrom
-        val transformedList: List<String>? = imageResult.transformedList
-        val extras: Map<String, String>? = imageResult.extras
-        // ...
-    }
-    is ImageResult.Error -> {
-        val request: ImageRequest = imageResult.request
-        val image: Image? = imageResult.image
-        when (image) {
-            is BitmapImage -> {
-                val bitmap: Bitmap = image.bitmap
-            }
-            is DrawableImage -> {
-                val drawable: Drawable = image.drawable
-            }
-        }
-        val throwable: Throwable = imageResult.throwable
-        // ...
-    }
-}
 ```
+
+> [displayImage()][displayImage] 仅单例模式下可用
 
 ## 文档
 
 基础功能：
 
+* [Compose][compose]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
 * [Resize：修改图片尺寸][resize]
 * [Transformation：转换图片][transformation]
@@ -454,28 +429,24 @@ when (imageResult) {
 * [Listener：监听请求状态和下载进度][listener]
 * [Cache：了解下载、结果、内存缓存][cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
-* [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
+* [Decode：了解 Sketch 的解码过程][decode]
 * [Target：将加载结果应用到目标上][target]
 * [HttpStack：了解 http 部分及使用 okhttp][http_stack]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
-* [Exif：纠正图片方向][exif]
+* [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
-* [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
-* [DownloadRequest：下载图片到磁盘][download_request]
-* [LoadRequest：加载图片获取 Bitmap][load_request]
-* [预加载图片到内存][preloading]
+* [预加载][preload]
 * [Lifecycle][lifecycle]
-* [Jetpack Compose][jetpack_compose]
 * [日志][log]
 
 特色功能：
 
 * [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
-* [显示下载进度][show_download_progress]
-* [显示图片类型角标][show_image_type]
+* [显示下载进度][progress_indicator]
+* [显示图片类型角标][mime_type_logo]
 * [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
 * [列表滑动中暂停加载图片][pause_load_when_scrolling]
 * [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
@@ -488,6 +459,10 @@ when (imageResult) {
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
+[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequestViewExtensions.kt
+
+[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/SingletonRequestExtensions.kt
+
 [ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
@@ -498,67 +473,71 @@ when (imageResult) {
 
 [DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
+[AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
+
+[AsyncImagePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImagePainter.kt
+
+[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt
+
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
+
+[displayImage]: ../../sketch-view/src/main/kotlin/com/github/panpf/sketch/SingletonImageViewExtensions.kt
+
 
 [comment]: <> (wiki)
 
-[getting_started]: getting_started_zh.md
+[animated_image]: animated_image_zh.md
+
+[apk_app_icon]: apk_app_icon_zh.md
+
+[cache]: cache_zh.md
+
+[compose]: compose_zh.md
+
+[decode]: decode_zh.md
+
+[exif_orientation]: exif_orientation_zh.md
 
 [fetcher]: fetcher_zh.md
 
-[decoder]: decoder_zh.md
+[getting_started]: getting_started_zh.md
 
-[animated_image]: animated_image_zh.md
+[http_stack]: http_stack_zh.md
+
+[image_options]: image_options_zh.md
+
+[lifecycle]: lifecycle_zh.md
+
+[listener]: listener_zh.md
+
+[log]: log_zh.md
+
+[long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md
+
+[mime_type_logo]: mime_type_logo_zh.md
+
+[pause_load_when_scrolling]: pause_load_when_scrolling_zh.md
+
+[preload]: preload_zh.md
+
+[progress_indicator]: progress_indicator_zh.md
+
+[request_interceptor]: request_interceptor_zh.md
 
 [resize]: resize_zh.md
+
+[save_cellular_traffic]: save_cellular_traffic_zh.md
+
+[sketch_image_view]: sketch_image_view_zh.md
+
+[state_image]: state_image_zh.md
+
+[svg]: svg_zh.md
+
+[target]: target_zh.md
 
 [transformation]: transformation_zh.md
 
 [transition]: transition_zh.md
 
-[state_image]: state_image_zh.md
-
-[listener]: listener_zh.md
-
-[cache]: cache_zh.md
-
-[target]: target_zh.md
-
-[http_stack]: http_stack_zh.md
-
-[svg]: svg_zh.md
-
 [video_frame]: video_frame_zh.md
-
-[exif]: exif_zh.md
-
-[image_options]: image_options_zh.md
-
-[request_interceptor]: request_interceptor_zh.md
-
-[decode_interceptor]: decode_interceptor_zh.md
-
-[preloading]: preloading_zh.md
-
-[download_request]: download_request_zh.md
-
-[load_request]: load_request_zh.md
-
-[long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md
-
-[show_image_type]: mime_type_logo_zh.md
-
-[show_download_progress]: download_progress_indicator_zh.md
-
-[sketch_image_view]: sketch_image_view_zh.md
-
-[save_cellular_traffic]: save_cellular_traffic_zh.md
-
-[pause_load_when_scrolling]: pause_load_when_scrolling_zh.md
-
-[apk_app_icon]: apk_app_icon_zh.md
-
-[log]: log_zh.md
-
-[lifecycle]: lifecycle_zh.md
-
-[jetpack_compose]: jetpack_compose_zh.md

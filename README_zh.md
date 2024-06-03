@@ -149,13 +149,15 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-更多有关 Uri、图片类型、平台差异、Sketch 自定义、ImageRequest 等内容请查看 [《开始使用》][getting_started] 文档
+更多有关 Uri、图片类型、平台差异、Sketch 自定义、ImageRequest 等内容请查看 [《开始使用》][getting_started]
+文档
 
 ## 文档
 
 基础功能：
 
 * [开始使用][getting_started]
+* [Compose][compose]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
 * [Resize：修改图片尺寸][resize]
 * [Transformation：转换图片][transformation]
@@ -164,27 +166,23 @@ context.sketch.enqueue(request)
 * [Listener：监听请求状态和下载进度][listener]
 * [Cache：了解下载、结果、内存缓存][cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
-* [Decoder：了解 Decoder 及扩展新的图片类型][decoder]
+* [Decode：了解 Sketch 的解码过程][decode]
 * [Target：将加载结果应用到目标上][target]
 * [HttpStack：了解 http 部分及使用 okhttp][http_stack]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
-* [ExifOrientation：纠正图片方向][exif]
+* [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
-* [DecodeInterceptor：拦截 Bitmap 或 Drawable 解码][decode_interceptor]
-* [DownloadRequest：下载图片到磁盘][download_request]
-* [LoadRequest：加载图片获取 Bitmap][load_request]
-* [预加载图片到内存][preloading]
+* [预加载][preload]
 * [Lifecycle][lifecycle]
-* [Jetpack Compose][jetpack_compose]
 * [日志][log]
 
 特色功能：
 
 * [SketchImageView：通过 XML 属性配置请求][sketch_image_view]
 * [提高长图在网格列表中的清晰度][long_image_grid_thumbnails]
-* [显示下载进度][download_progress_indicator]
+* [显示下载进度][progress_indicator]
 * [显示图片类型角标][mime_type_logo]
 * [蜂窝数据网络下暂停下载图片节省流量][save_cellular_traffic]
 * [列表滑动中暂停加载图片][pause_load_when_scrolling]
@@ -204,11 +202,11 @@ context.sketch.enqueue(request)
 
 ## 特别感谢
 
-* [coil-kt]/[coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及 sketch-animated 的
-  movie 部分
-* [koral--]/[android-gif-drawable]: animated-koralgif
-* [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
-* [BigBadaboom]/[androidsvg]: svg
+* [coil-kt/coil][coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及
+  sketch-animated 的 movie 部分
+* [koral--/android-gif-drawable][android-gif-drawable]: sketch-animated-koralgif
+* [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: sketch-video-ffmpeg
+* [BigBadaboom/androidsvg][androidsvg]: sketch-svg
 
 ## 我的项目
 
@@ -227,118 +225,98 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [comment]: <> (header)
 
+[license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
+
 [logo_image]: docs/res/logo.png
+
+[license_link]: https://www.apache.org/licenses/LICENSE-2.0
 
 [platform_image]: https://img.shields.io/badge/Platform-ComposeMultiplatform-brightgreen.svg
 
-[license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
-
-[license_link]: https://www.apache.org/licenses/LICENSE-2.0
+[qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
 
 [version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
 
 [version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 
-[qq_group_image]: https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg
-
-
 [comment]: <> (wiki)
-
-[getting_started]: docs/wiki/getting_started_zh.md
-
-[fetcher]: docs/wiki/fetcher_zh.md
-
-[decoder]: docs/wiki/decoder_zh.md
 
 [animated_image]: docs/wiki/animated_image_zh.md
 
-[resize]: docs/wiki/resize_zh.md
-
-[transformation]: docs/wiki/transformation_zh.md
-
-[transition]: docs/wiki/transition_zh.md
-
-[state_image]: docs/wiki/state_image_zh.md
-
-[listener]: docs/wiki/listener_zh.md
+[apk_app_icon]: docs/wiki/apk_app_icon_zh.md
 
 [cache]: docs/wiki/cache_zh.md
 
-[target]: docs/wiki/target_zh.md
+[compose]: docs/wiki/compose_zh.md
+
+[decode]: docs/wiki/decode_zh.md
+
+[exif_orientation]: docs/wiki/exif_orientation_zh.md
+
+[fetcher]: docs/wiki/fetcher_zh.md
+
+[getting_started]: docs/wiki/getting_started_zh.md
 
 [http_stack]: docs/wiki/http_stack_zh.md
 
-[svg]: docs/wiki/svg_zh.md
-
-[video_frame]: docs/wiki/video_frame_zh.md
-
-[exif]: docs/wiki/exif_zh.md
-
 [image_options]: docs/wiki/image_options_zh.md
 
-[request_interceptor]: docs/wiki/request_interceptor_zh.md
+[lifecycle]: docs/wiki/lifecycle_zh.md
 
-[decode_interceptor]: docs/wiki/decode_interceptor_zh.md
+[listener]: docs/wiki/listener_zh.md
 
-[preloading]: docs/wiki/preloading_zh.md
-
-[download_request]: docs/wiki/download_request_zh.md
-
-[load_request]: docs/wiki/load_request_zh.md
+[log]: docs/wiki/log_zh.md
 
 [long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails_zh.md
 
 [mime_type_logo]: docs/wiki/mime_type_logo_zh.md
 
-[download_progress_indicator]: docs/wiki/download_progress_indicator_zh.md
+[pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling_zh.md
 
-[sketch_image_view]: docs/wiki/sketch_image_view_zh.md
+[preload]: docs/wiki/preload_zh.md
+
+[progress_indicator]: docs/wiki/progress_indicator_zh.md
+
+[request_interceptor]: docs/wiki/request_interceptor_zh.md
+
+[resize]: docs/wiki/resize_zh.md
 
 [save_cellular_traffic]: docs/wiki/save_cellular_traffic_zh.md
 
-[pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling_zh.md
+[sketch_image_view]: docs/wiki/sketch_image_view_zh.md
 
-[apk_app_icon]: docs/wiki/apk_app_icon_zh.md
+[state_image]: docs/wiki/state_image_zh.md
 
-[log]: docs/wiki/log_zh.md
+[svg]: docs/wiki/svg_zh.md
 
-[lifecycle]: docs/wiki/lifecycle_zh.md
+[target]: docs/wiki/target_zh.md
 
-[jetpack_compose]: docs/wiki/jetpack_compose_zh.md
+[transformation]: docs/wiki/transformation_zh.md
+
+[transition]: docs/wiki/transition_zh.md
+
+[video_frame]: docs/wiki/video_frame_zh.md
 
 
 [comment]: <> (links)
 
-[koral--]: https://github.com/koral--
+
+[androidsvg]: https://github.com/BigBadaboom/androidsvg
 
 [android-gif-drawable]: https://github.com/koral--/android-gif-drawable
 
-[chrisbanes]: https://github.com/chrisbanes
-
-[PhotoView]: https://github.com/chrisbanes/PhotoView
-
-[bumptech]: https://github.com/bumptech
-
-[glide]: https://github.com/bumptech/glide
-
-[coil-kt]: https://github.com/coil-kt
-
 [coil]: https://github.com/coil-kt/coil
-
-[wseemann]: https://github.com/wseemann
 
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
 
-[BigBadaboom]: https://github.com/BigBadaboom
-
-[androidsvg]: https://github.com/BigBadaboom/androidsvg
 
 [Kotlin Coroutines]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
 
 [OkHttp]: https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro
 
 [Okio]: https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro
+
 
 [compose_compiler_config.conf]: sketch-core/compose_compiler_config.conf
 

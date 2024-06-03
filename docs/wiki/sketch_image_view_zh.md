@@ -105,6 +105,6 @@ scope.launch {
 
 [attrs]: ../../sketch-extensions-view-core/src/main/res/values/attrs.xml
 
-[show_download_progress]: download_progress_indicator.md
+[show_download_progress]: progress_indicator
 
 [show_image_type]: mime_type_logo.md

@@ -1,6 +1,6 @@
 # Exif
 
-Translations: [简体中文](exif_zh.md)
+Translations: [简体中文](exif_orientation_zh)
 
 Sketch supports restoring the orientation of images based on their Exif information. This feature is
 enabled by default. You can use [ImageRequest] and [ImageOptions] to provide The
