@@ -7,7 +7,7 @@ enabled by default. You can use [ImageRequest] and [ImageOptions] to provide The
 `ignoreExifOrientation` attribute disables this functionality, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     ignoreExifOrientation()
 }
 ```

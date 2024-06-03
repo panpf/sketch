@@ -27,7 +27,7 @@ Download cache is enabled by default, and you can control the download cache via
 downloadCachePolicy property of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     // Disable
     downloadCachePolicy(CachePolicy.DISABLED)
     // Read Only
@@ -115,7 +115,7 @@ Result cache is enabled by default, and you can control the bitmap result cache 
 resultCachePolicy property of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     // Disable
     resultCachePolicy(CachePolicy.DISABLED)
     // Read Only
@@ -195,7 +195,7 @@ Memory cache is enabled by default, and you can control the bitmap memory cache 
 memoryCachePolicy property of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     // Disable
     memoryCachePolicy(CachePolicy.DISABLED)
     // Read Only

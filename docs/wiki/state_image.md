@@ -31,7 +31,7 @@ follows:
 
 import java.awt.Color
 
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     placeholder(resources.getDrawable(R.drawable.placeholder))
     placeholder(ColorStateImage(IntColor(Color.RED)))
@@ -76,7 +76,7 @@ object MyCondition : CombinedStateImage.Condition {
     ): Boolean = throwable is IOException
 }
 
-imageView.displayImage("https://www.sample.com/image.jpg")
+imageView.displayImage("https://example.com/image.jpg")
 {
     error(R.drawable.error) {
         addState(MyCondition to DrawableStateImage(R.drawable.uri_empty))
@@ -106,7 +106,7 @@ page will gradually change from a blurry image to a clear image, which will have
 conveniently, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage())
     crossfade(fadeStart = false)
 }
@@ -117,7 +117,7 @@ find thumbnails in the memory. However, if the list page and the details page us
 you need to actively specify the uri of the list page, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage("https://www.sample.com/image.jpg?widht=300"))
     crossfade(fadeStart = false)
 }

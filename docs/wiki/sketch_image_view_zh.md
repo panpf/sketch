@@ -44,18 +44,18 @@ scope.launch {
     sketchImageView.requestState.loadState.collect {
         when (it) {
             is LoadState.Started -> {
-                val request: DisplayRequest = it.request
+                val request: ImageRequest = it.request
             }
             is LoadState.Success -> {
-                val request: DisplayRequest = it.request
+                val request: ImageRequest = it.request
                 val result: DisplayResult.Success = it.result
             }
             is LoadState.Error -> {
-                val request: DisplayRequest = it.request
+                val request: ImageRequest = it.request
                 val result: DisplayResult.Error = it.result
             }
             is LoadState.Canceled -> {
-                val request: DisplayRequest = it.request
+                val request: ImageRequest = it.request
             }
             else -> {
                 // null

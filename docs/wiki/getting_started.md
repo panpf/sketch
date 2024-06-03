@@ -11,11 +11,10 @@ Compose Multiplatform：
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
 // val imageUri = "compose.resource://files/sample.png"
-val imageUri = "https://www.sample.com/image.jpg"
+val imageUri = "https://example.com/image.jpg"
 
 AsyncImage(
     uri = imageUri,
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -27,7 +26,6 @@ AsyncImage(
         crossfade()
         // There is a lot more...
     },
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -41,7 +39,6 @@ Image(
         },
         contentScale = ContentScale.Crop
     ),
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 ```
@@ -61,7 +58,7 @@ Android View：
 // val imageUri = "/sdcard/download/image.jpg"
 // val imageUri = "asset://image.jpg"
 // val imageUri = "content://media/external/images/media/88484"
-val imageUri = "https://www.sample.com/image.jpg"
+val imageUri = "https://example.com/image.jpg"
 
 imageView.displayImage(imageUri)
 
@@ -267,7 +264,6 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 
 AsyncImage(
     request = request,
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -276,7 +272,6 @@ Image(
         request = request,
         contentScale = ContentScale.Crop
     ),
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 ```
@@ -476,35 +471,35 @@ Featured functions：
 
 [comment]: <> (class)
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
-
-[SingletonSketch]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/SingletonSketch.kt
-
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
-
-[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequestViewExtensions.kt
-
-[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/SingletonRequestExtensions.kt
-
-[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
-
-[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
-
-[Disposable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Disposable.kt
-
-[ViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
-
-[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
-
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 
 [AsyncImagePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImagePainter.kt
 
 [AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt
 
-[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
+[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
 [displayImage]: ../../sketch-view/src/main/kotlin/com/github/panpf/sketch/SingletonImageViewExtensions.kt
+
+[Disposable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Disposable.kt
+
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
+
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+
+[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/SingletonRequestExtensions.kt
+
+[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequestViewExtensions.kt
+
+[ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
+
+[SingletonSketch]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/SingletonSketch.kt
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
+
+[ViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
 
 [comment]: <> (wiki)

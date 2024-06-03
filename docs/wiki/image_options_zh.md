@@ -49,7 +49,7 @@ sketchImageView.updateDisplayImageOptions {
 ImageRequest：
 
 ```kotlin
-DisplayRequest(context, "http://sample.com/sample.jpeg") {
+ImageRequest(context, "http://sample.com/sample.jpeg") {
     merge(ImageOptions {
         // ...
     })

@@ -25,7 +25,7 @@ Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、�
 属性控制下载缓存:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     // 禁用
     downloadCachePolicy(CachePolicy.DISABLED)
     // 只读
@@ -109,7 +109,7 @@ Sketch 会在以下情况将 Bitmap 缓存到磁盘缓存中：
 结果缓存:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     // 禁用
     resultCachePolicy(CachePolicy.DISABLED)
     // 只读
@@ -184,7 +184,7 @@ try {
 内存缓存:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     // 禁用
     memoryCachePolicy(CachePolicy.DISABLED)
     // 只读

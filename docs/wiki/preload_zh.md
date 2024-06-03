@@ -8,7 +8,7 @@
 使用 [DownloadRequest] 可以将图片下载到磁盘，如下：
 
 ```kotlin
-DownloadRequest(context, "https://www.sample.com/image.jpg") {
+DownloadRequest(context, "https://example.com/image.jpg") {
     listener(
         onSuccess = { request: DownloadRequest, result: DownloadResult.Success ->
             val input: InputStream = result.data.newInputStream()
@@ -26,7 +26,7 @@ DownloadRequest(context, "https://www.sample.com/image.jpg") {
 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {
-    val result: DownloadResult = DownloadRequest(context, "https://www.sample.com/image.jpg").execute()
+    val result: DownloadResult = DownloadRequest(context, "https://example.com/image.jpg").execute()
     if (result is DownloadResult.Success) {
         val input: InputStream = result.data.newInputStream()
         // ...
@@ -46,7 +46,7 @@ coroutineScope.launch(Dispatchers.Main) {
 使用 [LoadRequest] 可以加载图片获得 Bitmap，如下：
 
 ```kotlin
-LoadRequest(context, "https://www.sample.com/image.jpg") {
+LoadRequest(context, "https://example.com/image.jpg") {
     listener(
         onSuccess = { request: LoadRequest, result: LoadResult.Success ->
             val bitmap = result.bitmap
@@ -64,7 +64,7 @@ LoadRequest(context, "https://www.sample.com/image.jpg") {
 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {
-    val result: LoadResult = LoadRequest(context, "https://www.sample.com/image.jpg").execute()
+    val result: LoadResult = LoadRequest(context, "https://example.com/image.jpg").execute()
     if (result is LoadResult.Success) {
         val bitmap = result.bitmap
         // ...
@@ -87,7 +87,7 @@ coroutineScope.launch(Dispatchers.Main) {
 要想将图片预加载到内存中只需要不设置 target 即可，如下：
 
 ```kotlin
-DisplayImage(context, "https://www.sample.com/image.jpg") {
+DisplayImage(context, "https://example.com/image.jpg") {
     // more ...
 }.enqueue()
 ```

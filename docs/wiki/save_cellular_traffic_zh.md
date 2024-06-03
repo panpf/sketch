@@ -26,7 +26,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 
 /* 为单个 ImageRequest 注册 */
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     components {
         addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
     }
@@ -36,7 +36,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 然后针对单个请求开启节省蜂窝流量功能，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     saveCellularTraffic(true)
 }
 ```
@@ -44,7 +44,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 最后配置节省蜂窝流量功能专用的错误状态图片，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
     error(R.drawable.ic_error) {

@@ -47,7 +47,7 @@ decoding, it will be adjusted again.
 Method used to configure [Resize]
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     /* Set three properties at once */
     resize(
         width = 100,

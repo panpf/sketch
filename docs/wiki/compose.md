@@ -2,134 +2,140 @@
 
 Translations: [简体中文](compose_zh)
 
-> [!IMPORTANT]
-> Required import `sketch-compose` module
+## AsyncImage
 
-### AsyncImage
-
-AsyncImage is a composable function that performs image requests asynchronously and renders the
-results. It has the same arguments as the standard Image composable function, plus it supports
-setting placeholder, error and onLoading, onSuccess, onError callbacks
+[AsyncImage] is a composable function that asynchronously executes image requests and renders the
+results. You can use it directly to load and display images, as follows:
 
 ```kotlin
+// val imageUri = "/Users/my/Downloads/image.jpg"
+// val imageUri = "compose.resource://files/sample.png"
+val imageUri = "https://example.com/image.jpg"
+
 AsyncImage(
-    uri = "https://example.com/image.jpg",
-    contentDescription = stringResource(R.string.description),
-    contentScale = ContentScale.Crop,
-    modifier = Modifier.clip(CircleShape)
+    uri = imageUri,
+    contentDescription = "photo"
 )
 
 // config params
 AsyncImage(
-    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
-        placeholder(R.drawable.placeholder)
-        error(R.drawable.error)
-        transformations(BlurTransformation())
-        crossfade(true)
+    rqeuest = ImageRequest(imageUri) {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
         // There is a lot more...
     },
-    contentDescription = stringResource(R.string.description),
-    contentScale = ContentScale.Crop,
-    modifier = Modifier.clip(CircleShape)
+    contentDescription = "photo"
 )
 ```
 
 ### SubcomposeAsyncImage
 
-SubcomposeAsyncImage is a variant of AsyncImage that uses subcomposition to provide a slot for the
-state of AsyncImagePainter API instead of using Painters
-
-Below is an example:
+[SubcomposeAsyncImage] is a variant of [AsyncImage], which allows you to draw content completely
+independently, as follows:
 
 ```kotlin
 SubcomposeAsyncImage(
     uri = "https://example.com/image.jpg",
     loading = {
-        CircularProgressIndicator()
+        Text("Loading")
     },
-    contentDescription = stringResource(R.string.description)
+    contentDescription = "photo"
 )
-```
 
-Additionally, you can implement more complex logic using SubcomposeAsyncImageContent using its
-content parameter and rendering the current state:
-
-```kotlin
 SubcomposeAsyncImage(
     uri = "https://example.com/image.jpg",
-    contentDescription = stringResource(R.string.description),
+    contentDescription = "photo",
     content = {
-        val state = painter.state
-        if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-            CircularProgressIndicator()
-        } else {
-            SubcomposeAsyncImageContent()
+        when (val state = painter.state) {
+            is PainterState.Loading -> {
+                Text("Loading")
+            }
+            is PainterState.Error -> {
+                Text("Error")
+            }
+            else -> {
+                Image(
+                    painter = state.painter,
+                    contentDescription = "photo"
+                )
+            }
         }
     }
 )
 ```
 
-Subcompose do not perform as well as regular compositions, so this composition may not be suitable
-for parts of the UI where performance is critical (such as lists).
-
-> If you use DisplayRequest.Builder.resizeSize to set a custom size for a DisplayRequest (e.g.
-> resizeSize(100, 100)), SubcomposeAsyncImage will not use subcomposition because it does not need
-> to
-> resolve composable constraints.
+> [!TIP]
+> [SubcomposeAsyncImage] may not perform as well as [AsyncImage], so this combination may not be
+> suitable for performance-critical parts of the list
 
 ### AsyncImagePainter
 
-AsyncImage and SubcomposeAsyncImage use AsyncImagePainter to load images. If you need Painter and
-can't use AsyncImage, you can use rememberAsyncImagePainter() to load the image:
+If you must use the Image component to display images, you can also use [AsyncImagePainter] directly
+to load images, as follows:
 
 ```kotlin
-val painter = rememberAsyncImagePainter(uri = "https://example.com/image.jpg")
+Image(
+    painter = rememberAsyncImagePainter(uri = "https://example.com/image.jpg"),
+    contentDescription = "photo"
+)
 
 // config params
-val painter = rememberAsyncImagePainter(
-    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
-        placeholder(R.drawable.placeholder)
-        error(R.drawable.error)
-        transformations(BlurTransformation())
-        crossfade(true)
-        // There is a lot more...
-    }
+Image(
+    painter = rememberAsyncImagePainter(
+        rqeuest = ImageRequest("https://example.com/image.jpg") {
+            placeholder(Res.drawable.placeholder)
+            error(Res.drawable.error)
+            crossfade()
+            // There is a lot more...
+        }
+    ),
+    contentDescription = "photo"
 )
 ```
 
-rememberAsyncImagePainter is a lower-level API and may not function as expected in all situations.
-For more information, read the documentation for this method.
-
-> If you set a custom ContentScale on the image that AsyncImagePainter is rendered on, you should
-> also set it in rememberAsyncImagePainter. It is necessary to determine the correct size of the
-> loaded image.
+> [!TIP]
+> 1. `Image + AsyncImagePainter` will be slightly slower than [AsyncImage], this is due to [Sketch]
+     Depends on the exact size of the component before loading the image, [AsyncImage]
+     The size of the component can be obtained during the layout stage,
+     while `Image + AsyncImagePainter` cannot obtain the component size until the drawing stage.
+> 2. If the contentScale is modified on the Image, the contentScale of rememberAsyncImagePainter
+     must also be modified simultaneously.
 
 ### AsyncImageState
 
-AsyncImageState is the core dependency of AsyncImagePainter. AsyncImagePainter is only responsible
-for reading from AsyncImageState
-painter parameter and then draw it
+[AsyncImageState] is the core of [AsyncImage] and [AsyncImagePainter]. [AsyncImageState] is
+responsible for execution [ImageRequest] and management state, [AsyncImagePainter] is responsible
+for reading Painter from [AsyncImageState] and drawing, [AsyncImage] is responsible for layout
 
-AsyncImageState is responsible for loading images and converting the loading results into Painter.
-It is also responsible for saving the status, progress, painter and
-The state of the painter, you can also reload the image through its restart method
+You can read the status, progress, and Painter of the request from [AsyncImageState], and you can
+also reload the image through its restart() method, as follows:
 
 ```kotlin
 val state = rememberAsyncImageState()
 AsyncImage(
     uri = "https://example.com/image.jpg",
-    contentDescription = stringResource(R.string.description),
-    contentScale = ContentScale.Crop,
-    modifier = Modifier.clip(CircleShape),
+    contentDescription = "photo",
     state = state,
 )
 
 val result: DisplayResult? = state.result
 val loadState: LoadState? = state.loadState
+val request: ImageRequest = loadState.request
 when (loadState) {
-    is Started -> {}
-    is Success -> {}
-    is Error -> {}
+    is Started -> {
+
+    }
+    is Success -> {
+        val cacheKey: String = loadState.result.cacheKey
+        val imageInfo: ImageInfo = loadState.result.imageInfo
+        val dataFrom: DataFrom = loadState.result.dataFrom
+        val transformedList: List<String>? = loadState.result.transformedList
+        val extras: Map<String, String>? = loadState.result.extras
+    }
+    is Error -> {
+        val throwable: Throwable = loadState.result.throwable
+    }
     is Canceled -> {}
     else -> {
         // null
@@ -145,75 +151,41 @@ when (painterState) {
 }
 val painter: Painter? = state.painter
 
-// Reload image
+// Reload
 state.restart()
 ```
 
-### listener/ProgressListener/target
+### listener/progressListener
 
-AsyncImage, AsyncImagePainter, and SubcomposeAsyncImage are not allowed to use the listener,
-ProgressListener, and target properties of DisplayRequest. If they are not null, an exception will
-be thrown.
+When using [AsyncImage], [SubcomposeAsyncImage] and [AsyncImagePainter], you cannot
+call [ImageRequest] listener(), progressListener() methods, which will cause the app to crash
 
-The reason is that the attributes listener, ProgressListener, and target are usually directly new
-when used. Now, when DisplayRequest is used as a parameter of AsyncImage and SubcomposeAsyncImage,
-reorganization is triggered because its equals result is false.
+The reason is that when using [Listener] and [ProgressListener], in most cases, they directly new a
+new instance, which will cause The equals result of [ImageRequest] is false and triggers
+reorganization, thus reducing performance
 
-Therefore you must pass AsyncImageState instead of listener, ProgressListener, target attributes
+Therefore you must use the loadState and progress properties of [AsyncImageState] instead of
+listener(), progressListener()
 
-### Size
+## Target
 
-The image request requires a size to determine the dimensions of the output image. By default,
-AsyncImage resolves the requested size when determining dimensions, whereas AsyncImagePainter alone
-resolves the requested size when the first frame will be drawn. It's solved this way to maximize
-performance.
+When using [AsyncImage], [SubcomposeAsyncImage] and [AsyncImagePainter], you cannot
+call [ImageRequest] target() method, which will cause the app to crash because the Target must be
+configured by [AsyncImageState]
 
-You can further improve performance by proactively setting resizeSize to avoid image requests
-waiting to determine component size, as follows:
 
-```kotlin
-val painter = rememberAsyncImagePainter(
-    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
-        resizeSize(100, 100)
-    }
-)
+[comment]: <> (class)
 
-Image(
-    painter = painter,
-    contentDescription = stringResource(R.string.description)
-)
-```
+[AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 
-### Transitions
+[AsyncImagePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImagePainter.kt
 
-You can enable the built-in crossfade transition using DisplayRequest.Builder.crossfade:
+[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt
 
-```kotlin
-AsyncImage(
-    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
-        crossfade(true)
-    },
-    contentDescription = null
-)
-```
+[SubcomposeAsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/SubcomposeAsyncImage.kt
 
-Custom transitions do not work with AsyncImage, SubcomposeAsyncImage or rememberAsyncImagePainter()
-because they require a View Quote.
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-Due to special internal support, only CrossfadeTransition works
+[Listener]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Listener.kt
 
-That is, you can create custom transitions in Compose by observing the state of AsyncImagePainter:
-
-```kotlin
-val painter = rememberAsyncImagePainter("https://example.com/image.jpg")
-
-val state = painter.state
-if (state is AsyncImagePainter.State.Success && state.result.dataFrom != DataFrom.MEMORY_CACHE) {
-    // Perform transition animation
-}
-
-Image(
-    painter = painter,
-    contentDescription = stringResource(R.string.description)
-)
-```
+[ProgressListener]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ProgressListener.kt

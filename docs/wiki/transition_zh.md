@@ -10,7 +10,7 @@
 ，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     crossfade()
     // 或
     transitionFactory(CrossfadeTransition.Factory())
@@ -46,7 +46,7 @@ resizeApplyToDrawable 属性会用 ResizeDrawable 将 placeholder 、error、res
 因此通常建议 [CrossfadeTransition] 和 resizeApplyToDrawable 搭配使用，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(R.drawable.im_placeholder)
     crossfade()
     resizeApplyToDrawable()

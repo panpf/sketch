@@ -26,7 +26,7 @@ Both [ImageRequest] and [ImageOptions] provide transformations methods for
 configuring [Transformation]
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     transformations(CircleCropTransformation(), RoundedCornersTransformation(20f))
 }
 ```

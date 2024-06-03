@@ -51,26 +51,26 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 
 /* Register for a single ImageRequest */
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     components {
         addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
     }
 }
 ```
 
-> Note: [PauseLoadWhenScrollingDrawableDecodeInterceptor] is only valid for [DisplayRequest]
+> Note: [PauseLoadWhenScrollingDrawableDecodeInterceptor] is only valid for [ImageRequest]
 
 Finally, enable the pause loading function during list scrolling for a single request, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     pauseLoadWhenScrolling(true)
 }
 ```
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[DisplayRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [PauseLoadWhenScrollingDrawableDecodeInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDrawableDecodeInterceptor.kt
 

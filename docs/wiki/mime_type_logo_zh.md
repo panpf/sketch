@@ -50,7 +50,7 @@ val imageTypeIconMap = remember {
 
 val state = rememberAsyncImageState()
 AsyncImage(
-    uri = "https://www.sample.com/image.jpg",
+    uri = "https://example.com/image.jpg",
     modifier = Modifier
         .size(200.dp)
         .mimeTypeLogo(state, imageTypeIconMap, margin = 4.dp),

@@ -13,7 +13,7 @@ configuring [Transition]
 ,as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     crossfade()
     // or
     transitionFactory(CrossfadeTransition.Factory())
@@ -52,7 +52,7 @@ Therefore, it is usually recommended to use [CrossfadeTransition] and resizeAppl
 together, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(R.drawable.im_placeholder)
     crossfade()
     resizeApplyToDrawable()

@@ -23,7 +23,7 @@ images.
 ### Use
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     resizePrecision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
 }
 ```

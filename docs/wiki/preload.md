@@ -7,7 +7,7 @@ Translations: [简体中文](preload_zh)
 Use [DownloadRequest] to download images to disk, as follows:
 
 ```kotlin
-DownloadRequest(context, "https://www.sample.com/image.jpg") {
+DownloadRequest(context, "https://example.com/image.jpg") {
     listener(
         onSuccess = { request: DownloadRequest, result: DownloadResult.Success ->
             val input: InputStream = result.data.newInputStream()
@@ -26,7 +26,7 @@ When you need to get the download result synchronously, you can use the execute 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {
     val result: DownloadResult =
-        DownloadRequest(context, "https://www.sample.com/image.jpg").execute()
+        DownloadRequest(context, "https://example.com/image.jpg").execute()
     if (result is DownloadResult.Success) {
         val input: InputStream = result.data.newInputStream()
         // ...
@@ -46,7 +46,7 @@ Translations: [简体中文](load_request_zh.md)
 Use [LoadRequest] to load an image and obtain a Bitmap, as follows:
 
 ```kotlin
-LoadRequest(context, "https://www.sample.com/image.jpg") {
+LoadRequest(context, "https://example.com/image.jpg") {
     listener(
         onSuccess = { request: LoadRequest, result: LoadResult.Success ->
             val bitmap = result.bitmap
@@ -65,7 +65,7 @@ follows:
 
 ```kotlin
 coroutineScope.launch(Dispatchers.Main) {
-    val result: LoadResult = LoadRequest(context, "https://www.sample.com/image.jpg").execute()
+    val result: LoadResult = LoadRequest(context, "https://example.com/image.jpg").execute()
     if (result is LoadResult.Success) {
         val bitmap = result.bitmap
         // ...
@@ -89,7 +89,7 @@ Translations: [简体中文](preloading_zh.md)
 To preload images into memory, you only need to not set target, as follows:
 
 ```kotlin
-DisplayImage(context, "https://www.sample.com/image.jpg") {
+DisplayImage(context, "https://example.com/image.jpg") {
     // more ...
 }.enqueue()
 ```

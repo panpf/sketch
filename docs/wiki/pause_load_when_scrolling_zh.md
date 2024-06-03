@@ -50,26 +50,26 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 
 /* 为单个 ImageRequest 注册 */
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     components {
         addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
     }
 }
 ```
 
-> 注意：[PauseLoadWhenScrollingDrawableDecodeInterceptor] 仅对 [DisplayRequest] 有效
+> 注意：[PauseLoadWhenScrollingDrawableDecodeInterceptor] 仅对 [ImageRequest] 有效
 
 最后针对单个请求开启列表滚动中暂停加载功能，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     pauseLoadWhenScrolling(true)
 }
 ```
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
-[DisplayRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/DisplayRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [PauseLoadWhenScrollingDrawableDecodeInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDrawableDecodeInterceptor.kt
 

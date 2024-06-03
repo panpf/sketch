@@ -5,7 +5,7 @@
 [ImageRequest] 通过 [Listener] 和 [ProgressListener] 可以监听开始、完成、错误、取消、进度，如下：
 
 ```kotlin
-ImageRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     listener(object : Listener {
         override fun onStart(request: ImageRequest) {
             // ...
@@ -47,7 +47,7 @@ ImageRequest(context, "https://www.sample.com/image.jpg") {
 还支持 kotlin 函数方式监听状态：
 
 ```kotlin
-ImageRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     listener(
         onStart = { request: ImageRequest ->
             // ...
@@ -83,7 +83,7 @@ ImageRequest(context, "https://www.sample.com/image.jpg") {
 监听下载进度：
 
 ```kotlin
-ImageRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     progressListener { request: ImageRequest, progress: Progress ->
         // ...
     }

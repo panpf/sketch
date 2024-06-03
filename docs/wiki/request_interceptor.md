@@ -48,7 +48,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 
 /* Register for a single ImageRequest */
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     components {
         addRequestInterceptor(MyRequestInterceptor())
     }

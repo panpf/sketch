@@ -19,7 +19,7 @@ SAME_ASPECT_RATIO 或 EXACTLY（创建时指定），否则返回 LESS_PIXELS，
 ### 使用
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     resizePrecision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
 }
 ```

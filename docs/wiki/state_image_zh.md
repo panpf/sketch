@@ -20,7 +20,7 @@ StateImage 用来为加载中状态和错误状态提供图片，有以下几种
 [ImageRequest] 和 [ImageOptions] 都提供了 placeholder(), uriEmpty(), error() 方法，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     placeholder(resources.getDrawable(R.drawable.placeholder))
     placeholder(ColorStateImage(IntColor(Color.RED)))
@@ -65,7 +65,7 @@ object MyCondition : CombinedStateImage.Condition {
   ): Boolean  = throwable is IOException
 }
 
-imageView.displayImage("https://www.sample.com/image.jpg")
+imageView.displayImage("https://example.com/image.jpg")
 {
   error(R.drawable.error) {
     addState(MyCondition to DrawableStateImage(R.drawable.uri_empty))
@@ -91,7 +91,7 @@ bounds
 [ThumbnailMemoryCacheStateImage] 就可以帮助我们非常方便的从内存缓存中寻找的缩略图，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage())
     crossfade(fadeStart = false)
 }
@@ -102,7 +102,7 @@ uri
 就需要主动指定列表页面的 uri，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage("https://www.sample.com/image.jpg?widht=300"))
     crossfade(fadeStart = false)
 }

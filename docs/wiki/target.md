@@ -42,13 +42,11 @@ to configure other parameters, as follows:
 
 ```kotlin
 AsyncIage(
-    rqeuest = DisplayRequest(LocalContext.current, "https://example.com/image.jpg") {
+    rqeuest = ImageRequest("https://example.com/image.jpg") {
         placeholder(R.drawable.placeholder)
         crossfade(true)
     },
-    contentDescription = stringResource(R.string.description),
-    contentScale = ContentScale.Crop,
-    modifier = Modifier.clip(CircleShape)
+    contentDescription = "photo",
 )
 ```
 

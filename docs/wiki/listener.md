@@ -6,7 +6,7 @@ Translations: [简体中文](listener_zh.md)
 through [Listener] and [ProgressListener], as follows:
 
 ```kotlin
-ImageRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     listener(object : Listener {
         override fun onStart(request: ImageRequest) {
             // ...
@@ -48,7 +48,7 @@ ImageRequest(context, "https://www.sample.com/image.jpg") {
 It also supports kotlin function monitoring status:
 
 ```kotlin
-ImageRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     addListener(
         onStart = { request: ImageRequest ->
             // ...
@@ -69,7 +69,7 @@ ImageRequest(context, "https://www.sample.com/image.jpg") {
 Monitor download progress:
 
 ```kotlin
-ImageRequest(context, "https://www.sample.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     addProgressListener { request: ImageRequest, progress: Progress ->
         // ...
     }

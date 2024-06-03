@@ -7,7 +7,7 @@ Sketch 支持根据图片的 Exif 信息恢复图片的方向，此功能默认�
 `ignoreExifOrientation` 属性禁用此功能，如下：
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     ignoreExifOrientation()
 }
 ```

@@ -27,7 +27,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 
 /* Register for a single ImageRequest */
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     components {
         addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
     }
@@ -37,7 +37,7 @@ imageView.displayImage("https://www.sample.com/image.jpg") {
 Then enable the cellular data saving function for a single request, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     saveCellularTraffic(true)
 }
 ```
@@ -46,7 +46,7 @@ Finally, configure the error status picture dedicated to the cellular traffic sa
 follows:
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
     error(R.drawable.ic_error) {

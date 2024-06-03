@@ -38,7 +38,7 @@
 方法用于配置 [Resize]
 
 ```kotlin
-imageView.displayImage("https://www.sample.com/image.jpg") {
+imageView.displayImage("https://example.com/image.jpg") {
     /* 一次设置三个属性 */
     resize(
         width = 100,
