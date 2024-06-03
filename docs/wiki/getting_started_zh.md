@@ -36,8 +36,7 @@ Image(
             error(Res.drawable.error)
             crossfade()
             // There is a lot more...
-        },
-        contentScale = ContentScale.Crop
+        }
     ),
     contentDescription = "photo"
 )
@@ -78,9 +77,7 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-[Sketch] 默认情况下会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费
-
-[Sketch] 还会在组件销毁时自动取消请求
+[Sketch] 是智能的，它会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费，还会在组件销毁时自动取消请求
 
 ## 支持的图片类型
 
@@ -253,10 +250,7 @@ AsyncImage(
 )
 
 Image(
-    painter = rememberAsyncImagePainter(
-        request = request,
-        contentScale = ContentScale.Crop
-    ),
+    painter = rememberAsyncImagePainter(request),
     contentDescription = "photo"
 )
 ```

@@ -43,29 +43,29 @@ implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
 还有一些可选的模块：
 
 ```kotlin
-// 通过 Android 或 Skia 内置的解码器实现解码 gif、webp、heif 等动图并播放
+// 使用 Android 或 Skia 内置的解码器实现解码 gif、webp、heif 等动图并播放
 implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 
-// [仅 Android] 通过 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
+// [仅 Android] 使用 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
 implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
 
 // 提供下载进度、列表滚动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk icon 和已安装 app icon 等实用功能
 implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
-// [仅 JVM] 支持通过 OkHttp 来下载图片
+// [仅 JVM] 支持使用 OkHttp 下载图片
 implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
 
-// [仅 JVM] 支持通过 ktor 来下载图片
+// [仅 JVM] 支持使用 ktor 下载图片
 implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
 
 // 支持 SVG 图片
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
-// [仅 Android] 通过 Android 内置的 MediaMetadataRetriever 类实现解码视频帧
+// [仅 Android] 使用 Android 内置的 MediaMetadataRetriever 类实现解码视频帧
 implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
 
-// [仅 Android] 通过 wseemann 的 FFmpegMediaMetadataRetriever 库实现解码视频帧
+// [仅 Android] 使用 wseemann 的 FFmpegMediaMetadataRetriever 库实现解码视频帧
 implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
 
@@ -90,7 +90,6 @@ val imageUri = "https://www.sample.com/image.jpg"
 
 AsyncImage(
     uri = imageUri,
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -102,7 +101,6 @@ AsyncImage(
         crossfade()
         // There is a lot more...
     },
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -113,10 +111,8 @@ Image(
             error(Res.drawable.error)
             crossfade()
             // There is a lot more...
-        },
-        contentScale = ContentScale.Crop
+        }
     ),
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 ```

@@ -36,8 +36,7 @@ Image(
             error(Res.drawable.error)
             crossfade()
             // There is a lot more...
-        },
-        contentScale = ContentScale.Crop
+        }
     ),
     contentDescription = "photo"
 )
@@ -80,11 +79,10 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-By default, [Sketch] will automatically adjust the size of the image according to the size of the
-component to prevent the size of the image loaded into memory from exceeding the size of the
-component itself and causing memory waste.
-
-[Sketch] will also automatically cancel the request when the component is destroyed.
+[Sketch] is smart. It will automatically adjust the size of the image according to the size of the
+component to prevent the size of the image loaded into the memory from exceeding the size of the
+component itself and cause memory waste. It will also automatically cancel the request when the
+component is destroyed.
 
 ## Supported Image Formats
 
@@ -268,10 +266,7 @@ AsyncImage(
 )
 
 Image(
-    painter = rememberAsyncImagePainter(
-        request = request,
-        contentScale = ContentScale.Crop
-    ),
+    painter = rememberAsyncImagePainter(request),
     contentDescription = "photo"
 )
 ```
@@ -360,30 +355,30 @@ val imageResult: ImageResult = ...
 val request: ImageRequest = imageResult.request
 val image: Image = imageResult.image
 when (image) {
-     is AndroidBitmapImage -> {
-          val bitmap: Bitmap = image.bitmap
-     }
-     is AndroidDrawableImage -> {
-          val drawable: Drawable = image.drawable
-     }
-     is ComposeBitmapImage -> {
-          val bitmap: ComposeBitmap = image.bitmap
-     }
-     is PainterImage -> {
-          val painter: Painter = image.painter
-     }
-     is SkiaAnimatedImage -> {
-          val codec: Codec = image.codec
-     }
+    is AndroidBitmapImage -> {
+        val bitmap: Bitmap = image.bitmap
+    }
+    is AndroidDrawableImage -> {
+        val drawable: Drawable = image.drawable
+    }
+    is ComposeBitmapImage -> {
+        val bitmap: ComposeBitmap = image.bitmap
+    }
+    is PainterImage -> {
+        val painter: Painter = image.painter
+    }
+    is SkiaAnimatedImage -> {
+        val codec: Codec = image.codec
+    }
 }
 if (imageResult is ImageResult.Success) {
-     val cacheKey: String = imageResult.cacheKey
-     val imageInfo: ImageInfo = imageResult.imageInfo
-     val dataFrom: DataFrom = imageResult.dataFrom
-     val transformedList: List<String>? = imageResult.transformedList
-     val extras: Map<String, String>? = imageResult.extras
+    val cacheKey: String = imageResult.cacheKey
+    val imageInfo: ImageInfo = imageResult.imageInfo
+    val dataFrom: DataFrom = imageResult.dataFrom
+    val transformedList: List<String>? = imageResult.transformedList
+    val extras: Map<String, String>? = imageResult.extras
 } else if (imageResult is ImageResult.Error) {
-     val throwable: Throwable = imageResult.throwable
+    val throwable: Throwable = imageResult.throwable
 }
 ```
 

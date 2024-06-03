@@ -55,7 +55,7 @@ There are also some optional modules:
 // Use Android or Skia's built-in decoder to decode gif, webp, heif and other animated images and play them
 implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 
-// [Android only] Decode gif and play it through GifDrawable of android-gif-drawable library
+// [Android only] Use GifDrawable of the android-gif-drawable library to decode gif and play it
 implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
 
 // Provides practical functions such as download progress, pausing loading during list scrolling, 
@@ -63,19 +63,19 @@ implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}
 implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
-// [JVM only] Support image downloading via OkHttp
+// [JVM only] Supports using OkHttp to download images
 implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
 
-// [JVM only] Support downloading images via ktor
+// [JVM only] Supports using ktor to download images
 implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
 
 // Support SVG images
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
-// [Android only] Decoding video frames through Android's built-in MediaMetadataRetriever class
+// [Android only] Use Android's built-in MediaMetadataRetriever class to decode video frames
 implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
 
-// [Android only] Decoding video frames via wseemann's FFmpegMediaMetadataRetriever library
+// [Android only] Decoding video frames using wseemann's FFmpegMediaMetadataRetriever library
 implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
 
@@ -101,7 +101,6 @@ val imageUri = "https://www.sample.com/image.jpg"
 
 AsyncImage(
     uri = imageUri,
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -113,7 +112,6 @@ AsyncImage(
         crossfade()
         // There is a lot more...
     },
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 
@@ -124,10 +122,8 @@ Image(
             error(Res.drawable.error)
             crossfade()
             // There is a lot more...
-        },
-        contentScale = ContentScale.Crop
+        }
     ),
-    contentScale = ContentScale.Crop,
     contentDescription = "photo"
 )
 ```
@@ -216,11 +212,11 @@ Please review the [CHANGELOG.md] file
 
 ## Special thanks
 
-* [coil-kt]/[coil]: Sketch uses some code from Coil, including framework, compose and
+* [coil-kt/coil][coil]: Sketch uses some code from Coil, including framework, compose and
   sketch-animated movie part
-* [koral--]/[android-gif-drawable]: animated-koralgif
-* [wseemann]/[FFmpegMediaMetadataRetriever]: video-ffmpeg
-* [BigBadaboom]/[androidsvg]: svg
+* [koral--/android-gif-drawable][android-gif-drawable]: animated-koralgif
+* [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: video-ffmpeg
+* [BigBadaboom/androidsvg][androidsvg]: svg
 
 ## My Projects
 
