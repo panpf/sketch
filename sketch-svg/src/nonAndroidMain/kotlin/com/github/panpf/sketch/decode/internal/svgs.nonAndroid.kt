@@ -62,6 +62,7 @@ internal actual suspend fun decodeSvg(
 
     val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
     val targetSize = requestContext.size!!
+    // TODO Determine whether the image needs to be enlarged based on the new ContentScaleType
     val targetScale = computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
