@@ -12,28 +12,10 @@ Three styles are provided to choose from, as follows:
 
 > They can also adjust color, size and behavior
 
-### View
+## Compose
 
 > [!IMPORTANT]
-> * Required import `sketch-extensions-view` module
-> * Required [SketchImageView]
-
-```kotlin
-val sketchImageView = SketchImageView(context)
-
-sketchImageView.showMaskProgressIndicator()
-// or
-sketchImageView.showSectorProgressIndicator()
-// or
-sketchImageView.showRingProgressIndicator()
-```
-
-> View version functionality is implemented by [ProgressIndicatorAbility]
-
-### Compose
-
-> [!IMPORTANT]
-> Required import `sketch-extensions-compose` module
+> Required import `sketch-extensions-compose-core` module
 
 ```kotlin
 val progressPainter = rememberDrawableProgressPainter(remember {
@@ -54,7 +36,64 @@ AsyncImage(
 
 > Compose version function is implemented by [ProgressIndicatorModifier]
 
-### Custom indicator style
+### Custom indicator
+
+You can inherit [AbsProgressPainter] to implement your own progress indicator, as follows:
+
+```kotlin
+class MyProgressPainter(
+    private val maskColor: Color = Color(PROGRESS_INDICATOR_MASK_COLOR),
+    hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
+    hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
+    stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
+) : AbsProgressPainter(
+    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+    hiddenWhenCompleted = hiddenWhenCompleted,
+    stepAnimationDuration = stepAnimationDuration
+), SketchPainter {
+
+    override val intrinsicSize: Size = Size(200.0, 200.0)
+
+    override fun DrawScope.drawProgress(drawProgress: Float) {
+        // Draw your indicator
+    }
+}
+```
+
+Then use your own indicator like this:
+
+```kotlin
+val progressPainter = remember { MyProgressPainter() }
+val state = rememberAsyncImageState()
+AsyncImage(
+    uri = "https://example.com/image.jpg",
+    modifier = Modifier
+        .size(200.dp)
+        .progressIndicator(state, progressPainter),
+    state = state,
+    contentDescription = "",
+)
+```
+
+## View
+
+> [!IMPORTANT]
+> * Required import `sketch-extensions-view-core` module
+> * Required [SketchImageView]
+
+```kotlin
+val sketchImageView = SketchImageView(context)
+
+sketchImageView.showMaskProgressIndicator()
+// or
+sketchImageView.showSectorProgressIndicator()
+// or
+sketchImageView.showRingProgressIndicator()
+```
+
+> View version functionality is implemented by [ProgressIndicatorAbility]
+
+### Custom indicator
 
 You can extends [AbsProgressDrawable] to implement your own progress indicator, as follows:
 
@@ -69,7 +108,7 @@ class MyProgressDrawable(
     stepAnimationDuration = stepAnimationDuration
 ) {
 
-    private val progressPaint = Paint().apply {
+    private val paint = Paint().apply {
         if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
             alpha = this@RingProgressDrawable.alpha
         }
@@ -111,34 +150,17 @@ class MyProgressDrawable(
 
 Then use your own indicator like this:
 
-View:
-
 ```kotlin
 val sketchImageView = SketchImageView(context)
 sketchImageView.showProgressIndicator(MyProgressDrawable())
-```
-
-Compose:
-
-```kotlin
-val progressPainter = rememberDrawableProgressPainter(remember {
-    MyProgressDrawable()
-})
-val state = rememberAsyncImageState()
-AsyncImage(
-    uri = "https://example.com/image.jpg",
-    modifier = Modifier
-        .size(200.dp)
-        .progressIndicator(state, progressPainter),
-    state = state,
-    contentDescription = "",
-)
 ```
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [ProgressIndicatorAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
-[AbsProgressDrawable]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/drawable/AbsProgressDrawable.kt
+[AbsProgressDrawable]: ../../sketch-extensions-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/internal/AbsProgressDrawable.kt
 
-[ProgressIndicatorModifier]: ../../sketch-extensions-compose/src/main/kotlin/com/github/panpf/sketch/compose/ability/ProgressIndicatorModifier.kt
+[ProgressIndicatorModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/ProgressIndicatorModifier.kt
+
+[AbsProgressPainter]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/internal/AbsProgressPainter.kt

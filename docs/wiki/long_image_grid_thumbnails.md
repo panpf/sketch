@@ -2,29 +2,28 @@
 
 Translations: [简体中文](long_image_grid_thumbnails_zh.md)
 
-For example, in GirdLayoutManager, the width and height of ImageView is 400x400, and the width and
-height of the image are 30000x960. Sketch automatically calculates that [Resize] is 400x400 and
-[Precision] defaults to LESS_PIXELS. In this case, the inSampleSize calculated according to [Resize]
-is 16, and the decoded thumbnail size is 1875x60, this thumbnail is extremely blurry and no content
-can be discerned
+Long images in the grid list will be displayed very blurry because the thumbnail size is too small.
 
-For this situation, you can use [LongImageClipPrecisionDecider] to dynamically
-calculate [Precision]. [LongImageClipPrecisionDecider] will return when encountering a long image.
-SAME_ASPECT_RATIO or EXACTLY (specified when creating), otherwise LESS_PIXELS is returned. This not
-only ensures that long images have a clear thumbnail, but also ensures fast loading of non-long
-images.
+For example, if the component is 400x400 and the image width and height are 30000x960, Sketch
+automatically calculates the [Resize] size to be 400x400, and the [Precision] default is
+LESS_PIXELS. The final calculated inSampleSize is 16 and the thumbnail size is 1875x60. This
+thumbnail is extremely blurry and cannot identify any content.
+
+At this time, you can use [LongImageClipPrecisionDecider] to dynamically calculate [Precision] based
+on the image width, height and ImageRequest.size. If it is judged to be a long image,
+use [Precision].SAME_ASPECT_RATIO to improve the clarity of the thumbnail. Otherwise, still
+use [Precision].LESS_PIXELS, so It not only ensures that long images have a clear thumbnail, but
+also ensures fast loading of non-long images.
 
 > [!TIP]
-> 1. The default implementation of long image rules is [DefaultLongImageDecider], you can also
-     create [LongImageClipPrecisionDecider] Use custom rules when
-> 2. SAME_ASPECT_RATIO and EXACTLY will use BitmapRegionDecoder to crop the original image, so you
-     can get a clearer thumbnail.
-
-### Use
+> 1. The default implementation of long image rules is [DefaultLongImageDecider], you can also use
+     custom rules when creating [LongImageClipPrecisionDecider]
+> 2. SAME_ASPECT_RATIO will only read part of the original image, so you can get a clearer
+     thumbnail.
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    resizePrecision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
+ImageRequest(context, "https://example.com/image.jpg") {
+    precision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
 }
 ```
 

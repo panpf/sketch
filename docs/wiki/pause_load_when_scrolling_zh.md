@@ -1,11 +1,9 @@
 # 列表滚动中暂停加载图片
 
-[//]: # (TODO)
-
 翻译：[English](pause_load_when_scrolling.md)
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-view` 或 `sketch-extensions-compose` 模块
+> 必须导入 `sketch-extensions-view-core` 或 `sketch-extensions-compose-core` 模块
 
 列表滚动的过程中开启异步线程加载图片会降低 UI 流畅度，因此在性能较差的设备上列表滚动中暂停加载图片能显著提高
 UI 流畅度
@@ -25,47 +23,39 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 @Composable
 fun ListContent() {
     val lazyListState = rememberLazyListState()
-    LaunchedEffect(lazyGridState.isScrollInProgress) {
-        PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
-            lazyGridState.isScrollInProgress
-    }
+    bindPauseLoadWhenScrolling(lazyListState)
 
     LazyColumn(state = lazyListState) {
-        // 绘制你的 item
+        // ...
     }
 }
 ```
 
-然后注册 [PauseLoadWhenScrollingDrawableDecodeInterceptor] 请求拦截器，如下：
+然后注册 [PauseLoadWhenScrollingDecodeInterceptor] 请求拦截器，如下：
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
-            }
-        }.build()
-    }
-}
-
-/* 为单个 ImageRequest 注册 */
-imageView.displayImage("https://example.com/image.jpg") {
+// 在自定义 Sketch 时为所有 ImageRequest 注册
+Sketch.Builder(this).apply {
     components {
-        addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
+        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+    }
+}.build()
+
+// 加载图片时为单个 ImageRequest 注册
+ImageRequest(context, "https://example.com/image.jpg") {
+    components {
+        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
     }
 }
 ```
 
 > [!TIP]
-> [PauseLoadWhenScrollingDrawableDecodeInterceptor] 仅对 [ImageRequest] 有效
+> [PauseLoadWhenScrollingDecodeInterceptor] 仅对 [ImageRequest] 有效
 
 最后针对单个请求开启列表滚动中暂停加载功能，如下：
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     pauseLoadWhenScrolling(true)
 }
 ```
@@ -74,6 +64,6 @@ imageView.displayImage("https://example.com/image.jpg") {
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[PauseLoadWhenScrollingDrawableDecodeInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDrawableDecodeInterceptor.kt
+[PauseLoadWhenScrollingDecodeInterceptor]: ../../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDecodeInterceptor.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

@@ -142,7 +142,7 @@ class MyDecodeInterceptor : DecodeInterceptor {
 > 3. If you want to stop executing requests, just don't execute the proceed method
 
 Then, register your DecodeInterceptor via the addDecodeInterceptor() and
-addDrawableDecodeInterceptor() methods as follows:
+addDecodeInterceptor() methods as follows:
 
 ```kotlin
 /* Register for all ImageRequests */

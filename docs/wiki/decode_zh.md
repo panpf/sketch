@@ -134,7 +134,7 @@ class MyDecodeInterceptor : DecodeInterceptor {
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [DecodeResult] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
-然后，通过 addDecodeInterceptor() 和 addDrawableDecodeInterceptor() 方法注册你的
+然后，通过 addDecodeInterceptor() 和 addDecodeInterceptor() 方法注册你的
 DecodeInterceptor，如下：
 
 ```kotlin

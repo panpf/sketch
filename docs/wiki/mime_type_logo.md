@@ -6,10 +6,41 @@ Sketch provides extended functions for displaying image type logo for view and C
 
 ![sample_mime_type_logo.png](../res/sample_mime_type_logo.png)
 
+### Compose
+
+> [!IMPORTANT]
+> Required import `sketch-extensions-compose-core` module
+
+```kotlin
+val imageTypeIconMap = remember {
+    mapOf(
+        "image/gif" to painterResource(Res.drawable.image_type_gif),
+        "image/png" to painterResource(Res.drawable.image_type_png),
+        "image/jpeg" to painterResource(Res.drawable.image_type_jpeg),
+        "image/webp" to painterResource(Res.drawable.image_type_webp),
+        "image/bmp" to painterResource(Res.drawable.image_type_bmp),
+        "image/svg+xml" to painterResource(Res.drawable.image_type_svg),
+        "image/heif" to painterResource(Res.drawable.image_type_heif),
+    )
+}
+
+val state = rememberAsyncImageState()
+AsyncImage(
+    uri = "https://example.com/image.jpg",
+    modifier = Modifier
+        .size(200.dp)
+        .mimeTypeLogo(state, imageTypeIconMap, margin = 4.dp),
+    state = state,
+    contentDescription = "",
+)
+```
+
+> Compose version function is implemented by [MimeTypeLogoModifier]
+
 ### View
 
 > [!IMPORTANT]
-> * Required import `sketch-extensions-view` module
+> * Required import `sketch-extensions-view-core` module
 > * Required [SketchImageView]
 
 ```kotlin
@@ -30,39 +61,8 @@ sketchImageView.showMimeTypeLogoWithRes(
 
 > View version functionality is implemented by [MimeTypeLogoAbility]
 
-### Compose
-
-> [!IMPORTANT]
-> Required import `sketch-extensions-compose` module
-
-```kotlin
-val imageTypeIconMap = remember {
-    mapOf(
-        "image/gif" to painterResource(R.drawable.image_type_gif),
-        "image/png" to painterResource(R.drawable.image_type_png),
-        "image/jpeg" to painterResource(R.drawable.image_type_jpeg),
-        "image/webp" to painterResource(R.drawable.image_type_webp),
-        "image/bmp" to painterResource(R.drawable.image_type_bmp),
-        "image/svg+xml" to painterResource(R.drawable.image_type_svg),
-        "image/heif" to painterResource(R.drawable.image_type_heif),
-    )
-}
-
-val state = rememberAsyncImageState()
-AsyncImage(
-    uri = "https://example.com/image.jpg",
-    modifier = Modifier
-        .size(200.dp)
-        .mimeTypeLogo(state, imageTypeIconMap, margin = 4.dp),
-    state = state,
-    contentDescription = "",
-)
-```
-
-> Compose version function is implemented by [MimeTypeLogoModifier]
-
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [MimeTypeLogoAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
-[MimeTypeLogoModifier]: ../../sketch-extensions-compose/src/main/kotlin/com/github/panpf/sketch/compose/ability/MimeTypeLogoModifier.kt
+[MimeTypeLogoModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoModifier.kt

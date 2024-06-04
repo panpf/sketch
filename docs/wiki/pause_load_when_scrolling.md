@@ -3,7 +3,7 @@
 Translations: [简体中文](pause_load_when_scrolling_zh.md)
 
 > [!IMPORTANT]
-> Required import `sketch-extensions-view` or `sketch-extensions-compose` module
+> Required import `sketch-extensions-view-core` or `sketch-extensions-compose-core` module
 
 Enabling asynchronous thread loading of images during list scrolling will reduce UI fluency.
 Therefore, pausing image loading during list scrolling can significantly improve performance on
@@ -24,47 +24,39 @@ listView.setOnScrollListener(PauseLoadWhenScrollingMixedScrollListener())
 @Composable
 fun ListContent() {
     val lazyListState = rememberLazyListState()
-    LaunchedEffect(lazyGridState.isScrollInProgress) {
-        PauseLoadWhenScrollingDrawableDecodeInterceptor.scrolling =
-            lazyGridState.isScrollInProgress
-    }
+    bindPauseLoadWhenScrolling(lazyListState)
 
     LazyColumn(state = lazyListState) {
-        // Draw your item
+        // ...
     }
 }
 ```
 
-Then register the [PauseLoadWhenScrollingDrawableDecodeInterceptor] request interceptor as follows:
+Then register the [PauseLoadWhenScrollingDecodeInterceptor] request interceptor as follows:
 
 ```kotlin
-/* Register for all ImageRequests */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
-            }
-        }.build()
-    }
-}
-
-/* Register for a single ImageRequest */
-imageView.displayImage("https://example.com/image.jpg") {
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(this).apply {
     components {
-        addDrawableDecodeInterceptor(PauseLoadWhenScrollingDrawableDecodeInterceptor())
+        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+    }
+}.build()
+
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "https://example.com/image.jpg") {
+    components {
+        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
     }
 }
 ```
 
 > [!TIP]
-> [PauseLoadWhenScrollingDrawableDecodeInterceptor] is only valid for [ImageRequest]
+> [PauseLoadWhenScrollingDecodeInterceptor] is only valid for [ImageRequest]
 
 Finally, enable the pause loading function during list scrolling for a single request, as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     pauseLoadWhenScrolling(true)
 }
 ```
@@ -73,6 +65,6 @@ imageView.displayImage("https://example.com/image.jpg") {
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[PauseLoadWhenScrollingDrawableDecodeInterceptor]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDrawableDecodeInterceptor.kt
+[PauseLoadWhenScrollingDecodeInterceptor]: ../../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDecodeInterceptor.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

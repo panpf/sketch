@@ -1,7 +1,5 @@
 # 下载进度指示器
 
-[//]: # (TODO)
-
 翻译：[English](progress_indicator.md)
 
 Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下：
@@ -14,28 +12,10 @@ Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下�
 
 > 它们还可以调整颜色、尺寸和行为
 
-### View
+## Compose
 
 > [!IMPORTANT]
-> * 必须导入 `sketch-extensions-view` 模块
-> * 必须使用 [SketchImageView]
-
-```kotlin
-val sketchImageView = SketchImageView(context)
-
-sketchImageView.showMaskProgressIndicator()
-// 或
-sketchImageView.showSectorProgressIndicator()
-// 或
-sketchImageView.showRingProgressIndicator()
-```
-
-> View 版本功能由 [ProgressIndicatorAbility] 实现
-
-### Compose
-
-> [!IMPORTANT]
-> 必须导入 `sketch-extensions-compose` 模块
+> 必须导入 `sketch-extensions-compose-core` 模块
 
 ```kotlin
 val progressPainter = rememberDrawableProgressPainter(remember {
@@ -58,6 +38,63 @@ AsyncImage(
 
 ### 自定义指示器样式
 
+你可以继承 [AbsProgressPainter] 实现你自己的进度指示器，如下：
+
+```kotlin
+class MyProgressPainter(
+    private val maskColor: Color = Color(PROGRESS_INDICATOR_MASK_COLOR),
+    hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
+    hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
+    stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
+) : AbsProgressPainter(
+    hiddenWhenIndeterminate = hiddenWhenIndeterminate,
+    hiddenWhenCompleted = hiddenWhenCompleted,
+    stepAnimationDuration = stepAnimationDuration
+), SketchPainter {
+
+    override val intrinsicSize: Size = Size(200.0, 200.0)
+
+    override fun DrawScope.drawProgress(drawProgress: Float) {
+        // 绘制你的指示器
+    }
+}
+```
+
+然后使用你自己的指示器，如下：
+
+```kotlin
+val progressPainter = remember { MyProgressPainter() }
+val state = rememberAsyncImageState()
+AsyncImage(
+    uri = "https://example.com/image.jpg",
+    modifier = Modifier
+        .size(200.dp)
+        .progressIndicator(state, progressPainter),
+    state = state,
+    contentDescription = "",
+)
+```
+
+## View
+
+> [!IMPORTANT]
+> * 必须导入 `sketch-extensions-view-core` 模块
+> * 必须使用 [SketchImageView]
+
+```kotlin
+val sketchImageView = SketchImageView(context)
+
+sketchImageView.showMaskProgressIndicator()
+// 或
+sketchImageView.showSectorProgressIndicator()
+// 或
+sketchImageView.showRingProgressIndicator()
+```
+
+> View 版本功能由 [ProgressIndicatorAbility] 实现
+
+### 自定义指示器样式
+
 你可以继承 [AbsProgressDrawable] 实现你自己的进度指示器，如下：
 
 ```kotlin
@@ -71,7 +108,7 @@ class MyProgressDrawable(
     stepAnimationDuration = stepAnimationDuration
 ) {
 
-    private val progressPaint = Paint().apply {
+    private val paint = Paint().apply {
         if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
             alpha = this@RingProgressDrawable.alpha
         }
@@ -113,34 +150,17 @@ class MyProgressDrawable(
 
 然后使用你自己的指示器，如下：
 
-View:
-
 ```kotlin
 val sketchImageView = SketchImageView(context)
 sketchImageView.showProgressIndicator(MyProgressDrawable())
-```
-
-Compose:
-
-```kotlin
-val progressPainter = rememberDrawableProgressPainter(remember {
-    MyProgressDrawable()
-})
-val state = rememberAsyncImageState()
-AsyncImage(
-    uri = "https://example.com/image.jpg",
-    modifier = Modifier
-        .size(200.dp)
-        .progressIndicator(state, progressPainter),
-    state = state,
-    contentDescription = "",
-)
 ```
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [ProgressIndicatorAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
-[AbsProgressDrawable]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/drawable/AbsProgressDrawable.kt
+[AbsProgressDrawable]: ../../sketch-extensions-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/internal/AbsProgressDrawable.kt
 
-[ProgressIndicatorModifier]: ../../sketch-extensions-compose/src/main/kotlin/com/github/panpf/sketch/compose/ability/ProgressIndicatorModifier.kt
+[ProgressIndicatorModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/ProgressIndicatorModifier.kt
+
+[AbsProgressPainter]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/internal/AbsProgressPainter.kt
