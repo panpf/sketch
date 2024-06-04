@@ -49,7 +49,7 @@ import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
-import com.github.panpf.sketch.transform.CrossfadeTransition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.asOrNull

@@ -28,13 +28,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.transform
+package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 

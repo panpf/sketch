@@ -30,7 +30,7 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.transform.CrossfadeTransition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 

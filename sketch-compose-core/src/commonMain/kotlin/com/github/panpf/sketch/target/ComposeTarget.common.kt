@@ -42,7 +42,7 @@ import com.github.panpf.sketch.request.internal.ComposeTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
-import com.github.panpf.sketch.transform.CrossfadeTransition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job

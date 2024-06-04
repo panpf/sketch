@@ -98,7 +98,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transform.CrossfadeTransition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition

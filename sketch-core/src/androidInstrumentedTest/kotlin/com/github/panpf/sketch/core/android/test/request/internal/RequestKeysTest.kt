@@ -46,7 +46,7 @@ import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transform.CrossfadeTransition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.SketchSize
