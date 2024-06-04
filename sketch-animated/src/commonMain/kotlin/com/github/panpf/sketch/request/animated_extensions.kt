@@ -42,7 +42,12 @@ const val ANIMATED_TRANSFORMATION_KEY = "sketch#animated_transformation"
  */
 fun ImageRequest.Builder.repeatCount(repeatCount: Int): ImageRequest.Builder {
     require(repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
-    return setParameter(ANIMATION_REPEAT_COUNT_KEY, repeatCount, null)
+    return setParameter(
+        key = ANIMATION_REPEAT_COUNT_KEY,
+        value = repeatCount,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
@@ -56,7 +61,12 @@ val ImageRequest.repeatCount: Int?
  */
 fun ImageOptions.Builder.repeatCount(repeatCount: Int): ImageOptions.Builder {
     require(repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
-    return setParameter(ANIMATION_REPEAT_COUNT_KEY, repeatCount, null)
+    return setParameter(
+        key = ANIMATION_REPEAT_COUNT_KEY,
+        value = repeatCount,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
@@ -70,7 +80,12 @@ val ImageOptions.repeatCount: Int?
  * Set the callback to be invoked at the start of the animation if the result is an animated Image.
  */
 fun ImageRequest.Builder.onAnimationStart(callback: (() -> Unit)?): ImageRequest.Builder {
-    return setParameter(ANIMATION_START_CALLBACK_KEY, callback, null)
+    return setParameter(
+        key = ANIMATION_START_CALLBACK_KEY,
+        value = callback,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
@@ -83,7 +98,12 @@ val ImageRequest.animationStartCallback: (() -> Unit)?
  * Set the callback to be invoked at the start of the animation if the result is an animated Image.
  */
 fun ImageOptions.Builder.onAnimationStart(callback: (() -> Unit)?): ImageOptions.Builder {
-    return setParameter(ANIMATION_START_CALLBACK_KEY, callback, null)
+    return setParameter(
+        key = ANIMATION_START_CALLBACK_KEY,
+        value = callback,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
@@ -97,7 +117,12 @@ val ImageOptions.animationStartCallback: (() -> Unit)?
  * Set the callback to be invoked at the end of the animation if the result is an animated Image.
  */
 fun ImageRequest.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageRequest.Builder {
-    return setParameter(ANIMATION_END_CALLBACK_KEY, callback, null)
+    return setParameter(
+        key = ANIMATION_END_CALLBACK_KEY,
+        value = callback,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
@@ -110,7 +135,12 @@ val ImageRequest.animationEndCallback: (() -> Unit)?
  * Set the callback to be invoked at the end of the animation if the result is an animated Image.
  */
 fun ImageOptions.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageOptions.Builder {
-    return setParameter(ANIMATION_END_CALLBACK_KEY, callback, null)
+    return setParameter(
+        key = ANIMATION_END_CALLBACK_KEY,
+        value = callback,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**

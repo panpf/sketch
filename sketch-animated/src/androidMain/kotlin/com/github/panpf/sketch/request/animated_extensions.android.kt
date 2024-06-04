@@ -41,7 +41,12 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
  * Default: `null`
  */
 fun ImageRequest.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): ImageRequest.Builder {
-    return setParameter(ANIMATED_TRANSFORMATION_KEY, animatedTransformation, null)
+    return setParameter(
+        key = ANIMATED_TRANSFORMATION_KEY,
+        value = animatedTransformation,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
@@ -56,12 +61,18 @@ val ImageRequest.animatedTransformation: AnimatedTransformation?
  * Default: `null`
  */
 fun ImageOptions.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): ImageOptions.Builder {
-    return setParameter(ANIMATED_TRANSFORMATION_KEY, animatedTransformation, null)
+    return setParameter(
+        key = ANIMATED_TRANSFORMATION_KEY,
+        value = animatedTransformation,
+        cacheKey = null,
+        requestKey = null
+    )
 }
 
 /**
  * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  */
+// TODO Support compose
 val ImageOptions.animatedTransformation: AnimatedTransformation?
     get() = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
 

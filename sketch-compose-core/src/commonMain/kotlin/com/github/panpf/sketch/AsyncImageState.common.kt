@@ -178,10 +178,14 @@ class AsyncImageState internal constructor(
                     val sketch = it[1] as Sketch
                     val contentScale = it[2] as ContentScale
                     val lastRequest = this@AsyncImageState.lastRequest
-                    if (lastRequest != null && lastRequest.key == request.key && lastRequest != request) {
-                        // TODO JS
-                        val diffImageRequest = lastRequest.difference(request)
-                        throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
+                    if (lastRequest != null) {
+                        if (lastRequest.key == request.key) {
+                            if (lastRequest != request) {
+                                // TODO Test whether onAnimationStart, onAnimationEnd, animatedTransformation will cause this problem
+                                val diffImageRequest = lastRequest.difference(request)
+                                throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
+                            }
+                        }
                     }
                     this@AsyncImageState.lastRequest = request
                     cancelLoadImageJob()
