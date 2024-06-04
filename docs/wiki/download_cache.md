@@ -1,6 +1,6 @@
 # Cache
 
-Translations: [简体中文](cache_zh.md)
+Translations: [简体中文](download_cache_zh.md)
 
 Sketch introduces download cache, result cache, and memory cache to improve the loading speed
 of images

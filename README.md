@@ -92,7 +92,7 @@ the indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio] Add obfuscation c
 
 ## Quickly Started
 
-Compose Multiplatform：
+Compose Multiplatform: 
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -128,7 +128,7 @@ Image(
 )
 ```
 
-Android View：
+Android View: 
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -161,33 +161,35 @@ ImageRequest, etc., please view the [《Getting Started》][getting_started] doc
 
 ## Documents
 
-Basic functions：
+Basic functions: 
 
 * [Get Started][getting_started]
 * [Compose][compose]
-* [AnimatedImage：GIF、WEBP、HEIF][animated_image]
-* [Resize：Modify the image size][resize]
-* [Transformation：Transformation image][transformation]
-* [Transition：Display images in cool transitions][transition]
-* [StateImage：Placeholder and error images][state_image]
-* [Listener：Listen for request status and download progress][listener]
-* [Cache：Learn about downloads, results, memory caching][cache]
-* [Fetcher：Learn about Fetcher and extend new URI types][fetcher]
-* [Decode：Understand the decoding process of Sketch][decode]
-* [Target：Apply the load results to the target][target]
-* [HttpStack：Learn about the HTTP section and using okhttp][http_stack]
-* [SVG：Decode SVG still images][svg]
-* [VideoFrames：Decode video frames][video_frame]
-* [ExifOrientation：Correct the image orientation][exif_orientation]
-* [ImageOptions：Manage image configurations in a unified manner][image_options]
-* [RequestInterceptor：Intercept ImageRequest][request_interceptor]
+* [AnimatedImage: GIF、WEBP、HEIF][animated_image]
+* [Resize: Modify the image size][resize]
+* [Transformation: Transformation image][transformation]
+* [Transition: Display images in cool transitions][transition]
+* [StateImage: Placeholder and error images][state_image]
+* [Listener: Listen for request status and download progress][listener]
+* [DownloadCache: Understand download caching to avoid repeated downloads][download_cache]
+* [ResultCache: Understand result caching to avoid duplicate conversions][result_cache]
+* [MemoryCache: Understand memory caching to avoid repeated loading][memory_cache]
+* [Fetcher: Learn about Fetcher and extend new URI types][fetcher]
+* [Decode: Understand the decoding process of Sketch][decode]
+* [Target: Apply the load results to the target][target]
+* [HttpStack: Learn about the HTTP section and using okhttp][http_stack]
+* [SVG: Decode SVG still images][svg]
+* [VideoFrames: Decode video frames][video_frame]
+* [ExifOrientation: Correct the image orientation][exif_orientation]
+* [ImageOptions: Manage image configurations in a unified manner][image_options]
+* [RequestInterceptor: Intercept ImageRequest][request_interceptor]
 * [Preload][preload]
 * [Lifecycle][lifecycle]
 * [Log][log]
 
-Featured functions：
+Featured functions: 
 
-* [SketchImageView：Configure the request through XML attributes][sketch_image_view]
+* [SketchImageView: Configure the request through XML attributes][sketch_image_view]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
 * [Displays the download progress][progress_indicator]
 * [Displays the image type corner][mime_type_logo]
@@ -222,14 +224,14 @@ Please review the [CHANGELOG.md] file
 
 The following are my other open source projects. If you are interested, you can learn about them:
 
-* [zoomimage](https://github.com/panpf/zoomimage)：Library for zoom images, supported Android View,
+* [zoomimage](https://github.com/panpf/zoomimage): Library for zoom images, supported Android View,
   Compose and Compose Multiplatform; supported double-click zoom, One or two fingers gesture zoom,
   single-finger drag, inertial sliding, positioning, rotation, super-large image subsampling and
   other functions.
-* [assembly-adapter](https://github.com/panpf/assembly-adapter)：A library on Android that provides
+* [assembly-adapter](https://github.com/panpf/assembly-adapter): A library on Android that provides
   multi-type Item implementations for various adapters. Incidentally, it also provides the most
   powerful divider for RecyclerView.
-* [sticky-item-decoration](https://github.com/panpf/stickyitemdecoration)：RecyclerView sticky item
+* [sticky-item-decoration](https://github.com/panpf/stickyitemdecoration): RecyclerView sticky item
   implementation
 
 ## License
@@ -259,11 +261,11 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [apk_app_icon]: docs/wiki/apk_app_icon.md
 
-[cache]: docs/wiki/cache.md
-
 [compose]: docs/wiki/compose.md
 
 [decode]: docs/wiki/decode.md
+
+[download_cache]: docs/wiki/download_cache.md
 
 [exif_orientation]: docs/wiki/exif_orientation.md
 
@@ -283,6 +285,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails.md
 
+[memory_cache]: docs/wiki/memory_cache.md
+
 [mime_type_logo]: docs/wiki/mime_type_logo.md
 
 [pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling.md
@@ -294,6 +298,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [request_interceptor]: docs/wiki/request_interceptor.md
 
 [resize]: docs/wiki/resize.md
+
+[result_cache]: docs/wiki/result_cache.md
 
 [save_cellular_traffic]: docs/wiki/save_cellular_traffic.md
 

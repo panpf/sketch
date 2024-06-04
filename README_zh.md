@@ -160,7 +160,9 @@ context.sketch.enqueue(request)
 * [Transition：用炫酷的过渡方式显示图片][transition]
 * [StateImage：占位图和错误图][state_image]
 * [Listener：监听请求状态和下载进度][listener]
-* [Cache：了解下载、结果、内存缓存][cache]
+* [DownloadCache：了解下载缓存，避免重复下载][download_cache]
+* [ResultCache：了解结果缓存，避免重复转换][result_cache]
+* [MemoryCache：了解内存缓存，避免重复加载][memory_cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
 * [Decode：了解 Sketch 的解码过程][decode]
 * [Target：将加载结果应用到目标上][target]
@@ -242,11 +244,11 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [apk_app_icon]: docs/wiki/apk_app_icon_zh.md
 
-[cache]: docs/wiki/cache_zh.md
-
 [compose]: docs/wiki/compose_zh.md
 
 [decode]: docs/wiki/decode_zh.md
+
+[download_cache]: docs/wiki/download_cache_zh.md
 
 [exif_orientation]: docs/wiki/exif_orientation_zh.md
 
@@ -266,6 +268,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails_zh.md
 
+[memory_cache]: docs/wiki/memory_cache_zh.md
+
 [mime_type_logo]: docs/wiki/mime_type_logo_zh.md
 
 [pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling_zh.md
@@ -277,6 +281,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [request_interceptor]: docs/wiki/request_interceptor_zh.md
 
 [resize]: docs/wiki/resize_zh.md
+
+[result_cache]: docs/wiki/result_cache_zh.md
 
 [save_cellular_traffic]: docs/wiki/save_cellular_traffic_zh.md
 

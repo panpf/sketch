@@ -26,6 +26,7 @@ class MyRequestInterceptor : RequestInterceptor {
 }
 ```
 
+> [!TIP]
 > 1. MyRequestInterceptor demonstrates a case where all requests are prohibited from using the
      memory cache
 > 2. If you want to modify the return result, just intercept the result returned by the proceed
@@ -35,20 +36,15 @@ class MyRequestInterceptor : RequestInterceptor {
 Then register your RequestInterceptor as follows:
 
 ```kotlin
-/* Register for all ImageRequests */
-class MyApplication : Application(), SingletonSketch.Factory {
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(this).apply {
+  components {
+      addRequestInterceptor(MyRequestInterceptor())
+  }
+}.build()
 
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addRequestInterceptor(MyRequestInterceptor())
-            }
-        }.build()
-    }
-}
-
-/* Register for a single ImageRequest */
-imageView.displayImage("https://example.com/image.jpg") {
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "https://example.com/image.jpg") {
     components {
         addRequestInterceptor(MyRequestInterceptor())
     }

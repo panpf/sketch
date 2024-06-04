@@ -1,6 +1,6 @@
 # Decoder
 
-Translations: [简体中文](decode_zh)
+Translations: [简体中文](decode_zh.md)
 
 [Decoder] is used to decode image files. It has the following implementation:
 
@@ -165,7 +165,7 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 }
 ```
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 

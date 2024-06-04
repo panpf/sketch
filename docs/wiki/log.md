@@ -28,7 +28,8 @@ You can also provide options in the App settings to modify them at any time, as 
 context.sketch.logger.level = Logger.Level.DEBUG
 ```
 
-> Note: Excessive Log logs will affect UI fluency. Please set the level to INFO and above for the
+> [!TIP]
+> Excessive Log logs will affect UI fluency. Please set the level to INFO and above for the
 > official release version.
 
 ### Modify output

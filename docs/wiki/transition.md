@@ -2,18 +2,14 @@
 
 Translations: [简体中文](transition_zh.md)
 
-[Transition] is used to configure the transition method between the old picture and the picture when
-it is displayed. [CrossfadeTransition] is provided by default to support the fade-in and fade-out
-effect.
+[Transition] is used to configure the transition method between the new picture and the old picture when it is displayed. [CrossfadeTransition] is provided by default to support the fade-in and fade-out effect.
 
-### Configure
+### Configuration
 
-Both [ImageRequest] and [ImageOptions] provide the crossfade() method and transition() method for
-configuring [Transition]
-,as follows:
+Both [ImageRequest] and [ImageOptions] provide the crossfade() method and transitionFactory() method for configuring [Transition] ,as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     crossfade()
     // or
     transitionFactory(CrossfadeTransition.Factory())
@@ -26,41 +22,23 @@ Please refer to the implementation of [CrossfadeTransition]
 
 ### Make the perfect transition
 
-[CrossfadeTransition] uses [CrossfadeDrawable] to implement transition, [CrossfadeDrawable] takes
-placeholder image and The maximum width and height of the result image are used as the width and
-height of the new Drawable, and then the placeholder image and result image are scaled.
+[CrossfadeTransition] Use the maximum width and height of the placeholder image and result image as the width and height of the new image, and then change the placeholder Image and result image are scaled
 
-#### Problem
+If the size of the result image and the placeholder image are inconsistent, for example, the result is larger than the placeholder, the placeholder image will be enlarged at the beginning of the transition. Although this process is fast, it is still easy to see.
 
-If the size of the result image and the placeholder image are inconsistent, for example, the result
-is larger than the placeholder, the placeholder image will be resized during the transition. The
-display effect on the page is that the placeholder image will be quickly enlarged at the beginning
-of the transition. If the aspect ratio Inconsistencies will lead to deformation. Although this
-process is quick, it is still easy to see.
+The best way to solve this problem is to keep the size of the placeholder image and the result image consistent. This effect can be easily achieved with the help of the resizeOnDraw attribute of [ImageRequest] and [ImageOptions]
 
-#### Solution
+The resizeOnDraw attribute will use [ResizePainter] or [ResizeDrawable] to wrap the placeholder, error, and result images, use [ImageRequest].size as the new size, and then use the [ImageRequest].scale attribute to scale the image. [Learn about resizeOnDraw][resizeOnDraw]
 
-The best way to solve this problem is to keep the size of the placeholder image and the result image
-consistent. This effect can be easily achieved with the help of the resizeApplyToDrawable attribute
-of [ImageRequest] and [ImageOptions]
-
-The resizeApplyToDrawable attribute uses ResizeDrawable to wrap the placeholder, error, and result
-drawables in a layer, uses Resize as the new size, and internally uses the scale attribute of Resize
-to scale the drawable. [View more resizeApplyToDrawable introduction][resize]
-
-Therefore, it is usually recommended to use [CrossfadeTransition] and resizeApplyToDrawable
-together, as follows:
+Therefore, it is usually recommended to use [CrossfadeTransition] and resizeOnDraw together, as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    placeholder(R.drawable.im_placeholder)
+ImageRequest(context, "https://example.com/image.jpg") {
+    placeholder(Res.drawable.im_placeholder)
     crossfade()
-    resizeApplyToDrawable()
+    resizeOnDraw()
 }
 ```
-
-> The TransitionDrawable that comes with Android also uses the maximum size of the start and end
-> images as the size of the new Drawable, which also has the same problem.
 
 [Transition]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transition/Transition.kt
 
@@ -70,6 +48,8 @@ imageView.displayImage("https://example.com/image.jpg") {
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CrossfadeDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/CrossfadeDrawable.kt
+[ResizePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/ResizePainter.kt
 
-[resize]: resize.md
+[ResizeDrawable]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/drawable/ResizeDrawable.kt
+
+[resizeOnDraw]: resize.md#resizeOnDraw

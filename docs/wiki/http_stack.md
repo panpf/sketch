@@ -78,7 +78,8 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 ```
 
-> Note: Because it needs to be compatible with Android 4.1, the older 3.12.0 version of OkHttp is
+> [!TIP]
+> Because it needs to be compatible with Android 4.1, the older 3.12.0 version of OkHttp is
 > used. If your app has a higher minimum version, you can use a newer version of OkHttp to customize
 > an HttpStack.
 

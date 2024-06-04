@@ -58,7 +58,8 @@ imageView.displayImage("https://example.com/image.jpg") {
 }
 ```
 
-> Note: [PauseLoadWhenScrollingDrawableDecodeInterceptor] is only valid for [ImageRequest]
+> [!TIP]
+> [PauseLoadWhenScrollingDrawableDecodeInterceptor] is only valid for [ImageRequest]
 
 Finally, enable the pause loading function during list scrolling for a single request, as follows:
 

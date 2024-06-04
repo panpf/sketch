@@ -1,5 +1,7 @@
 # StateImage
 
+[//]: # (TODO)
+
 翻译：[English](state_image.md)
 
 StateImage 用来为加载中状态和错误状态提供图片，有以下几种实现：

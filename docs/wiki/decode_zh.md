@@ -1,6 +1,8 @@
 # Decoder
 
-翻译：[English](decode)
+[//]: # (TODO)
+
+翻译：[English](decode.md)
 
 每一种图片类型都有对应的 Decoder
 对其提供支持，[查看更多 Decoder 介绍以及如何扩展新的图片类型][decoder]
@@ -157,7 +159,7 @@ imageView.displayImage("file:///sdcard/sample.mp4") {
 ```
 
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 

@@ -1,5 +1,7 @@
 # Lifecycle
 
+[//]: # (TODO)
+
 翻译：[English](lifecycle.md)
 
 Sketch 依赖 Lifecycle 监控页面的生命周期，用于以下功能：

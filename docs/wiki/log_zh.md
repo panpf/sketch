@@ -1,5 +1,7 @@
 # 日志
 
+[//]: # (TODO)
+
 翻译：[English](log.md)
 
 [Sketch] 的日志由 [Logger] 组件提供服务，默认使用 android.util.Log 输出，Tag 统一为 `Sketch`
@@ -27,7 +29,8 @@ class MyApplication : Application(), SingletonSketch.Factory {
 context.sketch.logger.level = Logger.Level.DEBUG
 ```
 
-> 注意：过多的 Log 日志会影响 UI 流畅度，正式发布版本请将 level 设置为 INFO 及以上级别
+> [!TIP]
+> 过多的 Log 日志会影响 UI 流畅度，正式发布版本请将 level 设置为 INFO 及以上级别
 
 ### 修改输出
 

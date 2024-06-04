@@ -12,20 +12,15 @@ Sketch 支持解码 SVG 静态图片，由 [SvgDecoder] 提供支持
 注册 [SvgDecoder]，如下：
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addDecoder(SvgDecoder.Factory())
-            }
-        }.build()
+// 在自定义 Sketch 时为所有 ImageRequest 注册
+Sketch.Builder(this).apply {
+    components {
+        addDecoder(SvgDecoder.Factory())
     }
-}
+}.build()
 
-/* 为单个 ImageRequest 注册 */
-imageView.displayImage("https://www.example.com/image.svg") {
+// 加载图片时为单个 ImageRequest 注册
+ImageRequest(context, "https://www.example.com/image.svg") {
     components {
         addDecoder(SvgDecoder.Factory())
     }
@@ -37,12 +32,13 @@ imageView.displayImage("https://www.example.com/image.svg") {
 [ImageRequest] 和 [ImageOptions] 支持一些 svg 相关的配置，如下：
 
 ```kotlin
-imageView.displayImage("https://www.example.com/image.svg") {
+ImageRequest(context, "https://www.example.com/image.svg") {
     svgBackgroundColor(Color.WHITE)
+    svgCss("...")    // Only Android 
 }
 ```
 
-[SvgDecoder]: ../../sketch-svg/src/main/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
+[SvgDecoder]: ../../sketch-svg/src/commonMain/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

@@ -1,6 +1,8 @@
 # Cache
 
-翻译：[English](cache.md)
+[//]: # (TODO)
+
+翻译：[English](download_cache.md)
 
 Sketch 为了提高图片的加载速度引入了下载缓存、结果缓存、内存缓存
 

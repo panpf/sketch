@@ -1,5 +1,7 @@
 # Listener
 
+[//]: # (TODO)
+
 翻译：[English](listener.md)
 
 [ImageRequest] 通过 [Listener] 和 [ProgressListener] 可以监听开始、完成、错误、取消、进度，如下：
@@ -94,8 +96,8 @@ ImageRequest(context, "https://example.com/image.jpg") {
 }
 ```
 
-> 注意：
-> 1. 所有方法都将在主线程执行
+> [!TIP]
+> 所有方法都将在主线程执行
 
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt

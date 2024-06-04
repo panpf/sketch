@@ -1,11 +1,11 @@
 # Jetpack Compose
 
-Translations: [简体中文](compose_zh)
+Translations: [简体中文](compose_zh.md)
 
 ## AsyncImage
 
 [AsyncImage] is a composable function that asynchronously executes image requests and renders the
-results. You can use it directly to load and display images, as follows:
+results. You can use it directly to load and load images, as follows:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -47,20 +47,20 @@ SubcomposeAsyncImage(
     uri = "https://example.com/image.jpg",
     contentDescription = "photo",
     content = {
-        when (val state = painter.state) {
-            is PainterState.Loading -> {
-                Text("Loading")
-            }
-            is PainterState.Error -> {
-                Text("Error")
-            }
-            else -> {
-                Image(
-                    painter = state.painter,
-                    contentDescription = "photo"
-                )
-            }
-        }
+         when (state.painterState) {
+              is PainterState.Loading -> {
+                   Text("Loading")
+              }
+              is PainterState.Error -> {
+                   Text("Error")
+              }
+              else -> {
+                   Image(
+                        painter = painter,
+                        contentDescription = "photo"
+                   )
+              }
+         }
     }
 )
 ```
@@ -71,7 +71,7 @@ SubcomposeAsyncImage(
 
 ### AsyncImagePainter
 
-If you must use the Image component to display images, you can also use [AsyncImagePainter] directly
+If you must use the Image component, you can also use [AsyncImagePainter] directly
 to load images, as follows:
 
 ```kotlin
@@ -119,7 +119,7 @@ AsyncImage(
     state = state,
 )
 
-val result: DisplayResult? = state.result
+val result: ImageResult? = state.result
 val loadState: LoadState? = state.loadState
 val request: ImageRequest = loadState.request
 when (loadState) {
@@ -174,7 +174,7 @@ call [ImageRequest] target() method, which will cause the app to crash because t
 configured by [AsyncImageState]
 
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 

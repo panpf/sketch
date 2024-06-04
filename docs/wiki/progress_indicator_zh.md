@@ -1,6 +1,8 @@
 # 下载进度指示器
 
-翻译：[English](progress_indicator)
+[//]: # (TODO)
+
+翻译：[English](progress_indicator.md)
 
 Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下：
 

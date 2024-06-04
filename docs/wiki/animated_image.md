@@ -1,60 +1,54 @@
-# Play Animated Image
+# Animated Image
 
 Translations: [简体中文](animated_image_zh.md)
 
-Sketch supports playing GIF, WEBP, HEIF animated images, and each animated image is supported by a
-corresponding [Decoder], as follows:
+> [!IMPORTANT]
+> Required import `sketch-animated` or `sketch-animated-koralgif` module
 
-| Type          | Decoder               | APi Limit    | Additional Module        |
-|:--------------|:----------------------|:-------------|:-------------------------|
-| GIF           | [GifAnimatedDecoder]  | Android 9+   | sketch-animated          |
-| GIF           | [GifMovieDecoder]     | Android 4.4+ | sketch-animated          |
-| GIF           | [GifDrawableDecoder]  | Android 4.1+ | sketch-animated-koralgif |
-| WEBP Animated | [WebPAnimatedDecoder] | Android 9+   | sketch-animated          |
-| HEIF Animated | [HeifAnimatedDecoder] | Android 11+  | sketch-animated          |
+[Sketch] supports playing GIF, WEBP, and HEIF animations. Each animation has a
+corresponding [Decoder] to provide support, as follows:
 
-> Caution:
-> 1. There are three types of GIFs, [Decoder] that can be selected according to the minimum
-     version supported by the app
-> 2. The `sketch-animated` module uses Android's built-in [ImageDecoder] and [Movie] classes to
-     implement
-     GIF, WEBP, and HEIF playback without additional increase in package size.
-> 3. The `sketch-animated-koralgif` module uses the [gif--]/[android-gif-drawable] library for
-     playback
-     gif, the library size is about 250 KB
+| Format        | Decoder                   | Android   | iOS | Desktop | Web | Additional Module        |
+|:--------------|:--------------------------|:----------|:----|:--------|:----|:-------------------------|
+| GIF           | [GifAnimatedDecoder]      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
+| GIF           | [GifMovieDecoder]         | ✅         | ❌   | ❌       | ❌   | sketch-animated          |
+| GIF           | [GifDrawableDecoder]      | ✅         | ❌   | ❌       | ❌   | sketch-animated-koralgif |
+| GIF           | [GifSkiaAnimatedDecoder]  | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
+| WEBP Animated | [WebpAnimatedDecoder]     | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
+| WEBP Animated | [WebpSkiaAnimatedDecoder] | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
+| HEIF Animated | [HeifAnimatedDecoder]     | ✅(API 30) | ❌   | ❌       | ❌   | sketch-animated          |
+
+> [!TIP]
+> There are three [Decoder] options for GIF on Android. You can choose the appropriate [Decoder]
+> based on the minimum version supported by the app.
 
 ## Register Decoder
 
-By default, Sketch does not register any [Decoder] for animated image, so you need to
-actively register [Decoder] with Sketch to play the animated image, as follows:
+[Sketch] does not register any animated [Decoder] by default. You need to actively
+register [Decoder] to [Sketch] to play animated images, as follows:
 
 ```kotlin
-/* Register for all ImageRequests */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addDecoder(
-                    when {
-                        VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDecoder.Factory()
-                        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDecoder.Factory()
-                        else -> GifDrawableDecoder.Factory()
-                    }
-                )
-                if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    addDecoder(WebpAnimatedDecoder.Factory())
-                }
-                if (VERSION.SDK_INT >= VERSION_CODES.R) {
-                    addDecoder(HeifAnimatedDecoder.Factory())
-                }
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(this).apply {
+    components {
+        addDecoder(
+            when {
+                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDecoder.Factory()
+                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDecoder.Factory()
+                else -> GifDrawableDecoder.Factory()
             }
-        }.build()
+        )
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            addDecoder(WebpAnimatedDecoder.Factory())
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            addDecoder(HeifAnimatedDecoder.Factory())
+        }
     }
-}
+}.build()
 
-/* Register for a single ImageRequest */
-imageView.displayImage("https://www.example.com/image.gif") {
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "https://www.example.com/image.gif") {
     components {
         addDecoder(
             when {
@@ -73,20 +67,20 @@ imageView.displayImage("https://www.example.com/image.gif") {
 }
 ```
 
-## Configure
+## Configuration
 
-Both [ImageRequest] and [ImageOptions] provide relevant methods for animated image configuration, as
-follows:
+Both [ImageRequest] and [ImageOptions] provide related methods for animation-related configuration,
+as follows:
 
 ```kotlin
-imageView.displayImage("https://www.example.com/image.gif") {
-    // Disabling animated image will decode only the first frame of animated image
+ImageRequest(context, "https://www.example.com/image.gif") {
+    // Disable animation and only decode the first frame of the animation
     disallowAnimatedImage()
 
-    // Configure animated image playback to stop after 1 time, and play it in an infinite loop by default
+    // Configure the animation to be played repeatedly once and then stop. The default is to play in an infinite loop.
     repeatCount(1)
 
-    // Listen for the animated image to start and stop playback
+    // Monitor the animation to start and stop playing
     onAnimationStart {
         // ...
     }
@@ -94,63 +88,68 @@ imageView.displayImage("https://www.example.com/image.gif") {
         // ...
     }
 
-    // Modify each frame of the animated image as you draw 
-    animatedTransformation { canvas ->
+    // [Only Android] Modify each frame of the animation as it is drawn 
+    animatedTransformation { canvas: Canvas ->
         // ...
     }
 }
 ```
 
-## Control playback
+## Control Play
 
-The [Decoder] related to the animated image returns [SketchAnimatableDrawable] uniformly,
-and [SketchAnimatableDrawable] is implemented
-Animatable2Compat interface
+[Decoder] related to animations uniformly returns [AnimatableDrawable] or [AnimatablePainter]. You
+can control playback through their start() and stop() methods, and determine the playback status
+through the isRunning() method.
 
-You can manually control the start and stop playback via the start() and stop() methods of the
-Animatable2Compat interface
+#### Initial State
 
-#### Initial state
+The initial state of the animation is controlled by [GenericViewTarget] and [GenericComposeTarget].
+After the animation is load into Target, the status of [ImageRequest].lifecycle will be
+checked. If the status of lifecycle is greater than start, it will start playing. Otherwise, it will
+wait until lifecycle. Play again when the status changes to start
 
-[GenericViewTarget] checks after [SketchAnimatableDrawable] is displayed on the ImageView
-ImageRequest.lifecycle, if the state of lifecycle is greater than start, it will start playing
+#### Automatic Control
 
-#### Automatic control
-
-[GenericViewTarget] listens to the start and stop states of ImageRequest.lifecycle to
-automatically control playback
+[GenericViewTarget] and [GenericComposeTarget] will listen to the start and stop of [ImageRequest]
+.lifecycle Status automatic control playback
 
 
-[koral--]: https://github.com/koral--
+[comment]: <> (classs)
 
-[android-gif-drawable]: https://github.com/koral--/android-gif-drawable
 
-[GifDrawable]: https://github.com/koral--/android-gif-drawable/blob/dev/android-gif-drawable/src/main/kotlin/pl/droidsonroids/gif/GifDrawable.java
+[AnimatableDrawable]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/AnimatableDrawable.kt
+
+[AnimatablePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/AnimatablePainter.kt
 
 [Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
-[GifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
+[GenericComposeTarget]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/target/GenericComposeTarget.kt
 
-[HeifAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
+[GenericViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt
 
-[WebpAnimatedDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
+[GifAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
 
 [GifDrawableDecoder]: ../../sketch-animated-koralgif/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
 
-[GifMovieDecoder]: ../../sketch-animated/src/main/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
+[GifMovieDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[GifSkiaAnimatedDecoder]: ../../sketch-animated/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/GifSkiaAnimatedDecoder.kt
 
-[SketchFactory]: ../../sketch/src/main/kotlin/com/github/panpf/sketch/SketchFactory.kt
-
-[SketchAnimatableDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/SketchAnimatableDrawable.kt
-
-[Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
-
-[ImageDecoder]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/ImageDecoder.java
+[HeifAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[GenericViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt
+[Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+
+[WebpAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
+
+[WebpSkiaAnimatedDecoder]: ../../sketch-animated/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/WebpSkiaAnimatedDecoder.kt
+
+
+[comment]: <> (wiki)
+
+[getting_started_platform_different]: getting_started.md#platform-differences

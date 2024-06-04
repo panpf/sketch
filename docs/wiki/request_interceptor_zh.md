@@ -25,6 +25,7 @@ class MyRequestInterceptor : RequestInterceptor {
 }
 ```
 
+> [!TIP]
 > 1. MyRequestInterceptor 演示了一个禁止所有请求使用内存缓存的案例
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [ImageData] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
@@ -32,20 +33,15 @@ class MyRequestInterceptor : RequestInterceptor {
 然后注册你的 RequestInterceptor，如下：
 
 ```kotlin
-/* 为所有 ImageRequest 注册 */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addRequestInterceptor(MyRequestInterceptor())
-            }
-        }.build()
+// 在自定义 Sketch 时为所有 ImageRequest 注册
+Sketch.Builder(this).apply {
+    components {
+        addRequestInterceptor(MyRequestInterceptor())
     }
-}
+}.build()
 
-/* 为单个 ImageRequest 注册 */
-imageView.displayImage("https://example.com/image.jpg") {
+// 加载图片时为单个 ImageRequest 注册
+ImageRequest(context, "https://example.com/image.jpg") {
     components {
         addRequestInterceptor(MyRequestInterceptor())
     }

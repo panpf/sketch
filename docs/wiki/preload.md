@@ -2,7 +2,7 @@
 
 ## Download Image
 
-Translations: [简体中文](preload_zh)
+Translations: [简体中文](preload_zh.md)
 
 Use [DownloadRequest] to download images to disk, as follows:
 
@@ -76,7 +76,8 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-> Note: LoadRequest will not obtain the Bitmap from the memory cache, nor will it put the obtained
+> [!TIP]
+> LoadRequest will not obtain the Bitmap from the memory cache, nor will it put the obtained
 > Bitmap into the memory cache, because the Bitmap returned by LoadRequest is completely handed over
 > to the user and is not controlled by Sketch.
 

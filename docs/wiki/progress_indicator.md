@@ -1,6 +1,6 @@
 # Download progress indicator
 
-Translations: [简体中文](progress_indicator_zh)
+Translations: [简体中文](progress_indicator_zh.md)
 
 Sketch provides extended functions for view and Compose to display download progress, as follows:
 

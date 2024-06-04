@@ -1,10 +1,10 @@
 # Compose
 
-翻译：[English](compose)
+翻译：[English](compose.md)
 
 ## AsyncImage
 
-[AsyncImage] 是一个异步执行图像请求并呈现结果的可组合函数，你可以直接使用它加载并显示图片，如下：
+[AsyncImage] 是一个异步执行图像请求并呈现结果的可组合函数，你可以直接使用它加载图片，如下：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -45,20 +45,20 @@ SubcomposeAsyncImage(
     uri = "https://example.com/image.jpg",
     contentDescription = "photo",
     content = {
-        when (val state = painter.state) {
-            is PainterState.Loading -> {
-                Text("Loading")
-            }
-            is PainterState.Error -> {
-                Text("Error")
-            }
-            else -> {
-                Image(
-                    painter = state.painter,
-                    contentDescription = "photo"
-                )
-            }
-        }
+         when (state.painterState) {
+              is PainterState.Loading -> {
+                   Text("Loading")
+              }
+              is PainterState.Error -> {
+                   Text("Error")
+              }
+              else -> {
+                   Image(
+                        painter = painter,
+                        contentDescription = "photo"
+                   )
+              }
+         }
     }
 )
 ```
@@ -68,7 +68,7 @@ SubcomposeAsyncImage(
 
 ### AsyncImagePainter
 
-如果你必须使用 Image 组件来显示图片，那么你还可以直接使用 [AsyncImagePainter] 来加载图像，如下：
+如果你必须使用 Image 组件，那么你还可以直接使用 [AsyncImagePainter] 来加载图像，如下：
 
 ```kotlin
 Image(
@@ -112,7 +112,7 @@ AsyncImage(
     state = state,
 )
 
-val result: DisplayResult? = state.result
+val result: ImageResult? = state.result
 val loadState: LoadState? = state.loadState
 val request: ImageRequest = loadState.request
 when (loadState) {
@@ -164,7 +164,7 @@ listener()、progressListener() 方法，这会导致 App 崩溃
 target() 方法，这会导致 App 崩溃，因为 Target 必须由 [AsyncImageState] 配置
 
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 

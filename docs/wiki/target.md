@@ -52,7 +52,7 @@ AsyncIage(
 
 ### RemoteViews
 
-Sketch provides [RemoteViewsTarget] to display images to [RemoteViews], as follows:
+Sketch provides [RemoteViewsTarget] to load images to [RemoteViews], as follows:
 
 ```kotlin
 val remoteViews =

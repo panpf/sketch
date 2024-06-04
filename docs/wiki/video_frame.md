@@ -2,66 +2,62 @@
 
 Translations: [简体中文](video_frame_zh.md)
 
+> [!IMPORTANT]
+> 1. Required import `sketch-extensions-view` or `sketch-extensions-compose` module
+> 2. Only supports Android platform
+
 Sketch supports decoding video frames, powered by the following Decoder:
 
-* [VideoFrameDecoder]: Use Android's built-in MediaMetadataRetriever class to decode video
-  frames
+* [VideoFrameDecoder]：Decode video frames using Android's built-in MediaMetadataRetriever class
     * You need to import the `sketch-video` module first
-    * It is recommended to use Android 8.1 and above, because versions 8.0 and below do not support
-      reading frame thumbnails, which will consume a lot of memory when decoding larger videos such
-      as 4k.
-* [FFmpegVideoFrameDecoder]：Use [wseemann]
-  /[FFmpegMediaMetadataRetriever-project] Library's [FFmpegMediaMetadataRetriever] class decodes
-  frames of video files
+    * It is recommended to use Android 8.1 and above, because versions 8.0 and below do not support reading frame thumbnails, which will consume a lot of memory when decoding larger videos such as 4k.
+* [FFmpegVideoFrameDecoder]：Decode video frames using the [FFmpegMediaMetadataRetriever] class of the [wseemann/FFmpegMediaMetadataRetriever-project][FFmpegMediaMetadataRetriever-project] library
     * You need to import the `sketch-video-ffmpeg` module first
-    * Library size is approximately 23MB
+    * Library size is approximately 23 MB
 
 ### Registered
 
 Select the appropriate Decoder according to the situation, and then register it as follows:
 
 ```kotlin
-/* Register for all ImageRequests */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addDecoder(FFmpegVideoFrameDecoder.Factory())
-            }
-        }.build()
-    }
-}
-
-/* Register for a single ImageRequest */
-imageView.displayImage("file:///sdcard/sample.mp4") {
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(this).apply {
     components {
-        addDecoder(FFmpegVideoFrameDecoder.Factory())
+        supportVideoFrame()
+        //or
+        supportFFmpegVideoFrame()
+    }
+}.build()
+
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "file:///sdcard/sample.mp4") {
+    components {
+      supportVideoFrame()
+      //or
+      supportFFmpegVideoFrame()
     }
 }
 ```
 
-### Configure
+### Configuration
 
 [ImageRequest] and [ImageOptions] support some video frame-related configurations, as follows:
 
 ```kotlin
-imageView.displayImage("file:///sdcard/sample.mp4") {
+ImageRequest(context, "file:///sdcard/sample.mp4") {
     // Extract the frame at 1000000 microseconds
     videoFrameMicros(1000000)
 
     // or extract the frame at 10000 ms
     videoFrameMillis(10000)
 
-    // or get the frame in the middle of the extraction
+    // or get the frames in between
     videoFramePercentDuration(0.5f)
 
     // Set the processing strategy when frames cannot be extracted at the specified time
     videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
 }
 ```
-
-[wseemann]: https://github.com/wseemann
 
 [FFmpegMediaMetadataRetriever-project]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
 

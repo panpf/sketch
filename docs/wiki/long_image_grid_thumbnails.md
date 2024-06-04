@@ -14,7 +14,7 @@ SAME_ASPECT_RATIO or EXACTLY (specified when creating), otherwise LESS_PIXELS is
 only ensures that long images have a clear thumbnail, but also ensures fast loading of non-long
 images.
 
-> Notice:
+> [!TIP]
 > 1. The default implementation of long image rules is [DefaultLongImageDecider], you can also
      create [LongImageClipPrecisionDecider] Use custom rules when
 > 2. SAME_ASPECT_RATIO and EXACTLY will use BitmapRegionDecoder to crop the original image, so you

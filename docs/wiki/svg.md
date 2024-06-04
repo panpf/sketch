@@ -12,20 +12,15 @@ Sketch supports decoding SVG static images, powered by [SvgDecoder]
 Register [SvgDecoder], as follows:
 
 ```kotlin
-/* Register for all ImageRequests */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            components {
-                addDecoder(SvgDecoder.Factory())
-            }
-        }.build()
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(this).apply {
+    components {
+        addDecoder(SvgDecoder.Factory())
     }
-}
+}.build()
 
-/* Register for a single ImageRequest */
-imageView.displayImage("https://www.example.com/image.svg") {
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "https://www.example.com/image.svg") {
     components {
         addDecoder(SvgDecoder.Factory())
     }
@@ -37,12 +32,13 @@ imageView.displayImage("https://www.example.com/image.svg") {
 [ImageRequest] and [ImageOptions] support some svg-related configurations, as follows:
 
 ```kotlin
-imageView.displayImage("https://www.example.com/image.svg") {
+ImageRequest(context, "https://www.example.com/image.svg") {
     svgBackgroundColor(Color.WHITE)
+    svgCss("...")    // Only Android
 }
 ```
 
-[SvgDecoder]: ../../sketch-svg/src/main/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
+[SvgDecoder]: ../../sketch-svg/src/commonMain/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

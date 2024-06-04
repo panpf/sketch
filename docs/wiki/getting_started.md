@@ -2,11 +2,11 @@
 
 Translations: [简体中文](getting_started_zh.md)
 
-## Display Image
+## Load Image
 
-Loading and displaying images with [Sketch] is very simple, as follows:
+Loading images with [Sketch] is very simple, as follows:
 
-Compose Multiplatform：
+Compose Multiplatform: 
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -44,14 +44,14 @@ Image(
 
 > [!TIP]
 > 1. On Compose Multiplatform you can use [AsyncImage] directly Components can also
-     use `Image + AsyncImagePainter` to display the image.
+     use `Image + AsyncImagePainter` to load the image.
 > 2. But it is more recommended to use the [AsyncImage] component because [AsyncImage] is slightly
      faster.
 > 3. This is because [Sketch] relies on the exact size of the component to start loading images,
      [AsyncImage] The size of the component can be obtained during the layout stage,
      while `Image + AsyncImagePainter` cannot obtain the component size until the drawing stage.
 
-Android View：
+Android View: 
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -153,18 +153,15 @@ different, as follows:
 
 ## Sketch
 
-The [Sketch] class is the core of the entire framework. It is used to execute [ImageRequest] and
-handle downloading, caching, decoding, conversion, and request management.
+The [Sketch] class is the core of the entire framework, which is used to execute and manage [ImageRequest]
 
 ### Singleton Mode
 
 The `sketch-compose` and `sketch-view` modules depend on the `sketch-singleton` module, so you can
-use the
-singleton mode by directly relying on them.
+use the singleton mode by directly relying on them.
 
 In singleton mode, you do not need to actively create a [Sketch] instance. You can directly obtain
-the
-shared [Sketch] instance, as follows:
+the shared [Sketch] instance, as follows:
 
 ```kotlin
 // Android
@@ -207,8 +204,7 @@ SingletonSketch.setSafe {
 ### Non-singleton mode
 
 In non-singleton mode, you need to create [Sketch] yourself and remember it, and then use the
-instance
-you created when needed, as follows:
+instance you created when needed, as follows:
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
@@ -248,7 +244,7 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 
 #### Configure Target
 
-To display the loading results directly on the component, you also need to configure [Target]
+To load the results directly into the component, you also need to configure [Target]
 
 On Compose [Target] is configured by [AsyncImage] and [AsyncImagePainter]'s
 cornerstone [AsyncImageState], you just need to
@@ -434,29 +430,31 @@ val imageResult: ImageResult? = imageView.imageResult
 Basic functions:
 
 * [Compose][compose]
-* [AnimatedImage：GIF、WEBP、HEIF][animated_image]
-* [Resize：Modify the image size][resize]
-* [Transformation：Transformation image][transformation]
-* [Transition：Display images in cool transitions][transition]
-* [StateImage：Placeholder and error images][state_image]
-* [Listener：Listen for request status and download progress][listener]
-* [Cache：Learn about downloads, results, memory caching][cache]
-* [Fetcher：Learn about Fetcher and extend new URI types][fetcher]
-* [Decode：Understand the decoding process of Sketch][decode]
-* [Target：Apply the load results to the target][target]
-* [HttpStack：Learn about the HTTP section and using okhttp][http_stack]
-* [SVG：Decode SVG still images][svg]
-* [VideoFrames：Decode video frames][video_frame]
-* [ExifOrientation：Correct the image orientation][exif_orientation]
-* [ImageOptions：Manage image configurations in a unified manner][image_options]
-* [RequestInterceptor：Intercept ImageRequest][request_interceptor]
+* [AnimatedImage: GIF、WEBP、HEIF][animated_image]
+* [Resize: Modify the image size][resize]
+* [Transformation: Transformation image][transformation]
+* [Transition: Display images in cool transitions][transition]
+* [StateImage: Placeholder and error images][state_image]
+* [Listener: Listen for request status and download progress][listener]
+* [DownloadCache: Understand download caching to avoid repeated downloads][download_cache]
+* [ResultCache: Understand result caching to avoid duplicate conversions][result_cache]
+* [MemoryCache: Understand memory caching to avoid repeated loading][memory_cache]
+* [Fetcher: Learn about Fetcher and extend new URI types][fetcher]
+* [Decode: Understand the decoding process of Sketch][decode]
+* [Target: Apply the load results to the target][target]
+* [HttpStack: Learn about the HTTP section and using okhttp][http_stack]
+* [SVG: Decode SVG still images][svg]
+* [VideoFrames: Decode video frames][video_frame]
+* [ExifOrientation: Correct the image orientation][exif_orientation]
+* [ImageOptions: Manage image configurations in a unified manner][image_options]
+* [RequestInterceptor: Intercept ImageRequest][request_interceptor]
 * [Preload][preload]
 * [Lifecycle][lifecycle]
 * [Log][log]
 
-Featured functions：
+Featured functions: 
 
-* [SketchImageView：Configure the request through XML attributes][sketch_image_view]
+* [SketchImageView: Configure the request through XML attributes][sketch_image_view]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]
 * [Displays the download progress][progress_indicator]
 * [Displays the image type corner][mime_type_logo]
@@ -464,7 +462,7 @@ Featured functions：
 * [The list slides to pause the loading of images][pause_load_when_scrolling]
 * [Displays an icon for an apk file or installed app][apk_app_icon]
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 
@@ -503,11 +501,11 @@ Featured functions：
 
 [apk_app_icon]: apk_app_icon.md
 
-[cache]: cache.md
-
 [compose]: compose.md
 
 [decode]: decode.md
+
+[download_cache]: download_cache.md
 
 [exif_orientation]: exif_orientation.md
 
@@ -527,6 +525,8 @@ Featured functions：
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md
 
+[memory_cache]: memory_cache.md
+
 [mime_type_logo]: mime_type_logo.md
 
 [pause_load_when_scrolling]: pause_load_when_scrolling.md
@@ -538,6 +538,8 @@ Featured functions：
 [request_interceptor]: request_interceptor.md
 
 [resize]: resize.md
+
+[result_cache]: result_cache.md
 
 [save_cellular_traffic]: save_cellular_traffic.md
 

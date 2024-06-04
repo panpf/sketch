@@ -2,9 +2,9 @@
 
 翻译：[English](getting_started.md)
 
-## 显示图片
+## 加载图片
 
-用 [Sketch] 加载并显示图片非常简单，如下：
+用 [Sketch] 加载图片非常简单，如下：
 
 Compose Multiplatform：
 
@@ -44,7 +44,7 @@ Image(
 
 > [!TIP]
 > 1. 在 Compose Multiplatform 上你既可以直接使用 [AsyncImage]
-     组件也可以使用 `Image + AsyncImagePainter` 来显示图片。
+     组件也可以使用 `Image + AsyncImagePainter` 来加载图片。
 > 2. 但更推荐使用 [AsyncImage] 组件，因为 [AsyncImage] 会略快一些。
 > 3. 这是由于 [Sketch] 依赖组件的确切大小才会开始加载图片，[AsyncImage]
      在布局阶段就可以获取到组件的大小，而 `Image + AsyncImagePainter` 则是要等到绘制阶段才能获取到组件大小。
@@ -146,7 +146,7 @@ context.sketch.enqueue(request)
 
 ## Sketch
 
-[Sketch] 类是整个框架的核心，它用来执行 [ImageRequest]，并处理下载、缓存、解码、转换以及请求管理等工作
+[Sketch] 类是整个框架的核心，它用来执行并管理 [ImageRequest]
 
 ### 单例模式
 
@@ -233,7 +233,7 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 
 #### 配置 Target
 
-要想将加载结果直接显示到组件上还需要配置 [Target]
+要想将结果直接加载到组件上还需要配置 [Target]
 
 在 Compose 上 [Target] 由 [AsyncImage] 和 [AsyncImagePainter] 的基石 [AsyncImageState] 来配置，你只需将
 [ImageRequest] 交给 [AsyncImage] 或 [AsyncImagePainter] 即可，如下：
@@ -368,7 +368,7 @@ if (imageResult is ImageResult.Success) {
 * ImageView 的 onViewDetachedFromWindow() 方法被执行
 * Lifecycle 变为 DESTROYED 状态
 
-未配置 [Target] 时或需要主动取消时可以通过 [Disposable] 或 Job 来取消，如下：
+未配置 [Target] 或需要主动取消时可以通过 [Disposable] 或 Job 来取消，如下：
 
 ```kotlin
 // 使用 enqueue() 方法异步执行请求时会返回一个 Disposable, 可以用来它在需要的时候取消请求
@@ -400,7 +400,7 @@ imageView.displayImage("https://www.example.com/image.jpg") {
 imageView.disposeDisplay()
 
 // result
-val imageResult = imageView.imageResult
+val imageResult: ImageResult? = imageView.imageResult
 ```
 
 > [displayImage()][displayImage] 仅单例模式下可用
@@ -416,7 +416,9 @@ val imageResult = imageView.imageResult
 * [Transition：用炫酷的过渡方式显示图片][transition]
 * [StateImage：占位图和错误图][state_image]
 * [Listener：监听请求状态和下载进度][listener]
-* [Cache：了解下载、结果、内存缓存][cache]
+* [DownloadCache：了解下载缓存，避免重复下载][download_cache]
+* [ResultCache：了解结果缓存，避免重复转换][result_cache]
+* [MemoryCache：了解内存缓存，避免重复加载][memory_cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
 * [Decode：了解 Sketch 的解码过程][decode]
 * [Target：将加载结果应用到目标上][target]
@@ -440,7 +442,7 @@ val imageResult = imageView.imageResult
 * [列表滑动中暂停加载图片][pause_load_when_scrolling]
 * [显示 APK 文件或已安装 APP 的图标][apk_app_icon]
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 
@@ -479,11 +481,11 @@ val imageResult = imageView.imageResult
 
 [apk_app_icon]: apk_app_icon_zh.md
 
-[cache]: cache_zh.md
-
 [compose]: compose_zh.md
 
 [decode]: decode_zh.md
+
+[download_cache]: download_cache_zh.md
 
 [exif_orientation]: exif_orientation_zh.md
 
@@ -503,6 +505,8 @@ val imageResult = imageView.imageResult
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md
 
+[memory_cache]: memory_cache_zh.md
+
 [mime_type_logo]: mime_type_logo_zh.md
 
 [pause_load_when_scrolling]: pause_load_when_scrolling_zh.md
@@ -514,6 +518,8 @@ val imageResult = imageView.imageResult
 [request_interceptor]: request_interceptor_zh.md
 
 [resize]: resize_zh.md
+
+[result_cache]: result_cache_zh.md
 
 [save_cellular_traffic]: save_cellular_traffic_zh.md
 

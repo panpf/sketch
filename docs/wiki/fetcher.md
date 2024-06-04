@@ -68,7 +68,7 @@ imageView.displayImage(context, "myUri://sample.jpeg") {
 }
 ```
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

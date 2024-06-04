@@ -1,5 +1,7 @@
 # 图片类型角标
 
+[//]: # (TODO)
+
 翻译：[English](mime_type_logo.md)
 
 Sketch 为 view 和 Compose 提供了显示图片类型角标的扩展功能，如下：

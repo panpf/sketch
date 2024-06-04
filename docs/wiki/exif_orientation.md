@@ -1,17 +1,13 @@
-# Exif
+# Exif Orientation
 
-Translations: [简体中文](exif_orientation_zh)
+Translations: [简体中文](exif_orientation_zh.md)
 
 Sketch supports restoring the orientation of images based on their Exif information. This feature is
-enabled by default. You can use [ImageRequest] and [ImageOptions] to provide The
-`ignoreExifOrientation` attribute disables this functionality, as follows:
+forcibly turned on and cannot be turned off.
 
-```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    ignoreExifOrientation()
-}
-```
+## Implement
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+On Android, rely on `androidx.exifinterface:exifinterface` to read the exif information and then
+restore the orientation of the image during decoding
 
-[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+On non-Android devices, it relies on Skia's own support for Exif.

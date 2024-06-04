@@ -1,5 +1,7 @@
 # Fetcher
 
+[//]: # (TODO)
+
 翻译：[English](fetcher.md)
 
 > 上表中的 `创建函数` 列展示了 Sketch 对部分 URI 提供的便捷创建函数
@@ -70,7 +72,7 @@ imageView.displayImage(context, "myUri://sample.jpeg") {
 }
 ```
 
-[comment]: <> (class)
+[comment]: <> (classs)
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 

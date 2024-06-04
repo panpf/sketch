@@ -1,5 +1,7 @@
 # Resize
 
+[//]: # (TODO)
+
 翻译：[English](resize.md)
 
 [Resize] 用来调整图片的尺寸，解码时参与计算 inSampleSize，解码后如果尺寸依然不符合 [Resize] 要求就会再次调整
@@ -92,7 +94,7 @@ imageView.displayImage("https://example.com/image.jpg") {
 * [Precision]：LESS_PIXELS
 * [Scale]：CENTER_CROP
 
-### resizeApplyToDrawable
+### resizeOnDraw
 
 [ImageRequest] 和 [ImageOptions] 的 resizeApplyToDrawable 属性用于将 [Resize] 应用到 [Target]
 的

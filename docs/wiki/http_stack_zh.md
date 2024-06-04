@@ -1,5 +1,7 @@
 # HttpStack
 
+[//]: # (TODO)
+
 翻译：[English](http_stack.md)
 
 [HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher]
@@ -77,7 +79,8 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 ```
 
-> 注意：由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app
+> [!TIP]
+> 由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app
 > 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
 
 ### Android 4.* TLS 1.1, 1.2 支持

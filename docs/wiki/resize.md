@@ -104,7 +104,7 @@ imageView.displayImage("https://example.com/image.jpg") {
 * [Precision]：LESS_PIXELS
 * [Scale]：CENTER_CROP
 
-### resizeApplyToDrawable
+### resizeOnDraw
 
 The resizeApplyToDrawable attribute of [ImageRequest] and [ImageOptions] is used to apply [Resize]
 to the placeholder, error, result Drawable of [Target]

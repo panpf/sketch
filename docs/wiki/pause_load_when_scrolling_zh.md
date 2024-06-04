@@ -1,5 +1,7 @@
 # 列表滚动中暂停加载图片
 
+[//]: # (TODO)
+
 翻译：[English](pause_load_when_scrolling.md)
 
 > [!IMPORTANT]
@@ -57,7 +59,8 @@ imageView.displayImage("https://example.com/image.jpg") {
 }
 ```
 
-> 注意：[PauseLoadWhenScrollingDrawableDecodeInterceptor] 仅对 [ImageRequest] 有效
+> [!TIP]
+> [PauseLoadWhenScrollingDrawableDecodeInterceptor] 仅对 [ImageRequest] 有效
 
 最后针对单个请求开启列表滚动中暂停加载功能，如下：
 

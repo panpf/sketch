@@ -1,17 +1,11 @@
-# Exif
+# Exif Orientation
 
-翻译：[English](exif_orientation)
+翻译：[English](exif_orientation.md)
 
-Sketch 支持根据图片的 Exif 信息恢复图片的方向，此功能默认开启，你可以通过 [ImageRequest]
-和 [ImageOptions] 提供的
-`ignoreExifOrientation` 属性禁用此功能，如下：
+Sketch 支持根据图片的 Exif 信息恢复图片的方向，此功能强制开启，并且无法关闭
 
-```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    ignoreExifOrientation()
-}
-```
+## 实现
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+在 Android 上依赖 `androidx.exifinterface:exifinterface` 读取 exif 信息然后再在解码时恢复图片的方向
 
-[ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
+在非 Android 上则依赖 Skia 自带的对 Exif 的支持 
