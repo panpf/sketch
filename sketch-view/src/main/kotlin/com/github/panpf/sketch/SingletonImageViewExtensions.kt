@@ -21,9 +21,8 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
 
 /**
@@ -31,11 +30,11 @@ import java.io.File
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
+// TODO rename to loadImage
 fun ImageView.displayImage(
     uri: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    context.sketch.enqueue(ImageRequest(this, uri, configBlock))
+): Disposable = context.sketch.enqueue(ImageRequest(this, uri, configBlock))
 
 /**
  * Load the image from [uri] and display it on this [ImageView]
@@ -45,8 +44,7 @@ fun ImageView.displayImage(
 fun ImageView.displayImage(
     uri: Uri?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    displayImage(uri?.toString(), configBlock)
+): Disposable = displayImage(uri?.toString(), configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
@@ -56,8 +54,7 @@ fun ImageView.displayImage(
 fun ImageView.displayImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
+): Disposable = displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from local file and display it on this [ImageView]
@@ -67,8 +64,7 @@ fun ImageView.displayImage(
 fun ImageView.displayImage(
     file: File?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    displayImage(file?.let { newFileUri(it.path) }, configBlock)
+): Disposable = displayImage(file?.let { newFileUri(it.path) }, configBlock)
 
 /**
  * Load the image from app assets and display it on this [ImageView]
@@ -78,8 +74,7 @@ fun ImageView.displayImage(
 fun ImageView.displayAssetImage(
     assetFileName: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    displayImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
+): Disposable = displayImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
@@ -89,8 +84,7 @@ fun ImageView.displayAssetImage(
 fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
+): Disposable = displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
@@ -101,5 +95,4 @@ fun ImageView.displayResourceImage(
     packageName: String,
     @DrawableRes drawableResId: Int,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable =
-    displayImage(newResourceUri(packageName, drawableResId), configBlock)
+): Disposable = displayImage(newResourceUri(packageName, drawableResId), configBlock)
