@@ -19,7 +19,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,13 +30,12 @@ import app.cash.paging.PagingData
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
+import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.common.list.AppendState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
-import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -96,10 +94,7 @@ private fun PhotoSquareGrid(
 ) {
     Box(Modifier.fillMaxSize()) {
         val gridState = rememberLazyGridState()
-        LaunchedEffect(gridState.isScrollInProgress) {
-            PauseLoadWhenScrollingDecodeInterceptor.scrolling =
-                gridState.isScrollInProgress
-        }
+        bindPauseLoadWhenScrolling(gridState)
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(gridCellsMinSize),
@@ -156,10 +151,7 @@ private fun PhotoStaggeredGrid(
 ) {
     Box(Modifier.fillMaxSize()) {
         val gridState = rememberLazyStaggeredGridState()
-        LaunchedEffect(gridState.isScrollInProgress) {
-            PauseLoadWhenScrollingDecodeInterceptor.scrolling =
-                gridState.isScrollInProgress
-        }
+        bindPauseLoadWhenScrolling(gridState)
 
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(minSize = gridCellsMinSize),

@@ -33,13 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
+import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.common.list.AppendState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
-import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -135,10 +134,7 @@ private fun PhotoSquareGrid(
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
-        LaunchedEffect(gridState.isScrollInProgress) {
-            PauseLoadWhenScrollingDecodeInterceptor.scrolling =
-                gridState.isScrollInProgress
-        }
+        bindPauseLoadWhenScrolling(gridState)
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(gridCellsMinSize),
@@ -194,10 +190,7 @@ private fun PhotoStaggeredGrid(
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
 ) {
     Box(Modifier.fillMaxSize()) {
-        LaunchedEffect(staggeredGridState.isScrollInProgress) {
-            PauseLoadWhenScrollingDecodeInterceptor.scrolling =
-                staggeredGridState.isScrollInProgress
-        }
+        bindPauseLoadWhenScrolling(staggeredGridState)
 
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(minSize = gridCellsMinSize),
