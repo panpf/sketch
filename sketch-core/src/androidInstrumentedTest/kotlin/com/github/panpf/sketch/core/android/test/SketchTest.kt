@@ -69,13 +69,40 @@ class SketchTest {
 
         val context = getTestContext()
         Builder(context).apply {
-            build().apply {
-                Assert.assertEquals(Logger(), logger)
+            val fakePipeline = object: Logger.Pipeline {
+                override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
+
+                }
+
+                override fun flush() {
+
+                }
+
+                override fun toString(): String {
+                    return "FakePipeline"
+                }
             }
-            logger(Logger(module = "TestModule"))
             build().apply {
-                Assert.assertEquals(Logger(module = "TestModule"), logger)
-                Assert.assertNotEquals(Logger(), logger)
+                Assert.assertEquals(Logger.Level.Info, logger.level)
+                Assert.assertFalse(logger.toString().contains(fakePipeline.toString()))
+            }
+
+            logger()
+            build().apply {
+                Assert.assertEquals(Logger.Level.Info, logger.level)
+                Assert.assertFalse(logger.toString().contains(fakePipeline.toString()))
+            }
+
+            logger(level = Logger.Level.Verbose)
+            build().apply {
+                Assert.assertEquals(Logger.Level.Verbose, logger.level)
+                Assert.assertFalse(logger.toString().contains(fakePipeline.toString()))
+            }
+
+            logger(level = Logger.Level.Verbose, pipeline = fakePipeline)
+            build().apply {
+                Assert.assertEquals(Logger(level = Logger.Level.Verbose, pipeline = fakePipeline), logger)
+                Assert.assertTrue(logger.toString().contains(fakePipeline.toString()))
             }
 
             val defaultMemoryCache = MemoryCache.Builder(context).build()

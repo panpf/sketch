@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("EnumValuesSoftDeprecate")
+
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.app.Application
@@ -362,14 +364,15 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
     }
 
     private fun makeOtherMenuList(): List<Any> = buildList {
+        @Suppress("EnumValuesSoftDeprecate")
         add(
             MultiSelectMenu(
                 title = "Logger Level",
-                desc = if (application1.sketch.logger.level <= Logger.Debug) "DEBUG and below will reduce UI fluency" else "",
-                values = Logger.levels.map { Logger.levelName(it) },
-                getValue = { Logger.levelName(application1.sketch.logger.level) },
+                desc = if (application1.sketch.logger.level <= Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
+                values = Logger.Level.values().map { it.name },
+                getValue = { application1.sketch.logger.level.name },
                 onSelect = { _, value ->
-                    appSettingsService.logLevel.value = value
+                    appSettingsService.logLevel.value = Logger.Level.valueOf(value)
                 }
             )
         )

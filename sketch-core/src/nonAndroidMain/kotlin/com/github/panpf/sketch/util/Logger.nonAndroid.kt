@@ -1,15 +1,15 @@
 package com.github.panpf.sketch.util
 
-actual fun platformLogPipeline(): Logger.Pipeline = StdLogPipeline()
+actual fun platformLogPipeline(): Logger.Pipeline = PrintLogPipeline()
 
-class StdLogPipeline : Logger.Pipeline {
+class PrintLogPipeline : Logger.Pipeline {
 
-    override fun log(level: Int, tag: String, msg: String, tr: Throwable?) {
+    override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
         if (tr != null) {
             val trString = tr.stackTraceToString()
-            println("${Logger.levelName(level)}. $tag. $msg. \n$trString")
+            println("$level. $tag. $msg. \n$trString")
         } else {
-            println("${Logger.levelName(level)}. $tag. $msg")
+            println("$level. $tag. $msg")
         }
     }
 
@@ -19,12 +19,12 @@ class StdLogPipeline : Logger.Pipeline {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is StdLogPipeline
+        return other is PrintLogPipeline
     }
 
     override fun hashCode(): Int {
-        return this@StdLogPipeline::class.hashCode()
+        return this@PrintLogPipeline::class.hashCode()
     }
 
-    override fun toString(): String = "StdLogPipeline"
+    override fun toString(): String = "PrintLogPipeline"
 }

@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalResourceApi::class)
+@file:Suppress("EnumValuesSoftDeprecate")
 
 package com.github.panpf.sketch.sample.ui.setting
 
@@ -43,9 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
@@ -266,9 +267,9 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
     add(
         DropdownSettingItem(
             title = "Logger Level",
-            desc = if (Logger.level(appSettings.logLevel.value) <= Logger.Debug)
+            desc = if (appSettings.logLevel.value <= Logger.Level.Debug)
                 "DEBUG and below will reduce UI fluency" else null,
-            values = Logger.levels.map { Logger.levelName(it) },
+            values = Logger.Level.values().toList(),
             state = appSettings.logLevel,
         )
     )

@@ -34,7 +34,6 @@ import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.sample.util.sha256String
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -113,12 +112,13 @@ private fun initialSketch() {
                 addDecoder(GifSkiaAnimatedDecoder.Factory())
                 addDecoder(WebpSkiaAnimatedDecoder.Factory())
             }
-            logger(Logger(level = Logger.level(appSettings.logLevel.value)))
+            // To be able to print the Sketch initialization log
+            logger(level = appSettings.logLevel.value)
         }.build().apply {
             @Suppress("OPT_IN_USAGE")
             GlobalScope.launch {
                 appSettings.logLevel.collect {
-                    logger.level = Logger.level(it)
+                    logger.level = it
                 }
             }
         }

@@ -171,7 +171,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
         return Sketch.Builder(this).apply {
-            logger(Logger(Logger.DEBUG))
+            logger(level = Logger.Level.Debug)
             httpStack(OkHttpStack.Builder().build())
             // There is a lot more...
         }.build()
@@ -181,7 +181,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 // Non Android
 SingletonSketch.setSafe {
     Sketch.Builder(PlatformContext.INSTANCE).apply {
-        logger(Logger(Logger.DEBUG))
+        logger(level = Logger.Level.Debug)
         httpStack(OkHttpStack.Builder().build())
         // There is a lot more...
     }.build()
@@ -197,7 +197,7 @@ SingletonSketch.setSafe {
 
 ```kotlin
 val sketch = Sketch.Builder(context).apply {
-    logger(Logger(Logger.DEBUG))
+    logger(level = Logger.Level.Debug)
     httpStack(OkHttpStack.Builder().build())
     // There is a lot more...
 }.build()

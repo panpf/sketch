@@ -22,7 +22,6 @@ import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
-import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import platform.UIKit.UIViewController
@@ -67,17 +66,18 @@ private fun initialSketch() {
         val context = PlatformContext.INSTANCE
         val appSettings = context.appSettings
         Sketch.Builder(context).apply {
-            logger(Logger(level = Logger.level(appSettings.logLevel.value)))
             components {
                 supportSvg()
                 addDecoder(GifSkiaAnimatedDecoder.Factory())
                 addDecoder(WebpSkiaAnimatedDecoder.Factory())
             }
+            // To be able to print the Sketch initialization log
+            logger(level = appSettings.logLevel.value)
         }.build().apply {
             @Suppress("OPT_IN_USAGE")
             GlobalScope.launch {
                 appSettings.logLevel.collect {
-                    logger.level = Logger.level(it)
+                    logger.level = it
                 }
             }
         }

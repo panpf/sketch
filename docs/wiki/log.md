@@ -1,81 +1,67 @@
-# 日志
+# Log
 
 Translations: [简体中文](log_zh.md)
 
-[Sketch] logs are provided by the [Logger] component. By default, android.util.Log is used for
-output, and the Tag is unified to `Sketch`
+The log of [Sketch] is provided by the [Logger] component, and the tag is unified as `Sketch`
 
 ### Modify Level
 
-Like android.util.Log, [Logger] also supports Level, the default is `INFO`
+Like most logging frameworks, [Logger] also controls the level of output logs through [Logger]
+.Level, which defaults to `Info`
 
-You can modify it when initializing [Sketch], as follows:
-
-```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            logger(Logger(Logger.Level.DEBUG))
-        }.build()
-    }
-}
-```
-
-You can also provide options in the App settings to modify them at any time, as follows:
+You can modify the level at any time, as follows:
 
 ```kotlin
-context.sketch.logger.level = Logger.Level.DEBUG
+// When initializing Sketch
+Sketch.Builder(this).apply {
+    logger(level = Logger.Level.Debug)
+}.build()
+
+// At any other time
+context.sketch.logger.level = Logger.Level.Debug
 ```
 
 > [!TIP]
-> Excessive Log logs will affect UI fluency. Please set the level to INFO and above for the
-> official release version.
+> Excessive logs will affect UI fluency. For the official release version, please set the level to
+> Info and above.
 
-### Modify output
+### 修改输出
 
-[Logger] outputs to android.util.Log by default. You can implement the [Logger].Proxy interface to
-customize new output, and then modify it when initializing [Sketch], as follows:
+[Logger] Output logs through the [Logger].Pipeline interface, on the Android platform [Logger]
+.Pipeline
+The implementation is [AndroidLogPipeline], on non-Android platforms it is [PrintLogPipeline]
+
+You can implement the [Logger].Pipeline interface to customize new output, and then use it when
+initializing [Sketch], as follows:
 
 ```kotlin
-class MyProxy : Logger.Proxy {
-    override fun v(tag: String, msg: String, tr: Throwable?) {
-        Log.v(tag, msg, tr)
-    }
+class MyPipeline : Logger.Pipeline {
 
-    override fun d(tag: String, msg: String, tr: Throwable?) {
-        Log.d(tag, msg, tr)
-    }
-
-    override fun i(tag: String, msg: String, tr: Throwable?) {
-        Log.i(tag, msg, tr)
-    }
-
-    override fun w(tag: String, msg: String, tr: Throwable?) {
-        Log.w(tag, msg, tr)
-    }
-
-    override fun e(tag: String, msg: String, tr: Throwable?) {
-        Log.e(tag, msg, tr)
+    override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
+        if (tr != null) {
+            val trString = tr.stackTraceToString()
+            println("$level. $tag. $msg. \n$trString")
+        } else {
+            println("$level. $tag. $msg")
+        }
     }
 
     override fun flush() {
 
     }
 
-    override fun toString(): String = "MyProxy"
+    override fun toString(): String = "MyPipeline"
 }
 
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            logger(Logger(Logger.Level.DEBUG, MyProxy()))
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    logger(pipeline = MyPipeline())
+}.build()
 ```
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [Logger]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Logger.kt
+
+[AndroidLogPipeline]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/util/Logger.android.kt
+
+[PrintLogPipeline]: ../../sketch-core/src/nonAndroidMain/kotlin/com/github/panpf/sketch/util/Logger.nonAndroid.kt

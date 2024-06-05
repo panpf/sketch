@@ -28,7 +28,7 @@ expect fun getTestContext(): PlatformContext
 fun newSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Sketch {
     val context = getTestContext()
     return Sketch.Builder(context).apply {
-        logger(Logger(level = Logger.Verbose))
+        logger(level = Logger.Level.Verbose)
         val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))

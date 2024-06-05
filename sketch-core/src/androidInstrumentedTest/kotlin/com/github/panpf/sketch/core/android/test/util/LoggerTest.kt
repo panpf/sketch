@@ -28,10 +28,10 @@ class LoggerTest {
     @Test
     fun testConstructor() {
         Logger().apply {
-            Assert.assertEquals(Logger.Info, level)
+            Assert.assertEquals(Logger.Level.Info, level)
         }
-        Logger(level = Logger.Debug).apply {
-            Assert.assertEquals(Logger.Debug, level)
+        Logger(level = Logger.Level.Debug).apply {
+            Assert.assertEquals(Logger.Level.Debug, level)
         }
 
         val testPipeline = TestPipeline()
@@ -54,67 +54,65 @@ class LoggerTest {
         }
     }
 
-    // TODO test module
-
     @Test
     fun testLevel() {
         Logger().apply {
-            Assert.assertEquals(Logger.Info, level)
-            level = Logger.Error
-            Assert.assertEquals(Logger.Error, level)
+            Assert.assertEquals(Logger.Level.Info, level)
+            level = Logger.Level.Error
+            Assert.assertEquals(Logger.Level.Error, level)
         }
     }
 
     @Test
     fun testIsLoggable() {
         Logger().apply {
-            level = Logger.Verbose
-            Assert.assertTrue(isLoggable(Logger.Verbose))
-            Assert.assertTrue(isLoggable(Logger.Debug))
-            Assert.assertTrue(isLoggable(Logger.Info))
-            Assert.assertTrue(isLoggable(Logger.Warn))
-            Assert.assertTrue(isLoggable(Logger.Error))
-            Assert.assertTrue(isLoggable(Logger.Assert))
+            level = Logger.Level.Verbose
+            Assert.assertTrue(isLoggable(Logger.Level.Verbose))
+            Assert.assertTrue(isLoggable(Logger.Level.Debug))
+            Assert.assertTrue(isLoggable(Logger.Level.Info))
+            Assert.assertTrue(isLoggable(Logger.Level.Warn))
+            Assert.assertTrue(isLoggable(Logger.Level.Error))
+            Assert.assertTrue(isLoggable(Logger.Level.Assert))
 
-            level = Logger.Debug
-            Assert.assertFalse(isLoggable(Logger.Verbose))
-            Assert.assertTrue(isLoggable(Logger.Debug))
-            Assert.assertTrue(isLoggable(Logger.Info))
-            Assert.assertTrue(isLoggable(Logger.Warn))
-            Assert.assertTrue(isLoggable(Logger.Error))
-            Assert.assertTrue(isLoggable(Logger.Assert))
+            level = Logger.Level.Debug
+            Assert.assertFalse(isLoggable(Logger.Level.Verbose))
+            Assert.assertTrue(isLoggable(Logger.Level.Debug))
+            Assert.assertTrue(isLoggable(Logger.Level.Info))
+            Assert.assertTrue(isLoggable(Logger.Level.Warn))
+            Assert.assertTrue(isLoggable(Logger.Level.Error))
+            Assert.assertTrue(isLoggable(Logger.Level.Assert))
 
-            level = Logger.Info
-            Assert.assertFalse(isLoggable(Logger.Verbose))
-            Assert.assertFalse(isLoggable(Logger.Debug))
-            Assert.assertTrue(isLoggable(Logger.Info))
-            Assert.assertTrue(isLoggable(Logger.Warn))
-            Assert.assertTrue(isLoggable(Logger.Error))
-            Assert.assertTrue(isLoggable(Logger.Assert))
+            level = Logger.Level.Info
+            Assert.assertFalse(isLoggable(Logger.Level.Verbose))
+            Assert.assertFalse(isLoggable(Logger.Level.Debug))
+            Assert.assertTrue(isLoggable(Logger.Level.Info))
+            Assert.assertTrue(isLoggable(Logger.Level.Warn))
+            Assert.assertTrue(isLoggable(Logger.Level.Error))
+            Assert.assertTrue(isLoggable(Logger.Level.Assert))
 
-            level = Logger.Warn
-            Assert.assertFalse(isLoggable(Logger.Verbose))
-            Assert.assertFalse(isLoggable(Logger.Debug))
-            Assert.assertFalse(isLoggable(Logger.Info))
-            Assert.assertTrue(isLoggable(Logger.Warn))
-            Assert.assertTrue(isLoggable(Logger.Error))
-            Assert.assertTrue(isLoggable(Logger.Assert))
+            level = Logger.Level.Warn
+            Assert.assertFalse(isLoggable(Logger.Level.Verbose))
+            Assert.assertFalse(isLoggable(Logger.Level.Debug))
+            Assert.assertFalse(isLoggable(Logger.Level.Info))
+            Assert.assertTrue(isLoggable(Logger.Level.Warn))
+            Assert.assertTrue(isLoggable(Logger.Level.Error))
+            Assert.assertTrue(isLoggable(Logger.Level.Assert))
 
-            level = Logger.Error
-            Assert.assertFalse(isLoggable(Logger.Verbose))
-            Assert.assertFalse(isLoggable(Logger.Debug))
-            Assert.assertFalse(isLoggable(Logger.Info))
-            Assert.assertFalse(isLoggable(Logger.Warn))
-            Assert.assertTrue(isLoggable(Logger.Error))
-            Assert.assertTrue(isLoggable(Logger.Assert))
+            level = Logger.Level.Error
+            Assert.assertFalse(isLoggable(Logger.Level.Verbose))
+            Assert.assertFalse(isLoggable(Logger.Level.Debug))
+            Assert.assertFalse(isLoggable(Logger.Level.Info))
+            Assert.assertFalse(isLoggable(Logger.Level.Warn))
+            Assert.assertTrue(isLoggable(Logger.Level.Error))
+            Assert.assertTrue(isLoggable(Logger.Level.Assert))
 
-            level = Logger.Assert
-            Assert.assertFalse(isLoggable(Logger.Verbose))
-            Assert.assertFalse(isLoggable(Logger.Debug))
-            Assert.assertFalse(isLoggable(Logger.Info))
-            Assert.assertFalse(isLoggable(Logger.Warn))
-            Assert.assertFalse(isLoggable(Logger.Error))
-            Assert.assertTrue(isLoggable(Logger.Assert))
+            level = Logger.Level.Assert
+            Assert.assertFalse(isLoggable(Logger.Level.Verbose))
+            Assert.assertFalse(isLoggable(Logger.Level.Debug))
+            Assert.assertFalse(isLoggable(Logger.Level.Info))
+            Assert.assertFalse(isLoggable(Logger.Level.Warn))
+            Assert.assertFalse(isLoggable(Logger.Level.Error))
+            Assert.assertTrue(isLoggable(Logger.Level.Assert))
         }
     }
 
@@ -124,11 +122,11 @@ class LoggerTest {
         Logger(pipeline = testPipeline).apply {
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             v { throw java.lang.Exception("It's not supposed to be here") }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Verbose
+            level = Logger.Level.Verbose
             v { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -138,13 +136,13 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             v(Exception("exception")) {
                 throw java.lang.Exception("It's not supposed to be here")
             }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Verbose
+            level = Logger.Level.Verbose
             v(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -160,11 +158,11 @@ class LoggerTest {
         Logger(pipeline = testPipeline).apply {
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             d { throw java.lang.Exception("It's not supposed to be here") }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Debug
+            level = Logger.Level.Debug
             d { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -174,13 +172,13 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             d(Exception("exception")) {
                 throw java.lang.Exception("It's not supposed to be here")
             }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Debug
+            level = Logger.Level.Debug
             d(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -196,11 +194,11 @@ class LoggerTest {
         Logger(pipeline = testPipeline).apply {
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             i { throw java.lang.Exception("It's not supposed to be here") }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Info
+            level = Logger.Level.Info
             i { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -210,13 +208,13 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             i(Exception("exception")) {
                 throw java.lang.Exception("It's not supposed to be here")
             }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Info
+            level = Logger.Level.Info
             i(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -232,11 +230,11 @@ class LoggerTest {
         Logger(pipeline = testPipeline).apply {
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             w { throw java.lang.Exception("It's not supposed to be here") }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Warn
+            level = Logger.Level.Warn
             w { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -246,11 +244,11 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             w("message")
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Warn
+            level = Logger.Level.Warn
             w("message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -260,13 +258,13 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             w(Exception("exception")) {
                 throw java.lang.Exception("It's not supposed to be here")
             }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Warn
+            level = Logger.Level.Warn
             w(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -276,11 +274,11 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             w(Exception("exception"), "message")
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Warn
+            level = Logger.Level.Warn
             w(Exception("exception"), "message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -296,11 +294,11 @@ class LoggerTest {
         Logger(pipeline = testPipeline).apply {
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             e { throw java.lang.Exception("It's not supposed to be here") }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Error
+            level = Logger.Level.Error
             e { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -310,11 +308,11 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             e("message")
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Error
+            level = Logger.Level.Error
             e("message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -324,13 +322,13 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             e(Exception("exception")) {
                 throw java.lang.Exception("It's not supposed to be here")
             }
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Error
+            level = Logger.Level.Error
             e(Exception("exception")) { "message" }
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -340,11 +338,11 @@ class LoggerTest {
 
             testPipeline.logList.clear()
             Assert.assertEquals(0, testPipeline.logList.size)
-            level = Logger.Assert
+            level = Logger.Level.Assert
             e(Exception("exception"), "message")
             Assert.assertEquals(0, testPipeline.logList.size)
 
-            level = Logger.Error
+            level = Logger.Level.Error
             e(Exception("exception"), "message")
             Assert.assertEquals(1, testPipeline.logList.size)
             Assert.assertEquals(
@@ -370,28 +368,42 @@ class LoggerTest {
         }
     }
 
+    @Test
+    fun testEqualsAndHashCode() {
+        val logger1 = Logger()
+        val logger11 = Logger()
+        val logger2 = Logger(level = Logger.Level.Error)
+        val logger3 = Logger(level = Logger.Level.Error, pipeline = TestPipeline())
+
+        Assert.assertEquals(logger1, logger11)
+        Assert.assertNotEquals(logger1, logger2)
+        Assert.assertNotEquals(logger1, logger3)
+        Assert.assertNotEquals(logger1.hashCode(), logger2.hashCode())
+        Assert.assertNotEquals(logger1.hashCode(), logger3.hashCode())
+    }
+
     private class TestPipeline : Logger.Pipeline {
 
         val logList = LinkedList<LogEntry>()
 
-        override fun log(level: Int, tag: String, msg: String, tr: Throwable?) {
+        override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
             if (!msg.contains("setLevel")) {
                 logList.add(LogEntry(level, tag, msg, tr))
             }
         }
 
         override fun flush() {
-            logList.add(LogEntry(Logger.Assert, "Sketch", "flush", null))
+            logList.add(LogEntry(Logger.Level.Assert, "Sketch", "flush", null))
         }
 
         private data class LogEntry(
-            @Logger.Level val level: Int,
+            val level: Logger.Level,
             val tag: String,
             val msg: String,
             val tr: Throwable?
         ) {
             override fun toString(): String {
-                return "LogEntry(level=${Logger.levelName(level)}, tag=$tag, msg=$msg, tr=$tr)"
+                return "LogEntry(level=$level, tag=$tag, msg=$msg, tr=$tr)"
             }
         }
     }

@@ -18,6 +18,7 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.annotation.AnyThread
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
@@ -34,15 +35,17 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.Logger.Level
+import com.github.panpf.sketch.util.Logger.Pipeline
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import com.github.panpf.sketch.util.platformLogPipeline
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -221,8 +224,11 @@ class Sketch private constructor(options: Options) {
         /**
          * Set the [Logger] to write logs to.
          */
-        fun logger(logger: Logger?): Builder = apply {
-            this.logger = logger
+        fun logger(
+            level: Level = Level.Info,
+            pipeline: Pipeline = platformLogPipeline()
+        ): Builder = apply {
+            this.logger = Logger(level, pipeline)
         }
 
         /**

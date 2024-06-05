@@ -36,7 +36,6 @@ import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
-import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -47,7 +46,6 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
-        logger(Logger(level = Logger.level(appSettingsService.logLevel.value)))   // for Sketch init log
         val httpStack = when (appSettingsService.httpClient.value) {
             "Ktor" -> KtorStack()
             "OkHttp" -> OkHttpStack.Builder().build()
@@ -87,10 +85,12 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
                 supportAnimatedHeif()
             }
         }
+        // To be able to print the Sketch initialization log
+        logger(level = appSettingsService.logLevel.value)
     }.build().apply {
         coroutineScope.launch {
             appSettingsService.logLevel.collect {
-                logger.level = Logger.level(it)
+                logger.level = it
             }
         }
     }
