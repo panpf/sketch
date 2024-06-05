@@ -44,17 +44,17 @@ imageView.displayImage("https://example.com/image.jpg") {
 但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
 
 ```kotlin
-val lockKey = "http://sample.com/sample.jpeg"
+val lockKey = "https://example.com/image.jpg"
 val lock = context.sketch.downloadCache.editLock(lockKey)
 lock.lock()
 try {
-    val diskCacheKey = "http://sample.com/sample.jpeg"
+    val diskCacheKey = "https://example.com/image.jpg"
 
     // edit
     val editor: DiskCache.Editor = context.sketch.downloadCache.edit(diskCacheKey)
     try {
         editor.newOutputStream().use {
-            it.write("http://sample.com/sample.jpeg".toByteArray())
+            it.write("https://example.com/image.jpg".toByteArray())
         }
         editor.commit()
     } catch (e: Exception) {
@@ -128,17 +128,17 @@ imageView.displayImage("https://example.com/image.jpg") {
 但要注意先获取编辑锁并且上锁再访问，这样能避免在多线程下出问题，如下：
 
 ```kotlin
-val lockKey = "http://sample.com/sample.jpeg"
+val lockKey = "https://example.com/image.jpg"
 val lock = context.sketch.resultCache.editLock(lockKey)
 lock.lock()
 try {
-    val diskCacheKey = "http://sample.com/sample.jpeg"
+    val diskCacheKey = "https://example.com/image.jpg"
 
     // edit
     val editor: DiskCache.Editor = context.sketch.resultCache.edit(diskCacheKey)
     try {
         editor.newOutputStream().use {
-            it.write("http://sample.com/sample.jpeg".toByteArray())
+            it.write("https://example.com/image.jpg".toByteArray())
         }
         editor.commit()
     } catch (e: Exception) {
@@ -201,7 +201,7 @@ imageView.displayImage("https://example.com/image.jpg") {
 你可以通过 `context.sketch.memoryCache` 属性获取内存缓存实例来访问内存缓存。
 
 ```kotlin
-val memoryCacheKey = "http://sample.com/sample.jpeg"
+val memoryCacheKey = "https://example.com/image.jpg"
 
 // put
 val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)

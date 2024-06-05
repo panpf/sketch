@@ -5,65 +5,87 @@ Translations: [简体中文](image_options_zh.md)
 [ImageOptions] is used to define image request configurations in batches and supports all
 image-related attributes of [ImageRequest].
 
-[ImageOptions] can currently be used in three places:
+[ImageOptions] can be used in the following locations:
 
-* [SketchImageView].displayImageOptions
-* [ImageRequest].Builder.merge()/default()
-* [Sketch].globalImageOptions
+* [Target].getImageOptions()
+    * [SketchImageView].imageOptions
+    * [AsyncImageState].options
+* [ImageRequest].Builder.merge(ImageOptions)/default(ImageOptions)
+* [Sketch].Builder.globalImageOptions(ImageOptions)
 
-Ultimately when building [ImageRequest] it will end up as [ImageRequest].Builder >
-View > [ImageRequest] Sequential build of .Builder.defaultOptions > [Sketch].globalImageOptions
+The final priority of the same properties when constructing the [ImageRequest] is:
+
+1. [ImageRequest].Builder
+2. [Target].getImageOptions()
+3. [ImageRequest].Builder.default(ImageOptions)
+4. [Sketch].globalImageOptions
 
 ### Example
 
 Global：
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            globalImageOptions(ImageOptions {
-                placeholer(R.drawable.placeholder)
-                error(R.drawable.error)
-                // more ...
-            })
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    globalImageOptions(ImageOptions {
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
+    })
+}.build()
 ```
 
 View：
 
 ```kotlin
-sketchImageView.displayImageOptions = ImageOptions {
+sketchImageView.imageOptions = ImageOptions {
     placeholer(R.drawable.placeholder)
     // more ...
-}
-
-// Update based on existing ImageOptions
-sketchImageView.updateDisplayImageOptions {
-    error(R.drawable.error)
 }
 ```
 
 ImageRequest：
 
 ```kotlin
-ImageRequest(context, "http://sample.com/sample.jpeg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     merge(ImageOptions {
-        // ...
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
     })
     default(ImageOptions {
-        // ...
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
     })
 }
 ```
 
+AsyncImageState：
+
+```kotlin
+val state = rememberAsyncImageState()
+LaunchEffect(state) {
+    state.options = ImageOptions {
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
+    }
+}
+AsyncImage(
+    uri = "https://example.com/image.jpg",
+    contentDescription = "",
+    state = state,
+)
+```
+
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+
+[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt

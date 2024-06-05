@@ -1,70 +1,90 @@
 # ImageOptions
 
-[//]: # (TODO)
-
 翻译：[English](image_options.md)
 
 [ImageOptions] 用来批量定义图片请求配置，支持 [ImageRequest] 全部图片相关属性
 
-目前可以在三个地方使用 [ImageOptions]：
+可以在以下位置使用 [ImageOptions]：
 
-* [SketchImageView].displayImageOptions
-* [ImageRequest].Builder.merge()/default()
-* [Sketch].globalImageOptions
+* [Target].getImageOptions()
+    * [SketchImageView].imageOptions
+    * [AsyncImageState].options
+* [ImageRequest].Builder.merge(ImageOptions)/default(ImageOptions)
+* [Sketch].Builder.globalImageOptions(ImageOptions)
 
-最终在构建 [ImageRequest] 时将以 [ImageRequest].Builder > View > [ImageRequest]
-.Builder.defaultOptions > [Sketch].globalImageOptions 的顺序构建
+最终在构建 [ImageRequest] 时相同属性的优先级为：
+
+1. [ImageRequest].Builder
+2. [Target].getImageOptions()
+3. [ImageRequest].Builder.default(ImageOptions)
+4. [Sketch].globalImageOptions
 
 ### 示例
 
 Global：
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-          globalImageOptions(ImageOptions {
-            placeholer(R.drawable.placeholder)
-            error(R.drawable.error)
-            // more ...
-          })
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    globalImageOptions(ImageOptions {
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
+    })
+}.build()
 ```
 
 View：
 
 ```kotlin
-sketchImageView.displayImageOptions = ImageOptions {
+sketchImageView.imageOptions = ImageOptions {
     placeholer(R.drawable.placeholder)
     // more ...
-}
-
-// 在现有 ImageOptions 基础上更新
-sketchImageView.updateDisplayImageOptions {
-    error(R.drawable.error)
 }
 ```
 
 ImageRequest：
 
 ```kotlin
-ImageRequest(context, "http://sample.com/sample.jpeg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     merge(ImageOptions {
-        // ...
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
     })
     default(ImageOptions {
-        // ...
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
     })
 }
 ```
 
+AsyncImageState：
+
+```kotlin
+val state = rememberAsyncImageState()
+LaunchEffect(state) {
+    state.options = ImageOptions {
+        placeholer(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        // more ...
+    }
+}
+AsyncImage(
+    uri = "https://example.com/image.jpg",
+    contentDescription = "",
+    state = state,
+)
+```
+
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+
+[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt

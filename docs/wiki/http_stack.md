@@ -2,8 +2,18 @@
 
 Translations: [简体中文](http_stack_zh.md)
 
-[HttpStack] is used to initiate HTTP network requests and obtain responses and then hand them over
-to [HttpUriFetcher] to download images. The default implementation is [HurlStack]
+[HttpStack] is used to initiate HTTP network requests and obtain responses, then hand them over
+to [HttpUriFetcher] to download images.
+
+On the jvm platform, [Sketch] provides two implementations [HurlStack]
+and [OkHttpStack]. [HurlStack] is used by default. [OkHttpStack] requires additional dependence on
+the `sketch-http-okhttp` module.
+
+On non-jvm platforms, [Sketch] only provides [KtorStack] implementation, and [KtorStack] is used by
+default.
+
+You can also use [KtorStack] on the jvm platform, which requires additional dependency on
+the `sketch-http-ktor` module
 
 ### HurlStack
 
@@ -24,10 +34,10 @@ class MyApplication : Application(), SingletonSketch.Factory {
                 // User-Agent. Default null
                 userAgent(String)
 
-                // Add non-repeatable headers. Default null
+                // Add some non-repeatable headers. Default null
                 extraHeaders(Map<String, String>)
 
-                // Add repeatable headers. Default null
+                // Add some repeatable headers. Default null
                 addExtraHeaders(Map<String, String>)
 
                 // HttpURLConnection is handled by this method before executing connect. Default null
@@ -42,9 +52,8 @@ class MyApplication : Application(), SingletonSketch.Factory {
 
 ### OkHttpStack
 
-Sketch also provides [OkHttpStack] implementation of [HttpStack]. Before using it, you need to
-import the `sketch-okhttp` module and then initialize it.
-You can register through the `httpStack()` method when using Sketch, as follows:
+Before using [OkHttpStack], you need to rely on the `sketch-okhttp` module, and then
+pass `httpStack()` when initializing [Sketch] The method to register is as follows:
 
 ```kotlin
 class MyApplication : Application(), SingletonSketch.Factory {
@@ -61,10 +70,10 @@ class MyApplication : Application(), SingletonSketch.Factory {
                 // User-Agent. Default null
                 userAgent(String)
 
-                // Add non-repeatable headers. Default null
+                // Add some non-repeatable headers. Default null
                 extraHeaders(Map<String, String>)
 
-                // Add repeatable headers. Default null
+                // Add some repeatable headers. Default null
                 addExtraHeaders(Map<String, String>)
 
                 // Interceptor. Default null
@@ -78,58 +87,36 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 ```
 
-> [!TIP]
-> Because it needs to be compatible with Android 4.1, the older 3.12.0 version of OkHttp is
-> used. If your app has a higher minimum version, you can use a newer version of OkHttp to customize
-> an HttpStack.
+### KtorStack
 
-### Android 4.* TLS 1.1, 1.2 supported
-
-Android versions 4.1 to 4.4 support TLS 1.1 and 1.2 but are not enabled by default. HurlStack and
-OkHttpStack are enabled as follows:
+Before using [KtorStack] on the jvm platform, you need to rely on the `sketch-http-ktor` module, and
+then initialize [Sketch] You can register through the `httpStack()` method, as follows:
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            httpStack(OkHttpStack.Builder().apply {
-                if (VERSION.SDK_INT <= 19) {
-                    enabledTlsProtocols("TLSv1.1", "TLSv1.2")
-                }
-            }.build())
-
-            // or
-            httpStack(HurlStack.Builder().apply {
-                if (VERSION.SDK_INT <= 19) {
-                    enabledTlsProtocols("TLSv1.1", "TLSv1.2")
-                }
-            }.build())
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    httpStack(KtorStack())
+}.build()
 ```
 
 ### Customize
 
-Implement the [HttpStack] interface to define your own HttpStack, and then register it through
-the `httpStack()` method when initializing Sketch:
+First implement the [HttpStack] interface to define your own [HttpStack], and then register it
+through the `httpStack()` method when initializing [Sketch]:
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            httpStack(MyHttpStack())
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    httpStack(MyHttpStack())
+}.build()
 ```
 
-[HttpStack]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HttpStack.kt
+[HttpStack]: ../../sketch-http-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HttpStack.kt
 
-[HurlStack]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
+[HurlStack]: ../../sketch-http-core/src/jvmCommonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
 
-[OkHttpStack]: ../../sketch-okhttp/src/main/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
+[OkHttpStack]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
+
+[KtorStack]: ../../sketch-http-ktor/src/commonMain/kotlin/com/github/panpf/sketch/http/KtorStack.kt
 
 [HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt

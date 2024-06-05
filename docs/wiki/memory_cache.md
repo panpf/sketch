@@ -46,17 +46,17 @@ However, it is important to obtain the edit lock first and lock it before access
 avoid problems in multi-threading, as follows:
 
 ```kotlin
-val lockKey = "http://sample.com/sample.jpeg"
+val lockKey = "https://example.com/image.jpg"
 val lock = context.sketch.downloadCache.editLock(lockKey)
 lock.lock()
 try {
-    val diskCacheKey = "http://sample.com/sample.jpeg"
+    val diskCacheKey = "https://example.com/image.jpg"
 
     // edit
     val editor: DiskCache.Editor = context.sketch.downloadCache.edit(diskCacheKey)
     try {
         editor.newOutputStream().use {
-            it.write("http://sample.com/sample.jpeg".toByteArray())
+            it.write("https://example.com/image.jpg".toByteArray())
         }
         editor.commit()
     } catch (e: Exception) {
@@ -134,17 +134,17 @@ However, it is important to obtain the edit lock first and lock it before access
 avoid problems in multi-threading, as follows:
 
 ```kotlin
-val lockKey = "http://sample.com/sample.jpeg"
+val lockKey = "https://example.com/image.jpg"
 val lock = context.sketch.resultCache.editLock(lockKey)
 lock.lock()
 try {
-    val diskCacheKey = "http://sample.com/sample.jpeg"
+    val diskCacheKey = "https://example.com/image.jpg"
 
     // edit
     val editor: DiskCache.Editor = context.sketch.resultCache.edit(diskCacheKey)
     try {
         editor.newOutputStream().use {
-            it.write("http://sample.com/sample.jpeg".toByteArray())
+            it.write("https://example.com/image.jpg".toByteArray())
         }
         editor.commit()
     } catch (e: Exception) {
@@ -211,7 +211,7 @@ You can access the memory cache by getting an instance of the memory cache via
 the `context.sketch.memoryCache` property.
 
 ```kotlin
-val memoryCacheKey = "http://sample.com/sample.jpeg"
+val memoryCacheKey = "https://example.com/image.jpg"
 
 // put
 val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)

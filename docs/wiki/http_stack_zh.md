@@ -1,11 +1,15 @@
 # HttpStack
 
-[//]: # (TODO)
-
 翻译：[English](http_stack.md)
 
-[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher]
-下载图片，默认的实现是 [HurlStack]
+[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher] 下载图片
+
+在 jvm 平台上，[Sketch] 提供了 [HurlStack] 和 [OkHttpStack]
+两种实现，默认使用 [HurlStack]，[OkHttpStack] 需要额外依赖 `sketch-http-okhttp` 模块
+
+在非 jvm 平台上 [Sketch] 只提供了 [KtorStack] 实现，默认使用 [KtorStack]。
+
+你也可以在 jvm 平台上使用 [KtorStack]，这需要额外依赖 `sketch-http-ktor` 模块
 
 ### HurlStack
 
@@ -44,8 +48,8 @@ class MyApplication : Application(), SingletonSketch.Factory {
 
 ### OkHttpStack
 
-Sketch 还提供了 [HttpStack] 的 [OkHttpStack] 实现，使用之前需要先导入 `sketch-okhttp` 模块，然后在初始化
-Sketch 时通过 `httpStack()` 方法注册即可，如下：
+使用 [OkHttpStack] 之前需要先依赖 `sketch-okhttp` 模块，然后在初始化 [Sketch] 时通过 `httpStack()`
+方法注册即可，如下：
 
 ```kotlin
 class MyApplication : Application(), SingletonSketch.Factory {
@@ -79,55 +83,35 @@ class MyApplication : Application(), SingletonSketch.Factory {
 }
 ```
 
-> [!TIP]
-> 由于需要兼容 Android 4.1 所以使用的是较旧的 3.12.0 版本的 OkHttp，如果你的 app
-> 最低版本较高，那么你可以使用较新版本的 OkHttp 自定一个 HttpStack
+### KtorStack
 
-### Android 4.* TLS 1.1, 1.2 支持
-
-Android 4.1 到 4.4 版本支持 TLS 1.1 和 1.2 但是默认没有开启，HurlStack 和 OkHttpStack 开启方式如下：
+在 jvm 平台上使用 [KtorStack] 之前需要先依赖 `sketch-http-ktor` 模块，然后在初始化 [Sketch]
+时通过 `httpStack()` 方法注册即可，如下：
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            httpStack(OkHttpStack.Builder().apply {
-                if (VERSION.SDK_INT <= 19) {
-                    enabledTlsProtocols("TLSv1.1", "TLSv1.2")
-                }
-            }.build())
-
-            // 或
-            httpStack(HurlStack.Builder().apply {
-                if (VERSION.SDK_INT <= 19) {
-                    enabledTlsProtocols("TLSv1.1", "TLSv1.2")
-                }
-            }.build())
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    httpStack(KtorStack())
+}.build()
 ```
 
 ### 自定义
 
-实现 [HttpStack] 接口定义自己的 HttpStack，然后在初始化 Sketch 时通过 `httpStack()` 方法注册即可：
+首先实现 [HttpStack] 接口定义自己的 [HttpStack]，然后在初始化 [Sketch] 时通过 `httpStack()` 方法注册即可：
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
-            httpStack(MyHttpStack())
-        }.build()
-    }
-}
+Sketch.Builder(this).apply {
+    httpStack(MyHttpStack())
+}.build()
 ```
 
-[HttpStack]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HttpStack.kt
+[HttpStack]: ../../sketch-http-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HttpStack.kt
 
-[HurlStack]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
+[HurlStack]: ../../sketch-http-core/src/jvmCommonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
 
-[OkHttpStack]: ../../sketch-okhttp/src/main/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
+[OkHttpStack]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
+
+[KtorStack]: ../../sketch-http-ktor/src/commonMain/kotlin/com/github/panpf/sketch/http/KtorStack.kt
 
 [HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
