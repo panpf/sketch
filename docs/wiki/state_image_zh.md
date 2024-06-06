@@ -4,7 +4,7 @@
 
 翻译：[English](state_image.md)
 
-StateImage 用来为加载中状态和错误状态提供图片，有以下几种实现：
+[StateImage] 用来为加载中状态和错误状态提供图片，有以下几种实现：
 
 * [CurrentStateImage]：使用 ImageView 当前的 drawable 作为状态图片
 * [ColorStateImage]：使用给定的颜色值或颜色资源 Id 创建一个 ColorDrawable 作为状态图片
@@ -16,6 +16,8 @@ StateImage 用来为加载中状态和错误状态提供图片，有以下几种
   作为状态图片，搭配 crossfade 可以实现从小图到大图的完美过渡
 * [ThumbnailMemoryCacheStateImage]：使用给定的或当前请求的 uri 匹配内存缓存中的宽高比和原图一致，并且没有用
   Transformation 修改的缩略图作为状态图片
+* [IconAnimatableStateImage]
+* [PainterStateImage]
 
 ### 配置
 
@@ -61,17 +63,17 @@ import java.io.IOException
 
 object MyCondition : CombinedStateImage.Condition {
 
-  override fun accept(
-    request: ImageRequest,
-    throwable: Throwable?
-  ): Boolean  = throwable is IOException
+    override fun accept(
+        request: ImageRequest,
+        throwable: Throwable?
+    ): Boolean = throwable is IOException
 }
 
 imageView.displayImage("https://example.com/image.jpg")
 {
-  error(R.drawable.error) {
-    addState(MyCondition to DrawableStateImage(R.drawable.uri_empty))
-  }
+    error(R.drawable.error) {
+        addState(MyCondition to DrawableStateImage(R.drawable.uri_empty))
+    }
 }
 ```
 
@@ -112,24 +114,28 @@ imageView.displayImage("https://example.com/image.jpg") {
 
 > 缩略图的标准为宽高比一致并且没有用任何 Transformation 修改的图片
 
-[StateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/StateImage.kt
+[StateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/StateImage.kt
 
-[ColorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ColorStateImage.kt
+[ColorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ColorStateImage.kt
 
-[DrawableStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
+[DrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/DrawableStateImage.kt
 
-[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
+[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ErrorStateImage.kt
 
-[CombinedStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/internal/CombinedStateImage.kt
+[CombinedStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/CombinedStateImage.kt
 
-[IconStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/IconStateImage.kt
+[IconStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/IconStateImage.kt
 
-[MemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
+[IconAnimatableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/IconAnimatableStateImage.kt
 
-[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ThumbnailMemoryCacheStateImage.kt
+[MemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/MemoryCacheStateImage.kt
+
+[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ThumbnailMemoryCacheStateImage.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/CurrentStateImage.kt
+[CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/CurrentStateImage.kt
+
+[PainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/PainterStateImage.kt
