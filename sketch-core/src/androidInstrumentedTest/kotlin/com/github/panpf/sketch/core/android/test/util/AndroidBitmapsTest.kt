@@ -50,7 +50,7 @@ class AndroidBitmapsTest {
         )
 
         Assert.assertEquals(
-            0,
+            if (VERSION.SDK_INT >= VERSION_CODES.O) 0 else 110 * 210 * 2,
             Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565)
                 .apply { recycle() }
                 .allocationByteCountCompat
