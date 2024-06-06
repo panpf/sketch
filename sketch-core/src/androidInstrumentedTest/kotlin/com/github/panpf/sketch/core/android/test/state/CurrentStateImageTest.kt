@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.core.android.test.state
 
+import android.R
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Color
@@ -52,7 +53,7 @@ class CurrentStateImageTest {
             )
         }
 
-        CurrentStateImage(android.R.drawable.btn_default).apply {
+        CurrentStateImage(R.drawable.btn_default).apply {
             Assert.assertTrue(
                 getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable is StateListDrawable
@@ -128,8 +129,8 @@ class CurrentStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = CurrentStateImage(android.R.drawable.btn_default)
-        val element11 = CurrentStateImage(android.R.drawable.btn_default)
+        val element1 = CurrentStateImage(R.drawable.btn_default)
+        val element11 = CurrentStateImage(R.drawable.btn_default)
         val element2 = CurrentStateImage()
 
         Assert.assertNotSame(element1, element11)
@@ -154,7 +155,7 @@ class CurrentStateImageTest {
         CurrentStateImage().apply {
             Assert.assertEquals("CurrentStateImage(null)", toString())
         }
-        CurrentStateImage(android.R.drawable.btn_default).apply {
+        CurrentStateImage(R.drawable.btn_default).apply {
             Assert.assertEquals(
                 "CurrentStateImage(DrawableStateImage(ResDrawable(${android.R.drawable.btn_default})))",
                 toString()

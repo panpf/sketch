@@ -21,14 +21,13 @@ import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.IntColorStateImage
 import com.github.panpf.sketch.state.asStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
-import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -84,10 +83,10 @@ class ErrorStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ErrorStateImage(ColorStateImage(IntColor(Color.RED)))
-        val element11 = ErrorStateImage(ColorStateImage(IntColor(Color.RED)))
-        val element2 = ErrorStateImage(ColorStateImage(IntColor(Color.GREEN)))
-        val element3 = ErrorStateImage(ColorStateImage(IntColor(Color.BLUE)))
+        val element1 = ErrorStateImage(IntColorStateImage(Color.RED))
+        val element11 = ErrorStateImage(IntColorStateImage(Color.RED))
+        val element2 = ErrorStateImage(IntColorStateImage(Color.GREEN))
+        val element3 = ErrorStateImage(IntColorStateImage(Color.BLUE))
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -114,15 +113,15 @@ class ErrorStateImageTest {
 
     @Test
     fun testToString() {
-        ErrorStateImage(ColorStateImage(IntColor(Color.RED))).apply {
+        ErrorStateImage(IntColorStateImage(Color.RED)).apply {
             Assert.assertEquals(
                 "ErrorStateImage([DefaultCondition:ColorStateImage(IntColor(${Color.RED}))])",
                 toString()
             )
         }
 
-        ErrorStateImage(ColorStateImage(IntColor(Color.GREEN))) {
-            uriEmptyError(ColorStateImage(IntColor(Color.YELLOW)))
+        ErrorStateImage(IntColorStateImage(Color.GREEN)) {
+            uriEmptyError(IntColorStateImage(Color.YELLOW))
         }.apply {
             Assert.assertEquals(
                 "ErrorStateImage([UriEmptyCondition:ColorStateImage(IntColor(${Color.YELLOW})), DefaultCondition:ColorStateImage(IntColor(${Color.GREEN}))])",

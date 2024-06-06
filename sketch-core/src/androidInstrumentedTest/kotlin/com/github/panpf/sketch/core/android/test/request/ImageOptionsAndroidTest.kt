@@ -13,12 +13,11 @@ import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.uriEmpty
-import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.IntColorStateImage
 import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
-import com.github.panpf.sketch.util.IntColor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -247,9 +246,9 @@ class ImageOptionsAndroidTest {
                 assertNull(placeholder)
             }
 
-            placeholder(ColorStateImage(IntColor(Color.BLUE)))
+            placeholder(IntColorStateImage(Color.BLUE))
             build().apply {
-                assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholder)
+                assertEquals(IntColorStateImage(Color.BLUE), placeholder)
             }
 
             placeholder(ColorDrawableEqualizer(Color.GREEN))
@@ -279,9 +278,9 @@ class ImageOptionsAndroidTest {
                 assertNull(uriEmpty)
             }
 
-            uriEmpty(ColorStateImage(IntColor(Color.BLUE)))
+            uriEmpty(IntColorStateImage(Color.BLUE))
             build().apply {
-                assertEquals(ColorStateImage(IntColor(Color.BLUE)), uriEmpty)
+                assertEquals(IntColorStateImage(Color.BLUE), uriEmpty)
             }
 
             uriEmpty(ColorDrawableEqualizer(Color.GREEN))
@@ -311,10 +310,10 @@ class ImageOptionsAndroidTest {
                 assertNull(error)
             }
 
-            error(ColorStateImage(IntColor(Color.BLUE)))
+            error(IntColorStateImage(Color.BLUE))
             build().apply {
                 assertEquals(
-                    ErrorStateImage(ColorStateImage(IntColor(Color.BLUE))),
+                    ErrorStateImage(IntColorStateImage(Color.BLUE)),
                     error
                 )
             }

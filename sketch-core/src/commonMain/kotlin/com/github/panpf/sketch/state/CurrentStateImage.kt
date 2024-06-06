@@ -15,32 +15,16 @@
  */
 package com.github.panpf.sketch.state
 
-import android.graphics.drawable.Drawable
-import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.DrawableEqualizer
-
-fun CurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
-    CurrentStateImageImpl(defaultImage)
-
-fun CurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =
-    CurrentStateImageImpl(DrawableStateImage(defaultDrawable))
-
-fun CurrentStateImage(@DrawableRes defaultDrawableRes: Int): CurrentStateImage =
-    CurrentStateImageImpl(DrawableStateImage(defaultDrawableRes))
 
 /**
- * Use current [Drawable] as the state [Drawable]
+ * Use current [Image] as the state [Image]
  */
-interface CurrentStateImage : StateImage {
-    val defaultImage: StateImage?
-}
-
-private class CurrentStateImageImpl(
-    override val defaultImage: StateImage? = null
-) : CurrentStateImage {
+class CurrentStateImage(
+    val defaultImage: StateImage? = null
+) : StateImage {
 
     override val key: String = "CurrentStateImage(${defaultImage?.key})"
 
@@ -48,7 +32,14 @@ private class CurrentStateImageImpl(
         sketch: Sketch,
         request: ImageRequest,
         throwable: Throwable?
-    ): Image? = request.target?.currentImage ?: defaultImage?.getImage(sketch, request, throwable)
+    ): Image? {
+        val currentImage = request.target?.currentImage
+        if (currentImage != null) {
+            return currentImage
+        }
+        val image = defaultImage?.getImage(sketch, request, throwable)
+        return image
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

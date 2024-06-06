@@ -15,7 +15,7 @@ fun ErrorStateImage.Builder.uriEmptyError(emptyDrawable: DrawableEqualizer): Err
 /**
  * Add a StateImage dedicated to the empty uri error
  */
-fun ErrorStateImage.Builder.uriEmptyError(emptyImageResId: Int): ErrorStateImage.Builder =
+fun ErrorStateImage.Builder.uriEmptyError(emptyResId: Int): ErrorStateImage.Builder =
     apply {
-        addState(UriEmptyCondition to DrawableStateImage(emptyImageResId))
+        addState(UriEmptyCondition to DrawableStateImage(emptyResId))
     }

@@ -28,24 +28,18 @@ import com.github.panpf.sketch.util.ResDrawable
 
 fun DrawableEqualizer.asStateImage(): DrawableStateImage = DrawableStateImage(this)
 
-fun DrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
-    DrawableStateImageImpl(RealEqualityDrawable(drawable))
-
-fun DrawableStateImage(@DrawableRes drawableRes: Int): DrawableStateImage =
-    DrawableStateImageImpl(ResDrawable(drawableRes))
-
 /**
  * Use [Drawable] as the state [Drawable]
  */
-interface DrawableStateImage : StateImage {
+class DrawableStateImage(
     val drawableFetcher: DrawableFetcher
-}
-
-private class DrawableStateImageImpl(
-    override val drawableFetcher: DrawableFetcher
-) : DrawableStateImage {
+) : StateImage {
 
     override val key: String = "DrawableStateImage(${drawableFetcher.key})"
+
+    constructor(drawable: DrawableEqualizer) : this(RealEqualityDrawable(drawable))
+
+    constructor(@DrawableRes drawableRes: Int) : this(ResDrawable(drawableRes))
 
     override fun getImage(
         sketch: Sketch,

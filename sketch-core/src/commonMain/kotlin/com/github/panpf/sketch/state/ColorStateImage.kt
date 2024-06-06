@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,34 @@
  */
 package com.github.panpf.sketch.state
 
-import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.PainterEqualizer
+import com.github.panpf.sketch.state.internal.ImageGenerator
 
-@Stable
-class PainterStateImage(val painter: PainterEqualizer) : StateImage {
+class ColorStateImage(val generator: ImageGenerator) : StateImage {
 
-    override val key: String = "PainterStateImage(${painter.key})"
+    override val key: String = "ColorStateImage(${generator.key})"
 
-    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
-        return painter.wrapped.asSketchImage()
+    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
+        val image = generator.getImage(sketch, request, throwable)
+        return image
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is PainterStateImage) return false
-        return painter == other.painter
+        if (other !is ColorStateImage) return false
+        if (generator != other.generator) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return painter.hashCode()
+        return generator.hashCode()
     }
 
     override fun toString(): String {
-        return "PainterStateImage(painter=$painter)"
+        return "ColorStateImage($generator)"
     }
+
+    companion object
 }

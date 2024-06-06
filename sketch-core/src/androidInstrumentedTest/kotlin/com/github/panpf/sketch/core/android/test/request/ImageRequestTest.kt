@@ -76,12 +76,13 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
-import com.github.panpf.sketch.state.ColorStateImage
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.IntColorStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
+import com.github.panpf.sketch.state.ResColorStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.target.ImageViewTarget
@@ -98,13 +99,11 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getEqualityDrawableCompat
 import kotlinx.coroutines.runBlocking
@@ -1122,9 +1121,9 @@ class ImageRequestTest {
                 Assert.assertNull(placeholder)
             }
 
-            placeholder(ColorStateImage(IntColor(Color.BLUE)))
+            placeholder(IntColorStateImage(Color.BLUE))
             build().apply {
-                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), placeholder)
+                Assert.assertEquals(IntColorStateImage(Color.BLUE), placeholder)
             }
 
             placeholder(ColorDrawableEqualizer(Color.GREEN))
@@ -1156,9 +1155,9 @@ class ImageRequestTest {
                 Assert.assertNull(uriEmpty)
             }
 
-            uriEmpty(ColorStateImage(IntColor(Color.BLUE)))
+            uriEmpty(IntColorStateImage(Color.BLUE))
             build().apply {
-                Assert.assertEquals(ColorStateImage(IntColor(Color.BLUE)), uriEmpty)
+                Assert.assertEquals(IntColorStateImage(Color.BLUE), uriEmpty)
             }
 
             uriEmpty(ColorDrawableEqualizer(Color.GREEN))
@@ -1190,10 +1189,10 @@ class ImageRequestTest {
                 Assert.assertNull(error)
             }
 
-            error(ColorStateImage(IntColor(Color.BLUE)))
+            error(IntColorStateImage(Color.BLUE))
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(ColorStateImage(IntColor(Color.BLUE))),
+                    ErrorStateImage(IntColorStateImage(Color.BLUE)),
                     error
                 )
             }
@@ -1373,19 +1372,31 @@ class ImageRequestTest {
         ImageRequest(imageView, uri) {
             registerListener(listener1)
         }.apply {
-            Assert.assertEquals(PairListener(first = listener1, second = imageView.myListener), listener)
+            Assert.assertEquals(
+                PairListener(first = listener1, second = imageView.myListener),
+                listener
+            )
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
         ImageRequest(imageView, uri) {
             registerListener(listener1)
             registerListener(listener2)
         }.apply {
-            Assert.assertEquals(PairListener(first = Listeners(listOf(listener1, listener2)), second = imageView.myListener), listener)
+            Assert.assertEquals(
+                PairListener(
+                    first = Listeners(listOf(listener1, listener2)),
+                    second = imageView.myListener
+                ), listener
+            )
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
 
         ImageRequest(context1, uri) {
-            registerListener(onStart = {}, onCancel = {}, onError = { _, _ -> }, onSuccess = { _, _ -> })
+            registerListener(
+                onStart = {},
+                onCancel = {},
+                onError = { _, _ -> },
+                onSuccess = { _, _ -> })
         }.apply {
             Assert.assertTrue(listener is Listener)
             Assert.assertNull(target)
@@ -1425,9 +1436,9 @@ class ImageRequestTest {
             Assert.assertNull(target)
         }
 
-        val listener1 = ProgressListener {_, _, ->}
-        val listener2 = ProgressListener {_, _, ->}
-        val listener3 = ProgressListener {_, _, ->}
+        val listener1 = ProgressListener { _, _ -> }
+        val listener2 = ProgressListener { _, _ -> }
+        val listener3 = ProgressListener { _, _ -> }
 
         ImageRequest(context1, uri) {
             registerProgressListener(listener1)
@@ -1447,7 +1458,10 @@ class ImageRequestTest {
             registerProgressListener(listener2)
             registerProgressListener(listener3)
         }.apply {
-            Assert.assertEquals(ProgressListeners(listOf(listener1, listener2, listener3)), progressListener)
+            Assert.assertEquals(
+                ProgressListeners(listOf(listener1, listener2, listener3)),
+                progressListener
+            )
             Assert.assertNull(target)
         }
         ImageRequest(context1, uri) {
@@ -1479,14 +1493,28 @@ class ImageRequestTest {
         ImageRequest(imageView, uri) {
             registerProgressListener(listener1)
         }.apply {
-            Assert.assertEquals(PairProgressListener(first = listener1, second = imageView.myProgressListener), progressListener)
+            Assert.assertEquals(
+                PairProgressListener(
+                    first = listener1,
+                    second = imageView.myProgressListener
+                ), progressListener
+            )
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
         ImageRequest(imageView, uri) {
             registerProgressListener(listener1)
             registerProgressListener(listener2)
         }.apply {
-            Assert.assertEquals(PairProgressListener(first = ProgressListeners(listOf(listener1, listener2)), second = imageView.myProgressListener), progressListener)
+            Assert.assertEquals(
+                PairProgressListener(
+                    first = ProgressListeners(
+                        listOf(
+                            listener1,
+                            listener2
+                        )
+                    ), second = imageView.myProgressListener
+                ), progressListener
+            )
             Assert.assertEquals(ImageViewTarget(imageView), target)
         }
     }
@@ -1554,7 +1582,7 @@ class ImageRequestTest {
                 registerProgressListener() { _, _ -> }
             },
             ScopeAction {
-                defaultOptions(ImageOptions(){
+                defaultOptions(ImageOptions() {
                     size(100, 100)
                 })
             },
@@ -1617,10 +1645,10 @@ class ImageRequestTest {
                 )
             },
             ScopeAction {
-                placeholder(ColorStateImage(IntColor(Color.BLUE)))
+                placeholder(IntColorStateImage(Color.BLUE))
             },
             ScopeAction {
-                placeholder(ColorStateImage(ResColor(color.background_dark)))
+                placeholder(ResColorStateImage(color.background_dark))
             },
             ScopeAction {
                 val drawable = context.resources.getEqualityDrawableCompat(drawable.ic_delete, null)
@@ -1633,24 +1661,29 @@ class ImageRequestTest {
                 placeholder(CurrentStateImage(drawable.ic_delete))
             },
             ScopeAction {
-                placeholder(MemoryCacheStateImage("uri", ColorStateImage(IntColor(Color.BLUE))))
+                placeholder(MemoryCacheStateImage("uri", IntColorStateImage(Color.BLUE)))
             },
             ScopeAction {
-                placeholder(ThumbnailMemoryCacheStateImage("uri", ColorStateImage(IntColor(Color.BLUE))))
+                placeholder(ThumbnailMemoryCacheStateImage("uri", IntColorStateImage(Color.BLUE)))
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete))
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete)) {
-                    uriEmptyError(ColorStateImage(IntColor(Color.BLUE)))
+                    uriEmptyError(IntColorStateImage(Color.BLUE))
                 }
             },
             ScopeAction {
                 transitionFactory(ViewCrossfadeTransition.Factory())
             },
             ScopeAction {
-                transitionFactory(ViewCrossfadeTransition.Factory(fadeStart = false, alwaysUse = true))
+                transitionFactory(
+                    ViewCrossfadeTransition.Factory(
+                        fadeStart = false,
+                        alwaysUse = true
+                    )
+                )
             },
             ScopeAction {
                 disallowAnimatedImage(true)

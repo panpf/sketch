@@ -14,30 +14,13 @@ import kotlin.math.abs
  * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
  * @param uri The uri of the image, if null use ImageRequest.uri
  */
-fun ThumbnailMemoryCacheStateImage(
-    uri: String? = null,
-    defaultImage: StateImage? = null
-): ThumbnailMemoryCacheStateImage = ThumbnailMemoryCacheStateImageImpl(uri, defaultImage)
-
-/**
- * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
- */
-interface ThumbnailMemoryCacheStateImage : StateImage {
-    val uri: String?
-    val defaultImage: StateImage?
-}
-
-/**
- * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
- * @param uri The uri of the image, if null use ImageRequest.uri
- */
-private class ThumbnailMemoryCacheStateImageImpl(
-    override val uri: String? = null,
-    override val defaultImage: StateImage? = null
-) : ThumbnailMemoryCacheStateImage {
+class ThumbnailMemoryCacheStateImage(
+    val uri: String? = null,
+    val defaultImage: StateImage? = null
+) : StateImage {
 
     override val key: String =
-        "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=${defaultImage?.key})"
+        "ThumbnailMemoryCacheStateImage(uri='$uri',defaultImage=${defaultImage?.key})"
 
     override fun getImage(
         sketch: Sketch,
@@ -102,6 +85,6 @@ private class ThumbnailMemoryCacheStateImageImpl(
     }
 
     override fun toString(): String {
-        return "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=$defaultImage)"
+        return "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=$defaultImage)"
     }
 }

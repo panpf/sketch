@@ -32,53 +32,9 @@ fun ErrorStateImage(
 /**
  * Provide Drawable specifically for error status, support custom [CombinedStateImage.Condition] Provide different Drawable according to different error types
  */
-interface ErrorStateImage : CombinedStateImage {
-
-    class Builder constructor(private val defaultImage: StateImage?) {
-
-        private val stateList = mutableListOf<Pair<CombinedStateImage.Condition, StateImage?>>()
-
-        /**
-         * Add a custom state
-         */
-        fun addState(pair: Pair<CombinedStateImage.Condition, StateImage?>): Builder = apply {
-            stateList.add(pair)
-        }
-
-        /**
-         * Add a StateImage dedicated to the empty uri error
-         */
-        fun uriEmptyError(emptyImage: StateImage): Builder = apply {
-            addState(UriEmptyCondition to emptyImage)
-        }
-
-        fun build(): ErrorStateImage {
-            val list = if (defaultImage != null) {
-                stateList.plus(DefaultCondition to defaultImage)
-            } else {
-                stateList
-            }
-            return ErrorStateImageImpl(list)
-        }
-    }
-
-    data object DefaultCondition : CombinedStateImage.Condition {
-
-        override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
-
-    }
-
-    data object UriEmptyCondition : CombinedStateImage.Condition {
-
-        override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
-            throwable is UriInvalidException && (request.uri.isEmpty() || request.uri.isBlank())
-
-    }
-}
-
-private class ErrorStateImageImpl(
+class ErrorStateImage(
     override val stateList: List<Pair<CombinedStateImage.Condition, StateImage?>>
-) : ErrorStateImage {
+) : CombinedStateImage {
     override val key: String =
         "ErrorStateImage(${
             stateList.joinToString(
@@ -107,5 +63,46 @@ private class ErrorStateImageImpl(
                 separator = ", ",
                 transform = { it.first.toString() + ":" + it.second?.key })
         })"
+    }
+
+    class Builder constructor(private val defaultImage: StateImage?) {
+
+        private val stateList = mutableListOf<Pair<CombinedStateImage.Condition, StateImage?>>()
+
+        /**
+         * Add a custom state
+         */
+        fun addState(pair: Pair<CombinedStateImage.Condition, StateImage?>): Builder = apply {
+            stateList.add(pair)
+        }
+
+        /**
+         * Add a StateImage dedicated to the empty uri error
+         */
+        fun uriEmptyError(emptyImage: StateImage): Builder = apply {
+            addState(UriEmptyCondition to emptyImage)
+        }
+
+        fun build(): ErrorStateImage {
+            val list = if (defaultImage != null) {
+                stateList.plus(DefaultCondition to defaultImage)
+            } else {
+                stateList
+            }
+            return ErrorStateImage(list)
+        }
+    }
+
+    data object DefaultCondition : CombinedStateImage.Condition {
+
+        override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
+
+    }
+
+    data object UriEmptyCondition : CombinedStateImage.Condition {
+
+        override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
+            throwable is UriInvalidException && (request.uri.isEmpty() || request.uri.isBlank())
+
     }
 }
