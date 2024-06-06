@@ -5,17 +5,17 @@
 > [!IMPORTANT]
 > 必须导入 `sketch-animated` 或 `sketch-animated-koralgif` 模块
 
-[Sketch] 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [Decoder] 提供支持，如下：
+[Sketch] 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [Decoder] 提供支持，他们所支持的平台以及差异如下：
 
-| Format        | Decoder                   | Android   | iOS | Desktop | Web | Additional Module        |
-|:--------------|:--------------------------|:----------|:----|:--------|:----|:-------------------------|
-| GIF           | [GifAnimatedDecoder]      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
-| GIF           | [GifMovieDecoder]         | ✅         | ❌   | ❌       | ❌   | sketch-animated          |
-| GIF           | [GifDrawableDecoder]      | ✅         | ❌   | ❌       | ❌   | sketch-animated-koralgif |
-| GIF           | [GifSkiaAnimatedDecoder]  | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
-| WEBP Animated | [WebpAnimatedDecoder]     | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
-| WEBP Animated | [WebpSkiaAnimatedDecoder] | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
-| HEIF Animated | [HeifAnimatedDecoder]     | ✅(API 30) | ❌   | ❌       | ❌   | sketch-animated          |
+| Format        | Decoder                   | resize | Android   | iOS | Desktop | Web | Dependent modules        |
+|:--------------|:--------------------------|--------|:----------|:----|:--------|:----|:-------------------------|
+| GIF           | [GifAnimatedDecoder]      | ✅      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
+| GIF           | [GifMovieDecoder]         | ❌      | ✅         | ❌   | ❌       | ❌   | sketch-animated          |
+| GIF           | [GifDrawableDecoder]      | ✅      | ✅         | ❌   | ❌       | ❌   | sketch-animated-koralgif |
+| GIF           | [GifSkiaAnimatedDecoder]  | ❌      | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
+| WEBP Animated | [WebpAnimatedDecoder]     | ✅      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
+| WEBP Animated | [WebpSkiaAnimatedDecoder] | ❌      | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
+| HEIF Animated | [HeifAnimatedDecoder]     | ✅      | ✅(API 30) | ❌   | ❌       | ❌   | sketch-animated          |
 
 > [!TIP]
 > 在 Android 上为 GIF 提供了三种 [Decoder] 可供选择，你可以根据 app

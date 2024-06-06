@@ -4,22 +4,57 @@ Translations: [简体中文](fetcher_zh.md)
 
 [Fetcher] is used to get data from uri, return [FetchResult], and hand it over to [Decoder] for use.
 
-Sketch has a corresponding [Fetcher] implementation for each uri supported, and there are the
-following types:
+Each uri supported by [Sketch] has a corresponding [Fetcher] implementation, as shown in the
+following table:
 
-* [AssetUriFetcher][AssetUriFetcher]: Load images from the app’s assets directory
-* [Base64UriFetcher][Base64UriFetcher]: Load an image in base 64 format from the uri itself
-* [ContentUriFetcher][ContentUriFetcher]: Load images from ContentResolver
-* [FileUriFetcher][FileUriFetcher]: Load images from local files
-* [HttpUriFetcher][HttpUriFetcher]: Load image from http uri
-* [ResourceUriFetcher][ResourceUriFetcher]: Load images from Android Resource
-* [AppIconUriFetcher][AppIconUriFetcher]: Load the icon from the installed
-  app, [Learn more](apk_app_icon.md#displays-an-icon-for-the-installed-app)
+| URI                    | Fetcher                     | Create                  | Dependent modules      | Android | iOS | Desktop | Web |
+|:-----------------------|-----------------------------|-------------------------|------------------------|---------|:----|:--------|:----|
+| http://, https://      | [HttpUriFetcher]            | -                       | -                      | ✅       | ✅   | ✅       | ✅   |
+| /, file://             | [FileUriFetcher]            | newFileUri()            | -                      | ✅       | ✅   | ✅       | ✅   |
+| compose.resource://    | [ComposeResourceUriFetcher] | newComposeResourceUri() | -                      | ✅       | ✅   | ✅       | ✅   |
+| data:image/, data:img/ | [Base64UriFetcher]          | newBase64Uri()          | -                      | ✅       | ✅   | ✅       | ✅   |
+| asset://               | [AssetUriFetcher]           | newAssetUri()           | -                      | ✅       | ❌   | ❌       | ❌   |
+| content://             | [ContentUriFetcher]         | -                       | -                      | ✅       | ❌   | ❌       | ❌   |
+| android.resource://    | [ResourceUriFetcher]        | newResourceUri()        | -                      | ✅       | ❌   | ❌       | ❌   |
+| app.icon://            | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core | ✅       | ❌   | ❌       | ❌   |
+| kotlin.resource://     | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                      | ❌       | ✅   | ✅       | ❌   |
+
+> [!TIP]
+> * [AssetUriFetcher] is used to load images from the Android assets directory
+> * [ContentUriFetcher] ContentResolver for Android to load images
+> * [ResourceUriFetcher] is used to load images from Android's resources directory
+> * [AppIconUriFetcher] is used to load the icon of the installed App. It also needs to rely
+    on `sketch-extensions-core`
+    module. [Learn more](apk_app_icon.md#load-the-icon-of-the-installed-app)
+> * [Base64UriFetcher] is used to load images from the base64 data block of the uri itself
+> * [ComposeResourceUriFetcher] is used to load images from the composeResources directory of
+    Compose Multiplatform
+> * [KotlinResourceUriFetcher] is used to load images from the resources directory of kotlin
+
+## Register Fetcher
+
+[Fetcher] that needs to rely on a separate module (such as [AppIconUriFetcher]) needs to be
+registered when initializing Sketch, as follows:
+
+```kotlin
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(context).apply {
+    components {
+        addFetcher(AppIconUriFetcher.Factory())
+    }
+}.build()
+
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "https://www.example.com/image.gif") {
+    components {
+        addFetcher(AppIconUriFetcher.Factory())
+    }
+}
+```
 
 ### Extend Fetcher
 
-First you need to implement the [Fetcher] interface to define your [Fetcher] and its Factory, as
-follows:
+First implement the [Fetcher] interface to define your Fetcher and its Factory, and then register it through the addFetcher() method, as follows:
 
 ```kotlin
 class MyFetcher : Fetcher {
@@ -35,7 +70,7 @@ class MyFetcher : Fetcher {
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): MyFetcher? {
-          return if (request.uri.startWith("$MY_SCHEME://")) {
+            return if (request.uri.startWith("$MY_SCHEME://")) {
                 MyFetcher()
             } else {
                 null
@@ -43,25 +78,16 @@ class MyFetcher : Fetcher {
         }
     }
 }
-```
 
-Then register through the addFetcher method, as follows:
-
-```kotlin
-/* Register for all ImageRequests */
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(context).apply {
-            components {
-                addFetcher(MyFetcher.Factory())
-            }
-        }.build()
+// Register for all ImageRequests when customizing Sketch
+Sketch.Builder(context).apply {
+    components {
+        addFetcher(MyFetcher.Factory())
     }
-}
+}.build()
 
-/* Register for a single ImageRequest */
-imageView.displayImage(context, "myUri://sample.jpeg") {
+// Register for a single ImageRequest when loading an image
+ImageRequest(context, "myUri://sample.jpeg") {
     components {
         addFetcher(MyFetcher.Factory())
     }
@@ -69,6 +95,8 @@ imageView.displayImage(context, "myUri://sample.jpeg") {
 ```
 
 [comment]: <> (classs)
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -78,16 +106,20 @@ imageView.displayImage(context, "myUri://sample.jpeg") {
 
 [FetchResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/FetchResult.kt
 
-[AssetUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/AssetUriFetcher.kt
+[AssetUriFetcher]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/fetch/AssetUriFetcher.kt
 
 [Base64UriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/Base64UriFetcher.kt
 
-[ContentUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ContentUriFetcher.kt
+[ContentUriFetcher]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/fetch/ContentUriFetcher.kt
 
 [FileUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/FileUriFetcher.kt
 
 [HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
 
-[ResourceUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ResourceUriFetcher.kt
+[ResourceUriFetcher]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/fetch/ResourceUriFetcher.kt
 
-[AppIconUriFetcher]: ../../sketch-extensions-core/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
+[AppIconUriFetcher]: ../../sketch-extensions-core/src/androidMain/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
+
+[KotlinResourceUriFetcher]: ../../sketch-core/src/desktopMain/kotlin/com/github/panpf/sketch/fetch/KotlinResourceUriFetcher.kt
+
+[ComposeResourceUriFetcher]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ComposeResourceUriFetcher.kt

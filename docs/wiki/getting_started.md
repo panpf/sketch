@@ -102,8 +102,7 @@ component is destroyed.
 | Video frames  | sketch-video<br>sketch-video-ffmpeg         |
 | Apk icon      | sketch-extensions-core                      |
 
-Each image type has a corresponding Decoder support for
-it, [see more about Decoder and how to extend new image types][decode]
+Each image type has a corresponding Decoder support for it, [Learn more about Decoder][decode]
 
 ## Supported URIs
 
@@ -122,8 +121,7 @@ resources, as follows:
 | kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                      |
 | app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core |
 
-Each URI has its own Fetcher to support
-it, [see more about Fetcher and how to extend new URIs][fetcher]
+Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 
 ## Platform differences
 

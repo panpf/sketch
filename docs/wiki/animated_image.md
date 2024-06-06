@@ -6,17 +6,18 @@ Translations: [简体中文](animated_image_zh.md)
 > Required import `sketch-animated` or `sketch-animated-koralgif` module
 
 [Sketch] supports playing GIF, WEBP, and HEIF animations. Each animation has a
-corresponding [Decoder] to provide support, as follows:
+corresponding [Decoder] to provide support, the platforms they support and their differences are as
+follows:
 
-| Format        | Decoder                   | Android   | iOS | Desktop | Web | Additional Module        |
-|:--------------|:--------------------------|:----------|:----|:--------|:----|:-------------------------|
-| GIF           | [GifAnimatedDecoder]      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
-| GIF           | [GifMovieDecoder]         | ✅         | ❌   | ❌       | ❌   | sketch-animated          |
-| GIF           | [GifDrawableDecoder]      | ✅         | ❌   | ❌       | ❌   | sketch-animated-koralgif |
-| GIF           | [GifSkiaAnimatedDecoder]  | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
-| WEBP Animated | [WebpAnimatedDecoder]     | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
-| WEBP Animated | [WebpSkiaAnimatedDecoder] | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
-| HEIF Animated | [HeifAnimatedDecoder]     | ✅(API 30) | ❌   | ❌       | ❌   | sketch-animated          |
+| Format        | Decoder                   | resize | Android   | iOS | Desktop | Web | Dependent modules        |
+|:--------------|:--------------------------|--------|:----------|:----|:--------|:----|:-------------------------|
+| GIF           | [GifAnimatedDecoder]      | ✅      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
+| GIF           | [GifMovieDecoder]         | ❌      | ✅         | ❌   | ❌       | ❌   | sketch-animated          |
+| GIF           | [GifDrawableDecoder]      | ✅      | ✅         | ❌   | ❌       | ❌   | sketch-animated-koralgif |
+| GIF           | [GifSkiaAnimatedDecoder]  | ❌      | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
+| WEBP Animated | [WebpAnimatedDecoder]     | ✅      | ✅(API 28) | ❌   | ❌       | ❌   | sketch-animated          |
+| WEBP Animated | [WebpSkiaAnimatedDecoder] | ❌      | ❌         | ✅   | ✅       | ✅   | sketch-animated          |
+| HEIF Animated | [HeifAnimatedDecoder]     | ✅      | ✅(API 30) | ❌   | ❌       | ❌   | sketch-animated          |
 
 > [!TIP]
 > There are three [Decoder] options for GIF on Android. You can choose the appropriate [Decoder]
