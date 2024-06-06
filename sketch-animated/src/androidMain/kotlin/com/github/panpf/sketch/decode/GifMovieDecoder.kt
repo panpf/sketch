@@ -81,6 +81,8 @@ class GifMovieDecoder(
 
             // Set the animated transformation to be applied on each frame.
             setAnimatedTransformation(request.animatedTransformation)
+
+            // TODO not support resize
         }
 
         val imageInfo = ImageInfo(
