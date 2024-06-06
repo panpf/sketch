@@ -56,7 +56,7 @@ class MyFetcher : Fetcher {
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             components {
                 addFetcher(MyFetcher.Factory())
             }

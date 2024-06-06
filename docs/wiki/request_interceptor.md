@@ -37,7 +37,7 @@ Then register your RequestInterceptor as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
   components {
       addRequestInterceptor(MyRequestInterceptor())
   }

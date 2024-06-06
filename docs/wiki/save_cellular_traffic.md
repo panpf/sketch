@@ -15,7 +15,7 @@ First register the [SaveCellularTrafficRequestInterceptor] request interceptor, 
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
     }

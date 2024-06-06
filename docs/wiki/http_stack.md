@@ -23,7 +23,7 @@ the `sketch-http-ktor` module
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             httpStack(HurlStack.Builder().apply {
                 // Connection timed out. Default 7000
                 connectTimeout(Int)
@@ -59,7 +59,7 @@ pass `httpStack()` when initializing [Sketch] The method to register is as follo
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             httpStack(OkHttpStack.Builder().apply {
                 // Connection timed out. Default 7000
                 connectTimeout(Int)
@@ -93,7 +93,7 @@ Before using [KtorStack] on the jvm platform, you need to rely on the `sketch-ht
 then initialize [Sketch] You can register through the `httpStack()` method, as follows:
 
 ```kotlin
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     httpStack(KtorStack())
 }.build()
 ```
@@ -104,7 +104,7 @@ First implement the [HttpStack] interface to define your own [HttpStack], and th
 through the `httpStack()` method when initializing [Sketch]:
 
 ```kotlin
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     httpStack(MyHttpStack())
 }.build()
 ```

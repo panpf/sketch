@@ -1,251 +1,119 @@
-# Cache
+# Memory Cache
 
 Translations: [简体中文](memory_cache_zh.md)
 
-Sketch introduces download cache, result cache, and memory cache to improve the loading speed
-of images
-
-## Download cache
-
-The download cache is used to store images on disk persistently to avoid duplicate downloads.
-
-The download cache is served by the [DiskCache] component, and the default implementation
-is [LruDiskCache]:
-
-* Purge old caches based on the principle of least use
-* The default maximum size is 300MB
-* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/download`,
-  and in order to be multi-process-compatible, Sketch is used in a non-primary process
-  When cache the directory name, the process name is appended, e.g. "download:push"
-
-> You can do this by initializing Sketch via [LruDiskCache].ForDownloadBuilder creates and modifies
-> the maximum capacity or cache directory, and then registers it via the downloadCache() method
-
-#### Configure the download cache
-
-Download cache is enabled by default, and you can control the download cache via the
-downloadCachePolicy property of [ImageRequest] or [ImageOptions]:
-
-```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    // Disable
-    downloadCachePolicy(CachePolicy.DISABLED)
-    // Read Only
-    downloadCachePolicy(CachePolicy.READ_ONLY)
-    // Write Only
-    downloadCachePolicy(CachePolicy.WRITE_ONLY)
-}
-```
-
-#### Access the download cache
-
-You can access the download cache by getting an instance of the download cache via
-the `context.sketch.downloadCache` property.
-
-However, it is important to obtain the edit lock first and lock it before accessing it, so as to
-avoid problems in multi-threading, as follows:
-
-```kotlin
-val lockKey = "https://example.com/image.jpg"
-val lock = context.sketch.downloadCache.editLock(lockKey)
-lock.lock()
-try {
-    val diskCacheKey = "https://example.com/image.jpg"
-
-    // edit
-    val editor: DiskCache.Editor = context.sketch.downloadCache.edit(diskCacheKey)
-    try {
-        editor.newOutputStream().use {
-            it.write("https://example.com/image.jpg".toByteArray())
-        }
-        editor.commit()
-    } catch (e: Exception) {
-        editor.abort()
-    }
-
-    // get
-    val snapshot: Snapshot? = context.sketch.downloadCache.get(diskCacheKey)
-    snapshot?.newInputStream().use {
-        it.readBytes()
-    }
-
-    // exist
-    val exist: Boolean = context.sketch.downloadCache.exist(diskCacheKey)
-} finally {
-    lock.unlock()
-}
-```
-
-For more available methods, please refer to [DiskCache]
-
-#### Free the download cache
-
-The download cache is released in the following situations:
-
-* Actively call the `remove()`, `clear()` methods of DiskCache
-* Proactively call the `abort()` method of DiskCache.Editor
-* The `remove()` method of DiskCache.Snapshot is actively called
-* Older caches are automatically freed when maximum capacity is reached
-
-## Result cache
-
-The result cache is used to store the converted images on disk durably, avoiding repeated
-conversions and improving loading speed.
-
-The resulting cache is served by the [DiskCache] component, and the default implementation
-is [LruDiskCache]:
-
-* Purge old caches based on the principle of least use
-* The default maximum size is 200MB
-* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/result`, and
-  in order to be compatible with multiple processes, it should be used in non-primary processes
-  When cache Sketch, the process name is appended to the directory name, e.g. "result:push"
-
-> You can do this by initializing Sketch via [LruDiskCache]. ForResultBuilder creates and modifies
-> the maximum capacity or cache directory, and then registers it via the resultCache() method
-
-Sketch caches the Bitmap to the disk cache in the following situations:
-
-* The resize is not null and the decoded bitmap is not the same size as the original image
-* After Transformation transformation
-
-#### Configure the result cache
-
-Result cache is enabled by default, and you can control the bitmap result cache via the
-resultCachePolicy property of [ImageRequest] or [ImageOptions]:
-
-```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    // Disable
-    resultCachePolicy(CachePolicy.DISABLED)
-    // Read Only
-    resultCachePolicy(CachePolicy.READ_ONLY)
-    // Write Only
-    resultCachePolicy(CachePolicy.WRITE_ONLY)
-}
-```
-
-#### Access the result cache
-
-You can access the results cache by getting the result cache instance via
-the `context.sketch.resultCache` property.
-
-However, it is important to obtain the edit lock first and lock it before accessing it, so as to
-avoid problems in multi-threading, as follows:
-
-```kotlin
-val lockKey = "https://example.com/image.jpg"
-val lock = context.sketch.resultCache.editLock(lockKey)
-lock.lock()
-try {
-    val diskCacheKey = "https://example.com/image.jpg"
-
-    // edit
-    val editor: DiskCache.Editor = context.sketch.resultCache.edit(diskCacheKey)
-    try {
-        editor.newOutputStream().use {
-            it.write("https://example.com/image.jpg".toByteArray())
-        }
-        editor.commit()
-    } catch (e: Exception) {
-        editor.abort()
-    }
-
-    // get
-    val snapshot: Snapshot? = context.sketch.resultCache.get(diskCacheKey)
-    snapshot?.newInputStream().use {
-        it.readBytes()
-    }
-
-    // exist
-    val exist: Boolean = context.sketch.resultCache.exist(diskCacheKey)
-} finally {
-    lock.unlock()
-}
-```
-
-For more available methods, please refer to [DiskCache]
-
-#### Free the result cache
-
-The result cache is released in the following situations:
-
-* Actively call the `remove()` and `clear()` methods of DiskCache
-* Actively call the `abort()` method of DiskCache.Editor
-* Actively call the `remove()` method of DiskCache.Snapshot
-* Automatically frees older caches when the maximum capacity is reached
-
-## Memory cache
-
-Memory cache is used to cache bitmaps in memory to avoid reloading images.
+In order to avoid repeated loading of images and improve the loading speed of images, Sketch
+introduces memory caching. [MemoryCacheRequestInterceptor] will cache the loaded Image in the memory
+and read it directly from the memory next time to skip the loading process.
 
 The memory cache is served by the [MemoryCache] component, and the default implementation
 is [LruMemoryCache]:
 
-* Release old Bitmaps according to the principle of least use
-* Maximum capacity is two-thirds of the lesser of 6 screen sizes and one-third of the maximum
-  available memory
+* Release the old Bitmap based on the least used principle
+* Maximum capacity is 25% to 33% of maximum available memory on Android and 15% of maximum available
+  memory on non-Android
 
-> You can create a [LruMemoryCache] when initializing Sketch and modify the maximum capacity, and
-> then register it via the memoryCache() method
+## Customize
 
-#### Configure the memory cache
+You can customize the implementation or configuration of the memory cache through the memoryCache()
+method of [Sketch].Builder when initializing [Sketch], as follows:
 
-Memory cache is enabled by default, and you can control the bitmap memory cache via the
-memoryCachePolicy property of [ImageRequest] or [ImageOptions]:
+```kotlin
+// Use the default MemoryCache implementation and configure its parameters
+Sketch.Builder(context).apply {
+    memoryCache(
+        MemoryCache.Builder(context)
+            .maxSizePercent(0.4f)
+            .build()
+    )
+}.build()
+
+// Use your own MemoryCache implementation
+class MyMemoryCache : MemoryCache {
+    // ...
+}
+Sketch.Builder(context).apply {
+    memoryCache(MyDiskCache())
+}.build()
+```
+
+## Configuration request
+
+The default configuration of the memory cache is [CachePolicy].ENABLED. You can control memory
+caching through the memoryCachePolicy
+attribute of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 imageView.displayImage("https://example.com/image.jpg") {
     // Disable
     memoryCachePolicy(CachePolicy.DISABLED)
-    // Read Only
+    // Read only
     memoryCachePolicy(CachePolicy.READ_ONLY)
     // Write Only
     memoryCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
-#### Access the memory cache
+## Read and write cache
 
-You can access the memory cache by getting an instance of the memory cache via
-the `context.sketch.memoryCache` property.
+You can access the memory cache by getting the memory cache instance through
+the `sketch.memoryCache` property.
 
 ```kotlin
-val memoryCacheKey = "https://example.com/image.jpg"
+scope.launch {
+    val memoryCache = sketch.memoryCache
+    val memoryCacheKey = requestContext.memoryCacheKey
+    memoryCache.withLock(memoryCacheKey) {
+        // put
+        val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)
+        val newCacheValue = newBitmap.asSketchImage().cacheValue()!!
+        put(memoryCacheKey, newCacheValue)
 
-// put
-val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)
-context.sketch.memoryCache.put(memoryCacheKey, MemoryCache.Value(CountBitmap(newBitmap)))
+        // exist
+        val exist: Boolean = exist(memoryCacheKey)
 
-// get
-val cachedBitmap: Bitmap? = context.sketch.memoryCache.get(memoryCacheKey)?.countBitmap?.bitmap
+        // get
+        val cachedValue: MemoryCache.Value? = get(memoryCacheKey)
+        val image: Image = cachedValue?.image
 
-// exist
-val exist: Boolean = context.sketch.memoryCache.exist(memoryCacheKey)
+        // remove
+        val clearedValue: MemoryCache.Value? = remove(memoryCacheKey)
+    }
+
+    // Clear all
+    memoryCache.clear()
+
+    // trim
+    memoryCache.trim((memoryCache.maxSize * 0.5f).toLong())
+}
 ```
+
+> [!CAUTION]
+> When accessing the memoryCache of a specified key, you must first obtain the lock and then access
+> it. This will not only avoid repeated loading of the same request, but also avoid problems under
+> multi-threading.
 
 For more available methods, please refer to [MemoryCache]
 
-#### Free the memory cache
+## Clear cache
 
-The memory cache is released in the following situations:
+The memory cache is cleared under the following circumstances:
 
-* Actively call the `trim()` and `clear()` methods of MemoryCache
-* Cached bitmaps are no longer referenced
-* Automatically frees older caches when the maximum capacity is reached
-* The low available memory of the device triggers the application's `onLowMemory()` method
-* The system trim memory triggers the application's `onTrimMemory(int)` method
+* Actively call the `trim()`, `remove()`, and `clear()` methods of MemoryCache
+* Automatically release older caches when maximum capacity is reached
+* The low available memory of the device triggers the `onLowMemory()` method of Application
+* System trimming memory triggers Application's `onTrimMemory(int)` method
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [MemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
 
-[LruMemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
-
-[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
-
-[LruDiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
+[LruMemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/LruMemoryCache.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[reference_article]: http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html
+[MemoryCacheRequestInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/MemoryCacheRequestInterceptor.kt
+
+[CachePolicy]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/CachePolicy.kt

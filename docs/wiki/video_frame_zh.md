@@ -22,7 +22,7 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         supportVideoFrame()
         //or

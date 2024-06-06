@@ -43,7 +43,7 @@
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             components {
                 addDecoder(MyDecoder.Factory())
             }
@@ -142,7 +142,7 @@ DecodeInterceptor，如下：
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             components {
                 addDecodeInterceptor(MyDecodeInterceptor())
             }

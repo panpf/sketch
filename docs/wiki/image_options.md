@@ -25,7 +25,7 @@ The final priority of the same properties when constructing the [ImageRequest] i
 Global：
 
 ```kotlin
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     globalImageOptions(ImageOptions {
         placeholer(Res.drawable.placeholder)
         error(Res.drawable.error)

@@ -36,7 +36,7 @@ Then register the [PauseLoadWhenScrollingDecodeInterceptor] request interceptor 
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
     }

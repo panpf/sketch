@@ -1,251 +1,189 @@
-# Cache
+# Result Cache
 
 Translations: [简体中文](result_cache_zh.md)
 
-Sketch introduces download cache, result cache, and memory cache to improve the loading speed
-of images
+In order to avoid repeated conversion of images and improve the loading speed of images, [Sketch]
+introduces result caching. [ResultCacheDecodeInterceptor] will persistently store the converted
+images on the disk, and read them directly from the disk next time to skip the conversion process.
 
-## Download cache
-
-The download cache is used to store images on disk persistently to avoid duplicate downloads.
-
-The download cache is served by the [DiskCache] component, and the default implementation
+The result cache is served by the [DiskCache] component, and the default implementation
 is [LruDiskCache]:
 
-* Purge old caches based on the principle of least use
-* The default maximum size is 300MB
-* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/download`,
-  and in order to be multi-process-compatible, Sketch is used in a non-primary process
-  When cache the directory name, the process name is appended, e.g. "download:push"
+* Default maximum capacity is 200 MB
+* Clear old cache based on least used principle
 
-> You can do this by initializing Sketch via [LruDiskCache].ForDownloadBuilder creates and modifies
-> the maximum capacity or cache directory, and then registers it via the downloadCache() method
+## Cache directory
 
-#### Configure the download cache
+In order to adapt to the differences between different platforms, the locations of cache directories
+are also different on different platforms.
 
-Download cache is enabled by default, and you can control the download cache via the
-downloadCachePolicy property of [ImageRequest] or [ImageOptions]:
+### Android
+
+The default result cache directories on Android are obtained in the following order:
+
+1. `/sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/result`
+2. `/data/data/[APP_PACKAGE_NAME]/cache/sketch4/result`
+
+> [!TIP]
+> In order to be compatible with multiple processes, when using Sketch in a non-main process, the
+> process name will be added after the cache directory name, such as "result:push"
+
+### iOS
+
+The default results cache directory on iOS is:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    // Disable
-    downloadCachePolicy(CachePolicy.DISABLED)
-    // Read Only
-    downloadCachePolicy(CachePolicy.READ_ONLY)
-    // Write Only
-    downloadCachePolicy(CachePolicy.WRITE_ONLY)
-}
+val appCacheDirectory =
+    NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true).first() as String
+val resultCacheDir = "$appCacheDirectory/sketch4/result"
 ```
 
-#### Access the download cache
+### Desktop
 
-You can access the download cache by getting an instance of the download cache via
-the `context.sketch.downloadCache` property.
-
-However, it is important to obtain the edit lock first and lock it before accessing it, so as to
-avoid problems in multi-threading, as follows:
+The default results cache directory on desktop platforms is:
 
 ```kotlin
-val lockKey = "https://example.com/image.jpg"
-val lock = context.sketch.downloadCache.editLock(lockKey)
-lock.lock()
-try {
-    val diskCacheKey = "https://example.com/image.jpg"
+val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java)).md5()
 
-    // edit
-    val editor: DiskCache.Editor = context.sketch.downloadCache.edit(diskCacheKey)
-    try {
-        editor.newOutputStream().use {
-            it.write("https://example.com/image.jpg".toByteArray())
-        }
-        editor.commit()
-    } catch (e: Exception) {
-        editor.abort()
-    }
+// macOS
+"/Users/[user]/Library/Caches/SketchImageLoader/${appName}/sketch4/result"
 
-    // get
-    val snapshot: Snapshot? = context.sketch.downloadCache.get(diskCacheKey)
-    snapshot?.newInputStream().use {
-        it.readBytes()
-    }
+// Windows
+"C:\\Users\\[user]\\AppData\\Local\\SketchImageLoader\\${appName}\\sketch4/result\\Cache"
 
-    // exist
-    val exist: Boolean = context.sketch.downloadCache.exist(diskCacheKey)
-} finally {
-    lock.unlock()
-}
+// Linux
+"/home/[user]/.cache/SketchImageLoader/${appName}/sketch4/result"
 ```
 
-For more available methods, please refer to [DiskCache]
+### Web
 
-#### Free the download cache
+The web platform does not yet support result caching
 
-The download cache is released in the following situations:
+## Customize
 
-* Actively call the `remove()`, `clear()` methods of DiskCache
-* Proactively call the `abort()` method of DiskCache.Editor
-* The `remove()` method of DiskCache.Snapshot is actively called
-* Older caches are automatically freed when maximum capacity is reached
-
-## Result cache
-
-The result cache is used to store the converted images on disk durably, avoiding repeated
-conversions and improving loading speed.
-
-The resulting cache is served by the [DiskCache] component, and the default implementation
-is [LruDiskCache]:
-
-* Purge old caches based on the principle of least use
-* The default maximum size is 200MB
-* The default cache directory is `sdcard/Android/data/[APP_PACKAGE_NAME]/cache/sketch4/result`, and
-  in order to be compatible with multiple processes, it should be used in non-primary processes
-  When cache Sketch, the process name is appended to the directory name, e.g. "result:push"
-
-> You can do this by initializing Sketch via [LruDiskCache]. ForResultBuilder creates and modifies
-> the maximum capacity or cache directory, and then registers it via the resultCache() method
-
-Sketch caches the Bitmap to the disk cache in the following situations:
-
-* The resize is not null and the decoded bitmap is not the same size as the original image
-* After Transformation transformation
-
-#### Configure the result cache
-
-Result cache is enabled by default, and you can control the bitmap result cache via the
-resultCachePolicy property of [ImageRequest] or [ImageOptions]:
+You can pass resultCache() or resultCacheOptions() of [Sketch].Builder when initializing [Sketch]
+Method to customize the implementation or configuration of result cache, as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+// Use the default LruDiskCache implementation and configure its parameters
+Sketch.Builder(context).apply {
+    resultCacheOptions(
+        DiskCache.Options(
+            // Just choose one of directory and appCacheDirectory
+            directory = "/tmp/myapp/sketch/result",
+            // Just choose one of directory and appCacheDirectory
+            appCacheDirectory = "/tmp/myapp",
+            // 100 MB
+            maxSize = 1024 * 1024 * 100,
+            // The app's management version number for the result cache. 
+            // If you want to clear the old result cache, upgrade this version number.
+            appVersion = 1,
+        )
+    )
+}.build()
+
+// Use your own DiskCache implementation
+class MyDiskCache : DiskCache {
+    // ...
+}
+Sketch.Builder(context).apply {
+    resultCache(MyDiskCache())
+}.build()
+```
+
+## 配置请求
+
+The default configuration of the result cache is [CachePolicy].ENABLED. You can control result caching through the resultCachePolicy
+attribute of [ImageRequest] or [ImageOptions], as follows:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
     // Disable
     resultCachePolicy(CachePolicy.DISABLED)
-    // Read Only
+    // Read only
     resultCachePolicy(CachePolicy.READ_ONLY)
     // Write Only
     resultCachePolicy(CachePolicy.WRITE_ONLY)
 }
 ```
 
-#### Access the result cache
+## Read and write cache
 
-You can access the results cache by getting the result cache instance via
-the `context.sketch.resultCache` property.
-
-However, it is important to obtain the edit lock first and lock it before accessing it, so as to
-avoid problems in multi-threading, as follows:
+You can access the result cache by obtaining the result cache instance through
+the `sketch.resultCache` property, but be careful to obtain the lock before accessing, so as to
+avoid problems under multi-threading, as follows:
 
 ```kotlin
-val lockKey = "https://example.com/image.jpg"
-val lock = context.sketch.resultCache.editLock(lockKey)
-lock.lock()
-try {
-    val diskCacheKey = "https://example.com/image.jpg"
-
-    // edit
-    val editor: DiskCache.Editor = context.sketch.resultCache.edit(diskCacheKey)
-    try {
-        editor.newOutputStream().use {
-            it.write("https://example.com/image.jpg".toByteArray())
+scope.launch {
+    val resultCache = sketch.resultCache
+    val resultCacheKey = requestContext.resultCacheKey
+    resultCache.withLock(resultCacheKey) {
+        // get
+        openSnapshot(resultCacheKey)?.use { snapshot ->
+            val dataPath: Path = snapshot.data
+            val metadataPath: Path = snapshot.metadata
+            val dataContent = fileSystem.source(dataPath).buffer().use {
+                it.readUtf8()
+            }
+            val metadataContent = fileSystem.source(metadataPath).buffer().use {
+                it.readUtf8()
+            }
         }
-        editor.commit()
-    } catch (e: Exception) {
-        editor.abort()
+
+        // edit
+        val editor: DiskCache.Editor? = openEditor(resultCacheKey)
+        if (editor != null) {
+            try {
+                val dataPath: Path = editor.data
+                val metadataPath: Path = editor.metadata
+                fileSystem.sink(dataPath).buffer().use {
+                    it.writeUtf8("data")
+                }
+                fileSystem.sink(metadataPath).buffer().use {
+                    it.writeUtf8("metadata")
+                }
+                editor.commit()
+            } catch (e: Exception) {
+                editor.abort()
+            }
+        }
+
+        // remove
+        val cleared: Boolean = remove(resultCacheKey)
     }
 
-    // get
-    val snapshot: Snapshot? = context.sketch.resultCache.get(diskCacheKey)
-    snapshot?.newInputStream().use {
-        it.readBytes()
-    }
-
-    // exist
-    val exist: Boolean = context.sketch.resultCache.exist(diskCacheKey)
-} finally {
-    lock.unlock()
+    // Clear all
+    resultCache.clear()
 }
 ```
+
+> [!CAUTION]
+> 1. openSnapshot and openEditor with the same key conflict with each other. For example,
+     openSnapshot is not closed before openEditor is closed. Always returns null and vice versa
+> 2. So it must be executed inside withLock, otherwise unexpected events may occur.
 
 For more available methods, please refer to [DiskCache]
 
-#### Free the result cache
+## Clear cache
 
-The result cache is released in the following situations:
+The results cache is cleared under the following circumstances:
 
-* Actively call the `remove()` and `clear()` methods of DiskCache
-* Actively call the `abort()` method of DiskCache.Editor
-* Actively call the `remove()` method of DiskCache.Snapshot
-* Automatically frees older caches when the maximum capacity is reached
+1. Actively call the `remove()` and clear()` methods of [DiskCache]
+2. Actively call the `abort()` method of [DiskCache].Editor
+3. Automatically clear older caches when maximum capacity is reached
 
-## Memory cache
-
-Memory cache is used to cache bitmaps in memory to avoid reloading images.
-
-The memory cache is served by the [MemoryCache] component, and the default implementation
-is [LruMemoryCache]:
-
-* Release old Bitmaps according to the principle of least use
-* Maximum capacity is two-thirds of the lesser of 6 screen sizes and one-third of the maximum
-  available memory
-
-> You can create a [LruMemoryCache] when initializing Sketch and modify the maximum capacity, and
-> then register it via the memoryCache() method
-
-#### Configure the memory cache
-
-Memory cache is enabled by default, and you can control the bitmap memory cache via the
-memoryCachePolicy property of [ImageRequest] or [ImageOptions]:
-
-```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
-    // Disable
-    memoryCachePolicy(CachePolicy.DISABLED)
-    // Read Only
-    memoryCachePolicy(CachePolicy.READ_ONLY)
-    // Write Only
-    memoryCachePolicy(CachePolicy.WRITE_ONLY)
-}
-```
-
-#### Access the memory cache
-
-You can access the memory cache by getting an instance of the memory cache via
-the `context.sketch.memoryCache` property.
-
-```kotlin
-val memoryCacheKey = "https://example.com/image.jpg"
-
-// put
-val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)
-context.sketch.memoryCache.put(memoryCacheKey, MemoryCache.Value(CountBitmap(newBitmap)))
-
-// get
-val cachedBitmap: Bitmap? = context.sketch.memoryCache.get(memoryCacheKey)?.countBitmap?.bitmap
-
-// exist
-val exist: Boolean = context.sketch.memoryCache.exist(memoryCacheKey)
-```
-
-For more available methods, please refer to [MemoryCache]
-
-#### Free the memory cache
-
-The memory cache is released in the following situations:
-
-* Actively call the `trim()` and `clear()` methods of MemoryCache
-* Cached bitmaps are no longer referenced
-* Automatically frees older caches when the maximum capacity is reached
-* The low available memory of the device triggers the application's `onLowMemory()` method
-* The system trim memory triggers the application's `onTrimMemory(int)` method
-
-[MemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
-
-[LruMemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruMemoryCache.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
 
-[LruDiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruDiskCache.kt
+[LruDiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/LruDiskCache.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[reference_article]: http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html
+[HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+
+[ResultCacheDecodeInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/ResultCacheDecodeInterceptor.kt
+
+[CachePolicy]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/CachePolicy.kt

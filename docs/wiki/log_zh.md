@@ -12,7 +12,7 @@
 
 ```kotlin
 // 在初始哈 Sketch 时
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     logger(level = Logger.Level.Debug)
 }.build()
 
@@ -49,7 +49,7 @@ class MyPipeline : Logger.Pipeline {
     override fun toString(): String = "MyPipeline"
 }
 
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     logger(pipeline = MyPipeline())
 }.build()
 ```

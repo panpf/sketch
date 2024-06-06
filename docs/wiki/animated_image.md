@@ -29,7 +29,7 @@ register [Decoder] to [Sketch] to play animated images, as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         addDecoder(
             when {

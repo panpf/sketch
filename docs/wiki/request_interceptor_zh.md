@@ -34,7 +34,7 @@ class MyRequestInterceptor : RequestInterceptor {
 
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         addRequestInterceptor(MyRequestInterceptor())
     }

@@ -170,7 +170,7 @@ val sketch = SingletonSketch.get()
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             logger(level = Logger.Level.Debug)
             httpStack(OkHttpStack.Builder().build())
             // There is a lot more...

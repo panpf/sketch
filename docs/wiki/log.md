@@ -13,7 +13,7 @@ You can modify the level at any time, as follows:
 
 ```kotlin
 // When initializing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     logger(level = Logger.Level.Debug)
 }.build()
 
@@ -53,7 +53,7 @@ class MyPipeline : Logger.Pipeline {
     override fun toString(): String = "MyPipeline"
 }
 
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     logger(pipeline = MyPipeline())
 }.build()
 ```

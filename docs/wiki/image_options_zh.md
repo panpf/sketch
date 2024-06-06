@@ -24,7 +24,7 @@
 Global：
 
 ```kotlin
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     globalImageOptions(ImageOptions {
         placeholer(Res.drawable.placeholder)
         error(Res.drawable.error)

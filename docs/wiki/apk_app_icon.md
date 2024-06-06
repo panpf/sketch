@@ -12,7 +12,7 @@ First, register [ApkIconDecoder] as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         supportApkIcon()
     }
@@ -38,7 +38,7 @@ First, register [AppIconUriFetcher] as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         supportAppIcon()
     }

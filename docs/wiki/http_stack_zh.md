@@ -19,7 +19,7 @@
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             httpStack(HurlStack.Builder().apply {
                 // 连接超时。默认 7000
                 connectTimeout(Int)
@@ -55,7 +55,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             httpStack(OkHttpStack.Builder().apply {
                 // 连接超时。默认 7000
                 connectTimeout(Int)
@@ -89,7 +89,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 时通过 `httpStack()` 方法注册即可，如下：
 
 ```kotlin
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     httpStack(KtorStack())
 }.build()
 ```
@@ -99,7 +99,7 @@ Sketch.Builder(this).apply {
 首先实现 [HttpStack] 接口定义自己的 [HttpStack]，然后在初始化 [Sketch] 时通过 `httpStack()` 方法注册即可：
 
 ```kotlin
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     httpStack(MyHttpStack())
 }.build()
 ```

@@ -41,7 +41,7 @@ to be registered manually according to your needs, as follows:
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             components {
                 addDecoder(MyDecoder.Factory())
             }
@@ -149,7 +149,7 @@ addDecodeInterceptor() methods as follows:
 class MyApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(): Sketch {
-        return Sketch.Builder(this).apply {
+        return Sketch.Builder(context).apply {
             components {
                 addDecodeInterceptor(MyDecodeInterceptor())
             }

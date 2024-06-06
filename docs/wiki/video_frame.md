@@ -21,7 +21,7 @@ Select the appropriate Decoder according to the situation, and then register it 
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         supportVideoFrame()
         //or

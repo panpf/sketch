@@ -13,7 +13,7 @@ Sketch 支持解码 SVG 静态图片，由 [SvgDecoder] 提供支持
 
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(this).apply {
+Sketch.Builder(context).apply {
     components {
         addDecoder(SvgDecoder.Factory())
     }
