@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.drawable.internal.toLogString
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.heightWithBitmapFirst
 import com.github.panpf.sketch.util.widthWithBitmapFirst
@@ -53,8 +52,7 @@ data class AndroidDrawableImage internal constructor(
         else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
     }
 
-    override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? =
-        null
+    override fun cacheValue(extras: Map<String, Any?>?): Value? = null
 
     override fun checkValid(): Boolean = true
 

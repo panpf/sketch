@@ -103,7 +103,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val request = requestContext.request
         if (!request.memoryCachePolicy.writeEnabled) return false
         val newCacheValue = imageData.image.cacheValue(
-            requestContext = requestContext,
             extras = newCacheValueExtras(
                 imageInfo = imageData.imageInfo,
                 transformedList = imageData.transformedList,

@@ -46,7 +46,7 @@ interface Image {
      */
     val shareable: Boolean
 
-    fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value?
+    fun cacheValue(extras: Map<String, Any?>? = null): Value?
 
     fun checkValid(): Boolean
 

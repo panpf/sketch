@@ -19,7 +19,7 @@ import com.github.panpf.sketch.AndroidBitmapImage
 
 class AndroidBitmapImageValue(
     override val image: AndroidBitmapImage,
-    override val extras: Map<String, Any?> = emptyMap(),
+    override val extras: Map<String, Any?>? = null,
 ) : MemoryCache.Value {
 
     override val size: Long = image.byteCount

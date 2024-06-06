@@ -18,11 +18,8 @@ package com.github.panpf.sketch
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.ImageTransformer
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.painter.internal.toLogString
-import com.github.panpf.sketch.request.internal.RequestContext
 import kotlin.math.roundToInt
 
 fun Painter.asSketchImage(shareable: Boolean = false): Image {
@@ -45,10 +42,7 @@ data class PainterImage(
 
     override val allocationByteCount: Long = 4L * width * height
 
-    override fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): MemoryCache.Value? = null
+    override fun cacheValue(extras: Map<String, Any?>?): MemoryCache.Value? = null
 
     override fun checkValid(): Boolean = true
 

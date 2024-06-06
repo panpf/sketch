@@ -19,7 +19,6 @@ import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.asOrNull
@@ -59,7 +58,7 @@ data class AndroidBitmapImage internal constructor(
 
     override val allocationByteCount: Long = bitmap.allocationByteCountCompat.toLong()
 
-    override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value =
+    override fun cacheValue(extras: Map<String, Any?>?): Value =
         AndroidBitmapImageValue(this, extras)
 
     override fun checkValid(): Boolean = !bitmap.isRecycled

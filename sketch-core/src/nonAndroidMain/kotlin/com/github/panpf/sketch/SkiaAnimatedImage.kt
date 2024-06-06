@@ -1,7 +1,6 @@
 package com.github.panpf.sketch
 
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
 
@@ -22,10 +21,7 @@ data class SkiaAnimatedImage(
 
     override val shareable: Boolean = true
 
-    override fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): Value? = null
+    override fun cacheValue(extras: Map<String, Any?>?): Value? = null
     // Because repeatCount, animationStartCallback, and animationEndCallback cannot be cached in memory.
 //    ): Value = SkiaAnimatedImageValue(this, extras)
 

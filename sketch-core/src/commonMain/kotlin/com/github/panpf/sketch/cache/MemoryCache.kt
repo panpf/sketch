@@ -86,7 +86,7 @@ interface MemoryCache {
 
         val size: Long
 
-        val extras: Map<String, Any?>
+        val extras: Map<String, Any?>?
 
         fun checkValid(): Boolean
     }
@@ -137,17 +137,17 @@ val RequestContext.memoryCacheKey: String
     get() = cacheKey
 
 fun MemoryCache.Value.getImageInfo(): ImageInfo? {
-    return extras["imageInfo"] as ImageInfo?
+    return extras?.get("imageInfo") as? ImageInfo
 }
 
 fun MemoryCache.Value.getTransformedList(): List<String>? {
     @Suppress("UNCHECKED_CAST")
-    return extras["transformedList"] as List<String>?
+    return extras?.get("transformedList") as? List<String>
 }
 
 fun MemoryCache.Value.getExtras(): Map<String, String>? {
     @Suppress("UNCHECKED_CAST")
-    return extras["extras"] as Map<String, String>?
+    return extras?.get("extras") as? Map<String, String>
 }
 
 fun newCacheValueExtras(

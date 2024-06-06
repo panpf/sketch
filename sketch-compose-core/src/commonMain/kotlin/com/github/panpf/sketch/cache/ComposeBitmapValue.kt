@@ -6,7 +6,7 @@ import com.github.panpf.sketch.ComposeBitmapImage
 
 class ComposeBitmapValue(
     private val composeBitmapImage: ComposeBitmapImage,
-    override val extras: Map<String, Any?>
+    override val extras: Map<String, Any?>?
 ) : Value {
 
     override val image: Image = composeBitmapImage

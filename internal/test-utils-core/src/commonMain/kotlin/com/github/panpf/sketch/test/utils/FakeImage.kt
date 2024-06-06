@@ -3,7 +3,6 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.ImageTransformer
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.SketchSize
 
 class FakeImage(val size: SketchSize) : Image {
@@ -23,9 +22,7 @@ class FakeImage(val size: SketchSize) : Image {
     override val shareable: Boolean
         get() = true
 
-    override fun cacheValue(requestContext: RequestContext, extras: Map<String, Any?>): Value? {
-        return null
-    }
+    override fun cacheValue(extras: Map<String, Any?>?): Value? = null
 
     override fun checkValid(): Boolean {
         return true

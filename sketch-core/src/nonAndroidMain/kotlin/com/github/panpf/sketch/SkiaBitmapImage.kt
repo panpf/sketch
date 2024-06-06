@@ -1,7 +1,6 @@
 package com.github.panpf.sketch
 
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.mapping
@@ -24,10 +23,7 @@ data class SkiaBitmapImage(
 
     override val allocationByteCount: Long = byteCount
 
-    override fun cacheValue(
-        requestContext: RequestContext,
-        extras: Map<String, Any?>
-    ): Value? = null
+    override fun cacheValue(extras: Map<String, Any?>?): Value? = null
 
     override fun checkValid(): Boolean = true
 
