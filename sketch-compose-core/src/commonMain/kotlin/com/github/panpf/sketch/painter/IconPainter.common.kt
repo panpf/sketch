@@ -32,7 +32,7 @@ import com.github.panpf.sketch.painter.internal.DrawInvalidate
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.PainterEqualizer
 import com.github.panpf.sketch.util.asEquality
-import com.github.panpf.sketch.util.equalityPainterResource
+import com.github.panpf.sketch.util.rememberEqualityPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -77,7 +77,7 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val backgroundPainter = background?.let { equalityPainterResource(it) }
+    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = icon,
@@ -111,7 +111,7 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = equalityPainterResource(icon)
+    val iconPainter = rememberEqualityPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -130,7 +130,7 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = equalityPainterResource(icon)
+    val iconPainter = rememberEqualityPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
         IconPainter(
@@ -150,8 +150,8 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = equalityPainterResource(icon)
-    val backgroundPainter = background?.let { equalityPainterResource(it) }
+    val iconPainter = rememberEqualityPainterResource(icon)
+    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -169,7 +169,7 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = equalityPainterResource(icon)
+    val iconPainter = rememberEqualityPainterResource(icon)
     return remember(icon, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,

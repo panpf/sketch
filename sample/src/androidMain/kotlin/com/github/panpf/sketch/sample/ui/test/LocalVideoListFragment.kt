@@ -50,7 +50,7 @@ import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import java.io.File
@@ -176,19 +176,19 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
         ) {
             binding.thumbnailImage.updateImageOptions {
                 placeholder(
-                    IconStateImage(
+                    IconDrawableStateImage(
                         icon = R.drawable.ic_image_outline,
                         background = R.color.placeholder_bg
                     )
                 )
                 error(
-                    IconStateImage(
+                    IconDrawableStateImage(
                         icon = R.drawable.ic_error_baseline,
                         background = R.color.placeholder_bg
                     )
                 ) {
                     saveCellularTrafficError(
-                        IconStateImage(
+                        IconDrawableStateImage(
                             icon = R.drawable.im_save_cellular_traffic,
                             background = R.color.placeholder_bg
                         )

@@ -2,6 +2,7 @@ package com.github.panpf.sketch.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -17,6 +18,15 @@ import org.jetbrains.compose.resources.painterResource
 fun equalityPainterResource(resource: DrawableResource): PainterEqualizer {
     val painter = painterResource(resource)
     return PainterEqualizer(wrapped = painter, equalityKey = resource)
+}
+
+@ExperimentalResourceApi
+@Composable
+fun rememberEqualityPainterResource(resource: DrawableResource): PainterEqualizer {
+    val painter = painterResource(resource)
+    return remember(resource) {
+        PainterEqualizer(wrapped = painter, equalityKey = resource)
+    }
 }
 
 fun Painter.asEquality(equalKey: Any): PainterEqualizer =

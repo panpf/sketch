@@ -34,7 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ErrorStateImageTest {
+class ErrorStateImageAndroidTest {
 
     @Test
     fun testGetDrawable() {

@@ -128,15 +128,13 @@ fun rememberIconAnimatablePainter(
     background: IntColor? = null,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
-): IconAnimatablePainter {
-    return remember(icon, background, iconSize, iconTint) {
-        IconAnimatablePainter(
-            icon = icon.asPainterEqualizer(),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEquality(),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
-        )
-    }
+): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
+    IconAnimatablePainter(
+        icon = icon.asPainterEqualizer(),
+        background = background?.let { ColorPainter(Color(it.color)) }?.asEquality(),
+        iconSize = iconSize?.toSize(),
+        iconTint = iconTint?.let { Color(it.color) }
+    )
 }
 
 
@@ -165,15 +163,13 @@ fun rememberIconAnimatablePainter(
     icon: DrawableEqualizer,
     iconSize: SketchSize? = null,
     iconTint: IntColor? = null,
-): IconAnimatablePainter {
-    return remember(icon, iconSize, iconTint) {
-        IconAnimatablePainter(
-            icon = icon.asPainterEqualizer(),
-            background = null,
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
-        )
-    }
+): IconAnimatablePainter = remember(icon, iconSize, iconTint) {
+    IconAnimatablePainter(
+        icon = icon.asPainterEqualizer(),
+        background = null,
+        iconSize = iconSize?.toSize(),
+        iconTint = iconTint?.let { Color(it.color) }
+    )
 }
 
 

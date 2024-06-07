@@ -25,7 +25,6 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
-import com.github.panpf.sketch.util.asEquality
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
@@ -33,7 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DrawableStateImageTest {
+class DrawableStateImageCommonTest {
 
     @Test
     fun testGetDrawable() {

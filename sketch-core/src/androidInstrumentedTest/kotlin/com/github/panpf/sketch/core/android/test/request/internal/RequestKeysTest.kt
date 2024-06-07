@@ -38,7 +38,7 @@ import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -228,7 +228,7 @@ class RequestKeysTest {
                     _memoryCachePolicy + _transitionFactory
         )
 
-        val placeholder = IconStateImage(
+        val placeholder = IconDrawableStateImage(
             icon = drawable.ic_delete,
             background = color.background_dark
         )
@@ -449,7 +449,7 @@ class RequestKeysTest {
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
-        val placeholder = IconStateImage(
+        val placeholder = IconDrawableStateImage(
             icon = drawable.ic_delete,
             background = color.background_dark
         )

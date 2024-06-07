@@ -12,7 +12,6 @@ import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.drawable.internal.toLogString
 import java.lang.Deprecated
 
-// TODO rename getDrawableEqualizer
 fun Context.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
@@ -85,7 +84,7 @@ fun Resources.getEqualityDrawableForDensity(
 fun Drawable.asEquality(equalKey: Any): DrawableEqualizer =
     DrawableEqualizer(wrapped = this, equalityKey = equalKey)
 
-fun ColorDrawableEqualizer(@ColorInt color: Int) : DrawableEqualizer {
+fun ColorDrawableEqualizer(@ColorInt color: Int): DrawableEqualizer {
     return ColorDrawable(color).asEquality(color)
 }
 

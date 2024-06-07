@@ -15,16 +15,17 @@
  */
 package com.github.panpf.sketch.core.android.test.state
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.AndroidDrawableImage
-import com.github.panpf.sketch.drawable.IconAnimatableDrawable
+import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.IconAnimatableStateImage
+import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.IntColor
@@ -33,24 +34,22 @@ import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.asEquality
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.getEqualityDrawableCompat
+import com.github.panpf.sketch.util.getEqualityDrawable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class IconAnimatableStateImageTest {
+class IconDrawableStateImageCommonTest {
 
     @Test
     fun createFunctionTest() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val drawableIcon = androidx.core.R.drawable.ic_call_decline.let {
-            context.getDrawable(it)!!.asEquality(it)
-        }
+        val drawableIcon =
+            androidx.core.R.drawable.ic_call_decline.let { context.getEqualityDrawable(it) }
         val resIcon = androidx.core.R.drawable.ic_call_answer
-        val drawableBackground = androidx.core.R.drawable.notification_bg.let {
-            context.getDrawable(it)!!.asEquality(it)
-        }
+        val drawableBackground =
+            androidx.core.R.drawable.notification_bg.let { context.getEqualityDrawable(it) }
         val resBackground = androidx.core.R.drawable.notification_template_icon_bg
         val intColorBackground = IntColor(Color.BLUE)
         val iconSize = Size(100, 100)
@@ -58,258 +57,258 @@ class IconAnimatableStateImageTest {
         val resIconTint = android.R.color.black
 
         // drawable icon
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconSize = iconSize,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconSize = iconSize,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconSize = iconSize,
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconTint = resIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = drawableBackground,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = resBackground,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = intColorBackground,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = drawableBackground,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = resBackground,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             background = intColorBackground,
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             iconSize = iconSize,
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = drawableIcon,
         )
 
         // res icon
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = resBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconSize = iconSize,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = resBackground,
             iconSize = iconSize,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconSize = iconSize,
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = resBackground,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconTint = resIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = drawableBackground,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = resBackground,
             iconTint = intIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = intColorBackground,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             iconSize = iconSize,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             iconSize = iconSize,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = drawableBackground,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = resBackground,
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             background = intColorBackground,
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             iconSize = iconSize,
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             iconTint = resIconTint
         )
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
             iconTint = intIconTint
         )
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = resIcon,
         )
     }
@@ -318,88 +317,121 @@ class IconAnimatableStateImageTest {
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, MyImages.jpeg.uri)
-        val iconDrawable =
-            context.getEqualityDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+        val iconDrawable = BitmapDrawable(
+            context.resources,
+            Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565)
+        ).let { it.asEquality(it) }
         val greenBgDrawable = ColorDrawableEqualizer(Color.GREEN)
 
-        IconAnimatableStateImage(
-            icon = iconDrawable,
-            background = greenBgDrawable
-        ).apply {
-            getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
-                .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable.wrapped, icon)
-                    Assert.assertEquals(greenBgDrawable.wrapped, background)
-                    Assert.assertNull(iconSize)
-                }
-        }
+        IconDrawableStateImage(icon = iconDrawable, background = greenBgDrawable)
+            .getImage(sketch, request, null)
+            ?.asOrThrow<AndroidDrawableImage>()
+            ?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertEquals(iconDrawable.wrapped, icon)
+                Assert.assertEquals(greenBgDrawable.wrapped, background)
+                Assert.assertNull(iconSize)
+            }
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = iconDrawable,
-            background = android.R.drawable.bottom_bar,
             iconSize = SketchSize(40, 40),
-        ).apply {
-            getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
-                .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable.wrapped, icon)
-                    Assert.assertTrue(background is BitmapDrawable)
-                    Assert.assertEquals(Size(40, 40), iconSize)
-                }
-        }
+            background = android.R.drawable.bottom_bar,
+        ).getImage(sketch, request, null)
+            ?.asOrThrow<AndroidDrawableImage>()
+            ?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertEquals(iconDrawable.wrapped, icon)
+                Assert.assertTrue(background is BitmapDrawable)
+                Assert.assertEquals(Size(40, 40), iconSize)
+            }
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = iconDrawable,
-            background = IntColor(Color.BLUE)
-        ).apply {
-            getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
-                .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable.wrapped, icon)
-                    Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
-                    Assert.assertNull(iconSize)
-                }
-        }
+            background = IntColor(Color.BLUE),
+        ).getImage(sketch, request, null)
+            ?.asOrThrow<AndroidDrawableImage>()
+            ?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertEquals(iconDrawable.wrapped, icon)
+                Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
+                Assert.assertNull(iconSize)
+            }
 
-        IconAnimatableStateImage(iconDrawable).apply {
-            getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
-                .asOrNull<IconAnimatableDrawable>()!!.apply {
-                    Assert.assertEquals(iconDrawable.wrapped, icon)
-                    Assert.assertNull(background)
-                    Assert.assertNull(iconSize)
-                }
-        }
+        IconDrawableStateImage(icon = iconDrawable)
+            .getImage(sketch, request, null)
+            ?.asOrThrow<AndroidDrawableImage>()
+            ?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertEquals(iconDrawable.wrapped, icon)
+                Assert.assertNull(background)
+                Assert.assertNull(iconSize)
+            }
 
 
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = greenBgDrawable
-        ).apply {
-            Assert.assertNull(getImage(sketch, request, null))
+        ).getImage(sketch, request, null)
+            ?.asOrThrow<AndroidDrawableImage>()
+            ?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertTrue(icon is BitmapDrawable)
+                Assert.assertEquals(greenBgDrawable.wrapped, background)
+                Assert.assertNull(iconSize)
+            }
+
+        IconDrawableStateImage(
+            icon = android.R.drawable.ic_delete,
+            iconSize = SketchSize(30, 30),
+            background = android.R.drawable.bottom_bar,
+        ).getImage(sketch, request, null)
+            ?.asOrThrow<AndroidDrawableImage>()
+            ?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertTrue(icon is BitmapDrawable)
+                Assert.assertTrue(background is BitmapDrawable)
+                Assert.assertEquals(Size(30, 30), iconSize)
+            }
+
+        IconDrawableStateImage(
+            icon = android.R.drawable.ic_delete,
+            background = IntColor(Color.BLUE)
+        ).getImage(
+            sketch,
+            request,
+            null
+        )?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
+            Assert.assertTrue(icon is BitmapDrawable)
+            Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
+            Assert.assertNull(iconSize)
         }
+
+        IconDrawableStateImage(icon = android.R.drawable.ic_delete)
+            .getImage(
+                sketch,
+                request,
+                null
+            )?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
+                Assert.assertTrue(icon is BitmapDrawable)
+                Assert.assertNull(background)
+                Assert.assertNull(iconSize)
+            }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = IconAnimatableStateImage(
+        val element1 = IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = android.R.drawable.bottom_bar
         )
-        val element11 = IconAnimatableStateImage(
+        val element11 = IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = android.R.drawable.bottom_bar
         )
-        val element2 = IconAnimatableStateImage(
+        val element2 = IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = android.R.drawable.btn_default
         )
-        val element3 = IconAnimatableStateImage(
+        val element3 = IconDrawableStateImage(
             icon = android.R.drawable.btn_star,
             background = android.R.drawable.bottom_bar
         )
-        val element4 = IconAnimatableStateImage(icon = android.R.drawable.btn_star)
+        val element4 = IconDrawableStateImage(icon = android.R.drawable.btn_star)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -435,46 +467,46 @@ class IconAnimatableStateImageTest {
 
     @Test
     fun testToString() {
-        IconAnimatableStateImage(icon = android.R.drawable.ic_delete).apply {
+        IconDrawableStateImage(icon = android.R.drawable.ic_delete).apply {
             Assert.assertEquals(
-                "IconAnimatableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=null)",
+                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=null)",
                 toString()
             )
         }
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = android.R.drawable.bottom_bar
         ).apply {
             Assert.assertEquals(
-                "IconAnimatableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
+                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
                 toString()
             )
         }
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             iconSize = SketchSize(50, 50)
         ).apply {
             Assert.assertEquals(
-                "IconAnimatableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x50)",
+                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x50)",
                 toString()
             )
         }
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             iconSize = SketchSize(50, 30)
         ).apply {
             Assert.assertEquals(
-                "IconAnimatableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x30)",
+                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x30)",
                 toString()
             )
         }
-        IconAnimatableStateImage(
+        IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             iconSize = Size(44, 67),
             background = android.R.drawable.btn_default,
         ).apply {
             Assert.assertEquals(
-                "IconAnimatableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.btn_default}), iconSize=44x67)",
+                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.btn_default}), iconSize=44x67)",
                 toString()
             )
         }

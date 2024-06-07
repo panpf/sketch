@@ -36,36 +36,36 @@ import com.github.panpf.sketch.util.Size
 
 /* ********************************************* drawable icon ********************************************* */
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -73,36 +73,36 @@ fun IconStateImage(
 )
 
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -110,22 +110,22 @@ fun IconStateImage(
 )
 
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = RealEqualityDrawable(icon),
     background = null,
     iconSize = iconSize,
@@ -135,36 +135,36 @@ fun IconStateImage(
 
 /* ********************************************* res icon ********************************************* */
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -172,36 +172,36 @@ fun IconStateImage(
 )
 
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: DrawableEqualizer? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { RealEqualityDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
@@ -209,22 +209,22 @@ fun IconStateImage(
 )
 
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
 
-fun IconStateImage(
+fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
-): IconStateImage = IconStateImage(
+): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
     background = null,
     iconSize = iconSize,
@@ -237,7 +237,7 @@ fun IconStateImage(
  *
  * Icons are centered and always the same size
  */
-class IconStateImage(
+class IconDrawableStateImage(
     val icon: DrawableFetcher,
     val background: DrawableFetcher?,
     val iconSize: Size?,
@@ -245,7 +245,7 @@ class IconStateImage(
 ) : StateImage {
 
     override val key: String =
-        "IconStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize)"
+        "IconDrawableStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize)"
 
     override fun getImage(
         sketch: Sketch,
@@ -278,7 +278,7 @@ class IconStateImage(
                 iconTint = iconTintColor
             )
         } catch (e: Throwable) {
-            sketch.logger.w("IconStateImage. getDrawable error. ${e.message}")
+            sketch.logger.w("IconStateDrawableImage. getDrawable error. ${e.message}")
             e.printStackTrace()
             null
         }?.asSketchImage()
@@ -286,7 +286,7 @@ class IconStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconStateImage) return false
+        if (other !is IconDrawableStateImage) return false
         if (icon != other.icon) return false
         if (iconSize != other.iconSize) return false
         if (background != other.background) return false
@@ -301,6 +301,6 @@ class IconStateImage(
     }
 
     override fun toString(): String {
-        return "IconStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+        return "IconDrawableStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
     }
 }

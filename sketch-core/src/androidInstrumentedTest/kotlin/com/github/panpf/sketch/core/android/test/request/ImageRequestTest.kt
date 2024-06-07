@@ -79,7 +79,7 @@ import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.state.IntColorStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.state.ResColorStateImage
@@ -1638,7 +1638,7 @@ class ImageRequestTest {
             },
             ScopeAction {
                 placeholder(
-                    IconStateImage(
+                    IconDrawableStateImage(
                         icon = drawable.ic_delete,
                         background = color.background_dark
                     )

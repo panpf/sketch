@@ -32,8 +32,8 @@ import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.state.IconAnimatableStateImage
-import com.github.panpf.sketch.state.IconStateImage
+import com.github.panpf.sketch.state.IconAnimatableDrawableStateImage
+import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
@@ -82,27 +82,27 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
             updateImageOptions {
                 if (animatedPlaceholder) {
                     placeholder(
-                        IconAnimatableStateImage(
+                        IconAnimatableDrawableStateImage(
                             icon = R.drawable.ic_placeholder_eclipse_animated,
                             background = R.color.placeholder_bg
                         )
                     )
                 } else {
                     placeholder(
-                        IconStateImage(
+                        IconDrawableStateImage(
                             icon = R.drawable.ic_image_outline,
                             background = R.color.placeholder_bg,
                         )
                     )
                 }
                 error(
-                    defaultStateImage = IconStateImage(
+                    defaultStateImage = IconDrawableStateImage(
                         icon = R.drawable.ic_error_baseline,
                         background = R.color.placeholder_bg
                     )
                 ) {
                     saveCellularTrafficError(
-                        IconStateImage(
+                        IconDrawableStateImage(
                             icon = R.drawable.ic_signal_cellular,
                             background = R.color.placeholder_bg
                         )
