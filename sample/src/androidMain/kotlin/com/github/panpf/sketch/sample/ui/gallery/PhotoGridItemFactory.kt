@@ -96,7 +96,7 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
                     )
                 }
                 error(
-                    defaultStateImage = IconDrawableStateImage(
+                    defaultImage = IconDrawableStateImage(
                         icon = R.drawable.ic_error_baseline,
                         background = R.color.placeholder_bg
                     )

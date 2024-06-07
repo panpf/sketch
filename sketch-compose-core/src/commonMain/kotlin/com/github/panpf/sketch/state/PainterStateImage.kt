@@ -15,12 +15,35 @@
  */
 package com.github.panpf.sketch.state
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.PainterEqualizer
+import com.github.panpf.sketch.util.rememberEqualityPainterResource
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+
+@Composable
+fun rememberPainterStateImage(painter: PainterEqualizer): PainterStateImage =
+    remember(painter) { PainterStateImage(painter) }
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun rememberPainterStateImage(resource: DrawableResource): PainterStateImage {
+    val painter = rememberEqualityPainterResource(resource)
+    return remember(resource) { PainterStateImage(painter) }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun PainterStateImage(resource: DrawableResource): PainterStateImage {
+    val painter = rememberEqualityPainterResource(resource)
+    return PainterStateImage(painter)
+}
 
 @Stable
 class PainterStateImage(val painter: PainterEqualizer) : StateImage {

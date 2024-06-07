@@ -540,10 +540,10 @@ interface ImageOptions {
          * You can also set image of different error types via the trailing lambda function
          */
         fun error(
-            defaultStateImage: StateImage?,
+            defaultImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            this.error = ErrorStateImage(defaultStateImage, configBlock)
+            this.error = ErrorStateImage(defaultImage, configBlock)
                 .takeIf { it.stateList.isNotEmpty() }
         }
 

@@ -586,10 +586,10 @@ data class ImageRequest(
          * You can also set image of different error types via the trailing lambda function
          */
         fun error(
-            defaultStateImage: StateImage?,
+            defaultImage: StateImage?,
             configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
         ): Builder = apply {
-            definedOptionsBuilder.error(defaultStateImage, configBlock)
+            definedOptionsBuilder.error(defaultImage, configBlock)
         }
 
         /**
