@@ -34,6 +34,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.util.fitScale
 import java.lang.ref.WeakReference
 
@@ -58,9 +59,8 @@ open class ImageViewTarget constructor(
     override val fitScale: Boolean
         get() = view?.scaleType?.fitScale ?: true
 
-    override fun getScale(): Scale? {
-        return view?.scaleType?.toScale()
-    }
+    override fun getScaleDecider(): ScaleDecider? =
+        view?.scaleType?.toScale()?.let { ScaleDecider(it) }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

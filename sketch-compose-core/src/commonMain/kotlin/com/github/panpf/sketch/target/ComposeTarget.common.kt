@@ -57,13 +57,19 @@ interface ComposeTarget : Target {
     override val currentImage: Image?
         get() = painter?.asSketchImage()
 
+
+    override fun newRequestDelegate(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        job: Job
+    ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
+
+
     override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? {
         return ComposeResizeOnDrawHelper
     }
 
-    override fun getTargetCrossfadeTransitionFactory(
-        factory: CrossfadeTransition.Factory
-    ): Transition.Factory? {
+    override fun getCrossfadeTransition(factory: CrossfadeTransition.Factory): Transition.Factory? {
         return ComposeCrossfadeTransition.Factory(
             durationMillis = factory.durationMillis,
             fadeStart = factory.fadeStart,
@@ -71,12 +77,6 @@ interface ComposeTarget : Target {
             alwaysUse = factory.alwaysUse,
         )
     }
-
-    override fun newRequestDelegate(
-        sketch: Sketch,
-        initialRequest: ImageRequest,
-        job: Job
-    ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
 
     override fun getComponents(): ComponentRegistry? = ComponentRegistry.Builder().apply {
         addFetcher(ComposeResourceUriFetcher.Factory())

@@ -28,7 +28,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
-import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
@@ -42,29 +42,31 @@ interface Target {
     val currentImage: Image?
         get() = null
 
+
     fun getRequestManager(): RequestManager
 
     fun newRequestDelegate(sketch: Sketch, initialRequest: ImageRequest, job: Job): RequestDelegate
 
-    fun getImageOptions(): ImageOptions? = null
-
-    fun getSizeResolver(): SizeResolver? = null
-
-    fun getResizeOnDrawHelper(): ResizeOnDrawHelper? = null
-
-    fun getTargetCrossfadeTransitionFactory(
-        factory: CrossfadeTransition.Factory
-    ): Transition.Factory? = null
-
-    fun getScale(): Scale? = null
-
-    fun getLifecycleResolver(): LifecycleResolver? = null
 
     fun getListener(): Listener? = null
 
     fun getProgressListener(): ProgressListener? = null
-    
+
+    fun getLifecycleResolver(): LifecycleResolver? = null
+
+
+    fun getSizeResolver(): SizeResolver? = null
+
+    fun getScaleDecider(): ScaleDecider? = null
+
+    fun getResizeOnDrawHelper(): ResizeOnDrawHelper? = null
+
+    fun getCrossfadeTransition(factory: CrossfadeTransition.Factory): Transition.Factory? = null
+
+    fun getImageOptions(): ImageOptions? = null
+
     fun getComponents(): ComponentRegistry? = null
+
 
     /**
      * Called when the request starts.

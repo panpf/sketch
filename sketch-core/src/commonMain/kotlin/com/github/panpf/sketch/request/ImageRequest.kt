@@ -719,7 +719,7 @@ data class ImageRequest(
             val sizeMultiplier = finalOptions.sizeMultiplier
             val precisionDecider =
                 finalOptions.precisionDecider ?: PrecisionDecider(Precision.LESS_PIXELS)
-            val scaleDecider = finalOptions.scaleDecider ?: ScaleDecider(resolveScale())
+            val scaleDecider = finalOptions.scaleDecider ?: resolveScaleDecider()
             val transformations = finalOptions.transformations
             val placeholder = finalOptions.placeholder
             val uriEmpty = finalOptions.uriEmpty
@@ -769,8 +769,8 @@ data class ImageRequest(
         private fun resolveLifecycleResolver(): LifecycleResolver =
             target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalTargetLifecycle)
 
-        private fun resolveScale(): Scale =
-            target?.getScale() ?: Scale.CENTER_CROP
+        private fun resolveScaleDecider(): ScaleDecider =
+            target?.getScaleDecider() ?: ScaleDecider(Scale.CENTER_CROP)
 
         private fun combinationListener(
             definedRequestOptions: RequestOptions,

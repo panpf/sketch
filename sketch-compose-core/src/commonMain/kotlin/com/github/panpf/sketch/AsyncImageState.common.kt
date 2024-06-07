@@ -44,7 +44,7 @@ import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.ComposeTargetRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
-import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.target.GenericComposeTarget
 import com.github.panpf.sketch.target.TargetLifecycle
@@ -312,20 +312,25 @@ class AsyncImageState internal constructor(
         override val fitScale: Boolean
             get() = contentScale?.fitScale ?: true
 
+
         override fun getRequestManager(): RequestManager = requestManager
 
-        override fun getImageOptions(): ImageOptions? = this@AsyncImageState.options
-
-        override fun getSizeResolver(): SizeResolver = this@AsyncImageState.sizeResolver
-
-        override fun getScale(): Scale? = this@AsyncImageState.contentScale?.toScale()
-
-        override fun getLifecycleResolver(): LifecycleResolver? =
-            this@AsyncImageState.lifecycle?.let { LifecycleResolver(it) }
 
         override fun getListener(): Listener = this@AsyncImageState.listener
 
         override fun getProgressListener(): ProgressListener = this@AsyncImageState.listener
+
+        override fun getLifecycleResolver(): LifecycleResolver? =
+            this@AsyncImageState.lifecycle?.let { LifecycleResolver(it) }
+
+
+        override fun getSizeResolver(): SizeResolver = this@AsyncImageState.sizeResolver
+
+        override fun getScaleDecider(): ScaleDecider? =
+            this@AsyncImageState.contentScale?.toScale()?.let { ScaleDecider(it) }
+
+        override fun getImageOptions(): ImageOptions? = this@AsyncImageState.options
+
 
         override fun onStart(requestContext: RequestContext, placeholder: Image?) {
             super.onStart(requestContext, placeholder)

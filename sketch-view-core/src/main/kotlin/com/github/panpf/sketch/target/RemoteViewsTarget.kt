@@ -30,7 +30,7 @@ import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
-import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.util.toBitmap
 import kotlinx.coroutines.Job
 
@@ -42,6 +42,8 @@ class RemoteViewsTarget constructor(
     @IdRes private val imageViewId: Int,
     private val onUpdated: () -> Unit,
 ) : Target {
+
+    private val requestManager = BaseRequestManager()
 
     override fun onStart(requestContext: RequestContext, placeholder: Image?) =
         setDrawable(requestContext, placeholder)
@@ -59,13 +61,8 @@ class RemoteViewsTarget constructor(
         }
     }
 
-    private val requestManager = BaseRequestManager()
 
     override fun getRequestManager(): RequestManager = requestManager
-
-    override fun getImageOptions(): ImageOptions? = null
-
-    override fun getLifecycleResolver(): LifecycleResolver? = null
 
     override fun newRequestDelegate(
         sketch: Sketch,
@@ -73,11 +70,18 @@ class RemoteViewsTarget constructor(
         job: Job
     ): RequestDelegate = RemoteViewsDelegate(sketch, initialRequest, this, job)
 
-    override fun getScale(): Scale? = null
 
     override fun getListener(): Listener? = null
 
     override fun getProgressListener(): ProgressListener? = null
+
+    override fun getLifecycleResolver(): LifecycleResolver? = null
+
+
+    override fun getScaleDecider(): ScaleDecider? = null
+
+    override fun getImageOptions(): ImageOptions? = null
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
