@@ -2,52 +2,81 @@
 
 Translations: [简体中文](state_image_zh.md)
 
-StateImage is used to provide images for loading status and error status. There are several
+[StateImage] is used to provide images for loading status and error status. There are several
 implementations:
 
-* [CurrentStateImage]: Use the current drawable of ImageView as the state image
-* [ColorStateImage]: Create a ColorDrawable as a state image using the given color value or color
-  resource Id
-* [DrawableStateImage]: Create a Drawable as a state image using the given Drawable or Drawable
-  resource Id
-* [ErrorStateImage]: Specially used for error status, different status images will be selected
+For View:
+
+* [DrawableStateImage]: Use Drawable as status picture
+* [ColorDrawableStateImage]: Create a ColorDrawable using colors as status picture
+* [IconDrawableStateImage]: Use IconDrawable as status picture. It can ensure that the size of the
+  icon remains unchanged and is not affected by the scaling of the component. It is suitable for use
+  in waterfall layouts.
+* [IconAnimatableDrawableStateImage]: Use IconAnimatableDrawable as state image. It can ensure that
+  the size of the icon remains unchanged and is not affected by the scaling of the component. It is
+  suitable for use in waterfall layouts.
+
+For Compose:
+
+* [PainterStateImage]: Use Painter as status picture
+* [ColorPainterStateImage]: Create a ColorPainter using colors as a status picture
+* [IconPainterStateImage]: Use IconPainter as status image. It can ensure that the size of the icon
+  remains unchanged and is not affected by the scaling of the component. It is suitable for use in
+  waterfall layouts.
+* [IconAnimatablePainterStateImage]: Use IconAnimatablePainter as state image. It can ensure that
+  the size of the icon remains unchanged and is not affected by the scaling of the component. It is
+  suitable for use in waterfall layouts.
+
+Generic:
+
+* [CurrentStateImage]: Use the component's current Image as the state image
+* [MemoryCacheStateImage]: Use the given memory cache key to obtain the Image from the memory cache
+  as the status image, and use crossfade to achieve a perfect transition from small to large images.
+* [ThumbnailMemoryCacheStateImage]: A simplified version of [MemoryCacheStateImage] that uses the
+  given or currently requested uri to match the aspect ratio of the image in the memory cache to be
+  consistent with the original image, and the thumbnail that has not been modified by Transformation
+  is used as the state image. It can also be used with crossfade to achieve a perfect transition
+  from small images to large images.
+* [ErrorStateImage]: Specially used for error status, you can choose different status pictures
   according to the error type
-* [IconStateImage]: Create a state image using the given icon Drawable and background Drawable,
-  which ensures that regardless of the View How big is the size? The icon is always centered and the
-  size remains unchanged. It is more suitable for use in waterfall layouts.
-* [MemoryCacheStateImage]: Using the given memory cache key, try to get the bitmap from the memory
-  cache As a status picture, it can be used with crossfade to achieve a perfect transition from
-  small pictures to large pictures.
-* [ThumbnailMemoryCacheStateImage]: Use the given or current request uri to match the aspect ratio
-  in the memory cache to be consistent with the original image, and is useless Transformation
-  modified thumbnail as status image
 
-### Configure
+## Configuration
 
-Both [ImageRequest] and [ImageOptions] provide placeholder(), uriEmpty(), error() methods, as
-follows:
+[StateImage] is used in the placeholder(), uriEmpty(), and error() methods of [ImageRequest]
+and [ImageOptions], as follows:
 
 ```kotlin
-
-import java.awt.Color
-
-imageView.displayImage("https://example.com/image.jpg") {
+// View
+ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
-    placeholder(resources.getDrawable(R.drawable.placeholder))
-    placeholder(ColorStateImage(IntColor(Color.RED)))
+    placeholder(context.getEqualityDrawable(R.drawable.placeholder))
+    placeholder(IntColorDrawableStateImage(Color.RED))
     placeholder(DrawableStateImage(R.drawable.placeholder))
-    placeholder(IconStateImage(R.drawable.placeholder_icon, IntColor(Color.GRAY)))
+    placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
 
-    uriEmpty(R.drawable.placeholder)
-    uriEmpty(resources.getDrawable(R.drawable.placeholder))
-    uriEmpty(ColorStateImage(IntColor(Color.RED)))
-    uriEmpty(DrawableStateImage(R.drawable.placeholder))
-    uriEmpty(IconStateImage(R.drawable.placeholder_icon, IntColor(Color.GRAY)))
+    uriEmpty(R.drawable.uri_empty)
+    uriEmpty(context.getEqualityDrawable(R.drawable.uri_empty))
+    uriEmpty(IntColorDrawableStateImage(Color.RED))
+    uriEmpty(DrawableStateImage(R.drawable.uri_empty))
+    uriEmpty(IconDrawableStateImage(R.drawable.uri_empty, IntColor(Color.GRAY)))
 
-    // error is internally implemented using ErrorStateImage, so there is an additional lambda function that can configure specific error conditions.
-    // And the error() method that can be used by the placeholder() method can also be used.
     error(R.drawable.error) {
         uriEmptyError(DrawableStateImage(R.drawable.uri_empty))
+    }
+}
+
+// Compose
+val placeholder = rememberPainterStateImage(Res.drawable.placeholder)
+//    val placeholder = rememberColorPainterStateImage(Color.Red)
+//    val placeholder = rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray)
+val uriEmpty = rememberPainterStateImage(Res.drawable.uri_empty)
+//    val uriEmpty = rememberColorPainterStateImage(Color.Red)
+//    val uriEmpty = rememberIconPainterStateImage(Res.drawable.uri_empty, background = Color.Gray)
+ImageRequest("https://example.com/image.jpg") {
+    placeholder(placeholder)
+    uriEmpty(uriEmpty)
+    error(Res.drawable.error) {
+        uriEmptyError(uriEmpty)
     }
 }
 ```
@@ -56,18 +85,15 @@ imageView.displayImage("https://example.com/image.jpg") {
 
 You can refer to the existing implementation of [StateImage]
 
-### Extends ErrorStateImage
+### ErrorStateImage
 
 [ErrorStateImage] supports returning different status images according to different error types
 
-By default, Sketch only provides uriEmptyError type, you can implement [ErrorStateImage]
-.Condition interface to extend the new type, and then pass [ErrorStateImage].Builder.addState() uses
-a custom type, as follows:
+By default, Sketch only provides one type, uriEmptyError. You can implement the [ErrorStateImage]
+.Condition interface to extend the new type, and then use the custom type through [ErrorStateImage]
+.Builder.addState(), as follows:
 
 ```kotlin
-
-import java.io.IOException
-
 object MyCondition : ErrorStateImage.Condition {
 
     override fun accept(
@@ -76,23 +102,23 @@ object MyCondition : ErrorStateImage.Condition {
     ): Boolean = throwable is IOException
 }
 
-imageView.displayImage("https://example.com/image.jpg")
+ImageRequest(context, "https://example.com/image.jpg")
 {
     error(R.drawable.error) {
-        addState(MyCondition to DrawableStateImage(R.drawable.uri_empty))
+        addState(MyCondition to DrawableStateImage(R.drawable.mystate))
     }
 }
 ```
 
-### IconStateImage
+### Icon*StateImage
 
 In the waterfall flow layout, since the size of each item may be different, when all items use the
-same placeholder, ImageView The scaling causes the placeholder to appear larger or smaller on the
-page.
+same placeholder, the placeholder will appear to be larger or smaller on the page due to the scaling
+of the component.
 
-For this situation, using [IconStateImage] can perfectly solve the problem. [IconStateImage]
-consists of an icon and a background, and has no fixed size. No matter how big the bounds are, the
-icon will remain a fixed size, so that all placeholders on the page look like same size
+For this situation, using Icon\*StateImage can perfectly solve the problem. Icon\*StateImage
+consists of an icon and a background. The icon is not affected by component scaling. The icon always
+remains a fixed size, so that all placeholders on the page look the same. the size of
 
 ### ThumbnailMemoryCacheStateImage
 
@@ -113,8 +139,8 @@ imageView.displayImage("https://example.com/image.jpg") {
 ```
 
 [ThumbnailMemoryCacheStateImage] By default, the uri of the current [ImageRequest] will be used to
-find thumbnails in the memory. However, if the list page and the details page use different uris,
-you need to actively specify the uri of the list page, as follows:
+find thumbnails in the memory, but if the list page and the details page use different
+uri, you need to actively specify the uri of the list page, as follows:
 
 ```kotlin
 imageView.displayImage("https://example.com/image.jpg") {
@@ -123,27 +149,36 @@ imageView.displayImage("https://example.com/image.jpg") {
 }
 ```
 
+> [!TIP]
 > The standard for thumbnails is images with the same aspect ratio and without any Transformation
 > modification.
 
-[StateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/StateImage.kt
+[StateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/StateImage.kt
 
-[ColorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ColorStateImage.kt
+[ColorDrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/ColorDrawableStateImage.common.kt
 
-[DrawableStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/DrawableStateImage.kt
+[ColorPainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ColorPainterStateImage.kt
 
-[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ErrorStateImage.kt
+[DrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/DrawableStateImage.common.kt
 
-[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/internal/ErrorStateImage.kt
+[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ErrorStateImage.common.kt
 
-[IconStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/IconStateImage.kt
+[IconDrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/IconDrawableStateImage.common.kt
 
-[MemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/MemoryCacheStateImage.kt
+[IconAnimatableDrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/IconAnimatableDrawableStateImage.common.kt
 
-[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/ThumbnailMemoryCacheStateImage.kt
+[IconPainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/IconPainterStateImage.common.kt
+
+[IconAnimatablePainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/IconAnimatablePainterStateImage.common.kt
+
+[MemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/MemoryCacheStateImage.kt
+
+[ThumbnailMemoryCacheStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ThumbnailMemoryCacheStateImage.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.kt
 
-[CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/stateimage/CurrentStateImage.kt
+[CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/CurrentStateImage.kt
+
+[PainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/PainterStateImage.kt
