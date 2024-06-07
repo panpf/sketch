@@ -15,7 +15,7 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.uriEmpty
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IntColorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import kotlin.test.Test
@@ -246,9 +246,9 @@ class ImageOptionsAndroidTest {
                 assertNull(placeholder)
             }
 
-            placeholder(IntColorStateImage(Color.BLUE))
+            placeholder(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
-                assertEquals(IntColorStateImage(Color.BLUE), placeholder)
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
             }
 
             placeholder(ColorDrawableEqualizer(Color.GREEN))
@@ -278,9 +278,9 @@ class ImageOptionsAndroidTest {
                 assertNull(uriEmpty)
             }
 
-            uriEmpty(IntColorStateImage(Color.BLUE))
+            uriEmpty(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
-                assertEquals(IntColorStateImage(Color.BLUE), uriEmpty)
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), uriEmpty)
             }
 
             uriEmpty(ColorDrawableEqualizer(Color.GREEN))
@@ -310,10 +310,10 @@ class ImageOptionsAndroidTest {
                 assertNull(error)
             }
 
-            error(IntColorStateImage(Color.BLUE))
+            error(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
                 assertEquals(
-                    ErrorStateImage(IntColorStateImage(Color.BLUE)),
+                    ErrorStateImage(IntColorDrawableStateImage(Color.BLUE)),
                     error
                 )
             }

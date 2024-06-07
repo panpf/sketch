@@ -23,7 +23,7 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.state.IntColorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestCountTarget
@@ -317,13 +317,15 @@ class ThumbnailMemoryCacheStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ThumbnailMemoryCacheStateImage("uri1", IntColorStateImage(Color.BLUE))
+        val element1 =
+            ThumbnailMemoryCacheStateImage("uri1", IntColorDrawableStateImage(Color.BLUE))
         val element11 =
-            ThumbnailMemoryCacheStateImage("uri1", IntColorStateImage(Color.BLUE))
+            ThumbnailMemoryCacheStateImage("uri1", IntColorDrawableStateImage(Color.BLUE))
         val element2 =
-            ThumbnailMemoryCacheStateImage("uri1", IntColorStateImage(Color.GREEN))
-        val element3 = ThumbnailMemoryCacheStateImage("uri2", IntColorStateImage(Color.BLUE))
-        val element4 = ThumbnailMemoryCacheStateImage(null, IntColorStateImage(Color.BLUE))
+            ThumbnailMemoryCacheStateImage("uri1", IntColorDrawableStateImage(Color.GREEN))
+        val element3 =
+            ThumbnailMemoryCacheStateImage("uri2", IntColorDrawableStateImage(Color.BLUE))
+        val element4 = ThumbnailMemoryCacheStateImage(null, IntColorDrawableStateImage(Color.BLUE))
         val element5 = ThumbnailMemoryCacheStateImage("uri1", null)
 
         Assert.assertNotSame(element1, element11)
@@ -376,21 +378,21 @@ class ThumbnailMemoryCacheStateImageTest {
         val request = ImageRequest(context, MyImages.jpeg.uri)
         val uri = request.uri
 
-        ThumbnailMemoryCacheStateImage(uri, IntColorStateImage(Color.BLUE)).apply {
+        ThumbnailMemoryCacheStateImage(uri, IntColorDrawableStateImage(Color.BLUE)).apply {
             Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
+                "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=ColorDrawableStateImage(IntColor(${Color.BLUE})))",
                 toString()
             )
         }
-        ThumbnailMemoryCacheStateImage(uri, IntColorStateImage(Color.GREEN)).apply {
+        ThumbnailMemoryCacheStateImage(uri, IntColorDrawableStateImage(Color.GREEN)).apply {
             Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri=$uri, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
+                "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=ColorDrawableStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }
         ThumbnailMemoryCacheStateImage(null, null).apply {
             Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri=null, defaultImage=null)",
+                "ThumbnailMemoryCacheStateImage(uri='null', defaultImage=null)",
                 toString()
             )
         }

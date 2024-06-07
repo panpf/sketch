@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IntColorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.sketch.util.ColorDrawableEqualizer
@@ -38,29 +38,29 @@ class SaveCellularTrafficExtensionsAndroidTest {
 
     @Test
     fun testSaveCellularTrafficError() {
-        ErrorStateImage(IntColorStateImage(Color.BLACK)).apply {
+        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)).apply {
             Assert.assertNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorStateImage(Color.BLACK)) {
+        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError()
         }.apply {
             Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorStateImage(Color.BLACK)) {
-            saveCellularTrafficError(IntColorStateImage(Color.BLUE))
+        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
+            saveCellularTrafficError(IntColorDrawableStateImage(Color.BLUE))
         }.apply {
             Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorStateImage(Color.BLACK)) {
+        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(ColorDrawableEqualizer(Color.GREEN))
         }.apply {
             Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorStateImage(Color.BLACK)) {
+        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(android.R.drawable.btn_dialog)
         }.apply {
             Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })

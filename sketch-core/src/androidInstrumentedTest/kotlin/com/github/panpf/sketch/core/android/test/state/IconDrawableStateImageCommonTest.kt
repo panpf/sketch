@@ -469,7 +469,7 @@ class IconDrawableStateImageCommonTest {
     fun testToString() {
         IconDrawableStateImage(icon = android.R.drawable.ic_delete).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=null)",
+                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=null)",
                 toString()
             )
         }
@@ -478,7 +478,7 @@ class IconDrawableStateImageCommonTest {
             background = android.R.drawable.bottom_bar
         ).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
+                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
                 toString()
             )
         }
@@ -487,7 +487,7 @@ class IconDrawableStateImageCommonTest {
             iconSize = SketchSize(50, 50)
         ).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x50)",
+                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x50)",
                 toString()
             )
         }
@@ -496,7 +496,7 @@ class IconDrawableStateImageCommonTest {
             iconSize = SketchSize(50, 30)
         ).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x30)",
+                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x30)",
                 toString()
             )
         }
@@ -506,7 +506,7 @@ class IconDrawableStateImageCommonTest {
             background = android.R.drawable.btn_default,
         ).apply {
             Assert.assertEquals(
-                "IconStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.btn_default}), iconSize=44x67)",
+                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.btn_default}), iconSize=44x67)",
                 toString()
             )
         }

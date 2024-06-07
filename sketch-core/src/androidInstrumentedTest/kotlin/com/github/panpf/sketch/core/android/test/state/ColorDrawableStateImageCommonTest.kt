@@ -21,7 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.IntColorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
@@ -30,14 +30,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ColorStateImageTest {
+class ColorDrawableStateImageCommonTest {
 
     @Test
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, MyImages.jpeg.uri)
 
-        IntColorStateImage(Color.BLUE).apply {
+        IntColorDrawableStateImage(Color.BLUE).apply {
             Assert.assertEquals(
                 Color.BLUE,
                 getImage(sketch, request, null)!!
@@ -46,7 +46,7 @@ class ColorStateImageTest {
             )
         }
 
-        IntColorStateImage(Color.RED).apply {
+        IntColorDrawableStateImage(Color.RED).apply {
             Assert.assertEquals(
                 Color.RED,
                 getImage(sketch, request, null)!!
@@ -55,7 +55,7 @@ class ColorStateImageTest {
             )
         }
 
-        IntColorStateImage(Color.GREEN).apply {
+        IntColorDrawableStateImage(Color.GREEN).apply {
             Assert.assertEquals(
                 Color.GREEN,
                 getImage(sketch, request, null)!!
@@ -67,10 +67,10 @@ class ColorStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = IntColorStateImage(Color.RED)
-        val element11 = IntColorStateImage(Color.RED)
-        val element2 = IntColorStateImage(Color.GREEN)
-        val element3 = IntColorStateImage(Color.BLUE)
+        val element1 = IntColorDrawableStateImage(Color.RED)
+        val element11 = IntColorDrawableStateImage(Color.RED)
+        val element2 = IntColorDrawableStateImage(Color.GREEN)
+        val element3 = IntColorDrawableStateImage(Color.BLUE)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)
@@ -97,11 +97,11 @@ class ColorStateImageTest {
 
     @Test
     fun testToString() {
-        IntColorStateImage(Color.RED).apply {
-            Assert.assertEquals("IntColorStateImage(${Color.RED}))", toString())
+        IntColorDrawableStateImage(Color.RED).apply {
+            Assert.assertEquals("ColorDrawableStateImage(IntColor(${Color.RED}))", toString())
         }
-        IntColorStateImage(Color.GREEN).apply {
-            Assert.assertEquals("IntColorStateImage(${Color.GREEN}))", toString())
+        IntColorDrawableStateImage(Color.GREEN).apply {
+            Assert.assertEquals("ColorDrawableStateImage(IntColor(${Color.GREEN}))", toString())
         }
     }
 }

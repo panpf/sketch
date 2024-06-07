@@ -80,9 +80,9 @@ import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IconDrawableStateImage
-import com.github.panpf.sketch.state.IntColorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
-import com.github.panpf.sketch.state.ResColorStateImage
+import com.github.panpf.sketch.state.ResColorDrawableStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.target.ImageViewTarget
@@ -1121,9 +1121,9 @@ class ImageRequestTest {
                 Assert.assertNull(placeholder)
             }
 
-            placeholder(IntColorStateImage(Color.BLUE))
+            placeholder(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
-                Assert.assertEquals(IntColorStateImage(Color.BLUE), placeholder)
+                Assert.assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
             }
 
             placeholder(ColorDrawableEqualizer(Color.GREEN))
@@ -1155,9 +1155,9 @@ class ImageRequestTest {
                 Assert.assertNull(uriEmpty)
             }
 
-            uriEmpty(IntColorStateImage(Color.BLUE))
+            uriEmpty(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
-                Assert.assertEquals(IntColorStateImage(Color.BLUE), uriEmpty)
+                Assert.assertEquals(IntColorDrawableStateImage(Color.BLUE), uriEmpty)
             }
 
             uriEmpty(ColorDrawableEqualizer(Color.GREEN))
@@ -1189,10 +1189,10 @@ class ImageRequestTest {
                 Assert.assertNull(error)
             }
 
-            error(IntColorStateImage(Color.BLUE))
+            error(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
                 Assert.assertEquals(
-                    ErrorStateImage(IntColorStateImage(Color.BLUE)),
+                    ErrorStateImage(IntColorDrawableStateImage(Color.BLUE)),
                     error
                 )
             }
@@ -1645,10 +1645,10 @@ class ImageRequestTest {
                 )
             },
             ScopeAction {
-                placeholder(IntColorStateImage(Color.BLUE))
+                placeholder(IntColorDrawableStateImage(Color.BLUE))
             },
             ScopeAction {
-                placeholder(ResColorStateImage(color.background_dark))
+                placeholder(ResColorDrawableStateImage(color.background_dark))
             },
             ScopeAction {
                 val drawable = context.resources.getEqualityDrawableCompat(drawable.ic_delete, null)
@@ -1661,17 +1661,21 @@ class ImageRequestTest {
                 placeholder(CurrentStateImage(drawable.ic_delete))
             },
             ScopeAction {
-                placeholder(MemoryCacheStateImage("uri", IntColorStateImage(Color.BLUE)))
+                placeholder(MemoryCacheStateImage("uri", IntColorDrawableStateImage(Color.BLUE)))
             },
             ScopeAction {
-                placeholder(ThumbnailMemoryCacheStateImage("uri", IntColorStateImage(Color.BLUE)))
+                placeholder(
+                    ThumbnailMemoryCacheStateImage(
+                        "uri",
+                        IntColorDrawableStateImage(Color.BLUE)
+                    ))
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete))
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete)) {
-                    uriEmptyError(IntColorStateImage(Color.BLUE))
+                    uriEmptyError(IntColorDrawableStateImage(Color.BLUE))
                 }
             },
             ScopeAction {

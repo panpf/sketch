@@ -28,7 +28,7 @@ import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.IntColorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -57,7 +57,7 @@ class MemoryCacheStateImageTest {
         MemoryCacheStateImage(memoryCacheKey).apply {
             Assert.assertNull(getImage(sketch, request, null))
         }
-        MemoryCacheStateImage(memoryCacheKey, IntColorStateImage(Color.BLUE)).apply {
+        MemoryCacheStateImage(memoryCacheKey, IntColorDrawableStateImage(Color.BLUE)).apply {
             Assert.assertTrue(
                 getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable is ColorDrawable
@@ -86,7 +86,7 @@ class MemoryCacheStateImageTest {
         MemoryCacheStateImage(memoryCacheKey, null).apply {
             Assert.assertTrue(getImage(sketch, request, null) is AndroidBitmapImage)
         }
-        MemoryCacheStateImage(memoryCacheKey, IntColorStateImage(Color.BLUE)).apply {
+        MemoryCacheStateImage(memoryCacheKey, IntColorDrawableStateImage(Color.BLUE)).apply {
             Assert.assertTrue(getImage(sketch, request, null) is AndroidBitmapImage)
         }
 
@@ -95,11 +95,11 @@ class MemoryCacheStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = MemoryCacheStateImage("key1", IntColorStateImage(Color.BLUE))
-        val element11 = MemoryCacheStateImage("key1", IntColorStateImage(Color.BLUE))
-        val element2 = MemoryCacheStateImage("key1", IntColorStateImage(Color.GREEN))
-        val element3 = MemoryCacheStateImage("key2", IntColorStateImage(Color.BLUE))
-        val element4 = MemoryCacheStateImage(null, IntColorStateImage(Color.BLUE))
+        val element1 = MemoryCacheStateImage("key1", IntColorDrawableStateImage(Color.BLUE))
+        val element11 = MemoryCacheStateImage("key1", IntColorDrawableStateImage(Color.BLUE))
+        val element2 = MemoryCacheStateImage("key1", IntColorDrawableStateImage(Color.GREEN))
+        val element3 = MemoryCacheStateImage("key2", IntColorDrawableStateImage(Color.BLUE))
+        val element4 = MemoryCacheStateImage(null, IntColorDrawableStateImage(Color.BLUE))
         val element5 = MemoryCacheStateImage("key1", null)
 
         Assert.assertNotSame(element1, element11)
@@ -152,21 +152,21 @@ class MemoryCacheStateImageTest {
         val request = ImageRequest(context, MyImages.jpeg.uri)
         val memoryCacheKey = request.toRequestContext(sketch).cacheKey
 
-        MemoryCacheStateImage(memoryCacheKey, IntColorStateImage(Color.BLUE)).apply {
+        MemoryCacheStateImage(memoryCacheKey, IntColorDrawableStateImage(Color.BLUE)).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(cacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.BLUE})))",
+                "MemoryCacheStateImage(cacheKey='$memoryCacheKey', defaultImage=ColorDrawableStateImage(IntColor(${Color.BLUE})))",
                 toString()
             )
         }
-        MemoryCacheStateImage(memoryCacheKey, IntColorStateImage(Color.GREEN)).apply {
+        MemoryCacheStateImage(memoryCacheKey, IntColorDrawableStateImage(Color.GREEN)).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(cacheKey=$memoryCacheKey, defaultImage=ColorStateImage(IntColor(${Color.GREEN})))",
+                "MemoryCacheStateImage(cacheKey='$memoryCacheKey', defaultImage=ColorDrawableStateImage(IntColor(${Color.GREEN})))",
                 toString()
             )
         }
         MemoryCacheStateImage(null, null).apply {
             Assert.assertEquals(
-                "MemoryCacheStateImage(cacheKey=null, defaultImage=null)",
+                "MemoryCacheStateImage(cacheKey='null', defaultImage=null)",
                 toString()
             )
         }
