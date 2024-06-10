@@ -25,6 +25,7 @@ import okio.Path
 
 expect fun getTestContext(): PlatformContext
 
+// TODO 不再使用
 fun newSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Sketch {
     val context = getTestContext()
     return Sketch.Builder(context).apply {
@@ -36,10 +37,12 @@ fun newSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Sketch 
     }.build()
 }
 
+// TODO 不再使用
 fun newSketch(): Sketch {
     return newSketch {}
 }
 
+// TODO 改成在 block 中使用新创建的 Sketch，block 结束后自动清除 downloadCache 和 resultCache，防止产生越来越多的垃圾文件
 fun getTestContextAndNewSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Pair<PlatformContext, Sketch> {
     val context = getTestContext()
     return context to newSketch(block)
