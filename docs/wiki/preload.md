@@ -1,99 +1,76 @@
+## Preload
 
+## Pre-download to disk cache
 
-## Download Image
+> [!IMPORTANT]
+> The `sketch-extensions-core` module must be imported
 
-Translations: [简体中文](preload_zh.md)
-
-Use [DownloadRequest] to download images to disk, as follows:
-
-```kotlin
-DownloadRequest(context, "https://example.com/image.jpg") {
-    listener(
-        onSuccess = { request: DownloadRequest, result: DownloadResult.Success ->
-            val input: InputStream = result.data.newInputStream()
-            // ...
-        },
-        onError = { request: DownloadRequest, result: DownloadResult.Error ->
-            val throwable: Throwable = result.throwable
-            // ...
-        }
-    )
-}.enqueue()
-```
-
-When you need to get the download result synchronously, you can use the execute method, as follows:
+You can pre-download network images to the disk cache through the [enqueueDownload]
+or [executeDownload] function, as follows:
 
 ```kotlin
-coroutineScope.launch(Dispatchers.Main) {
-    val result: DownloadResult =
-        DownloadRequest(context, "https://example.com/image.jpg").execute()
-    if (result is DownloadResult.Success) {
-        val input: InputStream = result.data.newInputStream()
+val imageUri = "https://example.com/image.jpg"
+
+val disposable = sketch.enqueueDownload(imageUri)
+scope.launch {
+    disposable.job.await()
+    val snapshot = sketch.downloadCache.withLock {
+        openSnapshot(imageUri)
+    }
+    try {
+        val bytes: ByteArray = sketch.downloadCache.fileSystem
+            .source(snapshot.data).buffer().use { it.readByteArray() }
         // ...
-    } else if (result is DownloadResult.Error) {
-        val throwable: Throwable = result.throwable
+    } finally {
+        snapshot.close()
+    }
+}
+
+// or
+scope.launch {
+    sketch.executeDownload(imageUri)
+    val snapshot = sketch.downloadCache.withLock {
+        openSnapshot(imageUri)
+    }
+    try {
+        val bytes: ByteArray = sketch.downloadCache.fileSystem
+            .source(snapshot.data).buffer().use { it.readByteArray() }
         // ...
+    } finally {
+        snapshot.close()
     }
 }
 ```
 
-[DownloadRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/DownloadRequest.kt
+## Preload into memory cache
 
-# LoadRequest
-
-Translations: [简体中文](load_request_zh.md)
-
-Use [LoadRequest] to load an image and obtain a Bitmap, as follows:
+If you want to preload the image into memory, you only need to not set [Target], but other
+parameters need to be the same as when used, as follows:
 
 ```kotlin
-LoadRequest(context, "https://example.com/image.jpg") {
-    listener(
-        onSuccess = { request: LoadRequest, result: LoadResult.Success ->
-            val bitmap = result.bitmap
-            // ...
-        },
-        onError = { request: LoadRequest, result: LoadResult.Error ->
-            val throwable: Throwable = result.throwable
-            // ...
-        }
-    )
-}.enqueue()
-```
+val request = ImageRequest(context, "https://example.com/image.jpg") {
+    size(200, 200)
+    precision(Precision.LESS_PIXELS)
+    scale(Scale.CENTER_CROP)
+}
 
-When you need to obtain the loading results synchronously, you can use the execute method, as
-follows:
-
-```kotlin
-coroutineScope.launch(Dispatchers.Main) {
-    val result: LoadResult = LoadRequest(context, "https://example.com/image.jpg").execute()
-    if (result is LoadResult.Success) {
-        val bitmap = result.bitmap
-        // ...
-    } else if (result is LoadResult.Error) {
-        val throwable: Throwable = result.throwable
-        // ...
-    }
+sketch.enqueue(request)
+// or
+scope.launch {
+    sketch.execute(request)
 }
 ```
 
 > [!TIP]
-> LoadRequest will not obtain the Bitmap from the memory cache, nor will it put the obtained
-> Bitmap into the memory cache, because the Bitmap returned by LoadRequest is completely handed over
-> to the user and is not controlled by Sketch.
+> When building [ImageRequest], you need to actively set and use consistent size, precision, and
+> scale, because if there is no active setting when using Size, precision and scale will be obtained
+> from [Target], which may cause inconsistencies in size, precision, and scale between preloading
+> and use, resulting in failure to hit the cache.
 
-[LoadRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LoadRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-## Preload images into memory
+[Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
-Translations: [简体中文](preloading_zh.md)
+[enqueueDownload]: ../../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/util/download.kt
 
-To preload images into memory, you only need to not set target, as follows:
-
-```kotlin
-DisplayImage(context, "https://example.com/image.jpg") {
-    // more ...
-}.enqueue()
-```
-
-In order to ensure that the cache is accurately hit when used later, the configuration during
-preloading needs to be exactly the same as when used, especially resizeSize
+[executeDownload]: ../../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/util/download.kt

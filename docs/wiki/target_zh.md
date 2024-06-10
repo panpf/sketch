@@ -1,59 +1,44 @@
 # Target
 
-[//]: # (TODO)
-
 翻译：[English](target.md)
 
-[Target] 用来将 [Image] 显示到 View、Compose 以及其它任意组件上
+[Target] 主要的工作是用来显示 [Image]，同时还负责在构建 [ImageRequest]
+时提供 [SizeResolver]、[ScaleDecider]、[ResizeOnDrawHelper]、[LifecycleResolver] 等属性，这些属性会被作为默认值使用
 
-### View
+## Compose
 
-显示到 View 时需要你主动设置 target，如下：
-
-```kotlin
-val imageView = ImageView(context)
-
-ImageRequest(context, "https://www.example.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    crossfade(true)
-    target(imageView)
-}.enqueue(request)
-
-// 或
-ImageRequest(context, "https://www.example.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    crossfade(true)
-    target(
-        onStart = { requestContext, placeholder: Image? ->
-            imageView.setImageDrawable(placeholder?.asDrawable())
-        },
-        onSuccess = { requestContext, result: Image ->
-            imageView.setImageDrawable(result.asDrawable())
-        },
-        onError = { requestContext, error: Image? ->
-            imageView.setImageDrawable(error?.asDrawable())
-        }
-    )
-}.enqueue(request)
-```
-
-### Compose
-
-显示到 Compose 时不需要你设置 target，AsyncImage 会设置，只需配置其它参数即可，如下：
+将 [Image] 显示到 Compose 组件时不需要你主动设置 target，[AsyncImage] 和 [AsyncImagePainter]
+会设置，你只需设置其它参数即可，如下：
 
 ```kotlin
 AsyncIage(
     rqeuest = ImageRequest("https://example.com/image.jpg") {
-        placeholder(R.drawable.placeholder)
-        crossfade(true)
+        placeholder(Res.drawable.placeholder)
+        crossfade()
     },
     contentDescription = "photo",
 )
 ```
 
+## View
+
+将 [Image] 显示到 View 时需要你主动设置 [Target]
+
+### ImageView
+
+[Sketch] 提供了 [ImageViewTarget] 用来将图片显示到 [ImageView]，如下：
+
+```kotlin
+ImageRequest(context, "https://www.example.com/image.jpg") {
+    placeholder(R.drawable.placeholder)
+    crossfade()
+    target(imageView)
+}.enqueue(request)
+```
+
 ### RemoteViews
 
-Sketch 提供了 [RemoteViewsTarget] 用来将图片显示到 [RemoteViews]，如下：
+[Sketch] 还提供了 [RemoteViewsTarget] 用来将图片显示到 [RemoteViews]，如下：
 
 ```kotlin
 val remoteViews =
@@ -81,17 +66,20 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 }.enqueue()
 ```
 
-1. 如上所示 [RemoteViewsTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的
-   setImageViewBitmap 方法设置 Bitmap
-2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
+> [!TIP]
+> 1. 如上所示 [RemoteViewsTarget] 仅将 Drawable 转换为 Bitmap 并调用 [RemoteViews] 的
+     setImageViewBitmap 方法设置 Bitmap
+> 2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
+
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
 [Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[ViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
-[ImageViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
+[ImageViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -99,4 +87,16 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 
 [RemoteViews]: https://developer.android.google.cn/reference/android/widget/RemoteViews
 
-[RemoteViewsTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt
+[RemoteViewsTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/RemoteViewsTarget.kt
+
+[SizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
+
+[ScaleDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ScaleDecider.kt
+
+[ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
+
+[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LifecycleResolver.kt
+
+[AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
+
+[AsyncImagePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImagePainter.kt

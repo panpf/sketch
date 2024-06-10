@@ -2,52 +2,43 @@
 
 Translations: [简体中文](resize_zh.md)
 
-[Resize] is used to adjust the size of the picture. It participates in the calculation of
-inSampleSize during decoding. If the size still does not meet the requirements of [Resize] after
-decoding, it will be adjusted again.
+[Sketch] will adjust the size of the image to avoid exceeding the target and causing memory waste.
 
-[Resize] consists of the following concepts:
+Adjusting the image size depends on the sizeResolver, precisionDecider and scaleDecider
+of [ImageRequest]
+Attributes, when they are determined, a [Resize] will be generated and handed over to [Decoder] for
+use.
 
-* width、height: Desired width and height
-* [Precision]: Decide how to use width and height to resize the image
-    * LESS_PIXELS: Default precision. As long as the number of pixels of the final Bitmap (width
-      times height) is less than or equal to the number of pixels of [Resize]
-    * SMALLER_SIZE: As long as the width and height of the final Bitmap are less than or equal to
-      the width and height of [Resize]
-    * SAME_ASPECT_RATIO: The final aspect ratio of Bitmap is consistent with the aspect ratio
-      of [Resize] and the number of pixels must be less than [Resize]. If the ratio is inconsistent,
-      it will be calculated according to [Scale]
-      Crop the original image, preferably using BitmapRegionDecoder.
-    * EXACTLY: The final Bitmap size must be the same as [Resize]. If the size is inconsistent, the
-      original image will be cropped according to [Scale], and BitmapRegionDecoder will be used
-      first for cropping.
-* [PrecisionDecider]: Decide which [Precision] to use based on image size and [Resize]
-    * [FixedPrecisionDecider]: Always use the specified [Precision]
-    * [LongImageClipPrecisionDecider]: If it is a long image, use the specified [Precision],
-      otherwise always use LESS_PIXELS
+[Decoder] First reduce the image size through subsampling or regional subsampling during decoding.
+If the size still does not meet the [Resize] requirements after decoding, it will be adjusted again.
+
+[Resize] consists of [Size], [Precision], [Scale]
+
+* [Size]: Desired width and height
+* [Precision]: Decide how to use [Size] to resize images
+    * LESS_PIXELS: As long as the number of pixels of the final Image (width times height) is less
+      than or equal to the number of pixels of [Size]
+    * SMALLER_SIZE: As long as the width and height of the final Image are less than or equal
+      to [Size]
+    * SAME_ASPECT_RATIO: Ensure that the aspect ratio of the final Image is consistent with the
+      aspect ratio of [Size] and the number of pixels is less than or equal to the number of pixels
+      of [Size]. If they are inconsistent, the original image will be cropped according to [Scale]
+    * EXACTLY: Make sure the size of the final Image is consistent with [Size], if not the original
+      image will be cropped according to [Scale]
 * [Scale]: Determines how to crop the original image when [Precision] is EXACTLY or
   SAME_ASPECT_RATIO
-    * START_CROP: Keep the start part
-    * CENTER_CROP: Keep the middle part
+    * START_CROP: Keep the head part
+    * CENTER_CROP: Keep the center part
     * END_CROP: Keep the end part
-    * FILL: Keep all, but deformed
-* [ScaleDecider]: Decide which [Scale] to use based on image size and [Resize]
-    * [FixedScaleDecider]: Always use the specified [Scale]
-    * [LongImageScaleDecider]: Specify two [Scale], the first one is used for long images, otherwise
-      the second one is used
+    * FILL: All retained but deformed
 
-> 1. The default implementation of long image rules is [DefaultLongImageDecider], you can also
-     create [LongImageClipPrecisionDecider] or [LongImageScaleDecider] when using custom rules
-> 2. Using [LongImageClipPrecisionDecider] helps improve the clarity of long images in the grid
-     list, [View detailed introduction][long_image_grid_thumbnails]
+## Configuration
 
-### Configure
-
-[ImageRequest] and [ImageOptions] both provide resize, resizeSize, resizePrecision, resizeScale
-Method used to configure [Resize]
+Both [ImageRequest] and [ImageOptions] provide resize, size, precision, and scale methods for
+configuring [Resize], as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     /* Set three properties at once */
     resize(
         width = 100,
@@ -69,52 +60,105 @@ imageView.displayImage("https://example.com/image.jpg") {
     )
 
     /* Set size properties only */
-    resizeSize(100, 100)
+    size(100, 100)
     // or
-    resizeSize(Size(100, 100))
+    size(Size(100, 100))
     // or
-    resizeSize(FixedSizeResolver(100, 100))
+    size(FixedSizeResolver(100, 100))
 
     /* Set precision properties only */
-    resizePrecision(Precision.SAME_ASPECT_RATIO)
+    precision(Precision.SAME_ASPECT_RATIO)
     // or
-    resizePrecision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
+    precision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
 
-    /* Set scale properties only */
-    resizeScale(Scale.END_CROP)
+    /* Set only scale properties */
+    scale(Scale.END_CROP)
     // or
-    resizeScale(LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP))
+    scale(LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP))
 }
 ```
 
-### Default Value
+## SizeResolver
 
-* width、height:
-    1. If target is [ViewTarget]
-        1. Prioritize the width and height of view's LayoutParams
-        2. Secondly, it is delayed to the drawing stage to obtain the width and height of the View.
-           If the width and height are still 0 in the drawing stage, the request will not continue
-           to be executed.
-    2. If used in compose
-        1. If AsyncImage is used, take the measured width and height
-        2. If AsyncImagePainter is used directly, the drawing width and height are obtained in the
-           drawing stage. Similarly, the width and height are still the same in the drawing stage.
-           0, then the request will not continue to execute
-    3. Get the width and height of the screen
-* [Precision]：LESS_PIXELS
-* [Scale]：CENTER_CROP
+[Sketch] Use Resolver wrapper to provide [Size] for [ImageRequest], this is because the size of the
+View or Compose component changes when building [ImageRequest] may not be determined and needs to
+wait until the drawing stage to obtain it, so use [SizeResolver] to solve this problem
 
-### resizeOnDraw
+## PrecisionDecider 和 ScaleDecider
 
-The resizeApplyToDrawable attribute of [ImageRequest] and [ImageOptions] is used to apply [Resize]
-to the placeholder, error, result Drawable of [Target]
+[Sketch] also uses the Decider wrapper to provide [Precision] and [Scale] for [ImageRequest], so
+that when decoding, you can dynamically decide which [Precision] and [Scale] to use based on the
+image size and [Resize]
 
-Sketch will use [ResizeDrawable] or [ResizeAnimatableDrawable] to convert placeholder, error, result
-Drawable Wrapping one layer, externally using [Resize] as intrinsicWidth and intrinsicHeight,
-internally using [Resize]'s scale for Drawable Zoom
+The following implementations are provided by default:
 
-This function can be used with [CrossfadeTransition] to achieve a perfect
-transition, [View introduction to perfect transition][transition]
+* [PrecisionDecider]: Determine which [Precision] to use based on the image size and [Size]
+  of [Resize]
+    * [FixedPrecisionDecider]: Always use the specified [Precision]
+    * [LongImageClipPrecisionDecider]: If it is a long image, use the specified [Precision],
+      otherwise always use LESS_PIXELS
+* [ScaleDecider]: Decide which [Scale] to use based on the image size and [Size] of [Resize]
+    * [FixedScaleDecider]: Always use the specified [Scale]
+    * [LongImageScaleDecider]: Specify two [Scale], the first one is used for long images, otherwise
+      the second one is used
+
+> [!TIP]
+> 1. Using [LongImageClipPrecisionDecider] and [LongImageScaleDecider] helps improve the clarity of
+     long images in grid lists. [Learn more][long_image_grid_thumbnails]
+> 2. The default implementation of long image rules is [DefaultLongImageDecider]. You can also use
+     custom rules when creating [LongImageClipPrecisionDecider] or [LongImageScaleDecider]
+
+## Build order and defaults
+
+Determining the values of these properties when building [ImageRequest] is still a bit complicated,
+here is a simple building sequence:
+
+* [Size]:
+    1. [ImageRequest].Builder.sizeResolver
+    2. [Target].getImageOptions().sizeResolver
+    3. [ImageRequest].Builder.defaultOptions.sizeResolver
+    4. [Sketch].globalImageOptions.sizeResolver
+    5. [Target].getSizeResolver()
+        1. View 或 Compose 组件的宽高
+        2. DisplayMetrics size 或 LocalWindow containerSize
+    6. [OriginSizeResolver]
+* [Precision]:
+    1. [ImageRequest].Builder.precisionDecider
+    2. [Target].getImageOptions().precisionDecider
+    3. [ImageRequest].Builder.defaultOptions.precisionDecider
+    4. [Sketch].globalImageOptions.precisionDecider
+    5. [Precision].LESS_PIXELS
+* [Scale]:
+    1. [ImageRequest].Builder.scaleDecider
+    2. [Target].getImageOptions().scaleDecider
+    3. [ImageRequest].Builder.defaultOptions.scaleDecider
+    4. [Sketch].globalImageOptions.scaleDecider
+    5. [Scale].CENTER_CROP
+
+> [!TIP]
+> 1. When [Target] is [ViewTarget], the LayoutParams width and height of the View are taken first,
+     and then the measured width and height of the View are delayed until the drawing stage. If the
+     drawing stage is not executed, the request will not be executed.
+> 2. If the width of the component is a fixed value (for example, 100) and the height is wrap, Size
+     will be '100xContainerHeight'
+> 3. For detailed build rules, please refer to the [ImageRequest].Builder.build() method
+
+## resizeOnDraw
+
+The resizeOnDraw properties of [ImageRequest] and [ImageOptions] are used to apply [Resize] to the
+placeholder, error, result [Image] of [Target] to change the size of [Image] during drawing
+
+resizeOnDraw relies on [ResizeOnDrawHelper] implementation, [ResizeOnDrawHelper] will
+use [ResizeDrawable] or [ResizePainter] to wrap placeholder, error, result [Image] with a
+layer, [Size] of [Resize] is used externally as the width and height, and [Scale] of [Resize] is
+used internally to scale [Image]
+
+resizeOnDraw paired with [CrossfadeTransition] can achieve a perfect
+transition. [Understanding Perfect Transition](transition.md#perfect-transition)
+
+> [!IMPORTANT]
+> 1. [ResizeOnDrawHelper] is provided by [Target], so if [Target] is not set, the resizeOnDraw
+     property will have no effect
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
 
@@ -136,7 +180,7 @@ transition, [View introduction to perfect transition][transition]
 
 [Precision]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Precision.kt
 
-[ViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
+[ViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ViewTarget.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -146,12 +190,20 @@ transition, [View introduction to perfect transition][transition]
 
 [Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 
-[ResizeDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+[ResizeDrawable]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/drawable/ResizeDrawable.kt
 
-[ResizeAnimatableDrawable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/drawable/internal/ResizeDrawable.kt
+[ResizeAnimatableDrawable]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/drawable/ResizeAnimatableDrawable.kt
 
 [DefaultLongImageDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/LongImageDecider.kt
 
-[long_image_grid_thumbnails]: long_image_grid_thumbnails.md
+[Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt
 
-[transition]: transition.md
+[Size]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Size.kt
+
+[OriginSizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
+
+[Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
+
+[ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
+
+[long_image_grid_thumbnails]: long_image_grid_thumbnails.md

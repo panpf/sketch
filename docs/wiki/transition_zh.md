@@ -21,7 +21,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 请参考 [CrossfadeTransition] 的实现
 
-### 实现完美过渡
+### 完美过渡
 
 [CrossfadeTransition] 以 placeholder 图片和 result 图片的最大宽高作为新图片的宽高，然后对 placeholder
 图片和 result 图片进行缩放

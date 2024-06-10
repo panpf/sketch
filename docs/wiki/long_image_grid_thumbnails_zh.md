@@ -20,6 +20,7 @@
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
     precision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
+    scale(LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP))
 }
 ```
 

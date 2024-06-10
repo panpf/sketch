@@ -20,7 +20,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 Please refer to the implementation of [CrossfadeTransition]
 
-### Make the perfect transition
+### Perfect transition
 
 [CrossfadeTransition] Use the maximum width and height of the placeholder image and result image as the width and height of the new image, and then change the placeholder Image and result image are scaled
 

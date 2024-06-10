@@ -14,10 +14,10 @@ Translations: [简体中文](transformation_zh.md)
 > [!TIP]
 > 1. [Transformation] does not support animated graphics. Please use the animatedTransformation()
      function for animated image.
-> 2. When using RoundedCornersTransformation, please use it with 'resizePrecision(
-     Precision.EXACTLY)', because if the original image size is the same as
-     When the resize size is inconsistent, the final fillet will be scaled during display, resulting
-     in the fillet size being inconsistent with expectations.
+> 2. When using RoundedCornersTransformation, please use it with 'precision(Precision.EXACTLY)',
+     because if the original image size is the same as When the resize size is inconsistent, the
+     final fillet will be scaled during display, resulting in the fillet size being inconsistent
+     with expectations.
 
 ### Configure
 
