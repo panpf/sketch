@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.request
 
 import android.widget.ImageView
-import com.github.panpf.sketch.request.ImageRequest.Builder
 import com.github.panpf.sketch.target.ImageViewTarget
 
 
@@ -26,8 +25,8 @@ import com.github.panpf.sketch.target.ImageViewTarget
 fun ImageRequest(
     imageView: ImageView,
     uri: String?,
-    configBlock: (Builder.() -> Unit)? = null
-): ImageRequest = Builder(imageView.context, uri).apply {
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): ImageRequest = ImageRequest.Builder(imageView.context, uri).apply {
     target(imageView)
     configBlock?.invoke(this)
 }.build()
@@ -36,6 +35,6 @@ fun ImageRequest(
 /**
  * Set the target to the ImageView
  */
-fun Builder.target(imageView: ImageView): Builder = apply {
+fun ImageRequest.Builder.target(imageView: ImageView): ImageRequest.Builder = apply {
     target(ImageViewTarget(imageView))
 }

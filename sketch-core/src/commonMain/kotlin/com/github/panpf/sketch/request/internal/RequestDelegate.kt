@@ -34,8 +34,7 @@ internal fun requestDelegate(
     job: Job
 ): RequestDelegate {
     val target = initialRequest.target
-    val targetRequestDelegate =
-        target?.newRequestDelegate(sketch, initialRequest, job)
+    val targetRequestDelegate = target?.newRequestDelegate(sketch, initialRequest, job)
     return targetRequestDelegate ?: NoTargetRequestDelegate(sketch, initialRequest, job)
 }
 
@@ -87,7 +86,7 @@ open class BaseRequestDelegate(
 
         val target = target
         if (target != null) {
-            target.getRequestManager().setRequest(this)
+            target.getRequestManager()?.setRequest(this)
             if (target is TargetLifecycle.EventObserver) {
                 lifecycle.removeAndAddObserver(target)
             }
@@ -121,7 +120,7 @@ open class BaseRequestDelegate(
         if (event == TargetLifecycle.Event.ON_DESTROY) {
             val target = target
             if (target != null) {
-                target.getRequestManager().dispose()
+                target.getRequestManager()?.dispose()
             } else {
                 dispose()
             }

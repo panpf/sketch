@@ -295,13 +295,13 @@ class RequestKeysTest {
         var request = ImageRequest(context, uri)
 
         val verifyCacheKey: (String) -> Unit = { expectCacheKey ->
-            val resizeSize = runBlocking { request.sizeResolver.size() }
-            val cacheKey = request.newCacheKey(resizeSize)
+            val size = runBlocking { request.sizeResolver.size() }
+            val cacheKey = request.newCacheKey(size)
             Assert.assertEquals(expectCacheKey, cacheKey)
         }
 
-        var resizeSize = runBlocking { request.sizeResolver.size() }
-        var _size = "&_size=${resizeSize}"
+        var size = runBlocking { request.sizeResolver.size() }
+        var _size = "&_size=${size}"
         var _precision = "&_precision=${request.precisionDecider.key}"
         var _scale = "&_scale=${request.scaleDecider.key}"
         verifyCacheKey(uri + _size + _precision + _scale)
@@ -382,8 +382,8 @@ class RequestKeysTest {
         request = request.newRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        resizeSize = runBlocking { request.sizeResolver.size() }
-        _size = "&_size=${resizeSize}"
+        size = runBlocking { request.sizeResolver.size() }
+        _size = "&_size=${size}"
         _precision = "&_precision=${request.precisionDecider.key}"
         _scale = "&_scale=${request.scaleDecider.key}"
         verifyCacheKey(

@@ -762,7 +762,6 @@ data class ImageRequest(
             )
         }
 
-        // 有 target 时，target 的保底size 是屏幕或窗口 size，无 target 时是原图 size
         private fun resolveSizeResolver(): SizeResolver =
             target?.getSizeResolver() ?: OriginSizeResolver
 

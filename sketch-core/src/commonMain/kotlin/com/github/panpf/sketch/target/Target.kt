@@ -43,9 +43,13 @@ interface Target {
         get() = null
 
 
-    fun getRequestManager(): RequestManager
+    fun getRequestManager(): RequestManager? = null
 
-    fun newRequestDelegate(sketch: Sketch, initialRequest: ImageRequest, job: Job): RequestDelegate
+    fun newRequestDelegate(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        job: Job
+    ): RequestDelegate? = null
 
 
     fun getListener(): Listener? = null

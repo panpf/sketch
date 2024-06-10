@@ -19,7 +19,7 @@ class ViewTargetRequestDelegate(
         val view = viewTarget.view
             ?: throw CancellationException("'ViewTarget.view' is cleared.")
         if (!ViewCompat.isAttachedToWindow(view)) {
-            viewTarget.getRequestManager().setRequest(this)
+            viewTarget.getRequestManager()?.setRequest(this)
             throw CancellationException("'ViewTarget.view' must be attached to a window.")
         }
     }

@@ -168,8 +168,8 @@ class SvgDecoderTest {
                     "ImageInfo(256x225,'image/svg+xml')",
                     imageInfo.toShortString()
                 )
-                val resizeSize = OriginSizeResolver.size()
-                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, resizeSize)
+                val size = OriginSizeResolver.size()
+                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, size)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(bitmapSize, image.size)
                 assertEquals(LOCAL, dataFrom)
