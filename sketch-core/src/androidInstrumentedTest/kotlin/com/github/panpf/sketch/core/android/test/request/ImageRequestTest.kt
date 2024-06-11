@@ -43,7 +43,7 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.request.GlobalTargetLifecycle
+import com.github.panpf.sketch.target.GlobalTargetLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult

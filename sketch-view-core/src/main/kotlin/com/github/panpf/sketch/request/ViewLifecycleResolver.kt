@@ -21,6 +21,7 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import com.github.panpf.sketch.target.GlobalTargetLifecycle
 import com.github.panpf.sketch.target.RealTargetLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle
 import java.lang.ref.WeakReference

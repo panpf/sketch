@@ -52,7 +52,7 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.AndroidDrawableImage
-import com.github.panpf.sketch.request.GlobalTargetLifecycle
+import com.github.panpf.sketch.target.GlobalTargetLifecycle
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
