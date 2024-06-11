@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.serialization")
@@ -54,7 +55,6 @@ kotlin {
             }
         }
         binaries.executable()
-        applyBinaryen()
     }
 
     sourceSets {
@@ -235,7 +235,7 @@ afterEvaluate {
             dependsOn(named("wasmJsProductionExecutableCompileSync"))
             dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
         }
-        named("wasmJsBrowserProductionExecutableDistributeResources").configure(configureWasmJs)
+        named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
     }
 }
 

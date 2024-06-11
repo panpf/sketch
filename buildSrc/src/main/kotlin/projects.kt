@@ -33,6 +33,10 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun Project.androidLibrary(
     nameSpace: String,
@@ -116,6 +120,8 @@ private fun <T : BaseExtension> Project.androidBase(
 //            }
 //            targets.configureEach {
 //                compilations.configureEach {
+//                    // https://youtrack.jetbrains.com/issue/KT-61573#focus=Comments-27-9822729.0-0
+//                    @Suppress("DEPRECATION")
 //                    compilerOptions.configure {
 //                        val arguments = listOf(
 //                            // https://kotlinlang.org/docs/compiler-reference.html#progressive
@@ -131,6 +137,7 @@ private fun <T : BaseExtension> Project.androidBase(
 //    }
 //    tasks.withType<KotlinCompile>().configureEach {
 //        compilerOptions {
+//            // Temporarily disable due to https://youtrack.jetbrains.com/issue/KT-60866.
 //            allWarningsAsErrors.set(System.getenv("CI").toBoolean())
 //
 //            val arguments = mutableListOf<String>()

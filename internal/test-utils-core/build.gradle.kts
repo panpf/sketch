@@ -12,11 +12,12 @@ kotlin {
         commonMain.dependencies {
             api(projects.sketchCore)
             api(projects.internal.images)
-            api(libs.kotlin.test.junit)
+            api(libs.kotlin.test)
             api(libs.kotlinx.coroutines.test)
         }
         jvmCommonMain.dependencies {
             api(libs.junit)
+            api(libs.kotlin.test.junit)
             api(libs.panpf.tools4j.reflect)
             api(libs.panpf.tools4j.security)
             api(libs.panpf.tools4j.test)

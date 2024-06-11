@@ -1,5 +1,5 @@
 [versions]
-android-plugin = "8.4.0"
+android-plugin = "8.5.0-rc02"
 androidx-activity = "1.8.2"
 androidx-annotation = "1.7.1"
 androidx-appcompat = "1.6.1"
@@ -26,16 +26,16 @@ cashapp-paging = "3.3.0-alpha02-0.5.1"
 ffmpegMediaMetadataRetriever = "1.0.16"
 google-material = "1.11.0"
 
-jetbrains-compose = "1.6.1"
-jetbrains-compose-compiler = "1.5.10.1"
+jetbrains-compose = "1.6.11"
+#jetbrains-compose-compiler = "1.5.10.1"
 
 junit = "4.13.2"
 
-kotlin = "1.9.23"
-kotlinx-atomicfu = "0.23.2" # sync with kotlin version
-kotlinx-coroutines = "1.8.0"
+kotlin = "2.0.0"
+kotlinx-atomicfu = "0.24.0" # sync with kotlin version
+kotlinx-coroutines = "1.8.1"
 kotlinx-serialization-json = "1.6.3"
-ktor = "2.3.9"
+ktor = "2.3.11"
 ktor-wasm = "3.0.0-wasm2"   # TODO Currently only versions with the '-wasm2' suffix support wasm
 
 leakcanary = "2.12"
@@ -49,11 +49,12 @@ panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.0"
 panpf-zoomimage = "1.0.2"
 
-skiko = "0.7.97"    # sync with compose version
+skiko = "0.8.4"    # sync with compose version
 voyager = "1.1.0-alpha03"
 
 [libraries]
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+gradlePlugin-kotlinComposeCompiler = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-kotlinSerialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 gradlePlugin-kotlinxAtomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
@@ -94,11 +95,12 @@ ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaM
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 
-jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jetbrains-compose-compiler" }
+#jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jetbrains-compose-compiler" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }

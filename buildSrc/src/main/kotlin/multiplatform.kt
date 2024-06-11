@@ -197,8 +197,8 @@ fun Project.applyKotlinJsImplicitDependencyWorkaround() {
             dependsOn(getByPath(":sketch-singleton:jsTestTestDevelopmentExecutableCompileSync"))
         }
         named("jsBrowserProductionWebpack").configure(configureJs)
-        named("jsBrowserProductionLibraryPrepare").configure(configureJs)
-        named("jsNodeProductionLibraryPrepare").configure(configureJs)
+        named("jsBrowserProductionLibraryDistribution").configure(configureJs)
+        named("jsNodeProductionLibraryDistribution").configure(configureJs)
     }
 }
 
@@ -219,14 +219,7 @@ fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
             dependsOn(getByPath(":sketch-singleton:wasmJsTestTestDevelopmentExecutableCompileSync"))
         }
         named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
-        named("wasmJsBrowserProductionLibraryPrepare").configure(configureWasmJs)
-        named("wasmJsNodeProductionLibraryPrepare").configure(configureWasmJs)
-        named("wasmJsBrowserProductionExecutableDistributeResources").configure {
-            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
-            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
-            dependsOn(named("wasmJsProductionLibraryCompileSync"))
-            dependsOn(named("wasmJsProductionExecutableCompileSync"))
-            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
-        }
+        named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
+        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
     }
 }

@@ -1,9 +1,7 @@
-import org.jetbrains.compose.ComposeExtension
-import org.jetbrains.compose.experimental.dsl.ExperimentalExtension
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
@@ -18,6 +16,7 @@ buildscript {
         classpath(libs.gradlePlugin.jetbrainsCompose)
         classpath(libs.gradlePlugin.kotlin)
         classpath(libs.gradlePlugin.kotlinSerialization)
+        classpath(libs.gradlePlugin.kotlinComposeCompiler)
         classpath(libs.gradlePlugin.kotlinxAtomicfu)
         classpath(libs.gradlePlugin.mavenPublish)
     }
@@ -30,9 +29,7 @@ tasks.register("cleanRootBuild", Delete::class) {
 allprojects {
     kotlinDependenciesConfig()
     jvmTargetConfig()
-    composeCompilerVersionConfig()
-    composeStabilityConfig()
-    composeReportsConfig()
+    composeConfig()
     publishConfig()
     applyOkioJsTestWorkaround()
     androidTestConfig()
@@ -63,45 +60,24 @@ fun Project.jvmTargetConfig() {
     }
 }
 
-fun Project.composeCompilerVersionConfig() {
-    plugins.withId("org.jetbrains.compose") {
-        extensions.configure<ComposeExtension> {
-            kotlinCompilerPlugin = libs.jetbrains.compose.compiler.get().toString()
-            extensions.configure<ExperimentalExtension> {
-                web.application {}  // Render components in html canvas using wasm
-            }
-        }
-    }
-}
+fun Project.composeConfig() {
+    plugins.withId("org.jetbrains.kotlin.plugin.compose") {
+        extensions.configure<ComposeCompilerGradlePluginExtension> {
+            enableIntrinsicRemember = true
+            enableNonSkippingGroupOptimization = true
+            enableStrongSkippingMode = true
+            stabilityConfigurationFile = rootDir.resolve("sketch-core/compose_compiler_config.conf")
 
-private val composePlugin = "androidx.compose.compiler.plugins.kotlin"
-
-fun Project.composeStabilityConfig() {
-    plugins.withId("org.jetbrains.compose") {
-        tasks.withType<KotlinCompile> {
-            val outputDir = rootDir.resolve("sketch-core/compose_compiler_config.conf").path
-            compilerOptions.freeCompilerArgs
-                .addAll("-P", "plugin:$composePlugin:stabilityConfigurationPath=$outputDir")
-        }
-    }
-}
-
-/**
- * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
- * which is located in the `project/module/build/compose_compiler` directory.
- *
- * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
- */
-fun Project.composeReportsConfig() {
-    if (project.findProperty("composeCompilerReports") == "true") {
-        plugins.withId("org.jetbrains.compose") {
-            tasks.withType<KotlinCompile> {
-                val outputDir =
-                    project.layout.buildDirectory.dir("compose_compiler").get().asFile.path
-                compilerOptions.freeCompilerArgs
-                    .addAll("-P", "plugin:$composePlugin:metricsDestination=$outputDir")
-                compilerOptions.freeCompilerArgs
-                    .addAll("-P", "plugin:$composePlugin:reportsDestination=$outputDir")
+            /**
+             * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
+             * which is located in the `project/module/build/compose_compiler` directory.
+             *
+             * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
+             */
+            if (project.findProperty("composeCompilerReports") == "true") {
+                val outputDir = layout.buildDirectory.dir("compose_compiler").get().asFile
+                metricsDestination = outputDir
+                reportsDestination = outputDir
             }
         }
     }
