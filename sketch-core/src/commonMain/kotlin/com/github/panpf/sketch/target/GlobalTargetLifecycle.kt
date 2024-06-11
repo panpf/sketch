@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.request
-
-import com.github.panpf.sketch.target.TargetLifecycle
+package com.github.panpf.sketch.target
 
 /**
  * A [TargetLifecycle] implementation that is always resumed and never destroyed.
