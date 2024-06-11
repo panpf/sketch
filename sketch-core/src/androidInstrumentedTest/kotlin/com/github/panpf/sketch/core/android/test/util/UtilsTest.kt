@@ -16,13 +16,8 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.content.ComponentCallbacks2
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Lifecycle.State.STARTED
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
-import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -34,8 +29,6 @@ import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -77,41 +70,6 @@ class UtilsTest {
             runBlocking(Dispatchers.Main) {
                 requiredWorkThread()
             }
-        }
-    }
-
-    @Test
-    fun testAwaitStarted() {
-        val lifecycleOwner = object : LifecycleOwner {
-            override var lifecycle: Lifecycle = LifecycleRegistry(this)
-        }
-        val myLifecycle = lifecycleOwner.lifecycle as LifecycleRegistry
-
-        var state = ""
-        runBlocking {
-            async(Dispatchers.Main) {
-                state = "waiting"
-                myLifecycle.awaitStarted()
-                state = "started"
-            }
-            delay(10)
-            Assert.assertEquals("waiting", state)
-            delay(10)
-            Assert.assertEquals("waiting", state)
-            runBlocking(Dispatchers.Main) {
-                myLifecycle.currentState = STARTED
-            }
-            delay(10)
-            Assert.assertEquals("started", state)
-
-            state = ""
-            async(Dispatchers.Main) {
-                state = "waiting"
-                myLifecycle.awaitStarted()
-                state = "started"
-            }
-            delay(10)
-            Assert.assertEquals("started", state)
         }
     }
 

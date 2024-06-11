@@ -62,6 +62,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @Composable
+expect fun resolveTargetLifecycle(): TargetLifecycle?
+
+@Composable
 expect fun getWindowContainerSize(): IntSize
 
 @Composable

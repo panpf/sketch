@@ -21,7 +21,7 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
-import com.github.panpf.sketch.target.AndroidTargetLifecycle
+import com.github.panpf.sketch.target.RealTargetLifecycle
 import com.github.panpf.sketch.target.TargetLifecycle
 import java.lang.ref.WeakReference
 
@@ -36,7 +36,7 @@ class ViewLifecycleResolver constructor(
         // because lifecycle() will only be executed after attached.
         val view1 = viewReference.get()
         val lifecycle = resolveLifecycle(view1) ?: return GlobalTargetLifecycle
-        return AndroidTargetLifecycle(lifecycle)
+        return RealTargetLifecycle(lifecycle)
     }
 
     private fun resolveLifecycle(view: View?): Lifecycle? {

@@ -5,25 +5,11 @@ import android.graphics.ColorSpace
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.target.AndroidTargetLifecycle
 import com.github.panpf.sketch.util.DrawableEqualizer
 
-
-/**
- * Set the [Lifecycle] for this request.
- *
- * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
- * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
- *
- * If this is null or is not set the will attempt to find the lifecycle
- * for this request through its context.
- */
-fun ImageRequest.Builder.lifecycle(lifecycle: Lifecycle): ImageRequest.Builder =
-    lifecycle(AndroidTargetLifecycle(lifecycle))
 
 /**
  * Set Drawable placeholder image when loading

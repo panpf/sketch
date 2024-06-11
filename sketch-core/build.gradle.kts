@@ -17,7 +17,6 @@ kotlin {
             api(libs.androidx.appcompat.resources)
             api(libs.androidx.core)
             api(libs.androidx.exifinterface)
-            api(libs.androidx.lifecycle.runtime)
             api(libs.kotlinx.coroutines.android)
         }
         desktopMain.dependencies {
@@ -29,6 +28,9 @@ kotlin {
         }
         nonJvmCommonMain.dependencies {
             api(projects.sketchHttpKtor)
+        }
+        nonJsCommonMain.dependencies {
+            api(libs.androidx.lifecycle.common)
         }
 
         commonTest.dependencies {

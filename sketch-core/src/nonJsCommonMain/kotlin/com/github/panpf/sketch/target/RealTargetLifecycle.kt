@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 
-class AndroidTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
+class RealTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
 
     override val currentState: State
         get() = lifecycle.currentState.toTargetLifecycleState()
@@ -27,7 +27,7 @@ class AndroidTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
     }
 
     private class LifecycleEventObserverWrapper(
-        private val lifecycle: AndroidTargetLifecycle,
+        private val lifecycle: RealTargetLifecycle,
         private val observer: EventObserver,
     ) : LifecycleEventObserver {
 
@@ -60,7 +60,7 @@ class AndroidTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AndroidTargetLifecycle) return false
+        if (other !is RealTargetLifecycle) return false
         return lifecycle == other.lifecycle
     }
 
@@ -69,6 +69,6 @@ class AndroidTargetLifecycle(val lifecycle: Lifecycle) : TargetLifecycle() {
     }
 
     override fun toString(): String {
-        return "AndroidTargetLifecycle(lifecycle=$lifecycle)"
+        return "RealTargetLifecycle($lifecycle)"
     }
 }

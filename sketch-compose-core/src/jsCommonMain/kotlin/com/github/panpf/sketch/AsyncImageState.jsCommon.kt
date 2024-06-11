@@ -1,11 +1,7 @@
-//package com.github.panpf.sketch
-//
-//import com.github.panpf.sketch.request.ImageRequest
-//import com.github.panpf.sketch.request.ImageRequest.Builder
-//import com.github.panpf.sketch.request.internal.SkiaBitmapToComposeBitmapRequestInterceptor
-//
-//actual fun updateRequestBuilder(request: ImageRequest, builder: Builder) {
-//    builder.mergeComponents {
-//        addRequestInterceptor(SkiaBitmapToComposeBitmapRequestInterceptor())
-//    }
-//}
+package com.github.panpf.sketch
+
+import androidx.compose.runtime.Composable
+import com.github.panpf.sketch.target.TargetLifecycle
+
+@Composable
+actual fun resolveTargetLifecycle(): TargetLifecycle? = null    // TODO Waiting for androidx lifecycle to support js

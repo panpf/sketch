@@ -19,7 +19,6 @@ package com.github.panpf.sketch.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION.SDK_INT
@@ -28,8 +27,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.XmlRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import org.xmlpull.v1.XmlPullParser

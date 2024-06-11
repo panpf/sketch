@@ -76,7 +76,7 @@ import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.lifecycle
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.target.AndroidTargetLifecycle
+import com.github.panpf.sketch.target.RealTargetLifecycle
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
@@ -95,7 +95,6 @@ import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
-import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -1747,7 +1746,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, MyImages.jpeg.uri) {
             lifecycle(myLifecycle)
         }.let { request ->
-            Assert.assertEquals(LifecycleResolver(AndroidTargetLifecycle(myLifecycle)), request.lifecycleResolver)
+            Assert.assertEquals(LifecycleResolver(RealTargetLifecycle(myLifecycle)), request.lifecycleResolver)
             runBlocking {
                 val deferred = async {
                     sketch.execute(request)
