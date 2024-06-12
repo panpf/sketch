@@ -1,10 +1,13 @@
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.sample.ui.components.zoomimage.core
 
-import com.github.panpf.sketch.JvmBitmap
-import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.ResizeMapping
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
+import com.github.panpf.sketch.util.Rect
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.calculateRotatedSize
+import com.github.panpf.sketch.util.fastGaussianBlur
 import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.Graphics2D
@@ -14,17 +17,20 @@ import java.awt.color.ColorSpace
 import java.awt.geom.AffineTransform
 import java.awt.geom.Area
 import java.awt.geom.RoundRectangle2D
+import java.awt.image.BufferedImage
 import kotlin.math.min
 
-internal fun JvmBitmap.copied(): JvmBitmap {
-    val newImage = JvmBitmap(width, height, type)
+typealias BufferedBitmap = BufferedImage
+
+internal fun BufferedBitmap.copied(): BufferedBitmap {
+    val newImage = BufferedBitmap(width, height, type)
     val graphics = newImage.createGraphics()
     graphics.drawImage(this, 0, 0, null)
     graphics.dispose()
     return newImage
 }
 
-internal fun JvmBitmap.hasAlpha(): Boolean {
+internal fun BufferedBitmap.hasAlpha(): Boolean {
     val height = this.height
     val width = this.width
     var hasAlpha = false
@@ -40,7 +46,7 @@ internal fun JvmBitmap.hasAlpha(): Boolean {
     return hasAlpha
 }
 
-internal fun JvmBitmap.readPixels(region: Rect? = null): IntArray {
+internal fun BufferedBitmap.readPixels(region: Rect? = null): IntArray {
     val targetPixels = if (region != null) {
         region.width() * region.height()
     } else {
@@ -59,14 +65,13 @@ internal fun JvmBitmap.readPixels(region: Rect? = null): IntArray {
     return pixels
 }
 
-internal fun JvmBitmap.toLogString(): String {
-    return "JvmBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},${colorModel.colorSpace.typeName})"
+internal fun BufferedBitmap.toLogString(): String {
+    return "BufferedBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},${colorModel.colorSpace.typeName})"
 }
 
-
-internal fun JvmBitmap.backgrounded(color: Int): JvmBitmap {
+internal fun BufferedBitmap.backgrounded(color: Int): BufferedBitmap {
     val inputBitmap = this
-    val outBitmap = JvmBitmap(inputBitmap.width, inputBitmap.height, inputBitmap.type)
+    val outBitmap = BufferedBitmap(inputBitmap.width, inputBitmap.height, inputBitmap.type)
     val graphics = outBitmap.createGraphics()
     graphics.color = Color(color)
     graphics.fillRect(0, 0, inputBitmap.width, inputBitmap.height)
@@ -76,7 +81,7 @@ internal fun JvmBitmap.backgrounded(color: Int): JvmBitmap {
     return outBitmap
 }
 
-internal fun JvmBitmap.blur(radius: Int): Boolean {
+internal fun BufferedBitmap.blur(radius: Int): Boolean {
     val imageWidth = this.width
     val imageHeight = this.height
     val pixels: IntArray = readPixels()
@@ -93,13 +98,13 @@ internal fun JvmBitmap.blur(radius: Int): Boolean {
     return true
 }
 
-internal fun JvmBitmap.circleCropped(scale: Scale): JvmBitmap {
+internal fun BufferedBitmap.circleCropped(scale: Scale): BufferedBitmap {
     val inputBitmap = this
     val newImageSize = min(inputBitmap.width, inputBitmap.height)
-    val outBitmap = JvmBitmap(
+    val outBitmap = BufferedBitmap(
         /* width = */ newImageSize,
         /* height = */ newImageSize,
-        /* imageType = */ JvmBitmap.TYPE_INT_ARGB
+        /* imageType = */ BufferedBitmap.TYPE_INT_ARGB
     )
     val graphics = outBitmap.createGraphics().apply {
         setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -118,7 +123,7 @@ internal fun JvmBitmap.circleCropped(scale: Scale): JvmBitmap {
         imageHeight = inputBitmap.height,
         resizeWidth = outBitmap.width,
         resizeHeight = outBitmap.height,
-        precision = EXACTLY,
+        precision = Precision.EXACTLY,
         scale = scale,
     )!!
     graphics.drawImage(
@@ -137,9 +142,9 @@ internal fun JvmBitmap.circleCropped(scale: Scale): JvmBitmap {
     return outBitmap
 }
 
-internal fun JvmBitmap.flipped(horizontal: Boolean = true): JvmBitmap {
+internal fun BufferedBitmap.flipped(horizontal: Boolean = true): BufferedBitmap {
     val inputBitmap = this
-    val outBitmap = JvmBitmap(inputBitmap.width, inputBitmap.height, inputBitmap.type)
+    val outBitmap = BufferedBitmap(inputBitmap.width, inputBitmap.height, inputBitmap.type)
     val graphics = outBitmap.createGraphics()
     val transform = if (horizontal) {
         AffineTransform.getTranslateInstance(inputBitmap.width.toDouble(), 0.0)
@@ -159,12 +164,12 @@ internal fun JvmBitmap.flipped(horizontal: Boolean = true): JvmBitmap {
     return outBitmap
 }
 
-internal fun JvmBitmap.mapping(mapping: ResizeMapping): JvmBitmap {
+internal fun BufferedBitmap.mapping(mapping: ResizeMapping): BufferedBitmap {
     val inputBitmap = this
     val newWidth = mapping.newWidth
     val newHeight = mapping.newHeight
     val newType = inputBitmap.colorModel.transparency
-    val outBitmap = JvmBitmap(
+    val outBitmap = BufferedBitmap(
         /* width = */ newWidth,
         /* height = */ newHeight,
         /* imageType = */ newType
@@ -191,7 +196,7 @@ internal fun JvmBitmap.mapping(mapping: ResizeMapping): JvmBitmap {
     return outBitmap
 }
 
-internal fun JvmBitmap.mask(color: Int) {
+internal fun BufferedBitmap.mask(color: Int) {
     val graphics = this@mask.createGraphics()
     val alpha = color ushr 24
     graphics.composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha / 255f)
@@ -201,12 +206,12 @@ internal fun JvmBitmap.mask(color: Int) {
     graphics.dispose()
 }
 
-internal fun JvmBitmap.roundedCornered(cornerRadii: FloatArray): JvmBitmap {
+internal fun BufferedBitmap.roundedCornered(cornerRadii: FloatArray): BufferedBitmap {
     val inputBitmap = this
-    val outBitmap = JvmBitmap(
+    val outBitmap = BufferedBitmap(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
-        /* imageType = */ JvmBitmap.TYPE_INT_ARGB
+        /* imageType = */ BufferedBitmap.TYPE_INT_ARGB
     )
     val graphics = outBitmap.createGraphics().apply {
         setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -225,15 +230,15 @@ internal fun JvmBitmap.roundedCornered(cornerRadii: FloatArray): JvmBitmap {
     return outBitmap
 }
 
-internal fun JvmBitmap.rotated(angle: Int): JvmBitmap {
+internal fun BufferedBitmap.rotated(angle: Int): BufferedBitmap {
     val inputBitmap = this
     val inputSize = Size(inputBitmap.width, inputBitmap.height)
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
     val outSize = calculateRotatedSize(size = inputSize, angle = finalAngle.toDouble())
-    val outBitmap = JvmBitmap(
+    val outBitmap = BufferedBitmap(
         /* width = */ outSize.width,
         /* height = */ outSize.height,
-        /* imageType = */ JvmBitmap.TYPE_INT_ARGB
+        /* imageType = */ BufferedBitmap.TYPE_INT_ARGB
     )
     val graphics: Graphics2D = outBitmap.createGraphics().apply {
         setRenderingHint(
@@ -270,14 +275,14 @@ internal fun JvmBitmap.rotated(angle: Int): JvmBitmap {
     return outBitmap
 }
 
-internal fun JvmBitmap.scaled(scaleFactor: Float): JvmBitmap {
+internal fun BufferedBitmap.scaled(scaleFactor: Float): BufferedBitmap {
     val inputBitmap = this
     val oldWidth = inputBitmap.width
     val oldHeight = inputBitmap.height
     val newWidth = (oldWidth * scaleFactor).toInt()
     val newHeight = (oldHeight * scaleFactor).toInt()
     val newType = inputBitmap.colorModel.transparency
-    val outBitmap = JvmBitmap(
+    val outBitmap = BufferedBitmap(
         /* width = */ newWidth,
         /* height = */ newHeight,
         /* imageType = */ newType
@@ -304,9 +309,8 @@ internal fun JvmBitmap.scaled(scaleFactor: Float): JvmBitmap {
     return outBitmap
 }
 
-
 private fun createRoundedCornersShape(
-    inputBitmap: JvmBitmap,
+    inputBitmap: BufferedBitmap,
     cornerRadii: FloatArray
 ): Shape = Area().apply {
     /* Use four rounded rectangles with different degrees to overlap each other, obtain a rounded rectangle with four different angles */

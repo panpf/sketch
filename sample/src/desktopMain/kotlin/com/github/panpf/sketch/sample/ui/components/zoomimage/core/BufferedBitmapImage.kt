@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch
+package com.github.panpf.sketch.sample.ui.components.zoomimage.core
 
+import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.ImageTransformer
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.resize.internal.ResizeMapping
-import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.mapping
-import com.github.panpf.sketch.util.readPixels
-import com.github.panpf.sketch.util.scaled
-import com.github.panpf.sketch.util.toLogString
 
-fun JvmBitmap.asSketchImage(): JvmBitmapImage = JvmBitmapImage(this)
+fun BufferedBitmap.asSketchImage(): BufferedBitmapImage = BufferedBitmapImage(this)
 
-data class JvmBitmapImage(
-    val bitmap: JvmBitmap,
+data class BufferedBitmapImage(
+    val bitmap: BufferedBitmap,
     override val shareable: Boolean = true
 ) : Image {
 
@@ -42,24 +39,24 @@ data class JvmBitmapImage(
 
     override fun checkValid(): Boolean = true
 
-    override fun transformer(): ImageTransformer = JvmBitmapTransformer()
+    override fun transformer(): ImageTransformer = BufferedBitmapTransformer()
 
     override fun getPixels(): IntArray = bitmap.readPixels()
 
     override fun toString(): String =
-        "JvmBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
+        "BufferedBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
 }
 
-class JvmBitmapTransformer : ImageTransformer {
+class BufferedBitmapTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {
-        val inputBitmap = image.asOrThrow<JvmBitmapImage>().bitmap
+        val inputBitmap = (image as BufferedBitmapImage).bitmap
         val outBitmap = inputBitmap.scaled(scaleFactor)
         return outBitmap.asSketchImage()
     }
 
     override fun mapping(image: Image, mapping: ResizeMapping): Image {
-        val inputBitmap = image.asOrThrow<JvmBitmapImage>().bitmap
+        val inputBitmap = (image as BufferedBitmapImage).bitmap
         val outBitmap = inputBitmap.mapping(mapping)
         return outBitmap.asSketchImage()
     }

@@ -14,12 +14,12 @@ import okio.Path.Companion.toPath
 /**
  * Sample: 'file:///sdcard/sample.jpg'
  */
-fun newFileUri(filePath: String): String = "${FileUriFetcher.SCHEME}://$filePath"
+fun newFileUri(path: String): String = "${FileUriFetcher.SCHEME}://$path"
 
 /**
  * Sample: 'file:///sdcard/sample.jpg'
  */
-fun newFileUri(file: Path): String = "${FileUriFetcher.SCHEME}://${file}"
+fun newFileUri(path: Path): String = "${FileUriFetcher.SCHEME}://${path}"
 
 /**
  * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
