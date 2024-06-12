@@ -4,16 +4,11 @@ import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import okio.Path.Companion.toOkioPath
 
 actual fun isDebugMode(): Boolean = BuildConfig.DEBUG
 

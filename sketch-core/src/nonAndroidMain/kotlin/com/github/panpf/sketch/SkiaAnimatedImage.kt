@@ -22,8 +22,6 @@ data class SkiaAnimatedImage(
     override val shareable: Boolean = true
 
     override fun cacheValue(extras: Map<String, Any?>?): Value? = null
-    // Because repeatCount, animationStartCallback, and animationEndCallback cannot be cached in memory.
-//    ): Value = SkiaAnimatedImageValue(this, extras)
 
     override fun checkValid(): Boolean = true
 
@@ -34,12 +32,3 @@ data class SkiaAnimatedImage(
     override fun toString(): String =
         "SkiaAnimatedImage(image=${codec.toLogString()}, shareable=$shareable)"
 }
-
-//class SkiaAnimatedImageValue(
-//    animatedImage: SkiaAnimatedImage,
-//    override val extras: Map<String, Any?> = emptyMap()
-//) : Value {
-//    override val image: Image = animatedImage
-//    override val size: Long = animatedImage.byteCount
-//    override fun checkValid(): Boolean = true
-//}

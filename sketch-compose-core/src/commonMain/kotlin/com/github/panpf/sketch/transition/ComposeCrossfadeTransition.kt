@@ -16,9 +16,9 @@
 package com.github.panpf.sketch.transition
 
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.painter.CrossfadePainter
+import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
@@ -100,7 +100,8 @@ class ComposeCrossfadeTransition constructor(
             )
         }
 
-        override val key: String = "ComposeCrossfadeTransition.Factory(durationMillis=$durationMillis,fadeStart=$fadeStart,preferExactIntrinsicSize=$preferExactIntrinsicSize,alwaysUse=$alwaysUse)"
+        override val key: String =
+            "ComposeCrossfadeTransition.Factory(durationMillis=$durationMillis,fadeStart=$fadeStart,preferExactIntrinsicSize=$preferExactIntrinsicSize,alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

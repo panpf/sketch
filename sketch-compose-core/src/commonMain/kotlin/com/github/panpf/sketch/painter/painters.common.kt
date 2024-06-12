@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.painter.internal
+package com.github.panpf.sketch.painter
 
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -6,7 +6,9 @@ import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.VectorPainter
-import com.github.panpf.sketch.painter.SketchPainter
+import com.github.panpf.sketch.Image
+
+expect fun Image.asPainter(): Painter
 
 
 fun Painter.toLogString(): String = when (this) {

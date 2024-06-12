@@ -18,8 +18,6 @@ package com.github.panpf.sketch.util
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.PlatformContext
 import okio.Path
 import okio.Path.Companion.toOkioPath

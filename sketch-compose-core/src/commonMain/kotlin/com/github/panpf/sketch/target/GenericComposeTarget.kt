@@ -17,11 +17,11 @@ package com.github.panpf.sketch.target
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.lifecycle.PlatformLifecycle.Event
 import com.github.panpf.sketch.lifecycle.PlatformLifecycleEventObserver
 import com.github.panpf.sketch.lifecycle.PlatformLifecycleOwner
 import com.github.panpf.sketch.painter.AnimatablePainter
+import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.transition.TransitionComposeTarget
