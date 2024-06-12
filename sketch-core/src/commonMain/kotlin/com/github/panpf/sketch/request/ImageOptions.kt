@@ -153,6 +153,11 @@ interface ImageOptions {
     val resizeOnDraw: Boolean?
 
     /**
+     * Allow setting null Image to ImageView or AsyncImage
+     */
+    val allowNullImage: Boolean?
+
+    /**
      * Bitmap memory caching policy
      *
      * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
@@ -220,6 +225,7 @@ interface ImageOptions {
                 && transitionFactory == null
                 && disallowAnimatedImage == null
                 && resizeOnDraw == null
+                && allowNullImage == null
                 && memoryCachePolicy == null
                 && componentRegistry == null
 
@@ -244,6 +250,7 @@ interface ImageOptions {
         private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
         private var resizeOnDraw: Boolean? = null
+        private var allowNullImage: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
 
         private var componentRegistry: ComponentRegistry? = null
@@ -270,6 +277,7 @@ interface ImageOptions {
             this.transitionFactory = options.transitionFactory
             this.disallowAnimatedImage = options.disallowAnimatedImage
             this.resizeOnDraw = options.resizeOnDraw
+            this.allowNullImage = options.allowNullImage
             this.memoryCachePolicy = options.memoryCachePolicy
 
             this.componentRegistry = options.componentRegistry
@@ -606,6 +614,13 @@ interface ImageOptions {
         }
 
         /**
+         * Allow setting null Image to ImageView or AsyncImage
+         */
+        fun allowNullImage(allow: Boolean? = true): Builder = apply {
+            this.allowNullImage = allow
+        }
+
+        /**
          * Set bitmap memory caching policy
          */
         fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
@@ -696,6 +711,9 @@ interface ImageOptions {
             if (this.resizeOnDraw == null) {
                 this.resizeOnDraw = options.resizeOnDraw
             }
+            if (this.allowNullImage == null) {
+                this.allowNullImage = options.allowNullImage
+            }
             if (this.memoryCachePolicy == null) {
                 this.memoryCachePolicy = options.memoryCachePolicy
             }
@@ -725,6 +743,7 @@ interface ImageOptions {
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,
                 resizeOnDraw = resizeOnDraw,
+                allowNullImage = allowNullImage,
                 memoryCachePolicy = memoryCachePolicy,
                 componentRegistry = componentRegistry,
             )
@@ -748,6 +767,7 @@ interface ImageOptions {
         override val transitionFactory: Transition.Factory?,
         override val disallowAnimatedImage: Boolean?,
         override val resizeOnDraw: Boolean?,
+        override val allowNullImage: Boolean?,
         override val memoryCachePolicy: CachePolicy?,
         override val componentRegistry: ComponentRegistry?,
     ) : ImageOptions

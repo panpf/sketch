@@ -33,6 +33,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendResultCachePolicy()
     .appendDisallowAnimatedImage()
     .appendResizeOnDraw()
+    .appendAllowNullImage()
     .appendMemoryCachePolicy()
     .appendTransitionFactory()
     .appendPlaceholder()
@@ -218,6 +219,13 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         val error = request.error
         if (error != null) {
             appendQueryParameter("_error", error.key)
+        }
+    }
+
+    fun appendAllowNullImage(): ImageRequestKeyBuilder = apply {
+        val allowNullImage = request.allowNullImage
+        if (allowNullImage == true) {
+            appendQueryParameter("_allowNullImage", true.toString())
         }
     }
 

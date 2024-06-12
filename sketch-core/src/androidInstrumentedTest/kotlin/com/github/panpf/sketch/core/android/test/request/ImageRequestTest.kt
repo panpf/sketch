@@ -106,6 +106,7 @@ import com.github.panpf.sketch.util.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getEqualityDrawableCompat
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -1279,6 +1280,30 @@ class ImageRequestTest {
             build().apply {
                 Assert.assertFalse(resizeOnDraw ?: false)
             }
+        }
+    }
+
+    @Test
+    fun testAllowNullImage() = runTest {
+        val context = getTestContext()
+
+        ImageRequest(context, MyImages.animGif.uri).apply {
+            Assert.assertNull(allowNullImage)
+        }
+        ImageRequest(context, MyImages.animGif.uri) {
+            allowNullImage()
+        }.apply {
+            Assert.assertTrue(allowNullImage!!)
+        }
+        ImageRequest(context, MyImages.animGif.uri) {
+            allowNullImage(true)
+        }.apply {
+            Assert.assertTrue(allowNullImage!!)
+        }
+        ImageRequest(context, MyImages.animGif.uri) {
+            allowNullImage(false)
+        }.apply {
+            Assert.assertFalse(allowNullImage!!)
         }
     }
 

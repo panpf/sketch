@@ -46,8 +46,8 @@ import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transform.RotateTransformation
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.SketchSize
 import kotlinx.coroutines.runBlocking
@@ -207,6 +207,17 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
+            allowNullImage(true)
+        }
+        val _allowNullImage = "&_allowNullImage=true"
+        verifyKey(
+            uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
+                    _size + _sizeMultiplier + _precision + _scale +
+                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _allowNullImage
+        )
+
+        request = request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
         }
         val _memoryCachePolicy = "&_memoryCachePolicy=WRITE_ONLY"
@@ -214,7 +225,7 @@ class RequestKeysTest {
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy
+                    _allowNullImage + _memoryCachePolicy
         )
 
         request = request.newRequest {
@@ -225,7 +236,7 @@ class RequestKeysTest {
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _transitionFactory
+                    _allowNullImage + _memoryCachePolicy + _transitionFactory
         )
 
         val placeholder = IconDrawableStateImage(
@@ -240,7 +251,7 @@ class RequestKeysTest {
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _transitionFactory + _placeholder
+                    _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder
         )
 
         val uriEmpty = FakeStateImage(FakeImage(SketchSize(200, 200)))
@@ -252,7 +263,7 @@ class RequestKeysTest {
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty
+                    _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty
         )
 
         val error = DrawableStateImage(drawable.ic_delete)
@@ -264,7 +275,8 @@ class RequestKeysTest {
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty + _error
+                    _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
+                    _uriEmpty + _error
         )
 
         request = request.newRequest {
@@ -282,8 +294,8 @@ class RequestKeysTest {
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty + _error +
-                    _decoders + _decodeInterceptors + _requestInterceptors
+                    _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
+                    _uriEmpty + _error + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 

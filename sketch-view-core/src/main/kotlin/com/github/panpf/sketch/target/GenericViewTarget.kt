@@ -38,7 +38,6 @@ import com.github.panpf.sketch.asDrawableOrThrow
 import com.github.panpf.sketch.lifecycle.PlatformLifecycle.Event
 import com.github.panpf.sketch.lifecycle.PlatformLifecycleEventObserver
 import com.github.panpf.sketch.lifecycle.PlatformLifecycleOwner
-import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
@@ -102,7 +101,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         // 'image != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment.loadBgImage() is an example.
-        if (image != null || requestContext.request.allowNullImage) {
+        if (image != null || requestContext.request.allowNullImage == true) {
             val newDrawable = image?.asDrawableOrThrow()
             updateDrawable(newDrawable)
         }

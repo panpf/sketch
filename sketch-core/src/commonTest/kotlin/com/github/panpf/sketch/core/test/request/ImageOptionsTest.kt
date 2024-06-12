@@ -22,10 +22,12 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -43,6 +45,7 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
@@ -54,11 +57,13 @@ import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -1326,6 +1331,28 @@ class ImageOptionsTest {
             build().apply {
                 assertFalse(resizeOnDraw ?: false)
             }
+        }
+    }
+
+    @Test
+    fun testAllowNullImage() = runTest {
+        ImageOptions().apply {
+            assertNull(allowNullImage)
+        }
+        ImageOptions {
+            allowNullImage()
+        }.apply {
+            assertTrue(allowNullImage!!)
+        }
+        ImageOptions {
+            allowNullImage(true)
+        }.apply {
+            assertTrue(allowNullImage!!)
+        }
+        ImageOptions {
+            allowNullImage(false)
+        }.apply {
+            assertFalse(allowNullImage!!)
         }
     }
 

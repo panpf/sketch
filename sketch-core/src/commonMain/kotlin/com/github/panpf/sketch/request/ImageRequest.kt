@@ -183,6 +183,11 @@ data class ImageRequest(
     val resizeOnDraw: Boolean?,
 
     /**
+     * Allow setting null Image to ImageView or AsyncImage
+     */
+    val allowNullImage: Boolean?,
+
+    /**
      * Bitmap memory caching policy
      *
      * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
@@ -652,6 +657,13 @@ data class ImageRequest(
         }
 
         /**
+         * Allow setting null Image to ImageView or AsyncImage
+         */
+        fun allowNullImage(allow: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.allowNullImage(allow)
+        }
+
+        /**
          * Set bitmap memory caching policy
          */
         fun memoryCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
@@ -730,6 +742,7 @@ data class ImageRequest(
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeOnDraw = finalOptions.resizeOnDraw
+            val allowNullImage = finalOptions.allowNullImage
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
             val targetComponents = target?.getComponents()
             val componentRegistry = finalOptions.componentRegistry.merged(targetComponents)
@@ -760,6 +773,7 @@ data class ImageRequest(
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,
                 resizeOnDraw = resizeOnDraw,
+                allowNullImage = allowNullImage,
                 memoryCachePolicy = memoryCachePolicy,
                 componentRegistry = componentRegistry,
             )

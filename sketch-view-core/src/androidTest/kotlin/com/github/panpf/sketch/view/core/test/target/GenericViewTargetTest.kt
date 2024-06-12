@@ -14,7 +14,6 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
 import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.GenericViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
