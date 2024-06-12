@@ -143,6 +143,20 @@ here is a simple building sequence:
      will be '100xContainerHeight'
 > 3. For detailed build rules, please refer to the [ImageRequest].Builder.build() method
 
+## sizeMultiplier
+
+sizeMultiplier is used to scale size. For example, when sizeMultiplier is 2.0, when size is 100x100,
+the actual size is 200x200
+
+This is usually used to use the size of the component as the size by default, but the component is
+too small and the size needs to be enlarged to improve the image quality, as follows:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    sizeMultiplier(2.0f)
+}
+```
+
 ## resizeOnDraw
 
 The resizeOnDraw properties of [ImageRequest] and [ImageOptions] are used to apply [Resize] to the

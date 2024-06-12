@@ -126,6 +126,19 @@ ImageRequest(context, "https://example.com/image.jpg") {
 > 2. 假如组件的宽是固定值（例如 100），高是 wrap 时，Size 将会是 '100x屏幕或容器的高'
 > 3. 详细构建规则请参考 [ImageRequest].Builder.build() 方法
 
+## sizeMultiplier
+
+sizeMultiplier 用于对 size 进行缩放，例如 sizeMultiplier 为 2.0 时，size 为 100x100 时实际大小为
+200x200
+
+这通常用于默认用组件的大小作为 size，但是组件太小，需要放大 size 以提高图片质量，如下：
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    sizeMultiplier(2.0f)
+}
+```
+
 ## resizeOnDraw
 
 [ImageRequest] 和 [ImageOptions] 的 resizeOnDraw 属性用于将 [Resize] 应用到 [Target] 的 placeholder,

@@ -2,47 +2,57 @@
 
 Translations: [简体中文](lifecycle_zh.md)
 
-Sketch relies on Lifecycle to monitor the life cycle of the page for the following functions:
+[Sketch] relies on [PlatformLifecycle] to monitor the life cycle of the page for the following
+functions:
 
-1. [ViewTargetRequestDelegate] automatically stops the request when onDestroy
-2. [GenericViewTarget] automatically controls animation playback during onStart and onStop
+1. When the animation is loaded, it will automatically play if the page has reached the Start state.
+2. Start or stop playing animations when the page reaches Start or Stop state
+3. Stop the request when the page is destroyed
+
+Since the `androidx.lifecycle` library currently does not support the js platform, [Sketch] provides
+a [PlatformLifecycle] interface. The js platform relies on `androidx.lifecycle` to implement
+the [PlatformLifecycle] interface, but the js platform does not currently support the Lifecycle
+function.
 
 ### Default Value
 
-If lifecycle is not set when creating the request, Sketch will obtain lifecycle in the following
-order:
+If [PlatformLifecycle] is not set when creating the request, [Sketch] will be obtained in the
+following order:
 
-view:
+* compose:
+    1. Obtained through LocalLifecycleOwner.current.lifecycle API
+    2. Use [GlobalPlatformLifecycle]
+* view:
+    1. Obtained through view.findViewTreeLifecycleOwner() API
+    2. Obtained through view.context (if context implements the LifecycleOwner interface, such as
+       Activity)
+    3. Obtained through [ImageRequest].Builder.context (if context implements the LifecycleOwner
+       interface, e.g.
+       Activity)
+    4. Use [GlobalPlatformLifecycle]
 
-1. Obtained through view.findViewTreeLifecycleOwner() API
-2. Obtained through view.context (if context implements the LifecycleOwner interface, such as
-   Activity)
-3. Obtained through ImageRequest.Builder.context (if the context implements the LifecycleOwner
-   interface, such as Activity)
-4. Use GlobalLifecycle
+### Configuration
 
-compose:
-
-1. Obtained through LocalLifecycleOwner.current.lifecycle API
-2. Obtained through ImageRequest.Builder.context (if the context implements the LifecycleOwner
-   interface, such as Activity)
-3. Use GlobalLifecycle
-
-### Configure
-
-If the above default value cannot obtain the Lifecycle or the default obtained Lifecycle does not
-meet your needs, [ImageRequest].Builder also provides the lifecycle() method for setting the
-lifecycle, as follows:
+If the above [Sketch] cannot obtain [PlatformLifecycle] by default or the [PlatformLifecycle]
+obtained by default does not meet your needs, [ImageRequest].Builder also provides the lifecycle()
+method for setting lifecycle, as follows:
 
 ```kotlin
-val lifecycle = LifecycleRegistry(this)
-imageView.displayImage("https://www.example.com/image.gif") {
+val platformLifecycle: PlatformLifecycle = ...
+ImageRequest(context, "https://www.example.com/image.gif") {
+    lifecycle(platformLifecycle)
+}
+// or
+val lifecycle: Lifecycle = ...
+ImageRequest(context, "https://www.example.com/image.gif") {
     lifecycle(lifecycle)
 }
 ```
 
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ViewTargetRequestDelegate]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/internal/RequestDelegate.kt
+[PlatformLifecycle]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/lifecycle/PlatformLifecycle.kt
 
-[GenericViewTarget]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt
+[GlobalPlatformLifecycle]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/lifecycle/GlobalPlatformLifecycle.kt
