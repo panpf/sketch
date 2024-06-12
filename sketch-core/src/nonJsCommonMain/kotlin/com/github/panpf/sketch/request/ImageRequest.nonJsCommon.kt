@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.request
 
 import androidx.lifecycle.Lifecycle
-import com.github.panpf.sketch.target.RealTargetLifecycle
+import com.github.panpf.sketch.lifecycle.RealPlatformLifecycle
 
 
 /**
@@ -14,4 +14,4 @@ import com.github.panpf.sketch.target.RealTargetLifecycle
  * for this request through its context.
  */
 fun ImageRequest.Builder.lifecycle(lifecycle: Lifecycle): ImageRequest.Builder =
-    lifecycle(RealTargetLifecycle(lifecycle))
+    lifecycle(RealPlatformLifecycle(lifecycle))

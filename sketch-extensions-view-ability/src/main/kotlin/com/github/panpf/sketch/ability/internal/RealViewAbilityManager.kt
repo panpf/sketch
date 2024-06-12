@@ -25,11 +25,6 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
 import androidx.core.view.ViewCompat
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.Progress
-import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.ability.AttachObserver
 import com.github.panpf.sketch.ability.ClickObserver
 import com.github.panpf.sketch.ability.DrawForegroundObserver
@@ -49,6 +44,11 @@ import com.github.panpf.sketch.ability.ViewAbility
 import com.github.panpf.sketch.ability.ViewAbilityContainer
 import com.github.panpf.sketch.ability.ViewAbilityManager
 import com.github.panpf.sketch.ability.VisibilityChangedObserver
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.Progress
+import com.github.panpf.sketch.request.ProgressListener
 import java.lang.ref.WeakReference
 
 class RealViewAbilityManager(
@@ -320,7 +320,7 @@ class RealViewAbilityManager(
         instanceStateObserverAbilityList.forEach {
             val childBundle = it.onSaveInstanceState()
             if (childBundle != null) {
-                val key = it::class.java.name + "_onSaveInstanceState"
+                val key = "${it::class}_onSaveInstanceState"
                 bundle.putBundle(key, childBundle)
             }
         }
@@ -332,7 +332,7 @@ class RealViewAbilityManager(
             instanceStateObserverAbilityList?.takeIf { it.isNotEmpty() } ?: return
         val state1 = state?.takeIf { !it.isEmpty } ?: return
         instanceStateObserverAbilityList.forEach {
-            val key = it::class.java.name + "_onSaveInstanceState"
+            val key = "${it::class}_onSaveInstanceState"
             val childBundle = state1.getBundle(key)
             it.onRestoreInstanceState(childBundle)
         }

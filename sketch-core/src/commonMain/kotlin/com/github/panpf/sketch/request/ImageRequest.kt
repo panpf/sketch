@@ -21,6 +21,10 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.lifecycle.FixedLifecycleResolver
+import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
+import com.github.panpf.sketch.lifecycle.LifecycleResolver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
@@ -34,9 +38,7 @@ import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
-import com.github.panpf.sketch.target.GlobalTargetLifecycle
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
@@ -67,13 +69,13 @@ data class ImageRequest(
     val uri: String,
 
     /**
-     * The [TargetLifecycle] resolver for this request.
-     * The request will be started when TargetLifecycle is in [TargetLifecycle.State.STARTED]
-     * and canceled when TargetLifecycle is in [TargetLifecycle.State.DESTROYED].
+     * The [PlatformLifecycle] resolver for this request.
+     * The request will be started when PlatformLifecycle is in [PlatformLifecycle.State.STARTED]
+     * and canceled when PlatformLifecycle is in [PlatformLifecycle.State.DESTROYED].
      *
-     * When [TargetLifecycle] is not actively set,
-     * Sketch first obtains the TargetLifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
-     * Secondly, get the [TargetLifecycle] of Activity through context, and finally use [GlobalTargetLifecycle]
+     * When [PlatformLifecycle] is not actively set,
+     * Sketch first obtains the PlatformLifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
+     * Secondly, get the [PlatformLifecycle] of Activity through context, and finally use [GlobalPlatformLifecycle]
      */
     val lifecycleResolver: LifecycleResolver,
 
@@ -309,23 +311,23 @@ data class ImageRequest(
         }
 
         /**
-         * Set the [TargetLifecycle] for this request.
+         * Set the [PlatformLifecycle] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [TargetLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [TargetLifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
          *
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
          */
-        fun lifecycle(lifecycle: TargetLifecycle?): Builder = apply {
+        fun lifecycle(lifecycle: PlatformLifecycle?): Builder = apply {
             definedRequestOptionsBuilder.lifecycle(lifecycle)
         }
 
         /**
          * Set the [LifecycleResolver] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [TargetLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [TargetLifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
          *
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
@@ -706,8 +708,8 @@ data class ImageRequest(
             val definedRequestOptions = definedRequestOptionsBuilder.build()
             val listener = combinationListener(definedRequestOptions, target)
             val progressListener = combinationProgressListener(definedRequestOptions, target)
-            val lifecycleResolver = definedRequestOptions.lifecycleResolver
-                ?: DefaultLifecycleResolver(resolveLifecycleResolver())
+            val lifecycleResolver =
+                definedRequestOptions.lifecycleResolver ?: resolveLifecycleResolver()
             val targetOptions = target?.getImageOptions()
             val definedOptions = definedOptionsBuilder.merge(targetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
@@ -767,7 +769,7 @@ data class ImageRequest(
             target?.getSizeResolver() ?: OriginSizeResolver
 
         private fun resolveLifecycleResolver(): LifecycleResolver =
-            target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalTargetLifecycle)
+            target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalPlatformLifecycle)
 
         private fun resolveScaleDecider(): ScaleDecider =
             target?.getScaleDecider() ?: ScaleDecider(Scale.CENTER_CROP)

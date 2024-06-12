@@ -15,28 +15,39 @@
  */
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.target.TargetLifecycle
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleEventObserver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleObserver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleOwner
 
 /**
- * A [TargetLifecycle] implementation that is always resumed and never destroyed.
- *
- * This is used as a fallback if [findTargetLifecycle] cannot find a more tightly scoped [TargetLifecycle].
+ * A [PlatformLifecycle] implementation that is always resumed and never destroyed.
  */
-object TestGlobalTargetLifecycle : TargetLifecycle() {
+data object TestGlobalPlatformLifecycle : PlatformLifecycle() {
+
+    private val owner = TestPlatformLifecycleOwner(this)
 
     override val currentState: State
         get() = State.RESUMED
 
-    override fun addObserver(observer: EventObserver) {
-        // Call the TargetLifecycle methods in order and do not hold a reference to the observer.
-        observer.onStateChanged(this@TestGlobalTargetLifecycle, Event.ON_CREATE)
-        observer.onStateChanged(this@TestGlobalTargetLifecycle, Event.ON_START)
-        observer.onStateChanged(this@TestGlobalTargetLifecycle, Event.ON_RESUME)
+    override fun addObserver(observer: PlatformLifecycleObserver) {
+        require(observer is PlatformLifecycleEventObserver) {
+            "Observer must implement PlatformLifecycleEventObserver"
+        }
+        // Call the PlatformLifecycle methods in order and do not hold a reference to the observer.
+        observer.onStateChanged(owner, Event.ON_CREATE)
+        observer.onStateChanged(owner, Event.ON_START)
+        observer.onStateChanged(owner, Event.ON_RESUME)
     }
 
-    override fun removeObserver(observer: EventObserver) {}
+    override fun removeObserver(observer: PlatformLifecycleObserver) {
+        require(observer is PlatformLifecycleEventObserver) {
+            "Observer must implement PlatformLifecycleEventObserver"
+        }
+    }
 
-    override fun toString() = "GlobalTargetLifecycle"
 }
 
-fun TargetLifecycle.isTestGlobalTargetLifecycle() = this is TestGlobalTargetLifecycle
+class TestPlatformLifecycleOwner(lifecycle: TestGlobalPlatformLifecycle) : PlatformLifecycleOwner {
+    override val lifecycle: PlatformLifecycle = lifecycle
+}

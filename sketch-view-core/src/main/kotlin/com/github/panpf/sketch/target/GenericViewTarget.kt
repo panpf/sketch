@@ -35,12 +35,14 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asDrawableOrThrow
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle.Event
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleEventObserver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleOwner
 import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.target.TargetLifecycle.Event
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -51,7 +53,7 @@ import com.github.panpf.sketch.util.asOrNull
  * to implement [ViewTarget] directly.
  */
 abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionViewTarget,
-    TargetLifecycle.EventObserver, AttachObserver {
+    PlatformLifecycleEventObserver, AttachObserver {
 
     private var isStarted = false
     private var isAttached = false
@@ -72,7 +74,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     override fun onError(requestContext: RequestContext, error: Image?) =
         updateImage(requestContext, error)
 
-    override fun onStateChanged(source: TargetLifecycle, event: Event) {
+    override fun onStateChanged(source: PlatformLifecycleOwner, event: Event) {
         when (event) {
             Event.ON_START -> {
                 isStarted = true

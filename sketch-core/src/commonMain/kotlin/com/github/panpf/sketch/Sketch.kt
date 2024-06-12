@@ -28,6 +28,7 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -36,7 +37,6 @@ import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
-import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
@@ -146,8 +146,8 @@ class Sketch private constructor(options: Options) {
     /**
      * Execute the ImageRequest asynchronously.
      *
-     * Note: The request will not start executing until TargetLifecycle state is STARTED
-     * reaches [TargetLifecycle.State.STARTED] state and View is attached to window
+     * Note: The request will not start executing until PlatformLifecycle state is STARTED
+     * reaches [PlatformLifecycle.State.STARTED] state and View is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
@@ -164,8 +164,8 @@ class Sketch private constructor(options: Options) {
     /**
      * Execute the ImageRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until TargetLifecycle state is STARTED
-     * reaches [TargetLifecycle.State.STARTED] state and View is attached to window
+     * Note: The request will not start executing until PlatformLifecycle state is STARTED
+     * reaches [PlatformLifecycle.State.STARTED] state and View is attached to window
      *
      * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
      */
@@ -374,6 +374,7 @@ class Sketch private constructor(options: Options) {
     }
 }
 
+// TODO Change the file name to Sketch.common
 internal expect fun platformComponents(): ComponentRegistry
 internal expect fun defaultHttpStack(): HttpStack
 

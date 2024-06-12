@@ -15,9 +15,10 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.MainThread
+import com.github.panpf.sketch.lifecycle.awaitStarted
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
@@ -25,7 +26,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.awaitStarted
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
@@ -43,7 +43,11 @@ class RequestExecutor {
     }
 
     @MainThread
-    suspend fun execute(sketch: Sketch, initialRequest: ImageRequest, enqueue: Boolean): ImageResult {
+    suspend fun execute(
+        sketch: Sketch,
+        initialRequest: ImageRequest,
+        enqueue: Boolean
+    ): ImageResult {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
@@ -187,7 +191,8 @@ class RequestExecutor {
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
-        val logMessage = "RequestExecutor. Request failed. '${throwable1.message}'. '${requestContext.logKey}'"
+        val logMessage =
+            "RequestExecutor. Request failed. '${throwable1.message}'. '${requestContext.logKey}'"
         when (throwable1) {
             is DepthException -> sketch.logger.d { logMessage }
             is SketchException -> sketch.logger.e(logMessage)

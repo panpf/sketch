@@ -15,10 +15,10 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.lifecycle.LifecycleResolver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.target.TargetLifecycle
 
 /**
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
@@ -106,26 +106,20 @@ data class RequestOptions(
         }
 
         /**
-         * Set the [TargetLifecycle] for this request.
+         * Set the [PlatformLifecycle] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [TargetLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [TargetLifecycle.State.DESTROYED].
-         *
-         * If this is null or is not set the will attempt to find the lifecycle
-         * for this request through its [context].
+         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
          */
-        fun lifecycle(lifecycle: TargetLifecycle?): Builder = apply {
+        fun lifecycle(lifecycle: PlatformLifecycle?): Builder = apply {
             this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
         }
 
         /**
          * Set the [LifecycleResolver] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [TargetLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [TargetLifecycle.State.DESTROYED].
-         *
-         * If this is null or is not set the will attempt to find the lifecycle
-         * for this request through its [context].
+         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
          */
         fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
             this.lifecycleResolver = lifecycleResolver

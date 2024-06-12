@@ -37,31 +37,36 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidBitmapImage
+import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.cache.memoryCacheKey
+import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
-import com.github.panpf.sketch.request.DefaultLifecycleResolver
+import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
+import com.github.panpf.sketch.lifecycle.LifecycleResolver
+import com.github.panpf.sketch.lifecycle.RealPlatformLifecycle
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.AndroidDrawableImage
-import com.github.panpf.sketch.target.GlobalTargetLifecycle
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.cache.memoryCacheKey
-import com.github.panpf.sketch.cache.resultCacheKey
-import com.github.panpf.sketch.size
+import com.github.panpf.sketch.request.lifecycle
+import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -69,22 +74,16 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.colorSpace
-import com.github.panpf.sketch.request.error
-import com.github.panpf.sketch.request.lifecycle
-import com.github.panpf.sketch.request.placeholder
-import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.target.RealTargetLifecycle
+import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestAssetFetcherFactory
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestErrorDecoder
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
@@ -1217,7 +1216,7 @@ class ImageRequestExecuteTest {
         var onStartImage: Image?
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
-            target(onStart =  { _, placeholder: Image? ->
+            target(onStart = { _, placeholder: Image? ->
                 onStartImage = placeholder
             }
             )
@@ -1733,7 +1732,7 @@ class ImageRequestExecuteTest {
 
         ImageRequest(context, MyImages.jpeg.uri).let { request ->
             Assert.assertEquals(
-                DefaultLifecycleResolver(LifecycleResolver(GlobalTargetLifecycle)),
+                LifecycleResolver(GlobalPlatformLifecycle),
                 request.lifecycleResolver
             )
             runBlocking {
@@ -1746,7 +1745,10 @@ class ImageRequestExecuteTest {
         ImageRequest(context, MyImages.jpeg.uri) {
             lifecycle(myLifecycle)
         }.let { request ->
-            Assert.assertEquals(LifecycleResolver(RealTargetLifecycle(myLifecycle)), request.lifecycleResolver)
+            Assert.assertEquals(
+                LifecycleResolver(RealPlatformLifecycle(myLifecycle)),
+                request.lifecycleResolver
+            )
             runBlocking {
                 val deferred = async {
                     sketch.execute(request)

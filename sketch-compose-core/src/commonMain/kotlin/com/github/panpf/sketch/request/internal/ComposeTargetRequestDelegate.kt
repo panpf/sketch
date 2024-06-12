@@ -1,9 +1,8 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.target.ComposeTarget
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.BaseRequestDelegate
+import com.github.panpf.sketch.target.ComposeTarget
 import kotlinx.coroutines.Job
 
 class ComposeTargetRequestDelegate(
@@ -18,7 +17,7 @@ class ComposeTargetRequestDelegate(
     }
 
     override fun finish() {
-        // Monitoring of TargetLifecycle cannot be removed here.
-        // Because GenericComposeTarget needs to stop or start animation by listening to TargetLifecycle Image
+        // Monitoring of PlatformLifecycle cannot be removed here.
+        // Because GenericComposeTarget needs to stop or start animation by listening to PlatformLifecycle Image
     }
 }

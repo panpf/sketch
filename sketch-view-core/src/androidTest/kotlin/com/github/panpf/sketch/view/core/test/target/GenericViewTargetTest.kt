@@ -11,12 +11,12 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.target.GlobalTargetLifecycle
+import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.target.GenericViewTarget
-import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContextSync
@@ -79,10 +79,10 @@ class GenericViewTargetTest {
         TestViewTarget(imageView).apply {
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
 
-            onStateChanged(GlobalTargetLifecycle, TargetLifecycle.Event.ON_START)
+            onStateChanged(GlobalPlatformLifecycle.owner, PlatformLifecycle.Event.ON_START)
             Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
 
-            onStateChanged(GlobalTargetLifecycle, TargetLifecycle.Event.ON_STOP)
+            onStateChanged(GlobalPlatformLifecycle.owner, PlatformLifecycle.Event.ON_STOP)
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
         }
     }
@@ -115,7 +115,7 @@ class GenericViewTargetTest {
             onError(requestContext, drawable.asSketchImage())
             onSuccess(requestContext, drawable.asSketchImage())
 
-            onStateChanged(GlobalTargetLifecycle, TargetLifecycle.Event.ON_START)
+            onStateChanged(GlobalPlatformLifecycle.owner, PlatformLifecycle.Event.ON_START)
 
             onStart(requestContext, drawable.asSketchImage())
             onError(requestContext, drawable.asSketchImage())
@@ -134,7 +134,7 @@ class GenericViewTargetTest {
             Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
             Assert.assertFalse(animatableDrawable.running)
 
-            onStateChanged(GlobalTargetLifecycle, TargetLifecycle.Event.ON_START)
+            onStateChanged(GlobalPlatformLifecycle.owner, PlatformLifecycle.Event.ON_START)
             Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
             Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
             Assert.assertFalse(animatableDrawable.running)
@@ -144,12 +144,12 @@ class GenericViewTargetTest {
             Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
             Assert.assertTrue(animatableDrawable.running)
 
-            onStateChanged(GlobalTargetLifecycle, TargetLifecycle.Event.ON_STOP)
+            onStateChanged(GlobalPlatformLifecycle.owner, PlatformLifecycle.Event.ON_STOP)
             Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
             Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
             Assert.assertFalse(animatableDrawable.running)
 
-            onStateChanged(GlobalTargetLifecycle, TargetLifecycle.Event.ON_START)
+            onStateChanged(GlobalPlatformLifecycle.owner, PlatformLifecycle.Event.ON_START)
             Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
             Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
             Assert.assertTrue(animatableDrawable.running)

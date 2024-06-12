@@ -31,12 +31,13 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
+import com.github.panpf.sketch.lifecycle.LifecycleResolver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
-import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
@@ -47,7 +48,6 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.target.GenericComposeTarget
-import com.github.panpf.sketch.target.TargetLifecycle
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.isEmpty
@@ -62,14 +62,14 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @Composable
-expect fun resolveTargetLifecycle(): TargetLifecycle?
+internal expect fun resolvePlatformLifecycle(): PlatformLifecycle?
 
 @Composable
 expect fun getWindowContainerSize(): IntSize
 
 @Composable
 fun rememberAsyncImageState(): AsyncImageState {
-    val lifecycle = resolveTargetLifecycle()
+    val lifecycle = resolvePlatformLifecycle()
     val inspectionMode = LocalInspectionMode.current
     val containerSize = getWindowContainerSize()
     return remember(lifecycle, inspectionMode, containerSize) {
@@ -79,7 +79,7 @@ fun rememberAsyncImageState(): AsyncImageState {
 
 @Stable
 class AsyncImageState internal constructor(
-    private val lifecycle: TargetLifecycle?,
+    private val lifecycle: PlatformLifecycle?,
     private val inspectionMode: Boolean,
     private val containerSize: IntSize,
 ) : RememberObserver {

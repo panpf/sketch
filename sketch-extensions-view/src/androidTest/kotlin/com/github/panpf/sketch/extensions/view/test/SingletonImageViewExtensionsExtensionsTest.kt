@@ -23,7 +23,7 @@ import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
 import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
-import com.github.panpf.sketch.test.utils.TestGlobalTargetLifecycle
+import com.github.panpf.sketch.test.utils.TestGlobalPlatformLifecycle
 import com.github.panpf.sketch.test.utils.versionCodeCompat
 import com.github.panpf.sketch.view.core.R
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
@@ -42,7 +42,7 @@ class SingletonImageViewExtensionsExtensionsTest {
         val versionCode =
             context.packageManager.getPackageInfo(context.packageName, 0).versionCodeCompat
         imageView.displayAppIconImage(context.packageName, versionCode) {
-            lifecycle(TestGlobalTargetLifecycle)
+            lifecycle(TestGlobalPlatformLifecycle)
         }
         Thread.sleep(300)
         val manager = imageView.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager

@@ -23,6 +23,7 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -30,7 +31,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.target.GlobalTargetLifecycle
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayTransformation
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
@@ -69,7 +69,7 @@ class SketchTest {
 
         val context = getTestContext()
         Builder(context).apply {
-            val fakePipeline = object: Logger.Pipeline {
+            val fakePipeline = object : Logger.Pipeline {
                 override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
 
                 }
@@ -101,7 +101,10 @@ class SketchTest {
 
             logger(level = Logger.Level.Verbose, pipeline = fakePipeline)
             build().apply {
-                Assert.assertEquals(Logger(level = Logger.Level.Verbose, pipeline = fakePipeline), logger)
+                Assert.assertEquals(
+                    Logger(level = Logger.Level.Verbose, pipeline = fakePipeline),
+                    logger
+                )
                 Assert.assertTrue(logger.toString().contains(fakePipeline.toString()))
             }
 
@@ -391,7 +394,7 @@ class SketchTest {
         val listenerSupervisor4 = ListenerSupervisor()
         val request4 = ImageRequest(imageView, MyImages.jpeg.uri) {
             registerListener(listenerSupervisor4)
-            lifecycle(GlobalTargetLifecycle)
+            lifecycle(GlobalPlatformLifecycle)
         }
         val result4 = runBlocking {
             try {

@@ -40,14 +40,13 @@ import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.request.DefaultLifecycleResolver
+import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
+import com.github.panpf.sketch.lifecycle.LifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.target.GlobalTargetLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
@@ -125,7 +124,7 @@ class ImageRequestTest {
             Assert.assertNull(this.progressListener)
             Assert.assertNull(this.target)
             Assert.assertEquals(
-                DefaultLifecycleResolver(LifecycleResolver(GlobalTargetLifecycle)),
+                LifecycleResolver(GlobalPlatformLifecycle),
                 this.lifecycleResolver
             )
 
@@ -320,7 +319,7 @@ class ImageRequestTest {
 
         ImageRequest(context1, uri).apply {
             Assert.assertEquals(
-                DefaultLifecycleResolver(LifecycleResolver(GlobalTargetLifecycle)),
+                LifecycleResolver(GlobalPlatformLifecycle),
                 this.lifecycleResolver
             )
         }
@@ -1668,7 +1667,8 @@ class ImageRequestTest {
                     ThumbnailMemoryCacheStateImage(
                         "uri",
                         IntColorDrawableStateImage(Color.BLUE)
-                    ))
+                    )
+                )
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete))

@@ -18,12 +18,14 @@ package com.github.panpf.sketch.target
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle.Event
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleEventObserver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleOwner
 import com.github.panpf.sketch.painter.AnimatablePainter
-import com.github.panpf.sketch.transition.TransitionComposeTarget
 import com.github.panpf.sketch.request.allowNullImage
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.target.TargetLifecycle.Event
+import com.github.panpf.sketch.transition.TransitionComposeTarget
 import com.github.panpf.sketch.util.asOrNull
 
 /**
@@ -34,7 +36,7 @@ import com.github.panpf.sketch.util.asOrNull
  * to implement [ComposeTarget] directly.
  */
 abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
-    TargetLifecycle.EventObserver, AttachObserver {
+    PlatformLifecycleEventObserver, AttachObserver {
 
     private var isStarted = false
     private var isAttached = false
@@ -48,7 +50,7 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     override fun onSuccess(requestContext: RequestContext, result: Image) =
         updateImage(requestContext, result)
 
-    override fun onStateChanged(source: TargetLifecycle, event: Event) {
+    override fun onStateChanged(source: PlatformLifecycleOwner, event: Event) {
         when (event) {
             Event.ON_START -> {
                 isStarted = true

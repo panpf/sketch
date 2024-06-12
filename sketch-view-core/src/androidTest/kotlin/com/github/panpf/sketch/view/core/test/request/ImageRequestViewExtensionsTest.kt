@@ -5,7 +5,6 @@ import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.request.DefaultLifecycleResolver
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ViewLifecycleResolver
@@ -35,14 +34,7 @@ class ImageRequestViewExtensionsTest {
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertEquals(ImageViewTarget(imageView1), this.target)
-            Assert.assertEquals(
-                DefaultLifecycleResolver(
-                    ViewLifecycleResolver(
-                        imageView1
-                    )
-                ),
-                this.lifecycleResolver
-            )
+            Assert.assertEquals(ViewLifecycleResolver(imageView1), this.lifecycleResolver)
 
             Assert.assertEquals(NETWORK, this.depth)
             Assert.assertNull(this.parameters)

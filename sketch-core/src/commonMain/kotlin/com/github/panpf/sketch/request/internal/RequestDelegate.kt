@@ -15,12 +15,14 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.MainThread
+import com.github.panpf.sketch.lifecycle.PlatformLifecycle
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleEventObserver
+import com.github.panpf.sketch.lifecycle.PlatformLifecycleOwner
+import com.github.panpf.sketch.lifecycle.removeAndAddObserver
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.target.TargetLifecycle
-import com.github.panpf.sketch.target.removeAndAddObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 
@@ -50,7 +52,7 @@ interface RequestDelegate {
 
     /** Register all lifecycle observers. */
     @MainThread
-    fun start(lifecycle: TargetLifecycle)
+    fun start(lifecycle: PlatformLifecycle)
 
     /** Called when this request's job is cancelled or completes successfully/unsuccessfully. */
     @MainThread
@@ -72,22 +74,22 @@ open class BaseRequestDelegate(
     override val initialRequest: ImageRequest,
     protected val target: Target?,
     protected val job: Job
-) : RequestDelegate, AttachObserver, TargetLifecycle.EventObserver {
+) : RequestDelegate, AttachObserver, PlatformLifecycleEventObserver {
 
-    protected var lifecycle: TargetLifecycle? = null
+    protected var lifecycle: PlatformLifecycle? = null
 
     override fun assertActive() {
         // Do Nothing.
     }
 
-    override fun start(lifecycle: TargetLifecycle) {
+    override fun start(lifecycle: PlatformLifecycle) {
         this.lifecycle = lifecycle
         lifecycle.addObserver(this)
 
         val target = target
         if (target != null) {
             target.getRequestManager()?.setRequest(this)
-            if (target is TargetLifecycle.EventObserver) {
+            if (target is PlatformLifecycleEventObserver) {
                 lifecycle.removeAndAddObserver(target)
             }
         }
@@ -96,7 +98,7 @@ open class BaseRequestDelegate(
     override fun dispose() {
         job.cancel()
         val target = target
-        if (target is TargetLifecycle.EventObserver) {
+        if (target is PlatformLifecycleEventObserver) {
             lifecycle?.removeObserver(target)
         }
         lifecycle?.removeObserver(this)
@@ -104,7 +106,7 @@ open class BaseRequestDelegate(
 
     override fun finish() {
         val target = target
-        if (target is TargetLifecycle.EventObserver) {
+        if (target is PlatformLifecycleEventObserver) {
             lifecycle?.removeObserver(target)
         }
         lifecycle?.removeObserver(this)
@@ -116,8 +118,8 @@ open class BaseRequestDelegate(
         }
     }
 
-    override fun onStateChanged(source: TargetLifecycle, event: TargetLifecycle.Event) {
-        if (event == TargetLifecycle.Event.ON_DESTROY) {
+    override fun onStateChanged(source: PlatformLifecycleOwner, event: PlatformLifecycle.Event) {
+        if (event == PlatformLifecycle.Event.ON_DESTROY) {
             val target = target
             if (target != null) {
                 target.getRequestManager()?.dispose()
