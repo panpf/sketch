@@ -60,7 +60,7 @@ class EngineDecodeInterceptorTest {
             result.imageInfo.toString()
         )
         Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
-        Assert.assertNull(result.transformedList)
+        Assert.assertNull(result.transformeds)
     }
 
     @Test

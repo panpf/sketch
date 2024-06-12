@@ -49,7 +49,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
             createItem(binding, "Data From: ", args.dataFromInfo.orEmpty())
                 .apply { binding.contentLayout.addView(this) }
 
-            createItem(binding, "Transformed: ", args.transformedInfo.orEmpty())
+            createItem(binding, "Transformeds: ", args.transformedInfo.orEmpty())
                 .apply { binding.contentLayout.addView(this) }
         } else {
             createItem(binding, "Throwable: ", args.throwableString.orEmpty())
@@ -101,7 +101,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
 
                 dataFromInfo = imageResult.dataFrom.name
 
-                transformedInfo = imageResult.transformedList
+                transformedInfo = imageResult.transformeds
                     ?.joinToString(separator = "\n") { transformed ->
                         transformed.replace("Transformed", "")
                     }

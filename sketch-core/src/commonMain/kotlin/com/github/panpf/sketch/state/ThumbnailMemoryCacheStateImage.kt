@@ -4,7 +4,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.getImageInfo
-import com.github.panpf.sketch.cache.getTransformedList
+import com.github.panpf.sketch.cache.getTransformeds
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.format
@@ -51,9 +51,9 @@ class ThumbnailMemoryCacheStateImage(
                         (imageInfo.width.toFloat() / imageInfo.height).format(1)
                     val sizeSame = abs(bitmapAspectRatio - imageAspectRatio) <= 0.1f
 
-                    val transformedList = it.getTransformedList()
+                    val transformeds = it.getTransformeds()
                     val noOtherTransformed =
-                        transformedList == null || transformedList.all { transformed ->
+                        transformeds == null || transformeds.all { transformed ->
                             isInSampledTransformed(transformed)
                         }
 

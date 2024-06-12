@@ -89,7 +89,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                 image = image,
                 imageInfo = metadata.imageInfo,
                 dataFrom = RESULT_CACHE,
-                transformedList = metadata.transformedList,
+                transformeds = metadata.transformeds,
                 extras = metadata.extras
             )
         }
@@ -112,8 +112,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         decodeResult: DecodeResult,
     ): Boolean {
         if (!requestContext.request.resultCachePolicy.writeEnabled) return false
-        val transformedList = decodeResult.transformedList
-        if (transformedList.isNullOrEmpty()) return false
+        val transformeds = decodeResult.transformeds
+        if (transformeds.isNullOrEmpty()) return false
         val image = decodeResult.image
         val imageSerializer =
             createImageSerializer()?.takeIf { it.supportImage(image) } ?: return false
@@ -128,7 +128,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
             val metadataString = Metadata(
                 imageInfo = decodeResult.imageInfo,
-                transformedList = transformedList,
+                transformeds = transformeds,
                 extras = decodeResult.extras
             ).toMetadataString()
             resultCache.fileSystem.sink(editor.metadata).buffer().use { writer ->
@@ -158,7 +158,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
     private class Metadata(
         val imageInfo: ImageInfo,
-        val transformedList: List<String>?,
+        val transformeds: List<String>?,
         val extras: Map<String, String>?
     ) {
 
@@ -166,7 +166,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             appendLine("width=${imageInfo.width}")
             appendLine("height=${imageInfo.height}")
             appendLine("mimeType=${imageInfo.mimeType}")
-            transformedList?.forEach {
+            transformeds?.forEach {
                 appendLine("transformed=${it}")
             }
             extras?.entries?.forEach {
@@ -190,7 +190,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                     height = propertiesMap["height"]!!.toInt(),
                     mimeType = propertiesMap["mimeType"]!!,
                 )
-                val transformedList = propertiesMap.keys.asSequence()
+                val transformeds = propertiesMap.keys.asSequence()
                     .filter { key -> key == "transformed" }
                     .mapNotNull { key -> propertiesMap[key] }
                     .toList()
@@ -204,7 +204,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                     }
                 return Metadata(
                     imageInfo = imageInfo,
-                    transformedList = transformedList,
+                    transformeds = transformeds,
                     extras = extras
                 )
             }

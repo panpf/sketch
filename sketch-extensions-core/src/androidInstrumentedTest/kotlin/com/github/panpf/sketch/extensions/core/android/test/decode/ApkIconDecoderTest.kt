@@ -169,7 +169,7 @@ class ApkIconDecoderTest {
                     imageInfo.toShortString()
                 )
                 Assert.assertEquals(LOCAL, dataFrom)
-                Assert.assertNull(transformedList)
+                Assert.assertNull(transformeds)
             }
 
         ImageRequest(context, apkFilePath) {
@@ -185,7 +185,7 @@ class ApkIconDecoderTest {
                     imageInfo.toShortString()
                 )
                 Assert.assertEquals(LOCAL, dataFrom)
-                Assert.assertNull(transformedList)
+                Assert.assertNull(transformeds)
             }
 
         ImageRequest(context, apkFilePath) {
@@ -205,7 +205,7 @@ class ApkIconDecoderTest {
                     )
                     Assert.assertEquals(
                         listOf(createInSampledTransformed(2)),
-                        transformedList
+                        transformeds
                     )
                 } else {
                     val scale = min(
@@ -216,7 +216,7 @@ class ApkIconDecoderTest {
                         "Bitmap(${(iconDrawable.intrinsicWidth * scale).roundToInt()}x${(iconDrawable.intrinsicHeight * scale).roundToInt()},ARGB_8888)",
                         image.getBitmapOrThrow().toShortInfoString()
                     )
-                    Assert.assertEquals(listOf(createScaledTransformed(scale)), transformedList)
+                    Assert.assertEquals(listOf(createScaledTransformed(scale)), transformeds)
                 }
                 Assert.assertEquals(
                     "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
@@ -249,7 +249,7 @@ class ApkIconDecoderTest {
                             )
                         )
                     ),
-                    transformedList
+                    transformeds
                 )
             }
 

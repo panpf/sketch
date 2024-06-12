@@ -48,7 +48,7 @@ class ImageResultTest {
             image = ColorDrawable(Color.BLACK).asSketchImage(),
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
             dataFrom = LOCAL,
-            transformedList = listOf(createCircleCropTransformed(END_CROP)),
+            transformeds = listOf(createCircleCropTransformed(END_CROP)),
             extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertSame(request1, request)
@@ -58,7 +58,7 @@ class ImageResultTest {
                 imageInfo
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformedList)
+            Assert.assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformeds)
             Assert.assertEquals(mapOf("age" to "16"), extras)
         }
 

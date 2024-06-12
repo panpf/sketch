@@ -72,7 +72,7 @@ class MemoryCacheStateImageTest {
                 image = Bitmap.createBitmap(100, 100, RGB_565).asSketchImage(),
                 newCacheValueExtras(
                     imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                    transformedList = null,
+                    transformeds = null,
                     extras = null,
                 )
             )

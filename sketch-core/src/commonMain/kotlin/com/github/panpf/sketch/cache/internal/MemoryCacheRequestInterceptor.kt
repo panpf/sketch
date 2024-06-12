@@ -18,7 +18,7 @@ package com.github.panpf.sketch.cache.internal
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.cache.getExtras
 import com.github.panpf.sketch.cache.getImageInfo
-import com.github.panpf.sketch.cache.getTransformedList
+import com.github.panpf.sketch.cache.getTransformeds
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.cache.newCacheValueExtras
@@ -79,7 +79,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         return ImageData(
             image = cachedValue.image,
             imageInfo = cachedValue.getImageInfo()!!,
-            transformedList = cachedValue.getTransformedList(),
+            transformeds = cachedValue.getTransformeds(),
             extras = cachedValue.getExtras(),
             dataFrom = DataFrom.MEMORY_CACHE,
         )
@@ -105,7 +105,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val newCacheValue = imageData.image.cacheValue(
             extras = newCacheValueExtras(
                 imageInfo = imageData.imageInfo,
-                transformedList = imageData.transformedList,
+                transformeds = imageData.transformeds,
                 extras = imageData.extras,
             )
         )

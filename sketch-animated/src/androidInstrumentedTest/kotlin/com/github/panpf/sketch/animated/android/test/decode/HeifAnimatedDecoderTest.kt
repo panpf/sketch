@@ -183,7 +183,7 @@ class HeifAnimatedDecoderTest {
                 Assert.assertEquals(ImageInfo(256, 144, "image/heif"), this.imageInfo)
                 Assert.assertEquals(Size(256, 144), image.getDrawableOrThrow().intrinsicSize)
                 Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertNull(this.transformedList)
+                Assert.assertNull(this.transformeds)
                 val animatedImageDrawable =
                     ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable).drawable
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
@@ -200,7 +200,7 @@ class HeifAnimatedDecoderTest {
                 Assert.assertEquals(ImageInfo(256, 144, "image/heif"), this.imageInfo)
                 Assert.assertEquals(Size(128, 72), image.getDrawableOrThrow().intrinsicSize)
                 Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
                 val animatedImageDrawable =
                     ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable).drawable
                 Assert.assertEquals(3, animatedImageDrawable.repeatCount)

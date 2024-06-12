@@ -191,7 +191,7 @@ fun realDecode(
         precision = precision,
         scale = scale
     )
-    val transformedList = mutableListOf<String>()
+    val transformeds = mutableListOf<String>()
     val resizeMapping = calculateResizeMapping(
         imageSize = imageInfo.size,
         resizeSize = resize.size,
@@ -212,9 +212,9 @@ fun realDecode(
             imageSize = imageSize
         )
         if (sampleSize > 1) {
-            transformedList.add(createInSampledTransformed(sampleSize))
+            transformeds.add(createInSampledTransformed(sampleSize))
         }
-        transformedList.add(createSubsamplingTransformed(resizeMapping.srcRect))
+        transformeds.add(createSubsamplingTransformed(resizeMapping.srcRect))
         decodeRegion(resizeMapping.srcRect, sampleSize)
     } else {
         val sampleSize = calculateSampleSize(
@@ -224,7 +224,7 @@ fun realDecode(
             mimeType = imageInfo.mimeType
         )
         if (sampleSize > 1) {
-            transformedList.add(0, createInSampledTransformed(sampleSize))
+            transformeds.add(0, createInSampledTransformed(sampleSize))
         }
         decodeFull(sampleSize)
     }
@@ -235,7 +235,7 @@ fun realDecode(
         image = image,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
-        transformedList = transformedList.takeIf { it.isNotEmpty() }?.toList(),
+        transformeds = transformeds.takeIf { it.isNotEmpty() }?.toList(),
         extras = null,
     )
 }

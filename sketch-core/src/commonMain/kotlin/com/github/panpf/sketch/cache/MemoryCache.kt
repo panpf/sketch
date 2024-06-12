@@ -140,9 +140,9 @@ fun MemoryCache.Value.getImageInfo(): ImageInfo? {
     return extras?.get("imageInfo") as? ImageInfo
 }
 
-fun MemoryCache.Value.getTransformedList(): List<String>? {
+fun MemoryCache.Value.getTransformeds(): List<String>? {
     @Suppress("UNCHECKED_CAST")
-    return extras?.get("transformedList") as? List<String>
+    return extras?.get("transformeds") as? List<String>
 }
 
 fun MemoryCache.Value.getExtras(): Map<String, String>? {
@@ -152,12 +152,12 @@ fun MemoryCache.Value.getExtras(): Map<String, String>? {
 
 fun newCacheValueExtras(
     imageInfo: ImageInfo,
-    transformedList: List<String>?,
+    transformeds: List<String>?,
     extras: Map<String, String>?,
 ): Map<String, Any?> {
     return mapOf(
         "imageInfo" to imageInfo,
-        "transformedList" to transformedList,
+        "transformeds" to transformeds,
         "extras" to extras,
     )
 }

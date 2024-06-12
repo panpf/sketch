@@ -62,7 +62,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
         ViewCrossfadeTransition(requestContext, imageViewTarget, result).apply {
@@ -116,7 +116,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
         ViewCrossfadeTransition(requestContext, imageViewTarget, success).transition()
@@ -157,7 +157,7 @@ class ViewCrossfadeTransitionTest {
                 image = imageViewTarget.drawable!!.asSketchImage(),
                 imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 dataFrom = LOCAL,
-                transformedList = null,
+                transformeds = null,
                 extras = null,
             )
         ).transition()
@@ -206,7 +206,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
         Assert.assertNotNull(factory.create(requestContext, imageViewTarget, successResult))
@@ -224,7 +224,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = MEMORY_CACHE,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
         Assert.assertNull(

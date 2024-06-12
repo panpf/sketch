@@ -130,7 +130,7 @@ when (loadState) {
         val cacheKey: String = loadState.result.cacheKey
         val imageInfo: ImageInfo = loadState.result.imageInfo
         val dataFrom: DataFrom = loadState.result.dataFrom
-        val transformedList: List<String>? = loadState.result.transformedList
+        val transformeds: List<String>? = loadState.result.transformeds
         val extras: Map<String, String>? = loadState.result.extras
     }
     is Error -> {

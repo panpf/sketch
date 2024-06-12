@@ -173,7 +173,7 @@ class GifAnimatedDecoderTest {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 Assert.assertEquals(Size(480, 480), image.getDrawableOrThrow().intrinsicSize)
                 Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertNull(this.transformedList)
+                Assert.assertNull(this.transformeds)
                 val animatedImageDrawable =
                     ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable).drawable
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
@@ -190,7 +190,7 @@ class GifAnimatedDecoderTest {
                 Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 Assert.assertEquals(Size(240, 240), image.getDrawableOrThrow().intrinsicSize)
                 Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
                 val animatedImageDrawable =
                     ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable).drawable
                 Assert.assertEquals(3, animatedImageDrawable.repeatCount)

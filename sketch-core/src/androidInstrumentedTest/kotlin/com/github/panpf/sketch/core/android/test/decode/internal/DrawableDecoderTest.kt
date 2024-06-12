@@ -115,7 +115,7 @@ class DrawableDecoderTest {
 //                imageInfo.toShortString()
 //            )
 //            Assert.assertEquals(LOCAL, dataFrom)
-//            Assert.assertNull(transformedList)
+//            Assert.assertNull(transformeds)
 //        }
 //
 //        ImageRequest(context, newResourceUri(R.drawable.test)) {
@@ -136,7 +136,7 @@ class DrawableDecoderTest {
 //                imageInfo.toShortString()
 //            )
 //            Assert.assertEquals(LOCAL, dataFrom)
-//            Assert.assertNull(transformedList)
+//            Assert.assertNull(transformeds)
 //        }
 
         ImageRequest(
@@ -159,7 +159,7 @@ class DrawableDecoderTest {
                 "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
-            Assert.assertEquals(listOf(createScaledTransformed(scale)), transformedList)
+            Assert.assertEquals(listOf(createScaledTransformed(scale)), transformeds)
             Assert.assertEquals(
                 "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
                 imageInfo.toShortString()
@@ -187,7 +187,7 @@ class DrawableDecoderTest {
                 "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
-            Assert.assertEquals(listOf(createScaledTransformed(2.0f)), transformedList)
+            Assert.assertEquals(listOf(createScaledTransformed(2.0f)), transformeds)
             Assert.assertEquals(
                 "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
                 imageInfo.toShortString()

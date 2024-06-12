@@ -40,7 +40,7 @@ open class SkiaAnimatedDecoder(
             ),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
     }

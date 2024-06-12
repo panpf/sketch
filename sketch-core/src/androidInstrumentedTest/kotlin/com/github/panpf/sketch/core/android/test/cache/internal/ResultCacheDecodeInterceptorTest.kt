@@ -85,7 +85,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
-                result.transformedList?.joinToString()
+                result.transformeds?.joinToString()
             )
             Assert.assertEquals(
                 mapOf("key" to "hasExtras"),
@@ -104,7 +104,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(DataFrom.RESULT_CACHE, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
-                result.transformedList?.joinToString()
+                result.transformeds?.joinToString()
             )
             Assert.assertEquals(
                 mapOf("key" to "hasExtras"),
@@ -125,7 +125,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
-                result.transformedList?.joinToString()
+                result.transformeds?.joinToString()
             )
             Assert.assertEquals(
                 mapOf("key" to "hasExtras"),
@@ -146,7 +146,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
-                result.transformedList?.joinToString()
+                result.transformeds?.joinToString()
             )
             Assert.assertEquals(
                 mapOf("key" to "hasExtras"),
@@ -168,7 +168,7 @@ class ResultCacheDecodeInterceptorTest {
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4)",
-                result.transformedList?.joinToString()
+                result.transformeds?.joinToString()
             )
             Assert.assertEquals(
                 mapOf("key" to "hasExtras"),
@@ -192,7 +192,7 @@ class ResultCacheDecodeInterceptorTest {
                 result.imageInfo.toString()
             )
             Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
-            Assert.assertEquals(null, result.transformedList?.joinToString())
+            Assert.assertEquals(null, result.transformeds?.joinToString())
             Assert.assertEquals(
                 mapOf("key" to "hasExtras"),
                 result.extras

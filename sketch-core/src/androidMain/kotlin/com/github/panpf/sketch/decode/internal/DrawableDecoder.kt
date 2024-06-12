@@ -53,13 +53,13 @@ open class DrawableDecoder constructor(
         }
         val imageSize = Size(imageWidth, imageHeight)
         val targetSize = requestContext.size!!
-        var transformedList: List<String>? = null
+        var transformeds: List<String>? = null
         val scale: Float = computeScaleMultiplierWithOneSide(
             sourceSize = imageSize,
             targetSize = targetSize
         )
         if (scale != 1f) {
-            transformedList = listOf(createScaledTransformed(scale))
+            transformeds = listOf(createScaledTransformed(scale))
         }
         // TODO Determine whether the image needs to be enlarged based on the new ContentScaleType
         val dstSize = Size(
@@ -80,7 +80,7 @@ open class DrawableDecoder constructor(
             image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
             imageInfo = imageInfo,
             dataFrom = LOCAL,
-            transformedList = transformedList,
+            transformeds = transformeds,
             extras = null
         )
         val resizedResult = decodeResult.appliedResize(requestContext)

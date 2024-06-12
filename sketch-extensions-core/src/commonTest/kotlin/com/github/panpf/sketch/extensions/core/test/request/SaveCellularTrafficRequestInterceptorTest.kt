@@ -313,7 +313,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                     image = FakeImage(SketchSize(100, 100)),
                     imageInfo = ImageInfo(100, 100, "image/xml"),
                     dataFrom = LOCAL,
-                    transformedList = null,
+                    transformeds = null,
                     extras = null,
                 )
             )

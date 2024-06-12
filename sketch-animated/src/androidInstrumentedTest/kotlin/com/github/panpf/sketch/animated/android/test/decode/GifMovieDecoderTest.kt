@@ -196,7 +196,7 @@ class GifMovieDecoderTest {
                     Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
                     Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
                     Assert.assertEquals(LOCAL, this.dataFrom)
-                    Assert.assertNull(this.transformedList)
+                    Assert.assertNull(this.transformeds)
                     val movieDrawable =
                         (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
                     Assert.assertEquals(-1, movieDrawable.getRepeatCount())
@@ -219,7 +219,7 @@ class GifMovieDecoderTest {
                     Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
                     Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
                     Assert.assertEquals(LOCAL, this.dataFrom)
-                    Assert.assertNull(this.transformedList)
+                    Assert.assertNull(this.transformeds)
                     val movieDrawable =
                         (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
                     Assert.assertEquals(3, movieDrawable.getRepeatCount())

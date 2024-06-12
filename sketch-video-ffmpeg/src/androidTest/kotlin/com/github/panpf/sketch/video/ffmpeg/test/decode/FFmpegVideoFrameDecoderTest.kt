@@ -189,7 +189,7 @@ class FFmpegVideoFrameDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         ImageRequest(context, MyImages.mp4.uri) {
@@ -210,7 +210,7 @@ class FFmpegVideoFrameDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(2)), transformeds)
         }
 
         ImageRequest(context, MyImages.png.uri).run {

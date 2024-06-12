@@ -72,7 +72,7 @@ class TransformationDecodeInterceptorTest {
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 image.getBitmapOrThrow().corners()
             )
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         runBlocking {
@@ -96,7 +96,7 @@ class TransformationDecodeInterceptorTest {
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 image.getBitmapOrThrow().corners()
             )
-            Assert.assertEquals(listOf(createCircleCropTransformed(CENTER_CROP)), transformedList)
+            Assert.assertEquals(listOf(createCircleCropTransformed(CENTER_CROP)), transformeds)
         }
 
         runBlocking {
@@ -129,7 +129,7 @@ class TransformationDecodeInterceptorTest {
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 image.getBitmapOrThrow().corners()
             )
-            Assert.assertNotNull(transformedList)
+            Assert.assertNotNull(transformeds)
         }
 
         runBlocking {
@@ -162,7 +162,7 @@ class TransformationDecodeInterceptorTest {
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 image.getBitmapOrThrow().corners()
             )
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
     }
 

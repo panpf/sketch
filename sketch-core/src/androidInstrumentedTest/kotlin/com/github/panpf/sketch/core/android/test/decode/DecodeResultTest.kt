@@ -40,12 +40,12 @@ class DecodeResultTest {
     fun testConstructor() {
         val newBitmap = Bitmap.createBitmap(100, 100, RGB_565)
         val imageInfo = ImageInfo(3000, 500, "image/png")
-        val transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45))
+        val transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45))
         DecodeResult(
             image = newBitmap.asSketchImage(),
             imageInfo = imageInfo,
             dataFrom = LOCAL,
-            transformedList = transformedList,
+            transformeds = transformeds,
             extras = mapOf("age" to "16")
         ).apply {
             Assert.assertTrue(newBitmap === image.getBitmapOrThrow())
@@ -56,7 +56,7 @@ class DecodeResultTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 "InSampledTransformed(4), RotateTransformed(45)",
-                this.transformedList?.joinToString()
+                this.transformeds?.joinToString()
             )
             Assert.assertEquals(
                 mapOf("age" to "16"),
@@ -72,7 +72,7 @@ class DecodeResultTest {
             image = image,
             imageInfo = ImageInfo(3000, 500, "image/png"),
             dataFrom = LOCAL,
-            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+            transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
             extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertEquals(
@@ -80,7 +80,7 @@ class DecodeResultTest {
                         "image=$image, " +
                         "imageInfo=$imageInfo, " +
                         "dataFrom=$dataFrom, " +
-                        "transformedList=$transformedList, " +
+                        "transformeds=$transformeds, " +
                         "extras={age=16})",
                 toString()
             )
@@ -96,7 +96,7 @@ class DecodeResultTest {
             image = bitmap1.asSketchImage(),
             imageInfo = ImageInfo(3000, 500, "image/png"),
             dataFrom = LOCAL,
-            transformedList = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+            transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
             extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
@@ -104,7 +104,7 @@ class DecodeResultTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16"),
@@ -120,7 +120,7 @@ class DecodeResultTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16"),
@@ -136,7 +136,7 @@ class DecodeResultTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16"),
@@ -153,7 +153,7 @@ class DecodeResultTest {
                 Assert.assertEquals(LOCAL, dataFrom)
                 Assert.assertEquals(
                     listOf(createInSampledTransformed(4), createRotateTransformed(45)),
-                    transformedList
+                    transformeds
                 )
                 Assert.assertEquals(
                     mapOf("age" to "16"),
@@ -169,7 +169,7 @@ class DecodeResultTest {
             Assert.assertEquals(MEMORY, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16"),
@@ -191,7 +191,7 @@ class DecodeResultTest {
                     createRotateTransformed(45),
                     createCircleCropTransformed(FILL)
                 ),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16"),
@@ -209,7 +209,7 @@ class DecodeResultTest {
             Assert.assertEquals(LOCAL, dataFrom)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16", "sex" to "male"),

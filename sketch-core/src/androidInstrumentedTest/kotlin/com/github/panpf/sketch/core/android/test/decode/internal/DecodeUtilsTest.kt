@@ -886,7 +886,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         ImageRequest(context, hasExifFile.file.path) {
@@ -919,7 +919,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
             Assert.assertEquals(
                 result1.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
@@ -961,7 +961,7 @@ class DecodeUtilsTest {
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
-                transformedList
+                transformeds
             )
         }
 
@@ -1000,7 +1000,7 @@ class DecodeUtilsTest {
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 result3.image.getBitmapOrThrow().corners(),
@@ -1043,7 +1043,7 @@ class DecodeUtilsTest {
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
-                transformedList
+                transformeds
             )
         }
 
@@ -1082,7 +1082,7 @@ class DecodeUtilsTest {
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
-                transformedList
+                transformeds
             )
             Assert.assertEquals(
                 result5.image.getBitmapOrThrow().corners(),
@@ -1120,7 +1120,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(16)), transformeds)
         }
 
         ImageRequest(context, hasExifFile.file.path).newRequest {
@@ -1153,7 +1153,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(16)), transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(16)), transformeds)
             Assert.assertEquals(
                 result7.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
@@ -1183,7 +1183,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(8)), transformeds)
         }
 
         ImageRequest(context, MyImages.bmp.uri).newRequest {
@@ -1209,7 +1209,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
             Assert.assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(8)), transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(8)), transformeds)
             Assert.assertEquals(
                 result9.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
@@ -1226,7 +1226,7 @@ class DecodeUtilsTest {
                 image = Bitmap.createBitmap(80, 50, ARGB_8888).asSketchImage(),
                 imageInfo = ImageInfo(80, 50, "image/png"),
                 dataFrom = MEMORY,
-                transformedList = null,
+                transformeds = null,
                 extras = null,
             )
         }

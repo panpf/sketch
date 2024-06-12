@@ -177,7 +177,7 @@ class GifDrawableDecoderTest {
             Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
             Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
             Assert.assertEquals(LOCAL, this.dataFrom)
-            Assert.assertNull(this.transformedList)
+            Assert.assertNull(this.transformeds)
             val gifDrawable =
                 ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
             Assert.assertEquals(0, gifDrawable.loopCount)
@@ -194,7 +194,7 @@ class GifDrawableDecoderTest {
             Assert.assertEquals(240, image.getDrawableOrThrow().intrinsicWidth)
             Assert.assertEquals(240, image.getDrawableOrThrow().intrinsicHeight)
             Assert.assertEquals(LOCAL, this.dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformedList)
+            Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
             val gifDrawable =
                 ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
             Assert.assertEquals(3, gifDrawable.loopCount)

@@ -174,9 +174,9 @@ class SvgDecoderTest {
                 assertEquals(bitmapSize, image.size)
                 assertEquals(LOCAL, dataFrom)
                 if (sizeMultiplier != 1f) {
-                    assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformedList)
+                    assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
                 } else {
-                    assertNull(transformedList)
+                    assertNull(transformeds)
                 }
             }
 
@@ -221,7 +221,7 @@ class SvgDecoderTest {
                 }
                 assertEquals(
                     expected = listOfNotNull(scaledTransformed).takeIf { it.isNotEmpty() },
-                    actual = transformedList,
+                    actual = transformeds,
                     message = "targetSize=$targetSize"
                 )
             }
@@ -264,11 +264,11 @@ class SvgDecoderTest {
                 } else {
                     null
                 }
-                val expectedTransformedList =
+                val expectedTransformeds =
                     listOfNotNull(scaledTransformed, resizeTransformed).takeIf { it.isNotEmpty() }
                 assertEquals(
-                    expected = expectedTransformedList,
-                    actual = transformedList,
+                    expected = expectedTransformeds,
+                    actual = transformeds,
                     message = "precision=$precision"
                 )
             }

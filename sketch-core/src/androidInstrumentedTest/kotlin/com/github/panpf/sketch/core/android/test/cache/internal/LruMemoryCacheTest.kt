@@ -266,7 +266,7 @@ class LruMemoryCacheTest {
             image = bitmap.asSketchImage(),
             extras = newCacheValueExtras(
                 imageInfo = ImageInfo(width, height, "image/jpeg"),
-                transformedList = null,
+                transformeds = null,
                 extras = null,
             )
         )

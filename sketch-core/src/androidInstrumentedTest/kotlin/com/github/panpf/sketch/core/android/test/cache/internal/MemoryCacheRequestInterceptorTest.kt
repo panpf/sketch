@@ -124,7 +124,7 @@ class MemoryCacheRequestInterceptorTest {
                 cacheImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
-                    transformedList = imageData.transformedList,
+                    transformeds = imageData.transformeds,
                     extras = imageData.extras,
                 )
             )
@@ -155,7 +155,7 @@ class MemoryCacheRequestInterceptorTest {
                 cacheImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
-                    transformedList = imageData.transformedList,
+                    transformeds = imageData.transformeds,
                     extras = imageData.extras,
                 )
             )
@@ -254,7 +254,7 @@ class MemoryCacheRequestInterceptorTest {
                 bitmap.asSketchImage(),
                 imageInfo = imageInfo,
                 dataFrom = DataFrom.LOCAL,
-                transformedList = null,
+                transformeds = null,
                 extras = null
             )
         }

@@ -146,7 +146,7 @@ class RequestExecutor {
             cacheKey = requestContext.cacheKey,
             imageInfo = imageData.imageInfo,
             dataFrom = imageData.dataFrom,
-            transformedList = imageData.transformedList,
+            transformeds = imageData.transformeds,
             extras = imageData.extras,
         )
         val target = lastRequest.target
@@ -160,7 +160,7 @@ class RequestExecutor {
             val resultString = "image=${result.image}, " +
                     "imageInfo=${result.imageInfo}, " +
                     "dataFrom=${result.dataFrom}, " +
-                    "transformedList=${result.transformedList}, " +
+                    "transformeds=${result.transformeds}, " +
                     "extras=${result.extras}"
             "RequestExecutor. Request Successful. Result($resultString). '${requestContext.logKey}'"
         }

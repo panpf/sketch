@@ -46,7 +46,7 @@ private class DownloadFakeDecoder(private val fetchResult: FetchResult) : Decode
                 height = 1,
             ),
             dataFrom = fetchResult.dataFrom,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
         return Result.success(result)

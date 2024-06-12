@@ -1019,7 +1019,7 @@ class ImageRequestExecuteTest {
 
         request.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(transformedList?.all {
+                Assert.assertTrue(transformeds?.all {
                     it.startsWith("ResizeTransformed") || it.startsWith("InSampledTransformed")
                 } != false)
             }
@@ -1031,7 +1031,7 @@ class ImageRequestExecuteTest {
                     image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNull(
-                    transformedList?.getRoundedCornersTransformed()
+                    transformeds?.getRoundedCornersTransformed()
                 )
             }
         request.newRequest {
@@ -1043,7 +1043,7 @@ class ImageRequestExecuteTest {
                     image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNotNull(
-                    transformedList?.getRoundedCornersTransformed()
+                    transformeds?.getRoundedCornersTransformed()
                 )
             }
 
@@ -1054,7 +1054,7 @@ class ImageRequestExecuteTest {
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(Size(323, 484), Size(image.width, image.height))
                 Assert.assertNull(
-                    transformedList?.getRotateTransformed()
+                    transformeds?.getRotateTransformed()
                 )
             }
         request.newRequest {
@@ -1065,7 +1065,7 @@ class ImageRequestExecuteTest {
             .asOrNull<ImageResult.Success>()!!.apply {
                 Assert.assertEquals(Size(484, 323), Size(image.width, image.height))
                 Assert.assertNotNull(
-                    transformedList?.getRotateTransformed()
+                    transformeds?.getRotateTransformed()
                 )
             }
 
@@ -1080,7 +1080,7 @@ class ImageRequestExecuteTest {
                     image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNull(
-                    transformedList?.getCircleCropTransformed()
+                    transformeds?.getCircleCropTransformed()
                 )
             }
         request.newRequest {
@@ -1095,7 +1095,7 @@ class ImageRequestExecuteTest {
                     image.getBitmapOrThrow().corners()
                 )
                 Assert.assertNotNull(
-                    transformedList?.getCircleCropTransformed()
+                    transformeds?.getCircleCropTransformed()
                 )
             }
     }
@@ -1588,7 +1588,7 @@ class ImageRequestExecuteTest {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertFalse(transformedList?.contains("TestDecodeInterceptor") == true)
+            Assert.assertFalse(transformeds?.contains("TestDecodeInterceptor") == true)
         }
         ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
@@ -1597,7 +1597,7 @@ class ImageRequestExecuteTest {
                 addDecodeInterceptor(TestDecodeInterceptor())
             }
         }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertTrue(transformedList?.contains("TestDecodeInterceptor") == true)
+            Assert.assertTrue(transformeds?.contains("TestDecodeInterceptor") == true)
         }
 
         ImageRequest(context, MyImages.jpeg.uri.replace("asset", "test")) {

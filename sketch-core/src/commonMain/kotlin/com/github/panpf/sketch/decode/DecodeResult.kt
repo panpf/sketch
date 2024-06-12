@@ -29,7 +29,7 @@ data class DecodeResult constructor(
     /**
      * Store the transformation history of the Image
      */
-    val transformedList: List<String>?,
+    val transformeds: List<String>?,
     /**
      * Store some additional information for consumer use,
      * You can add information here during decoding, transformation, interceptor, etc.
@@ -46,7 +46,7 @@ data class DecodeResult constructor(
         image = image,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
-        transformedList = transformedList?.toMutableList(),
+        transformeds = transformeds?.toMutableList(),
         extras = extras?.toMutableMap(),
     ).apply {
         block?.invoke(this)
@@ -56,7 +56,7 @@ data class DecodeResult constructor(
             "image=$image, " +
             "imageInfo=$imageInfo, " +
             "dataFrom=$dataFrom, " +
-            "transformedList=$transformedList, " +
+            "transformeds=$transformeds, " +
             "extras=$extras" +
             ")"
 
@@ -64,12 +64,12 @@ data class DecodeResult constructor(
         private val image: Image,
         private val imageInfo: ImageInfo,
         private val dataFrom: DataFrom,
-        private var transformedList: MutableList<String>? = null,
+        private var transformeds: MutableList<String>? = null,
         private var extras: MutableMap<String, String>? = null,
     ) {
 
         fun addTransformed(transformed: String): Builder = apply {
-            this.transformedList = (this.transformedList ?: mutableListOf()).apply {
+            this.transformeds = (this.transformeds ?: mutableListOf()).apply {
                 add(transformed)
             }
         }
@@ -84,7 +84,7 @@ data class DecodeResult constructor(
             image = image,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
-            transformedList = transformedList?.toList(),
+            transformeds = transformeds?.toList(),
             extras = extras?.toMap(),
         )
     }

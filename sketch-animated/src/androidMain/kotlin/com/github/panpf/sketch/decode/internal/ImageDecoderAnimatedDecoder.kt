@@ -132,7 +132,7 @@ open class ImageDecoderAnimatedDecoder(
             throw DecodeException("This image is not a animated image, please modify your DrawableDecoder.Factory.create() method to match the image accurately")
         }
 
-        val transformedList: List<String>? =
+        val transformeds: List<String>? =
             if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
         drawable.repeatCount = request.repeatCount
             ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
@@ -153,7 +153,7 @@ open class ImageDecoderAnimatedDecoder(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
-            transformedList = transformedList,
+            transformeds = transformeds,
             extras = null,
         )
     }

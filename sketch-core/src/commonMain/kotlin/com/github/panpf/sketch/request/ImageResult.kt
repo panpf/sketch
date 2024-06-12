@@ -37,7 +37,7 @@ interface ImageResult {
         /**
          * Store the transformation history of the Bitmap
          */
-        val transformedList: List<String>?,
+        val transformeds: List<String>?,
         /**
          * Store some additional information for consumer use
          */

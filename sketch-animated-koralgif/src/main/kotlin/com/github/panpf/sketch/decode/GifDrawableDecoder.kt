@@ -110,7 +110,7 @@ class GifDrawableDecoder(
             }
         }
 
-        val transformedList =
+        val transformeds =
             if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
         val imageInfo = ImageInfo(
             width = imageWidth,
@@ -133,7 +133,7 @@ class GifDrawableDecoder(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
-            transformedList = transformedList,
+            transformeds = transformeds,
             extras = null,
         )
     }

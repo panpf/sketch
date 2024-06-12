@@ -201,7 +201,7 @@ class VideoFrameDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -223,7 +223,7 @@ class VideoFrameDecoderTest {
                     imageInfo.toShortString()
                 )
                 Assert.assertEquals(LOCAL, dataFrom)
-                Assert.assertNull(transformedList)
+                Assert.assertNull(transformeds)
             }
         }
 
@@ -241,13 +241,13 @@ class VideoFrameDecoderTest {
                     "Bitmap(250x125,ARGB_8888)",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
-                Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), transformeds)
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 Assert.assertEquals(
                     "Bitmap(250x125,RGB_565)",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
-                Assert.assertEquals(listOf(createInSampledTransformed(2)), transformedList)
+                Assert.assertEquals(listOf(createInSampledTransformed(2)), transformeds)
             } else {
                 Assert.assertEquals(
                     "Bitmap(250x125,RGB_565)",
@@ -255,7 +255,7 @@ class VideoFrameDecoderTest {
                 )
                 Assert.assertEquals(
                     listOf(createResizeTransformed(Resize(300, 300, LESS_PIXELS))),
-                    transformedList
+                    transformeds
                 )
             }
             Assert.assertEquals(

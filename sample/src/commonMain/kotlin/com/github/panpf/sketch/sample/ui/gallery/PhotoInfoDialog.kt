@@ -58,11 +58,11 @@ fun PhotoInfoDialog(imageResult: ImageResult?, onDismissRequest: () -> Unit) {
                 val dataFromInfo = imageResult.dataFrom.name
                 PhotoInfoItem("Data From: ", dataFromInfo)
 
-                val transformedInfo = imageResult.transformedList
+                val transformedInfo = imageResult.transformeds
                     ?.joinToString(separator = "\n") { transformed ->
                         transformed.replace("Transformed", "")
                     }
-                PhotoInfoItem("Transformed: ", transformedInfo.orEmpty())
+                PhotoInfoItem("Transformeds: ", transformedInfo.orEmpty())
             } else if (imageResult is ImageResult.Error) {
                 val throwableString = imageResult.throwable.toString()
                 PhotoInfoItem("Throwable: ", throwableString)

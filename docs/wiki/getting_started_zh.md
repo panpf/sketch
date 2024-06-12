@@ -351,7 +351,7 @@ if (imageResult is ImageResult.Success) {
     val cacheKey: String = imageResult.cacheKey
     val imageInfo: ImageInfo = imageResult.imageInfo
     val dataFrom: DataFrom = imageResult.dataFrom
-    val transformedList: List<String>? = imageResult.transformedList
+    val transformeds: List<String>? = imageResult.transformeds
     val extras: Map<String, String>? = imageResult.extras
 } else if (imageResult is ImageResult.Error) {
     val throwable: Throwable = imageResult.throwable

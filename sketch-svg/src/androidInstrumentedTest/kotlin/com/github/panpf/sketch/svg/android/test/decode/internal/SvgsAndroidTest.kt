@@ -39,7 +39,7 @@ class SvgsAndroidTest {
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(LOCAL, dataFrom)
-                assertNull(transformedList)
+                assertNull(transformeds)
             }
 
         val displaySize = context.resources.displayMetrics.let {
@@ -61,9 +61,9 @@ class SvgsAndroidTest {
             )
             assertEquals(LOCAL, dataFrom)
             if (sizeMultiplier != 1f) {
-                assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformedList)
+                assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
             } else {
-                assertNull(transformedList)
+                assertNull(transformeds)
             }
         }
     }

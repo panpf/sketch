@@ -96,7 +96,7 @@ class ListenersTest {
                     cacheKey = "",
                     imageInfo = ImageInfo(100, 100, "image/jpeg"),
                     dataFrom = MEMORY,
-                    transformedList = null,
+                    transformeds = null,
                     extras = null
                 )
             )

@@ -137,7 +137,7 @@ class DecodeInterceptorChainTest {
                     image = Bitmap.createBitmap(12, 45, RGB_565).asSketchImage(),
                     imageInfo = ImageInfo(12, 45, "image/jpeg"),
                     dataFrom = LOCAL,
-                    transformedList = null,
+                    transformeds = null,
                     extras = null,
                 )
             )

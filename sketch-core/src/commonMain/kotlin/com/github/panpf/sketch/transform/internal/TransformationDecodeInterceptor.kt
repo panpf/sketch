@@ -35,17 +35,17 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
         val decodeResult = result.let { it.getOrNull() ?: return it }
 
         val oldImage = decodeResult.image
-        val transformedList = mutableListOf<String>()
+        val transformeds = mutableListOf<String>()
         val newImage = try {
             transformations.fold(oldImage) { inputImage, next ->
                 val transformResult = next.transform(sketch, requestContext, inputImage)
                 if (transformResult != null) {
                     check(transformResult.image.checkValid()) {
-                        val transformedListString =
-                            transformedList.joinToString(prefix = "[", postfix = "]")
-                        "Invalid image after transform. transformedList=$transformedListString"
+                        val transformedsString =
+                            transformeds.joinToString(prefix = "[", postfix = "]")
+                        "Invalid image after transform. transformeds=$transformedsString"
                     }
-                    transformedList.add(transformResult.transformed)
+                    transformeds.add(transformResult.transformed)
                     transformResult.image
                 } else {
                     inputImage
@@ -54,9 +54,9 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
         } catch (e: Throwable) {
             return Result.failure(e)
         }
-        return if (transformedList.isNotEmpty()) {
+        return if (transformeds.isNotEmpty()) {
             val newDecodeResult = decodeResult.newResult(image = newImage) {
-                transformedList.forEach {
+                transformeds.forEach {
                     addTransformed(it)
                 }
             }

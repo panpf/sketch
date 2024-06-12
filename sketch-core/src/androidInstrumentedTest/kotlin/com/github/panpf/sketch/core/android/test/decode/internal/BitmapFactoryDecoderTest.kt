@@ -77,7 +77,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         ImageRequest(context, MyImages.webp.uri) {
@@ -95,7 +95,7 @@ class BitmapFactoryDecoderTest {
                 Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
             }
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         // exif
@@ -118,7 +118,7 @@ class BitmapFactoryDecoderTest {
                         imageInfo.toShortString()
                     )
                     Assert.assertEquals(LOCAL, dataFrom)
-                    Assert.assertNull(transformedList)
+                    Assert.assertNull(transformeds)
                 }
             }
     }
@@ -139,7 +139,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
 
         ImageRequest(context, MyImages.webp.uri) {
@@ -158,7 +158,7 @@ class BitmapFactoryDecoderTest {
                 Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
             }
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
         }
     }
 
@@ -179,7 +179,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
             Assert.assertEquals(ColorSpace.get(SRGB), bitmap.colorSpace)
         }
 
@@ -198,7 +198,7 @@ class BitmapFactoryDecoderTest {
                 Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
             }
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
             Assert.assertEquals(ColorSpace.get(SRGB), bitmap.colorSpace)
         }
 
@@ -214,7 +214,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
             Assert.assertEquals(ColorSpace.get(ADOBE_RGB), bitmap.colorSpace)
         }
 
@@ -234,7 +234,7 @@ class BitmapFactoryDecoderTest {
                 Assert.assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
             }
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformedList)
+            Assert.assertNull(transformeds)
             Assert.assertEquals(ColorSpace.get(ADOBE_RGB), bitmap.colorSpace)
         }
     }
@@ -263,9 +263,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, MyImages.jpeg.uri) {
             size(500, 500)
@@ -286,9 +286,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -311,9 +311,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, MyImages.jpeg.uri) {
             size(300, 500)
@@ -334,9 +334,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -355,9 +355,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, MyImages.jpeg.uri) {
             size(300, 500)
@@ -374,9 +374,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
 
         // scale
@@ -451,8 +451,8 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, MyImages.bmp.uri) {
             size(200, 200)
@@ -473,8 +473,8 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -497,8 +497,8 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, MyImages.bmp.uri) {
             size(300, 500)
@@ -519,7 +519,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
         }
 
         // precision = EXACTLY
@@ -538,8 +538,8 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, MyImages.bmp.uri) {
             size(300, 500)
@@ -556,8 +556,8 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
 
         // scale
@@ -638,9 +638,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, testFile.file.path) {
             size(500, 500)
@@ -661,9 +661,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -686,9 +686,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, testFile.file.path) {
             size(300, 500)
@@ -709,9 +709,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNull(transformeds?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -730,9 +730,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
         ImageRequest(context, testFile.file.path) {
             size(300, 500)
@@ -749,9 +749,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
 
         // precision = LongImageClipPrecisionDecider
@@ -777,9 +777,9 @@ class BitmapFactoryDecoderTest {
                 imageInfo.toShortString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNotNull(transformedList?.getInSampledTransformed())
-            Assert.assertNotNull(transformedList?.getSubsamplingTransformed())
-            Assert.assertNotNull(transformedList?.getResizeTransformed())
+            Assert.assertNotNull(transformeds?.getInSampledTransformed())
+            Assert.assertNotNull(transformeds?.getSubsamplingTransformed())
+            Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
 
         // scale

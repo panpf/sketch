@@ -84,13 +84,13 @@ internal actual suspend fun decodeSvg(
         height = svgHeight.roundToInt(),
         mimeType = MIME_TYPE,
     )
-    val transformedList: List<String>? = if (targetScale != 1f)
+    val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
     val decodeResult = DecodeResult(
         image = bitmap.asSketchImage(),
         imageInfo = imageInfo,
         dataFrom = dataSource.dataFrom,
-        transformedList = transformedList,
+        transformeds = transformeds,
         extras = null
     )
 

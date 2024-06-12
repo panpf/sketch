@@ -106,7 +106,7 @@ class GifMovieDecoder(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
-            transformedList = null,
+            transformeds = null,
             extras = null,
         )
     }
