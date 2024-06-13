@@ -33,6 +33,7 @@ package com.github.panpf.sketch.util
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
@@ -42,6 +43,7 @@ import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Error
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.PainterState.Success
+import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
 import com.github.panpf.sketch.util.Size as SketchSize
