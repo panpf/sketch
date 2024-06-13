@@ -69,12 +69,13 @@ internal expect fun resolvePlatformLifecycle(): PlatformLifecycle?
 expect fun getWindowContainerSize(): IntSize
 
 @Composable
-fun rememberAsyncImageState(): AsyncImageState {
+fun rememberAsyncImageState(optionsLazy: (() -> ImageOptions)? = null): AsyncImageState {
     val lifecycle = resolvePlatformLifecycle()
     val inspectionMode = LocalInspectionMode.current
     val containerSize = getWindowContainerSize()
     return remember(lifecycle, inspectionMode, containerSize) {
-        AsyncImageState(lifecycle, inspectionMode, containerSize)
+        val options = optionsLazy?.invoke()
+        AsyncImageState(lifecycle, inspectionMode, containerSize, options)
     }
 }
 
@@ -83,6 +84,7 @@ class AsyncImageState internal constructor(
     private val lifecycle: PlatformLifecycle?,
     private val inspectionMode: Boolean,
     private val containerSize: IntSize,
+    private val options: ImageOptions?,
 ) : RememberObserver {
 
     private val target = AsyncImageTarget()
@@ -105,7 +107,6 @@ class AsyncImageState internal constructor(
     internal var filterQuality = DrawScope.DefaultFilterQuality
     private val sizeResolver = AsyncImageSizeResolver(size)
 
-    var options: ImageOptions? by mutableStateOf(null)
     var loadState: LoadState? by mutableStateOf(null)
         private set
     var result: ImageResult? by mutableStateOf(null)
