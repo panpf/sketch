@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.thauvin.erik.urlencoder
+package com.github.panpf.sketch.util
 
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic

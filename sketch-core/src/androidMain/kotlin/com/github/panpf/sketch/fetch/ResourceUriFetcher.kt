@@ -24,13 +24,13 @@ import android.util.TypedValue
 import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
-import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
-import com.github.panpf.sketch.util.ResDrawable
 import com.github.panpf.sketch.util.ifOrNull
 
 /**

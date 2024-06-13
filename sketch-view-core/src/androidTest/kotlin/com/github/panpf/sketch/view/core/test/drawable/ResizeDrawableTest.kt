@@ -23,7 +23,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.ResizeDrawable
-import com.github.panpf.sketch.drawable.internal.toLogString
+import com.github.panpf.sketch.drawable.toLogString
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL

@@ -17,7 +17,6 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
-import com.github.panpf.sketch.drawable.internal.toLogString
 
 /**
  * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable

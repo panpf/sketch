@@ -4,10 +4,10 @@ import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.drawable.internal.toLogString
+import com.github.panpf.sketch.drawable.heightWithBitmapFirst
+import com.github.panpf.sketch.drawable.toLogString
+import com.github.panpf.sketch.drawable.widthWithBitmapFirst
 import com.github.panpf.sketch.util.allocationByteCountCompat
-import com.github.panpf.sketch.util.heightWithBitmapFirst
-import com.github.panpf.sketch.util.widthWithBitmapFirst
 
 fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): AndroidDrawableImage {
     return AndroidDrawableImage(this, shareable)

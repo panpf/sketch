@@ -6,9 +6,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import com.github.panpf.sketch.util.PainterEqualizer
-import com.github.panpf.sketch.util.asEquality
-import com.github.panpf.sketch.util.equalityPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

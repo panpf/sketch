@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.drawable
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,7 +23,9 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.util.ColorFetcher
+import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.getDrawableCompat
+import com.github.panpf.sketch.util.getXmlDrawableCompat
 
 /**
  * For getting the Drawable

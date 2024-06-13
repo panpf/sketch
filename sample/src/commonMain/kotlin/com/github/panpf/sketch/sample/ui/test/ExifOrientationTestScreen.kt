@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.util.equalityPainterResource
+import com.github.panpf.sketch.painter.equalityPainterResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import sketch_root.sample.generated.resources.Res.drawable
 import sketch_root.sample.generated.resources.ic_image_outline

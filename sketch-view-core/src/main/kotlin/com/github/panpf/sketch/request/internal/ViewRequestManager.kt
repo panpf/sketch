@@ -35,23 +35,23 @@ import androidx.annotation.MainThread
 import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.view.core.R
 
-internal val View.requestManager: ViewTargetRequestManager
+internal val View.requestManager: ViewRequestManager
     get() {
-        val manager = getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?
+        val manager = getTag(R.id.sketch_request_manager) as ViewRequestManager?
         if (manager != null) {
             return manager
         }
         return synchronized(this) {
             // Check again in case coil_request_manager was just set.
-            (getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?)
-                ?: ViewTargetRequestManager(this).apply {
+            (getTag(R.id.sketch_request_manager) as ViewRequestManager?)
+                ?: ViewRequestManager(this).apply {
                     addOnAttachStateChangeListener(this)
                     setTag(R.id.sketch_request_manager, this)
                 }
         }
     }
 
-class ViewTargetRequestManager constructor(private val view: View) : BaseRequestManager(),
+class ViewRequestManager constructor(private val view: View) : BaseRequestManager(),
     View.OnAttachStateChangeListener {
 
     @MainThread

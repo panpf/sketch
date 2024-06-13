@@ -50,9 +50,8 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
-import com.github.panpf.sketch.drawable.internal.toLogString
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -185,7 +184,11 @@ class CrossfadeDrawable @JvmOverloads constructor(
         }
 
         return when {
-            startDrawable != null && endDrawable != null -> resolveOpacity(startDrawable.opacity, endDrawable.opacity)
+            startDrawable != null && endDrawable != null -> resolveOpacity(
+                startDrawable.opacity,
+                endDrawable.opacity
+            )
+
             startDrawable != null -> startDrawable.opacity
             endDrawable != null -> endDrawable.opacity
             else -> PixelFormat.TRANSPARENT

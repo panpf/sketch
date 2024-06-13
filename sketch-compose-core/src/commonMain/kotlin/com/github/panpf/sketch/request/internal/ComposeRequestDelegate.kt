@@ -5,7 +5,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ComposeTarget
 import kotlinx.coroutines.Job
 
-class ComposeTargetRequestDelegate(
+class ComposeRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
     target: ComposeTarget,

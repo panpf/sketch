@@ -20,11 +20,11 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.drawable.DrawableFetcher
+import com.github.panpf.sketch.drawable.RealEqualityDrawable
+import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.DrawableEqualizer
-import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealEqualityDrawable
-import com.github.panpf.sketch.util.ResDrawable
 
 fun DrawableEqualizer.asStateImage(): DrawableStateImage = DrawableStateImage(this)
 

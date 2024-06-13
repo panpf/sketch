@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.state
 
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.util.DrawableEqualizer
+import com.github.panpf.sketch.drawable.DrawableEqualizer
 
 
 fun CurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =

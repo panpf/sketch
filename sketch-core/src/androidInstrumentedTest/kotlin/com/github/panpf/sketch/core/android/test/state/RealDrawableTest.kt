@@ -19,7 +19,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.RealDrawable
+import com.github.panpf.sketch.drawable.RealDrawable
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -37,7 +37,7 @@ internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (valu
  * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#apply).
  */
 @OptIn(ExperimentalContracts::class)
-inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
+internal inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
     contract {
         callsInPlace(block, EXACTLY_ONCE)
     }
@@ -53,7 +53,7 @@ inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
  * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#let).
  */
 @OptIn(ExperimentalContracts::class)
-inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
+internal inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
     contract {
         callsInPlace(block, EXACTLY_ONCE)
     }
@@ -233,19 +233,21 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (context != other.context) return "context different: '${context}' vs '${other.context}'"
     if (uri != other.uri) return "uri different: '${uri}' vs '${other.uri}'"
     if (listener != other.listener) return "listener different: '${listener}' vs '${other.listener}'"
-    if (progressListener != other.progressListener) return "progressListener different: '${progressListener}' vs '${other.progressListener}'"
-    if (target != other.target) return "target different: '${target}' vs '${other.target}'"
-    if (lifecycleResolver != other.lifecycleResolver) return "lifecycleResolver different: '${lifecycleResolver}' vs '${other.lifecycleResolver}'"
-    if (definedOptions != other.definedOptions) return "definedOptions different: '${
-        definedOptions.difference(
-            other.definedOptions
-        )
-    }'"
-    if (defaultOptions != other.defaultOptions) return "defaultOptions different: '${
-        defaultOptions.difference(
-            other.defaultOptions
-        )
-    }'"
+    if (progressListener != other.progressListener) {
+        return "progressListener different: '${progressListener}' vs '${other.progressListener}'"
+    }
+    if (target != other.target) {
+        return "target different: '${target}' vs '${other.target}'"
+    }
+    if (lifecycleResolver != other.lifecycleResolver) {
+        return "lifecycleResolver different: '${lifecycleResolver}' vs '${other.lifecycleResolver}'"
+    }
+    if (definedOptions != other.definedOptions) {
+        return "definedOptions different: '${definedOptions.difference(other.definedOptions)}'"
+    }
+    if (defaultOptions != other.defaultOptions) {
+        return "defaultOptions different: '${defaultOptions.difference(other.defaultOptions)}'"
+    }
     if (definedRequestOptions != other.definedRequestOptions) return "definedRequestOptions different: '${definedRequestOptions}' vs '${other.definedRequestOptions}'"
     if (depthHolder != other.depthHolder) return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
     if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"

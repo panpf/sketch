@@ -6,9 +6,9 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.util.DrawableEqualizer
 
 
 /**

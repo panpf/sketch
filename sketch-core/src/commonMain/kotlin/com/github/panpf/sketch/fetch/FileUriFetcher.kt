@@ -7,7 +7,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.toUri
-import net.thauvin.erik.urlencoder.UrlEncoderUtil
+import com.github.panpf.sketch.util.UrlEncoderUtil
 import okio.Path
 import okio.Path.Companion.toPath
 

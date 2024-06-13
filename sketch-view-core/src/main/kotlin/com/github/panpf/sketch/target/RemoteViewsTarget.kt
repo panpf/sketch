@@ -30,7 +30,7 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.util.toBitmap
+import com.github.panpf.sketch.toBitmapOrThrow
 import kotlinx.coroutines.Job
 
 /**
@@ -55,7 +55,7 @@ class RemoteViewsTarget constructor(
 
     private fun setDrawable(requestContext: RequestContext, result: Image?) {
         if (result != null || requestContext.request.allowNullImage == true) {
-            remoteViews.setImageViewBitmap(imageViewId, result?.toBitmap())
+            remoteViews.setImageViewBitmap(imageViewId, result?.toBitmapOrThrow())
             onUpdated()
         }
     }

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.state
 
+import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.state.ErrorStateImage.UriEmptyCondition
-import com.github.panpf.sketch.util.DrawableEqualizer
 
 
 /**

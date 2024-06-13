@@ -27,7 +27,7 @@ import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.asStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test

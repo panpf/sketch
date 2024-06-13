@@ -43,7 +43,7 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.internal.ComposeTargetRequestManager
+import com.github.panpf.sketch.request.internal.ComposeRequestManager
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -90,7 +90,7 @@ class AsyncImageState internal constructor(
     private val target = AsyncImageTarget()
     private val listener = AsyncImageListener()
     private var lastRequest: ImageRequest? = null
-    private val requestManager = ComposeTargetRequestManager(this)
+    private val requestManager = ComposeRequestManager(this)
     private var coroutineScope: CoroutineScope? = null
     private var loadImageJob: Job? = null
     private var rememberedCount = 0

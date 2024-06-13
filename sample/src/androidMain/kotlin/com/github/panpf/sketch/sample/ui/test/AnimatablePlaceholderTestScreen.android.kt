@@ -5,8 +5,8 @@ import androidx.compose.runtime.remember
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.state.asPainterEqualizer
-import com.github.panpf.sketch.util.PainterEqualizer
-import com.github.panpf.sketch.util.getEqualityDrawableCompat
+import com.github.panpf.sketch.painter.PainterEqualizer
+import com.github.panpf.sketch.drawable.getEqualityDrawableCompat
 
 @Composable
 actual fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): PainterEqualizer? {

@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.drawable
 
 import android.content.Context
 import android.content.res.Resources
@@ -9,8 +9,9 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
-import com.github.panpf.sketch.drawable.internal.toLogString
-import java.lang.Deprecated
+import com.github.panpf.sketch.util.Equalizer
+import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.key
 
 fun Context.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
@@ -44,7 +45,10 @@ fun Resources.getEqualityDrawableCompatForDensity(
     return drawable.asEquality(resId)
 }
 
-@Deprecated
+@Deprecated(
+    message = "Use getEqualityDrawable(Int, Int, Resources.Theme) instead.",
+    replaceWith = ReplaceWith("getEqualityDrawable(resId, density, theme)")
+)
 fun Resources.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
@@ -60,7 +64,10 @@ fun Resources.getEqualityDrawable(
     return drawable.asEquality(resId)
 }
 
-@Deprecated
+@Deprecated(
+    message = "Use getEqualityDrawableForDensity(Int, Int, Resources.Theme) instead.",
+    replaceWith = ReplaceWith("getEqualityDrawableForDensity(resId, density, theme)")
+)
 fun Resources.getEqualityDrawableForDensity(
     @DrawableRes resId: Int,
     density: Int,

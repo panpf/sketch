@@ -2,8 +2,8 @@ package com.github.panpf.sketch.state
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.painter.asPainter
-import com.github.panpf.sketch.util.DrawableEqualizer
-import com.github.panpf.sketch.util.PainterEqualizer
+import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.painter.PainterEqualizer
 
 
 fun Drawable.asPainterEqualizer(equalKey: Any): PainterEqualizer =

@@ -1,9 +1,8 @@
 package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.AsyncImageState
-import com.github.panpf.sketch.request.internal.BaseRequestManager
 
-class ComposeTargetRequestManager(
+class ComposeRequestManager(
     private val asyncImageState: AsyncImageState
 ) : BaseRequestManager() {
 

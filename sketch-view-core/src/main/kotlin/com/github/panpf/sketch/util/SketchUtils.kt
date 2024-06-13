@@ -19,15 +19,15 @@ import android.view.View
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
+import com.github.panpf.sketch.request.internal.ViewRequestManager
 import com.github.panpf.sketch.view.core.R
 
 class SketchUtils private constructor() {
 
     companion object {
 
-        internal fun requestManagerOrNull(view: View): ViewTargetRequestManager? =
-            view.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager?
+        internal fun requestManagerOrNull(view: View): ViewRequestManager? =
+            view.getTag(R.id.sketch_request_manager) as ViewRequestManager?
 
         /**
          * Dispose the request that's attached to this view (if there is one).

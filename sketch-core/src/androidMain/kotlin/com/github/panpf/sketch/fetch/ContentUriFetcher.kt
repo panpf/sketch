@@ -19,8 +19,8 @@ import android.net.Uri
 import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.ContentDataSource
 
 /**
  * Support 'content://sample.jpg' uri

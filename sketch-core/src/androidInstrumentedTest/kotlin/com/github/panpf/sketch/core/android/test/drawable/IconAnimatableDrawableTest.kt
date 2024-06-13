@@ -32,7 +32,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.IconAnimatableDrawable
-import com.github.panpf.sketch.drawable.internal.calculateFitBounds
+import com.github.panpf.sketch.drawable.calculateFitBounds
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow

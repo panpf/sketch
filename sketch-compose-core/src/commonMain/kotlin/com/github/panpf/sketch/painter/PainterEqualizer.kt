@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -7,8 +7,9 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.painter.SketchPainter
-import com.github.panpf.sketch.painter.toLogString
+import com.github.panpf.sketch.util.Equalizer
+import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.key
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource

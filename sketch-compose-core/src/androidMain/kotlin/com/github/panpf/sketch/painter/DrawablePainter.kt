@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.Ltr
 import androidx.compose.ui.unit.LayoutDirection.Rtl
-import com.github.panpf.sketch.drawable.internal.toLogString
-import com.github.panpf.sketch.util.DrawableEqualizer
+import com.github.panpf.sketch.drawable.toLogString
+import com.github.panpf.sketch.drawable.DrawableEqualizer
 import kotlin.math.roundToInt
 
 /**

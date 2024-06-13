@@ -28,7 +28,7 @@ import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import com.github.panpf.sketch.util.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

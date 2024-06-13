@@ -8,7 +8,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 
 /** A request delegate for restartable requests with a [ViewTarget]. */
-class ViewTargetRequestDelegate(
+class ViewRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
     private val viewTarget: ViewTarget<*>,

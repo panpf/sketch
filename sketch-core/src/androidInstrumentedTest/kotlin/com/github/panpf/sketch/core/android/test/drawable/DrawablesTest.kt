@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.util
+package com.github.panpf.sketch.core.android.test.drawable
 
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.LayerDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.drawable.CrossfadeDrawable
-import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.findLeafChildDrawable
-import com.github.panpf.sketch.util.toNewBitmap
+import com.github.panpf.sketch.drawable.toNewBitmap
 import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.Assert
 import org.junit.Test

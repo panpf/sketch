@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.drawable.internal
+package com.github.panpf.sketch.drawable
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
+import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -29,13 +33,47 @@ import android.graphics.drawable.VectorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
+import androidx.core.graphics.component3
+import androidx.core.graphics.component4
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.github.panpf.sketch.drawable.SketchDrawable
-import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toLogString
 import kotlin.math.min
+
+/**
+ * Drawable into new Bitmap. Each time a new bitmap is drawn
+ */
+internal fun Drawable.toNewBitmap(
+    preferredConfig: Config? = null,
+    targetSize: Size? = null
+): Bitmap {
+    val (oldLeft, oldTop, oldRight, oldBottom) = bounds
+    val targetWidth = targetSize?.width ?: intrinsicWidth
+    val targetHeight = targetSize?.height ?: intrinsicHeight
+    setBounds(0, 0, targetWidth, targetHeight)
+
+    val config = preferredConfig ?: ARGB_8888
+    val bitmap: Bitmap = Bitmap.createBitmap(
+        /* width = */ targetWidth,
+        /* height = */ targetHeight,
+        /* config = */ config,
+    )
+    val canvas = Canvas(bitmap)
+    draw(canvas)
+
+    setBounds(oldLeft, oldTop, oldRight, oldBottom) // restore bounds
+    return bitmap
+}
+
+internal val Drawable.widthWithBitmapFirst: Int
+    get() = (this as? BitmapDrawable)?.bitmap?.width ?: intrinsicWidth
+
+internal val Drawable.heightWithBitmapFirst: Int
+    get() = (this as? BitmapDrawable)?.bitmap?.height ?: intrinsicHeight
 
 internal fun calculateFitBounds(contentSize: Size, containerBounds: Rect): Rect {
     val left: Int

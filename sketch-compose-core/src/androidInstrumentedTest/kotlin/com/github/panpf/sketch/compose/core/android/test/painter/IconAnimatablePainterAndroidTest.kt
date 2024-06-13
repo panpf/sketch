@@ -4,8 +4,8 @@ import android.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.asEquality
+import com.github.panpf.sketch.drawable.IntColor
+import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.util.Size
 
 class IconAnimatablePainterAndroidTest {

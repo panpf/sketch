@@ -41,7 +41,7 @@ import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import com.github.panpf.sketch.util.equalityPainterResource
+import com.github.panpf.sketch.painter.equalityPainterResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import sketch_root.sample.generated.resources.Res.drawable
 import sketch_root.sample.generated.resources.ic_error_baseline

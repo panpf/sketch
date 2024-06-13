@@ -5,15 +5,10 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.Context
-import android.graphics.Rect
 import android.os.Build
 import android.os.Looper
 import android.os.Process
-import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.resize.Scale
 import java.io.File
-import kotlin.math.max
-import kotlin.math.roundToInt
 
 
 internal actual fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()

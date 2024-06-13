@@ -17,7 +17,7 @@ import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.uriEmptyError
-import com.github.panpf.sketch.util.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

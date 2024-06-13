@@ -3,7 +3,7 @@ package com.github.panpf.sketch.painter
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
-import com.github.panpf.sketch.drawable.internal.toLogString
+import com.github.panpf.sketch.drawable.toLogString
 
 @Stable
 class DrawableAnimatablePainter(

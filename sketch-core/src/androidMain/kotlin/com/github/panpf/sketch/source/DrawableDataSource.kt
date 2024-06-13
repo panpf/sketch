@@ -17,8 +17,8 @@ package com.github.panpf.sketch.source
 
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.DrawableFetcher
 import okio.Path
 import okio.Source
 

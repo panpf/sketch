@@ -29,7 +29,7 @@ import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.internal.versionCodeCompat
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.util.DrawableFetcher
+import com.github.panpf.sketch.drawable.DrawableFetcher
 
 /**
  * Adds App icon support

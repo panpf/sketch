@@ -15,10 +15,11 @@
  */
 package com.github.panpf.sketch.core.android.test.state
 
+import android.R
 import androidx.core.content.res.ResourcesCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.drawable.ResColor
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +31,7 @@ class ResColorTest {
     fun testGetColor() {
         val context = getTestContext()
 
-        ResColor(android.R.color.background_dark).apply {
+        ResColor(R.color.background_dark).apply {
             Assert.assertEquals(android.R.color.background_dark, resId)
             Assert.assertEquals(
                 ResourcesCompat.getColor(context.resources, android.R.color.background_dark, null),
@@ -38,7 +39,7 @@ class ResColorTest {
             )
         }
 
-        ResColor(android.R.color.background_light).apply {
+        ResColor(R.color.background_light).apply {
             Assert.assertEquals(android.R.color.background_light, resId)
             Assert.assertEquals(
                 ResourcesCompat.getColor(context.resources, android.R.color.background_light, null),
@@ -49,21 +50,21 @@ class ResColorTest {
 
     @Test
     fun testToString() {
-        ResColor(android.R.color.background_dark).apply {
+        ResColor(R.color.background_dark).apply {
             Assert.assertEquals("ResColor(${android.R.color.background_dark})", toString())
         }
 
-        ResColor(android.R.color.background_light).apply {
+        ResColor(R.color.background_light).apply {
             Assert.assertEquals("ResColor(${android.R.color.background_light})", toString())
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ResColor(android.R.color.background_dark)
-        val element11 = ResColor(android.R.color.background_dark)
-        val element2 = ResColor(android.R.color.background_light)
-        val element3 = ResColor(android.R.color.darker_gray)
+        val element1 = ResColor(R.color.background_dark)
+        val element11 = ResColor(R.color.background_dark)
+        val element2 = ResColor(R.color.background_light)
+        val element3 = ResColor(R.color.darker_gray)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

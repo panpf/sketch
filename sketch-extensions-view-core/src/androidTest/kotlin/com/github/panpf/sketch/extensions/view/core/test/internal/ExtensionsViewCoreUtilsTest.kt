@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.extensions.view.core.test.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.internal.format
+import com.github.panpf.sketch.util.format
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

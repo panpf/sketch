@@ -16,7 +16,9 @@
 package com.github.panpf.sketch
 
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import androidx.core.graphics.drawable.toBitmap
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.resize.internal.ResizeMapping
@@ -31,9 +33,7 @@ import com.github.panpf.sketch.util.toLogString
 fun AndroidBitmap.asSketchImage(
     resources: Resources? = null,
     shareable: Boolean = isImmutable
-): AndroidBitmapImage {
-    return AndroidBitmapImage(this, shareable, resources)
-}
+): AndroidBitmapImage = AndroidBitmapImage(this, shareable, resources)
 
 fun Image.getBitmapOrNull(): AndroidBitmap? = when (this) {
     is AndroidBitmapImage -> bitmap
@@ -43,6 +43,15 @@ fun Image.getBitmapOrNull(): AndroidBitmap? = when (this) {
 
 fun Image.getBitmapOrThrow(): AndroidBitmap = getBitmapOrNull()
     ?: throw IllegalArgumentException("Unable to get Bitmap from Image '$this'")
+
+fun Image.toBitmapOrNull(): Bitmap? = when (this) {
+    is AndroidBitmapImage -> bitmap.copy(bitmap.config, false)
+    is AndroidDrawableImage -> drawable.toBitmap()
+    else -> null
+}
+
+fun Image.toBitmapOrThrow(): Bitmap = toBitmapOrNull()
+    ?: throw IllegalArgumentException("'$this' can't be converted to Bitmap")
 
 data class AndroidBitmapImage internal constructor(
     val bitmap: AndroidBitmap,

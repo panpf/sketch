@@ -24,7 +24,7 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
-import com.github.panpf.sketch.util.DrawableFetcher
+import com.github.panpf.sketch.drawable.DrawableFetcher
 import java.io.File
 import java.io.IOException
 

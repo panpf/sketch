@@ -38,12 +38,12 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.ComposeTargetRequestDelegate
+import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
-import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 
@@ -62,7 +62,7 @@ interface ComposeTarget : Target {
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate = ComposeTargetRequestDelegate(sketch, initialRequest, this, job)
+    ): RequestDelegate = ComposeRequestDelegate(sketch, initialRequest, this, job)
 
 
     override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? {

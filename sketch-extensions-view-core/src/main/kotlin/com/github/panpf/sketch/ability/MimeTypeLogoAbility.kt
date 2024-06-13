@@ -17,10 +17,9 @@ package com.github.panpf.sketch.ability
 
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.util.DrawableFetcher
-import com.github.panpf.sketch.util.RealDrawable
-import com.github.panpf.sketch.util.ResDrawable
+import com.github.panpf.sketch.drawable.DrawableFetcher
+import com.github.panpf.sketch.drawable.RealDrawable
+import com.github.panpf.sketch.drawable.ResDrawable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel

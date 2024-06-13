@@ -10,10 +10,10 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.painter.IconPainter
+import com.github.panpf.sketch.painter.PainterEqualizer
+import com.github.panpf.sketch.painter.asEquality
+import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.PainterEqualizer
-import com.github.panpf.sketch.util.asEquality
-import com.github.panpf.sketch.util.rememberEqualityPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

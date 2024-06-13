@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
+import com.github.panpf.sketch.drawable.toNewBitmap
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
@@ -29,7 +30,6 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
-import com.github.panpf.sketch.util.toNewBitmap
 import kotlin.math.roundToInt
 
 /**

@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.util.PainterEqualizer
+import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest

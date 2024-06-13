@@ -3,7 +3,7 @@ package com.github.panpf.sketch.state
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.util.DrawableEqualizer
+import com.github.panpf.sketch.drawable.DrawableEqualizer
 
 
 @Composable

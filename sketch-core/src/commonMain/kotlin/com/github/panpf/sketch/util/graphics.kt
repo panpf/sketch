@@ -204,11 +204,11 @@ fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
 }
 
 fun calculateRotatedSize(size: Size, angle: Double): Size {
-    val radians = toRadians(angle)
-    val affineTransform: (Point2D) -> Point2D = { corner ->
-        val x = corner.x * kotlin.math.cos(radians) - corner.y * kotlin.math.sin(radians)
-        val y = corner.x * kotlin.math.sin(radians) + corner.y * kotlin.math.cos(radians)
-        Point2D(x, y)
+    val radians = angle * 0.017453292519943295
+    val affineTransform: (Pair<Double, Double>) -> Pair<Double, Double> = { corner ->
+        val x = corner.first * kotlin.math.cos(radians) - corner.second * kotlin.math.sin(radians)
+        val y = corner.first * kotlin.math.sin(radians) + corner.second * kotlin.math.cos(radians)
+        Pair(x, y)
     }
 
     var minX = Double.MAX_VALUE
@@ -216,42 +216,20 @@ fun calculateRotatedSize(size: Size, angle: Double): Size {
     var maxX = Double.MIN_VALUE
     var maxY = Double.MIN_VALUE
     val corners = arrayOf(
-        Point2D(0.0, 0.0),
-        Point2D(size.width.toDouble(), 0.0),
-        Point2D(0.0, size.height.toDouble()),
-        Point2D(size.width.toDouble(), size.height.toDouble())
+        Pair(0.0, 0.0),
+        Pair(size.width.toDouble(), 0.0),
+        Pair(0.0, size.height.toDouble()),
+        Pair(size.width.toDouble(), size.height.toDouble())
     )
     for (corner in corners) {
         val result = affineTransform(corner)
-        minX = min(minX, result.x)
-        minY = min(minY, result.y)
-        maxX = max(maxX, result.x)
-        maxY = max(maxY, result.y)
+        minX = min(minX, result.first)
+        minY = min(minY, result.second)
+        maxX = max(maxX, result.first)
+        maxY = max(maxY, result.second)
     }
 
     val newWidth = abs(maxX - minX).toInt()
     val newHeight = abs(maxY - minY).toInt()
     return Size(width = newWidth, height = newHeight)
 }
-
-/**
- * Converts an angle measured in degrees to an approximately
- * equivalent angle measured in radians.  The conversion from
- * degrees to radians is generally inexact.
- *
- * Copy from java Math
- *
- * @param   angdeg   an angle, in degrees
- * @return  the measurement of the angle `angdeg`
- * in radians.
- * @since   1.2
- */
-fun toRadians(angdeg: Double): Double = angdeg * DEGREES_TO_RADIANS
-
-/**
- * Constant by which to multiply an angular value in degrees to obtain an
- * angular value in radians.
- *
- * Copy from java Math
- */
-private const val DEGREES_TO_RADIANS = 0.017453292519943295

@@ -44,7 +44,7 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ListenerProvider
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestDelegate
-import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
+import com.github.panpf.sketch.request.internal.ViewRequestDelegate
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
@@ -82,7 +82,7 @@ interface ViewTarget<T : View> : Target {
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate = ViewTargetRequestDelegate(sketch, initialRequest, this, job)
+    ): RequestDelegate = ViewRequestDelegate(sketch, initialRequest, this, job)
 
 
     override fun getListener(): Listener? =

@@ -21,8 +21,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.displayAppIconImage
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.ViewTargetRequestDelegate
-import com.github.panpf.sketch.request.internal.ViewTargetRequestManager
+import com.github.panpf.sketch.request.internal.ViewRequestDelegate
+import com.github.panpf.sketch.request.internal.ViewRequestManager
 import com.github.panpf.sketch.test.utils.TestGlobalPlatformLifecycle
 import com.github.panpf.sketch.test.utils.versionCodeCompat
 import com.github.panpf.sketch.view.core.R
@@ -45,9 +45,9 @@ class SingletonImageViewExtensionsExtensionsTest {
             lifecycle(TestGlobalPlatformLifecycle)
         }
         Thread.sleep(300)
-        val manager = imageView.getTag(R.id.sketch_request_manager) as ViewTargetRequestManager
+        val manager = imageView.getTag(R.id.sketch_request_manager) as ViewRequestManager
         val request = manager
-            .getFieldValue<ViewTargetRequestDelegate>("currentRequestDelegate")!!
+            .getFieldValue<ViewRequestDelegate>("currentRequestDelegate")!!
             .getFieldValue<ImageRequest>("initialRequest")!!
         Assert.assertEquals(
             newAppIconUri(context.packageName, versionCode),
