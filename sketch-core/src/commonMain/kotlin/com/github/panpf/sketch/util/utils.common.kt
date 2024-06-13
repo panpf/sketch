@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageOptions.ImageOptionsImpl
 import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -275,7 +274,6 @@ fun ImageOptions?.difference(other: ImageOptions?): String {
     if (this == null) return "This is null"
     if (other == null) return "Other is null"
     if (this === other) return "Same instance"
-    if (other !is ImageOptionsImpl) return "Different class"
     if (depthHolder != other.depthHolder) return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
     if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"
     if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"

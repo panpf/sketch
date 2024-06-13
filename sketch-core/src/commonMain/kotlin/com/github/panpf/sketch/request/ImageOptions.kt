@@ -53,17 +53,17 @@ fun ImageOptions(
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-interface ImageOptions {
+data class ImageOptions (
 
     /**
      * The processing depth of the request.
      */
-    val depthHolder: DepthHolder?
+    val depthHolder: DepthHolder?,
 
     /**
      * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
      */
-    val parameters: Parameters?
+    val parameters: Parameters?,
 
 
     /**
@@ -71,97 +71,97 @@ interface ImageOptions {
      *
      * @see com.github.panpf.sketch.http.HurlStack.getResponse
      */
-    val httpHeaders: HttpHeaders?
+    val httpHeaders: HttpHeaders?,
 
     /**
      * Http download cache policy
      *
      * @see com.github.panpf.sketch.fetch.HttpUriFetcher
      */
-    val downloadCachePolicy: CachePolicy?
+    val downloadCachePolicy: CachePolicy?,
 
 
     /**
      * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to size
      */
-    val sizeResolver: SizeResolver?
+    val sizeResolver: SizeResolver?,
 
     /**
      * val finalSize = sizeResolver.size() * sizeMultiplier
      */
-    val sizeMultiplier: Float?
+    val sizeMultiplier: Float?,
 
     /**
      * Decide what Precision to use with [sizeResolver] to calculate the size of the final Bitmap
      */
-    val precisionDecider: PrecisionDecider?
+    val precisionDecider: PrecisionDecider?,
 
     /**
      * Which part of the original image to keep when [precisionDecider] returns [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
-    val scaleDecider: ScaleDecider?
+    val scaleDecider: ScaleDecider?,
 
     /**
      * The list of [Transformation]s to be applied to this request
      */
-    val transformations: List<Transformation>?
+    val transformations: List<Transformation>?,
 
     /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
      */
-    val resultCachePolicy: CachePolicy?
+    val resultCachePolicy: CachePolicy?,
 
 
     /**
      * Placeholder image when loading
      */
-    val placeholder: StateImage?
+    val placeholder: StateImage?,
 
     /**
      * Image to display when uri is empty
      */
-    val uriEmpty: StateImage?
+    val uriEmpty: StateImage?,
 
     /**
      * Image to display when loading fails
      */
-    val error: ErrorStateImage?
+    val error: ErrorStateImage?,
 
     /**
      * How the current image and the new image transition
      */
-    val transitionFactory: Transition.Factory?
+    val transitionFactory: Transition.Factory?,
 
     /**
      * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
      */
-    val disallowAnimatedImage: Boolean?
+    val disallowAnimatedImage: Boolean?,
 
     /**
      * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
      */
-    val resizeOnDraw: Boolean?
+    val resizeOnDraw: Boolean?,
 
     /**
      * Allow setting null Image to ImageView or AsyncImage
      */
-    val allowNullImage: Boolean?
+    val allowNullImage: Boolean?,
 
     /**
      * Bitmap memory caching policy
      *
      * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
      */
-    val memoryCachePolicy: CachePolicy?
+    val memoryCachePolicy: CachePolicy?,
 
 
     /**
      * Components that are only valid for the current request
      */
-    val componentRegistry: ComponentRegistry?
-
+    val componentRegistry: ComponentRegistry?,
+) {
 
     /**
      * Create a new [ImageOptions.Builder] based on the current [ImageOptions].
@@ -713,7 +713,7 @@ interface ImageOptions {
             val parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() }
             val httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() }
             val transformations = transformations?.takeIf { it.isNotEmpty() }
-            return ImageOptionsImpl(
+            return ImageOptions(
                 depthHolder = depthHolder,
                 parameters = parameters,
                 httpHeaders = httpHeaders,
@@ -736,28 +736,6 @@ interface ImageOptions {
             )
         }
     }
-
-    data class ImageOptionsImpl(
-        override val depthHolder: DepthHolder?,
-        override val parameters: Parameters?,
-        override val httpHeaders: HttpHeaders?,
-        override val downloadCachePolicy: CachePolicy?,
-        override val sizeResolver: SizeResolver?,
-        override val sizeMultiplier: Float?,
-        override val precisionDecider: PrecisionDecider?,
-        override val scaleDecider: ScaleDecider?,
-        override val transformations: List<Transformation>?,
-        override val resultCachePolicy: CachePolicy?,
-        override val placeholder: StateImage?,
-        override val uriEmpty: StateImage?,
-        override val error: ErrorStateImage?,
-        override val transitionFactory: Transition.Factory?,
-        override val disallowAnimatedImage: Boolean?,
-        override val resizeOnDraw: Boolean?,
-        override val allowNullImage: Boolean?,
-        override val memoryCachePolicy: CachePolicy?,
-        override val componentRegistry: ComponentRegistry?,
-    ) : ImageOptions
 }
 
 /**
