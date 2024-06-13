@@ -62,11 +62,31 @@ fun ImageRequest(
  */
 data class ImageRequest(
 
-    /** App Context */
+    /**
+     * App Context
+     */
     val context: PlatformContext,
 
-    /** The uri of the image to be loaded. */
+    /**
+     * The uri of the image to be loaded.
+     */
     val uri: String,
+
+    /**
+     * [Target] is used to receive Drawable and draw it
+     */
+    val target: Target?,
+
+
+    /**
+     * [Listener] is used to receive the state and result of the request
+     */
+    val listener: Listener?,
+
+    /**
+     * [ProgressListener] is used to receive the download progress of the request
+     */
+    val progressListener: ProgressListener?,
 
     /**
      * The [PlatformLifecycle] resolver for this request.
@@ -79,28 +99,31 @@ data class ImageRequest(
      */
     val lifecycleResolver: LifecycleResolver,
 
-    /** [Target] is used to receive Drawable and draw it */
-    val target: Target?,
-
-    /** [Listener] is used to receive the state and result of the request */
-    val listener: Listener?,
-
-    /** [ProgressListener] is used to receive the download progress of the request */
-    val progressListener: ProgressListener?,
-
-    /** User-provided ImageOptions */
-    val definedOptions: ImageOptions,
-
-    /** Default ImageOptions */
-    val defaultOptions: ImageOptions?,
-
+    /**
+     * Stores user-provided request-related parameters such as [Listener], [ProgressListener], [LifecycleResolver], etc.
+     */
     val definedRequestOptions: RequestOptions,
 
 
-    /** The processing depth of the request. */
+    /**
+     * Stores User-provided image related parameters
+     */
+    val definedOptions: ImageOptions,
+
+    /**
+     * Default image related parameters
+     */
+    val defaultOptions: ImageOptions?,
+
+
+    /**
+     * The processing depth of the request.
+     */
     val depthHolder: DepthHolder,
 
-    /** A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder]. */
+    /**
+     * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
+     */
     val parameters: Parameters?,
 
 
