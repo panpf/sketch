@@ -60,8 +60,8 @@ class SaveCellularTrafficRequestInterceptor constructor(
             enabled && request.isSaveCellularTraffic
                     && !request.isIgnoredSaveCellularTraffic
                     && isCellularNetworkConnected(chain.sketch) -> {
-                if (request.depth != LOCAL) {
-                    val oldDepth = request.depth
+                if (request.depthHolder.depth != LOCAL) {
+                    val oldDepth = request.depthHolder.depth
                     request.newRequest {
                         depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
                         setParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY, oldDepth.name, null)
@@ -81,7 +81,7 @@ class SaveCellularTrafficRequestInterceptor constructor(
                             null
                         }
                     }
-                if (oldDepth != null && request.depth != oldDepth) {
+                if (oldDepth != null && request.depthHolder.depth != oldDepth) {
                     request.newRequest {
                         depth(oldDepth)
                         removeParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)

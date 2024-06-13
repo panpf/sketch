@@ -76,13 +76,13 @@ class RequestExecutorTest {
         val (context, sketch) = getTestContextAndNewSketch {
         }
         val request = ImageRequest(context, MyImages.jpeg.uri).apply {
-            Assert.assertEquals(Depth.NETWORK, depth)
+            Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
             Assert.assertTrue(sizeResolver is OriginSizeResolver)
         }
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(sketch, request, false).apply {
-                Assert.assertEquals(Depth.NETWORK, this.request.depth)
+                Assert.assertEquals(Depth.NETWORK, this.request.depthHolder.depth)
                 Assert.assertEquals(CachePolicy.ENABLED, this.request.downloadCachePolicy)
                 Assert.assertTrue(this.request.sizeResolver is OriginSizeResolver)
             }
@@ -96,13 +96,13 @@ class RequestExecutorTest {
             })
         }
         val request2 = ImageRequest(context2, MyImages.jpeg.uri).apply {
-            Assert.assertEquals(Depth.NETWORK, depth)
+            Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
             Assert.assertTrue(sizeResolver is OriginSizeResolver)
         }
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(sketch2, request2, false).apply {
-                Assert.assertEquals(MEMORY, this.request.depth)
+                Assert.assertEquals(MEMORY, this.request.depthHolder.depth)
                 Assert.assertEquals(WRITE_ONLY, this.request.downloadCachePolicy)
                 Assert.assertTrue(this.request.sizeResolver is FixedSizeResolver)
             }

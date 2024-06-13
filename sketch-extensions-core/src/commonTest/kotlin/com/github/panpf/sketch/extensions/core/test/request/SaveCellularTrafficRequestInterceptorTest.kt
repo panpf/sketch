@@ -67,11 +67,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(interceptor.enabled)
             assertFalse(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             interceptor.intercept(chain)
-            assertEquals(NETWORK, chain.request.depth)
+            assertEquals(NETWORK, chain.request.depthHolder.depth)
             assertFalse(chain.request.isDepthFromSaveCellularTraffic)
         }
 
@@ -90,11 +90,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(interceptor.enabled)
             assertTrue(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             interceptor.intercept(chain)
-            assertEquals(Depth.LOCAL, chain.finalRequest.depth)
+            assertEquals(Depth.LOCAL, chain.finalRequest.depthHolder.depth)
             assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
 
@@ -113,11 +113,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertFalse(interceptor.enabled)
             assertTrue(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             interceptor.intercept(chain)
-            assertEquals(NETWORK, chain.finalRequest.depth)
+            assertEquals(NETWORK, chain.finalRequest.depthHolder.depth)
             assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
 
@@ -134,11 +134,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(interceptor.enabled)
             assertFalse(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             interceptor.intercept(chain)
-            assertEquals(NETWORK, chain.finalRequest.depth)
+            assertEquals(NETWORK, chain.finalRequest.depthHolder.depth)
             assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
 
@@ -158,11 +158,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(interceptor.enabled)
             assertTrue(request.isSaveCellularTraffic)
             assertTrue(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             interceptor.intercept(chain)
-            assertEquals(NETWORK, chain.finalRequest.depth)
+            assertEquals(NETWORK, chain.finalRequest.depthHolder.depth)
             assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
 
@@ -181,11 +181,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(errorInterceptor.enabled)
             assertTrue(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             errorInterceptor.intercept(chain)
-            assertEquals(NETWORK, chain.finalRequest.depth)
+            assertEquals(NETWORK, chain.finalRequest.depthHolder.depth)
             assertFalse(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
 
@@ -205,11 +205,11 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(interceptor.enabled)
             assertTrue(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(MEMORY, request.depth)
+            assertEquals(MEMORY, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             interceptor.intercept(chain)
-            assertEquals(Depth.LOCAL, chain.finalRequest.depth)
+            assertEquals(Depth.LOCAL, chain.finalRequest.depthHolder.depth)
             assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
         }
 
@@ -222,7 +222,7 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(interceptor.enabled)
             assertTrue(request.isSaveCellularTraffic)
             assertFalse(request.isIgnoredSaveCellularTraffic)
-            assertEquals(NETWORK, request.depth)
+            assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
             val chain = TestRequestInterceptorChain(
@@ -232,7 +232,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 requestContext = request.toRequestContext(sketch)
             )
             interceptor.intercept(chain)
-            assertEquals(Depth.LOCAL, chain.finalRequest.depth)
+            assertEquals(Depth.LOCAL, chain.finalRequest.depthHolder.depth)
             assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
 
             interceptor.enabled = false
@@ -243,7 +243,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 chain.finalRequest.toRequestContext(sketch)
             )
             interceptor.intercept(chain1)
-            assertEquals(NETWORK, chain1.finalRequest.depth)
+            assertEquals(NETWORK, chain1.finalRequest.depthHolder.depth)
             assertFalse(chain1.finalRequest.isDepthFromSaveCellularTraffic)
         }
     }

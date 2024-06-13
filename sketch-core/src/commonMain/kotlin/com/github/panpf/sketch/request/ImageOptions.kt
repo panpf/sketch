@@ -31,13 +31,11 @@ import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
-import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transform.Transformation
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.keyOrNull
-
-const val DEPTH_FROM_KEY = "sketch#depth_from"
 
 /**
  * Build and set the [ImageOptions]
@@ -60,13 +58,7 @@ interface ImageOptions {
     /**
      * The processing depth of the request.
      */
-    val depth: Depth?
-
-    /**
-     * where does this depth come from
-     */
-    val depthFrom: String?
-        get() = parameters?.value(DEPTH_FROM_KEY)
+    val depthHolder: DepthHolder?
 
     /**
      * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
@@ -209,7 +201,7 @@ interface ImageOptions {
      * Returns true if all properties are empty
      */
     fun isEmpty(): Boolean =
-        depth == null
+        depthHolder == null
                 && parameters?.isEmpty() != false
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
@@ -231,7 +223,7 @@ interface ImageOptions {
 
     class Builder {
 
-        private var depth: Depth? = null
+        private var depthHolder: DepthHolder? = null
         private var parametersBuilder: Parameters.Builder? = null
 
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
@@ -258,7 +250,7 @@ interface ImageOptions {
         constructor()
 
         internal constructor(options: ImageOptions) {
-            this.depth = options.depth
+            this.depthHolder = options.depthHolder
             this.parametersBuilder = options.parameters?.newBuilder()
 
             this.httpHeadersBuilder = options.httpHeaders?.newBuilder()
@@ -287,13 +279,8 @@ interface ImageOptions {
         /**
          * Set the requested depth
          */
-        fun depth(depth: Depth?, depthFrom: String? = null): Builder = apply {
-            this.depth = depth
-            if (depth != null && depthFrom != null) {
-                setParameter(DEPTH_FROM_KEY, depthFrom, null)
-            } else {
-                removeParameter(DEPTH_FROM_KEY)
-            }
+        fun depth(depth: Depth?, from: String? = null): Builder = apply {
+            this.depthHolder = depth?.let { DepthHolder(it, from) }
         }
 
 
@@ -660,8 +647,8 @@ interface ImageOptions {
         fun merge(options: ImageOptions?): Builder = apply {
             if (options == null) return@apply
 
-            if (this.depth == null) {
-                this.depth = options.depth
+            if (this.depthHolder == null) {
+                this.depthHolder = options.depthHolder
             }
             options.parameters?.let {
                 parametersBuilder = parametersBuilder?.build().merged(it)?.newBuilder()
@@ -727,7 +714,7 @@ interface ImageOptions {
             val httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() }
             val transformations = transformations?.takeIf { it.isNotEmpty() }
             return ImageOptionsImpl(
-                depth = depth,
+                depthHolder = depthHolder,
                 parameters = parameters,
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
@@ -751,7 +738,7 @@ interface ImageOptions {
     }
 
     data class ImageOptionsImpl(
-        override val depth: Depth?,
+        override val depthHolder: DepthHolder?,
         override val parameters: Parameters?,
         override val httpHeaders: HttpHeaders?,
         override val downloadCachePolicy: CachePolicy?,

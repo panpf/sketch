@@ -129,7 +129,7 @@ class ImageRequestTest {
                 this.lifecycleResolver
             )
 
-            Assert.assertEquals(NETWORK, this.depth)
+            Assert.assertEquals(NETWORK, this.depthHolder.depth)
             Assert.assertNull(this.parameters)
             Assert.assertNull(this.httpHeaders)
             Assert.assertEquals(ENABLED, this.downloadCachePolicy)
@@ -160,35 +160,35 @@ class ImageRequestTest {
         val uri = MyImages.jpeg.uri
 
         ImageRequest(context1, uri).newBuilder().build().apply {
-            Assert.assertEquals(NETWORK, depth)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
         }
         ImageRequest(context1, uri).newBuilder {
             depth(LOCAL)
         }.build().apply {
-            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
         }
         ImageRequest(context1, uri).newBuilder {
             depth(LOCAL)
         }.build().apply {
-            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
         }
 
         ImageRequest(context1, uri).newRequest().apply {
-            Assert.assertEquals(NETWORK, depth)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
         }
         ImageRequest(context1, uri).newRequest {
             depth(LOCAL)
         }.apply {
-            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
         }
         ImageRequest(context1, uri).newRequest {
             depth(LOCAL)
         }.apply {
-            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
         }
 
         ImageRequest(context1, uri).newBuilder().build().apply {
-            Assert.assertEquals(NETWORK, depth)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
             Assert.assertNull(listener)
             Assert.assertNull(progressListener)
         }
@@ -212,13 +212,13 @@ class ImageRequestTest {
 
             }
         }.build().apply {
-            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
             Assert.assertNotNull(listener)
             Assert.assertNotNull(progressListener)
         }
 
         ImageRequest(context1, uri).newRequest().apply {
-            Assert.assertEquals(NETWORK, depth)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
             Assert.assertNull(listener)
             Assert.assertNull(progressListener)
         }
@@ -242,7 +242,7 @@ class ImageRequestTest {
 
             }
         }.apply {
-            Assert.assertEquals(LOCAL, depth)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
             Assert.assertNotNull(listener)
             Assert.assertNotNull(progressListener)
         }
@@ -377,7 +377,7 @@ class ImageRequestTest {
         val uri = MyImages.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
-                Assert.assertEquals(NETWORK, depth)
+                Assert.assertEquals(NETWORK, depthHolder.depth)
                 Assert.assertNull(parameters)
             }
 
@@ -411,43 +411,43 @@ class ImageRequestTest {
         val context1 = getTestContext()
         val uri = MyImages.jpeg.uri
         ImageRequest(context1, uri).apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
+            Assert.assertNull(depthHolder.from)
         }
 
         ImageRequest(context1, uri) {
             depth(LOCAL)
         }.apply {
-            Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(depthFrom)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
+            Assert.assertNull(depthHolder.from)
         }
 
         ImageRequest(context1, uri) {
             depth(null)
         }.apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
+            Assert.assertNull(depthHolder.from)
         }
 
         ImageRequest(context1, uri) {
             depth(LOCAL, null)
         }.apply {
-            Assert.assertEquals(LOCAL, depth)
-            Assert.assertNull(depthFrom)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
+            Assert.assertNull(depthHolder.from)
         }
 
         ImageRequest(context1, uri) {
             depth(null, "TestDepthFrom")
         }.apply {
-            Assert.assertEquals(NETWORK, depth)
-            Assert.assertNull(depthFrom)
+            Assert.assertEquals(NETWORK, depthHolder.depth)
+            Assert.assertNull(depthHolder.from)
         }
 
         ImageRequest(context1, uri) {
             depth(LOCAL, "TestDepthFrom")
         }.apply {
-            Assert.assertEquals(LOCAL, depth)
-            Assert.assertEquals("TestDepthFrom", depthFrom)
+            Assert.assertEquals(LOCAL, depthHolder.depth)
+            Assert.assertEquals("TestDepthFrom", depthHolder.from)
         }
     }
 

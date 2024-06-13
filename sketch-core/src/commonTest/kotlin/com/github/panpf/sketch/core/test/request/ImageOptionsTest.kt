@@ -22,12 +22,10 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -45,7 +43,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
@@ -57,7 +54,6 @@ import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
-import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -95,7 +91,7 @@ class ImageOptionsTest {
         ImageOptions().apply {
             assertTrue(this.isEmpty())
             assertFalse(this.isNotEmpty())
-            assertNull(this.depth)
+            assertNull(this.depthHolder)
             assertNull(this.parameters)
             assertNull(this.httpHeaders)
             assertNull(this.downloadCachePolicy)
@@ -119,7 +115,7 @@ class ImageOptionsTest {
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertEquals(LOCAL, this.depth)
+            assertEquals(LOCAL, this.depthHolder?.depth)
         }
 
         ImageOptions {
@@ -268,7 +264,7 @@ class ImageOptionsTest {
             depth(NETWORK)
         }.build().apply {
             assertFalse(this.isEmpty())
-            assertNotNull(depth)
+            assertNotNull(depthHolder)
         }
 
         ImageOptions().newBuilder {
@@ -293,7 +289,7 @@ class ImageOptionsTest {
             depth(NETWORK)
         }.apply {
             assertFalse(this.isEmpty())
-            assertNotNull(depth)
+            assertNotNull(depthHolder)
         }
 
         ImageOptions().newOptions {
@@ -321,15 +317,15 @@ class ImageOptionsTest {
         assertNotSame(options, options.merged(ImageOptions()))
 
         ImageOptions().apply {
-            assertEquals(null, this.depth)
+            assertEquals(null, this.depthHolder)
         }.merged(ImageOptions {
             depth(LOCAL)
         }).apply {
-            assertEquals(LOCAL, this.depth)
+            assertEquals(LOCAL, this.depthHolder?.depth)
         }.merged(ImageOptions {
             depth(NETWORK)
         }).apply {
-            assertEquals(LOCAL, this.depth)
+            assertEquals(LOCAL, this.depthHolder?.depth)
         }
 
         ImageOptions().apply {
@@ -683,43 +679,43 @@ class ImageOptionsTest {
     @Test
     fun testDepth() {
         ImageOptions().apply {
-            assertNull(depth)
-            assertNull(depthFrom)
+            assertNull(depthHolder?.depth)
+            assertNull(depthHolder?.from)
         }
 
         ImageOptions {
             depth(null)
         }.apply {
-            assertNull(depth)
-            assertNull(depthFrom)
+            assertNull(depthHolder?.depth)
+            assertNull(depthHolder?.from)
         }
 
         ImageOptions {
             depth(LOCAL)
         }.apply {
-            assertEquals(LOCAL, depth)
-            assertNull(depthFrom)
+            assertEquals(LOCAL, depthHolder?.depth)
+            assertNull(depthHolder?.from)
         }
 
         ImageOptions {
             depth(LOCAL, null)
         }.apply {
-            assertEquals(LOCAL, depth)
-            assertNull(depthFrom)
+            assertEquals(LOCAL, depthHolder?.depth)
+            assertNull(depthHolder?.from)
         }
 
         ImageOptions {
             depth(null, "TestDepthFrom")
         }.apply {
-            assertNull(depth)
-            assertNull(depthFrom)
+            assertNull(depthHolder?.depth)
+            assertNull(depthHolder?.from)
         }
 
         ImageOptions {
             depth(LOCAL, "TestDepthFrom")
         }.apply {
-            assertEquals(LOCAL, depth)
-            assertEquals("TestDepthFrom", depthFrom)
+            assertEquals(LOCAL, depthHolder?.depth)
+            assertEquals("TestDepthFrom", depthHolder?.from)
         }
     }
 

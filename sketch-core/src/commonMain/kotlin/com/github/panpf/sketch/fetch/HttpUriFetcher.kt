@@ -79,7 +79,7 @@ open class HttpUriFetcher(
 
     private suspend fun executeFetch(): Result<FetchResult> {
         /* Check depth */
-        val depth = request.depth
+        val depth = request.depthHolder.depth
         if (depth >= Depth.LOCAL) {
             val message = "Request depth limited to $depth. ${request.uri}"
             return Result.failure(DepthException(message))

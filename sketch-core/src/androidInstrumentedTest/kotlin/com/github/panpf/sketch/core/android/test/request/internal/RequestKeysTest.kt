@@ -88,14 +88,13 @@ class RequestKeysTest {
         request = request.newRequest {
             depth(LOCAL, "test")
         }
-        val _depth = "&_depth=LOCAL"
-        var _parameters = "&_parameters=${request.parameters!!.requestKey}"
-        verifyKey(uri + _depth + _parameters + _size + _precision + _scale)
+        val _depth = "&_depth=${request.depthHolder.key}"
+        verifyKey(uri + _depth + _size + _precision + _scale)
 
         request = request.newRequest {
             setParameter(key = "type", value = "list")
         }
-        _parameters = "&_parameters=${request.parameters!!.requestKey}"
+        var _parameters = "&_parameters=${request.parameters!!.requestKey}"
         verifyKey(uri + _depth + _parameters + _size + _precision + _scale)
 
         request = request.newRequest {

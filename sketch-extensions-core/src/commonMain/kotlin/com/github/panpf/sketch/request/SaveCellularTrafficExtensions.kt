@@ -99,17 +99,17 @@ val ImageOptions.isIgnoredSaveCellularTraffic: Boolean
  * Returns true if Depth is from the cellular saving feature
  */
 val ImageRequest.isDepthFromSaveCellularTraffic: Boolean
-    get() = depthFrom == SAVE_CELLULAR_TRAFFIC_KEY
+    get() = depthHolder.from == SAVE_CELLULAR_TRAFFIC_KEY
 
 /**
  * Returns true if Depth is from the cellular saving feature
  */
 val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
-    get() = depthFrom == SAVE_CELLULAR_TRAFFIC_KEY
+    get() = depthHolder?.from == SAVE_CELLULAR_TRAFFIC_KEY
 
 
 /**
  * Returns true if the request is abnormal due to the cellular data saving feature
  */
 fun isCausedBySaveCellularTraffic(request: ImageRequest, throwable: Throwable?): Boolean =
-    throwable is DepthException && request.depth == LOCAL && request.isDepthFromSaveCellularTraffic
+    throwable is DepthException && request.depthHolder.depth == LOCAL && request.isDepthFromSaveCellularTraffic

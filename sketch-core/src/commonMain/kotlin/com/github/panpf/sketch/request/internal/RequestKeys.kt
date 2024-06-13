@@ -75,8 +75,8 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     }
 
     fun appendDepth(): ImageRequestKeyBuilder = apply {
-        request.depth.takeIf { it != NETWORK }?.also { depth ->
-            appendQueryParameter("_depth", depth.name)
+        request.depthHolder.takeIf { it.depth != NETWORK }?.also { depth ->
+            appendQueryParameter("_depth", depth.key)
         }
     }
 

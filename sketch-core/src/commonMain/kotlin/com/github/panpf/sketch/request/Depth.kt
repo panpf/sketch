@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.util.Key
+
 /**
  * The processing depth of the request.
  */
@@ -33,4 +35,23 @@ enum class Depth {
      * Load images only from memory
      */
     MEMORY;
+}
+
+data class DepthHolder(val depth: Depth, val from: String? = null) : Key {
+
+    companion object {
+        val Default = DepthHolder(Depth.NETWORK)
+    }
+
+    override val key: String by lazy {
+        if (from != null) {
+            "DepthHolder(depth=$depth,from='$from')"
+        } else {
+            "DepthHolder($depth)"
+        }
+    }
+
+    override fun toString(): String {
+        return "DepthHolder(depth=$depth, from='$from')"
+    }
 }

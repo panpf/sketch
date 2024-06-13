@@ -53,8 +53,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 val imageDataFromCache = readFromMemoryCache(requestContext)
                 if (imageDataFromCache != null) {
                     Result.success(imageDataFromCache)
-                } else if (memoryCachePolicy.readEnabled && request.depth >= Depth.MEMORY) {
-                    Result.failure(DepthException("Request depth limited to ${request.depth}. ${request.key}"))
+                } else if (memoryCachePolicy.readEnabled && request.depthHolder.depth >= Depth.MEMORY) {
+                    Result.failure(DepthException("Request depth limited to ${request.depthHolder.depth}. ${request.key}"))
                 } else {
                     callbackPlaceholder(chain)
                     chain.proceed(request).apply {

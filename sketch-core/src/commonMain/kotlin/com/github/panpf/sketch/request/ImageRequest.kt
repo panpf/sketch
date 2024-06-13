@@ -98,7 +98,7 @@ data class ImageRequest(
 
 
     /** The processing depth of the request. */
-    val depth: Depth,
+    val depthHolder: DepthHolder,
 
     /** A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder]. */
     val parameters: Parameters?,
@@ -203,10 +203,6 @@ data class ImageRequest(
      * The unique identifier for this request.
      */
     override val key: String by lazy { newKey() }
-
-    /** where does this depth come from */
-    val depthFrom: String?
-        get() = parameters?.value(DEPTH_FROM_KEY)
 
     /**
      * Create a new [ImageRequest.Builder] based on the current [ImageRequest].
@@ -725,7 +721,7 @@ data class ImageRequest(
             val targetOptions = target?.getImageOptions()
             val definedOptions = definedOptionsBuilder.merge(targetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
-            val depth = finalOptions.depth ?: Depth.NETWORK
+            val depthHolder = finalOptions.depthHolder ?: DepthHolder.Default
             val parameters = finalOptions.parameters
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
@@ -757,7 +753,7 @@ data class ImageRequest(
                 defaultOptions = defaultOptions,
                 definedOptions = definedOptions,
                 definedRequestOptions = definedRequestOptions,
-                depth = depth,
+                depthHolder = depthHolder,
                 parameters = parameters,
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
