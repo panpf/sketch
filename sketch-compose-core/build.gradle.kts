@@ -13,6 +13,7 @@ kotlin {
             api(projects.sketchCore)
             api(compose.foundation)
             api(compose.ui)
+            // TODO Create sketch-compose-resources module as android usually doesn't need it
             api(compose.components.resources)
         }
 

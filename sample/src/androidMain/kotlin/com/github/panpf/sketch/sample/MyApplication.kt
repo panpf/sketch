@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+// TODO The app crashes when it starts. It seems to be caused by the mismatch between 2.8.1 viewmodel and activity.
 class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
