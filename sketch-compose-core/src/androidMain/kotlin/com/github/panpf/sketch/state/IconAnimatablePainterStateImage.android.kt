@@ -12,7 +12,7 @@ import com.github.panpf.sketch.drawable.IntColor
 import com.github.panpf.sketch.drawable.ResColor
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.util.SketchSize
-import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.painter.asEquality
 import com.github.panpf.sketch.util.toSize
 
 
