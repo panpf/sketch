@@ -8,7 +8,7 @@
 
 * [Target].getImageOptions()
     * [SketchImageView].imageOptions
-    * [AsyncImageState].options
+    * [rememberAsyncImageState { ImageOptions() }][AsyncImageState]
 * [ImageRequest].Builder.merge(ImageOptions)/default(ImageOptions)
 * [Sketch].Builder.globalImageOptions(ImageOptions)
 

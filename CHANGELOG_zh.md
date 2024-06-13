@@ -10,16 +10,47 @@
 
 ### sketch-core
 
-* 不再区分 Display、Load、Download，现在只有一个 ImageRequest、ImageResult、ImageListener
-* 移除 BitmapPool 以及和它相关的 disallowReuseBitmap 属性、CountBitmap、SketchCountBitmapDrawable 类
-* ImageResult 的 requestKey 属性被移除、requestCacheKey 属性重命名为 cacheKey
-* SketchSingleton 重构为 SingletonSketch
-* SketchDrawable 的 imageUri、requestKey、requestCacheKey、imageInfo、dataFrom、transformedList、extras 等属性被移除，现在请从 ImageResult 中获取它们
-* 现在 Target、ImageResult、DecodeResult 都使用 Image
+request:
+
+* change: 不再区分 Display、Load、Download，现在只有一个 ImageRequest、ImageResult、ImageListener
+* change: ImageResult 的 requestKey 属性被移除、requestCacheKey 属性重命名为 cacheKey
+* change: 现在 Target、ImageResult、DecodeResult 都使用 Image
+* change: SketchDrawable 的
+  imageUri、requestKey、requestCacheKey、imageInfo、dataFrom、transformedList、extras 等属性被移除，现在请从
+  ImageResult 中获取它们
+* change: depth 和 depthFrom 属性合并成 DepthHolder
+* change: bitmapConfig、colorSpace、preferQualityOverSpeed、placeholder(Int)、uriEmpty(Int)、error(Int) 等
+  Android 平台特有 API 以扩展函数的形式提供
+* change: resizeApplyToDrawable 重命名为 resizeOnDraw
+* new: 新增 'sizeMultiplier: Float' 属性，用于设置图片大小的缩放比例
+* new: 新增 'allowNullImage: Boolean' 属性
+
+decode:
+
+* change: BitmapDecoder 和 DrawableDecoder 合并为 Decoder
+* change: BitmapDecodeInterceptor 和 DrawableDecodeInterceptor 合并为 DecodeInterceptor
+
+cache:
+
+* delete: 移除 BitmapPool 以及和它相关的 disallowReuseBitmap
+  属性、CountBitmap、SketchCountBitmapDrawable 类
+* change: 重构 DiskCache SnapShot 和 Editor，get() 和 edit() 改为 openSnapShot() 和 openEditor()
+  ，并且同一个 key 的 openSnapShot() 和 openEditor() 现在是互相冲突的, openSnapshot 未关闭前
+  openEditor 始终返回 null
+* change: 重构 MemoryCache.Value
+
+other:
+
+* change: SketchSingleton 重构为 SingletonSketch
 
 ### sketch-compose
 
+* delete: AsyncImage 可组合函数移除 placeholder、error、uriEmpty、onLoading、onSuccess、onError 参数
+* upgrade：Compose Multiplatform 升级到 1.6.10
+* new: AsyncImageState 现在可以设置 ImageOptions 了，例如：'rememberAsyncImageState {
+  ImageOptions() }'
 
 ### other
 
-* Android 最低 API 升到了 API 21
+* upgrade：Android 最低 API 升到了 API 21
+* upgrade：kotlin 升级到 2.0.0，主要是为了支持 Compose Multiplatform 1.6.10
