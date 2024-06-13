@@ -166,20 +166,15 @@ class AppSettings(val context: PlatformContext) {
     private val resultCacheValue: CachePolicy
         get() = if (resultCache.value) ENABLED else DISABLED
     private val precisionValue: PrecisionDecider
-        get() = when (precision.value) {
-            "LongImageClipMode" -> LongImageClipPrecisionDecider(longImage = SAME_ASPECT_RATIO)
-            else -> PrecisionDecider(Precision.valueOf(precision.value))
-        }
+        get() = precision(precision.value)
     private val scaleValue: ScaleDecider
-        get() = when (scale.value) {
-            "LongImageMode" -> LongImageStartCropScaleDecider(
-                longImage = longImageScale.value,
-                otherImage = otherImageScale.value
-            )
+        get() = scale(
+            value = scale.value,
+            longImageScale = longImageScale.value,
+            otherImageScale = otherImageScale.value
+        )
 
-            else -> ScaleDecider(Scale.valueOf(value = scale.value))
-        }
-
+    // TODO try to remove it
     private val listSettingFlows = listOf(
         bitmapQuality,  // Only for Android
         colorSpace,  // Only for Android
@@ -198,8 +193,10 @@ class AppSettings(val context: PlatformContext) {
         disallowAnimatedImageInList,
     )
 
+    // TODO try to remove it
     val listsCombinedFlow: Flow<Any> = combine(listSettingFlows) { it.joinToString() }
 
+    // TODO try to remove it
     private val viewerSettingFlows = listOf(
         bitmapQuality,  // Only for Android
         colorSpace,  // Only for Android
@@ -209,13 +206,12 @@ class AppSettings(val context: PlatformContext) {
         resultCache,
         downloadCache,
     )
+    // TODO try to remove it
     val viewersCombinedFlow: Flow<Any> =
         combine(viewerSettingFlows) { it.joinToString() }
 
+    // TODO try to remove it
     fun buildListImageOptions(): ImageOptions = ImageOptions {
-        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
-
-        platformBuildImageOptions(this@AppSettings)
 
         memoryCachePolicy(memoryCacheValue)
         resultCachePolicy(resultCacheValue)
@@ -224,16 +220,40 @@ class AppSettings(val context: PlatformContext) {
         precision(precisionValue)
         scale(scaleValue)
 
+        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
         saveCellularTraffic(saveCellularTrafficInList.value)
         disallowAnimatedImage(disallowAnimatedImageInList.value)
+
+        platformBuildImageOptions(this@AppSettings)
     }
 
+    // TODO try to remove it
     fun buildViewerImageOptions(): ImageOptions = ImageOptions {
         platformBuildImageOptions(this@AppSettings)
 
         memoryCachePolicy(memoryCacheValue)
         resultCachePolicy(resultCacheValue)
         downloadCachePolicy(downloadCacheValue)
+    }
+
+    companion object {
+        fun precision(value: String): PrecisionDecider {
+            return when (value) {
+                "LongImageClipMode" -> LongImageClipPrecisionDecider(longImage = SAME_ASPECT_RATIO)
+                else -> PrecisionDecider(Precision.valueOf(value))
+            }
+        }
+
+        fun scale(value: String, longImageScale: Scale, otherImageScale: Scale): ScaleDecider {
+            return when (value) {
+                "LongImageMode" -> LongImageStartCropScaleDecider(
+                    longImage = longImageScale,
+                    otherImage = otherImageScale
+                )
+
+                else -> ScaleDecider(Scale.valueOf(value = value))
+            }
+        }
     }
 }
 

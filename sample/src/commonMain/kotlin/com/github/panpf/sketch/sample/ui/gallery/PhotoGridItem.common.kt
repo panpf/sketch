@@ -24,10 +24,15 @@ import com.github.panpf.sketch.SubcomposeAsyncImage
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.mimeTypeLogo
 import com.github.panpf.sketch.ability.progressIndicator
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
@@ -96,7 +101,6 @@ fun PhotoGridItem(
             it.progressIndicator(imageState, progressPainter)
         }
 
-    val listSettings by appSettingsService.listsCombinedFlow.collectAsState(Unit)
     val colorScheme = MaterialTheme.colorScheme
     val animatedPlaceholderStateImage =
         if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
@@ -115,18 +119,36 @@ fun PhotoGridItem(
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )
-    val request = remember(photo.listThumbnailUrl, listSettings) {
-        ImageRequest(context, photo.listThumbnailUrl) {
-            placeholder(placeholderStateImage)
-            error(errorStateImage) {
-                saveCellularTrafficError(saveCellularTrafficStateImage)
-            }
-            crossfade()
-            resizeOnDraw()
-            sizeMultiplier(2f)  // To get a clearer thumbnail
-            merge(appSettingsService.buildListImageOptions())
+    val memoryCacheEnabled by appSettingsService.memoryCache.collectAsState()
+    val resultCacheEnabled by appSettingsService.resultCache.collectAsState()
+    val downloadCacheEnabled by appSettingsService.downloadCache.collectAsState()
+    val precision by appSettingsService.precision.collectAsState()
+    val scale by appSettingsService.scale.collectAsState()
+    val longImageScale by appSettingsService.longImageScale.collectAsState()
+    val otherImageScale by appSettingsService.otherImageScale.collectAsState()
+    val pauseLoadWhenScroll by appSettingsService.pauseLoadWhenScrollInList.collectAsState()
+    val saveCellularTraffic by appSettingsService.saveCellularTrafficInList.collectAsState()
+    val disallowAnimatedImage by appSettingsService.disallowAnimatedImageInList.collectAsState()
+    val builder = ImageRequest.Builder(context, photo.listThumbnailUrl).apply {
+        memoryCachePolicy(if (memoryCacheEnabled) ENABLED else DISABLED)
+        resultCachePolicy(if (resultCacheEnabled) ENABLED else DISABLED)
+        downloadCachePolicy(if (downloadCacheEnabled) ENABLED else DISABLED)
+        precision(AppSettings.precision(precision))
+        scale(AppSettings.scale(scale, longImageScale, otherImageScale))
+        pauseLoadWhenScrolling(pauseLoadWhenScroll)
+        saveCellularTraffic(saveCellularTraffic)
+        disallowAnimatedImage(disallowAnimatedImage)
+
+        placeholder(placeholderStateImage)
+        error(errorStateImage) {
+            saveCellularTrafficError(saveCellularTrafficStateImage)
         }
+        crossfade()
+        resizeOnDraw()
+        sizeMultiplier(2f)  // To get a clearer thumbnail
     }
+    PlatformListImageSettings(appSettingsService, builder)
+    val request = builder.build()
     when (index % 3) {
         0 -> {
             AsyncImage(
@@ -168,3 +190,6 @@ fun PhotoGridItem(
         }
     }
 }
+
+@Composable
+expect inline fun PlatformListImageSettings(appSettings: AppSettings, builder: ImageRequest.Builder)

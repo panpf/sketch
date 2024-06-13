@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.progressIndicator
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.rememberAsyncImageState
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
@@ -41,7 +41,10 @@ import kotlinx.coroutines.launch
 
 class FetcherTestItem(val title: String, val imageUri: String)
 
-expect suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: Boolean = true): List<FetcherTestItem>
+expect suspend fun buildFetcherTestItems(
+    context: PlatformContext,
+    fromCompose: Boolean = true
+): List<FetcherTestItem>
 
 class FetcherTestScreen : BaseScreen() {
 
@@ -86,14 +89,16 @@ class FetcherTestScreen : BaseScreen() {
                     HorizontalPager(state = pagerState) {
                         Box(Modifier.fillMaxSize()) {
                             val imageUri = items[it].imageUri
-                            val imageState = rememberAsyncImageState()
-                            val progressPainter = rememberThemeSectorProgressPainter()
-                            MyAsyncImage(
-                                request = ImageRequest(context, imageUri) {
+                            val imageState = rememberAsyncImageState {
+                                ImageOptions {
                                     memoryCachePolicy(DISABLED)
                                     resultCachePolicy(DISABLED)
                                     downloadCachePolicy(DISABLED)
-                                },
+                                }
+                            }
+                            val progressPainter = rememberThemeSectorProgressPainter()
+                            MyAsyncImage(
+                                uri = imageUri,
                                 contentDescription = "Image",
                                 state = imageState,
                                 modifier = Modifier

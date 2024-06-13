@@ -30,6 +30,7 @@ import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
@@ -81,7 +82,15 @@ class DecoderTestScreen : BaseScreen() {
                         }
                     }
                     HorizontalPager(state = pagerState) {
-                        val imageState = rememberAsyncImageState()
+                        val imageState = rememberAsyncImageState {
+                            ImageOptions {
+                                memoryCachePolicy(DISABLED)
+                                resultCachePolicy(DISABLED)
+                                downloadCachePolicy(DISABLED)
+                            }
+                        }
+
+                        println(imageState)
                         val progressPainter = rememberThemeSectorProgressPainter()
                         val testItem = items[it]
                         if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
@@ -89,9 +98,6 @@ class DecoderTestScreen : BaseScreen() {
                                 val imageUri = testItem.imageUri
                                 MyAsyncImage(
                                     request = ImageRequest(context, imageUri) {
-                                        memoryCachePolicy(DISABLED)
-                                        resultCachePolicy(DISABLED)
-                                        downloadCachePolicy(DISABLED)
                                         if (testItem.imageDecoder != null) {
                                             components {
                                                 addDecoder(testItem.imageDecoder)

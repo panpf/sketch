@@ -12,24 +12,31 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 
 actual fun isDebugMode(): Boolean = BuildConfig.DEBUG
 
-
-private val AppSettings.bitmapQualityValue: BitmapConfig?
-    get() = when (bitmapQuality.value) {
+fun AppSettings.Companion.bitmapQualityValue(value: String): BitmapConfig? {
+    return when (value) {
         "LOW" -> BitmapConfig.LowQuality
         "HIGH" -> BitmapConfig.HighQuality
         else -> null
     }
+}
 
-@get:RequiresApi(VERSION_CODES.O)
-private val AppSettings.colorSpaceValue: ColorSpace.Named?
-    get() = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        when (val value = colorSpace.value) {
+fun AppSettings.Companion.colorSpaceValue(value: String): ColorSpace.Named? {
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        when (value) {
             "Default" -> null
             else -> ColorSpace.Named.valueOf(value)
         }
     } else {
         null
     }
+}
+
+private val AppSettings.bitmapQualityValue: BitmapConfig?
+    get() = AppSettings.bitmapQualityValue(bitmapQuality.value)
+
+@get:RequiresApi(VERSION_CODES.O)
+private val AppSettings.colorSpaceValue: ColorSpace.Named?
+    get() = AppSettings.colorSpaceValue(colorSpace.value)
 
 actual fun ImageOptions.Builder.platformBuildImageOptions(appSettings: AppSettings) {
     bitmapConfig(appSettings.bitmapQualityValue)

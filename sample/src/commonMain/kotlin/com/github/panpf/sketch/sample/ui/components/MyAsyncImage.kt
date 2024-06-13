@@ -25,6 +25,51 @@ import com.github.panpf.sketch.sample.ui.gallery.PhotoInfoDialog
 
 @Composable
 fun MyAsyncImage(
+    uri: String,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    state: AsyncImageState = rememberAsyncImageState(),
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
+    clipToBounds: Boolean = true,
+) {
+    var photoInfoImageResult: ImageResult? by remember { mutableStateOf(null) }
+
+    AsyncImage(
+        uri = uri,
+        contentDescription = contentDescription,
+        sketch = SingletonSketch.get(LocalPlatformContext.current),
+        modifier = modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onLongPress = {
+                    val imageResult = state.result
+                    if (imageResult != null) {
+                        photoInfoImageResult = imageResult
+                    }
+                }
+            )
+        },
+        state = state,
+        alignment = alignment,
+        contentScale = contentScale,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        filterQuality = filterQuality,
+        clipToBounds = clipToBounds,
+    )
+
+    if (photoInfoImageResult != null) {
+        PhotoInfoDialog(photoInfoImageResult) {
+            photoInfoImageResult = null
+        }
+    }
+}
+
+@Composable
+fun MyAsyncImage(
     request: ImageRequest,
     contentDescription: String?,
     modifier: Modifier = Modifier,
