@@ -3,7 +3,7 @@ package com.github.panpf.sketch.painter
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.painter.internal.toLogString
+import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.resize.Scale
 
 @Stable

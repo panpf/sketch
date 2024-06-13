@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
-import com.github.panpf.sketch.painter.internal.toLogString
+import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import kotlin.js.JsName
 import kotlin.math.max

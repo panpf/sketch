@@ -33,6 +33,7 @@ import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.lifecycle.LifecycleResolver
 import com.github.panpf.sketch.lifecycle.PlatformLifecycle
+import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult

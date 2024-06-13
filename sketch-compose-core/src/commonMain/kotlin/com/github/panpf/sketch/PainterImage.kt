@@ -19,7 +19,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.painter.internal.toLogString
+import com.github.panpf.sketch.painter.toLogString
 import kotlin.math.roundToInt
 
 fun Painter.asSketchImage(shareable: Boolean = false): Image {
