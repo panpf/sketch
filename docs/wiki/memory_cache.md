@@ -44,7 +44,7 @@ caching through the memoryCachePolicy
 attribute of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     // Disable
     memoryCachePolicy(CachePolicy.DISABLED)
     // Read only

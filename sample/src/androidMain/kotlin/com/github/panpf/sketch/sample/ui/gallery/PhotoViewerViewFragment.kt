@@ -28,7 +28,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.ability.showProgressIndicator
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.R
@@ -117,11 +117,11 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             appSettingsService.viewersCombinedFlow
                 .ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    displayImage(binding)
+                    loadImage(binding)
                 }
             appSettingsService.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    displayImage(binding)
+                    loadImage(binding)
                 }
         }
 
@@ -188,9 +188,9 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
         }
     }
 
-    private fun displayImage(binding: FragmentImageViewerBinding) {
+    private fun loadImage(binding: FragmentImageViewerBinding) {
         val imageUri = getImageUrl()
-        binding.zoomImage.displayImage(imageUri) {
+        binding.zoomImage.loadImage(imageUri) {
             merge(appSettingsService.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)

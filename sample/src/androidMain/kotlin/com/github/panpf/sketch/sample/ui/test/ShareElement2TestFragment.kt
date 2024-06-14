@@ -22,7 +22,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.transition.TransitionInflater
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestShareElement2Binding
@@ -54,9 +54,9 @@ class ShareElement2TestFragment : BaseBindingFragment<FragmentTestShareElement2B
     ) {
         binding.zoomImage.apply {
             ViewCompat.setTransitionName(this, "transition_app_icon")
-            Log.i("ShareElementTest", "$id. displayImage")
+            Log.i("ShareElementTest", "$id. loadImage")
             postponeEnterTransition(100, MILLISECONDS)
-            displayImage(MyImages.jpeg.uri) {
+            loadImage(MyImages.jpeg.uri) {
                 placeholder(ThumbnailMemoryCacheStateImage())
                 registerListener(
                     onSuccess = { _, _ ->

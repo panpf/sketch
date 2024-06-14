@@ -27,7 +27,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.NavMainDirections
@@ -173,7 +173,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
     }
 
     private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {
-        binding.bgImage.displayImage(imageUrl) {
+        binding.bgImage.loadImage(imageUrl) {
             val screenSize = requireContext().getScreenSize()
             resize(
                 width = screenSize.x / 4,

@@ -18,7 +18,7 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Bundle
 import android.view.View
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
@@ -42,18 +42,18 @@ class AnimatablePlaceholderTestFragment :
     ) {
         toolbar.title = "AnimatablePlaceholder"
 
-        displayImage(binding)
+        loadImage(binding)
 
         binding.retryButton.setOnClickListener {
             urlIndex++
-            displayImage(binding)
+            loadImage(binding)
         }
     }
 
-    private fun displayImage(binding: FragmentTestAnimatablePlaceholderBinding) {
+    private fun loadImage(binding: FragmentTestAnimatablePlaceholderBinding) {
         val images = arrayOf(MyImages.jpeg.uri, MyImages.webp.uri, MyImages.bmp.uri)
         val urlString = images[urlIndex % images.size]
-        binding.myImage1.displayImage(urlString) {
+        binding.myImage1.loadImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
@@ -66,7 +66,7 @@ class AnimatablePlaceholderTestFragment :
                 addDecodeInterceptor(DelayDecodeInterceptor(3000))
             }
         }
-        binding.myImage2.displayImage(urlString) {
+        binding.myImage2.loadImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
@@ -79,7 +79,7 @@ class AnimatablePlaceholderTestFragment :
                 addDecodeInterceptor(DelayDecodeInterceptor(3000))
             }
         }
-        binding.myImage3.displayImage(urlString) {
+        binding.myImage3.loadImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(

@@ -38,7 +38,7 @@ Sketch.Builder(context).apply {
 内存缓存默认配置是 [CachePolicy].ENABLED，你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制内存缓存:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     // 禁用
     memoryCachePolicy(CachePolicy.DISABLED)
     // 只读

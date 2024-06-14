@@ -42,6 +42,7 @@ cache:
 other:
 
 * change: SketchSingleton 重构为 SingletonSketch
+* change: displayImage 重命名为 loadImage
 
 ### sketch-compose
 

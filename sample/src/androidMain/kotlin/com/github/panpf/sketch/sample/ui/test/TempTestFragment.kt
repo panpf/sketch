@@ -16,19 +16,13 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.fragment.app.commit
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.sample.databinding.FragmentTestShareElementBinding
 import com.github.panpf.sketch.sample.databinding.FragmentTestTempBinding
-import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
 
@@ -48,7 +42,7 @@ class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
         toolbar.title = "Temp"
 
         binding.myImage.apply {
-            displayImage(MyImages.jpeg.uri) {
+            loadImage(MyImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
             }

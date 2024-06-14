@@ -35,7 +35,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.NavMainDirections
@@ -207,7 +207,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             absoluteAdapterPosition: Int,
             data: VideoInfo
         ) {
-            binding.thumbnailImage.displayImage(data.path) {
+            binding.thumbnailImage.loadImage(data.path) {
                 merge(context.appSettingsService.buildListImageOptions())
             }
             binding.nameText.text = data.title

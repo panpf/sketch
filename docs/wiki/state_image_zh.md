@@ -120,7 +120,7 @@ placeholder 都是一样的大小
 [ThumbnailMemoryCacheStateImage] 就可以帮助我们非常方便的从内存缓存中寻找的缩略图，如下：
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage())
     crossfade(fadeStart = false)
 }
@@ -130,7 +130,7 @@ imageView.displayImage("https://example.com/image.jpg") {
 uri 就需要主动指定列表页面的 uri，如下：
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage("https://www.sample.com/image.jpg?widht=300"))
     crossfade(fadeStart = false)
 }

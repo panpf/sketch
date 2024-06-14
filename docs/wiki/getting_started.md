@@ -59,10 +59,10 @@ Android View:
 // val imageUri = "content://media/external/images/media/88484"
 val imageUri = "https://example.com/image.jpg"
 
-imageView.displayImage(imageUri)
+imageView.loadImage(imageUri)
 
 // config params
-imageView.displayImage(imageUri) {
+imageView.loadImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
     crossfade()
@@ -283,7 +283,7 @@ context.sketch.enqueue(request)
 ```
 
 You can also use [ImageRequest][ImageRequest_ViewExtensions](ImageView, String) or
-ImageView.[displayImage()][displayImage] extension functions, they will call target() for you, as
+ImageView.[loadImage()][loadImage] extension functions, they will call target() for you, as
 follows:
 
 ```kotlin
@@ -293,7 +293,7 @@ val request = ImageRequest(imageView, "https://www.example.com/image.jpg") {
 }
 context.sketch.enqueue(request)
 
-imageView.displayImage() {
+imageView.loadImage() {
     size(300, 300)
     // There is a lot more...
 }
@@ -409,7 +409,7 @@ job.cancel()
 
 ```kotlin
 // display
-imageView.displayImage("https://www.example.com/image.jpg") {
+imageView.loadImage("https://www.example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
     crossfade(true)
@@ -422,7 +422,7 @@ imageView.disposeDisplay()
 val imageResult: ImageResult? = imageView.imageResult
 ```
 
-> [displayImage()][displayImage] is only available in singleton mode
+> [loadImage()][loadImage] is only available in singleton mode
 
 ## Document
 
@@ -471,7 +471,7 @@ Featured functions:
 
 [DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.common.kt
 
-[displayImage]: ../../sketch-view/src/main/kotlin/com/github/panpf/sketch/image_view_singleton_extensions.kt
+[loadImage]: ../../sketch-view/src/main/kotlin/com/github/panpf/sketch/image_view_singleton_extensions.kt
 
 [Disposable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Disposable.kt
 

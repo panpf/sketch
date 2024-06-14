@@ -23,7 +23,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationBlurBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
@@ -102,7 +102,7 @@ class BlurTransformationTestFragment :
         val maskColor = viewModel.maskColorData.value
         val backgroundColor = viewModel.backgroundColorData.value
 
-        binding.myImage1.displayImage(MyImages.jpeg.uri) {
+        binding.myImage1.loadImage(MyImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addTransformations(
@@ -114,7 +114,7 @@ class BlurTransformationTestFragment :
             )
         }
 
-        binding.myImage2.displayImage(MyImages.png.uri) {
+        binding.myImage2.loadImage(MyImages.png.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addTransformations(

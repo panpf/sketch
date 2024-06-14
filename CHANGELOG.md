@@ -46,6 +46,7 @@ cache:
 other:
 
 * change: SketchSingleton refactored into SingletonSketch
+* change: displayImage renamed to loadImage
 
 ### sketch-compose
 

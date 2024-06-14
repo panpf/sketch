@@ -21,7 +21,7 @@ import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRotateBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
@@ -41,7 +41,7 @@ class RotateTransformationTestFragment :
         savedInstanceState: Bundle?
     ) {
         viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-            binding.myImage.displayImage(MyImages.statics.first().uri) {
+            binding.myImage.loadImage(MyImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(it))

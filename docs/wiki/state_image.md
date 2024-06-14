@@ -136,7 +136,7 @@ page will gradually change from a blurry image to a clear image, which will have
 conveniently, as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage())
     crossfade(fadeStart = false)
 }
@@ -147,7 +147,7 @@ find thumbnails in the memory, but if the list page and the details page use dif
 uri, you need to actively specify the uri of the list page, as follows:
 
 ```kotlin
-imageView.displayImage("https://example.com/image.jpg") {
+ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(ThumbnailMemoryCacheStateImage("https://www.sample.com/image.jpg?widht=300"))
     crossfade(fadeStart = false)
 }

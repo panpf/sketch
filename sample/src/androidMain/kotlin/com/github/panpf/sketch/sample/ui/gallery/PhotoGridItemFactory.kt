@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettingsService
@@ -142,7 +142,7 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
                 }
             }
 
-            displayImage(data.listThumbnailUrl) {
+            loadImage(data.listThumbnailUrl) {
                 merge(appSettingsService.buildListImageOptions())
             }
         }

@@ -20,7 +20,7 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -50,7 +50,7 @@ class CircleCropTransformationTestFragment :
             binding.endButton.isChecked = it == END_CROP
             binding.fillButton.isChecked = it == FILL
 
-            binding.myImage.displayImage(MyImages.statics.first().uri) {
+            binding.myImage.loadImage(MyImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 scale(it)

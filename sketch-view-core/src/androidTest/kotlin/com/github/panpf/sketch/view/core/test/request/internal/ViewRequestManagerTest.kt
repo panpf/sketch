@@ -16,7 +16,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ReusableDisposable
 import com.github.panpf.sketch.request.internal.requestManager
-import com.github.panpf.sketch.test.singleton.displayImage
+import com.github.panpf.sketch.test.singleton.loadImage
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.view.core.R.id
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
@@ -94,7 +94,7 @@ class ViewRequestManagerTest {
 
         // If there is no attached to the window, the display will inevitably fail
         runBlocking {
-            imageView.displayImage(MyImages.jpeg.uri)
+            imageView.loadImage(MyImages.jpeg.uri)
             delay(1500)
         }
         Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))

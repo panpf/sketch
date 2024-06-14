@@ -30,7 +30,7 @@ import java.io.File
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayImage(
+fun ImageView.loadImage(
     uri: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
@@ -41,64 +41,64 @@ fun ImageView.displayImage(
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayImage(
+fun ImageView.loadImage(
     uri: Uri?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    displayImage(uri?.toString(), configBlock)
+    loadImage(uri?.toString(), configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayImage(
+fun ImageView.loadImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
+    loadImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from local file and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayImage(
+fun ImageView.loadImage(
     file: File?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    displayImage(file?.let { newFileUri(it.path) }, configBlock)
+    loadImage(file?.let { newFileUri(it.path) }, configBlock)
 
 /**
  * Load the image from app assets and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayAssetImage(
+fun ImageView.loadAssetImage(
     assetFileName: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    displayImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
+    loadImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayResourceImage(
+fun ImageView.loadResourceImage(
     @DrawableRes drawableResId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    displayImage(drawableResId?.let { newResourceUri(it) }, configBlock)
+    loadImage(drawableResId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
  */
-fun ImageView.displayResourceImage(
+fun ImageView.loadResourceImage(
     packageName: String,
     @DrawableRes drawableResId: Int,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    displayImage(newResourceUri(packageName, drawableResId), configBlock)
+    loadImage(newResourceUri(packageName, drawableResId), configBlock)

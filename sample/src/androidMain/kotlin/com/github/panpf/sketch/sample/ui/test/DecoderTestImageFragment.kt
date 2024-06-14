@@ -8,7 +8,7 @@ import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.ability.showDataFromLogo
 import com.github.panpf.sketch.ability.showProgressIndicator
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
@@ -30,7 +30,7 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                     binding.myImage.apply {
                         showDataFromLogo()
                         showProgressIndicator(createThemeSectorProgressDrawable(requireContext()))
-                        displayImage(testItem.imageUri) {
+                        loadImage(testItem.imageUri) {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)
                             downloadCachePolicy(DISABLED)

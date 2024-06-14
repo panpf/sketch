@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.test.singleton.displayImage
+import com.github.panpf.sketch.test.singleton.loadImage
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -24,7 +24,7 @@ class SketchUtilsTest {
         val imageView = ImageView(context)
 
         Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
-        imageView.displayImage(MyImages.jpeg.uri)
+        imageView.loadImage(MyImages.jpeg.uri)
         Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
     }
 
@@ -42,7 +42,7 @@ class SketchUtilsTest {
         Thread.sleep(100)
 
         Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
-        imageView.displayImage(MyImages.jpeg.uri)
+        imageView.loadImage(MyImages.jpeg.uri)
         Thread.sleep(100)
         Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
     }
@@ -57,7 +57,7 @@ class SketchUtilsTest {
         Thread.sleep(100)
 
         Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
-        imageView.displayImage(MyImages.jpeg.uri)
+        imageView.loadImage(MyImages.jpeg.uri)
         Thread.sleep(100)
         Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
     }

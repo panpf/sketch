@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.ability.showDataFromLogo
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.displayImage
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.images.MyImage
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
@@ -118,7 +118,7 @@ class ExifOrientationGridItemFactory :
             }
         }
 
-        binding.myListImage.displayImage(data.uri)
+        binding.myListImage.loadImage(data.uri)
         binding.text.text = data.name
     }
 }

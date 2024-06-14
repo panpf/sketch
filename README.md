@@ -138,10 +138,10 @@ Android View:
 // val imageUri = "content://media/external/images/media/88484"
 val imageUri = "https://www.sample.com/image.jpg"
 
-imageView.displayImage(imageUri)
+imageView.loadImage(imageUri)
 
 // config params
-imageView.displayImage(imageUri) {
+imageView.loadImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
     crossfade()
