@@ -95,7 +95,7 @@ scope.launch {
 * 设备可用内存较低触发了 Application 的 `onLowMemory()` 方法
 * 系统整理内存触发了 Application 的 `onTrimMemory(int)` 方法
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [MemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
 

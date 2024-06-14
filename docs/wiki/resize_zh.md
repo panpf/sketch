@@ -154,7 +154,7 @@ resizeOnDraw 搭配 [CrossfadeTransition]
 > [!IMPORTANT]
 > 1. [ResizeOnDrawHelper] 由 [Target] 提供，因此如果没有设置 [Target]，resizeOnDraw 属性也将无效
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [Resize]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Resize.kt
 

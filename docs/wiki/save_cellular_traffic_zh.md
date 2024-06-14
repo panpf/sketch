@@ -60,7 +60,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 ```
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 

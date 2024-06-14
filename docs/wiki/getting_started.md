@@ -469,9 +469,9 @@ Featured functions:
 
 [AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt
 
-[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.kt
+[DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.common.kt
 
-[displayImage]: ../../sketch-view/src/main/kotlin/com/github/panpf/sketch/SingletonImageViewExtensions.kt
+[displayImage]: ../../sketch-view/src/main/kotlin/com/github/panpf/sketch/image_view_singleton_extensions.kt
 
 [Disposable]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Disposable.kt
 
@@ -479,15 +479,15 @@ Featured functions:
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
-[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/SingletonRequestExtensions.kt
+[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/image_request_singleton_extensions.kt
 
-[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequestViewExtensions.kt
+[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/image_request_view_extensions.kt
 
 [ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
-[SingletonSketch]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/SingletonSketch.kt
+[SingletonSketch]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/SingletonSketch.common.kt
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 

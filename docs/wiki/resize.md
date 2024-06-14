@@ -174,7 +174,7 @@ transition. [Understanding Perfect Transition](transition.md#perfect-transition)
 > 1. [ResizeOnDrawHelper] is provided by [Target], so if [Target] is not set, the resizeOnDraw
      property will have no effect
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [Resize]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/Resize.kt
 

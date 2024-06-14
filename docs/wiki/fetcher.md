@@ -97,7 +97,7 @@ ImageRequest(context, "myUri://sample.jpeg") {
 
 [comment]: <> (classs)
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
@@ -123,4 +123,4 @@ ImageRequest(context, "myUri://sample.jpeg") {
 
 [KotlinResourceUriFetcher]: ../../sketch-core/src/desktopMain/kotlin/com/github/panpf/sketch/fetch/KotlinResourceUriFetcher.kt
 
-[ComposeResourceUriFetcher]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ComposeResourceUriFetcher.kt
+[ComposeResourceUriFetcher]: ../../sketch-compose-resources/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ComposeResourceUriFetcher.kt

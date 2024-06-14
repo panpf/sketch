@@ -54,9 +54,9 @@ Sketch.Builder(context).apply {
 }.build()
 ```
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
-[Logger]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Logger.kt
+[Logger]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Logger.common.kt
 
 [AndroidLogPipeline]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/util/Logger.android.kt
 

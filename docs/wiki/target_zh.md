@@ -71,7 +71,7 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
      setImageViewBitmap 方法设置 Bitmap
 > 2. 所以还需要你在 onUpdated 函数中刷新通知或 AppWidget 才能将 Bitmap 显示到屏幕上
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
@@ -95,7 +95,7 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 
 [ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
 
-[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LifecycleResolver.kt
+[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/lifecycle/LifecycleResolver.kt
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 

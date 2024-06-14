@@ -69,7 +69,7 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 > 1. As shown above [RemoteViewsTarget] only converts the Drawable to Bitmap and calls the setImageViewBitmap method of [RemoteViews] to set the Bitmap
 > 2. So you still need to refresh the notification or AppWidget in the onUpdated function to display the Bitmap on the screen.
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
@@ -93,7 +93,7 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 
 [ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
 
-[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LifecycleResolver.kt
+[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/lifecycle/LifecycleResolver.kt
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 

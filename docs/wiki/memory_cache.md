@@ -104,7 +104,7 @@ The memory cache is cleared under the following circumstances:
 * The low available memory of the device triggers the `onLowMemory()` method of Application
 * System trimming memory triggers Application's `onTrimMemory(int)` method
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.kt
+[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
 [MemoryCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/MemoryCache.kt
 
