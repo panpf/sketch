@@ -19,6 +19,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.decode.GifMovieDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.supportMovieGif
@@ -36,7 +37,6 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.transform.PixelOpacity
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -206,7 +206,7 @@ class GifMovieDecoderTest {
 
         ImageRequest(context, MyImages.animGif.uri) {
             repeatCount(3)
-            animatedTransformation { PixelOpacity.TRANSLUCENT }
+            animatedTransformation(TranslucentAnimatedTransformation)
             onAnimationEnd { }
             resize(300, 300)
         }.apply {

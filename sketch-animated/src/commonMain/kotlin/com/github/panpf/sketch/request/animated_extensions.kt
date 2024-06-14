@@ -45,8 +45,8 @@ fun ImageRequest.Builder.repeatCount(repeatCount: Int): ImageRequest.Builder {
     return setParameter(
         key = ANIMATION_REPEAT_COUNT_KEY,
         value = repeatCount,
-        cacheKey = null,
-        requestKey = null
+        cacheKey = repeatCount.toString(),
+        requestKey = repeatCount.toString(),
     )
 }
 

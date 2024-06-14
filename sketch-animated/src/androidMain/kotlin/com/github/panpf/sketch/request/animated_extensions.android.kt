@@ -45,7 +45,7 @@ fun ImageRequest.Builder.animatedTransformation(animatedTransformation: Animated
         key = ANIMATED_TRANSFORMATION_KEY,
         value = animatedTransformation,
         cacheKey = null,
-        requestKey = null
+        requestKey = animatedTransformation.key
     )
 }
 

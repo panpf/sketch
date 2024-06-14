@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.animated.android.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -38,7 +39,7 @@ class AnimatedExtensionsAndroidTest {
     @Test
     fun testAnimatedTransformation() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val myAnimatedTransformation = AnimatedTransformation { PixelOpacity.TRANSLUCENT }
+        val myAnimatedTransformation = TranslucentAnimatedTransformation
 
         ImageRequest(context, MyImages.animGif.uri).apply {
             assertNull(animatedTransformation)

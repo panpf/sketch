@@ -92,7 +92,7 @@ class AnimatedExtensionsTest {
         val cacheKey2 = ImageRequest(context, MyImages.animGif.uri) {
             repeatCount(5)
         }.toRequestContext(sketch).cacheKey
-        assertEquals(cacheKey1, cacheKey2)
+        assertNotEquals(cacheKey1, cacheKey2)
     }
 
     @Test
@@ -131,7 +131,7 @@ class AnimatedExtensionsTest {
         val key2 = ImageRequest(context, MyImages.animGif.uri) {
             onAnimationStart(myAnimationStartCallback)
         }.key
-        assertNotEquals(key1, key2)
+        assertEquals(key1, key2)
 
         val cacheKey1 =
             ImageRequest(context, MyImages.animGif.uri).toRequestContext(sketch).cacheKey
@@ -177,7 +177,7 @@ class AnimatedExtensionsTest {
         val key2 = ImageRequest(context, MyImages.animGif.uri) {
             onAnimationEnd(myAnimationEndCallback)
         }.key
-        assertNotEquals(key1, key2)
+        assertEquals(key1, key2)
 
         val cacheKey1 =
             ImageRequest(context, MyImages.animGif.uri).toRequestContext(sketch).cacheKey

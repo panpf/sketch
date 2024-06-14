@@ -18,11 +18,12 @@ package com.github.panpf.sketch.transform
 import android.graphics.Canvas
 import android.graphics.PostProcessor
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.util.Key
 
 /**
  * An interface for making transformations to an animated image's pixel data.
  */
-fun interface AnimatedTransformation {
+interface AnimatedTransformation : Key {
 
     /**
      * Apply the transformation to the [canvas].
