@@ -20,10 +20,9 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newAloneTestDiskCacheDirectory
 import com.github.panpf.sketch.util.formatFileSize
-import com.github.panpf.sketch.util.sha256String
+import com.github.panpf.sketch.util.md5
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
-import okio.Source
 import okio.buffer
 import org.junit.Assert
 import org.junit.Test
@@ -309,7 +308,7 @@ class LruDiskCacheTest {
             it.putFile("file1", 1)
             it.openSnapshot("file1")!!.use { file1Snapshot ->
                 Assert.assertEquals(
-                    defaultCacheDir.resolve("${"file1".sha256String()}.0"),
+                    defaultCacheDir.resolve("${"file1".md5()}.0"),
                     file1Snapshot.data
                 )
             }

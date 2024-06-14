@@ -27,7 +27,7 @@ import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
-import com.github.panpf.sketch.util.sha256String
+import com.github.panpf.sketch.util.md5
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.sync.Mutex
@@ -60,7 +60,7 @@ class LruDiskCache constructor(
     // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
     private val mutexMapLock = SynchronizedObject()
-    private val keyMapperCache = KeyMapperCache { it.sha256String() }
+    private val keyMapperCache = KeyMapperCache { it.md5() }
     private val keyMapperCacheLock = SynchronizedObject()
 
     private val cache: DiskLruCache by lazy {

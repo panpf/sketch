@@ -4,7 +4,7 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.util.LruCache
-import com.github.panpf.sketch.util.sha256String
+import com.github.panpf.sketch.util.md5
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.FileSystem
@@ -15,7 +15,7 @@ class EmptyDiskCache constructor(override val fileSystem: FileSystem) : DiskCach
 
     // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
-    private val keyMapperCache = KeyMapperCache { it.sha256String() }
+    private val keyMapperCache = KeyMapperCache { it.md5() }
 
     override val maxSize: Long = 0L
 

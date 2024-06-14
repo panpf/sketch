@@ -17,7 +17,7 @@ package com.github.panpf.sketch.core.android.test.cache.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.internal.KeyMapperCache
-import com.github.panpf.sketch.util.sha256String
+import com.github.panpf.sketch.util.md5
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,13 +28,13 @@ class KeyMapperCacheTest {
     @Test
     fun testMaxSize() {
         KeyMapperCache(5) {
-            it.sha256String()
+            it.md5()
         }.apply {
             Assert.assertEquals(5, maxSize)
         }
 
         KeyMapperCache(15) {
-            it.sha256String()
+            it.md5()
         }.apply {
             Assert.assertEquals(15, maxSize)
         }
@@ -43,10 +43,10 @@ class KeyMapperCacheTest {
     @Test
     fun testMapper() {
         KeyMapperCache(5) {
-            it.sha256String()
+            it.md5()
         }.apply {
-            Assert.assertEquals("image1".sha256String(), mapper("image1"))
-            Assert.assertEquals("image2".sha256String(), mapper("image2"))
+            Assert.assertEquals("image1".md5(), mapper("image1"))
+            Assert.assertEquals("image2".md5(), mapper("image2"))
         }
 
         KeyMapperCache(5) {
@@ -60,10 +60,10 @@ class KeyMapperCacheTest {
     @Test
     fun testMapKey() {
         KeyMapperCache(5) {
-            it.sha256String()
+            it.md5()
         }.apply {
-            Assert.assertEquals("image1".sha256String(), mapKey("image1"))
-            Assert.assertEquals("image2".sha256String(), mapKey("image2"))
+            Assert.assertEquals("image1".md5(), mapKey("image1"))
+            Assert.assertEquals("image2".md5(), mapKey("image2"))
         }
     }
 }

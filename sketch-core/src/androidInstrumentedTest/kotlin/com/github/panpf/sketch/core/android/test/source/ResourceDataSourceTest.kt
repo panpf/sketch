@@ -8,7 +8,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.sketch.util.sha256String
+import com.github.panpf.sketch.util.md5
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
 import org.junit.Assert
@@ -86,7 +86,7 @@ class ResourceDataSourceTest {
         ).apply {
             val file = getFile()
             Assert.assertEquals(
-                (request.uri + "_data_source").sha256String() + ".0",
+                (request.uri + "_data_source").md5() + ".0",
                 file.name
             )
         }

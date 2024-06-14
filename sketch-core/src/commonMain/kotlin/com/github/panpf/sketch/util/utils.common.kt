@@ -86,9 +86,6 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
 
 internal fun String.md5() = encodeUtf8().md5().hex()
 
-// TODO 用 MD5 替换 SHA-256
-internal fun String.sha256String() = encodeUtf8().sha256().hex()
-
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
 internal fun Float.format(newScale: Int): Float {
