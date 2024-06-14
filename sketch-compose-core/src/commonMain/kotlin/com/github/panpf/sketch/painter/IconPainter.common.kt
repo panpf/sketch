@@ -30,10 +30,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.internal.DrawInvalidate
 import com.github.panpf.sketch.util.Key
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-// TODO Looking forward to Compose Multiplatform supporting ColorResource
 
 @Composable
 fun rememberIconPainter(
@@ -67,25 +64,6 @@ fun rememberIconPainter(
 }
 
 @Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainter(
-    icon: PainterEqualizer,
-    background: DrawableResource? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainter {
-    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainter(
-            icon = icon,
-            background = backgroundPainter,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
 fun rememberIconPainter(
     icon: PainterEqualizer,
     iconSize: Size? = null,
@@ -97,84 +75,6 @@ fun rememberIconPainter(
         iconSize = iconSize,
         iconTint = iconTint
     )
-}
-
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainter(
-    icon: DrawableResource,
-    background: PainterEqualizer? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainter(
-            icon = iconPainter,
-            background = background,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainter(
-    icon: DrawableResource,
-    background: Color? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    return remember(icon, background, iconSize, iconTint) {
-        val backgroundPainter = background?.let { ColorPainter(it) }
-        IconPainter(
-            icon = iconPainter,
-            background = backgroundPainter?.asEquality(),
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainter(
-    icon: DrawableResource,
-    background: DrawableResource? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainter(
-            icon = iconPainter,
-            background = backgroundPainter,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainter(
-    icon: DrawableResource,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    return remember(icon, iconSize, iconTint) {
-        IconPainter(
-            icon = iconPainter,
-            background = null,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
 }
 
 

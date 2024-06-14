@@ -13,8 +13,11 @@ import com.github.panpf.sketch.sample.appId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.harawata.appdirs.AppDirsFactory
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import sketch_root.sample.generated.resources.Res
 import java.io.File
 
+@OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: Boolean): List<FetcherTestItem> {
     val fileUriTestFile = getFileUriTestFile(MyImages.jpeg)
     val fileUriTestFile2 = getFileUriTestFile(MyImages.bmp)
@@ -24,7 +27,7 @@ actual suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: 
         add(FetcherTestItem(title = "FILE_URI", newFileUri(fileUriTestFile)))
         add(FetcherTestItem(title = "FILE_PATH", fileUriTestFile2.toString()))
         add(FetcherTestItem(title = "RES_KOTLIN", newKotlinResourceUri("sample.jpeg")))
-        add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri("files/liuyifei.jpg")))
+        add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))))
         add(FetcherTestItem(title = "BASE64", MyImages.BASE64_IMAGE))
     }
 }

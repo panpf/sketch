@@ -81,6 +81,10 @@ ImageRequest("https://example.com/image.jpg") {
 }
 ```
 
+> [!TIP]
+> You need to import the `sketch-compose-resources` module placeholder, uriEmpty, and error to
+> support the DrawableResource of compose resources.
+
 ### Customize
 
 You can refer to the existing implementation of [StateImage]

@@ -70,6 +70,10 @@ ImageRequest("https://example.com/image.jpg") {
 }
 ```
 
+> [!TIP]
+> 需要导入 `sketch-compose-resources` 模块 placeholder、uriEmpty、error 才能支持 compose resources 的
+> DrawableResource
+
 ### 自定义
 
 可参考现有 [StateImage] 的实现

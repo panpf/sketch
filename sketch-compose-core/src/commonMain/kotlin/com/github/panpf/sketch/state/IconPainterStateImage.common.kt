@@ -12,12 +12,7 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.painter.IconPainter
 import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.painter.asEquality
-import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import com.github.panpf.sketch.request.ImageRequest
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-
-// TODO Looking forward to Compose Multiplatform supporting ColorResource
 
 
 @Composable
@@ -56,25 +51,6 @@ fun rememberIconPainterStateImage(
 }
 
 @Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainterStateImage(
-    icon: PainterEqualizer,
-    background: DrawableResource? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainterStateImage {
-    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainterStateImage(
-            icon = icon,
-            background = backgroundPainter,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
 fun rememberIconPainterStateImage(
     icon: PainterEqualizer,
     iconSize: Size? = null,
@@ -90,83 +66,6 @@ fun rememberIconPainterStateImage(
     }
 }
 
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainterStateImage(
-    icon: DrawableResource,
-    background: PainterEqualizer? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainterStateImage {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainterStateImage(
-            icon = iconPainter,
-            background = background,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainterStateImage(
-    icon: DrawableResource,
-    background: Color? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainterStateImage {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    return remember(icon, background, iconSize, iconTint) {
-        val backgroundPainter = background?.let { ColorPainter(it) }
-        IconPainterStateImage(
-            icon = iconPainter,
-            background = backgroundPainter?.asEquality(),
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainterStateImage(
-    icon: DrawableResource,
-    background: DrawableResource? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainterStateImage {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainterStateImage(
-            icon = iconPainter,
-            background = backgroundPainter,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun rememberIconPainterStateImage(
-    icon: DrawableResource,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconPainterStateImage {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    return remember(icon, iconSize, iconTint) {
-        IconPainterStateImage(
-            icon = iconPainter,
-            background = null,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
 
 @Stable
 class IconPainterStateImage(
@@ -179,7 +78,7 @@ class IconPainterStateImage(
     override val key: String =
         "IconPainterStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=$iconTint)"
 
-    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
+    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return IconPainter(icon, background, iconSize, iconTint).asSketchImage()
     }
 

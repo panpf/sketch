@@ -6,17 +6,17 @@
 
 [Sketch] 支持的每一种 uri 都有对应的 [Fetcher] 实现，如下表所示：
 
-| URI                    | Fetcher                     | Create                  | Dependent modules      | Android | iOS | Desktop | Web |
-|:-----------------------|-----------------------------|-------------------------|------------------------|---------|:----|:--------|:----|
-| http://, https://      | [HttpUriFetcher]            | -                       | -                      | ✅       | ✅   | ✅       | ✅   |
-| /, file://             | [FileUriFetcher]            | newFileUri()            | -                      | ✅       | ✅   | ✅       | ✅   |
-| compose.resource://    | [ComposeResourceUriFetcher] | newComposeResourceUri() | -                      | ✅       | ✅   | ✅       | ✅   |
-| data:image/jpeg;base64 | [Base64UriFetcher]          | newBase64Uri()          | -                      | ✅       | ✅   | ✅       | ✅   |
-| asset://               | [AssetUriFetcher]           | newAssetUri()           | -                      | ✅       | ❌   | ❌       | ❌   |
-| content://             | [ContentUriFetcher]         | -                       | -                      | ✅       | ❌   | ❌       | ❌   |
-| android.resource://    | [ResourceUriFetcher]        | newResourceUri()        | -                      | ✅       | ❌   | ❌       | ❌   |
-| app.icon://            | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core | ✅       | ❌   | ❌       | ❌   |
-| kotlin.resource://     | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                      | ❌       | ✅   | ✅       | ❌   |
+| URI                    | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
+|:-----------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
+| http://, https://      | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
+| /, file://             | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
+| compose.resource://    | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
+| data:image/jpeg;base64 | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
+| asset://               | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
+| content://             | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
+| android.resource://    | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
+| app.icon://            | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
+| kotlin.resource://     | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
 > [!TIP]
 > * [AssetUriFetcher] 用于从 Android 的 assets 目录加载图片
@@ -25,7 +25,7 @@
 > * [AppIconUriFetcher] 用于加载已安装 App 的图标，它还需要依赖 `sketch-extensions-core`
     模块。[了解更多](apk_app_icon_zh.md#加载已安装-App-的图标)
 > * [Base64UriFetcher] 用于从 uri 本身的 base64 数据块中加载图片
-> * [ComposeResourceUriFetcher] 用于从 Compose Multiplatform 的 composeResources 目录加载图片
+> * [ComposeResourceUriFetcher] 用于从 Compose Multiplatform 的 composeResources 目录加载图片，它还需要依赖 `sketch-compose-resources` 模块。
 > * [KotlinResourceUriFetcher] 用于从 kotlin 的 resources 目录加载图片
 
 ## 注册 Fetcher
@@ -36,14 +36,14 @@
 // 在自定义 Sketch 时为所有 ImageRequest 注册
 Sketch.Builder(context).apply {
     components {
-        addFetcher(AppIconUriFetcher.Factory())
+        addFetcher(ComposeResourceUriFetcher.Factory())
     }
 }.build()
 
 // 加载图片时为单个 ImageRequest 注册
 ImageRequest(context, "https://www.example.com/image.gif") {
     components {
-        addFetcher(AppIconUriFetcher.Factory())
+        addFetcher(ComposeResourceUriFetcher.Factory())
     }
 }
 ```

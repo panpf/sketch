@@ -1,19 +1,45 @@
 package com.github.panpf.sketch.fetch
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.toUri
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.jetbrains.compose.resources.readResourceBytes
 
 /**
- * Sample: 'compose.resource://drawable/sample.png'
+ * Adds compose resources support
  */
-fun newComposeResourceUri(resourcePath: String): String =
-    "${ComposeResourceUriFetcher.SCHEME}://$resourcePath"
+fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Builder = apply {
+    addFetcher(ComposeResourceUriFetcher.Factory())
+}
+
+/**
+ * Sample: 'compose.resource://composeResources/sketch_root.sample.generated.resources/drawable/sample.png'
+ *
+ * @param resourcePath The path of the file to read in the compose resource's directory. For example:
+ * * 'composeResources/sketch_root.sample.generated.resources/drawable/sample.png'
+ * * Res.getUri("drawable/sample.png")
+ */
+fun newComposeResourceUri(resourcePath: String): String {
+    // "composeResources/sketch_root.sample.generated.resources/drawable/sample.png"
+    if (resourcePath.startsWith("composeResources/")) {
+        return "${ComposeResourceUriFetcher.SCHEME}://$resourcePath"
+    }
+
+    // file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/sketch_root.sample.generated.resources/drawable/sample.png
+    // jar:file:/data/app/com.github.panpf.sketch4.sample-kz2o4eobaLdvBww0SkguMw==/base.apk!/composeResources/sketch_root.sample.generated.resources/drawable/sample.png
+    val index = resourcePath.indexOf("/composeResources/")
+    if (index != -1) {
+        val realResourcePath = resourcePath.substring(index + 1)
+        return "${ComposeResourceUriFetcher.SCHEME}://$realResourcePath"
+    }
+
+    throw IllegalArgumentException("Unsupported compose resource path: $resourcePath")
+}
 
 class ComposeResourceUriFetcher(
     val sketch: Sketch,

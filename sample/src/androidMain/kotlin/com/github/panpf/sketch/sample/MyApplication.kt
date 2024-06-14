@@ -31,6 +31,7 @@ import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.supportAppIcon
+import com.github.panpf.sketch.fetch.supportComposeResources
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.http.OkHttpStack
@@ -55,6 +56,8 @@ class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
         }
         httpStack(httpStack)
         components {
+            supportComposeResources()
+
             supportSaveCellularTraffic()
             supportPauseLoadWhenScrolling()
 

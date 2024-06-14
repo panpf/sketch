@@ -62,6 +62,7 @@ kotlin {
             implementation(projects.internal.images)
             implementation(projects.sketchAnimated)
             implementation(projects.sketchCompose)
+            implementation(projects.sketchComposeResources)
             implementation(projects.sketchExtensionsCompose)
             implementation(projects.sketchHttpKtor)
             implementation(projects.sketchSvg)

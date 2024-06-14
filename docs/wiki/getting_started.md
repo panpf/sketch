@@ -6,7 +6,7 @@ Translations: [简体中文](getting_started_zh.md)
 
 Loading images with [Sketch] is very simple, as follows:
 
-Compose Multiplatform: 
+Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -51,7 +51,7 @@ Image(
      [AsyncImage] The size of the component can be obtained during the layout stage,
      while `Image + AsyncImagePainter` cannot obtain the component size until the drawing stage.
 
-Android View: 
+Android View:
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -109,17 +109,17 @@ Each image type has a corresponding Decoder support for it, [Learn more about De
 [Sketch] supports loading images from different data sources such as the network, local machine, and
 resources, as follows:
 
-| URI                    | Describe                 | Create Function         | Dependent Modules      |
-|:-----------------------|:-------------------------|:------------------------|:-----------------------|
-| http://, https://      | File in network          | _                       | _                      |
-| /, file://             | File in SDCard           | newFileUri()            | _                      |
-| content://             | Android Content Resolver | _                       | _                      |
-| asset://               | Android Asset            | newAssetUri()           | _                      |
-| android.resource://    | Android Resource         | newResourceUri()        | _                      |
-| data:image/, data:img/ | Base64                   | newBase64Uri()          | _                      |
-| compose.resource://    | Compose Resource         | newComposeResourceUri() | _                      |
-| kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                      |
-| app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core |
+| URI                    | Describe                 | Create Function         | Dependent Modules        |
+|:-----------------------|:-------------------------|:------------------------|:-------------------------|
+| http://, https://      | File in network          | _                       | _                        |
+| /, file://             | File in SDCard           | newFileUri()            | _                        |
+| content://             | Android Content Resolver | _                       | _                        |
+| asset://               | Android Asset            | newAssetUri()           | _                        |
+| android.resource://    | Android Resource         | newResourceUri()        | _                        |
+| data:image/, data:img/ | Base64                   | newBase64Uri()          | _                        |
+| compose.resource://    | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
+| kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                        |
+| app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
 
 Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 
@@ -151,7 +151,8 @@ different, as follows:
 
 ## Sketch
 
-The [Sketch] class is the core of the entire framework, which is used to execute and manage [ImageRequest]
+The [Sketch] class is the core of the entire framework, which is used to execute and
+manage [ImageRequest]
 
 ### Singleton Mode
 
@@ -450,7 +451,7 @@ Basic functions:
 * [Lifecycle][lifecycle]
 * [Log][log]
 
-Featured functions: 
+Featured functions:
 
 * [SketchImageView: Configure the request through XML attributes][sketch_image_view]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]

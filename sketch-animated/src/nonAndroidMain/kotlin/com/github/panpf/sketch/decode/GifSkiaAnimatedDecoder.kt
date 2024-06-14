@@ -1,11 +1,19 @@
 package com.github.panpf.sketch.decode
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+
+/**
+ * Adds gif support by Skia
+ */
+fun ComponentRegistry.Builder.supportSkiaGif(): ComponentRegistry.Builder = apply {
+    addDecoder(GifSkiaAnimatedDecoder.Factory())
+}
 
 class GifSkiaAnimatedDecoder(
     requestContext: RequestContext,

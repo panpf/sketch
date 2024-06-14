@@ -23,7 +23,10 @@ import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
 import okio.use
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import sketch_root.sample.generated.resources.Res
 
+@OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
@@ -42,7 +45,7 @@ actual suspend fun buildFetcherTestItems(
         add(FetcherTestItem(title = "RES_ID", newResourceUri(mipmap.ic_launcher)))
         add(FetcherTestItem(title = "RES_NAME", newResourceUri("drawable", "bg_circle_accent")))
         if (fromCompose) {
-            add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri("files/liuyifei.jpg")))
+            add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))))
         }
         add(
             FetcherTestItem(

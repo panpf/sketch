@@ -3,25 +3,20 @@ package com.github.panpf.sketch.compose.core.test.state
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.painter.asEquality
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import com.github.panpf.sketch.test.utils.SizeColorPainter
 
 class IconAnimatablePainterStateImageCommonTest {
     // TODO test
 
-    @OptIn(ExperimentalResourceApi::class)
     @Composable
     fun CreateFunctionTest() {
         val painterIcon =
             Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEquality(it) }
-        val resourceIcon = DrawableResource("testIcon")
         val painterBackground =
             Color.Gray.let { SizeColorPainter(it, Size(100f, 100f)).asEquality(it) }
         val colorBackground = Color.DarkGray
-        val resourceBackground = DrawableResource("testBackground")
         val iconSize = Size(200f, 200f)
         val iconTint = Color.Magenta
 
@@ -38,12 +33,6 @@ class IconAnimatablePainterStateImageCommonTest {
             iconSize = iconSize,
             iconTint = iconTint
         )
-        rememberIconAnimatablePainterStateImage(
-            icon = painterIcon,
-            background = resourceBackground,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
 
         rememberIconAnimatablePainterStateImage(
             icon = painterIcon,
@@ -55,11 +44,6 @@ class IconAnimatablePainterStateImageCommonTest {
             background = colorBackground,
             iconSize = iconSize,
         )
-        rememberIconAnimatablePainterStateImage(
-            icon = painterIcon,
-            background = resourceBackground,
-            iconSize = iconSize,
-        )
 
         rememberIconAnimatablePainterStateImage(
             icon = painterIcon,
@@ -69,11 +53,6 @@ class IconAnimatablePainterStateImageCommonTest {
         rememberIconAnimatablePainterStateImage(
             icon = painterIcon,
             background = colorBackground,
-            iconTint = iconTint
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = painterIcon,
-            background = resourceBackground,
             iconTint = iconTint
         )
 
@@ -91,10 +70,6 @@ class IconAnimatablePainterStateImageCommonTest {
             icon = painterIcon,
             background = colorBackground,
         )
-        rememberIconAnimatablePainterStateImage(
-            icon = painterIcon,
-            background = resourceBackground,
-        )
 
         rememberIconAnimatablePainterStateImage(
             icon = painterIcon,
@@ -107,90 +82,6 @@ class IconAnimatablePainterStateImageCommonTest {
 
         rememberIconAnimatablePainterStateImage(
             icon = painterIcon,
-        )
-
-        // resource icon
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = painterBackground,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = colorBackground,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = resourceBackground,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = painterBackground,
-            iconSize = iconSize,
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = colorBackground,
-            iconSize = iconSize,
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = resourceBackground,
-            iconSize = iconSize,
-        )
-
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = painterBackground,
-            iconTint = iconTint
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = colorBackground,
-            iconTint = iconTint
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = resourceBackground,
-            iconTint = iconTint
-        )
-
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = painterBackground,
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = colorBackground,
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            background = resourceBackground,
-        )
-
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            iconSize = iconSize,
-        )
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
-            iconTint = iconTint
-        )
-
-        rememberIconAnimatablePainterStateImage(
-            icon = resourceIcon,
         )
     }
 }

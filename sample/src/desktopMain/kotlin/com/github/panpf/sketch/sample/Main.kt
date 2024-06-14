@@ -23,8 +23,11 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
+import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
+import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.supportComposeResources
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.http.OkHttpStack
@@ -107,10 +110,12 @@ private fun initialSketch() {
             }
             httpStack(httpStack)
             components {
-                addRequestInterceptor(PexelsCompatibleRequestInterceptor())
                 supportSvg()
-                addDecoder(GifSkiaAnimatedDecoder.Factory())
-                addDecoder(WebpSkiaAnimatedDecoder.Factory())
+                supportSkiaGif()
+                supportSkiaAnimatedWebp()
+                supportComposeResources()
+
+                addRequestInterceptor(PexelsCompatibleRequestInterceptor())
             }
             // To be able to print the Sketch initialization log
             logger(level = appSettings.logLevel.value)

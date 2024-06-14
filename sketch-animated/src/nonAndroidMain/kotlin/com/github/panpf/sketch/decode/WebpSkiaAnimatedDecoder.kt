@@ -1,11 +1,19 @@
 package com.github.panpf.sketch.decode
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+
+/**
+ * Adds animation webp support by Skia
+ */
+fun ComponentRegistry.Builder.supportSkiaAnimatedWebp(): ComponentRegistry.Builder = apply {
+    addDecoder(WebpSkiaAnimatedDecoder.Factory())
+}
 
 class WebpSkiaAnimatedDecoder(
     requestContext: RequestContext,

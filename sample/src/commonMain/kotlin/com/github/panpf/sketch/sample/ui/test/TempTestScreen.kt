@@ -13,9 +13,12 @@ import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import sketch_root.sample.generated.resources.Res
 
 class TempTestScreen : BaseScreen() {
 
+    @OptIn(ExperimentalResourceApi::class)
     @Composable
     override fun DrawContent() {
         ToolbarScaffold(title = "TempTest") {
@@ -27,7 +30,7 @@ class TempTestScreen : BaseScreen() {
                     AsyncImage(
                         request = ImageRequest(
                             LocalPlatformContext.current,
-                            newComposeResourceUri("files/liuyifei.jpg")
+                            newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))
                         ) {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)

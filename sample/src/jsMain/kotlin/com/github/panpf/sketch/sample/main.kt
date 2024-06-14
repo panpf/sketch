@@ -7,7 +7,10 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
+import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
+import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.decode.supportSvg
+import com.github.panpf.sketch.fetch.supportComposeResources
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.skiko.wasm.onWasmReady
@@ -27,8 +30,9 @@ private fun initialSketch() {
         Sketch.Builder(context).apply {
             components {
                 supportSvg()
-                addDecoder(GifSkiaAnimatedDecoder.Factory())
-                addDecoder(WebpSkiaAnimatedDecoder.Factory())
+                supportSkiaGif()
+                supportSkiaAnimatedWebp()
+                supportComposeResources()
             }
             // To be able to print the Sketch initialization log
             logger(level = appSettings.logLevel.value)

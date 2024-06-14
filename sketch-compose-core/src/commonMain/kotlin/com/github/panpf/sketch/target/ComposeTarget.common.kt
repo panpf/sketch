@@ -35,7 +35,6 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
@@ -79,7 +78,6 @@ interface ComposeTarget : Target {
     }
 
     override fun getComponents(): ComponentRegistry? = ComponentRegistry.Builder().apply {
-        addFetcher(ComposeResourceUriFetcher.Factory())
         val toComposeBitmapInterceptor = getToComposeBitmapRequestInterceptor()
         if (toComposeBitmapInterceptor != null) {
             addRequestInterceptor(toComposeBitmapInterceptor)
