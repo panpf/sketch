@@ -14,7 +14,6 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toShortInfoString
-import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
@@ -214,11 +213,9 @@ class BitmapRegionDecoderTest {
             }
         } else {
             /* minAPI not support */
-            val bytes = Bytes(
-                ByteArray(1024).apply {
-                    context.assets.open(image.assetName).use { it.read(this) }
-                }
-            )
+            val bytes = ByteArray(1024).apply {
+                context.assets.open(image.assetName).use { it.read(this) }
+            }
             if (bytes.isAnimatedWebP()) {
                 when (VERSION.SDK_INT) {
                     16 -> assertThrow(IOException::class) {

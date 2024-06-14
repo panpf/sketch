@@ -9,7 +9,6 @@ import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.fetch
-import com.github.panpf.sketch.util.Bytes
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -27,9 +26,9 @@ class AnimatedDecodeUtilsTest {
         assertTrue(webpFetchResult.headerBytes.isWebP())
         assertTrue(animWebpFetchResult.headerBytes.isWebP())
         assertFalse(jpegFetchResult.headerBytes.isWebP())
-        assertFalse(webpFetchResult.headerBytes.bytes.copyOf().apply {
+        assertFalse(webpFetchResult.headerBytes.copyOf().apply {
             set(8, 'V'.code.toByte())
-        }.let { Bytes(it) }.isWebP())
+        }.isWebP())
     }
 
     @Test
@@ -43,14 +42,14 @@ class AnimatedDecodeUtilsTest {
         assertFalse(webpFetchResult.headerBytes.isAnimatedWebP())
 
         assertTrue(animWebpFetchResult.headerBytes.isAnimatedWebP())
-        assertFalse(animWebpFetchResult.headerBytes.bytes.copyOf().apply {
+        assertFalse(animWebpFetchResult.headerBytes.copyOf().apply {
             set(12, 'X'.code.toByte())
-        }.let { Bytes(it) }.isAnimatedWebP())
+        }.isAnimatedWebP())
 
         assertTrue(animWebpFetchResult.headerBytes.isAnimatedWebP())
-        assertFalse(animWebpFetchResult.headerBytes.bytes.copyOf().apply {
+        assertFalse(animWebpFetchResult.headerBytes.copyOf().apply {
             set(16, 0)
-        }.let { Bytes(it) }.isAnimatedWebP())
+        }.isAnimatedWebP())
 
         assertFalse(jpegFetchResult.headerBytes.isAnimatedWebP())
     }
@@ -77,19 +76,19 @@ class AnimatedDecodeUtilsTest {
 
         assertTrue(animHeifFetchResult.headerBytes.isAnimatedHeif())
 
-        assertTrue(animHeifFetchResult.headerBytes.bytes.copyOf().apply {
+        assertTrue(animHeifFetchResult.headerBytes.copyOf().apply {
             set(8, 'h'.code.toByte())
             set(9, 'e'.code.toByte())
             set(10, 'v'.code.toByte())
             set(11, 'c'.code.toByte())
-        }.let { Bytes(it) }.isAnimatedHeif())
+        }.isAnimatedHeif())
 
-        assertTrue(animHeifFetchResult.headerBytes.bytes.copyOf().apply {
+        assertTrue(animHeifFetchResult.headerBytes.copyOf().apply {
             set(8, 'h'.code.toByte())
             set(9, 'e'.code.toByte())
             set(10, 'v'.code.toByte())
             set(11, 'x'.code.toByte())
-        }.let { Bytes(it) }.isAnimatedHeif())
+        }.isAnimatedHeif())
 
         assertFalse(heicFetchResult.headerBytes.isAnimatedHeif())
         assertFalse(animWebpFetchResult.headerBytes.isAnimatedHeif())
@@ -103,9 +102,9 @@ class AnimatedDecodeUtilsTest {
         val animGifFetchResult = ImageRequest(context, MyImages.animGif.uri).fetch(sketch)
 
         assertTrue(animGifFetchResult.headerBytes.isGif())
-        assertTrue(animGifFetchResult.headerBytes.bytes.copyOf().apply {
+        assertTrue(animGifFetchResult.headerBytes.copyOf().apply {
             set(4, '7'.code.toByte())
-        }.let { Bytes(it) }.isGif())
+        }.isGif())
         assertFalse(animWebpFetchResult.headerBytes.isGif())
     }
 }

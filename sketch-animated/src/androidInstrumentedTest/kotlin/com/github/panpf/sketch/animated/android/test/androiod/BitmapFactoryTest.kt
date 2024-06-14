@@ -14,7 +14,6 @@ import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toShortInfoString
-import com.github.panpf.sketch.util.Bytes
 import com.github.panpf.sketch.util.Size
 import org.junit.Assert
 import org.junit.Test
@@ -174,9 +173,8 @@ class BitmapFactoryTest {
             } catch (e: IllegalArgumentException) {
                 throw Exception(message, e)
             }
-            val bytes = Bytes(
+            val bytes =
                 ByteArray(1024).apply { context.assets.open(image.assetName).use { it.read(this) } }
-            )
             if (bytes.isAnimatedWebP() && VERSION.SDK_INT == 17) {
                 Assert.assertNotNull(message, bitmap)
             } else {

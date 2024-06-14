@@ -18,13 +18,14 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.util.Bytes
+import com.github.panpf.sketch.util.indexOf
+import com.github.panpf.sketch.util.rangeEquals
 import okio.ByteString.Companion.encodeUtf8
 
 private val SVG_TAG = "<svg ".encodeUtf8().toByteArray()
 private val LEFT_ANGLE_BRACKET = "<".encodeUtf8().toByteArray()
 
-fun Bytes.isSvg(): Boolean =
+fun ByteArray.isSvg(): Boolean =
     rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1
 
 internal expect suspend fun decodeSvg(

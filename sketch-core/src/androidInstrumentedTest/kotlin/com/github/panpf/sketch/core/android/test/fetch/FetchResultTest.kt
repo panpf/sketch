@@ -111,7 +111,7 @@ class FetchResultTest {
         ).apply {
             Assert.assertEquals(
                 bytes.take(100).toTypedArray().contentToString(),
-                this.headerBytes.bytes.contentToString()
+                this.headerBytes.contentToString()
             )
         }
 
@@ -127,7 +127,7 @@ class FetchResultTest {
         ).apply {
             Assert.assertEquals(
                 bytes1.toTypedArray().contentToString(),
-                this.headerBytes.bytes.contentToString()
+                this.headerBytes.contentToString()
             )
         }
     }

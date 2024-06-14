@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.util.Bytes
+import com.github.panpf.sketch.util.rangeEquals
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.experimental.and
 
@@ -36,15 +36,15 @@ private val GIF_HEADER_87A = "GIF87a".encodeUtf8().toByteArray()
 private val GIF_HEADER_89A = "GIF89a".encodeUtf8().toByteArray()
 
 /**
- * Return 'true' if the [Bytes] contains a WebP image.
+ * Return 'true' if the [ByteArray] contains a WebP image.
  */
-fun Bytes.isWebP(): Boolean =
+fun ByteArray.isWebP(): Boolean =
     rangeEquals(0, WEBP_HEADER_RIFF) && rangeEquals(8, WEBP_HEADER_WEBP)
 
 /**
- * Return 'true' if the [Bytes] contains an animated WebP image.
+ * Return 'true' if the [ByteArray] contains an animated WebP image.
  */
-fun Bytes.isAnimatedWebP(): Boolean = isWebP()
+fun ByteArray.isAnimatedWebP(): Boolean = isWebP()
         && rangeEquals(12, WEBP_HEADER_VP8X)
         && (get(16) and 0b00000010) > 0
         // Some webp images do not comply with standard protocols, obviously not GIFs but have GIF markup, here to do a fault tolerance
@@ -52,25 +52,25 @@ fun Bytes.isAnimatedWebP(): Boolean = isWebP()
         && containsRiffAnimChunk(25)
 
 /**
- * Return 'true' if the [Bytes] contains an HEIF image. The [Bytes] is not consumed.
+ * Return 'true' if the [ByteArray] contains an HEIF image. The [ByteArray] is not consumed.
  */
-fun Bytes.isHeif(): Boolean = rangeEquals(4, HEIF_HEADER_FTYP)
+fun ByteArray.isHeif(): Boolean = rangeEquals(4, HEIF_HEADER_FTYP)
 
 /**
- * Return 'true' if the [Bytes] contains an animated HEIF image sequence.
+ * Return 'true' if the [ByteArray] contains an animated HEIF image sequence.
  */
-fun Bytes.isAnimatedHeif(): Boolean = isHeif()
+fun ByteArray.isAnimatedHeif(): Boolean = isHeif()
         && (rangeEquals(8, HEIF_HEADER_MSF1)
         || rangeEquals(8, HEIF_HEADER_HEVC)
         || rangeEquals(8, HEIF_HEADER_HEVX))
 
 /**
- * Return 'true' if the [Bytes] contains a GIF image.
+ * Return 'true' if the [ByteArray] contains a GIF image.
  */
-fun Bytes.isGif(): Boolean =
+fun ByteArray.isGif(): Boolean =
     rangeEquals(0, GIF_HEADER_89A) || rangeEquals(0, GIF_HEADER_87A)
 
-fun Bytes.containsRiffAnimChunk(offset: Int = 0): Boolean {
+fun ByteArray.containsRiffAnimChunk(offset: Int = 0): Boolean {
     (offset until size - WEBP_HEADER_ANIM.size).forEach {
         if (rangeEquals(it, WEBP_HEADER_ANIM)) {
             return true

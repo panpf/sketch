@@ -17,7 +17,6 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.util.Bytes
 import okio.buffer
 import okio.use
 
@@ -42,9 +41,9 @@ interface FetchResult {
         get() = dataSource.dataFrom
 
     /**
-     * 1024 bytes of header
+     * 100 bytes of header
      */
-    val headerBytes: Bytes
+    val headerBytes: ByteArray
 }
 
 open class FetchResultImpl constructor(
@@ -52,17 +51,17 @@ open class FetchResultImpl constructor(
 ) : FetchResult {
 
     companion object {
-        val EMPTY = Bytes(ByteArray(0))
+        val EMPTY = ByteArray(0)
     }
 
-    override val headerBytes: Bytes by lazy {
+    override val headerBytes: ByteArray by lazy {
         val dataSource = dataSource
         val byteArray = ByteArray(100)
         val readLength = dataSource.openSourceOrNull()?.use {
             it.buffer().read(byteArray)
         } ?: -1
         if (readLength != -1) {
-            Bytes(if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength))
+            if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength)
         } else {
             EMPTY
         }

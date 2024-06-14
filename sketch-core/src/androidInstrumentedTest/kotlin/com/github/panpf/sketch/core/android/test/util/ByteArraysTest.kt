@@ -16,20 +16,21 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.util.Bytes
+import com.github.panpf.sketch.util.indexOf
+import com.github.panpf.sketch.util.rangeEquals
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class BytesTest {
+class ByteArraysTest {
 
     private val bytes = "abcdefghijklmnopqrstuvwxyz".toByteArray()
 
     @Test
     fun testRangeEquals() {
-        Bytes(bytes).apply {
+        bytes.apply {
             assertThrow(IllegalArgumentException::class) {
                 rangeEquals(0, byteArrayOf())
             }
@@ -46,7 +47,7 @@ class BytesTest {
 
     @Test
     fun testIndexOf() {
-        Bytes(bytes).apply {
+        bytes.apply {
             Assert.assertEquals(0, indexOf('a'.code.toByte(), 0, 26))
             Assert.assertEquals(0, indexOf('a'.code.toByte(), 0, 1))
             Assert.assertEquals(12, indexOf('m'.code.toByte(), 0, 26))
@@ -85,7 +86,7 @@ class BytesTest {
 
     @Test
     fun testGet() {
-        Bytes(bytes).apply {
+        bytes.apply {
             Assert.assertEquals('a'.code.toByte(), get(0))
             Assert.assertEquals('m'.code.toByte(), get(12))
             Assert.assertEquals('z'.code.toByte(), get(25))
