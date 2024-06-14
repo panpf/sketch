@@ -8,54 +8,42 @@
 
 ### 加载 Apk 的图标
 
-首先，注册 [ApkIconDecoder]，如下：
-
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
+val sketch = Sketch.Builder(context).apply {
     components {
         supportApkIcon()
     }
 }.build()
+// 然后加载图片时传入 apk 文件的路径即可
+sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "/sdcard/sample.apk") {
+// 或者加载图片时为单个 ImageRequest 注册
+ImageRequest(context, uri = "/sdcard/sample.apk") {
     components {
         supportApkIcon()
     }
 }
-```
-
-然后，加载图片时传入 apk 文件的路径即可，如下：
-
-```kotlin
-imageView.displayImage("/sdcard/sample.apk")
 ```
 
 ### 加载已安装 App 的图标
 
-首先，注册 [AppIconUriFetcher]，如下：
-
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
+val sketch = Sketch.Builder(context).apply {
     components {
         supportAppIcon()
     }
 }.build()
+// 然后加载图片时使用 `newAppIconUri()` 函数创建专用 uri 即可
+sketch.enqueue(ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)))
 
-// 加载图片时为单个 ImageRequest 注册
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
+// 或者加载图片时为单个 ImageRequest 注册
+ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
     components {
         supportAppIcon()
     }
 }
-```
-
-然后，加载图片时使用 `newAppIconUri()` 函数创建专用 uri 即可，如下：
-
-```kotlin
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
 ```
 
 * versionCode：App 的版本号。必须传入正确的版本号，因为对图标进行修改时就会将修改后的图标缓存在磁盘上，如果只用

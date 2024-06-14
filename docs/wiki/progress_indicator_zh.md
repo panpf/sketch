@@ -15,7 +15,7 @@ Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下�
 ## Compose
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-compose-core` 模块
+> 必须导入 `sketch-extensions-compose` 模块
 
 ```kotlin
 val progressPainter = rememberDrawableProgressPainter(remember {
@@ -78,7 +78,7 @@ AsyncImage(
 ## View
 
 > [!IMPORTANT]
-> * 必须导入 `sketch-extensions-view-core` 模块
+> * 必须导入 `sketch-extensions-view` 模块
 > * 必须使用 [SketchImageView]
 
 ```kotlin
@@ -155,12 +155,12 @@ val sketchImageView = SketchImageView(context)
 sketchImageView.showProgressIndicator(MyProgressDrawable())
 ```
 
-[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[ProgressIndicatorAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
+[ProgressIndicatorAbility]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
 [AbsProgressDrawable]: ../../sketch-extensions-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/internal/AbsProgressDrawable.kt
 
-[ProgressIndicatorModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/ProgressIndicatorModifier.kt
+[ProgressIndicatorModifier]: ../../sketch-extensions-compose/src/commonMain/kotlin/com/github/panpf/sketch/ability/ProgressIndicatorModifier.kt
 
-[AbsProgressPainter]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/internal/AbsProgressPainter.kt
+[AbsProgressPainter]: ../../sketch-extensions-compose/src/commonMain/kotlin/com/github/panpf/sketch/painter/internal/AbsProgressPainter.kt

@@ -83,9 +83,8 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
 
 > [!TIP]
-> * `sketch-compose`, `sketch-view`, `sketch-extensions-compose`, `sketch-extensions-view`
-    Modules all depend on the singleton provided by the `sketch-singleton` module. If you don’t need
-    the singleton, you can directly rely on their `*-core` version.
+> * `sketch-compose`, `sketch-view` Modules all depend on the singleton provided by
+    the `sketch-singleton` module. If you don’t need the singleton, you can directly rely on their `*-core` version.
 > * On Android `sketch-compose` and `sketch-view` can be used together
 
 #### R8 / Proguard
@@ -95,7 +94,7 @@ the indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio] Add obfuscation c
 
 ## Quickly Started
 
-Compose Multiplatform: 
+Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -131,7 +130,7 @@ Image(
 )
 ```
 
-Android View: 
+Android View:
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -164,7 +163,7 @@ ImageRequest, etc., please view the [《Getting Started》][getting_started] doc
 
 ## Documents
 
-Basic functions: 
+Basic functions:
 
 * [Get Started][getting_started]
 * [Compose][compose]
@@ -190,7 +189,7 @@ Basic functions:
 * [Lifecycle][lifecycle]
 * [Log][log]
 
-Featured functions: 
+Featured functions:
 
 * [SketchImageView: Configure the request through XML attributes][sketch_image_view]
 * [Improve the clarity of long images in grid lists][long_image_grid_thumbnails]

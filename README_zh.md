@@ -73,8 +73,8 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
 
 > [!TIP]
-> * `sketch-compose`、`sketch-view`、`sketch-extensions-compose`、`sketch-extensions-view`
-    模块都依赖 `sketch-singleton` 模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
+> * `sketch-compose`、`sketch-view` 模块都依赖 `sketch-singleton`
+    模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
 > * 在 Android 上 `sketch-compose` 和 `sketch-view` 可以一起使用
 
 #### R8 / Proguard

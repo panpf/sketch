@@ -15,7 +15,7 @@ Three styles are provided to choose from, as follows:
 ## Compose
 
 > [!IMPORTANT]
-> Required import `sketch-extensions-compose-core` module
+> Required import `sketch-extensions-compose` module
 
 ```kotlin
 val progressPainter = rememberDrawableProgressPainter(remember {
@@ -78,7 +78,7 @@ AsyncImage(
 ## View
 
 > [!IMPORTANT]
-> * Required import `sketch-extensions-view-core` module
+> * Required import `sketch-extensions-view` module
 > * Required [SketchImageView]
 
 ```kotlin
@@ -155,12 +155,12 @@ val sketchImageView = SketchImageView(context)
 sketchImageView.showProgressIndicator(MyProgressDrawable())
 ```
 
-[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[ProgressIndicatorAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
+[ProgressIndicatorAbility]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
 [AbsProgressDrawable]: ../../sketch-extensions-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/internal/AbsProgressDrawable.kt
 
-[ProgressIndicatorModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/ProgressIndicatorModifier.kt
+[ProgressIndicatorModifier]: ../../sketch-extensions-compose/src/commonMain/kotlin/com/github/panpf/sketch/ability/ProgressIndicatorModifier.kt
 
-[AbsProgressPainter]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/internal/AbsProgressPainter.kt
+[AbsProgressPainter]: ../../sketch-extensions-compose/src/commonMain/kotlin/com/github/panpf/sketch/painter/internal/AbsProgressPainter.kt

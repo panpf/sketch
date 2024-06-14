@@ -3,7 +3,7 @@
 翻译：[English](sketch_image_view.md)
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-view` 或 `sketch-extensions-view-core` 模块
+> 必须导入 `sketch-extensions-view` 或 `sketch-extensions-view` 模块
 
 ### XML 属性
 
@@ -99,11 +99,11 @@ scope.launch {
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]
 
-[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [ViewAbilityContainer]: ../../sketch-extensions-view-ability/src/main/kotlin/com/github/panpf/sketch/ability/ViewAbilityContainer.kt
 
-[attrs]: ../../sketch-extensions-view-core/src/main/res/values/attrs.xml
+[attrs]: ../../sketch-extensions-view/src/main/res/values/attrs.xml
 
 [show_download_progress]: progress_indicator
 

@@ -9,7 +9,7 @@ Sketch provides extended functions for displaying image type logo for view and C
 ### Compose
 
 > [!IMPORTANT]
-> Required import `sketch-extensions-compose-core` module
+> Required import `sketch-extensions-compose` module
 
 ```kotlin
 val imageTypeIconMap = remember {
@@ -40,7 +40,7 @@ AsyncImage(
 ### View
 
 > [!IMPORTANT]
-> * Required import `sketch-extensions-view-core` module
+> * Required import `sketch-extensions-view` module
 > * Required [SketchImageView]
 
 ```kotlin
@@ -61,8 +61,8 @@ sketchImageView.showMimeTypeLogoWithRes(
 
 > View version functionality is implemented by [MimeTypeLogoAbility]
 
-[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[MimeTypeLogoAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
+[MimeTypeLogoAbility]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
-[MimeTypeLogoModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoModifier.kt
+[MimeTypeLogoModifier]: ../../sketch-extensions-compose/src/commonMain/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoModifier.kt

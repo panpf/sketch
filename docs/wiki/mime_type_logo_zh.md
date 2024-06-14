@@ -9,7 +9,7 @@ Sketch 为 view 和 Compose 提供了显示图片类型角标的扩展功能，�
 ### Compose
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-compose-core` 模块
+> 必须导入 `sketch-extensions-compose` 模块
 
 ```kotlin
 val imageTypeIconMap = remember {
@@ -40,7 +40,7 @@ AsyncImage(
 ### View
 
 > [!IMPORTANT]
-> * 必须导入 `sketch-extensions-view-core` 模块
+> * 必须导入 `sketch-extensions-view` 模块
 > * 必须使用 [SketchImageView]
 
 ```kotlin
@@ -61,8 +61,8 @@ sketchImageView.showMimeTypeLogoWithRes(
 
 > View 版本功能由 [MimeTypeLogoAbility] 实现
 
-[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[MimeTypeLogoAbility]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
+[MimeTypeLogoAbility]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoAbility.kt
 
-[MimeTypeLogoModifier]: ../../sketch-extensions-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoModifier.kt
+[MimeTypeLogoModifier]: ../../sketch-extensions-compose/src/commonMain/kotlin/com/github/panpf/sketch/ability/MimeTypeLogoModifier.kt

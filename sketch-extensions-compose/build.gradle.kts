@@ -10,8 +10,9 @@ addAllMultiplatformTargets()
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.sketchExtensionsComposeCore)
-            api(projects.sketchCompose)
+            api(projects.sketchComposeCore)
+            api(projects.sketchExtensionsCore)
+            api(compose.foundation)
         }
 
         commonTest.dependencies {

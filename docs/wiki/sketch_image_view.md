@@ -101,11 +101,11 @@ supports the following functions:
 * [Show download progress][show_download_progress]
 * [Show image type badge][show_image_type]
 
-[SketchImageView]: ../../sketch-extensions-view-core/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
+[SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
 [ViewAbilityContainer]: ../../sketch-extensions-view-ability/src/main/kotlin/com/github/panpf/sketch/ability/ViewAbilityContainer.kt
 
-[attrs]: ../../sketch-extensions-view-core/src/main/res/values/attrs.xml
+[attrs]: ../../sketch-extensions-view/src/main/res/values/attrs.xml
 
 [show_download_progress]: progress_indicator
 

@@ -8,28 +8,22 @@ Translations: [简体中文](apk_app_icon_zh.md)
 
 ### Load Apk Icon
 
-First, register [ApkIconDecoder] as follows:
-
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(context).apply {
+val sketch = Sketch.Builder(context).apply {
     components {
         supportApkIcon()
     }
 }.build()
+// Then just pass in the path to the apk file when loading the image.
+sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 
-// Register for a single ImageRequest when loading an image
-ImageRequest(context, "/sdcard/sample.apk") {
+// Or register for a single ImageRequest when loading an image
+ImageRequest(context, uri = "/sdcard/sample.apk") {
     components {
         supportApkIcon()
     }
 }
-```
-
-Then, just pass in the path to the apk file when loading the image, as follows:
-
-```kotlin
-imageView.displayImage("/sdcard/sample.apk")
 ```
 
 ### Load the icon of the installed app
@@ -38,24 +32,20 @@ First, register [AppIconUriFetcher] as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
-Sketch.Builder(context).apply {
+val sketch = Sketch.Builder(context).apply {
     components {
         supportAppIcon()
     }
 }.build()
+// Then use the `newAppIconUri()` function to create a dedicated uri when loading the image.
+sketch.enqueue(ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)))
 
-// Register for a single ImageRequest when loading an image
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
+// Or register for a single ImageRequest when loading an image
+ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
     components {
         supportAppIcon()
     }
 }
-```
-
-Then, use the `newAppIconUri()` function to create a dedicated uri when loading images, as follows:
-
-```kotlin
-imageView.displayImage(newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1))
 ```
 
 * versionCode：The versionCode of the app. The correct version number must be passed in, because
