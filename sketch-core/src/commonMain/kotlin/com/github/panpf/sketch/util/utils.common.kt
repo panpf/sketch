@@ -20,9 +20,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okio.ByteString.Companion.encodeUtf8
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind.EXACTLY_ONCE
-import kotlin.contracts.contract
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -36,11 +33,7 @@ internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? = if (valu
  *
  * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#apply).
  */
-@OptIn(ExperimentalContracts::class)
 internal inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
-    contract {
-        callsInPlace(block, EXACTLY_ONCE)
-    }
     if (value) {
         block()
     }
@@ -52,11 +45,7 @@ internal inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
  *
  * For detailed usage information see the documentation for [scope functions](https://kotlinlang.org/docs/reference/scope-functions.html#let).
  */
-@OptIn(ExperimentalContracts::class)
 internal inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
-    contract {
-        callsInPlace(block, EXACTLY_ONCE)
-    }
     return if (value) block(this) else this
 }
 
