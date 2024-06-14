@@ -7,10 +7,10 @@ import androidx.annotation.ColorRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.drawable.ColorFetcher
-import com.github.panpf.sketch.drawable.IntColor
-import com.github.panpf.sketch.drawable.ResColor
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.ColorFetcher
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 
 fun IntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
     ColorDrawableStateImage(IntColor(color))

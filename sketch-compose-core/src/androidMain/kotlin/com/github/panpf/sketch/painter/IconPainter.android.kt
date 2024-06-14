@@ -7,12 +7,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
-import com.github.panpf.sketch.drawable.asEquality
-import com.github.panpf.sketch.state.asPainterEqualizer
 import com.github.panpf.sketch.drawable.DrawableEqualizer
-import com.github.panpf.sketch.drawable.IntColor
-import com.github.panpf.sketch.drawable.ResColor
 import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.state.asPainterEqualizer
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.toSize
 

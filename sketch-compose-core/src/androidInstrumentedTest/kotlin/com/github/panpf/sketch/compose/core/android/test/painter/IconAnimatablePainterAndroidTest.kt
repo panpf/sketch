@@ -3,9 +3,9 @@ package com.github.panpf.sketch.compose.core.android.test.painter
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
-import com.github.panpf.sketch.drawable.IntColor
 import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.Size
 
 class IconAnimatablePainterAndroidTest {
@@ -14,9 +14,13 @@ class IconAnimatablePainterAndroidTest {
     @Composable
     fun CreateFunctionTest() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val drawableIcon = androidx.core.R.drawable.ic_call_decline.let { context.getDrawable(it)!!.asEquality(it)}
+        val drawableIcon = androidx.core.R.drawable.ic_call_decline.let {
+            context.getDrawable(it)!!.asEquality(it)
+        }
         val resIcon = androidx.core.R.drawable.ic_call_answer
-        val drawableBackground = androidx.core.R.drawable.notification_bg.let { context.getDrawable(it)!!.asEquality(it)}
+        val drawableBackground = androidx.core.R.drawable.notification_bg.let {
+            context.getDrawable(it)!!.asEquality(it)
+        }
         val resBackground = androidx.core.R.drawable.notification_template_icon_bg
         val intColorBackground = IntColor(Color.BLUE)
         val iconSize = Size(100, 100)

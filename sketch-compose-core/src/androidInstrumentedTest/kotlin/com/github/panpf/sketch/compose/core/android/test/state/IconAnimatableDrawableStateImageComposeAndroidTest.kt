@@ -3,10 +3,10 @@ package com.github.panpf.sketch.compose.core.android.test.state
 import android.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.state.rememberIconAnimatableDrawableStateImage
-import com.github.panpf.sketch.drawable.IntColor
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.state.rememberIconAnimatableDrawableStateImage
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.Size
 
 class IconAnimatableDrawableStateImageComposeAndroidTest {
     // TODO test

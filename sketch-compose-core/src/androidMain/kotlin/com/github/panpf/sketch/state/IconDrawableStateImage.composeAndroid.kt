@@ -5,7 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.panpf.sketch.drawable.DrawableEqualizer
-import com.github.panpf.sketch.drawable.IntColor
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.SketchSize
 
 

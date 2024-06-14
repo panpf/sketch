@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.state
+package com.github.panpf.sketch.core.android.test.util
 
 import android.R
 import androidx.core.content.res.ResourcesCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.drawable.ResColor
+import com.github.panpf.sketch.util.ResColor
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

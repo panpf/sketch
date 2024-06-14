@@ -13,59 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.state
+package com.github.panpf.sketch.core.android.test.drawable
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.R
+import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.drawable.RealDrawable
+import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.getDrawableCompat
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class RealDrawableTest {
+class ResDrawableTest {
 
     @Test
     fun testGetDrawable() {
         val context = getTestContext()
 
-        val redColorDrawable = ColorDrawable(Color.RED)
-        RealDrawable(redColorDrawable).apply {
-            Assert.assertSame(redColorDrawable, drawable)
-            Assert.assertSame(redColorDrawable, getDrawable(context))
+        ResDrawable(R.drawable.ic_delete).apply {
+            Assert.assertSame(
+                context.getDrawableCompat(android.R.drawable.ic_delete)
+                    .asOrThrow<BitmapDrawable>().bitmap,
+                getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
+            )
         }
 
-        val greenColorDrawable = ColorDrawable(Color.GREEN)
-        RealDrawable(greenColorDrawable).apply {
-            Assert.assertSame(greenColorDrawable, drawable)
-            Assert.assertSame(greenColorDrawable, getDrawable(context))
+        ResDrawable(R.drawable.bottom_bar).apply {
+            Assert.assertSame(
+                context.getDrawableCompat(android.R.drawable.bottom_bar)
+                    .asOrThrow<BitmapDrawable>().bitmap,
+                getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
+            )
         }
     }
 
     @Test
     fun testToString() {
-        val redColorDrawable = ColorDrawable(Color.RED)
-        RealDrawable(redColorDrawable).apply {
-            Assert.assertEquals("RealDrawable($redColorDrawable)", toString())
+        ResDrawable(R.drawable.ic_delete).apply {
+            Assert.assertEquals("ResDrawable(${android.R.drawable.ic_delete})", toString())
         }
 
-        val greenColorDrawable = ColorDrawable(Color.GREEN)
-        RealDrawable(greenColorDrawable).apply {
-            Assert.assertEquals("RealDrawable($greenColorDrawable)", toString())
+        ResDrawable(R.drawable.bottom_bar).apply {
+            Assert.assertEquals("ResDrawable(${android.R.drawable.bottom_bar})", toString())
+        }
+
+        val context = getTestContext()
+        ResDrawable(context.packageName, context.resources, R.drawable.bottom_bar).apply {
+            Assert.assertEquals(
+                "ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})",
+                toString()
+            )
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val redColorDrawable = ColorDrawable(Color.RED)
-        val greenColorDrawable = ColorDrawable(Color.GREEN)
-        val blueColorDrawable = ColorDrawable(Color.BLUE)
-        val element1 = RealDrawable(redColorDrawable)
-        val element11 = RealDrawable(redColorDrawable)
-        val element2 = RealDrawable(greenColorDrawable)
-        val element3 = RealDrawable(blueColorDrawable)
+        val element1 = ResDrawable(R.drawable.ic_delete)
+        val element11 = ResDrawable(R.drawable.ic_delete)
+        val element2 = ResDrawable(R.drawable.bottom_bar)
+        val element3 = ResDrawable(R.drawable.btn_dialog)
 
         Assert.assertNotSame(element1, element11)
         Assert.assertNotSame(element1, element2)

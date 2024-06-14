@@ -21,16 +21,16 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.drawable.ColorFetcher
 import com.github.panpf.sketch.drawable.ColorFetcherDrawable
 import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.drawable.IntColor
 import com.github.panpf.sketch.drawable.RealEqualityDrawable
-import com.github.panpf.sketch.drawable.ResColor
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.ColorFetcher
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.Size
 
 
