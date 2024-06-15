@@ -61,7 +61,6 @@ open class DrawableDecoder constructor(
         if (scale != 1f) {
             transformeds = listOf(createScaledTransformed(scale))
         }
-        // TODO Determine whether the image needs to be enlarged based on the new ContentScaleType
         val dstSize = Size(
             width = (imageWidth * scale).roundToInt(),
             height = (imageHeight * scale).roundToInt()

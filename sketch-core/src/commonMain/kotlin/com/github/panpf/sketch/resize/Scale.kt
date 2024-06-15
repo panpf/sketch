@@ -18,7 +18,6 @@ package com.github.panpf.sketch.resize
 /**
  * Which part of the original image to keep when [Precision] is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
  */
-// TODO Use ContentScaleType and Alignment to replace Scale so that SVG can determine whether scaling is needed based on ContentScale
 enum class Scale {
 
     /**
