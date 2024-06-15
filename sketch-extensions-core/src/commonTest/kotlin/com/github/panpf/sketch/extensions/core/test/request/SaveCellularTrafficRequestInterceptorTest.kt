@@ -30,6 +30,9 @@ import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
@@ -313,6 +316,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                     image = FakeImage(SketchSize(100, 100)),
                     imageInfo = ImageInfo(100, 100, "image/xml"),
                     dataFrom = LOCAL,
+                    resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                     transformeds = null,
                     extras = null,
                 )

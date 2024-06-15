@@ -23,6 +23,9 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.Listeners
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -96,6 +99,7 @@ class ListenersTest {
                     cacheKey = "",
                     imageInfo = ImageInfo(100, 100, "image/jpeg"),
                     dataFrom = MEMORY,
+                    resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                     transformeds = null,
                     extras = null
                 )

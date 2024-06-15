@@ -50,6 +50,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
@@ -1226,6 +1227,7 @@ class DecodeUtilsTest {
                 image = Bitmap.createBitmap(80, 50, ARGB_8888).asSketchImage(),
                 imageInfo = ImageInfo(80, 50, "image/png"),
                 dataFrom = MEMORY,
+                resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
                 transformeds = null,
                 extras = null,
             )

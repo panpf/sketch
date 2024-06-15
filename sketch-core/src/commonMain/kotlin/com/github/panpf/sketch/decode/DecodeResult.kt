@@ -16,6 +16,7 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.source.DataFrom
 
 /**
@@ -25,7 +26,7 @@ data class DecodeResult constructor(
     val image: Image,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,
-    // TODO resize
+    val resize: Resize,
     /**
      * Store the transformation history of the Image
      */
@@ -41,11 +42,13 @@ data class DecodeResult constructor(
         image: Image = this.image,
         imageInfo: ImageInfo = this.imageInfo,
         dataFrom: DataFrom = this.dataFrom,
+        resize: Resize = this.resize,
         block: (Builder.() -> Unit)? = null
     ): DecodeResult = Builder(
         image = image,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
+        resize = resize,
         transformeds = transformeds?.toMutableList(),
         extras = extras?.toMutableMap(),
     ).apply {
@@ -56,6 +59,7 @@ data class DecodeResult constructor(
             "image=$image, " +
             "imageInfo=$imageInfo, " +
             "dataFrom=$dataFrom, " +
+            "resize=$resize, " +
             "transformeds=$transformeds, " +
             "extras=$extras" +
             ")"
@@ -64,6 +68,7 @@ data class DecodeResult constructor(
         private val image: Image,
         private val imageInfo: ImageInfo,
         private val dataFrom: DataFrom,
+        private val resize: Resize,
         private var transformeds: MutableList<String>? = null,
         private var extras: MutableMap<String, String>? = null,
     ) {
@@ -84,6 +89,7 @@ data class DecodeResult constructor(
             image = image,
             imageInfo = imageInfo,
             dataFrom = dataFrom,
+            resize = resize,
             transformeds = transformeds?.toList(),
             extras = extras?.toMap(),
         )

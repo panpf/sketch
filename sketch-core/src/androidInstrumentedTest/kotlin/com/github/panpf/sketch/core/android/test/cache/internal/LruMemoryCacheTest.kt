@@ -23,6 +23,9 @@ import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.LruMemoryCache
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.formatFileSize
 import org.junit.Assert
@@ -266,6 +269,7 @@ class LruMemoryCacheTest {
             image = bitmap.asSketchImage(),
             extras = newCacheValueExtras(
                 imageInfo = ImageInfo(width, height, "image/jpeg"),
+                resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 transformeds = null,
                 extras = null,
             )

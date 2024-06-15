@@ -149,10 +149,12 @@ open class ImageDecoderAnimatedDecoder(
                     }
                 }
             }
+        val resize = requestContext.computeResize(imageInfo!!.size)
         DecodeResult(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
+            resize = resize,
             transformeds = transformeds,
             extras = null,
         )

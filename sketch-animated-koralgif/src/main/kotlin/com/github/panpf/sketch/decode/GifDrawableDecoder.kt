@@ -80,14 +80,16 @@ class GifDrawableDecoder(
         val imageHeight = gifInfoHandleHelper.height
         val size = requestContext.size!!
         val imageSize = Size(imageWidth, imageHeight)
-        val precision = request.precisionDecider.get(
-            imageSize = imageSize,
-            targetSize = size,
+        val imageInfo = ImageInfo(
+            width = imageWidth,
+            height = imageHeight,
+            mimeType = ImageFormat.GIF.mimeType,
         )
+        val resize= requestContext.computeResize(imageInfo.size)
         val inSampleSize = calculateSampleSize(
             imageSize = imageSize,
             targetSize = size,
-            smallerSizeMode = precision.isSmallerSizeMode(),
+            smallerSizeMode = resize.precision.isSmallerSizeMode(),
         )
         gifInfoHandleHelper.setOptions(GifOptions().apply {
             setInSampleSize(inSampleSize)
@@ -112,11 +114,6 @@ class GifDrawableDecoder(
 
         val transformeds =
             if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-        val imageInfo = ImageInfo(
-            width = imageWidth,
-            height = imageHeight,
-            mimeType = ImageFormat.GIF.mimeType,
-        )
         val animatableDrawable =
             AnimatableDrawable(GifDrawableWrapperDrawable(gifDrawable)).apply {
                 // Set the start and end animation callbacks if any one is supplied through the request.
@@ -133,6 +130,7 @@ class GifDrawableDecoder(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
+            resize = resize,
             transformeds = transformeds,
             extras = null,
         )

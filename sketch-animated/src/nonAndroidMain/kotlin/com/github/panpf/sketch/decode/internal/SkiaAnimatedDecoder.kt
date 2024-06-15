@@ -31,6 +31,7 @@ open class SkiaAnimatedDecoder(
         // TODO not support resize
         val request = requestContext.request
         val repeatCount = request.repeatCount
+        val resize = requestContext.computeResize(imageInfo.size)
         DecodeResult(
             image = SkiaAnimatedImage(
                 codec = codec,
@@ -40,6 +41,7 @@ open class SkiaAnimatedDecoder(
             ),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
+            resize = resize,
             transformeds = null,
             extras = null,
         )

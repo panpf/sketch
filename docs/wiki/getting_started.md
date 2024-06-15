@@ -370,6 +370,7 @@ if (imageResult is ImageResult.Success) {
     val cacheKey: String = imageResult.cacheKey
     val imageInfo: ImageInfo = imageResult.imageInfo
     val dataFrom: DataFrom = imageResult.dataFrom
+     val resize: Resize = imageResult.resize
     val transformeds: List<String>? = imageResult.transformeds
     val extras: Map<String, String>? = imageResult.extras
 } else if (imageResult is ImageResult.Error) {

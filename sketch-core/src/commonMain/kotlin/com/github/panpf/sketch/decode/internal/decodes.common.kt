@@ -180,17 +180,8 @@ fun realDecode(
     decodeRegion: ((srcRect: Rect, sampleSize: Int) -> Image)?
 ): DecodeResult {
     requiredWorkThread()
-    val request = requestContext.request
-    val size = requestContext.size!!
     val imageSize = Size(imageInfo.width, imageInfo.height)
-    val precision = request.precisionDecider.get(imageSize = imageSize, targetSize = size)
-    val scale = request.scaleDecider.get(imageSize = imageSize, targetSize = size)
-    val resize = Resize(
-        width = size.width,
-        height = size.height,
-        precision = precision,
-        scale = scale
-    )
+    val resize = requestContext.computeResize(imageInfo.size)
     val transformeds = mutableListOf<String>()
     val resizeMapping = calculateResizeMapping(
         imageSize = imageInfo.size,
@@ -235,6 +226,7 @@ fun realDecode(
         image = image,
         imageInfo = imageInfo,
         dataFrom = dataFrom,
+        resize = resize,
         transformeds = transformeds.takeIf { it.isNotEmpty() }?.toList(),
         extras = null,
     )
@@ -244,23 +236,11 @@ fun realDecode(
 fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     requiredWorkThread()
     val imageTransformer = image.transformer() ?: return this
-    val request = requestContext.request
     val size = requestContext.size!!
     if (size.isEmpty) {
         return this
     }
-    val resize = Resize(
-        width = size.width,
-        height = size.height,
-        precision = request.precisionDecider.get(
-            imageSize = Size(imageInfo.width, imageInfo.height),
-            targetSize = size,
-        ),
-        scale = request.scaleDecider.get(
-            imageSize = Size(imageInfo.width, imageInfo.height),
-            targetSize = size,
-        )
-    )
+    val resize = requestContext.computeResize(imageInfo.size)
     val newImage = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             imageSize = image.size,

@@ -25,8 +25,12 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.source.FileDataSource
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.closeQuietly
 import okio.buffer
 import okio.use
@@ -89,6 +93,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                 image = image,
                 imageInfo = metadata.imageInfo,
                 dataFrom = RESULT_CACHE,
+                resize = metadata.resize,
                 transformeds = metadata.transformeds,
                 extras = metadata.extras
             )
@@ -129,6 +134,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             val metadataString = Metadata(
                 imageInfo = decodeResult.imageInfo,
                 transformeds = transformeds,
+                resize = decodeResult.resize,
                 extras = decodeResult.extras
             ).toMetadataString()
             resultCache.fileSystem.sink(editor.metadata).buffer().use { writer ->
@@ -158,6 +164,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
     private class Metadata(
         val imageInfo: ImageInfo,
+        val resize: Resize,
         val transformeds: List<String>?,
         val extras: Map<String, String>?
     ) {
@@ -166,6 +173,10 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             appendLine("width=${imageInfo.width}")
             appendLine("height=${imageInfo.height}")
             appendLine("mimeType=${imageInfo.mimeType}")
+            appendLine("resizeWidth=${resize.size.width}")
+            appendLine("resizeHeight=${resize.size.height}")
+            appendLine("resizePrecision=${resize.precision}")
+            appendLine("resizeScale=${resize.scale}")
             transformeds?.forEach {
                 appendLine("transformed=${it}")
             }
@@ -190,6 +201,14 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                     height = propertiesMap["height"]!!.toInt(),
                     mimeType = propertiesMap["mimeType"]!!,
                 )
+                val resize = Resize(
+                    size = Size(
+                        width = propertiesMap["resizeWidth"]!!.toInt(),
+                        height = propertiesMap["resizeHeight"]!!.toInt()
+                    ),
+                    precision = Precision.valueOf(propertiesMap["resizePrecision"]!!),
+                    scale = Scale.valueOf(propertiesMap["resizeScale"]!!)
+                )
                 val transformeds = propertiesMap.keys.asSequence()
                     .filter { key -> key == "transformed" }
                     .mapNotNull { key -> propertiesMap[key] }
@@ -204,6 +223,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                     }
                 return Metadata(
                     imageInfo = imageInfo,
+                    resize = resize,
                     transformeds = transformeds,
                     extras = extras
                 )

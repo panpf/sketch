@@ -26,6 +26,9 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -137,6 +140,7 @@ class DecodeInterceptorChainTest {
                     image = Bitmap.createBitmap(12, 45, RGB_565).asSketchImage(),
                     imageInfo = ImageInfo(12, 45, "image/jpeg"),
                     dataFrom = LOCAL,
+                    resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
                     transformeds = null,
                     extras = null,
                 )

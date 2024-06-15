@@ -14,6 +14,9 @@ import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 
 fun Sketch.enqueueDownload(uri: String): Disposable {
     val request = buildDownloadRequest(context, uri)
@@ -46,6 +49,7 @@ private class DownloadFakeDecoder(private val fetchResult: FetchResult) : Decode
                 height = 1,
             ),
             dataFrom = fetchResult.dataFrom,
+            resize = Resize(0, 0, LESS_PIXELS, CENTER_CROP),
             transformeds = null,
             extras = null,
         )

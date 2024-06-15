@@ -85,10 +85,12 @@ internal actual suspend fun decodeSvg(
     )
     val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
+    val resize = requestContext.computeResize(imageInfo.size)
     val decodeResult = DecodeResult(
         image = bitmap.asSketchImage(),
         imageInfo = imageInfo,
         dataFrom = dataSource.dataFrom,
+        resize = resize,
         transformeds = transformeds,
         extras = null
     )

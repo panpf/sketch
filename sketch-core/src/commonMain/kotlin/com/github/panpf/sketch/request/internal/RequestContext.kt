@@ -17,6 +17,7 @@ package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.coerceAtLeast
@@ -76,6 +77,13 @@ class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRe
 
     fun unregisterCompletedListener(completedListener: CompletedListener) {
         completedListenerList.remove(completedListener)
+    }
+
+    fun computeResize(imageSize: Size): Resize {
+        val size = size!!
+        val precision = request.precisionDecider.get(imageSize = imageSize, targetSize = size)
+        val scale = request.scaleDecider.get(imageSize = imageSize, targetSize = size)
+        return Resize(size = size, precision = precision, scale = scale)
     }
 
     fun interface CompletedListener {

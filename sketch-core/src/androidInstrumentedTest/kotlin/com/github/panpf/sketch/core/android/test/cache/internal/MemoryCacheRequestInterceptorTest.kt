@@ -36,6 +36,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestCountTarget
@@ -124,6 +127,7 @@ class MemoryCacheRequestInterceptorTest {
                 cacheImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
+                    resize = imageData.resize,
                     transformeds = imageData.transformeds,
                     extras = imageData.extras,
                 )
@@ -155,6 +159,7 @@ class MemoryCacheRequestInterceptorTest {
                 cacheImage,
                 newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
+                    resize = imageData.resize,
                     transformeds = imageData.transformeds,
                     extras = imageData.extras,
                 )
@@ -253,6 +258,7 @@ class MemoryCacheRequestInterceptorTest {
             ImageData(
                 bitmap.asSketchImage(),
                 imageInfo = imageInfo,
+                resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 dataFrom = DataFrom.LOCAL,
                 transformeds = null,
                 extras = null

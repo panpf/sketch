@@ -28,6 +28,9 @@ import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.target.ImageViewTarget
@@ -62,6 +65,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
+            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             transformeds = null,
             extras = null,
         )
@@ -115,6 +119,7 @@ class ViewCrossfadeTransitionTest {
             cacheKey = request.toRequestContext(sketch).cacheKey,
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
+            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             dataFrom = LOCAL,
             transformeds = null,
             extras = null,
@@ -157,6 +162,7 @@ class ViewCrossfadeTransitionTest {
                 image = imageViewTarget.drawable!!.asSketchImage(),
                 imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 dataFrom = LOCAL,
+                resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 transformeds = null,
                 extras = null,
             )
@@ -206,6 +212,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
+            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             transformeds = null,
             extras = null,
         )
@@ -224,6 +231,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = MEMORY_CACHE,
+            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             transformeds = null,
             extras = null,
         )

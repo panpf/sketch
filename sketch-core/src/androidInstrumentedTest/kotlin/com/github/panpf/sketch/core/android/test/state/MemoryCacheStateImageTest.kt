@@ -28,6 +28,9 @@ import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -72,6 +75,7 @@ class MemoryCacheStateImageTest {
                 image = Bitmap.createBitmap(100, 100, RGB_565).asSketchImage(),
                 newCacheValueExtras(
                     imageInfo = ImageInfo(100, 100, "image/jpeg"),
+                    resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                     transformeds = null,
                     extras = null,
                 )

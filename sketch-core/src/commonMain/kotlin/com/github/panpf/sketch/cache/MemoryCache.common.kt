@@ -19,6 +19,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong
 
@@ -140,6 +141,10 @@ fun MemoryCache.Value.getImageInfo(): ImageInfo? {
     return extras?.get("imageInfo") as? ImageInfo
 }
 
+fun MemoryCache.Value.getResize(): Resize? {
+    return extras?.get("resize") as? Resize
+}
+
 fun MemoryCache.Value.getTransformeds(): List<String>? {
     @Suppress("UNCHECKED_CAST")
     return extras?.get("transformeds") as? List<String>
@@ -152,11 +157,13 @@ fun MemoryCache.Value.getExtras(): Map<String, String>? {
 
 fun newCacheValueExtras(
     imageInfo: ImageInfo,
+    resize: Resize,
     transformeds: List<String>?,
     extras: Map<String, String>?,
 ): Map<String, Any?> {
     return mapOf(
         "imageInfo" to imageInfo,
+        "resize" to resize,
         "transformeds" to transformeds,
         "extras" to extras,
     )

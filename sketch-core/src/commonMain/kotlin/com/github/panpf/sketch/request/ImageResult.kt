@@ -18,6 +18,7 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.resize.Resize
 
 /**
  * Result of [ImageRequest]
@@ -34,6 +35,7 @@ interface ImageResult {
         val cacheKey: String,
         val imageInfo: ImageInfo,
         val dataFrom: DataFrom,
+        val resize: Resize,
         /**
          * Store the transformation history of the Bitmap
          */

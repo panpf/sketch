@@ -49,6 +49,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 image = decodeResult.image,
                 imageInfo = decodeResult.imageInfo,
                 dataFrom = decodeResult.dataFrom,
+                resize = decodeResult.resize,
                 transformeds = decodeResult.transformeds,
                 extras = decodeResult.extras
             )

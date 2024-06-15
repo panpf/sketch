@@ -28,6 +28,9 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
@@ -189,6 +192,7 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
                     image = FakeImage(SketchSize(100, 100)),
                     imageInfo = ImageInfo(100, 100, "image/xml"),
                     dataFrom = LOCAL,
+                    resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
                     transformeds = null,
                     extras = null
                 )

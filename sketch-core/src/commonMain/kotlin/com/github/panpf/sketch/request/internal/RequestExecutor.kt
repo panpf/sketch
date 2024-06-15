@@ -146,6 +146,7 @@ class RequestExecutor {
             cacheKey = requestContext.cacheKey,
             imageInfo = imageData.imageInfo,
             dataFrom = imageData.dataFrom,
+            resize = imageData.resize,
             transformeds = imageData.transformeds,
             extras = imageData.extras,
         )

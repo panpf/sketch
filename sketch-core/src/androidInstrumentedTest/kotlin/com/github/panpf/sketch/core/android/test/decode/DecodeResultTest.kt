@@ -25,6 +25,10 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.getBitmapOrThrow
+import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.createRotateTransformed
@@ -45,6 +49,7 @@ class DecodeResultTest {
             image = newBitmap.asSketchImage(),
             imageInfo = imageInfo,
             dataFrom = LOCAL,
+            resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
             transformeds = transformeds,
             extras = mapOf("age" to "16")
         ).apply {
@@ -54,6 +59,7 @@ class DecodeResultTest {
                 imageInfo.toString()
             )
             Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 "InSampledTransformed(4), RotateTransformed(45)",
                 this.transformeds?.joinToString()
@@ -72,6 +78,7 @@ class DecodeResultTest {
             image = image,
             imageInfo = ImageInfo(3000, 500, "image/png"),
             dataFrom = LOCAL,
+            resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
             transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
             extras = mapOf("age" to "16"),
         ).apply {
@@ -80,6 +87,7 @@ class DecodeResultTest {
                         "image=$image, " +
                         "imageInfo=$imageInfo, " +
                         "dataFrom=$dataFrom, " +
+                        "resize=$resize, " +
                         "transformeds=$transformeds, " +
                         "extras={age=16})",
                 toString()
@@ -96,12 +104,14 @@ class DecodeResultTest {
             image = bitmap1.asSketchImage(),
             imageInfo = ImageInfo(3000, 500, "image/png"),
             dataFrom = LOCAL,
+            resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
             transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
             extras = mapOf("age" to "16"),
         ).apply {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
             Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformeds
@@ -118,6 +128,7 @@ class DecodeResultTest {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
             Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformeds
@@ -134,6 +145,7 @@ class DecodeResultTest {
             Assert.assertEquals(bitmap2, image.getBitmapOrThrow())
             Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformeds
@@ -151,6 +163,7 @@ class DecodeResultTest {
                 Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
                 Assert.assertEquals(ImageInfo(200, 200, "image/png"), imageInfo)
                 Assert.assertEquals(LOCAL, dataFrom)
+                Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
                 Assert.assertEquals(
                     listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                     transformeds
@@ -167,6 +180,7 @@ class DecodeResultTest {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
             Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(MEMORY, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformeds
@@ -185,6 +199,7 @@ class DecodeResultTest {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
             Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 listOf(
                     createInSampledTransformed(4),
@@ -207,12 +222,30 @@ class DecodeResultTest {
             Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
             Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
             Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             Assert.assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
                 transformeds
             )
             Assert.assertEquals(
                 mapOf("age" to "16", "sex" to "male"),
+                this.extras
+            )
+        }
+
+        result.newResult(resize = Resize(200, 300, EXACTLY, FILL)).apply {
+            Assert.assertNotSame(result, this)
+            Assert.assertNotEquals(result, this)
+            Assert.assertEquals(bitmap1, image.getBitmapOrThrow())
+            Assert.assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            Assert.assertEquals(LOCAL, dataFrom)
+            Assert.assertEquals(Resize(200, 300, EXACTLY, FILL), resize)
+            Assert.assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            Assert.assertEquals(
+                mapOf("age" to "16"),
                 this.extras
             )
         }

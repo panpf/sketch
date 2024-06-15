@@ -23,6 +23,9 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -48,6 +51,7 @@ class ImageResultTest {
             image = ColorDrawable(Color.BLACK).asSketchImage(),
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
             dataFrom = LOCAL,
+            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             transformeds = listOf(createCircleCropTransformed(END_CROP)),
             extras = mapOf("age" to "16"),
         ).apply {
