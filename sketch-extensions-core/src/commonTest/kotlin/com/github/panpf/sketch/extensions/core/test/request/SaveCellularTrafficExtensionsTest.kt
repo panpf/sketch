@@ -201,13 +201,25 @@ class SaveCellularTrafficExtensionsTest {
         val key2 = ImageRequest(context, MyImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.key
-        assertNotEquals(key1, key2)
+        assertEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, MyImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext(sketch).cacheKey
         assertEquals(cacheKey1, cacheKey2)
+
+        val key11 = ImageRequest(context, MyImages.svg.uri).key
+        val key22 = ImageRequest(context, MyImages.svg.uri) {
+            depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
+        }.key
+        assertNotEquals(key11, key22)
+
+        val cacheKey11 = ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey22 = ImageRequest(context, MyImages.svg.uri) {
+            depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
+        }.toRequestContext(sketch).cacheKey
+        assertEquals(cacheKey11, cacheKey22)
     }
 
     @Test

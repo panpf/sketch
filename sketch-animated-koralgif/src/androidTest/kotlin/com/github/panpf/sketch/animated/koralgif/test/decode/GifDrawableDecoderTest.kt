@@ -38,6 +38,7 @@ import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -186,7 +187,7 @@ class GifDrawableDecoderTest {
 
         ImageRequest(context, MyImages.animGif.uri) {
             repeatCount(3)
-            animatedTransformation { PixelOpacity.TRANSLUCENT }
+            animatedTransformation(TranslucentAnimatedTransformation)
             onAnimationEnd {}
             resize(300, 300)
         }.decode(sketch, factory).apply {
@@ -200,6 +201,14 @@ class GifDrawableDecoderTest {
             Assert.assertEquals(3, gifDrawable.loopCount)
             Assert.assertNotNull(gifDrawable.transform)
             gifDrawable.transform!!.onDraw(Canvas(), null, null)
+        }
+    }
+
+    object TranslucentAnimatedTransformation : AnimatedTransformation {
+        override val key: String = "TranslucentAnimatedTransformation"
+
+        override fun transform(canvas: Canvas): PixelOpacity {
+            return PixelOpacity.TRANSLUCENT
         }
     }
 }
