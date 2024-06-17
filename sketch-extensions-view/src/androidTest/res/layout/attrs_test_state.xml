@@ -3,6 +3,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:sketch_error="#00FF00"
-    app:sketch_uriEmpty="#00FFFF"
-    app:sketch_placeholder="#FF0000"
-    app:sketch_uriEmptyError="#0000FF" />
+    app:sketch_fallback="#00FFFF"
+    app:sketch_placeholder="#FF0000"/>

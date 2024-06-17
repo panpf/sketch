@@ -253,16 +253,16 @@ class RequestKeysTest {
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder
         )
 
-        val uriEmpty = FakeStateImage(FakeImage(SketchSize(200, 200)))
+        val fallback = FakeStateImage(FakeImage(SketchSize(200, 200)))
         request = request.newRequest {
-            uriEmpty(uriEmpty)
+            fallback(fallback)
         }
-        val _uriEmpty = "&_uriEmpty=${uriEmpty.key}"
+        val _fallback = "&_fallback=${fallback.key}"
         verifyKey(
             uri + _depth + _parameters + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
-                    _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder + _uriEmpty
+                    _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder + _fallback
         )
 
         val error = DrawableStateImage(drawable.ic_delete)
@@ -275,7 +275,7 @@ class RequestKeysTest {
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
-                    _uriEmpty + _error
+                    _fallback + _error
         )
 
         request = request.newRequest {
@@ -294,7 +294,7 @@ class RequestKeysTest {
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
-                    _uriEmpty + _error + _decoders + _decodeInterceptors + _requestInterceptors
+                    _fallback + _error + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 
@@ -472,9 +472,9 @@ class RequestKeysTest {
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
-        val uriEmpty = FakeStateImage(FakeImage(SketchSize(200, 200)))
+        val fallback = FakeStateImage(FakeImage(SketchSize(200, 200)))
         request = request.newRequest {
-            uriEmpty(uriEmpty)
+            fallback(fallback)
         }
         verifyCacheKey(
             uri + _parameters +

@@ -245,7 +245,7 @@ class RequestExecutor {
     ): Image? {
         val stateImage =
             if (throwable is UriInvalidException && throwable.message == URI_EMPTY_MESSAGE) {
-                request.uriEmpty
+                request.fallback
             } else {
                 request.error
             }

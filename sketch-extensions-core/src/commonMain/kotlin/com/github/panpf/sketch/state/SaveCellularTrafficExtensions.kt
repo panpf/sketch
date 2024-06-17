@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
  * Set the error image when the save cellular traffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition to null)
+    addState(SaveCellularTrafficCondition, null)
 }
 
 /**
@@ -32,7 +32,7 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder 
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     saveCellularTrafficImage: StateImage
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition to saveCellularTrafficImage)
+    addState(SaveCellularTrafficCondition, saveCellularTrafficImage)
 }
 
 data object SaveCellularTrafficCondition : ErrorStateImage.Condition {

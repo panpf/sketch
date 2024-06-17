@@ -19,7 +19,7 @@ request:
   imageUri、requestKey、requestCacheKey、imageInfo、dataFrom、transformedList、extras 等属性被移除，现在请从
   ImageResult 中获取它们
 * change: depth 和 depthFrom 属性合并成 DepthHolder
-* change: bitmapConfig、colorSpace、preferQualityOverSpeed、placeholder(Int)、uriEmpty(Int)、error(Int) 等
+* change: bitmapConfig、colorSpace、preferQualityOverSpeed、placeholder(Int)、fallback(Int)、error(Int) 等
   Android 平台特有 API 以扩展函数的形式提供
 * change: resizeApplyToDrawable 重命名为 resizeOnDraw
 * new: 新增 'sizeMultiplier: Float' 属性，用于设置图片大小的缩放比例
@@ -38,6 +38,10 @@ cache:
   ，并且同一个 key 的 openSnapShot() 和 openEditor() 现在是互相冲突的, openSnapshot 未关闭前
   openEditor 始终返回 null
 * change: 重构 MemoryCache.Value
+
+state:
+* change: ImageRequest 和 ImageOptions 的 uriEmpty 属性重命名为 fallback
+* delete: 移除 ErrorStateImage.Builder.uriEmptyError()
 
 other:
 

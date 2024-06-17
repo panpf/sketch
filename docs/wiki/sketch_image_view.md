@@ -24,7 +24,7 @@ as follows:
         android:contentDescription="@string/app_name"
         app:sketch_placeholder="@drawable/im_placeholder"
         app:sketch_error="@drawable/im_error"
-        app:sketch_uriEmpty="@drawable/im_uri_empty"
+        app:sketch_fallback="@drawable/im_fallback"
         app:sketch_crossfade="true"
         app:sketch_transformation="rotate"
         app:sketch_transformation_rotate_degrees="55" />

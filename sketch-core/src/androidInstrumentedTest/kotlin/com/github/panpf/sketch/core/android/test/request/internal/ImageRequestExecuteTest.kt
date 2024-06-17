@@ -1248,6 +1248,8 @@ class ImageRequestExecuteTest {
         Assert.assertTrue(onStartImage?.asOrThrow<AndroidDrawableImage>()?.drawable === colorDrawable.wrapped)
     }
 
+    // TODO fallback
+
     @Test
     fun testError() {
         val context = getTestContext()
@@ -1372,6 +1374,8 @@ class ImageRequestExecuteTest {
                 Assert.assertTrue(image.asOrThrow<AndroidDrawableImage>().drawable is ResizeDrawable)
             }
     }
+
+    // TODO allowNullImage
 
     @Test
     fun testMemoryCachePolicy() = runTest {

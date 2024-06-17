@@ -24,7 +24,7 @@ request:
   ImageResult
 * change: depth and depthFrom properties merged into DepthHolder
 * change: Android platform-specific APIs such as bitmapConfig, colorSpace, preferQualityOverSpeed,
-  placeholder(Int), uriEmpty(Int), error(Int), etc. are provided in the form of extension functions
+  placeholder(Int), fallback(Int), error(Int), etc. are provided in the form of extension functions
 * change: resizeApplyToDrawable renamed to resizeOnDraw
 * new: Added 'sizeMultiplier: Float' attribute to set the scaling ratio of the image size
 * new: Added 'allowNullImage: Boolean' attribute
@@ -42,6 +42,10 @@ cache:
   openEditor(), and openSnapShot() and openEditor() of the same key now conflict with each other,
   openEditor always returns null before openSnapshot is closed.
 * change: Refactor MemoryCache.Value
+
+state:
+* change: uriEmpty attribute of ImageRequest and ImageOptions renamed to fallback
+* delete: Delete ErrorStateImage.Builder.uriEmptyError()
 
 other:
 

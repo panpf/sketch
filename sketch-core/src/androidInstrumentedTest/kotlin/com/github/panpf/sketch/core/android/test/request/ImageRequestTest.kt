@@ -62,7 +62,7 @@ import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.uriEmpty
+import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -85,7 +85,7 @@ import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.state.ResColorDrawableStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
-import com.github.panpf.sketch.state.uriEmptyError
+import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ScopeAction
@@ -96,6 +96,7 @@ import com.github.panpf.sketch.test.utils.TestListenerImageView
 import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTarget
+import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -104,6 +105,7 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -144,7 +146,7 @@ class ImageRequestTest {
             Assert.assertNull(this.transformations)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
-            Assert.assertNull(this.uriEmpty)
+            Assert.assertNull(this.fallback)
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)
@@ -1147,35 +1149,35 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testUriEmpty() {
+    fun testFallback() {
         val context1 = getTestContext()
         val uri = MyImages.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
-                Assert.assertNull(uriEmpty)
+                Assert.assertNull(fallback)
             }
 
-            uriEmpty(IntColorDrawableStateImage(Color.BLUE))
+            fallback(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
-                Assert.assertEquals(IntColorDrawableStateImage(Color.BLUE), uriEmpty)
+                Assert.assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
             }
 
-            uriEmpty(ColorDrawableEqualizer(Color.GREEN))
+            fallback(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
-                Assert.assertEquals(true, uriEmpty is DrawableStateImage)
+                Assert.assertEquals(true, fallback is DrawableStateImage)
             }
 
-            uriEmpty(drawable.bottom_bar)
+            fallback(drawable.bottom_bar)
             build().apply {
                 Assert.assertEquals(
                     DrawableStateImage(drawable.bottom_bar),
-                    uriEmpty
+                    fallback
                 )
             }
 
-            uriEmpty(null)
+            fallback(null)
             build().apply {
-                Assert.assertNull(uriEmpty)
+                Assert.assertNull(fallback)
             }
         }
     }
@@ -1211,12 +1213,12 @@ class ImageRequestTest {
             }
 
             error(drawable.bottom_bar) {
-                uriEmptyError(drawable.alert_dark_frame)
+                addState(UriInvalidCondition, drawable.alert_dark_frame)
             }
             build().apply {
                 Assert.assertEquals(
                     ErrorStateImage(DrawableStateImage(drawable.bottom_bar)) {
-                        uriEmptyError(drawable.alert_dark_frame)
+                        addState(UriInvalidCondition, drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -1228,7 +1230,7 @@ class ImageRequestTest {
             }
 
             error {
-                uriEmptyError(drawable.btn_dialog)
+                addState(UriInvalidCondition, drawable.btn_dialog)
             }
             build().apply {
                 Assert.assertNotNull(error)
@@ -1700,7 +1702,7 @@ class ImageRequestTest {
             },
             ScopeAction {
                 error(DrawableStateImage(drawable.ic_delete)) {
-                    uriEmptyError(IntColorDrawableStateImage(Color.BLUE))
+                    addState(UriInvalidCondition, IntColor(Color.BLUE))
                 }
             },
             ScopeAction {

@@ -52,7 +52,7 @@ class ImageRequestViewExtensionsTest {
             Assert.assertNull(this.transformations)
             Assert.assertEquals(ENABLED, this.resultCachePolicy)
             Assert.assertNull(this.placeholder)
-            Assert.assertNull(this.uriEmpty)
+            Assert.assertNull(this.fallback)
             Assert.assertNull(this.error)
             Assert.assertNull(this.transitionFactory)
             Assert.assertFalse(this.disallowAnimatedImage)

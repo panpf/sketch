@@ -38,11 +38,10 @@ import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.uriEmpty
+import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.drawable.asEquality
-import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
@@ -129,14 +128,11 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_placeholder)?.apply {
                 placeholder(this.asEquality(this))
             }
-            typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmpty)?.apply {
-                uriEmpty(this.asEquality(this))
+            typedArray.getDrawable(R.styleable.SketchImageView_sketch_fallback)?.apply {
+                fallback(this.asEquality(this))
             }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_error)?.apply {
-                error(this.asEquality(this)) {
-                    typedArray.getDrawable(R.styleable.SketchImageView_sketch_uriEmptyError)
-                        ?.let { uriEmptyError(it.asEquality(it)) }
-                }
+                error(this.asEquality(this))
             }
         }.takeIf { !it.isEmpty() }
     } finally {

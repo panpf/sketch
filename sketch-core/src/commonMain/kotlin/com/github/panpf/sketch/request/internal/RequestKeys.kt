@@ -37,7 +37,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendMemoryCachePolicy()
     .appendTransitionFactory()
     .appendPlaceholder()
-    .appendUriEmpty()
+    .appendFallback()
     .appendError()
     .appendDecoders()
     .appendDecodeInterceptors()
@@ -208,10 +208,10 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         }
     }
 
-    fun appendUriEmpty(): ImageRequestKeyBuilder = apply {
-        val uriEmpty = request.uriEmpty
-        if (uriEmpty != null) {
-            appendQueryParameter("_uriEmpty", uriEmpty.key)
+    fun appendFallback(): ImageRequestKeyBuilder = apply {
+        val fallback = request.fallback
+        if (fallback != null) {
+            appendQueryParameter("_fallback", fallback.key)
         }
     }
 

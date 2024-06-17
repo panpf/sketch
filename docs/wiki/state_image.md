@@ -42,7 +42,7 @@ Generic:
 
 ## Configuration
 
-[StateImage] is used in the placeholder(), uriEmpty(), and error() methods of [ImageRequest]
+[StateImage] is used in the placeholder(), fallback(), and error() methods of [ImageRequest]
 and [ImageOptions], as follows:
 
 ```kotlin
@@ -54,35 +54,31 @@ ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(DrawableStateImage(R.drawable.placeholder))
     placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
 
-    uriEmpty(R.drawable.uri_empty)
-    uriEmpty(context.getEqualityDrawable(R.drawable.uri_empty))
-    uriEmpty(IntColorDrawableStateImage(Color.RED))
-    uriEmpty(DrawableStateImage(R.drawable.uri_empty))
-    uriEmpty(IconDrawableStateImage(R.drawable.uri_empty, IntColor(Color.GRAY)))
+    fallback(R.drawable.fallback)
+    fallback(context.getEqualityDrawable(R.drawable.fallback))
+    fallback(IntColorDrawableStateImage(Color.RED))
+    fallback(DrawableStateImage(R.drawable.fallback))
+    fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.GRAY)))
 
-    error(R.drawable.error) {
-        uriEmptyError(DrawableStateImage(R.drawable.uri_empty))
-    }
+    error(R.drawable.error)
 }
 
 // Compose
 val placeholder = rememberPainterStateImage(Res.drawable.placeholder)
 //    val placeholder = rememberColorPainterStateImage(Color.Red)
 //    val placeholder = rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray)
-val uriEmpty = rememberPainterStateImage(Res.drawable.uri_empty)
-//    val uriEmpty = rememberColorPainterStateImage(Color.Red)
-//    val uriEmpty = rememberIconPainterStateImage(Res.drawable.uri_empty, background = Color.Gray)
+val fallback = rememberPainterStateImage(Res.drawable.fallback)
+//    val fallback = rememberColorPainterStateImage(Color.Red)
+//    val fallback = rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Gray)
 ImageRequest("https://example.com/image.jpg") {
     placeholder(placeholder)
-    uriEmpty(uriEmpty)
-    error(Res.drawable.error) {
-        uriEmptyError(uriEmpty)
-    }
+    fallback(fallback)
+    error(Res.drawable.error)
 }
 ```
 
 > [!TIP]
-> You need to import the `sketch-compose-resources` module placeholder, uriEmpty, and error to
+> You need to import the `sketch-compose-resources` module placeholder, fallback, and error to
 > support the DrawableResource of compose resources.
 
 ### Customize
@@ -91,11 +87,9 @@ You can refer to the existing implementation of [StateImage]
 
 ### ErrorStateImage
 
-[ErrorStateImage] supports returning different status images according to different error types
-
-By default, Sketch only provides one type, uriEmptyError. You can implement the [ErrorStateImage]
-.Condition interface to extend the new type, and then use the custom type through [ErrorStateImage]
-.Builder.addState(), as follows:
+[ErrorStateImage] supports returning different status images according to different error types. You
+can implement the [ErrorStateImage] .Condition interface to extend the new type, and then use the
+custom type through [ErrorStateImage] .Builder.addState(), as follows:
 
 ```kotlin
 object MyCondition : ErrorStateImage.Condition {
@@ -109,7 +103,7 @@ object MyCondition : ErrorStateImage.Condition {
 ImageRequest(context, "https://example.com/image.jpg")
 {
     error(R.drawable.error) {
-        addState(MyCondition to DrawableStateImage(R.drawable.mystate))
+        addState(MyCondition, DrawableStateImage(R.drawable.mystate))
     }
 }
 ```

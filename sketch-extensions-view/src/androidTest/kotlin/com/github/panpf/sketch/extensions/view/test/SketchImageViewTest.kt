@@ -23,7 +23,6 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -68,9 +67,8 @@ class SketchImageViewTest {
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_state, null, false) as SketchImageView).apply {
             Assert.assertNotNull(imageOptions!!.placeholder)
-            Assert.assertNotNull(imageOptions!!.uriEmpty)
+            Assert.assertNotNull(imageOptions!!.fallback)
             Assert.assertNotNull(imageOptions!!.error)
-            Assert.assertNotNull((imageOptions!!.error as ErrorStateImage).stateList.find { it.first is ErrorStateImage.UriEmptyCondition })
         }
 
         (LayoutInflater.from(context)

@@ -12,12 +12,13 @@ import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.uriEmpty
+import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
-import com.github.panpf.sketch.state.uriEmptyError
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.state.addState
+import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -272,33 +273,33 @@ class ImageOptionsAndroidTest {
     }
 
     @Test
-    fun testUriEmpty() {
+    fun testFallback() {
         ImageOptions.Builder().apply {
             build().apply {
-                assertNull(uriEmpty)
+                assertNull(fallback)
             }
 
-            uriEmpty(IntColorDrawableStateImage(Color.BLUE))
+            fallback(IntColorDrawableStateImage(Color.BLUE))
             build().apply {
-                assertEquals(IntColorDrawableStateImage(Color.BLUE), uriEmpty)
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
             }
 
-            uriEmpty(ColorDrawableEqualizer(Color.GREEN))
+            fallback(ColorDrawableEqualizer(Color.GREEN))
             build().apply {
-                assertEquals(true, uriEmpty is DrawableStateImage)
+                assertEquals(true, fallback is DrawableStateImage)
             }
 
-            uriEmpty(android.R.drawable.bottom_bar)
+            fallback(android.R.drawable.bottom_bar)
             build().apply {
                 assertEquals(
                     DrawableStateImage(android.R.drawable.bottom_bar),
-                    uriEmpty
+                    fallback
                 )
             }
 
-            uriEmpty(null)
+            fallback(null)
             build().apply {
-                assertNull(uriEmpty)
+                assertNull(fallback)
             }
         }
     }
@@ -332,12 +333,12 @@ class ImageOptionsAndroidTest {
             }
 
             error(android.R.drawable.bottom_bar) {
-                uriEmptyError(android.R.drawable.alert_dark_frame)
+                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
             }
             build().apply {
                 assertEquals(
                     ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        uriEmptyError(android.R.drawable.alert_dark_frame)
+                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
                     },
                     error
                 )
@@ -349,7 +350,7 @@ class ImageOptionsAndroidTest {
             }
 
             error {
-                uriEmptyError(android.R.drawable.btn_dialog)
+                addState(UriInvalidCondition, android.R.drawable.btn_dialog)
             }
             build().apply {
                 assertNotNull(error)

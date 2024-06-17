@@ -26,14 +26,14 @@ fun ImageRequest.Builder.placeholder(@DrawableRes resId: Int): ImageRequest.Buil
 /**
  * Set Drawable placeholder image when uri is empty
  */
-fun ImageRequest.Builder.uriEmpty(drawable: DrawableEqualizer): ImageRequest.Builder =
-    uriEmpty(DrawableStateImage(drawable))
+fun ImageRequest.Builder.fallback(drawable: DrawableEqualizer): ImageRequest.Builder =
+    fallback(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res placeholder image when uri is empty
  */
-fun ImageRequest.Builder.uriEmpty(@DrawableRes resId: Int): ImageRequest.Builder =
-    uriEmpty(DrawableStateImage(resId))
+fun ImageRequest.Builder.fallback(@DrawableRes resId: Int): ImageRequest.Builder =
+    fallback(DrawableStateImage(resId))
 
 /**
  * Set Drawable image to display when loading fails.

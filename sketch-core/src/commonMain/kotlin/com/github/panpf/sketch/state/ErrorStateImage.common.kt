@@ -18,7 +18,6 @@ package com.github.panpf.sketch.state
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.state.ErrorStateImage.Builder
 
 /**
@@ -91,15 +90,8 @@ class ErrorStateImage(
         /**
          * Add a custom state
          */
-        fun addState(pair: Pair<Condition, StateImage?>): Builder = apply {
-            stateList.add(pair)
-        }
-
-        /**
-         * Add a StateImage dedicated to the empty uri error
-         */
-        fun uriEmptyError(emptyImage: StateImage): Builder = apply {
-            addState(UriEmptyCondition to emptyImage)
+        fun addState(condition: Condition, stateImage: StateImage?): Builder = apply {
+            stateList.add(Pair(condition, stateImage))
         }
 
         fun build(): ErrorStateImage {
@@ -115,13 +107,6 @@ class ErrorStateImage(
     data object DefaultCondition : Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
-
-    }
-
-    data object UriEmptyCondition : Condition {
-
-        override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
-            throwable is UriInvalidException && (request.uri.isEmpty() || request.uri.isBlank())
 
     }
 }

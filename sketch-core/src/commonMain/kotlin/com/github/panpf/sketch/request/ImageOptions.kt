@@ -122,7 +122,7 @@ data class ImageOptions (
     /**
      * Image to display when uri is empty
      */
-    val uriEmpty: StateImage?,
+    val fallback: StateImage?,
 
     /**
      * Image to display when loading fails
@@ -140,7 +140,7 @@ data class ImageOptions (
     val disallowAnimatedImage: Boolean?,
 
     /**
-     * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
+     * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image
      */
     val resizeOnDraw: Boolean?,
 
@@ -212,7 +212,7 @@ data class ImageOptions (
                 && transformations == null
                 && resultCachePolicy == null
                 && placeholder == null
-                && uriEmpty == null
+                && fallback == null
                 && error == null
                 && transitionFactory == null
                 && disallowAnimatedImage == null
@@ -237,7 +237,7 @@ data class ImageOptions (
         private var resultCachePolicy: CachePolicy? = null
 
         private var placeholder: StateImage? = null
-        private var uriEmpty: StateImage? = null
+        private var fallback: StateImage? = null
         private var error: ErrorStateImage? = null
         private var transitionFactory: Transition.Factory? = null
         private var disallowAnimatedImage: Boolean? = null
@@ -264,7 +264,7 @@ data class ImageOptions (
             this.resultCachePolicy = options.resultCachePolicy
 
             this.placeholder = options.placeholder
-            this.uriEmpty = options.uriEmpty
+            this.fallback = options.fallback
             this.error = options.error
             this.transitionFactory = options.transitionFactory
             this.disallowAnimatedImage = options.disallowAnimatedImage
@@ -525,8 +525,8 @@ data class ImageOptions (
         /**
          * Set placeholder image when uri is empty
          */
-        fun uriEmpty(stateImage: StateImage?): Builder = apply {
-            this.uriEmpty = stateImage
+        fun fallback(stateImage: StateImage?): Builder = apply {
+            this.fallback = stateImage
         }
 
         /**
@@ -594,7 +594,7 @@ data class ImageOptions (
         }
 
         /**
-         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
+         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image
          */
         fun resizeOnDraw(apply: Boolean? = true): Builder = apply {
             this.resizeOnDraw = apply
@@ -683,8 +683,8 @@ data class ImageOptions (
             if (this.placeholder == null) {
                 this.placeholder = options.placeholder
             }
-            if (this.uriEmpty == null) {
-                this.uriEmpty = options.uriEmpty
+            if (this.fallback == null) {
+                this.fallback = options.fallback
             }
             if (this.error == null) {
                 this.error = options.error
@@ -725,7 +725,7 @@ data class ImageOptions (
                 scaleDecider = scaleDecider,
                 transformations = transformations,
                 placeholder = placeholder,
-                uriEmpty = uriEmpty,
+                fallback = fallback,
                 error = error,
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,

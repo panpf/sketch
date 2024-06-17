@@ -18,16 +18,19 @@ package com.github.panpf.sketch.core.android.test.state
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
+import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.state.asStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -57,7 +60,7 @@ class ErrorStateImageAndroidTest {
         }
 
         ErrorStateImage(DrawableStateImage(colorDrawable)) {
-            uriEmptyError(colorDrawable2.asStateImage())
+            addState(UriInvalidCondition, colorDrawable2.asStateImage())
         }.apply {
             Assert.assertFalse(stateList.isEmpty())
             Assert.assertEquals(
@@ -121,29 +124,12 @@ class ErrorStateImageAndroidTest {
         }
 
         ErrorStateImage(IntColorDrawableStateImage(Color.GREEN)) {
-            uriEmptyError(IntColorDrawableStateImage(Color.YELLOW))
+            addState(UriInvalidCondition, IntColor(Color.YELLOW))
         }.apply {
             Assert.assertEquals(
-                "ErrorStateImage([UriEmptyCondition:ColorDrawableStateImage(IntColor(${Color.YELLOW})), DefaultCondition:ColorDrawableStateImage(IntColor(${Color.GREEN}))])",
+                "ErrorStateImage([UriInvalidCondition:ColorDrawableStateImage(IntColor(${Color.YELLOW})), DefaultCondition:ColorDrawableStateImage(IntColor(${Color.GREEN}))])",
                 toString()
             )
-        }
-    }
-
-    @Test
-    fun testUriEmptyCondition() {
-        val context = getTestContext()
-        val request = ImageRequest(context, MyImages.jpeg.uri)
-        val request1 = ImageRequest(context, "")
-        val request2 = ImageRequest(context, " ")
-
-        ErrorStateImage.UriEmptyCondition.apply {
-            Assert.assertTrue(accept(request1, UriInvalidException("")))
-            Assert.assertTrue(accept(request2, UriInvalidException("")))
-            Assert.assertFalse(accept(request, UriInvalidException("")))
-            Assert.assertFalse(accept(request1, Exception("")))
-            Assert.assertFalse(accept(request1, null))
-            Assert.assertEquals("UriEmptyCondition", toString())
         }
     }
 

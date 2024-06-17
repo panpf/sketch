@@ -54,6 +54,7 @@ import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -101,7 +102,7 @@ class ImageOptionsTest {
             assertNull(this.transformations)
             assertNull(this.resultCachePolicy)
             assertNull(this.placeholder)
-            assertNull(this.uriEmpty)
+            assertNull(this.fallback)
             assertNull(this.error)
             assertNull(this.transitionFactory)
             assertNull(this.disallowAnimatedImage)
@@ -199,11 +200,11 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            uriEmpty(FakeStateImage())
+            fallback(FakeStateImage())
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertEquals(FakeStateImage(), this.uriEmpty)
+            assertEquals(FakeStateImage(), this.fallback)
         }
 
         ImageOptions {
@@ -469,20 +470,20 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            assertEquals(null, this.uriEmpty)
+            assertEquals(null, this.fallback)
         }.merged(ImageOptions {
-            uriEmpty(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
         }).apply {
             assertEquals(
                 FakeStateImage(FakeImage(SketchSize(100, 100))),
-                this.uriEmpty
+                this.fallback
             )
         }.merged(ImageOptions {
-            uriEmpty(FakeStateImage(FakeImage(SketchSize(200, 200))))
+            fallback(FakeStateImage(FakeImage(SketchSize(200, 200))))
         }).apply {
             assertEquals(
                 FakeStateImage(FakeImage(SketchSize(100, 100))),
-                this.uriEmpty
+                this.fallback
             )
         }
 
@@ -622,7 +623,7 @@ class ImageOptionsTest {
                 placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
             },
             ScopeAction {
-                uriEmpty(FakeStateImage(FakeImage(SketchSize(100, 100))))
+                fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
             },
             ScopeAction {
                 error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
@@ -1217,25 +1218,25 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testUriEmpty() {
+    fun testFallback() {
         ImageOptions.Builder().apply {
             build().apply {
-                assertNull(uriEmpty)
+                assertNull(fallback)
             }
 
-            uriEmpty(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
             build().apply {
-                assertEquals(FakeStateImage(FakeImage(SketchSize(100, 100))), uriEmpty)
+                assertEquals(FakeStateImage(FakeImage(SketchSize(100, 100))), fallback)
             }
 
-            uriEmpty(FakeStateImage(FakeImage(SketchSize(200, 200))))
+            fallback(FakeStateImage(FakeImage(SketchSize(200, 200))))
             build().apply {
-                assertEquals(FakeStateImage(FakeImage(SketchSize(200, 200))), uriEmpty)
+                assertEquals(FakeStateImage(FakeImage(SketchSize(200, 200))), fallback)
             }
 
-            uriEmpty(null)
+            fallback(null)
             build().apply {
-                assertNull(uriEmpty)
+                assertNull(fallback)
             }
         }
     }
@@ -1264,12 +1265,12 @@ class ImageOptionsTest {
             }
 
             error(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
-                uriEmptyError(FakeStateImage(FakeImage(SketchSize(300, 300))))
+                addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(300, 300))))
             }
             build().apply {
                 assertEquals(
                     ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
-                        uriEmptyError(FakeStateImage(FakeImage(SketchSize(300, 300))))
+                        addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(300, 300))))
                     },
                     error
                 )

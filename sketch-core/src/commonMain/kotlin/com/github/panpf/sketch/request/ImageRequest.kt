@@ -180,7 +180,7 @@ data class ImageRequest(
     /**
      * Image to display when uri is empty
      */
-    val uriEmpty: StateImage?,
+    val fallback: StateImage?,
 
     /**
      * Image to display when loading fails
@@ -198,7 +198,7 @@ data class ImageRequest(
     val disallowAnimatedImage: Boolean,
 
     /**
-     * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
+     * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image
      */
     val resizeOnDraw: Boolean?,
 
@@ -600,8 +600,8 @@ data class ImageRequest(
         /**
          * Set placeholder image when uri is empty
          */
-        fun uriEmpty(stateImage: StateImage?): Builder = apply {
-            definedOptionsBuilder.uriEmpty(stateImage)
+        fun fallback(stateImage: StateImage?): Builder = apply {
+            definedOptionsBuilder.fallback(stateImage)
         }
 
         /**
@@ -666,7 +666,7 @@ data class ImageRequest(
         }
 
         /**
-         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, uriEmpty, error and the decoded image
+         * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image
          */
         fun resizeOnDraw(apply: Boolean? = true): Builder = apply {
             definedOptionsBuilder.resizeOnDraw(apply)
@@ -753,7 +753,7 @@ data class ImageRequest(
             val scaleDecider = finalOptions.scaleDecider ?: resolveScaleDecider()
             val transformations = finalOptions.transformations
             val placeholder = finalOptions.placeholder
-            val uriEmpty = finalOptions.uriEmpty
+            val fallback = finalOptions.fallback
             val error = finalOptions.error
             val transitionFactory = finalOptions.transitionFactory
             val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
@@ -784,7 +784,7 @@ data class ImageRequest(
                 scaleDecider = scaleDecider,
                 transformations = transformations,
                 placeholder = placeholder,
-                uriEmpty = uriEmpty,
+                fallback = fallback,
                 error = error,
                 transitionFactory = transitionFactory,
                 disallowAnimatedImage = disallowAnimatedImage,

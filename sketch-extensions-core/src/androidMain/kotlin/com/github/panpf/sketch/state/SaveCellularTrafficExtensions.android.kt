@@ -25,7 +25,7 @@ import com.github.panpf.sketch.drawable.DrawableEqualizer
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     saveCellularTrafficDrawable: DrawableEqualizer
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficDrawable))
+    addState(SaveCellularTrafficCondition, DrawableStateImage(saveCellularTrafficDrawable))
 }
 
 /**
@@ -34,5 +34,5 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     @DrawableRes saveCellularTrafficImageResId: Int
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition to DrawableStateImage(saveCellularTrafficImageResId))
+    addState(SaveCellularTrafficCondition, DrawableStateImage(saveCellularTrafficImageResId))
 }
