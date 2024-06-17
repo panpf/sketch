@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.view.ability")
+androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.viewability")
 
 dependencies {
     api(projects.sketchCore)
