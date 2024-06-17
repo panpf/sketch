@@ -46,25 +46,24 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
-import com.github.panpf.sketch.lifecycle.RealPlatformLifecycle
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.request.lifecycle
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -103,7 +102,6 @@ import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
@@ -1732,7 +1730,7 @@ class ImageRequestExecuteTest {
 
         ImageRequest(context, MyImages.jpeg.uri).let { request ->
             Assert.assertEquals(
-                LifecycleResolver(GlobalPlatformLifecycle),
+                LifecycleResolver(GlobalLifecycle),
                 request.lifecycleResolver
             )
             runBlocking {
@@ -1746,7 +1744,7 @@ class ImageRequestExecuteTest {
             lifecycle(myLifecycle)
         }.let { request ->
             Assert.assertEquals(
-                LifecycleResolver(RealPlatformLifecycle(myLifecycle)),
+                LifecycleResolver(myLifecycle),
                 request.lifecycleResolver
             )
             runBlocking {

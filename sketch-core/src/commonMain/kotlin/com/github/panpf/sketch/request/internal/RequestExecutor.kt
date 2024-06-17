@@ -18,7 +18,6 @@ package com.github.panpf.sketch.request.internal
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.MainThread
-import com.github.panpf.sketch.lifecycle.awaitStarted
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
@@ -29,6 +28,7 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
+import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.times
@@ -60,6 +60,7 @@ class RequestExecutor {
         try {
             // Set up the request's lifecycle observers. Cancel the request when destroy
             val lifecycle = request.lifecycleResolver.lifecycle()
+            println("lifecycle: $lifecycle")
             requestDelegate.start(lifecycle)
 
             // Enqueued requests suspend until the lifecycle is started.

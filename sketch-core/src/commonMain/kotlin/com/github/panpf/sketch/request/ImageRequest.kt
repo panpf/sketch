@@ -15,16 +15,13 @@
  */
 package com.github.panpf.sketch.request
 
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.lifecycle.FixedLifecycleResolver
-import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
-import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
@@ -89,13 +86,13 @@ data class ImageRequest(
     val progressListener: ProgressListener?,
 
     /**
-     * The [PlatformLifecycle] resolver for this request.
-     * The request will be started when PlatformLifecycle is in [PlatformLifecycle.State.STARTED]
-     * and canceled when PlatformLifecycle is in [PlatformLifecycle.State.DESTROYED].
+     * The [Lifecycle] resolver for this request.
+     * The request will be started when Lifecycle is in [Lifecycle.State.STARTED]
+     * and canceled when Lifecycle is in [Lifecycle.State.DESTROYED].
      *
-     * When [PlatformLifecycle] is not actively set,
-     * Sketch first obtains the PlatformLifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
-     * Secondly, get the [PlatformLifecycle] of Activity through context, and finally use [GlobalPlatformLifecycle]
+     * When [Lifecycle] is not actively set,
+     * Sketch first obtains the Lifecycle at the nearest location through `view.findViewTreeLifecycleOwner()` and `LocalLifecycleOwner.current.lifecycle` APIs
+     * Secondly, get the [Lifecycle] of Activity through context, and finally use [GlobalLifecycle]
      */
     val lifecycleResolver: LifecycleResolver,
 
@@ -335,23 +332,23 @@ data class ImageRequest(
         }
 
         /**
-         * Set the [PlatformLifecycle] for this request.
+         * Set the [Lifecycle] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
          *
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
          */
-        fun lifecycle(lifecycle: PlatformLifecycle?): Builder = apply {
+        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             definedRequestOptionsBuilder.lifecycle(lifecycle)
         }
 
         /**
          * Set the [LifecycleResolver] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
          *
          * If this is null or is not set the will attempt to find the lifecycle
          * for this request through its [context].
@@ -802,7 +799,7 @@ data class ImageRequest(
             target?.getSizeResolver() ?: OriginSizeResolver
 
         private fun resolveLifecycleResolver(): LifecycleResolver =
-            target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalPlatformLifecycle)
+            target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalLifecycle)
 
         private fun resolveScaleDecider(): ScaleDecider =
             target?.getScaleDecider() ?: ScaleDecider(Scale.CENTER_CROP)

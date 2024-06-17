@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
-import com.github.panpf.sketch.lifecycle.PlatformLifecycle
+import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
@@ -25,7 +25,6 @@ import com.github.panpf.sketch.request.ProgressListener
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-// TODO Is RequestOptions still necessary?
 data class RequestOptions(
     val listener: Listener?,
     val progressListener: ProgressListener?,
@@ -106,20 +105,20 @@ data class RequestOptions(
         }
 
         /**
-         * Set the [PlatformLifecycle] for this request.
+         * Set the [Lifecycle] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
          */
-        fun lifecycle(lifecycle: PlatformLifecycle?): Builder = apply {
+        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
             this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
         }
 
         /**
          * Set the [LifecycleResolver] for this request.
          *
-         * Requests are queued while the lifecycle is not at least [PlatformLifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [PlatformLifecycle.State.DESTROYED].
+         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
+         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
          */
         fun lifecycle(lifecycleResolver: LifecycleResolver?): Builder = apply {
             this.lifecycleResolver = lifecycleResolver

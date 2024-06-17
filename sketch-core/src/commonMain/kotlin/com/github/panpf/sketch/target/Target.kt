@@ -19,9 +19,9 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.MainThread
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestContext

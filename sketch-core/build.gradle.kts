@@ -10,6 +10,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchHttpCore)
+            api(libs.jetbrains.lifecycle.common)
 //                compileOnly(libs.composeStableMarker)
         }
         androidMain.dependencies {
@@ -28,9 +29,6 @@ kotlin {
         }
         nonJvmCommonMain.dependencies {
             api(projects.sketchHttpKtor)
-        }
-        nonJsCommonMain.dependencies {
-            api(libs.androidx.lifecycle.common)
         }
 
         commonTest.dependencies {

@@ -27,18 +27,19 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.IntSize
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
-import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
@@ -63,14 +64,11 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @Composable
-internal expect fun resolvePlatformLifecycle(): PlatformLifecycle?
-
-@Composable
 expect fun getWindowContainerSize(): IntSize
 
 @Composable
 fun rememberAsyncImageState(optionsLazy: (() -> ImageOptions)? = null): AsyncImageState {
-    val lifecycle = resolvePlatformLifecycle()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     val inspectionMode = LocalInspectionMode.current
     val containerSize = getWindowContainerSize()
     return remember(lifecycle, inspectionMode, containerSize) {
@@ -81,7 +79,7 @@ fun rememberAsyncImageState(optionsLazy: (() -> ImageOptions)? = null): AsyncIma
 
 @Stable
 class AsyncImageState internal constructor(
-    private val lifecycle: PlatformLifecycle?,
+    private val lifecycle: Lifecycle,
     private val inspectionMode: Boolean,
     private val containerSize: IntSize,
     private val options: ImageOptions?,
@@ -325,8 +323,8 @@ class AsyncImageState internal constructor(
 
         override fun getProgressListener(): ProgressListener = this@AsyncImageState.listener
 
-        override fun getLifecycleResolver(): LifecycleResolver? =
-            this@AsyncImageState.lifecycle?.let { LifecycleResolver(it) }
+        override fun getLifecycleResolver(): LifecycleResolver =
+            LifecycleResolver(this@AsyncImageState.lifecycle)
 
 
         override fun getSizeResolver(): SizeResolver = this@AsyncImageState.sizeResolver

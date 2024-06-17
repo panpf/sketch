@@ -95,7 +95,7 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 
 [ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
 
-[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/lifecycle/LifecycleResolver.kt
+[LifecycleResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/LifecycleResolver.kt
 
 [AsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImage.kt
 

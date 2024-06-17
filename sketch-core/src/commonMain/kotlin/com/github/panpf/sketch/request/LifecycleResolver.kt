@@ -1,8 +1,9 @@
-package com.github.panpf.sketch.lifecycle
+package com.github.panpf.sketch.request
 
+import androidx.lifecycle.Lifecycle
 import kotlin.js.JsName
 
-fun LifecycleResolver(lifecycle: PlatformLifecycle): LifecycleResolver =
+fun LifecycleResolver(lifecycle: Lifecycle): LifecycleResolver =
     FixedLifecycleResolver(lifecycle)
 
 /**
@@ -13,14 +14,14 @@ fun LifecycleResolver(lifecycle: PlatformLifecycle): LifecycleResolver =
 fun interface LifecycleResolver {
 
     @JsName("getLifecycle")
-    suspend fun lifecycle(): PlatformLifecycle
+    suspend fun lifecycle(): Lifecycle
 }
 
 class FixedLifecycleResolver constructor(
-    val lifecycle: PlatformLifecycle
+    val lifecycle: Lifecycle
 ) : LifecycleResolver {
 
-    override suspend fun lifecycle(): PlatformLifecycle = lifecycle
+    override suspend fun lifecycle(): Lifecycle = lifecycle
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

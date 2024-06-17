@@ -37,16 +37,18 @@ import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.getEqualityDrawableCompat
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.Parameters
 import com.github.panpf.sketch.request.ProgressListener
@@ -102,9 +104,7 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.drawable.getEqualityDrawableCompat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -125,7 +125,7 @@ class ImageRequestTest {
             Assert.assertNull(this.progressListener)
             Assert.assertNull(this.target)
             Assert.assertEquals(
-                LifecycleResolver(GlobalPlatformLifecycle),
+                LifecycleResolver(GlobalLifecycle),
                 this.lifecycleResolver
             )
 
@@ -320,7 +320,7 @@ class ImageRequestTest {
 
         ImageRequest(context1, uri).apply {
             Assert.assertEquals(
-                LifecycleResolver(GlobalPlatformLifecycle),
+                LifecycleResolver(GlobalLifecycle),
                 this.lifecycleResolver
             )
         }

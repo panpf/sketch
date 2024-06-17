@@ -23,8 +23,8 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -394,7 +394,7 @@ class SketchTest {
         val listenerSupervisor4 = ListenerSupervisor()
         val request4 = ImageRequest(imageView, MyImages.jpeg.uri) {
             registerListener(listenerSupervisor4)
-            lifecycle(GlobalPlatformLifecycle)
+            lifecycle(GlobalLifecycle)
         }
         val result4 = runBlocking {
             try {

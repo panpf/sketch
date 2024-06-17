@@ -25,7 +25,7 @@ class ViewRequestDelegate(
     }
 
     override fun finish() {
-        // Monitoring of PlatformLifecycle cannot be removed here.
-        // Because GenericViewTarget needs to stop or start animation by listening to PlatformLifecycle Image
+        // Monitoring of Lifecycle cannot be removed here.
+        // Because GenericViewTarget needs to stop or start animation by listening to Lifecycle Image
     }
 }

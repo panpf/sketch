@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.test.singleton.request
 
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -26,8 +26,8 @@ import com.github.panpf.sketch.test.singleton.SingletonSketch
 /**
  * Execute current ImageRequest asynchronously.
  *
- * Note: The request will not start executing until PlatformLifecycle state is STARTED
- * reaches [PlatformLifecycle.State.STARTED] state and View is attached to window
+ * Note: The request will not start executing until Lifecycle state is STARTED
+ * reaches [Lifecycle.State.STARTED] state and View is attached to window
  *
  * @return A [Disposable] which can be used to cancel or check the status of the request.
  */
@@ -38,8 +38,8 @@ fun ImageRequest.enqueue(sketch: Sketch = SingletonSketch.get(context)): Disposa
 /**
  * Execute current ImageRequest synchronously in the current coroutine scope.
  *
- * Note: The request will not start executing until PlatformLifecycle state is STARTED
- * reaches [PlatformLifecycle.State.STARTED] state and View is attached to window
+ * Note: The request will not start executing until Lifecycle state is STARTED
+ * reaches [Lifecycle.State.STARTED] state and View is attached to window
  *
  * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
  */

@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch
 
+import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.annotation.AnyThread
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
@@ -28,7 +29,6 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.lifecycle.PlatformLifecycle
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -146,8 +146,8 @@ class Sketch private constructor(options: Options) {
     /**
      * Execute the ImageRequest asynchronously.
      *
-     * Note: The request will not start executing until PlatformLifecycle state is STARTED
-     * reaches [PlatformLifecycle.State.STARTED] state and View is attached to window
+     * Note: The request will not start executing until Lifecycle state is STARTED
+     * reaches [Lifecycle.State.STARTED] state and View is attached to window
      *
      * @return A [Disposable] which can be used to cancel or check the status of the request.
      */
@@ -164,8 +164,8 @@ class Sketch private constructor(options: Options) {
     /**
      * Execute the ImageRequest synchronously in the current coroutine scope.
      *
-     * Note: The request will not start executing until PlatformLifecycle state is STARTED
-     * reaches [PlatformLifecycle.State.STARTED] state and View is attached to window
+     * Note: The request will not start executing until Lifecycle state is STARTED
+     * reaches [Lifecycle.State.STARTED] state and View is attached to window
      *
      * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
      */

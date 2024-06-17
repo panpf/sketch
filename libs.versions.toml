@@ -27,6 +27,7 @@ ffmpegMediaMetadataRetriever = "1.0.16"
 google-material = "1.12.0"
 
 jetbrains-compose = "1.6.11"
+jetbrains-lifecycle = "2.8.0"
 #jetbrains-compose-compiler = "1.5.10.1"
 
 junit = "4.13.2"
@@ -72,7 +73,6 @@ androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-cor
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "androidx-exifinterface" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
@@ -97,6 +97,7 @@ ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMedi
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 
 #jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jetbrains-compose-compiler" }
+jetbrains-lifecycle-common = { module = "org.jetbrains.androidx.lifecycle:lifecycle-common", version.ref = "jetbrains-lifecycle" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 

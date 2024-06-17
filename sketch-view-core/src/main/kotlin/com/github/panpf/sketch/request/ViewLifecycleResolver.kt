@@ -21,10 +21,6 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
-import com.github.panpf.sketch.lifecycle.GlobalPlatformLifecycle
-import com.github.panpf.sketch.lifecycle.LifecycleResolver
-import com.github.panpf.sketch.lifecycle.PlatformLifecycle
-import com.github.panpf.sketch.lifecycle.RealPlatformLifecycle
 import java.lang.ref.WeakReference
 
 class ViewLifecycleResolver constructor(
@@ -33,12 +29,12 @@ class ViewLifecycleResolver constructor(
 
     constructor(view: View) : this(WeakReference(view))
 
-    override suspend fun lifecycle(): PlatformLifecycle {
+    override suspend fun lifecycle(): Lifecycle {
         // There is no need to judge whether to attach to the window here,
         // because lifecycle() will only be executed after attached.
         val view1 = viewReference.get()
-        val lifecycle = resolveLifecycle(view1) ?: return GlobalPlatformLifecycle
-        return RealPlatformLifecycle(lifecycle)
+        val lifecycle = resolveLifecycle(view1)
+        return lifecycle ?: GlobalLifecycle
     }
 
     private fun resolveLifecycle(view: View?): Lifecycle? {
