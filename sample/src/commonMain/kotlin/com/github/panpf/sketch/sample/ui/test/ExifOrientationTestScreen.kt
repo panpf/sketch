@@ -21,17 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
-import com.github.panpf.sketch.rememberAsyncImageState
-import com.github.panpf.sketch.state.rememberIconPainterStateImage
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.painter.rememberEqualityPainterResource
+import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.painter.equalityPainterResource
+import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import sketch_root.sample.generated.resources.Res.drawable
 import sketch_root.sample.generated.resources.ic_image_outline
@@ -67,7 +67,7 @@ class ExifOrientationTestScreen : BaseScreen() {
                     ) {
                         val image = exifImages[index]
                         val placeholderStateImage = rememberIconPainterStateImage(
-                            icon = equalityPainterResource(drawable.ic_image_outline),
+                            icon = rememberEqualityPainterResource(drawable.ic_image_outline),
                             background = colorScheme.primaryContainer,
                             iconTint = colorScheme.onPrimaryContainer
                         )

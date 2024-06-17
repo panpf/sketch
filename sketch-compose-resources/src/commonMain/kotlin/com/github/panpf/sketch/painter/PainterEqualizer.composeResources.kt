@@ -7,12 +7,6 @@ import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
-fun equalityPainterResource(resource: DrawableResource): PainterEqualizer {
-    val painter = painterResource(resource)
-    return PainterEqualizer(wrapped = painter, equalityKey = resource)
-}
-
-@Composable
 fun rememberEqualityPainterResource(resource: DrawableResource): PainterEqualizer {
     val painter = painterResource(resource)
     return remember(resource) {

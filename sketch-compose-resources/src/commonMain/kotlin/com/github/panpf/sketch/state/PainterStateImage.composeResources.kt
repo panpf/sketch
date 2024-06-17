@@ -11,9 +11,3 @@ fun rememberPainterStateImage(resource: DrawableResource): PainterStateImage {
     val painter = rememberEqualityPainterResource(resource)
     return remember(resource) { PainterStateImage(painter) }
 }
-
-@Composable
-fun PainterStateImage(resource: DrawableResource): PainterStateImage {
-    val painter = rememberEqualityPainterResource(resource)
-    return PainterStateImage(painter)
-}

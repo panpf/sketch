@@ -15,7 +15,7 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val backgroundPainter = background?.let { equalityPainterResource(it) }
+    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = icon,
@@ -34,7 +34,7 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalityPainterResource(icon)
+    val iconPainter = rememberEqualityPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = iconPainter,
@@ -52,7 +52,7 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalityPainterResource(icon)
+    val iconPainter = rememberEqualityPainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
         IconAnimatablePainter(
@@ -71,8 +71,8 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalityPainterResource(icon)
-    val backgroundPainter = background?.let { equalityPainterResource(it) }
+    val iconPainter = rememberEqualityPainterResource(icon)
+    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = iconPainter,
@@ -89,7 +89,7 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter {
-    val iconPainter = equalityPainterResource(icon)
+    val iconPainter = rememberEqualityPainterResource(icon)
     return remember(icon, iconSize, iconTint) {
         IconAnimatablePainter(
             icon = iconPainter,
