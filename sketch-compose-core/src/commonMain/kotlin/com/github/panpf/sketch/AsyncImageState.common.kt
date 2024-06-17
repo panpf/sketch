@@ -34,6 +34,7 @@ import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.painter.asPainter
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -67,9 +68,27 @@ import kotlinx.coroutines.launch
 expect fun getWindowContainerSize(): IntSize
 
 @Composable
-fun rememberAsyncImageState(optionsLazy: (() -> ImageOptions)? = null): AsyncImageState {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
+fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
+    val lifecycle = if (inspectionMode) {
+        GlobalLifecycle
+    } else {
+        LocalLifecycleOwner.current.lifecycle
+    }
+    val containerSize = getWindowContainerSize()
+    return remember(lifecycle, inspectionMode, containerSize, options) {
+        AsyncImageState(lifecycle, inspectionMode, containerSize, options)
+    }
+}
+
+@Composable
+fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
+    val inspectionMode = LocalInspectionMode.current
+    val lifecycle = if (inspectionMode) {
+        GlobalLifecycle
+    } else {
+        LocalLifecycleOwner.current.lifecycle
+    }
     val containerSize = getWindowContainerSize()
     return remember(lifecycle, inspectionMode, containerSize) {
         val options = optionsLazy?.invoke()
