@@ -147,7 +147,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "com.github.panpf.sketch.sample.MainApp2Kt"
+        mainClass = "com.github.panpf.sketch.sample.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.github.panpf.sketch.sample"
