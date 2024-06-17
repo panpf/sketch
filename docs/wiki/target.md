@@ -11,13 +11,16 @@ will be set, you only need to set other parameters, as follows:
 
 ```kotlin
 AsyncIage(
-    rqeuest = ImageRequest("https://example.com/image.jpg") {
+    rqeuest = ComposableImageRequest("https://example.com/image.jpg") {
         placeholder(Res.drawable.placeholder)
         crossfade()
     },
     contentDescription = "photo",
 )
 ```
+
+> [!TIP]
+> `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
 ## View
 

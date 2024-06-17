@@ -34,7 +34,7 @@ Therefore, it is usually recommended to use [CrossfadeTransition] and resizeOnDr
 
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
-    placeholder(Res.drawable.im_placeholder)
+    placeholder(R.drawable.im_placeholder)
     crossfade()
     resizeOnDraw()
 }

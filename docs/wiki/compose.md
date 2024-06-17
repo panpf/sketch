@@ -19,7 +19,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(imageUri) {
+    rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -28,6 +28,9 @@ AsyncImage(
     contentDescription = "photo"
 )
 ```
+
+> [!TIP]
+> `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
 ### SubcomposeAsyncImage
 
@@ -47,20 +50,20 @@ SubcomposeAsyncImage(
     uri = "https://example.com/image.jpg",
     contentDescription = "photo",
     content = {
-         when (state.painterState) {
-              is PainterState.Loading -> {
-                   Text("Loading")
-              }
-              is PainterState.Error -> {
-                   Text("Error")
-              }
-              else -> {
-                   Image(
-                        painter = painter,
-                        contentDescription = "photo"
-                   )
-              }
-         }
+        when (state.painterState) {
+            is PainterState.Loading -> {
+                Text("Loading")
+            }
+            is PainterState.Error -> {
+                Text("Error")
+            }
+            else -> {
+                Image(
+                    painter = painter,
+                    contentDescription = "photo"
+                )
+            }
+        }
     }
 )
 ```
@@ -83,7 +86,7 @@ Image(
 // config params
 Image(
     painter = rememberAsyncImagePainter(
-        rqeuest = ImageRequest("https://example.com/image.jpg") {
+        rqeuest = ComposableImageRequest("https://example.com/image.jpg") {
             placeholder(Res.drawable.placeholder)
             error(Res.drawable.error)
             crossfade()
@@ -101,6 +104,7 @@ Image(
      while `Image + AsyncImagePainter` cannot obtain the component size until the drawing stage.
 > 2. If the contentScale is modified on the Image, the contentScale of rememberAsyncImagePainter
      must also be modified simultaneously.
+> 3. `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
 ### AsyncImageState
 

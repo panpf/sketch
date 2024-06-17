@@ -18,7 +18,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(imageUri) {
+    rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -27,6 +27,9 @@ AsyncImage(
     contentDescription = "photo"
 )
 ```
+
+> [!TIP]
+> `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
 ### SubcomposeAsyncImage
 
@@ -79,7 +82,7 @@ Image(
 // config params
 Image(
     painter = rememberAsyncImagePainter(
-        rqeuest = ImageRequest("https://example.com/image.jpg") {
+        rqeuest = ComposableImageRequest("https://example.com/image.jpg") {
             placeholder(Res.drawable.placeholder)
             error(Res.drawable.error)
             crossfade()
@@ -95,6 +98,7 @@ Image(
      依赖组件的确切大小才会开始加载图片，[AsyncImage]
      在布局阶段就可以获取到组件的大小，而 `Image + AsyncImagePainter` 则是要等到绘制阶段才能获取到组件大小。
 > 2. 如果在 Image 上修改了 contentScale，则也要同步修改 rememberAsyncImagePainter 的 contentScale
+> 3. `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
 ### AsyncImageState
 

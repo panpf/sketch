@@ -20,7 +20,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(imageUri) {
+    rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -31,7 +31,7 @@ AsyncImage(
 
 Image(
     painter = rememberAsyncImagePainter(
-        request = ImageRequest(imageUri) {
+        request = ComposableImageRequest(imageUri) {
             placeholder(Res.drawable.placeholder)
             error(Res.drawable.error)
             crossfade()
@@ -48,6 +48,7 @@ Image(
 > 2. 但更推荐使用 [AsyncImage] 组件，因为 [AsyncImage] 会略快一些。
 > 3. 这是由于 [Sketch] 依赖组件的确切大小才会开始加载图片，[AsyncImage]
      在布局阶段就可以获取到组件的大小，而 `Image + AsyncImagePainter` 则是要等到绘制阶段才能获取到组件大小。
+> 4. `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
 Android View：
 

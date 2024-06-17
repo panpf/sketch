@@ -12,13 +12,16 @@
 
 ```kotlin
 AsyncIage(
-    rqeuest = ImageRequest("https://example.com/image.jpg") {
+    rqeuest = ComposableImageRequest("https://example.com/image.jpg") {
         placeholder(Res.drawable.placeholder)
         crossfade()
     },
     contentDescription = "photo",
 )
 ```
+
+> [!TIP]
+> `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
 ## View
 

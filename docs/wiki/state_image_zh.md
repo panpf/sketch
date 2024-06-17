@@ -59,7 +59,7 @@ val placeholder = rememberPainterStateImage(Res.drawable.placeholder)
 val fallback = rememberPainterStateImage(Res.drawable.fallback)
 //    val fallback = rememberColorPainterStateImage(Color.Red)
 //    val fallback = rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Gray)
-ImageRequest("https://example.com/image.jpg") {
+ComposableImageRequest("https://example.com/image.jpg") {
     placeholder(placeholder)
     fallback(fallback)
     error(Res.drawable.error)

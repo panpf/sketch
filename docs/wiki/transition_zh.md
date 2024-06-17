@@ -37,7 +37,7 @@ resizeOnDraw 属性将会用 [ResizePainter] 或 [ResizeDrawable] 包装 placeho
 
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
-    placeholder(Res.drawable.im_placeholder)
+    placeholder(R.drawable.im_placeholder)
     crossfade()
     resizeOnDraw()
 }

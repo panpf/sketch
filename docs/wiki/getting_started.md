@@ -20,7 +20,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(imageUri) {
+    rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -31,7 +31,7 @@ AsyncImage(
 
 Image(
     painter = rememberAsyncImagePainter(
-        request = ImageRequest(imageUri) {
+        request = ComposableImageRequest(imageUri) {
             placeholder(Res.drawable.placeholder)
             error(Res.drawable.error)
             crossfade()
@@ -50,6 +50,7 @@ Image(
 > 3. This is because [Sketch] relies on the exact size of the component to start loading images,
      [AsyncImage] The size of the component can be obtained during the layout stage,
      while `Image + AsyncImagePainter` cannot obtain the component size until the drawing stage.
+> 4. `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
 Android View:
 
