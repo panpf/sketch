@@ -70,11 +70,7 @@ expect fun getWindowContainerSize(): IntSize
 @Composable
 fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
-    val lifecycle = if (inspectionMode) {
-        GlobalLifecycle
-    } else {
-        LocalLifecycleOwner.current.lifecycle
-    }
+    val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
     val containerSize = getWindowContainerSize()
     return remember(lifecycle, inspectionMode, containerSize, options) {
         AsyncImageState(lifecycle, inspectionMode, containerSize, options)
@@ -84,24 +80,20 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
 @Composable
 fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
-    val lifecycle = if (inspectionMode) {
-        GlobalLifecycle
-    } else {
-        LocalLifecycleOwner.current.lifecycle
-    }
+    val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
     val containerSize = getWindowContainerSize()
     return remember(lifecycle, inspectionMode, containerSize) {
-        val options = optionsLazy?.invoke()
+        val options = optionsLazy.invoke()
         AsyncImageState(lifecycle, inspectionMode, containerSize, options)
     }
 }
 
 @Stable
 class AsyncImageState internal constructor(
-    private val lifecycle: Lifecycle,
-    private val inspectionMode: Boolean,
-    private val containerSize: IntSize,
-    private val options: ImageOptions?,
+    val lifecycle: Lifecycle,
+    val inspectionMode: Boolean,
+    val containerSize: IntSize,
+    val options: ImageOptions?,
 ) : RememberObserver {
 
     private val target = AsyncImageTarget()
@@ -179,11 +171,16 @@ class AsyncImageState internal constructor(
                     val request = (it[0] as ImageRequest).apply { validateRequest(this) }
                     val sketch = it[1] as Sketch
                     val globalImageOptions = sketch.globalImageOptions
-                    val mergedOptions = request.defaultOptions?.merged(globalImageOptions)
-                    val updatedRequest = request.newBuilder().defaultOptions(mergedOptions).build()
+                    val newDefaultOptions = request.defaultOptions?.merged(globalImageOptions)
+                    val updatedRequest = request.newRequest {
+                        merge(options)
+                        defaultOptions(newDefaultOptions)
+                    }
                     val placeholderImage = updatedRequest.placeholder
                         ?.getImage(sketch, updatedRequest, null)
-                    painterState = Loading(placeholderImage?.asPainter())
+                    val painter1 = placeholderImage?.asPainter()
+                    painterState = Loading(painter1)
+                    painter = painter1
                 }
             }
         } else {
