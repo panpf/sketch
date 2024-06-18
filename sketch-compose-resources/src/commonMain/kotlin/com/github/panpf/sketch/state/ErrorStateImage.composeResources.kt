@@ -10,7 +10,7 @@ import org.jetbrains.compose.resources.DrawableResource
  * Create an ErrorStateImage
  */
 @Composable
-fun ErrorStateImage(
+fun ComposableErrorStateImage(
     defaultResource: DrawableResource? = null,
     configBlock: @Composable (Builder.() -> Unit)? = null
 ): ErrorStateImage =

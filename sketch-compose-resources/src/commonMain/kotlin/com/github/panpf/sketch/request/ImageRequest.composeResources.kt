@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
+import com.github.panpf.sketch.state.ComposableErrorStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.rememberPainterStateImage
 import org.jetbrains.compose.resources.DrawableResource
@@ -28,4 +29,4 @@ fun ImageRequest.Builder.fallback(resource: DrawableResource): ImageRequest.Buil
 fun ImageRequest.Builder.error(
     defaultResource: DrawableResource,
     configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(ErrorStateImage(defaultResource, configBlock))
+): ImageRequest.Builder = error(ComposableErrorStateImage(defaultResource, configBlock))

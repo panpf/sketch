@@ -188,7 +188,7 @@ configured by [AsyncImageState]
 
 [SubcomposeAsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/SubcomposeAsyncImage.kt
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [Listener]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/Listener.kt
 

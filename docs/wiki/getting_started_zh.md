@@ -458,7 +458,7 @@ val imageResult: ImageResult? = imageView.imageResult
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/image_request_singleton_extensions.kt
 

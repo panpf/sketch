@@ -67,7 +67,7 @@ scope.launch {
 > from [Target], which may cause inconsistencies in size, precision, and scale between preloading
 > and use, resulting in failure to hit the cache.
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 

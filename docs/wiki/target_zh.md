@@ -84,7 +84,7 @@ ImageRequest(context, "https://www.example.com/image.jpg") {
 
 [ImageViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/ImageViewTarget.kt
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 

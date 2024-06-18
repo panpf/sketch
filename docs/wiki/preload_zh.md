@@ -66,7 +66,7 @@ scope.launch {
 > size、precision、scale 就会从 [Target] 上获取，这样可能会造成预加载时和使用时的 size、precision、scale
 > 不一致导致无法命中缓存
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
 

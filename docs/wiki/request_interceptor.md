@@ -53,7 +53,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [RequestInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/RequestInterceptor.kt
 
-[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
+[ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 
