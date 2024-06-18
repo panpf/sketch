@@ -64,7 +64,7 @@ class SaveCellularTrafficRequestInterceptor constructor(
                     val oldDepth = request.depthHolder.depth
                     request.newRequest {
                         depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
-                        setParameter(
+                        setExtra(
                             key = SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY,
                             value = oldDepth.name,
                             cacheKey = null
@@ -77,7 +77,7 @@ class SaveCellularTrafficRequestInterceptor constructor(
 
             else -> {
                 val oldDepth =
-                    request.parameters?.value<String>(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)?.let {
+                    request.extras?.value<String>(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)?.let {
                         try {
                             Depth.valueOf(it)
                         } catch (e: Exception) {
@@ -88,7 +88,7 @@ class SaveCellularTrafficRequestInterceptor constructor(
                 if (oldDepth != null && request.depthHolder.depth != oldDepth) {
                     request.newRequest {
                         depth(oldDepth)
-                        removeParameter(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)
+                        removeExtra(SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY)
                     }
                 } else {
                     request

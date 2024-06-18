@@ -61,9 +61,9 @@ fun ImageOptions.Builder.error(
  */
 fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions.Builder = apply {
     if (bitmapConfig != null) {
-        setParameter(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
+        setExtra(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
     } else {
-        removeParameter(BITMAP_CONFIG_KEY)
+        removeExtra(BITMAP_CONFIG_KEY)
     }
 }
 
@@ -81,7 +81,7 @@ fun ImageOptions.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageOptions
  * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
  */
 val ImageOptions.bitmapConfig: BitmapConfig?
-    get() = BitmapConfig.valueOf(parameters?.value<String>(BITMAP_CONFIG_KEY))
+    get() = BitmapConfig.valueOf(extras?.value<String>(BITMAP_CONFIG_KEY))
 
 
 /**
@@ -90,9 +90,9 @@ val ImageOptions.bitmapConfig: BitmapConfig?
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Builder = apply {
     if (named != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setParameter(key = COLOR_SPACE_NAMED_KEY, value = named.name)
+        setExtra(key = COLOR_SPACE_NAMED_KEY, value = named.name)
     } else {
-        removeParameter(COLOR_SPACE_NAMED_KEY)
+        removeExtra(COLOR_SPACE_NAMED_KEY)
     }
 }
 
@@ -103,7 +103,7 @@ fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Buil
  */
 @get:RequiresApi(Build.VERSION_CODES.O)
 val ImageOptions.colorSpace: ColorSpace?
-    get() = parameters?.value<String>(COLOR_SPACE_NAMED_KEY)
+    get() = extras?.value<String>(COLOR_SPACE_NAMED_KEY)
         ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
 /**
@@ -122,9 +122,9 @@ val ImageOptions.colorSpace: ColorSpace?
 fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageOptions.Builder =
     apply {
         if (inPreferQualityOverSpeed == true) {
-            setParameter(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
+            setExtra(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
         } else {
-            removeParameter(PREFER_QUALITY_OVER_SPEED_KEY)
+            removeExtra(PREFER_QUALITY_OVER_SPEED_KEY)
         }
     }
 
@@ -142,4 +142,4 @@ fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
  */
 @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
 val ImageOptions.preferQualityOverSpeed: Boolean?
-    get() = parameters?.value<String>(PREFER_QUALITY_OVER_SPEED_KEY)?.toBoolean()
+    get() = extras?.value<String>(PREFER_QUALITY_OVER_SPEED_KEY)?.toBoolean()

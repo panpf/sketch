@@ -26,6 +26,7 @@ request:
 * change: Android platform-specific APIs such as bitmapConfig, colorSpace, preferQualityOverSpeed,
   placeholder(Int), fallback(Int), error(Int), etc. are provided in the form of extension functions
 * change: resizeApplyToDrawable renamed to resizeOnDraw
+* change: Parameters renamed to Extras
 * new: Added 'sizeMultiplier: Float' attribute to set the scaling ratio of the image size
 * new: Added 'allowNullImage: Boolean' attribute
 

@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
@@ -16,7 +16,7 @@ class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
     override suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,
-        parameters: Parameters?
+        extras: Extras?
     ): HttpStack.Response {
         val httpRequest = HttpRequestBuilder().apply {
             url(url)

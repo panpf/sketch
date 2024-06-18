@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 import okio.Closeable
 import okio.IOException
 import kotlin.coroutines.cancellation.CancellationException
@@ -33,7 +33,7 @@ interface HttpStack {
     suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,
-        parameters: Parameters?
+        extras: Extras?
     ): Response
 
     interface Response {

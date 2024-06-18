@@ -17,7 +17,7 @@ package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.http.internal.TlsCompatSocketFactory
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -70,7 +70,7 @@ class HurlStack private constructor(
     override suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,
-        parameters: Parameters?
+        extras: Extras?
     ): Response {
         val result = withContext(Dispatchers.IO) {
             runCatching {

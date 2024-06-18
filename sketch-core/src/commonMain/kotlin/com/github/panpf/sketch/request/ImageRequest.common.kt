@@ -121,7 +121,7 @@ data class ImageRequest(
     /**
      * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
      */
-    val parameters: Parameters?,
+    val extras: Extras?,
 
 
     /**
@@ -375,27 +375,27 @@ data class ImageRequest(
         /**
          * Bulk set parameters for this request
          */
-        fun parameters(parameters: Parameters?): Builder = apply {
-            definedOptionsBuilder.parameters(parameters)
+        fun extras(extras: Extras?): Builder = apply {
+            definedOptionsBuilder.extras(extras)
         }
 
         /**
          * Set a parameter for this request.
          */
-        fun setParameter(
+        fun setExtra(
             key: String,
             value: Any?,
             cacheKey: String? = keyOrNull(value),
             requestKey: String? = keyOrNull(value),
         ): Builder = apply {
-            definedOptionsBuilder.setParameter(key, value, cacheKey, requestKey)
+            definedOptionsBuilder.setExtra(key, value, cacheKey, requestKey)
         }
 
         /**
          * Remove a parameter from this request.
          */
-        fun removeParameter(key: String): Builder = apply {
-            definedOptionsBuilder.removeParameter(key)
+        fun removeExtra(key: String): Builder = apply {
+            definedOptionsBuilder.removeExtra(key)
         }
 
 
@@ -742,7 +742,7 @@ data class ImageRequest(
             val definedOptions = definedOptionsBuilder.merge(targetOptions).build()
             val finalOptions = definedOptions.merged(defaultOptions)
             val depthHolder = finalOptions.depthHolder ?: DepthHolder.Default
-            val parameters = finalOptions.parameters
+            val extras = finalOptions.extras
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
@@ -774,7 +774,7 @@ data class ImageRequest(
                 definedOptions = definedOptions,
                 definedRequestOptions = definedRequestOptions,
                 depthHolder = depthHolder,
-                parameters = parameters,
+                extras = extras,
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,

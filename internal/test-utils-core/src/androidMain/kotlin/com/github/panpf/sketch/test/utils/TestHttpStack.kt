@@ -19,7 +19,7 @@ import android.content.Context
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 
 class TestHttpStack constructor(
     private val context: Context,
@@ -44,7 +44,7 @@ class TestHttpStack constructor(
     override suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,
-        parameters: Parameters?
+        extras: Extras?
     ): HttpStack.Response {
         connectionDelayMillis?.let {
             Thread.sleep(it)

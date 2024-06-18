@@ -34,10 +34,10 @@ private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
 fun ImageRequest.Builder.videoFrameMicros(frameMicros: Long?): ImageRequest.Builder = apply {
     require(frameMicros == null || frameMicros >= 0) { "frameMicros must be >= 0." }
     if (frameMicros != null) {
-        removeParameter(VIDEO_FRAME_PERCENT_KEY)
-        setParameter(key = VIDEO_FRAME_MICROS_KEY, value = frameMicros)
+        removeExtra(VIDEO_FRAME_PERCENT_KEY)
+        setExtra(key = VIDEO_FRAME_MICROS_KEY, value = frameMicros)
     } else {
-        removeParameter(VIDEO_FRAME_MICROS_KEY)
+        removeExtra(VIDEO_FRAME_MICROS_KEY)
     }
 }
 
@@ -54,7 +54,7 @@ fun ImageRequest.Builder.videoFrameMillis(frameMillis: Long): ImageRequest.Build
  * Get the time **in microseconds** of the frame to extract from a video.
  */
 val ImageRequest.videoFrameMicros: Long?
-    get() = parameters?.value(VIDEO_FRAME_MICROS_KEY) as Long?
+    get() = extras?.value(VIDEO_FRAME_MICROS_KEY) as Long?
 
 /**
  * Set the time **in microseconds** of the frame to extract from a video.
@@ -64,10 +64,10 @@ val ImageRequest.videoFrameMicros: Long?
 fun ImageOptions.Builder.videoFrameMicros(frameMicros: Long?): ImageOptions.Builder = apply {
     require(frameMicros == null || frameMicros >= 0) { "frameMicros must be >= 0." }
     if (frameMicros != null) {
-        removeParameter(VIDEO_FRAME_PERCENT_KEY)
-        setParameter(key = VIDEO_FRAME_MICROS_KEY, value = frameMicros)
+        removeExtra(VIDEO_FRAME_PERCENT_KEY)
+        setExtra(key = VIDEO_FRAME_MICROS_KEY, value = frameMicros)
     } else {
-        removeParameter(VIDEO_FRAME_MICROS_KEY)
+        removeExtra(VIDEO_FRAME_MICROS_KEY)
     }
 }
 
@@ -84,7 +84,7 @@ fun ImageOptions.Builder.videoFrameMillis(frameMillis: Long): ImageOptions.Build
  * Get the time **in microseconds** of the frame to extract from a video.
  */
 val ImageOptions.videoFrameMicros: Long?
-    get() = parameters?.value(VIDEO_FRAME_MICROS_KEY) as Long?
+    get() = extras?.value(VIDEO_FRAME_MICROS_KEY) as Long?
 
 
 /**
@@ -97,10 +97,10 @@ fun ImageRequest.Builder.videoFramePercent(
 ): ImageRequest.Builder = apply {
     require(framePercent == null || framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
     if (framePercent != null) {
-        removeParameter(VIDEO_FRAME_MICROS_KEY)
-        setParameter(key = VIDEO_FRAME_PERCENT_KEY, value = framePercent)
+        removeExtra(VIDEO_FRAME_MICROS_KEY)
+        setExtra(key = VIDEO_FRAME_PERCENT_KEY, value = framePercent)
     } else {
-        removeParameter(VIDEO_FRAME_PERCENT_KEY)
+        removeExtra(VIDEO_FRAME_PERCENT_KEY)
     }
 }
 
@@ -108,7 +108,7 @@ fun ImageRequest.Builder.videoFramePercent(
  * Get the time of the frame to extract from a video (by framePercent duration).
  */
 val ImageRequest.videoFramePercent: Float?
-    get() = parameters?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
+    get() = extras?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
 
 /**
  * Set the time of the frame to extract from a video (by framePercent duration).
@@ -120,10 +120,10 @@ fun ImageOptions.Builder.videoFramePercent(
 ) = apply {
     require(framePercent == null || framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
     if (framePercent != null) {
-        removeParameter(VIDEO_FRAME_MICROS_KEY)
-        setParameter(key = VIDEO_FRAME_PERCENT_KEY, value = framePercent)
+        removeExtra(VIDEO_FRAME_MICROS_KEY)
+        setExtra(key = VIDEO_FRAME_PERCENT_KEY, value = framePercent)
     } else {
-        removeParameter(VIDEO_FRAME_PERCENT_KEY)
+        removeExtra(VIDEO_FRAME_PERCENT_KEY)
     }
 }
 
@@ -131,7 +131,7 @@ fun ImageOptions.Builder.videoFramePercent(
  * Get the time of the frame to extract from a video (by percent duration).
  */
 val ImageOptions.videoFramePercent: Float?
-    get() = parameters?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
+    get() = extras?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
 
 
 /**
@@ -152,9 +152,9 @@ fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = 
                 option == OPTION_CLOSEST
     ) { "Invalid video frame option: $option." }
     if (option != null) {
-        setParameter(key = VIDEO_FRAME_OPTION_KEY, value = option)
+        setExtra(key = VIDEO_FRAME_OPTION_KEY, value = option)
     } else {
-        removeParameter(VIDEO_FRAME_OPTION_KEY)
+        removeExtra(VIDEO_FRAME_OPTION_KEY)
     }
 }
 
@@ -162,7 +162,7 @@ fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = 
  * Get the option for how to decode the video frame.
  */
 val ImageRequest.videoFrameOption: Int?
-    get() = parameters?.value(VIDEO_FRAME_OPTION_KEY) as Int?
+    get() = extras?.value(VIDEO_FRAME_OPTION_KEY) as Int?
 
 /**
  * Set the option for how to decode the video frame.
@@ -182,9 +182,9 @@ fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = 
                 option == OPTION_CLOSEST
     ) { "Invalid video frame option: $option." }
     if (option != null) {
-        setParameter(key = VIDEO_FRAME_OPTION_KEY, value = option)
+        setExtra(key = VIDEO_FRAME_OPTION_KEY, value = option)
     } else {
-        removeParameter(VIDEO_FRAME_OPTION_KEY)
+        removeExtra(VIDEO_FRAME_OPTION_KEY)
     }
 }
 
@@ -192,4 +192,4 @@ fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = 
  * Get the option for how to decode the video frame.
  */
 val ImageOptions.videoFrameOption: Int?
-    get() = parameters?.value(VIDEO_FRAME_OPTION_KEY) as Int?
+    get() = extras?.value(VIDEO_FRAME_OPTION_KEY) as Int?

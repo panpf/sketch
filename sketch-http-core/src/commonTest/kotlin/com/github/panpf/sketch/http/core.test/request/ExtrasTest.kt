@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.http.core.test.request
 
-import com.github.panpf.sketch.request.Parameters
-import com.github.panpf.sketch.request.Parameters.Entry
+import com.github.panpf.sketch.request.Extras
+import com.github.panpf.sketch.request.Extras.Entry
 import com.github.panpf.sketch.request.count
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.isNotEmpty
@@ -9,23 +9,23 @@ import com.github.panpf.sketch.request.merged
 import kotlin.test.Test
 import kotlin.test.*
 
-class ParametersTest {
+class ExtrasTest {
 
     @Test
     fun testSizeAndCount() {
-        Parameters.Builder().build().apply {
+        Extras.Builder().build().apply {
             assertEquals(0, size)
             assertEquals(0, count())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             assertEquals(1, size)
             assertEquals(1, count())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build().apply {
@@ -36,19 +36,19 @@ class ParametersTest {
 
     @Test
     fun testIsEmptyAndIsNotEmpty() {
-        Parameters.Builder().build().apply {
+        Extras.Builder().build().apply {
             assertTrue(isEmpty())
             assertFalse(isNotEmpty())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             assertFalse(isEmpty())
             assertTrue(isNotEmpty())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build().apply {
@@ -59,7 +59,7 @@ class ParametersTest {
 
     @Test
     fun testValueAndGetAndCount() {
-        Parameters.Builder().build().apply {
+        Extras.Builder().build().apply {
             assertNull(value("key1"))
             assertNull(this["key1"])
             assertNull(value("key2"))
@@ -67,7 +67,7 @@ class ParametersTest {
             assertEquals(0, count())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             assertEquals("value1", value("key1"))
@@ -77,7 +77,7 @@ class ParametersTest {
             assertEquals(1, count())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build().apply {
@@ -91,35 +91,35 @@ class ParametersTest {
 
     @Test
     fun testKey() {
-        Parameters.Builder().build().apply {
-            assertEquals("Parameters()", key)
+        Extras.Builder().build().apply {
+            assertEquals("Extras()", key)
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", null)
         }.build().apply {
-            assertEquals("Parameters(key1:null)", key)
+            assertEquals("Extras(key1:null)", key)
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
-            assertEquals("Parameters(key1:value1)", key)
+            assertEquals("Extras(key1:value1)", key)
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build().apply {
-            assertEquals("Parameters(key1:value1,key2:value2)", key)
+            assertEquals("Extras(key1:value1,key2:value2)", key)
         }
 
         // sorted
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key2", "value2")
             set("key1", "value1")
         }.build().apply {
-            assertEquals("Parameters(key1:value1,key2:value2)", key)
+            assertEquals("Extras(key1:value1,key2:value2)", key)
         }
     }
 
@@ -127,7 +127,7 @@ class ParametersTest {
 
     @Test
     fun testCacheKey() {
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2", null)
             set("key3", "value3", "cacheKey3")
@@ -136,7 +136,7 @@ class ParametersTest {
             assertNull(entry("key2")?.cacheKey)
             assertEquals("cacheKey3", entry("key3")?.cacheKey)
 
-            assertEquals("Parameters(key1:value1,key3:cacheKey3)", cacheKey)
+            assertEquals("Extras(key1:value1,key3:cacheKey3)", cacheKey)
             assertEquals(
                 mapOf(
                     "key1" to "value1",
@@ -146,7 +146,7 @@ class ParametersTest {
             )
         }
 
-        Parameters.Builder().build().apply {
+        Extras.Builder().build().apply {
             assertNull(entry("key1")?.cacheKey)
             assertNull(entry("key2")?.cacheKey)
             assertNull(entry("key3")?.cacheKey)
@@ -158,7 +158,7 @@ class ParametersTest {
 
     @Test
     fun testEntry() {
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set(key = "key1", value = "value1")
             set(key = "key2", value = "value2", cacheKey = null)
             set(key = "key3", value = "value3", cacheKey = "cacheKey3")
@@ -174,7 +174,7 @@ class ParametersTest {
 
     @Test
     fun testValues() {
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
@@ -183,7 +183,7 @@ class ParametersTest {
             )
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2", null)
             set("key3", "value3", "cacheKey3")
@@ -201,13 +201,13 @@ class ParametersTest {
 
     @Test
     fun testIterator() {
-        Parameters.Builder().build().joinToString {
+        Extras.Builder().build().joinToString {
             "${it.first}:${it.second.value}:${it.second.cacheKey}"
         }.apply {
             assertEquals("", this)
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().joinToString {
             "${it.first}:${it.second.value}:${it.second.cacheKey}"
@@ -215,7 +215,7 @@ class ParametersTest {
             assertEquals("key1:value1:value1", this)
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build().joinToString {
@@ -227,93 +227,93 @@ class ParametersTest {
 
     @Test
     fun testEquals() {
-        val parameters1 = Parameters.Builder().build()
-        val parameters11 = Parameters.Builder().build()
+        val extras1 = Extras.Builder().build()
+        val extras11 = Extras.Builder().build()
 
-        val parameters2 = Parameters.Builder().apply {
+        val extras2 = Extras.Builder().apply {
             set("key1", "value1")
         }.build()
-        val parameters21 = Parameters.Builder().apply {
+        val extras21 = Extras.Builder().apply {
             set("key1", "value1")
         }.build()
 
-        val parameters3 = Parameters.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2")
-        }.build()
-        val parameters31 = Parameters.Builder().apply {
+        val extras3 = Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build()
+        val extras31 = Extras.Builder().apply {
+            set("key1", "value1")
+            set("key2", "value2")
+        }.build()
 
-        assertNotSame(parameters1, parameters11)
-        assertNotSame(parameters2, parameters21)
-        assertNotSame(parameters3, parameters31)
+        assertNotSame(extras1, extras11)
+        assertNotSame(extras2, extras21)
+        assertNotSame(extras3, extras31)
 
-        assertEquals(parameters1, parameters1)
-        assertEquals(parameters1, parameters11)
-        assertEquals(parameters2, parameters21)
-        assertEquals(parameters3, parameters31)
+        assertEquals(extras1, extras1)
+        assertEquals(extras1, extras11)
+        assertEquals(extras2, extras21)
+        assertEquals(extras3, extras31)
 
-        assertNotEquals(parameters1, parameters2)
-        assertNotEquals(parameters1, parameters3)
-        assertNotEquals(parameters2, parameters3)
+        assertNotEquals(extras1, extras2)
+        assertNotEquals(extras1, extras3)
+        assertNotEquals(extras2, extras3)
 
-        assertNotEquals(parameters2, Any())
-        assertNotEquals(parameters2, null as Parameters?)
+        assertNotEquals(extras2, Any())
+        assertNotEquals(extras2, null as Extras?)
     }
 
     @Test
     fun testHashCode() {
-        val parameters1 = Parameters.Builder().build()
-        val parameters11 = Parameters.Builder().build()
+        val extras1 = Extras.Builder().build()
+        val extras11 = Extras.Builder().build()
 
-        val parameters2 = Parameters.Builder().apply {
+        val extras2 = Extras.Builder().apply {
             set("key1", "value1")
         }.build()
-        val parameters21 = Parameters.Builder().apply {
+        val extras21 = Extras.Builder().apply {
             set("key1", "value1")
         }.build()
 
-        val parameters3 = Parameters.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2")
-        }.build()
-        val parameters31 = Parameters.Builder().apply {
+        val extras3 = Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build()
+        val extras31 = Extras.Builder().apply {
+            set("key1", "value1")
+            set("key2", "value2")
+        }.build()
 
-        assertEquals(parameters1.hashCode(), parameters11.hashCode())
-        assertEquals(parameters2.hashCode(), parameters21.hashCode())
-        assertEquals(parameters3.hashCode(), parameters31.hashCode())
+        assertEquals(extras1.hashCode(), extras11.hashCode())
+        assertEquals(extras2.hashCode(), extras21.hashCode())
+        assertEquals(extras3.hashCode(), extras31.hashCode())
 
-        assertNotEquals(parameters1.hashCode(), parameters2.hashCode())
-        assertNotEquals(parameters1.hashCode(), parameters3.hashCode())
-        assertNotEquals(parameters2.hashCode(), parameters3.hashCode())
+        assertNotEquals(extras1.hashCode(), extras2.hashCode())
+        assertNotEquals(extras1.hashCode(), extras3.hashCode())
+        assertNotEquals(extras2.hashCode(), extras3.hashCode())
     }
 
     @Test
     fun testToString() {
-        Parameters.Builder().build().apply {
-            assertEquals("Parameters({})", toString())
+        Extras.Builder().build().apply {
+            assertEquals("Extras({})", toString())
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
 
-        Parameters.Builder().apply {
+        Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
                 toString()
             )
         }
@@ -321,45 +321,45 @@ class ParametersTest {
 
     @Test
     fun testNewBuilder() {
-        Parameters.Builder().build().apply {
-            assertEquals("Parameters({})", toString())
+        Extras.Builder().build().apply {
+            assertEquals("Extras({})", toString())
         }.newBuilder().build().apply {
-            assertEquals("Parameters({})", toString())
+            assertEquals("Extras({})", toString())
         }.newBuilder {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }.newBuilder {
             set("key2", "value2")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
                 toString()
             )
         }
     }
 
     @Test
-    fun testNewParameters() {
-        Parameters.Builder().build().apply {
-            assertEquals("Parameters({})", toString())
-        }.newParameters().apply {
-            assertEquals("Parameters({})", toString())
-        }.newParameters {
+    fun testNewExtras() {
+        Extras.Builder().build().apply {
+            assertEquals("Extras({})", toString())
+        }.newExtras().apply {
+            assertEquals("Extras({})", toString())
+        }.newExtras {
             set("key1", "value1")
         }.apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
-        }.newParameters {
+        }.newExtras {
             set("key2", "value2", "value2")
         }.apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key2=Entry(value=value2, cacheKey=value2, requestKey=value2)})",
                 toString()
             )
         }
@@ -367,88 +367,88 @@ class ParametersTest {
 
     @Test
     fun testMerged() {
-        val parameters0 = Parameters.Builder().build().apply {
-            assertEquals("Parameters({})", toString())
+        val extras0 = Extras.Builder().build().apply {
+            assertEquals("Extras({})", toString())
         }
 
-        val parameters1 = Parameters.Builder().apply {
+        val extras1 = Extras.Builder().apply {
             set("key1", "value1")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
 
-        val parameters11 = Parameters.Builder().apply {
+        val extras11 = Extras.Builder().apply {
             set("key1", "value11")
         }.build().apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value11, cacheKey=value11, requestKey=value11)})",
+                "Extras({key1=Entry(value=value11, cacheKey=value11, requestKey=value11)})",
                 toString()
             )
         }
 
-        val parameters2 = Parameters.Builder().apply {
+        val extras2 = Extras.Builder().apply {
             set("key21", "value21")
             set("key22", "value22")
         }.build().apply {
             assertEquals(
-                "Parameters({key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
+                "Extras({key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
                 toString()
             )
         }
 
-        parameters0.merged(parameters0).apply {
-            assertEquals("Parameters({})", toString())
+        extras0.merged(extras0).apply {
+            assertEquals("Extras({})", toString())
         }
-        parameters0.merged(parameters1).apply {
+        extras0.merged(extras1).apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
                 toString()
             )
         }
-        parameters0.merged(parameters2).apply {
+        extras0.merged(extras2).apply {
             assertEquals(
-                "Parameters({key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
-                toString()
-            )
-        }
-
-        parameters1.merged(parameters2).apply {
-            assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
+                "Extras({key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
                 toString()
             )
         }
 
-        assertNotNull(parameters1["key1"])
-        assertNotNull(parameters11["key1"])
-        assertNotEquals(parameters1["key1"], parameters11["key1"])
-
-        parameters1.merged(parameters11).apply {
+        extras1.merged(extras2).apply {
             assertEquals(
-                "Parameters({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
-                toString()
-            )
-        }
-        parameters11.merged(parameters1).apply {
-            assertEquals(
-                "Parameters({key1=Entry(value=value11, cacheKey=value11, requestKey=value11)})",
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1), key21=Entry(value=value21, cacheKey=value21, requestKey=value21), key22=Entry(value=value22, cacheKey=value22, requestKey=value22)})",
                 toString()
             )
         }
 
-        parameters1.merged(null).apply {
-            assertSame(parameters1, this)
+        assertNotNull(extras1["key1"])
+        assertNotNull(extras11["key1"])
+        assertNotEquals(extras1["key1"], extras11["key1"])
+
+        extras1.merged(extras11).apply {
+            assertEquals(
+                "Extras({key1=Entry(value=value1, cacheKey=value1, requestKey=value1)})",
+                toString()
+            )
         }
-        null.merged(parameters1).apply {
-            assertSame(parameters1, this)
+        extras11.merged(extras1).apply {
+            assertEquals(
+                "Extras({key1=Entry(value=value11, cacheKey=value11, requestKey=value11)})",
+                toString()
+            )
+        }
+
+        extras1.merged(null).apply {
+            assertSame(extras1, this)
+        }
+        null.merged(extras1).apply {
+            assertSame(extras1, this)
         }
     }
 
     /** Returns a map of keys to non-null cache keys. Keys with a null cache key are filtered. */
-    private fun Parameters.cacheKeys(): Map<String, String> {
+    private fun Extras.cacheKeys(): Map<String, String> {
         return if (isEmpty()) {
             emptyMap()
         } else {

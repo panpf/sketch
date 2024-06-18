@@ -64,9 +64,9 @@ const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"
  */
 fun ImageRequest.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageRequest.Builder = apply {
     if (bitmapConfig != null) {
-        setParameter(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
+        setExtra(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
     } else {
-        removeParameter(BITMAP_CONFIG_KEY)
+        removeExtra(BITMAP_CONFIG_KEY)
     }
 }
 
@@ -84,7 +84,7 @@ fun ImageRequest.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageRequest
  * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
  */
 val ImageRequest.bitmapConfig: BitmapConfig?
-    get() = BitmapConfig.valueOf(parameters?.value<String>(BITMAP_CONFIG_KEY))
+    get() = BitmapConfig.valueOf(extras?.value<String>(BITMAP_CONFIG_KEY))
 
 
 const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"
@@ -95,9 +95,9 @@ const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Builder = apply {
     if (named != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setParameter(key = COLOR_SPACE_NAMED_KEY, value = named.name)
+        setExtra(key = COLOR_SPACE_NAMED_KEY, value = named.name)
     } else {
-        removeParameter(COLOR_SPACE_NAMED_KEY)
+        removeExtra(COLOR_SPACE_NAMED_KEY)
     }
 }
 
@@ -108,7 +108,7 @@ fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Buil
  */
 @get:RequiresApi(Build.VERSION_CODES.O)
 val ImageRequest.colorSpace: ColorSpace?
-    get() = parameters?.value<String>(COLOR_SPACE_NAMED_KEY)
+    get() = extras?.value<String>(COLOR_SPACE_NAMED_KEY)
         ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
 const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"
@@ -129,9 +129,9 @@ const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"
 fun ImageRequest.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageRequest.Builder =
     apply {
         if (inPreferQualityOverSpeed == true) {
-            setParameter(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
+            setExtra(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
         } else {
-            removeParameter(PREFER_QUALITY_OVER_SPEED_KEY)
+            removeExtra(PREFER_QUALITY_OVER_SPEED_KEY)
         }
     }
 
@@ -149,4 +149,4 @@ fun ImageRequest.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
  */
 @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
 val ImageRequest.preferQualityOverSpeed: Boolean
-    get() = parameters?.value<String>(PREFER_QUALITY_OVER_SPEED_KEY)?.toBoolean() == true
+    get() = extras?.value<String>(PREFER_QUALITY_OVER_SPEED_KEY)?.toBoolean() == true

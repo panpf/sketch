@@ -30,7 +30,7 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.Parameters.Entry
+import com.github.panpf.sketch.request.Extras.Entry
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.keyOrNull
 import kotlin.jvm.JvmField
@@ -38,8 +38,7 @@ import kotlin.jvm.JvmField
 /**
  * A map of generic values that can be used to pass custom data to Fetcher and Decoder.
  */
-// TODO rename Extras
-class Parameters private constructor(
+class Extras private constructor(
     val entries: Map<String, Entry>
 ) : Iterable<Pair<String, Entry>>, Key {
 
@@ -53,7 +52,7 @@ class Parameters private constructor(
             .map { "${it.key}:${it.value.value}" }
             .sorted()
             .joinToString(separator = ",")
-        "Parameters($keys)"
+        "Extras($keys)"
     }
 
     val requestKey: String? by lazy {
@@ -62,7 +61,7 @@ class Parameters private constructor(
             .map { "${it.key}:${it.value.requestKey}" }
             .sorted()
             .joinToString(separator = ",")
-        if (keys.isNotEmpty()) "Parameters($keys)" else null
+        if (keys.isNotEmpty()) "Extras($keys)" else null
     }
 
     val cacheKey: String? by lazy {
@@ -71,7 +70,7 @@ class Parameters private constructor(
             .map { "${it.key}:${it.value.cacheKey}" }
             .sorted()
             .joinToString(separator = ",")
-        if (keys.isNotEmpty()) "Parameters($keys)" else null
+        if (keys.isNotEmpty()) "Extras($keys)" else null
     }
 
     /** Returns the entry associated with [key] or null if [key] has no mapping. */
@@ -95,22 +94,22 @@ class Parameters private constructor(
         }
     }
 
-    /** Returns an [Iterator] over the entries in the [Parameters]. */
+    /** Returns an [Iterator] over the entries in the [Extras]. */
     override operator fun iterator(): Iterator<Pair<String, Entry>> {
         return entries.map { (key, value) -> key to value }.iterator()
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is Parameters && entries == other.entries
+        return other is Extras && entries == other.entries
     }
 
     override fun hashCode() = entries.hashCode()
 
-    override fun toString() = "Parameters($entries)"
+    override fun toString() = "Extras($entries)"
 
     /**
-     * Create a new [Parameters.Builder] based on the current [Parameters].
+     * Create a new [Extras.Builder] based on the current [Extras].
      */
     fun newBuilder(
         configBlock: (Builder.() -> Unit)? = null
@@ -119,11 +118,11 @@ class Parameters private constructor(
     }
 
     /**
-     * Create a new [Parameters] based on the current [Parameters].
+     * Create a new [Extras] based on the current [Extras].
      */
-    fun newParameters(
+    fun newExtras(
         configBlock: (Builder.() -> Unit)? = null
-    ): Parameters = Builder(this).apply {
+    ): Extras = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
 
@@ -141,8 +140,8 @@ class Parameters private constructor(
             entries = mutableMapOf()
         }
 
-        constructor(parameters: Parameters) {
-            entries = parameters.entries.toMutableMap()
+        constructor(extras: Extras) {
+            entries = extras.entries.toMutableMap()
         }
 
         /**
@@ -174,27 +173,27 @@ class Parameters private constructor(
         @Suppress("UNCHECKED_CAST")
         fun <T> value(key: String): T? = entries[key]?.value as T?
 
-        /** Create a new [Parameters] instance. */
-        fun build() = Parameters(entries.toMap())
+        /** Create a new [Extras] instance. */
+        fun build() = Extras(entries.toMap())
     }
 
     companion object {
         @JvmField
         @Suppress("unused")
-        val EMPTY = Parameters()
+        val EMPTY = Extras()
     }
 }
 
 /** Returns the number of parameters in this object. */
-fun Parameters.count(): Int = size
+fun Extras.count(): Int = size
 
 /** Return true when the set contains elements. */
-fun Parameters.isNotEmpty(): Boolean = !isEmpty()
+fun Extras.isNotEmpty(): Boolean = !isEmpty()
 
 /** Returns the value associated with [key] or null if [key] has no mapping. */
-operator fun Parameters.get(key: String): Any? = value(key)
+operator fun Extras.get(key: String): Any? = value(key)
 
-fun Parameters?.merged(other: Parameters?): Parameters? {
+fun Extras?.merged(other: Extras?): Extras? {
     if (this == null || other == null) {
         return this ?: other
     }

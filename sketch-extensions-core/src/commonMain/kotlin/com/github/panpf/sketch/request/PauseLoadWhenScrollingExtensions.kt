@@ -24,9 +24,9 @@ private const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_whe
 fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): ImageRequest.Builder =
     apply {
         if (enabled == true) {
-            setParameter(key = PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, value = true, cacheKey = null)
+            setExtra(key = PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, value = true, cacheKey = null)
         } else {
-            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
+            removeExtra(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
         }
     }
 
@@ -34,7 +34,7 @@ fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): Image
  * Returns true if pause load when scrolling has been enabled
  */
 val ImageRequest.isPauseLoadWhenScrolling: Boolean
-    get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
+    get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
 
 /**
  * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
@@ -42,13 +42,13 @@ val ImageRequest.isPauseLoadWhenScrolling: Boolean
 fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): ImageOptions.Builder =
     apply {
         if (enabled == true) {
-            setParameter(
+            setExtra(
                 key = PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY,
                 value = true,
                 cacheKey = null,
             )
         } else {
-            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
+            removeExtra(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
         }
     }
 
@@ -56,7 +56,7 @@ fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): Image
  * Returns true if pause load when scrolling has been enabled
  */
 val ImageOptions.isPauseLoadWhenScrolling: Boolean
-    get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
+    get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
 
 
 /**
@@ -65,9 +65,9 @@ val ImageOptions.isPauseLoadWhenScrolling: Boolean
 fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): ImageRequest.Builder =
     apply {
         if (ignore == true) {
-            setParameter(key = PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, value = true, cacheKey = null)
+            setExtra(key = PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, value = true, cacheKey = null)
         } else {
-            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
+            removeExtra(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
         }
     }
 
@@ -75,7 +75,7 @@ fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): 
  * Returns true if ignore pause load when scrolling has been enabled
  */
 val ImageRequest.isIgnoredPauseLoadWhenScrolling: Boolean
-    get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
+    get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
 
 /**
  * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
@@ -83,9 +83,9 @@ val ImageRequest.isIgnoredPauseLoadWhenScrolling: Boolean
 fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): ImageOptions.Builder =
     apply {
         if (ignore == true) {
-            setParameter(key = PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, value = true, cacheKey = null)
+            setExtra(key = PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, value = true, cacheKey = null)
         } else {
-            removeParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
+            removeExtra(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
         }
     }
 
@@ -93,4 +93,4 @@ fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): 
  * Returns true if ignore pause load when scrolling has been enabled
  */
 val ImageOptions.isIgnoredPauseLoadWhenScrolling: Boolean
-    get() = parameters?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
+    get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true

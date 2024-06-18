@@ -63,7 +63,7 @@ data class ImageOptions (
     /**
      * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
      */
-    val parameters: Parameters?,
+    val extras: Extras?,
 
 
     /**
@@ -202,7 +202,7 @@ data class ImageOptions (
      */
     fun isEmpty(): Boolean =
         depthHolder == null
-                && parameters?.isEmpty() != false
+                && extras?.isEmpty() != false
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
                 && sizeResolver == null
@@ -224,7 +224,7 @@ data class ImageOptions (
     class Builder {
 
         private var depthHolder: DepthHolder? = null
-        private var parametersBuilder: Parameters.Builder? = null
+        private var extrasBuilder: Extras.Builder? = null
 
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
@@ -251,7 +251,7 @@ data class ImageOptions (
 
         internal constructor(options: ImageOptions) {
             this.depthHolder = options.depthHolder
-            this.parametersBuilder = options.parameters?.newBuilder()
+            this.extrasBuilder = options.extras?.newBuilder()
 
             this.httpHeadersBuilder = options.httpHeaders?.newBuilder()
             this.downloadCachePolicy = options.downloadCachePolicy
@@ -287,20 +287,20 @@ data class ImageOptions (
         /**
          * Bulk set parameters for this request
          */
-        fun parameters(parameters: Parameters?): Builder = apply {
-            this.parametersBuilder = parameters?.newBuilder()
+        fun extras(extras: Extras?): Builder = apply {
+            this.extrasBuilder = extras?.newBuilder()
         }
 
         /**
          * Set a parameter for this request.
          */
-        fun setParameter(
+        fun setExtra(
             key: String,
             value: Any?,
             cacheKey: String? = keyOrNull(value),
             requestKey: String? = keyOrNull(value),
         ): Builder = apply {
-            this.parametersBuilder = (this.parametersBuilder ?: Parameters.Builder()).apply {
+            this.extrasBuilder = (this.extrasBuilder ?: Extras.Builder()).apply {
                 set(key, value, cacheKey, requestKey)
             }
         }
@@ -308,8 +308,8 @@ data class ImageOptions (
         /**
          * Remove a parameter from this request.
          */
-        fun removeParameter(key: String): Builder = apply {
-            this.parametersBuilder?.remove(key)
+        fun removeExtra(key: String): Builder = apply {
+            this.extrasBuilder?.remove(key)
         }
 
 
@@ -649,8 +649,8 @@ data class ImageOptions (
             if (this.depthHolder == null) {
                 this.depthHolder = options.depthHolder
             }
-            options.parameters?.let {
-                parametersBuilder = parametersBuilder?.build().merged(it)?.newBuilder()
+            options.extras?.let {
+                extrasBuilder = extrasBuilder?.build().merged(it)?.newBuilder()
             }
 
             options.httpHeaders?.let {
@@ -709,12 +709,12 @@ data class ImageOptions (
 
 
         fun build(): ImageOptions {
-            val parameters = parametersBuilder?.build()?.takeIf { it.isNotEmpty() }
+            val extras = extrasBuilder?.build()?.takeIf { it.isNotEmpty() }
             val httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() }
             val transformations = transformations?.takeIf { it.isNotEmpty() }
             return ImageOptions(
                 depthHolder = depthHolder,
-                parameters = parameters,
+                extras = extras,
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,

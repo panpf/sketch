@@ -22,6 +22,7 @@ request:
 * change: bitmapConfig、colorSpace、preferQualityOverSpeed、placeholder(Int)、fallback(Int)、error(Int) 等
   Android 平台特有 API 以扩展函数的形式提供
 * change: resizeApplyToDrawable 重命名为 resizeOnDraw
+* change: Parameters 重命名为 Extras
 * new: 新增 'sizeMultiplier: Float' 属性，用于设置图片大小的缩放比例
 * new: 新增 'allowNullImage: Boolean' 属性
 

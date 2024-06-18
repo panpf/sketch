@@ -50,7 +50,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
@@ -132,7 +132,7 @@ class ImageRequestTest {
             )
 
             Assert.assertEquals(NETWORK, this.depthHolder.depth)
-            Assert.assertNull(this.parameters)
+            Assert.assertNull(this.extras)
             Assert.assertNull(this.httpHeaders)
             Assert.assertEquals(ENABLED, this.downloadCachePolicy)
             Assert.assertNull(this.bitmapConfig)
@@ -380,7 +380,7 @@ class ImageRequestTest {
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertEquals(NETWORK, depthHolder.depth)
-                Assert.assertNull(parameters)
+                Assert.assertNull(extras)
             }
 
             merge(ImageOptions {
@@ -454,56 +454,56 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testParameters() {
+    fun testExtras() {
         val context1 = getTestContext()
         val uri = MyImages.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
-                Assert.assertNull(parameters)
+                Assert.assertNull(extras)
             }
 
-            /* parameters() */
-            parameters(Parameters())
+            /* extras() */
+            extras(Extras())
             build().apply {
-                Assert.assertNull(parameters)
+                Assert.assertNull(extras)
             }
 
-            parameters(Parameters.Builder().set("key1", "value1").build())
+            extras(Extras.Builder().set("key1", "value1").build())
             build().apply {
-                Assert.assertEquals(1, parameters?.size)
-                Assert.assertEquals("value1", parameters?.get("key1"))
+                Assert.assertEquals(1, extras?.size)
+                Assert.assertEquals("value1", extras?.get("key1"))
             }
 
-            parameters(null)
+            extras(null)
             build().apply {
-                Assert.assertNull(parameters)
+                Assert.assertNull(extras)
             }
 
             /* setParameter(), removeParameter() */
-            setParameter("key1", "value1")
-            setParameter("key2", "value2", "value2")
+            setExtra("key1", "value1")
+            setExtra("key2", "value2", "value2")
             build().apply {
-                Assert.assertEquals(2, parameters?.size)
-                Assert.assertEquals("value1", parameters?.get("key1"))
-                Assert.assertEquals("value2", parameters?.get("key2"))
+                Assert.assertEquals(2, extras?.size)
+                Assert.assertEquals("value1", extras?.get("key1"))
+                Assert.assertEquals("value2", extras?.get("key2"))
             }
 
-            setParameter("key2", "value2.1", null)
+            setExtra("key2", "value2.1", null)
             build().apply {
-                Assert.assertEquals(2, parameters?.size)
-                Assert.assertEquals("value1", parameters?.get("key1"))
-                Assert.assertEquals("value2.1", parameters?.get("key2"))
+                Assert.assertEquals(2, extras?.size)
+                Assert.assertEquals("value1", extras?.get("key1"))
+                Assert.assertEquals("value2.1", extras?.get("key2"))
             }
 
-            removeParameter("key2")
+            removeExtra("key2")
             build().apply {
-                Assert.assertEquals(1, parameters?.size)
-                Assert.assertEquals("value1", parameters?.get("key1"))
+                Assert.assertEquals(1, extras?.size)
+                Assert.assertEquals("value1", extras?.get("key1"))
             }
 
-            removeParameter("key1")
+            removeExtra("key1")
             build().apply {
-                Assert.assertNull(parameters)
+                Assert.assertNull(extras)
             }
         }
     }
@@ -1616,8 +1616,8 @@ class ImageRequestTest {
                 depth(LOCAL, "test")
             },
             ScopeAction {
-                setParameter("type", "list")
-                setParameter("big", "true")
+                setExtra("type", "list")
+                setExtra("big", "true")
             },
             ScopeAction {
                 setHttpHeader("from", "china")

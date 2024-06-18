@@ -37,7 +37,7 @@ class ImageRequestViewExtensionsTest {
             Assert.assertEquals(ViewLifecycleResolver(imageView1), this.lifecycleResolver)
 
             Assert.assertEquals(NETWORK, this.depthHolder.depth)
-            Assert.assertNull(this.parameters)
+            Assert.assertNull(this.extras)
             Assert.assertNull(this.httpHeaders)
             Assert.assertEquals(ENABLED, this.downloadCachePolicy)
             Assert.assertNull(this.bitmapConfig)

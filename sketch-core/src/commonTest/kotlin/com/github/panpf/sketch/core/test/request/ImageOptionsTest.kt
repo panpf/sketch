@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.isNotEmpty
@@ -93,7 +93,7 @@ class ImageOptionsTest {
             assertTrue(this.isEmpty())
             assertFalse(this.isNotEmpty())
             assertNull(this.depthHolder)
-            assertNull(this.parameters)
+            assertNull(this.extras)
             assertNull(this.httpHeaders)
             assertNull(this.downloadCachePolicy)
             assertNull(this.sizeResolver)
@@ -120,11 +120,11 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            setParameter("key", "value")
+            setExtra("key", "value")
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertNotNull(this.parameters)
+            assertNotNull(this.extras)
         }
 
         ImageOptions {
@@ -330,15 +330,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            assertEquals(null, this.parameters)
+            assertEquals(null, this.extras)
         }.merged(ImageOptions {
-            setParameter("key", "value")
+            setExtra("key", "value")
         }).apply {
-            assertEquals("value", this.parameters?.get("key"))
+            assertEquals("value", this.extras?.get("key"))
         }.merged(ImageOptions {
-            setParameter("key", "value1")
+            setExtra("key", "value1")
         }).apply {
-            assertEquals("value", this.parameters?.get("key"))
+            assertEquals("value", this.extras?.get("key"))
         }
 
         ImageOptions().apply {
@@ -593,7 +593,7 @@ class ImageOptionsTest {
                 depth(LOCAL)
             },
             ScopeAction {
-                setParameter("key", "value")
+                setExtra("key", "value")
             },
             ScopeAction {
                 setHttpHeader("key1", "value1")
@@ -721,54 +721,54 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testParameters() {
+    fun testExtras() {
         ImageOptions.Builder().apply {
             build().apply {
-                assertNull(parameters)
+                assertNull(extras)
             }
 
-            /* parameters() */
-            parameters(Parameters())
+            /* extras() */
+            extras(Extras())
             build().apply {
-                assertNull(parameters)
+                assertNull(extras)
             }
 
-            parameters(Parameters.Builder().set("key1", "value1").build())
+            extras(Extras.Builder().set("key1", "value1").build())
             build().apply {
-                assertEquals(1, parameters?.size)
-                assertEquals("value1", parameters?.get("key1"))
+                assertEquals(1, extras?.size)
+                assertEquals("value1", extras?.get("key1"))
             }
 
-            parameters(null)
+            extras(null)
             build().apply {
-                assertNull(parameters)
+                assertNull(extras)
             }
 
             /* setParameter(), removeParameter() */
-            setParameter("key1", "value1")
-            setParameter("key2", "value2", "value2")
+            setExtra("key1", "value1")
+            setExtra("key2", "value2", "value2")
             build().apply {
-                assertEquals(2, parameters?.size)
-                assertEquals("value1", parameters?.get("key1"))
-                assertEquals("value2", parameters?.get("key2"))
+                assertEquals(2, extras?.size)
+                assertEquals("value1", extras?.get("key1"))
+                assertEquals("value2", extras?.get("key2"))
             }
 
-            setParameter("key2", "value2.1", null)
+            setExtra("key2", "value2.1", null)
             build().apply {
-                assertEquals(2, parameters?.size)
-                assertEquals("value1", parameters?.get("key1"))
-                assertEquals("value2.1", parameters?.get("key2"))
+                assertEquals(2, extras?.size)
+                assertEquals("value1", extras?.get("key1"))
+                assertEquals("value2.1", extras?.get("key2"))
             }
 
-            removeParameter("key2")
+            removeExtra("key2")
             build().apply {
-                assertEquals(1, parameters?.size)
-                assertEquals("value1", parameters?.get("key1"))
+                assertEquals(1, extras?.size)
+                assertEquals("value1", extras?.get("key1"))
             }
 
-            removeParameter("key1")
+            removeExtra("key1")
             build().apply {
-                assertNull(parameters)
+                assertNull(extras)
             }
         }
     }

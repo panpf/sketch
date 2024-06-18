@@ -44,14 +44,14 @@ fun ImageRequest.Builder.animatedTransformation(
     animatedTransformation: AnimatedTransformation?
 ): ImageRequest.Builder = apply {
     if (animatedTransformation != null) {
-        setParameter(
+        setExtra(
             key = ANIMATED_TRANSFORMATION_KEY,
             value = animatedTransformation,
             cacheKey = null,
             requestKey = animatedTransformation.key
         )
     } else {
-        removeParameter(ANIMATED_TRANSFORMATION_KEY)
+        removeExtra(ANIMATED_TRANSFORMATION_KEY)
     }
 }
 
@@ -59,7 +59,7 @@ fun ImageRequest.Builder.animatedTransformation(
  * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  */
 val ImageRequest.animatedTransformation: AnimatedTransformation?
-    get() = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
+    get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
 
 /**
  * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
@@ -70,14 +70,14 @@ fun ImageOptions.Builder.animatedTransformation(
     animatedTransformation: AnimatedTransformation?
 ): ImageOptions.Builder = apply {
     if (animatedTransformation != null) {
-        setParameter(
+        setExtra(
             key = ANIMATED_TRANSFORMATION_KEY,
             value = animatedTransformation,
             cacheKey = null,
             requestKey = animatedTransformation.key
         )
     } else {
-        removeParameter(ANIMATED_TRANSFORMATION_KEY)
+        removeExtra(ANIMATED_TRANSFORMATION_KEY)
     }
 }
 
@@ -86,7 +86,7 @@ fun ImageOptions.Builder.animatedTransformation(
  */
 // TODO Support compose
 val ImageOptions.animatedTransformation: AnimatedTransformation?
-    get() = parameters?.value(ANIMATED_TRANSFORMATION_KEY)
+    get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
 
 fun animatable2CompatCallbackOf(
     onStart: (() -> Unit)?,

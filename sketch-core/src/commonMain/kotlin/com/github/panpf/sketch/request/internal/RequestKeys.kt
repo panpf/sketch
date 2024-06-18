@@ -22,7 +22,7 @@ import com.github.panpf.sketch.util.Size
 
 internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendDepth()
-    .appendRequestParameters()
+    .appendRequestExtras()
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
     .appendSize()
@@ -45,7 +45,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .build()
 
 internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
-    .appendCacheParameters()
+    .appendCacheExtras()
     .appendSize(size)
     .appendSizeMultiplier()
     .appendPrecision()
@@ -80,15 +80,15 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
         }
     }
 
-    fun appendRequestParameters(): ImageRequestKeyBuilder = apply {
-        request.parameters?.requestKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
-            appendQueryParameter("_parameters", parameterKey)
+    fun appendRequestExtras(): ImageRequestKeyBuilder = apply {
+        request.extras?.requestKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
+            appendQueryParameter("_extras", parameterKey)
         }
     }
 
-    fun appendCacheParameters(): ImageRequestKeyBuilder = apply {
-        request.parameters?.cacheKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
-            appendQueryParameter("_parameters", parameterKey)
+    fun appendCacheExtras(): ImageRequestKeyBuilder = apply {
+        request.extras?.cacheKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
+            appendQueryParameter("_extras", parameterKey)
         }
     }
 

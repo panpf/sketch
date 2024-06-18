@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.request.Parameters
+import com.github.panpf.sketch.request.Extras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
@@ -32,7 +32,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     override suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,
-        parameters: Parameters?
+        extras: Extras?
     ): HttpStack.Response {
         val result = withContext(Dispatchers.IO) {
             runCatching {

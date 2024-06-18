@@ -1576,14 +1576,14 @@ class ImageRequestExecuteTest {
 
         ImageRequest(context, MyImages.jpeg.uri)
             .let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-                Assert.assertNull(request.parameters?.get("TestRequestInterceptor"))
+                Assert.assertNull(request.extras?.get("TestRequestInterceptor"))
             }
         ImageRequest(context, MyImages.jpeg.uri) {
             components {
                 addRequestInterceptor(TestRequestInterceptor())
             }
         }.let { runBlocking { it.execute() } }.asOrThrow<ImageResult.Success>().apply {
-            Assert.assertEquals("true", request.parameters?.get("TestRequestInterceptor"))
+            Assert.assertEquals("true", request.extras?.get("TestRequestInterceptor"))
         }
 
         ImageRequest(context, MyImages.jpeg.uri) {

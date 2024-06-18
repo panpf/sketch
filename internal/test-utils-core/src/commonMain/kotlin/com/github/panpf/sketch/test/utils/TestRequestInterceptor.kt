@@ -25,7 +25,7 @@ class TestRequestInterceptor(override val sortWeight: Int = 0) : RequestIntercep
 
     override suspend fun intercept(chain: Chain): Result<ImageData> {
         return chain.proceed(chain.request.newRequest {
-            setParameter("TestRequestInterceptor", "true")
+            setExtra("TestRequestInterceptor", "true")
         })
     }
 

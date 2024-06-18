@@ -44,13 +44,13 @@ fun ImageOptions.Builder.base64Specification(
     specification: Base64Specification?
 ): ImageOptions.Builder = apply {
     if (specification != null) {
-        setParameter(
+        setExtra(
             key = BASE64_SPECIFICATION_KEY,
             value = specification.name,
             cacheKey = null
         )
     } else {
-        removeParameter(BASE64_SPECIFICATION_KEY)
+        removeExtra(BASE64_SPECIFICATION_KEY)
     }
 }
 
@@ -58,22 +58,22 @@ fun ImageRequest.Builder.base64Specification(
     specification: Base64Specification?
 ): ImageRequest.Builder = apply {
     if (specification != null) {
-        setParameter(
+        setExtra(
             key = BASE64_SPECIFICATION_KEY,
             value = specification.name,
             cacheKey = null
         )
     } else {
-        removeParameter(BASE64_SPECIFICATION_KEY)
+        removeExtra(BASE64_SPECIFICATION_KEY)
     }
 }
 
 val ImageOptions.base64Specification: Base64Specification?
-    get() = parameters?.value<String>(BASE64_SPECIFICATION_KEY)
+    get() = extras?.value<String>(BASE64_SPECIFICATION_KEY)
         ?.let { Base64Specification.valueOf(it) }
 
 val ImageRequest.base64Specification: Base64Specification?
-    get() = parameters?.value<String>(BASE64_SPECIFICATION_KEY)
+    get() = extras?.value<String>(BASE64_SPECIFICATION_KEY)
         ?.let { Base64Specification.valueOf(it) }
 
 /**

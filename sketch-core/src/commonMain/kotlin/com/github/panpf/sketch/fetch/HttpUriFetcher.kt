@@ -94,7 +94,7 @@ open class HttpUriFetcher(
 
             // open connection
             val response = try {
-                sketch.httpStack.getResponse(url, request.httpHeaders, request.parameters)
+                sketch.httpStack.getResponse(url, request.httpHeaders, request.extras)
             } catch (e: Throwable) {
                 return@withContext Result.failure(e)
             }

@@ -236,7 +236,7 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     }
     if (definedRequestOptions != other.definedRequestOptions) return "definedRequestOptions different: '${definedRequestOptions}' vs '${other.definedRequestOptions}'"
     if (depthHolder != other.depthHolder) return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
-    if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"
+    if (extras != other.extras) return "extras different: '${extras}' vs '${other.extras}'"
     if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
     if (downloadCachePolicy != other.downloadCachePolicy) return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
     if (sizeResolver != other.sizeResolver) return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
@@ -263,7 +263,7 @@ fun ImageOptions?.difference(other: ImageOptions?): String {
     if (other == null) return "Other is null"
     if (this === other) return "Same instance"
     if (depthHolder != other.depthHolder) return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
-    if (parameters != other.parameters) return "parameters different: '${parameters}' vs '${other.parameters}'"
+    if (extras != other.extras) return "extras different: '${extras}' vs '${other.extras}'"
     if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
     if (downloadCachePolicy != other.downloadCachePolicy) return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
     if (sizeResolver != other.sizeResolver) return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
