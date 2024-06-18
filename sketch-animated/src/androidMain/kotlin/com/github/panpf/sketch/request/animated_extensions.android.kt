@@ -40,13 +40,19 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
  *
  * Default: `null`
  */
-fun ImageRequest.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): ImageRequest.Builder {
-    return setParameter(
-        key = ANIMATED_TRANSFORMATION_KEY,
-        value = animatedTransformation,
-        cacheKey = null,
-        requestKey = animatedTransformation.key
-    )
+fun ImageRequest.Builder.animatedTransformation(
+    animatedTransformation: AnimatedTransformation?
+): ImageRequest.Builder = apply {
+    if (animatedTransformation != null) {
+        setParameter(
+            key = ANIMATED_TRANSFORMATION_KEY,
+            value = animatedTransformation,
+            cacheKey = null,
+            requestKey = animatedTransformation.key
+        )
+    } else {
+        removeParameter(ANIMATED_TRANSFORMATION_KEY)
+    }
 }
 
 /**
@@ -60,13 +66,19 @@ val ImageRequest.animatedTransformation: AnimatedTransformation?
  *
  * Default: `null`
  */
-fun ImageOptions.Builder.animatedTransformation(animatedTransformation: AnimatedTransformation): ImageOptions.Builder {
-    return setParameter(
-        key = ANIMATED_TRANSFORMATION_KEY,
-        value = animatedTransformation,
-        cacheKey = null,
-        requestKey = animatedTransformation.key
-    )
+fun ImageOptions.Builder.animatedTransformation(
+    animatedTransformation: AnimatedTransformation?
+): ImageOptions.Builder = apply {
+    if (animatedTransformation != null) {
+        setParameter(
+            key = ANIMATED_TRANSFORMATION_KEY,
+            value = animatedTransformation,
+            cacheKey = null,
+            requestKey = animatedTransformation.key
+        )
+    } else {
+        removeParameter(ANIMATED_TRANSFORMATION_KEY)
+    }
 }
 
 /**

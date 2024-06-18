@@ -31,10 +31,14 @@ private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
  *
  * Default: 0
  */
-fun ImageRequest.Builder.videoFrameMicros(frameMicros: Long): ImageRequest.Builder = apply {
-    require(frameMicros >= 0) { "frameMicros must be >= 0." }
-    removeParameter(VIDEO_FRAME_PERCENT_KEY)
-    setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
+fun ImageRequest.Builder.videoFrameMicros(frameMicros: Long?): ImageRequest.Builder = apply {
+    require(frameMicros == null || frameMicros >= 0) { "frameMicros must be >= 0." }
+    if (frameMicros != null) {
+        removeParameter(VIDEO_FRAME_PERCENT_KEY)
+        setParameter(key = VIDEO_FRAME_MICROS_KEY, value = frameMicros)
+    } else {
+        removeParameter(VIDEO_FRAME_MICROS_KEY)
+    }
 }
 
 /**
@@ -57,10 +61,14 @@ val ImageRequest.videoFrameMicros: Long?
  *
  * Default: 0
  */
-fun ImageOptions.Builder.videoFrameMicros(frameMicros: Long): ImageOptions.Builder = apply {
-    require(frameMicros >= 0) { "frameMicros must be >= 0." }
-    removeParameter(VIDEO_FRAME_PERCENT_KEY)
-    setParameter(VIDEO_FRAME_MICROS_KEY, frameMicros)
+fun ImageOptions.Builder.videoFrameMicros(frameMicros: Long?): ImageOptions.Builder = apply {
+    require(frameMicros == null || frameMicros >= 0) { "frameMicros must be >= 0." }
+    if (frameMicros != null) {
+        removeParameter(VIDEO_FRAME_PERCENT_KEY)
+        setParameter(key = VIDEO_FRAME_MICROS_KEY, value = frameMicros)
+    } else {
+        removeParameter(VIDEO_FRAME_MICROS_KEY)
+    }
 }
 
 /**
@@ -85,11 +93,15 @@ val ImageOptions.videoFrameMicros: Long?
  * Default: 0.0
  */
 fun ImageRequest.Builder.videoFramePercent(
-    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
+    @FloatRange(from = 0.0, to = 1.0) framePercent: Float?
 ): ImageRequest.Builder = apply {
-    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
-    removeParameter(VIDEO_FRAME_MICROS_KEY)
-    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
+    require(framePercent == null || framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
+    if (framePercent != null) {
+        removeParameter(VIDEO_FRAME_MICROS_KEY)
+        setParameter(key = VIDEO_FRAME_PERCENT_KEY, value = framePercent)
+    } else {
+        removeParameter(VIDEO_FRAME_PERCENT_KEY)
+    }
 }
 
 /**
@@ -104,11 +116,15 @@ val ImageRequest.videoFramePercent: Float?
  * Default: 0.0
  */
 fun ImageOptions.Builder.videoFramePercent(
-    @FloatRange(from = 0.0, to = 1.0) framePercent: Float
+    @FloatRange(from = 0.0, to = 1.0) framePercent: Float?
 ) = apply {
-    require(framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
-    removeParameter(VIDEO_FRAME_MICROS_KEY)
-    setParameter(VIDEO_FRAME_PERCENT_KEY, framePercent)
+    require(framePercent == null || framePercent in 0f..1f) { "framePercent must be in 0f..1f." }
+    if (framePercent != null) {
+        removeParameter(VIDEO_FRAME_MICROS_KEY)
+        setParameter(key = VIDEO_FRAME_PERCENT_KEY, value = framePercent)
+    } else {
+        removeParameter(VIDEO_FRAME_PERCENT_KEY)
+    }
 }
 
 /**
@@ -127,14 +143,19 @@ val ImageOptions.videoFramePercent: Float?
  *
  * @see MediaMetadataRetriever
  */
-fun ImageRequest.Builder.videoFrameOption(option: Int): ImageRequest.Builder = apply {
+fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = apply {
     require(
-        option == OPTION_PREVIOUS_SYNC ||
+        option == null ||
+                option == OPTION_PREVIOUS_SYNC ||
                 option == OPTION_NEXT_SYNC ||
                 option == OPTION_CLOSEST_SYNC ||
                 option == OPTION_CLOSEST
     ) { "Invalid video frame option: $option." }
-    setParameter(VIDEO_FRAME_OPTION_KEY, option)
+    if (option != null) {
+        setParameter(key = VIDEO_FRAME_OPTION_KEY, value = option)
+    } else {
+        removeParameter(VIDEO_FRAME_OPTION_KEY)
+    }
 }
 
 /**
@@ -152,14 +173,19 @@ val ImageRequest.videoFrameOption: Int?
  *
  * @see MediaMetadataRetriever
  */
-fun ImageOptions.Builder.videoFrameOption(option: Int): ImageOptions.Builder = apply {
+fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = apply {
     require(
-        option == OPTION_PREVIOUS_SYNC ||
+        option == null ||
+                option == OPTION_PREVIOUS_SYNC ||
                 option == OPTION_NEXT_SYNC ||
                 option == OPTION_CLOSEST_SYNC ||
                 option == OPTION_CLOSEST
     ) { "Invalid video frame option: $option." }
-    setParameter(VIDEO_FRAME_OPTION_KEY, option)
+    if (option != null) {
+        setParameter(key = VIDEO_FRAME_OPTION_KEY, value = option)
+    } else {
+        removeParameter(VIDEO_FRAME_OPTION_KEY)
+    }
 }
 
 /**

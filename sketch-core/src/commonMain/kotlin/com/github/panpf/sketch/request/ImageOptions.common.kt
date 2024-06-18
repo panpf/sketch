@@ -294,7 +294,6 @@ data class ImageOptions (
         /**
          * Set a parameter for this request.
          */
-        // TODO All parameters that depend on this parameter should be set to null for easy purging and merging
         fun setParameter(
             key: String,
             value: Any?,

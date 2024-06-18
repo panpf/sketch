@@ -15,18 +15,16 @@
  */
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.ImageRequest.Builder
-
 private const val PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY = "sketch#pause_load_when_scrolling_enabled"
 private const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_when_scrolling_ignored"
 
 /**
  * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
  */
-fun Builder.pauseLoadWhenScrolling(enabled: Boolean = true): Builder =
+fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): ImageRequest.Builder =
     apply {
-        if (enabled) {
-            setParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, true, null)
+        if (enabled == true) {
+            setParameter(key = PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, value = true, cacheKey = null)
         } else {
             removeParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
         }
@@ -41,10 +39,14 @@ val ImageRequest.isPauseLoadWhenScrolling: Boolean
 /**
  * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
  */
-fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean = true): ImageOptions.Builder =
+fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): ImageOptions.Builder =
     apply {
-        if (enabled) {
-            setParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY, true, null)
+        if (enabled == true) {
+            setParameter(
+                key = PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY,
+                value = true,
+                cacheKey = null,
+            )
         } else {
             removeParameter(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)
         }
@@ -60,10 +62,10 @@ val ImageOptions.isPauseLoadWhenScrolling: Boolean
 /**
  * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
  */
-fun Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): Builder =
+fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): ImageRequest.Builder =
     apply {
-        if (ignore) {
-            setParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, true, null)
+        if (ignore == true) {
+            setParameter(key = PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, value = true, cacheKey = null)
         } else {
             removeParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
         }
@@ -78,10 +80,10 @@ val ImageRequest.isIgnoredPauseLoadWhenScrolling: Boolean
 /**
  * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
  */
-fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean = true): ImageOptions.Builder =
+fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): ImageOptions.Builder =
     apply {
-        if (ignore) {
-            setParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, true, null)
+        if (ignore == true) {
+            setParameter(key = PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY, value = true, cacheKey = null)
         } else {
             removeParameter(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)
         }

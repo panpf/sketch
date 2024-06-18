@@ -61,11 +61,7 @@ fun ImageOptions.Builder.error(
  */
 fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions.Builder = apply {
     if (bitmapConfig != null) {
-        setParameter(
-            key = BITMAP_CONFIG_KEY,
-            value = bitmapConfig.value,
-            cacheKey = bitmapConfig.value
-        )
+        setParameter(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
     } else {
         removeParameter(BITMAP_CONFIG_KEY)
     }
@@ -94,11 +90,7 @@ val ImageOptions.bitmapConfig: BitmapConfig?
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Builder = apply {
     if (named != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setParameter(
-            key = COLOR_SPACE_NAMED_KEY,
-            value = named.name,
-            cacheKey = named.name
-        )
+        setParameter(key = COLOR_SPACE_NAMED_KEY, value = named.name)
     } else {
         removeParameter(COLOR_SPACE_NAMED_KEY)
     }
@@ -129,12 +121,8 @@ val ImageOptions.colorSpace: ColorSpace?
 @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
 fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageOptions.Builder =
     apply {
-        if (inPreferQualityOverSpeed != null) {
-            setParameter(
-                key = PREFER_QUALITY_OVER_SPEED_KEY,
-                value = inPreferQualityOverSpeed.toString(),
-                cacheKey = if (inPreferQualityOverSpeed == true) inPreferQualityOverSpeed.toString() else null
-            )
+        if (inPreferQualityOverSpeed == true) {
+            setParameter(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
         } else {
             removeParameter(PREFER_QUALITY_OVER_SPEED_KEY)
         }

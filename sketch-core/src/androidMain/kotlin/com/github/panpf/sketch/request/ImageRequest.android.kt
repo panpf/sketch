@@ -51,7 +51,7 @@ fun ImageRequest.Builder.error(
  * You can also set image of different error types via the trailing lambda function
  */
 fun ImageRequest.Builder.error(
-    defaultResId: Int,
+    @DrawableRes defaultResId: Int,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageRequest.Builder = error(DrawableStateImage(defaultResId), configBlock)
 
@@ -64,11 +64,7 @@ const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"
  */
 fun ImageRequest.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageRequest.Builder = apply {
     if (bitmapConfig != null) {
-        setParameter(
-            key = BITMAP_CONFIG_KEY,
-            value = bitmapConfig.value,
-            cacheKey = bitmapConfig.value
-        )
+        setParameter(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
     } else {
         removeParameter(BITMAP_CONFIG_KEY)
     }
@@ -99,11 +95,7 @@ const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Builder = apply {
     if (named != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setParameter(
-            key = COLOR_SPACE_NAMED_KEY,
-            value = named.name,
-            cacheKey = named.name
-        )
+        setParameter(key = COLOR_SPACE_NAMED_KEY, value = named.name)
     } else {
         removeParameter(COLOR_SPACE_NAMED_KEY)
     }
@@ -137,11 +129,7 @@ const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"
 fun ImageRequest.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageRequest.Builder =
     apply {
         if (inPreferQualityOverSpeed == true) {
-            setParameter(
-                key = PREFER_QUALITY_OVER_SPEED_KEY,
-                value = inPreferQualityOverSpeed.toString(),
-                cacheKey = inPreferQualityOverSpeed.toString()
-            )
+            setParameter(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
         } else {
             removeParameter(PREFER_QUALITY_OVER_SPEED_KEY)
         }

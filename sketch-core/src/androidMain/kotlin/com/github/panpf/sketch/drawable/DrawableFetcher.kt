@@ -89,7 +89,6 @@ class ResDrawable constructor(
     }
 }
 
-// TODO Remove this class
 class RealDrawable(val drawable: Drawable) : DrawableFetcher {
 
     override val key: String = "RealDrawable($drawable)"

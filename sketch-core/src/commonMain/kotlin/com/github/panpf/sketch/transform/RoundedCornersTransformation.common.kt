@@ -37,7 +37,6 @@ internal expect fun roundedCornersTransformation(image: Image, radiusArray: Floa
  *
  * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
  */
-// TODO expect class RoundedCornersTransformation
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
     /**

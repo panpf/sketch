@@ -21,8 +21,12 @@ private const val SVG_CSS_KEY = "sketch#svg_css"
 /**
  * Set the background color of the SVG image, the default is transparent
  */
-fun ImageRequest.Builder.svgBackgroundColor(color: Int): ImageRequest.Builder = apply {
-    setParameter(SVG_BACKGROUND_COLOR_KEY, color)
+fun ImageRequest.Builder.svgBackgroundColor(color: Int?): ImageRequest.Builder = apply {
+    if (color != null) {
+        setParameter(key = SVG_BACKGROUND_COLOR_KEY, value = color)
+    } else {
+        removeParameter(SVG_BACKGROUND_COLOR_KEY)
+    }
 }
 
 /**
@@ -34,8 +38,12 @@ val ImageRequest.svgBackgroundColor: Int?
 /**
  * Set the background color of the SVG image, the default is transparent
  */
-fun ImageOptions.Builder.svgBackgroundColor(color: Int) = apply {
-    setParameter(SVG_BACKGROUND_COLOR_KEY, color)
+fun ImageOptions.Builder.svgBackgroundColor(color: Int?) = apply {
+    if (color != null) {
+        setParameter(key = SVG_BACKGROUND_COLOR_KEY, value = color)
+    } else {
+        removeParameter(SVG_BACKGROUND_COLOR_KEY)
+    }
 }
 
 /**
@@ -48,8 +56,12 @@ val ImageOptions.svgBackgroundColor: Int?
 /**
  * Set the background color of the SVG image, the default is transparent
  */
-fun ImageRequest.Builder.svgCss(css: String): ImageRequest.Builder = apply {
-    setParameter(SVG_CSS_KEY, css)
+fun ImageRequest.Builder.svgCss(css: String?): ImageRequest.Builder = apply {
+    if (css != null) {
+        setParameter(key = SVG_CSS_KEY, value = css)
+    } else {
+        removeParameter(SVG_CSS_KEY)
+    }
 }
 
 /**
@@ -61,8 +73,12 @@ val ImageRequest.svgCss: String?
 /**
  * Set the background color of the SVG image, the default is transparent
  */
-fun ImageOptions.Builder.svgCss(css: String) = apply {
-    setParameter(SVG_CSS_KEY, css)
+fun ImageOptions.Builder.svgCss(css: String?) = apply {
+    if (css != null) {
+        setParameter(key = SVG_CSS_KEY, value = css)
+    } else {
+        removeParameter(SVG_CSS_KEY)
+    }
 }
 
 /**

@@ -40,31 +40,33 @@ enum class Base64Specification {
 
 const val BASE64_SPECIFICATION_KEY = "sketch#base64_specification"
 
-fun ImageOptions.Builder.base64Specification(specification: Base64Specification?): ImageOptions.Builder =
-    apply {
-        if (specification != null) {
-            setParameter(
-                key = BASE64_SPECIFICATION_KEY,
-                value = specification.name,
-                cacheKey = null
-            )
-        } else {
-            removeParameter(BASE64_SPECIFICATION_KEY)
-        }
+fun ImageOptions.Builder.base64Specification(
+    specification: Base64Specification?
+): ImageOptions.Builder = apply {
+    if (specification != null) {
+        setParameter(
+            key = BASE64_SPECIFICATION_KEY,
+            value = specification.name,
+            cacheKey = null
+        )
+    } else {
+        removeParameter(BASE64_SPECIFICATION_KEY)
     }
+}
 
-fun ImageRequest.Builder.base64Specification(specification: Base64Specification?): ImageRequest.Builder =
-    apply {
-        if (specification != null) {
-            setParameter(
-                key = BASE64_SPECIFICATION_KEY,
-                value = specification.name,
-                cacheKey = null
-            )
-        } else {
-            removeParameter(BASE64_SPECIFICATION_KEY)
-        }
+fun ImageRequest.Builder.base64Specification(
+    specification: Base64Specification?
+): ImageRequest.Builder = apply {
+    if (specification != null) {
+        setParameter(
+            key = BASE64_SPECIFICATION_KEY,
+            value = specification.name,
+            cacheKey = null
+        )
+    } else {
+        removeParameter(BASE64_SPECIFICATION_KEY)
     }
+}
 
 val ImageOptions.base64Specification: Base64Specification?
     get() = parameters?.value<String>(BASE64_SPECIFICATION_KEY)

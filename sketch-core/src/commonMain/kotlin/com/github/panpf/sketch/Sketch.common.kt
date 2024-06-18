@@ -374,8 +374,8 @@ class Sketch private constructor(options: Options) {
     }
 }
 
-// TODO Change the file name to Sketch.common
 internal expect fun platformComponents(): ComponentRegistry
+
 internal expect fun defaultHttpStack(): HttpStack
 
 internal fun defaultComponents(): ComponentRegistry {

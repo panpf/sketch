@@ -35,7 +35,6 @@ fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
 /**
  * Decode svg file and convert to Bitmap
  */
-// TODO expect class SvgDecoder
 class SvgDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,

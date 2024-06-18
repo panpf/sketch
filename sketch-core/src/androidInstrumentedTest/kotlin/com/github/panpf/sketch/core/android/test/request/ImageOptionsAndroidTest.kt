@@ -146,7 +146,7 @@ class ImageOptionsAndroidTest {
 
             preferQualityOverSpeed(false)
             build().apply {
-                assertEquals(false, preferQualityOverSpeed)
+                assertNull(preferQualityOverSpeed)
             }
 
             preferQualityOverSpeed(null)
