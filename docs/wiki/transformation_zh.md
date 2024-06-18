@@ -38,15 +38,15 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [Transformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/Transformation.kt
 
-[CircleCropTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/CircleCropTransformation.commom.kt
+[CircleCropTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/CircleCropTransformation.common.kt
 
-[RotateTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RotateTransformation.commom.kt
+[RotateTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RotateTransformation.common.kt
 
-[RoundedCornersTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RoundedCornersTransformation.commom.kt
+[RoundedCornersTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RoundedCornersTransformation.common.kt
 
-[MaskTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/MaskTransformation.commom.kt
+[MaskTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/MaskTransformation.common.kt
 
-[BlurTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/BlurTransformation.commom.kt
+[BlurTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/BlurTransformation.common.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.kt
 
