@@ -60,7 +60,6 @@ class RequestExecutor {
         try {
             // Set up the request's lifecycle observers. Cancel the request when destroy
             val lifecycle = request.lifecycleResolver.lifecycle()
-            println("lifecycle: $lifecycle")
             requestDelegate.start(lifecycle)
 
             // Enqueued requests suspend until the lifecycle is started.

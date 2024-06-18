@@ -133,10 +133,9 @@ open class IconPainter(
         }
 
         val finalIconSize = iconSize ?: icon.intrinsicSize
-        translate(
-            (size.width - finalIconSize.width) / 2,
-            (size.height - finalIconSize.height) / 2
-        ) {
+        val translateLeft = (size.width - finalIconSize.width) / 2
+        val translateTop = (size.height - finalIconSize.height) / 2
+        translate(left = translateLeft, top = translateTop) {
             with(icon) {
                 val filter = iconTint?.let { ColorFilter.tint(it) }
                 draw(size = finalIconSize, colorFilter = filter)
