@@ -26,7 +26,6 @@ import com.github.panpf.sketch.ability.mimeTypeLogo
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
@@ -44,8 +43,8 @@ import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import sketch_root.sample.generated.resources.Res.drawable
-import sketch_root.sample.generated.resources.ic_error_baseline
 import sketch_root.sample.generated.resources.ic_image_outline
+import sketch_root.sample.generated.resources.ic_image_outline_broken
 import sketch_root.sample.generated.resources.ic_signal_cellular
 
 @Composable
@@ -105,17 +104,17 @@ fun PhotoGridItem(
     val animatedPlaceholderStateImage =
         if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
     val placeholderStateImage = animatedPlaceholderStateImage ?: rememberIconPainterStateImage(
-        icon = rememberEqualityPainterResource(drawable.ic_image_outline),
+        icon = drawable.ic_image_outline,
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )
     val errorStateImage = rememberIconPainterStateImage(
-        icon = rememberEqualityPainterResource(drawable.ic_error_baseline),
+        icon = drawable.ic_image_outline_broken,
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )
     val saveCellularTrafficStateImage = rememberIconPainterStateImage(
-        icon = rememberEqualityPainterResource(drawable.ic_signal_cellular),
+        icon = drawable.ic_signal_cellular,
         background = colorScheme.primaryContainer,
         iconTint = colorScheme.onPrimaryContainer
     )

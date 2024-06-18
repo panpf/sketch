@@ -33,7 +33,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.ability.progressIndicator
-import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
@@ -71,7 +70,7 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                 }
                 val colorScheme = MaterialTheme.colorScheme
                 val placeholderPainter = rememberIconPainter(
-                    icon = rememberEqualityPainterResource(drawable.ic_image_outline),
+                    icon = drawable.ic_image_outline,
                     background = colorScheme.primaryContainer,
                     iconTint = colorScheme.onPrimaryContainer,
                 )

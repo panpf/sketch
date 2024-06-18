@@ -25,7 +25,6 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
@@ -67,7 +66,7 @@ class ExifOrientationTestScreen : BaseScreen() {
                     ) {
                         val image = exifImages[index]
                         val placeholderStateImage = rememberIconPainterStateImage(
-                            icon = rememberEqualityPainterResource(drawable.ic_image_outline),
+                            icon = drawable.ic_image_outline,
                             background = colorScheme.primaryContainer,
                             iconTint = colorScheme.onPrimaryContainer
                         )
