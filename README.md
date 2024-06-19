@@ -10,12 +10,12 @@ Translations: [简体中文](README_zh.md)
 Sketch is an image loading library specially designed for Compose Multiplatform and Android View. It
 has the following features:
 
-* `Multiple loading sources`: Supports loading images from multiple sources such as http, file,
+* `Multiple sources`: Supports loading images from multiple sources such as http, file,
   compose.resource, android asset/content/resource, etc.
 * `Powerful functions`: Supports three-level caching, automatically cancels requests, automatically
   adjusts image size, automatically rotates images according to Exif Orientation, etc.
 * `Rich functions`: Supports Animated image, SVG images, Base64 images, and video frames
-* `Easy to Expand`: Supports expansion of various aspects such as caching, decoding, transformation,
+* `Easy to expand`: Supports expansion of various aspects such as caching, decoding, transformation,
   transition, placeholder, etc.
 * `Special functions`: Practical extensions such as pausing downloads when cellular data is
   provided, pausing loading during list scrolling, image type badges, download progress indicators,
@@ -108,7 +108,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(imageUri) {
+    rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -119,7 +119,7 @@ AsyncImage(
 
 Image(
     painter = rememberAsyncImagePainter(
-        request = ImageRequest(imageUri) {
+        request = ComposableImageRequest(imageUri) {
             placeholder(Res.drawable.placeholder)
             error(Res.drawable.error)
             crossfade()
@@ -129,6 +129,9 @@ Image(
     contentDescription = "photo"
 )
 ```
+
+> [!TIP]
+> `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
 Android View:
 
