@@ -17,6 +17,8 @@ package com.github.panpf.sketch.state
 
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 
 
 /**
@@ -32,7 +34,25 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
  * Set the error image when the save cellular traffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
-    @DrawableRes saveCellularTrafficImageResId: Int
+    @DrawableRes resId: Int
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition, DrawableStateImage(saveCellularTrafficImageResId))
+    addState(SaveCellularTrafficCondition, DrawableStateImage(resId))
+}
+
+/**
+ * Set the error image when the save cellular traffic
+ */
+fun ErrorStateImage.Builder.saveCellularTrafficError(
+    color: IntColor
+): ErrorStateImage.Builder = apply {
+    addState(SaveCellularTrafficCondition, ColorDrawableStateImage(color))
+}
+
+/**
+ * Set the error image when the save cellular traffic
+ */
+fun ErrorStateImage.Builder.saveCellularTrafficError(
+    color: ResColor
+): ErrorStateImage.Builder = apply {
+    addState(SaveCellularTrafficCondition, ColorDrawableStateImage(color))
 }

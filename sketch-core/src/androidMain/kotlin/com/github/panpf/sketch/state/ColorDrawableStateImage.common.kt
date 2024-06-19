@@ -15,8 +15,14 @@ import com.github.panpf.sketch.util.ResColor
 fun IntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
     ColorDrawableStateImage(IntColor(color))
 
-fun ResColorDrawableStateImage(@ColorRes colorRes: Int): ColorDrawableStateImage =
-    ColorDrawableStateImage(ResColor(colorRes))
+fun ResColorDrawableStateImage(@ColorRes resId: Int): ColorDrawableStateImage =
+    ColorDrawableStateImage(ResColor(resId))
+
+fun ColorDrawableStateImage(color: IntColor): ColorDrawableStateImage =
+    ColorDrawableStateImage(color as ColorFetcher)
+
+fun ColorDrawableStateImage(color: ResColor): ColorDrawableStateImage =
+    ColorDrawableStateImage(color as ColorFetcher)
 
 /**
  * Use color as the state [Drawable]

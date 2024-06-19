@@ -10,5 +10,5 @@ fun rememberDrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage 
     remember(drawable) { DrawableStateImage(drawable) }
 
 @Composable
-fun rememberDrawableStateImage(@DrawableRes drawableRes: Int): DrawableStateImage =
-    remember(drawableRes) { DrawableStateImage(drawableRes) }
+fun rememberDrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
+    remember(resId) { DrawableStateImage(resId) }

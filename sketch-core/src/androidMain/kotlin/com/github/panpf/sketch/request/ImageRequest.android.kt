@@ -7,8 +7,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 
 
 /**
@@ -24,6 +27,18 @@ fun ImageRequest.Builder.placeholder(@DrawableRes resId: Int): ImageRequest.Buil
     placeholder(DrawableStateImage(resId))
 
 /**
+ * Set Color placeholder image when loading
+ */
+fun ImageRequest.Builder.placeholder(color: IntColor): ImageRequest.Builder =
+    placeholder(ColorDrawableStateImage(color))
+
+/**
+ * Set Color placeholder image when loading
+ */
+fun ImageRequest.Builder.placeholder(color: ResColor): ImageRequest.Builder =
+    placeholder(ColorDrawableStateImage(color))
+
+/**
  * Set Drawable placeholder image when uri is empty
  */
 fun ImageRequest.Builder.fallback(drawable: DrawableEqualizer): ImageRequest.Builder =
@@ -34,6 +49,18 @@ fun ImageRequest.Builder.fallback(drawable: DrawableEqualizer): ImageRequest.Bui
  */
 fun ImageRequest.Builder.fallback(@DrawableRes resId: Int): ImageRequest.Builder =
     fallback(DrawableStateImage(resId))
+
+/**
+ * Set Color placeholder image when uri is empty
+ */
+fun ImageRequest.Builder.fallback(color: IntColor): ImageRequest.Builder =
+    fallback(ColorDrawableStateImage(color))
+
+/**
+ * Set Color placeholder image when uri is empty
+ */
+fun ImageRequest.Builder.fallback(color: ResColor): ImageRequest.Builder =
+    fallback(ColorDrawableStateImage(color))
 
 /**
  * Set Drawable image to display when loading fails.
@@ -54,6 +81,26 @@ fun ImageRequest.Builder.error(
     @DrawableRes defaultResId: Int,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageRequest.Builder = error(DrawableStateImage(defaultResId), configBlock)
+
+/**
+ * Set Color image to display when loading fails.
+ *
+ * You can also set image of different error types via the trailing lambda function
+ */
+fun ImageRequest.Builder.error(
+    color: IntColor,
+    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+): ImageRequest.Builder = error(ColorDrawableStateImage(color), configBlock)
+
+/**
+ * Set Color image to display when loading fails.
+ *
+ * You can also set image of different error types via the trailing lambda function
+ */
+fun ImageRequest.Builder.error(
+    color: ResColor,
+    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+): ImageRequest.Builder = error(ColorDrawableStateImage(color), configBlock)
 
 
 const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"

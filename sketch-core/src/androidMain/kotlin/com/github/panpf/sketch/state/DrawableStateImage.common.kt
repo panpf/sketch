@@ -31,8 +31,8 @@ fun DrawableEqualizer.asStateImage(): DrawableStateImage = DrawableStateImage(th
 fun DrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
     DrawableStateImage(RealEqualityDrawable(drawable))
 
-fun DrawableStateImage(@DrawableRes drawableRes: Int): DrawableStateImage =
-    DrawableStateImage(ResDrawable(drawableRes))
+fun DrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
+    DrawableStateImage(ResDrawable(resId))
 
 /**
  * Use [Drawable] as the state [Drawable]
