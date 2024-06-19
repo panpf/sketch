@@ -178,7 +178,7 @@ data class ImageRequest(
     val placeholder: StateImage?,
 
     /**
-     * Image to display when uri is empty
+     * Image to display when uri is invalid
      */
     val fallback: StateImage?,
 
@@ -598,7 +598,7 @@ data class ImageRequest(
         }
 
         /**
-         * Set placeholder image when uri is empty
+         * Set placeholder image when uri is invalid
          */
         fun fallback(stateImage: StateImage?): Builder = apply {
             definedOptionsBuilder.fallback(stateImage)

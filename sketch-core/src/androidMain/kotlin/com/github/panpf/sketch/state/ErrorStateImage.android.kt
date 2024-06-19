@@ -7,7 +7,7 @@ import com.github.panpf.sketch.util.ResColor
 
 
 /**
- * Add a StateImage dedicated to the empty uri error
+ * Add a custom error state
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
@@ -17,7 +17,7 @@ fun ErrorStateImage.Builder.addState(
 }
 
 /**
- * Add a StateImage dedicated to the empty uri error
+ * Add a custom error state
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
@@ -27,7 +27,7 @@ fun ErrorStateImage.Builder.addState(
 }
 
 /**
- * Add a StateImage dedicated to the empty uri error
+ * Add a custom error state
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
@@ -37,7 +37,7 @@ fun ErrorStateImage.Builder.addState(
 }
 
 /**
- * Add a StateImage dedicated to the empty uri error
+ * Add a custom error state
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,

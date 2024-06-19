@@ -39,25 +39,25 @@ fun ImageRequest.Builder.placeholder(color: ResColor): ImageRequest.Builder =
     placeholder(ColorDrawableStateImage(color))
 
 /**
- * Set Drawable placeholder image when uri is empty
+ * Set Drawable placeholder image when uri is invalid
  */
 fun ImageRequest.Builder.fallback(drawable: DrawableEqualizer): ImageRequest.Builder =
     fallback(DrawableStateImage(drawable))
 
 /**
- * Set Drawable res placeholder image when uri is empty
+ * Set Drawable res placeholder image when uri is invalid
  */
 fun ImageRequest.Builder.fallback(@DrawableRes resId: Int): ImageRequest.Builder =
     fallback(DrawableStateImage(resId))
 
 /**
- * Set Color placeholder image when uri is empty
+ * Set Color placeholder image when uri is invalid
  */
 fun ImageRequest.Builder.fallback(color: IntColor): ImageRequest.Builder =
     fallback(ColorDrawableStateImage(color))
 
 /**
- * Set Color placeholder image when uri is empty
+ * Set Color placeholder image when uri is invalid
  */
 fun ImageRequest.Builder.fallback(color: ResColor): ImageRequest.Builder =
     fallback(ColorDrawableStateImage(color))

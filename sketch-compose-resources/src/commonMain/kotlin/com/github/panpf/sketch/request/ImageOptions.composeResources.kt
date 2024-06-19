@@ -14,7 +14,7 @@ fun ImageOptions.Builder.placeholder(resource: DrawableResource): ImageOptions.B
     placeholder(rememberPainterStateImage(resource))
 
 /**
- * Set Drawable placeholder image when uri is empty
+ * Set Drawable placeholder image when uri is invalid
  */
 @Composable
 fun ImageOptions.Builder.fallback(resource: DrawableResource): ImageOptions.Builder =

@@ -39,25 +39,25 @@ fun ImageOptions.Builder.placeholder(color: ResColor): ImageOptions.Builder =
     placeholder(ColorDrawableStateImage(color))
 
 /**
- * Set Drawable placeholder image when uri is empty
+ * Set Drawable placeholder image when uri is invalid
  */
 fun ImageOptions.Builder.fallback(drawable: DrawableEqualizer): ImageOptions.Builder =
     fallback(DrawableStateImage(drawable))
 
 /**
- * Set Drawable res placeholder image when uri is empty
+ * Set Drawable res placeholder image when uri is invalid
  */
 fun ImageOptions.Builder.fallback(@DrawableRes resId: Int): ImageOptions.Builder =
     fallback(DrawableStateImage(resId))
 
 /**
- * Set Color placeholder image when uri is empty
+ * Set Color placeholder image when uri is invalid
  */
 fun ImageOptions.Builder.fallback(color: IntColor): ImageOptions.Builder =
     fallback(ColorDrawableStateImage(color))
 
 /**
- * Set Color placeholder image when uri is empty
+ * Set Color placeholder image when uri is invalid
  */
 fun ImageOptions.Builder.fallback(color: ResColor): ImageOptions.Builder =
     fallback(ColorDrawableStateImage(color))

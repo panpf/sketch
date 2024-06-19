@@ -1,8 +1,11 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.state.ColorPainterStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
 
 @Composable
 fun ComposableImageRequest(
@@ -20,3 +23,25 @@ fun ComposableImageRequest(
 ): ImageRequest = ImageRequest.Builder(LocalPlatformContext.current, uri).apply {
     configBlock?.invoke(this)
 }.build()
+
+/**
+ * Set Color placeholder image when loading
+ */
+fun ImageRequest.Builder.placeholder(color: Color): ImageRequest.Builder =
+    placeholder(ColorPainterStateImage(color))
+
+/**
+ * Set Color placeholder image when uri is invalid
+ */
+fun ImageRequest.Builder.fallback(color: Color): ImageRequest.Builder =
+    fallback(ColorPainterStateImage(color))
+
+/**
+ * Set Color image to display when loading fails.
+ *
+ * You can also set image of different error types via the trailing lambda function
+ */
+fun ImageRequest.Builder.error(
+    color: Color,
+    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
+): ImageRequest.Builder = error(ColorPainterStateImage(color), configBlock)

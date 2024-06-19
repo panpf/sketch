@@ -88,7 +88,7 @@ class ErrorStateImage(
         private val stateList = mutableListOf<Pair<Condition, StateImage?>>()
 
         /**
-         * Add a custom state
+         * Add a custom error state
          */
         fun addState(condition: Condition, stateImage: StateImage?): Builder = apply {
             stateList.add(Pair(condition, stateImage))

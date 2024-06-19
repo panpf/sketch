@@ -19,7 +19,7 @@ fun ComposableErrorStateImage(
     }.build()
 
 /**
- * Add a StateImage dedicated to the empty uri error
+ * Add a custom error state
  */
 @Composable
 fun ErrorStateImage.Builder.addState(
