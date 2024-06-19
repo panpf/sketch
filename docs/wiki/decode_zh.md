@@ -27,8 +27,6 @@
 | 视频帧      | [FFmpegVideoFrameDecoder]                  | sketch-video-ffmpeg      | ✅          | ❌               | ❌               | ❌               |
 | Apk Icon | [ApkIconDecoder]                           | sketch-extensions-core   | ✅          | ❌               | ❌               | ❌               |
 
-> [!TIP]
-
 * [ApkIconDecoder] 在 Android 平台上解码 Apk
   文件的图标（[了解更多](apk_app_icon_zh.md#加载-apk-的图标)）
 * [BitmapFactoryDecoder] 在 Android 平台上使用 Android 内置的 [BitmapFactory] 解码图像，它是最后的解码器
