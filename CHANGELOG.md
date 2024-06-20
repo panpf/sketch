@@ -6,6 +6,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * change: ImageView.disposeLoad() renamed to ImageView.disposeLoad()
 * new: Added ImageRequest.Builder.composableError() and ImageOptions.Builder.composableError() extension functions
+* new: Added ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) extension function
 
 # 4.0.0-alpha01
 

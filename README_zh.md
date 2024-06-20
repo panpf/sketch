@@ -49,8 +49,9 @@ implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 // [仅 Android] 使用 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
 implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
 
-// 支持通过 uri 或 placeholder 访问 compose resources 资源
+// 支持通过 uri 或 placeholder、fallback、error 访问 compose resources 资源
 implementation("io.github.panpf.sketch4:sketch-compose-resources:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-extensions-compose-resources:${LAST_VERSION}")
 
 // 提供下载进度、列表滚动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk icon 和已安装 app icon 等实用功能
 implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")

@@ -34,7 +34,7 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 
-class SaveCellularTrafficExtensionsTest {
+class SaveCellularTrafficExtensionsCommonTest {
 
     @Test
     fun testSaveCellularTraffic() = runTest {

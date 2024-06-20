@@ -38,6 +38,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 最后配置节省蜂窝流量功能专用的错误状态图片，如下：
 
 ```kotlin
+// View
 ImageRequest(context, "https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
@@ -45,7 +46,19 @@ ImageRequest(context, "https://example.com/image.jpg") {
         saveCellularTrafficError(R.drawable.ic_signal_cellular)
     }
 }
+
+// Compose
+ComposableImageRequest(context, "https://example.com/image.jpg") {
+    saveCellularTraffic(true)
+
+    composableError(Res.drawable.ic_error) {
+        saveCellularTrafficError(Res.drawable.ic_signal_cellular)
+    }
+}
 ```
+
+> [!TIP]
+> `saveCellularTrafficError(Res.drawable.ic_signal_cellular)` 需要导入 `sketch-extensions-compose-resources` 模块
 
 ### 点击强制加载
 

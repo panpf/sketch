@@ -41,6 +41,7 @@ Finally, configure the error status picture dedicated to the cellular traffic sa
 follows:
 
 ```kotlin
+// View
 ImageRequest(context, "https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
@@ -48,7 +49,19 @@ ImageRequest(context, "https://example.com/image.jpg") {
         saveCellularTrafficError(R.drawable.ic_signal_cellular)
     }
 }
+
+// Compose
+ComposableImageRequest(context, "https://example.com/image.jpg") {
+    saveCellularTraffic(true)
+
+    composableError(Res.drawable.ic_error) {
+        saveCellularTrafficError(Res.drawable.ic_signal_cellular)
+    }
+}
 ```
+
+> [!TIP]
+> `saveCellularTrafficError(Res.drawable.ic_signal_cellular)` needs to import the `sketch-extensions-compose-resources` module
 
 ### Click to force load
 

@@ -1,0 +1,23 @@
+plugins {
+    id("com.android.library")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.compose")
+}
+
+addAllMultiplatformTargets()
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(projects.sketchComposeResources)
+            api(projects.sketchExtensionsCore)
+        }
+
+        commonTest.dependencies {
+            implementation(projects.internal.testUtils)
+        }
+    }
+}
+
+androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.compose.resources")

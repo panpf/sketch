@@ -64,6 +64,7 @@ kotlin {
             implementation(projects.sketchCompose)
             implementation(projects.sketchComposeResources)
             implementation(projects.sketchExtensionsCompose)
+            implementation(projects.sketchExtensionsComposeResources)
             implementation(projects.sketchHttpKtor)
             implementation(projects.sketchSvg)
             implementation(compose.components.resources)

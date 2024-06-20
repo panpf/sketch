@@ -30,9 +30,9 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder 
  * Set the error image when the save cellular traffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
-    saveCellularTrafficImage: StateImage
+    stateImage: StateImage
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition, saveCellularTrafficImage)
+    addState(SaveCellularTrafficCondition, stateImage)
 }
 
 data object SaveCellularTrafficCondition : ErrorStateImage.Condition {

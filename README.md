@@ -58,8 +58,9 @@ implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
 // [Android only] Use GifDrawable of the android-gif-drawable library to decode gif and play it
 implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
 
-// Support accessing compose resources through uri or placeholder
+// Support accessing compose resources through uri or placeholder, fallback, error, etc.
 implementation("io.github.panpf.sketch4:sketch-compose-resources:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-extensions-compose-resources:${LAST_VERSION}")
 
 // Provides practical functions such as download progress, pausing loading during list scrolling, 
 // saving cellular data, image type badge, loading apk icons and installed app icons, etc.

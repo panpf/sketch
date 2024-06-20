@@ -6,6 +6,7 @@
 
 * change: ImageView.disposeLoad() 重命名为 ImageView.disposeLoad()
 * new: 新增 ImageRequest.Builder.composableError() 和 ImageOptions.Builder.composableError() 扩展函数
+* new: 新增 ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) 扩展函数
 
 # 4.0.0-alpha01
 

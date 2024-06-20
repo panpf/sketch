@@ -25,9 +25,9 @@ import com.github.panpf.sketch.util.ResColor
  * Set the error image when the save cellular traffic
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
-    saveCellularTrafficDrawable: DrawableEqualizer
+    drawable: DrawableEqualizer
 ): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition, DrawableStateImage(saveCellularTrafficDrawable))
+    addState(SaveCellularTrafficCondition, DrawableStateImage(drawable))
 }
 
 /**
