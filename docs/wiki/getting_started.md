@@ -418,7 +418,7 @@ imageView.loadImage("https://www.example.com/image.jpg") {
 }
 
 // cancel
-imageView.disposeDisplay()
+imageView.disposeLoad()
 
 // result
 val imageResult: ImageResult? = imageView.imageResult

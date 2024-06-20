@@ -17,7 +17,7 @@ package com.github.panpf.sketch.view.core.test
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.disposeDisplay
+import com.github.panpf.sketch.disposeLoad
 import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.request.ImageResult
@@ -36,7 +36,7 @@ import org.junit.runner.RunWith
 class ImageViewExtensionsTest {
 
     @Test
-    fun testDisposeDisplay() {
+    fun testDisposeLoad() {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
@@ -55,7 +55,7 @@ class ImageViewExtensionsTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {
-                    imageView.disposeDisplay()
+                    imageView.disposeLoad()
                 })
             }.job.join()
         }
@@ -63,7 +63,7 @@ class ImageViewExtensionsTest {
     }
 
     @Test
-    fun testDisplayResult() {
+    fun testResult() {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
@@ -84,7 +84,7 @@ class ImageViewExtensionsTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {
-                    imageView.disposeDisplay()
+                    imageView.disposeLoad()
                 })
             }.job.join()
         }

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.util.SketchUtils
 /**
  * Dispose the request that's attached to this view (if there is one).
  */
-fun ImageView.disposeDisplay() {
+fun ImageView.disposeLoad() {
     SketchUtils.dispose(this)
 }
 

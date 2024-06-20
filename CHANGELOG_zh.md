@@ -2,6 +2,10 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+* change: ImageView.disposeLoad() 重命名为 ImageView.disposeLoad()
+
 # 4.0.0-alpha01
 
 > [!CAUTION]
