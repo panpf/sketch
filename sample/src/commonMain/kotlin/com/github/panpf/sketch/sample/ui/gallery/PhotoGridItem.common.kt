@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalResourceApi::class, ExperimentalResourceApi::class)
-
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.Image
@@ -28,8 +26,10 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
+import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.composableError
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.AppSettings
@@ -41,8 +41,7 @@ import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch_root.sample.generated.resources.Res.drawable
+import sketch_root.sample.generated.resources.Res
 import sketch_root.sample.generated.resources.ic_image_outline
 import sketch_root.sample.generated.resources.ic_image_outline_broken
 import sketch_root.sample.generated.resources.ic_signal_cellular
@@ -101,23 +100,6 @@ fun PhotoGridItem(
         }
 
     val colorScheme = MaterialTheme.colorScheme
-    val animatedPlaceholderStateImage =
-        if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
-    val placeholderStateImage = animatedPlaceholderStateImage ?: rememberIconPainterStateImage(
-        icon = drawable.ic_image_outline,
-        background = colorScheme.primaryContainer,
-        iconTint = colorScheme.onPrimaryContainer
-    )
-    val errorStateImage = rememberIconPainterStateImage(
-        icon = drawable.ic_image_outline_broken,
-        background = colorScheme.primaryContainer,
-        iconTint = colorScheme.onPrimaryContainer
-    )
-    val saveCellularTrafficStateImage = rememberIconPainterStateImage(
-        icon = drawable.ic_signal_cellular,
-        background = colorScheme.primaryContainer,
-        iconTint = colorScheme.onPrimaryContainer
-    )
     val memoryCacheEnabled by appSettingsService.memoryCache.collectAsState()
     val resultCacheEnabled by appSettingsService.resultCache.collectAsState()
     val downloadCacheEnabled by appSettingsService.downloadCache.collectAsState()
@@ -128,7 +110,7 @@ fun PhotoGridItem(
     val pauseLoadWhenScroll by appSettingsService.pauseLoadWhenScrollInList.collectAsState()
     val saveCellularTraffic by appSettingsService.saveCellularTrafficInList.collectAsState()
     val disallowAnimatedImage by appSettingsService.disallowAnimatedImageInList.collectAsState()
-    val builder = ImageRequest.Builder(context, photo.listThumbnailUrl).apply {
+    val request = ComposableImageRequest(photo.listThumbnailUrl) {
         memoryCachePolicy(if (memoryCacheEnabled) ENABLED else DISABLED)
         resultCachePolicy(if (resultCacheEnabled) ENABLED else DISABLED)
         downloadCachePolicy(if (downloadCacheEnabled) ENABLED else DISABLED)
@@ -138,16 +120,34 @@ fun PhotoGridItem(
         saveCellularTraffic(saveCellularTraffic)
         disallowAnimatedImage(disallowAnimatedImage)
 
+        val animatedPlaceholderStateImage =
+            if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
+        val placeholderStateImage = animatedPlaceholderStateImage ?: rememberIconPainterStateImage(
+            icon = Res.drawable.ic_image_outline,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
+        )
         placeholder(placeholderStateImage)
-        error(errorStateImage) {
-            saveCellularTrafficError(saveCellularTrafficStateImage)
+        composableError(
+            rememberIconPainterStateImage(
+                icon = Res.drawable.ic_image_outline_broken,
+                background = colorScheme.primaryContainer,
+                iconTint = colorScheme.onPrimaryContainer
+            )
+        ) {
+            saveCellularTrafficError(
+                rememberIconPainterStateImage(
+                    icon = Res.drawable.ic_signal_cellular,
+                    background = colorScheme.primaryContainer,
+                    iconTint = colorScheme.onPrimaryContainer
+                )
+            )
         }
         crossfade()
         resizeOnDraw()
         sizeMultiplier(2f)  // To get a clearer thumbnail
+        PlatformListImageSettings(appSettingsService, this)
     }
-    PlatformListImageSettings(appSettingsService, builder)
-    val request = builder.build()
     when (index % 3) {
         0 -> {
             AsyncImage(

@@ -30,3 +30,15 @@ fun ImageOptions.Builder.error(
     defaultResource: DrawableResource,
     configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageOptions.Builder = error(ComposableErrorStateImage(defaultResource, configBlock))
+
+
+/**
+ * Set Color image to display when loading fails.
+ *
+ * You can also set image of different error types via the trailing lambda function
+ */
+@Composable
+fun ImageOptions.Builder.composableError(
+    defaultResource: DrawableResource,
+    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+): ImageOptions.Builder = error(ComposableErrorStateImage(defaultResource, configBlock))

@@ -5,6 +5,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 # new
 
 * change: ImageView.disposeLoad() renamed to ImageView.disposeLoad()
+* new: Added ImageRequest.Builder.composableError() and ImageOptions.Builder.composableError() extension functions
 
 # 4.0.0-alpha01
 

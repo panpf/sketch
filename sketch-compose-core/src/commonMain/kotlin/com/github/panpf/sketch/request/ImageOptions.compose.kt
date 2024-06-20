@@ -3,7 +3,9 @@ package com.github.panpf.sketch.request
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.state.ColorPainterStateImage
+import com.github.panpf.sketch.state.ComposableErrorStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.StateImage
 
 
 /**
@@ -37,3 +39,26 @@ fun ImageOptions.Builder.error(
     color: Color,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageOptions.Builder = error(ColorPainterStateImage(color), configBlock)
+
+/**
+ * Set Color image to display when loading fails.
+ *
+ * You can also set image of different error types via the trailing lambda function
+ */
+@Composable
+fun ImageOptions.Builder.composableError(
+    stateImage: StateImage,
+    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+): ImageOptions.Builder = error(ComposableErrorStateImage(stateImage, configBlock))
+
+
+/**
+ * Set Color image to display when loading fails.
+ *
+ * You can also set image of different error types via the trailing lambda function
+ */
+@Composable
+fun ImageOptions.Builder.composableError(
+    color: Color,
+    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+): ImageOptions.Builder = error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))
