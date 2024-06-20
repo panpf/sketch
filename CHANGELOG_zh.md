@@ -2,7 +2,7 @@
 
 翻译：[English](CHANGELOG.md)
 
-# new
+# 4.0.0-alpha02
 
 * change: ImageView.disposeLoad() 重命名为 ImageView.disposeLoad()
 * new: 新增 ImageRequest.Builder.composableError() 和 ImageOptions.Builder.composableError() 扩展函数
