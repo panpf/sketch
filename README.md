@@ -84,7 +84,8 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 
 > [!TIP]
 > * `sketch-compose`, `sketch-view` Modules all depend on the singleton provided by
-    the `sketch-singleton` module. If you don’t need the singleton, you can directly rely on their `*-core` version.
+    the `sketch-singleton` module. If you don’t need the singleton, you can directly rely on
+    their `*-core` version.
 > * On Android `sketch-compose` and `sketch-view` can be used together
 
 #### R8 / Proguard
@@ -106,7 +107,17 @@ AsyncImage(
     contentDescription = "photo"
 )
 
-// config params
+AsyncImage(
+    uri = imageUri,
+    state = rememberAsyncImageState(ComposableImageOptions {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
+        // There is a lot more...
+    }),
+    contentDescription = "photo"
+)
+
 AsyncImage(
     rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
@@ -143,7 +154,6 @@ val imageUri = "https://www.sample.com/image.jpg"
 
 imageView.loadImage(imageUri)
 
-// config params
 imageView.loadImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
@@ -212,10 +222,9 @@ Please review the [CHANGELOG.md] file
   prompt for upgrade
 * Version 4.0 is specially built for Compose Multiplatform, so there are many breaking changes in
   the API, please upgrade with caution
-* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, such as
-  DisplayRequest, LoadRequest, DownloadRequest
-  Merged into one ImageRequest, removed BitmapPool, etc.
+* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, please check the update log for details
 * Android minimum API raised to API 21
+* Kotlin version upgraded to 2.0.0
 
 ## Special thanks
 
@@ -224,6 +233,23 @@ Please review the [CHANGELOG.md] file
 * [koral--/android-gif-drawable][android-gif-drawable]: animated-koralgif
 * [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: video-ffmpeg
 * [BigBadaboom/androidsvg][androidsvg]: svg
+
+## Run source code
+
+Prepare the environment:
+
+1. Android Studio: Koala+ (2024.1.1+)
+2. JDK: 17+
+3. Use [kdoctor] to check the running environment and follow the prompts to install the required
+   software
+4. Android Studio installs the `Kotlin Multiplatform` and `Compose Multiplatform IDE Support`plugins
+
+Execute code:
+
+1. Clone the project and open it using Android Studio
+2. The running configurations of each platform have been added to the `.run` directory. After
+   synchronization is completed, directly select the running configuration of the corresponding
+   platform in the running configuration drop-down box at the top of Android Studio and click Run.
 
 ## My Projects
 
@@ -350,3 +376,5 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [comment]: <> (footer)
 
 [CHANGELOG.md]: CHANGELOG.md
+
+[kdoctor]: https://github.com/Kotlin/kdoctor

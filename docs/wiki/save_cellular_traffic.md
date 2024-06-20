@@ -44,8 +44,8 @@ follows:
 ImageRequest(context, "https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
-    error(Res.drawable.ic_error) {
-        saveCellularTrafficError(Res.drawable.ic_signal_cellular)
+    error(R.drawable.ic_error) {
+        saveCellularTrafficError(R.drawable.ic_signal_cellular)
     }
 }
 ```

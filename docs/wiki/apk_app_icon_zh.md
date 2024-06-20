@@ -12,7 +12,7 @@
 // 在自定义 Sketch 时为所有 ImageRequest 注册
 val sketch = Sketch.Builder(context).apply {
     components {
-        supportApkIcon()
+        addDecoder(ApkIconDecoder.Factory())
     }
 }.build()
 // 然后加载图片时传入 apk 文件的路径即可
@@ -21,7 +21,7 @@ sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 // 或者加载图片时为单个 ImageRequest 注册
 ImageRequest(context, uri = "/sdcard/sample.apk") {
     components {
-        supportApkIcon()
+        addDecoder(ApkIconDecoder.Factory())
     }
 }
 ```
@@ -32,7 +32,7 @@ ImageRequest(context, uri = "/sdcard/sample.apk") {
 // 在自定义 Sketch 时为所有 ImageRequest 注册
 val sketch = Sketch.Builder(context).apply {
     components {
-        supportAppIcon()
+        addFetcher(AppIconUriFetcher.Factory())
     }
 }.build()
 // 然后加载图片时使用 `newAppIconUri()` 函数创建专用 uri 即可
@@ -41,7 +41,7 @@ sketch.enqueue(ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketc
 // 或者加载图片时为单个 ImageRequest 注册
 ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
     components {
-        supportAppIcon()
+        addFetcher(AppIconUriFetcher.Factory())
     }
 }
 ```

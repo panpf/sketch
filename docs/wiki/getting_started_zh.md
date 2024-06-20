@@ -18,7 +18,17 @@ AsyncImage(
     contentDescription = "photo"
 )
 
-// config params
+AsyncImage(
+     uri = imageUri,
+     state = rememberAsyncImageState(ComposableImageOptions {
+          placeholder(Res.drawable.placeholder)
+          error(Res.drawable.error)
+          crossfade()
+          // There is a lot more...
+     }),
+     contentDescription = "photo"
+)
+
 AsyncImage(
     rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
@@ -60,7 +70,6 @@ val imageUri = "https://example.com/image.jpg"
 
 imageView.loadImage(imageUri)
 
-// config params
 imageView.loadImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
@@ -107,7 +116,7 @@ context.sketch.enqueue(request)
 | URI                    | 描述                       | 创建函数                    | 依赖模块                     |
 |:-----------------------|:-------------------------|:------------------------|:-------------------------|
 | http://, https://      | File in network          | _                       | _                        |
-| /, file://             | File in SDCard           | newFileUri()            | _                        |
+| file://, /             | File in SDCard           | newFileUri()            | _                        |
 | content://             | Android Content Resolver | _                       | _                        |
 | asset://               | Android Asset            | newAssetUri()           | _                        |
 | android.resource://    | Android Resource         | newResourceUri()        | _                        |
@@ -131,7 +140,7 @@ context.sketch.enqueue(request)
 | heif 动图                                                                             | ✅ (API 30)    | ❌               | ❌               | ❌               |
 | svg                                                                                 | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
 | 视频帧                                                                                 | ✅             | ❌               | ❌               | ❌               |
-| http://, https://<br/>/, file://<br/>compose.resource://<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
+| http://, https://<br/>file://, /<br/>compose.resource://<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
 | asset://<br/>content://<br/>android.resource://                                     | ✅             | ❌               | ❌               | ❌               |
 | kotlin.resource://                                                                  | ❌             | ✅               | ✅               | ❌               |
 | Exif Orientation                                                                    | ✅             | ✅               | ✅               | ✅               |
@@ -255,7 +264,7 @@ Image(
 ```
 
 > [!CAUTION]
-> 在 AsyncImage 和 AsyncImagePainter 中你不能调用 target() 函数，这会导致 App 崩溃
+> 在 [AsyncImage] 和 [AsyncImagePainter] 中你不能调用 target() 函数，这会导致 App 崩溃
 
 在 Android View 系统中则需要你主动调用 target() 函数传入 ImageView，如下：
 
@@ -268,8 +277,8 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 context.sketch.enqueue(request)
 ```
 
-你还可以使用 [ImageRequest][ImageRequest_ViewExtensions](ImageView, String) 或
-ImageView.[loadImage()][loadImage] 扩展函数，它们会帮你调用 target()，如下：
+你还可以使用 [ImageRequest(ImageView, String)][ImageRequest_ViewExtensions] 或
+[ImageView.loadImage()][loadImage] 扩展函数，它们会帮你调用 target()，如下：
 
 ```kotlin
 val request = ImageRequest(imageView, "https://www.example.com/image.jpg") {
@@ -308,7 +317,7 @@ coroutineScope.launch(Dispatchers.Main) {
 #### 获取结果
 
 配置了 [Target] 时 [Sketch] 会将结果交给 [Target] 去显示，但有时候需要通过结果做一些事情或者没有配置
-[Target] 时就需要主动获取结果了，如下：
+[Target] 时就需要主动获取结果，如下：
 
 ```kotlin
 val request = ImageRequest(context, "https://www.example.com/image.jpg")
@@ -325,7 +334,7 @@ coroutineScope.launch(Dispatchers.Main) {
 }
 ```
 
-ImageResult 包含了很多有用的信息，如下：
+[ImageResult] 包含了很多有用的信息，如下：
 
 ```kotlin
 val imageResult: ImageResult = ...
@@ -389,7 +398,7 @@ job.cancel()
 [Sketch] 为 ImageView 提供了一系列的扩展，如下:
 
 ```kotlin
-// display
+// load
 imageView.loadImage("https://www.example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)

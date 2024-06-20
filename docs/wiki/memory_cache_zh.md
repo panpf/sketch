@@ -8,7 +8,7 @@
 内存缓存由 [MemoryCache] 组件提供服务，默认的实现是 [LruMemoryCache]：
 
 * 根据最少使用原则释放旧的 Bitmap
-* 最大容量在 Android 上是最大可用内存的 25% 到 33%，在非 Android 上是 最大可用内存的 15%
+* 最大容量在 Android 上是最大可用内存的 25% 到 33%，在非 Android 上是最大可用内存的 15%
 
 ## 自定义
 

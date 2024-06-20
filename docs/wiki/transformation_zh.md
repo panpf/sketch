@@ -12,7 +12,7 @@
 
 > [!TIP]
 > 1. [Transformation] 不支持动图，动图请使用 animatedTransformation() 函数
-> 2. 在使用 RoundedCornersTransformation 时请搭配 'precision(Precision.EXACTLY)' 使用，因为如果原图尺寸和
+> 2. 在使用 [RoundedCornersTransformation] 时请搭配 'precision(Precision.EXACTLY)' 使用，因为如果原图尺寸和
      resize 尺寸不一致时，最终圆角在显示时会被缩放，导致圆角大小和期待的不一致
 
 ### 配置
@@ -34,7 +34,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 * 同一个 [Transformation] 输入不同的参数输出不同的 key
 
 > [!TIP]
-> 自定义的 Transformation 不要对 transform 方法的 input Image 执行 recycle()，这会造成不可预知的错误
+> 自定义的 [Transformation] 不要对 transform 方法的 input Image 执行 recycle()，这会造成不可预知的错误
 
 [Transformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/Transformation.kt
 

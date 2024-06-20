@@ -4,7 +4,7 @@
 
 ## AsyncImage
 
-[AsyncImage] 是一个异步执行图像请求并呈现结果的可组合函数，你可以直接使用它加载图片，如下：
+[AsyncImage] 是一个异步执行图片请求并呈现结果的可组合函数，你可以直接使用它加载图片，如下：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -16,7 +16,17 @@ AsyncImage(
     contentDescription = "photo"
 )
 
-// config params
+AsyncImage(
+     uri = imageUri,
+     state = rememberAsyncImageState(ComposableImageOptions {
+          placeholder(Res.drawable.placeholder)
+          error(Res.drawable.error)
+          crossfade()
+          // There is a lot more...
+     }),
+     contentDescription = "photo"
+)
+
 AsyncImage(
     rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
@@ -71,7 +81,7 @@ SubcomposeAsyncImage(
 
 ### AsyncImagePainter
 
-如果你必须使用 Image 组件，那么你还可以直接使用 [AsyncImagePainter] 来加载图像，如下：
+如果你必须使用 Image 组件，那么你还可以直接使用 [AsyncImagePainter] 来加载图片，如下：
 
 ```kotlin
 Image(
@@ -79,7 +89,6 @@ Image(
     contentDescription = "photo"
 )
 
-// config params
 Image(
     painter = rememberAsyncImagePainter(
         rqeuest = ComposableImageRequest("https://example.com/image.jpg") {
@@ -106,7 +115,7 @@ Image(
 [ImageRequest]
 和管理状态，[AsyncImagePainter] 负责从 [AsyncImageState] 读取 Painter 并绘制，[AsyncImage] 负责布局
 
-你可以从 [AsyncImageState] 读取请求的状态、进度、Painter，你还可以通过其 restart() 方法重新加载图像，如下：
+你可以从 [AsyncImageState] 读取请求的状态、进度、Painter，你还可以通过其 restart() 方法重新加载图片，如下：
 
 ```kotlin
 val state = rememberAsyncImageState()
@@ -127,6 +136,7 @@ when (loadState) {
         val cacheKey: String = loadState.result.cacheKey
         val imageInfo: ImageInfo = loadState.result.imageInfo
         val dataFrom: DataFrom = loadState.result.dataFrom
+        val resize: Resize = loadState.result.resize
         val transformeds: List<String>? = loadState.result.transformeds
         val extras: Map<String, String>? = loadState.result.extras
     }

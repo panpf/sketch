@@ -8,7 +8,7 @@
 
 和大多数日志框架一样，[Logger] 也通过 [Logger].Level 控制输出日志的级别，默认为 `Info`
 
-你可以任何时候修改 level，如下：
+你可以在任何时候修改 level，如下：
 
 ```kotlin
 // 在初始哈 Sketch 时

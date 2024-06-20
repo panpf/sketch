@@ -5,8 +5,7 @@
 > [!IMPORTANT]
 > 必须导入 `sketch-extensions-view` 或 `sketch-extensions-compose` 模块
 
-列表滚动的过程中开启异步线程加载图片会降低 UI 流畅度，因此在性能较差的设备上列表滚动中暂停加载图片能显著提高
-UI 流畅度
+列表滚动的过程中大量加载图片会降低 UI 流畅度，因此在性能较差的设备上列表滚动中暂停加载图片能显著提高 UI 流畅度
 
 ### 配置
 
@@ -48,9 +47,6 @@ ImageRequest(context, "https://example.com/image.jpg") {
     }
 }
 ```
-
-> [!TIP]
-> [PauseLoadWhenScrollingDecodeInterceptor] 仅对 [ImageRequest] 有效
 
 最后针对单个请求开启列表滚动中暂停加载功能，如下：
 

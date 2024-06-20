@@ -9,10 +9,10 @@ For View:
 
 * [DrawableStateImage]: Use Drawable as status picture
 * [ColorDrawableStateImage]: Create a ColorDrawable using colors as status picture
-* [IconDrawableStateImage]: Use IconDrawable as status picture. It can ensure that the size of the
+* [IconDrawableStateImage]: Use [IconDrawable] as status picture. It can ensure that the size of the
   icon remains unchanged and is not affected by the scaling of the component. It is suitable for use
   in waterfall layouts.
-* [IconAnimatableDrawableStateImage]: Use IconAnimatableDrawable as state image. It can ensure that
+* [IconAnimatableDrawableStateImage]: Use [IconAnimatableDrawable] as state image. It can ensure that
   the size of the icon remains unchanged and is not affected by the scaling of the component. It is
   suitable for use in waterfall layouts.
 
@@ -20,10 +20,10 @@ For Compose:
 
 * [PainterStateImage]: Use Painter as status picture
 * [ColorPainterStateImage]: Create a ColorPainter using colors as a status picture
-* [IconPainterStateImage]: Use IconPainter as status image. It can ensure that the size of the icon
+* [IconPainterStateImage]: Use [IconPainter] as status image. It can ensure that the size of the icon
   remains unchanged and is not affected by the scaling of the component. It is suitable for use in
   waterfall layouts.
-* [IconAnimatablePainterStateImage]: Use IconAnimatablePainter as state image. It can ensure that
+* [IconAnimatablePainterStateImage]: Use [IconAnimatablePainter] as state image. It can ensure that
   the size of the icon remains unchanged and is not affected by the scaling of the component. It is
   suitable for use in waterfall layouts.
 
@@ -48,32 +48,47 @@ and [ImageOptions], as follows:
 ```kotlin
 // View
 ImageRequest(context, "https://example.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    placeholder(context.getEqualityDrawable(R.drawable.placeholder))
-    placeholder(IntColorDrawableStateImage(Color.RED))
-    placeholder(DrawableStateImage(R.drawable.placeholder))
-    placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
+  placeholder(R.drawable.placeholder)
+  placeholder(context.getEqualityDrawable(R.drawable.placeholder))
+  placeholder(IntColorDrawableStateImage(Color.Gray))
+  placeholder(DrawableStateImage(R.drawable.placeholder))
+  placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
 
-    fallback(R.drawable.fallback)
-    fallback(context.getEqualityDrawable(R.drawable.fallback))
-    fallback(IntColorDrawableStateImage(Color.RED))
-    fallback(DrawableStateImage(R.drawable.fallback))
-    fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.GRAY)))
+  fallback(R.drawable.fallback)
+  fallback(context.getEqualityDrawable(R.drawable.fallback))
+  fallback(IntColorDrawableStateImage(Color.RED))
+  fallback(DrawableStateImage(R.drawable.fallback))
+  fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.RED)))
 
-    error(R.drawable.error)
+  error(R.drawable.error)
+  error(R.drawable.error) {
+    addState(MyCondition, R.drawable.mystate)
+  }
+  error(ErrorStateImage(R.drawable.error)) {
+    addState(MyCondition, R.drawable.mystate)
+  })
 }
 
 // Compose
-val placeholder = rememberPainterStateImage(Res.drawable.placeholder)
-//    val placeholder = rememberColorPainterStateImage(Color.Red)
-//    val placeholder = rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray)
-val fallback = rememberPainterStateImage(Res.drawable.fallback)
-//    val fallback = rememberColorPainterStateImage(Color.Red)
-//    val fallback = rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Gray)
 ComposableImageRequest("https://example.com/image.jpg") {
-    placeholder(placeholder)
-    fallback(fallback)
-    error(Res.drawable.error)
+  placeholder(Res.drawable.placeholder)
+  placeholder(rememberPainterStateImage(Res.drawable.placeholder))
+  placeholder(rememberColorPainterStateImage(Color.Gray))
+  placeholder(rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray))
+
+  fallback(Res.drawable.fallback)
+  fallback(rememberPainterStateImage(Res.drawable.fallback))
+  fallback(rememberColorPainterStateImage(Color.Red))
+  fallback(rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Red))
+
+
+  error(Res.drawable.error)
+  error(Res.drawable.error) {
+    addState(MyCondition, Res.drawable.mystate)
+  }
+  error(ErrorStateImage(R.drawable.error)) {
+    addState(MyCondition, Res.drawable.mystate)
+  })
 }
 ```
 
@@ -180,3 +195,11 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/CurrentStateImage.kt
 
 [PainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/PainterStateImage.kt
+
+[IconPainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/IconPainter.common.kt
+
+[IconAnimatablePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/IconAnimatablePainter.common.kt
+
+[IconAnimatableDrawable]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/IconAnimatableDrawable.kt
+
+[IconDrawable]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/IconDrawable.kt

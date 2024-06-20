@@ -17,7 +17,17 @@ AsyncImage(
     contentDescription = "photo"
 )
 
-// config params
+AsyncImage(
+     uri = imageUri,
+     state = rememberAsyncImageState(ComposableImageOptions {
+          placeholder(Res.drawable.placeholder)
+          error(Res.drawable.error)
+          crossfade()
+          // There is a lot more...
+     }),
+     contentDescription = "photo"
+)
+
 AsyncImage(
     rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
@@ -83,7 +93,6 @@ Image(
     contentDescription = "photo"
 )
 
-// config params
 Image(
     painter = rememberAsyncImagePainter(
         rqeuest = ComposableImageRequest("https://example.com/image.jpg") {
@@ -134,6 +143,7 @@ when (loadState) {
         val cacheKey: String = loadState.result.cacheKey
         val imageInfo: ImageInfo = loadState.result.imageInfo
         val dataFrom: DataFrom = loadState.result.dataFrom
+         val resize: Resize = loadState.result.resize
         val transformeds: List<String>? = loadState.result.transformeds
         val extras: Map<String, String>? = loadState.result.extras
     }

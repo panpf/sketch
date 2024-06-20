@@ -10,6 +10,7 @@ Three styles are provided to choose from, as follows:
 
 ![sample_progress_drawable.png](../res/sample_progress_drawable.png)
 
+> [!TIP]
 > They can also adjust color, size and behavior
 
 ## Compose
@@ -18,11 +19,9 @@ Three styles are provided to choose from, as follows:
 > Required import `sketch-extensions-compose` module
 
 ```kotlin
-val progressPainter = rememberDrawableProgressPainter(remember {
-    SectorProgressDrawable()
-    // or MaskProgressDrawable()
-    // or RingProgressDrawable()
-})
+// val progressPainter = rememberMaskProgressPainter()
+// val progressPainter = rememberSectorProgressPainter()
+val progressPainter = rememberRingProgressPainter()
 val state = rememberAsyncImageState()
 AsyncImage(
     uri = "https://example.com/image.jpg",
@@ -34,6 +33,7 @@ AsyncImage(
 )
 ```
 
+> [!TIP]
 > Compose version function is implemented by [ProgressIndicatorModifier]
 
 ### Custom indicator
@@ -91,6 +91,7 @@ sketchImageView.showSectorProgressIndicator()
 sketchImageView.showRingProgressIndicator()
 ```
 
+> [!TIP]
 > View version functionality is implemented by [ProgressIndicatorAbility]
 
 ### Custom indicator

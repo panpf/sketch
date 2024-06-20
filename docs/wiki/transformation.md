@@ -14,7 +14,7 @@ Translations: [简体中文](transformation_zh.md)
 > [!TIP]
 > 1. [Transformation] does not support animated graphics. Please use the animatedTransformation()
      function for animated image.
-> 2. When using RoundedCornersTransformation, please use it with 'precision(Precision.EXACTLY)',
+> 2. When using [RoundedCornersTransformation], please use it with 'precision(Precision.EXACTLY)',
      because if the original image size is the same as When the resize size is inconsistent, the
      final fillet will be scaled during display, resulting in the fillet size being inconsistent
      with expectations.
@@ -40,7 +40,7 @@ and certainty of the key attribute:
 * The same [Transformation] inputs different parameters and outputs different keys.
 
 > [!TIP]
-> For custom Transformation, do not perform recycle() on the input Image of the transform
+> For custom [Transformation], do not perform recycle() on the input Image of the transform
 > method. This will cause unpredictable errors.
 
 [Transformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/Transformation.kt

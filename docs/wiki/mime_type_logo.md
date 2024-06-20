@@ -35,6 +35,7 @@ AsyncImage(
 )
 ```
 
+> [!TIP]
 > Compose version function is implemented by [MimeTypeLogoModifier]
 
 ### View
@@ -59,6 +60,7 @@ sketchImageView.showMimeTypeLogoWithRes(
 )
 ```
 
+> [!TIP]
 > View version functionality is implemented by [MimeTypeLogoAbility]
 
 [SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt

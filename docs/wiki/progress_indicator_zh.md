@@ -10,7 +10,8 @@ Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下�
 
 ![sample_progress_drawable.png](../res/sample_progress_drawable.png)
 
-> 它们还可以调整颜色、尺寸和行为
+> [!TIP]
+> 还可以调整它们的颜色、尺寸和行为
 
 ## Compose
 
@@ -18,11 +19,9 @@ Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下�
 > 必须导入 `sketch-extensions-compose` 模块
 
 ```kotlin
-val progressPainter = rememberDrawableProgressPainter(remember {
-    SectorProgressDrawable()
-    // or MaskProgressDrawable()
-    // or RingProgressDrawable()
-})
+// val progressPainter = rememberMaskProgressPainter()
+// val progressPainter = rememberSectorProgressPainter()
+val progressPainter = rememberRingProgressPainter()
 val state = rememberAsyncImageState()
 AsyncImage(
     uri = "https://example.com/image.jpg",
@@ -34,6 +33,7 @@ AsyncImage(
 )
 ```
 
+> [!TIP]
 > Compose 版本功能由 [ProgressIndicatorModifier] 实现
 
 ### 自定义指示器样式
@@ -91,6 +91,7 @@ sketchImageView.showSectorProgressIndicator()
 sketchImageView.showRingProgressIndicator()
 ```
 
+> [!TIP]
 > View 版本功能由 [ProgressIndicatorAbility] 实现
 
 ### 自定义指示器样式

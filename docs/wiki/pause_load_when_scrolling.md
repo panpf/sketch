@@ -5,9 +5,7 @@ Translations: [简体中文](pause_load_when_scrolling_zh.md)
 > [!IMPORTANT]
 > Required import `sketch-extensions-view` or `sketch-extensions-compose` module
 
-Enabling asynchronous thread loading of images during list scrolling will reduce UI fluency.
-Therefore, pausing image loading during list scrolling can significantly improve performance on
-devices with poor performance UI fluency
+Loading a large number of images during list scrolling will reduce UI fluency. Therefore, pausing the loading of images during list scrolling on devices with poor performance can significantly improve UI fluency.
 
 ### Configure
 
@@ -49,9 +47,6 @@ ImageRequest(context, "https://example.com/image.jpg") {
     }
 }
 ```
-
-> [!TIP]
-> [PauseLoadWhenScrollingDecodeInterceptor] is only valid for [ImageRequest]
 
 Finally, enable the pause loading function during list scrolling for a single request, as follows:
 

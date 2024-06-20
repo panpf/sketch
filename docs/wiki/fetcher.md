@@ -10,7 +10,7 @@ following table:
 | URI                    | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
 |:-----------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
 | http://, https://      | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
-| /, file://             | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
+| file://, /             | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
 | compose.resource://    | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
 | data:image/, data:img/ | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
 | asset://               | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
@@ -19,21 +19,20 @@ following table:
 | app.icon://            | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
 | kotlin.resource://     | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
-> [!TIP]
-> * [AssetUriFetcher] is used to load images from the Android assets directory
-> * [ContentUriFetcher] ContentResolver for Android to load images
-> * [ResourceUriFetcher] is used to load images from Android's resources directory
-> * [AppIconUriFetcher] is used to load the icon of the installed App. It also needs to rely
+* [AssetUriFetcher] is used to load images from the Android assets directory
+* [ContentUriFetcher] ContentResolver for Android to load images
+* [ResourceUriFetcher] is used to load images from Android's resources directory
+* [AppIconUriFetcher] is used to load the icon of the installed App. It also needs to rely
     on `sketch-extensions-core`
     module. [Learn more](apk_app_icon.md#load-the-icon-of-the-installed-app)
-> * [Base64UriFetcher] is used to load images from the base64 data block of the uri itself
-> * [ComposeResourceUriFetcher] is used to load images from the composeResources directory of
+* [Base64UriFetcher] is used to load images from the base64 data block of the uri itself
+* [ComposeResourceUriFetcher] is used to load images from the composeResources directory of
     Compose Multiplatform, it also needs to depend on the `sketch-compose-resources` module.
-> * [KotlinResourceUriFetcher] is used to load images from the resources directory of kotlin
+* [KotlinResourceUriFetcher] is used to load images from the resources directory of kotlin
 
 ## Register Fetcher
 
-[Fetcher] that needs to rely on a separate module (such as [AppIconUriFetcher]) needs to be
+[Fetcher] that needs to rely on a separate module (such as [ComposeResourceUriFetcher]) needs to be
 registered when initializing Sketch, as follows:
 
 ```kotlin

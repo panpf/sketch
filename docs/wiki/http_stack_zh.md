@@ -48,7 +48,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 
 ### OkHttpStack
 
-使用 [OkHttpStack] 之前需要先依赖 `sketch-okhttp` 模块，然后在初始化 [Sketch] 时通过 `httpStack()`
+使用 [OkHttpStack] 之前需要先依赖 `sketch-http-okhttp` 模块，然后在初始化 [Sketch] 时通过 `httpStack()`
 方法注册即可，如下：
 
 ```kotlin

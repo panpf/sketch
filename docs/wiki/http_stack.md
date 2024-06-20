@@ -52,7 +52,7 @@ class MyApplication : Application(), SingletonSketch.Factory {
 
 ### OkHttpStack
 
-Before using [OkHttpStack], you need to rely on the `sketch-okhttp` module, and then
+Before using [OkHttpStack], you need to rely on the `sketch-http-okhttp` module, and then
 pass `httpStack()` when initializing [Sketch] The method to register is as follows:
 
 ```kotlin

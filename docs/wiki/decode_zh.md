@@ -2,7 +2,7 @@
 
 翻译：[English](decode.md)
 
-[Decoder] 用于解码图像文件，支持的每一种图片类型都有对应的 [Decoder] 实现，如下表所示：
+[Decoder] 用于解码图片文件，支持的每一种图片类型都有对应的 [Decoder] 实现，如下表所示：
 
 | Format   | Decoder                                    | Dependent modules        | Android    | iOS             | Desktop         | Web             |
 |:---------|--------------------------------------------|--------------------------|------------|:----------------|:----------------|:----------------|
@@ -29,8 +29,8 @@
 
 * [ApkIconDecoder] 在 Android 平台上解码 Apk
   文件的图标（[了解更多](apk_app_icon_zh.md#加载-apk-的图标)）
-* [BitmapFactoryDecoder] 在 Android 平台上使用 Android 内置的 [BitmapFactory] 解码图像，它是最后的解码器
-* [DrawableDecoder] 在 Android 平台上解码 vector、shape 等 Android 支持的 xml drawable 图像
+* [BitmapFactoryDecoder] 在 Android 平台上使用 Android 内置的 [BitmapFactory] 解码图片，它是最后的解码器
+* [DrawableDecoder] 在 Android 平台上解码 vector、shape 等 Android 支持的 xml drawable 图片
 * [GifAnimatedDecoder] 在 Android 平台上使用 Android 内置的 [ImageDecoder] 解码 gif
   动图（[了解更多](animated_image_zh.md)）
 * [GifDrawableDecoder] 在 Android 平台上使用 koral-- 的 [android-gif-drawable][android-gif-drawable]
@@ -41,7 +41,7 @@
   动图（[了解更多](animated_image_zh.md)）
 * [HeifAnimatedDecoder] 使用 Android 内置的 [ImageDecoder] 解码 heif
   动图（[了解更多](animated_image_zh.md)）
-* [SkiaDecoder] 在非 Android 平台上使用 Skia 内置的 Image 解码图像，它是最后的解码器
+* [SkiaDecoder] 在非 Android 平台上使用 Skia 内置的 Image 解码图片，它是最后的解码器
 * [SvgDecoder] 在 Android 平台上使用 BigBadaboom 的 [androidsvg] 库，在非 Android 平台上使用 Skia 内置的
   SVGDOM 解码静态 svg 文件（[了解更多](svg_zh.md)）
 * [WebpAnimatedDecoder] 在 Android 平台上使用 Android 内置的 [ImageDecoder] 解码 webp
@@ -81,7 +81,7 @@ ImageRequest(context, "asset://sample.mypng") {
 class MyDecoder : Decoder {
 
     override suspend fun decode(): Result<BitmapDecodeResult> {
-        // 在这里解码图像
+        // 在这里解码图片
     }
 
     companion object {
@@ -97,7 +97,7 @@ class MyDecoder : Decoder {
         ): Decoder? {
             val mimeType = fetchResult.mimeType
             val dataSource = fetchResult.dataSource
-            // 在这通过 mimeType 或 dataSource 判断当前图像是否是
+            // 在这通过 mimeType 或 dataSource 判断当前图片是否是
             // MyDecoder 的目标类型，是的话返回一个新的 MyDecoder
             return if (fetchResult.mimeType == MY_MIME_TYPE) {
                 MyDecoder()
@@ -124,7 +124,7 @@ ImageRequest(context, "asset://sample.mypng") {
 ```
 
 > [!CAUTION]
-> 1. 自定义 [Decoder] 需要应用 ImageRequest 中的很多与图像质量和尺寸相关的属性，例如
+> 1. 自定义 [Decoder] 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如
      bitmapConfig、size、colorSpace 等，可参考其它 [Decoder] 实现
 > 2. 如果你的 [Decoder] 是解码动图的话一定要判断 [ImageRequest].disallowAnimatedImage 参数
 

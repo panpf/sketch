@@ -9,7 +9,7 @@
 | URI                    | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
 |:-----------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
 | http://, https://      | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
-| /, file://             | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
+| file://, /             | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
 | compose.resource://    | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
 | data:image/jpeg;base64 | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
 | asset://               | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
@@ -18,19 +18,18 @@
 | app.icon://            | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
 | kotlin.resource://     | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
-> [!TIP]
-> * [AssetUriFetcher] 用于从 Android 的 assets 目录加载图片
-> * [ContentUriFetcher] 用于 Android 的 ContentResolver 加载图片
-> * [ResourceUriFetcher] 用于从 Android 的 resources 目录加载图片
-> * [AppIconUriFetcher] 用于加载已安装 App 的图标，它还需要依赖 `sketch-extensions-core`
+* [AssetUriFetcher] 用于从 Android 的 assets 目录加载图片
+* [ContentUriFetcher] 用于 Android 的 ContentResolver 加载图片
+* [ResourceUriFetcher] 用于从 Android 的 resources 目录加载图片
+* [AppIconUriFetcher] 用于加载已安装 App 的图标，它还需要依赖 `sketch-extensions-core`
     模块。[了解更多](apk_app_icon_zh.md#加载已安装-App-的图标)
-> * [Base64UriFetcher] 用于从 uri 本身的 base64 数据块中加载图片
-> * [ComposeResourceUriFetcher] 用于从 Compose Multiplatform 的 composeResources 目录加载图片，它还需要依赖 `sketch-compose-resources` 模块。
-> * [KotlinResourceUriFetcher] 用于从 kotlin 的 resources 目录加载图片
+* [Base64UriFetcher] 用于从 uri 本身的 base64 数据块中加载图片
+* [ComposeResourceUriFetcher] 用于从 Compose Multiplatform 的 composeResources 目录加载图片，它还需要依赖 `sketch-compose-resources` 模块。
+* [KotlinResourceUriFetcher] 用于从 kotlin 的 resources 目录加载图片
 
 ## 注册 Fetcher
 
-需要依赖单独模块的 [Fetcher]（例如 [AppIconUriFetcher]），需要在初始化 Sketch 时注册，如下：
+需要依赖单独模块的 [Fetcher]（例如 [ComposeResourceUriFetcher]），需要在初始化 Sketch 时注册，如下：
 
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册

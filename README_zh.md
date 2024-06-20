@@ -96,7 +96,17 @@ AsyncImage(
     contentDescription = "photo"
 )
 
-// config params
+AsyncImage(
+    uri = imageUri,
+    state = rememberAsyncImageState(ComposableImageOptions {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
+        // There is a lot more...
+    }),
+    contentDescription = "photo"
+)
+
 AsyncImage(
     rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
@@ -133,7 +143,6 @@ val imageUri = "https://www.sample.com/image.jpg"
 
 imageView.loadImage(imageUri)
 
-// config params
 imageView.loadImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
@@ -200,9 +209,9 @@ context.sketch.enqueue(request)
 
 * maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 * 4.0 版本专为 Compose Multiplatform 打造，所以 API 有很多破坏性改动，请谨慎升级
-* 4.0 版本做了大量的简化，比 3.0 版本简单很多，例如 DisplayRequest、LoadRequest、DownloadRequest
-  合并为一个 ImageRequest，移除了 BitmapPool 等
+* 4.0 版本做了大量的简化，比 3.0 版本简单很多，详情请查看更新日志
 * Android 最低 API 升到了 API 21
+* Kotlin 版本升级到了 2.0.0
 
 ## 特别感谢
 
@@ -212,11 +221,26 @@ context.sketch.enqueue(request)
 * [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: sketch-video-ffmpeg
 * [BigBadaboom/androidsvg][androidsvg]: sketch-svg
 
+## 运行源码
+
+准备环境：
+
+1. Android Studio: Koala+ (2024.1.1+)
+2. JDK: 17+
+3. 使用 [kdoctor] 检查运行环境，并按照提示安装需要的软件
+4. Android Studio 安装 `Kotlin Multiplatform` 和 `Compose Multiplatform IDE Support` 插件
+
+执行代码：
+
+1. 克隆项目并使用 Android Studio 打开
+2. `.run` 目录下已经添加了各个平台的运行配置，同步完成后直接在 Android Studio
+   顶部运行配置下拉框中选择对应平台的运行配置然后点击运行即可
+
 ## 我的项目
 
 以下是我的其它开源项目，感兴趣的可以了解一下：
 
-* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图像的库，支持 Compose Multiplatform 和
+* [zoomimage](https://github.com/panpf/zoomimage)：用于缩放图片的库，支持 Compose Multiplatform 和
   Android
   View；支持双击缩放、单指或双指手势缩放、单指拖动、惯性滑动、定位、旋转、超大图子采样等功能。
 * [assembly-adapter](https://github.com/panpf/assembly-adapter)：Android 上的一个为各种 Adapter 提供多类型
@@ -334,3 +358,5 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [comment]: <> (footer)
 
 [CHANGELOG.md]: CHANGELOG_zh.md
+
+[kdoctor]: https://github.com/Kotlin/kdoctor

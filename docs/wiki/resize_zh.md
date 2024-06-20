@@ -77,7 +77,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 ## PrecisionDecider 和 ScaleDecider
 
 [Sketch] 同样使用 Decider 包装器为 [ImageRequest] 提供 [Precision] 和 [Scale]
-，这是样就可以在解码时根据图片大小和 [Resize] 动态决定使用何种 [Precision] 和 [Scale]
+，这样就可以在解码时根据图片大小和 [Resize] 动态决定使用何种 [Precision] 和 [Scale]
 
 默认提供了以下实现：
 
@@ -96,7 +96,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 ## 构建顺序和默认值
 
-在构建 [ImageRequest] 时确定这些属性的值还是有些复杂的，这里是一个简单的构建顺序：
+在构建 [ImageRequest] 时确定这些属性的值还是有些复杂的，如下：
 
 * [Size]：
     1. [ImageRequest].Builder.sizeResolver
@@ -128,7 +128,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 ## sizeMultiplier
 
-sizeMultiplier 用于对 size 进行缩放，例如 sizeMultiplier 为 2.0 时，size 为 100x100 时实际大小为
+sizeMultiplier 用于对 size 进行缩放，例如 sizeMultiplier 为 2.0 时，size 为 100x100 时实际 size 为
 200x200
 
 这通常用于默认用组件的大小作为 size，但是组件太小，需要放大 size 以提高图片质量，如下：
@@ -194,10 +194,14 @@ resizeOnDraw 搭配 [CrossfadeTransition]
 
 [Size]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Size.kt
 
+[SizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
+
 [OriginSizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
 [ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
+
+[ResizePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/ResizePainter.kt
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md

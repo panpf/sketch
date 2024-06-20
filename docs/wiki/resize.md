@@ -111,7 +111,7 @@ The following implementations are provided by default:
 ## Build order and defaults
 
 Determining the values of these properties when building [ImageRequest] is still a bit complicated,
-here is a simple building sequence:
+follows:
 
 * [Size]:
     1. [ImageRequest].Builder.sizeResolver
@@ -214,10 +214,14 @@ transition. [Understanding Perfect Transition](transition.md#perfect-transition)
 
 [Size]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Size.kt
 
+[SizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
+
 [OriginSizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
 [ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
+
+[ResizePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/ResizePainter.kt
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails.md

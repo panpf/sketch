@@ -35,6 +35,7 @@ AsyncImage(
 )
 ```
 
+> [!TIP]
 > Compose 版本功能由 [MimeTypeLogoModifier] 实现
 
 ### View
@@ -59,6 +60,7 @@ sketchImageView.showMimeTypeLogoWithRes(
 )
 ```
 
+> [!TIP]
 > View 版本功能由 [MimeTypeLogoAbility] 实现
 
 [SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt

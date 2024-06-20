@@ -9,7 +9,7 @@ image-related attributes of [ImageRequest].
 
 * [Target].getImageOptions()
     * [SketchImageView].imageOptions
-    * [rememberAsyncImageState { ImageOptions() }][AsyncImageState]
+    * [rememberAsyncImageState(ImageOptions)][AsyncImageState]
 * [ImageRequest].Builder.merge(ImageOptions)/default(ImageOptions)
 * [Sketch].Builder.globalImageOptions(ImageOptions)
 
@@ -27,8 +27,8 @@ Global：
 ```kotlin
 Sketch.Builder(context).apply {
     globalImageOptions(ImageOptions {
-        placeholer(Res.drawable.placeholder)
-        error(Res.drawable.error)
+        placeholer(R.drawable.placeholder)
+        error(R.drawable.error)
         // more ...
     })
 }.build()
@@ -48,13 +48,13 @@ ImageRequest：
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
     merge(ImageOptions {
-        placeholer(Res.drawable.placeholder)
-        error(Res.drawable.error)
+        placeholer(R.drawable.placeholder)
+        error(R.drawable.error)
         // more ...
     })
     default(ImageOptions {
-        placeholer(Res.drawable.placeholder)
-        error(Res.drawable.error)
+        placeholer(R.drawable.placeholder)
+        error(R.drawable.error)
         // more ...
     })
 }
@@ -63,18 +63,15 @@ ImageRequest(context, "https://example.com/image.jpg") {
 AsyncImageState：
 
 ```kotlin
-val state = rememberAsyncImageState()
-LaunchEffect(state) {
-    state.options = ImageOptions {
-        placeholer(Res.drawable.placeholder)
-        error(Res.drawable.error)
-        // more ...
-    }
-}
+val state = rememberAsyncImageState(ComposableImageOptions {
+  placeholer(Res.drawable.placeholder)
+  error(Res.drawable.error)
+  // more ...
+})
 AsyncImage(
-    uri = "https://example.com/image.jpg",
-    contentDescription = "",
-    state = state,
+  uri = "https://example.com/image.jpg",
+  contentDescription = "",
+  state = state,
 )
 ```
 

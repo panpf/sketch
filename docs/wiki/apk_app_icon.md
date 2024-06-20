@@ -12,7 +12,7 @@ Translations: [简体中文](apk_app_icon_zh.md)
 // Register for all ImageRequests when customizing Sketch
 val sketch = Sketch.Builder(context).apply {
     components {
-        supportApkIcon()
+        addDecoder(ApkIconDecoder.Factory())
     }
 }.build()
 // Then just pass in the path to the apk file when loading the image.
@@ -21,7 +21,7 @@ sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 // Or register for a single ImageRequest when loading an image
 ImageRequest(context, uri = "/sdcard/sample.apk") {
     components {
-        supportApkIcon()
+        addDecoder(ApkIconDecoder.Factory())
     }
 }
 ```
@@ -34,7 +34,7 @@ First, register [AppIconUriFetcher] as follows:
 // Register for all ImageRequests when customizing Sketch
 val sketch = Sketch.Builder(context).apply {
     components {
-        supportAppIcon()
+        addFetcher(AppIconUriFetcher.Factory())
     }
 }.build()
 // Then use the `newAppIconUri()` function to create a dedicated uri when loading the image.
@@ -43,7 +43,7 @@ sketch.enqueue(ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketc
 // Or register for a single ImageRequest when loading an image
 ImageRequest(context, uri = newAppIconUri("com.github.panpf.sketch.sample", versionCode = 1)) {
     components {
-        supportAppIcon()
+        addFetcher(AppIconUriFetcher.Factory())
     }
 }
 ```

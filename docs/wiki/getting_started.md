@@ -18,7 +18,17 @@ AsyncImage(
     contentDescription = "photo"
 )
 
-// config params
+AsyncImage(
+     uri = imageUri,
+     state = rememberAsyncImageState(ComposableImageOptions {
+          placeholder(Res.drawable.placeholder)
+          error(Res.drawable.error)
+          crossfade()
+          // There is a lot more...
+     }),
+     contentDescription = "photo"
+)
+
 AsyncImage(
     rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
@@ -62,7 +72,6 @@ val imageUri = "https://example.com/image.jpg"
 
 imageView.loadImage(imageUri)
 
-// config params
 imageView.loadImage(imageUri) {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)
@@ -113,7 +122,7 @@ resources, as follows:
 | URI                    | Describe                 | Create Function         | Dependent Modules        |
 |:-----------------------|:-------------------------|:------------------------|:-------------------------|
 | http://, https://      | File in network          | _                       | _                        |
-| /, file://             | File in SDCard           | newFileUri()            | _                        |
+| file://, /             | File in SDCard           | newFileUri()            | _                        |
 | content://             | Android Content Resolver | _                       | _                        |
 | asset://               | Android Asset            | newAssetUri()           | _                        |
 | android.resource://    | Android Resource         | newResourceUri()        | _                        |
@@ -138,7 +147,7 @@ different, as follows:
 | Animated heif                                                                          | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
 | svg                                                                                    | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
 | Video frames                                                                           | ✅             | ❌                       | ❌                       | ❌                       |
-| http://<br/>https://<br/>/, file://<br/>compose.resource://<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
+| http://<br/>https://<br/>file://, /<br/>compose.resource://<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
 | asset://<br/>content://<br/>android.resource://                                        | ✅             | ❌                       | ❌                       | ❌                       |
 | kotlin.resource://                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
 | Exif Orientation                                                                       | ✅             | ✅                       | ✅                       | ✅                       |
@@ -268,7 +277,7 @@ Image(
 ```
 
 > [!CAUTION]
-> You cannot call the target() function in AsyncImage and AsyncImagePainter, which will cause the
+> You cannot call the target() function in [AsyncImage] and [AsyncImagePainter], which will cause the
 > app to crash
 
 In the Android View system, you need to actively call the target() function and pass in the
@@ -283,8 +292,8 @@ val request = ImageRequest(context, "https://www.example.com/image.jpg") {
 context.sketch.enqueue(request)
 ```
 
-You can also use [ImageRequest][ImageRequest_ViewExtensions](ImageView, String) or
-ImageView.[loadImage()][loadImage] extension functions, they will call target() for you, as
+You can also use [ImageRequest(ImageView, String)][ImageRequest_ViewExtensions] or
+[ImageView.loadImage()][loadImage] extension functions, they will call target() for you, as
 follows:
 
 ```kotlin
@@ -410,7 +419,7 @@ job.cancel()
 [Sketch] provides a series of extensions for ImageView, as follows:
 
 ```kotlin
-// display
+// load
 imageView.loadImage("https://www.example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     error(R.drawable.error)

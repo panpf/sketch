@@ -23,18 +23,18 @@ Select the appropriate Decoder according to the situation, and then register it 
 // Register for all ImageRequests when customizing Sketch
 Sketch.Builder(context).apply {
     components {
-        supportVideoFrame()
+        addDecoder(VideoFrameDecoder.Factory())
         //or
-        supportFFmpegVideoFrame()
+        addDecoder(FFmpegVideoFrameDecoder.Factory())
     }
 }.build()
 
 // Register for a single ImageRequest when loading an image
 ImageRequest(context, "file:///sdcard/sample.mp4") {
     components {
-      supportVideoFrame()
+      addDecoder(VideoFrameDecoder.Factory())
       //or
-      supportFFmpegVideoFrame()
+      addDecoder(FFmpegVideoFrameDecoder.Factory())
     }
 }
 ```

@@ -38,11 +38,6 @@ val lifecycle: Lifecycle = ...
 ImageRequest(context, "https://www.example.com/image.gif") {
     lifecycle(lifecycle)
 }
-// or
-val lifecycle: Lifecycle = ...
-ImageRequest(context, "https://www.example.com/image.gif") {
-    lifecycle(lifecycle)
-}
 ```
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt

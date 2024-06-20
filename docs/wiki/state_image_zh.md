@@ -8,16 +8,16 @@ For View:
 
 * [DrawableStateImage]：使用 Drawable 作为状态图片
 * [ColorDrawableStateImage]：使用颜色创建 ColorDrawable 作为状态图片
-* [IconDrawableStateImage]：使用 IconDrawable 作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
-* [IconAnimatableDrawableStateImage]：使用 IconAnimatableDrawable
+* [IconDrawableStateImage]：使用 [IconDrawable] 作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
+* [IconAnimatableDrawableStateImage]：使用 [IconAnimatableDrawable]
   作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
 
 For Compose:
 
 * [PainterStateImage]：使用 Painter 作为状态图片
 * [ColorPainterStateImage]：使用颜色创建 ColorPainter 作为状态图片
-* [IconPainterStateImage]：使用 IconPainter 作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
-* [IconAnimatablePainterStateImage]：使用 IconAnimatablePainter
+* [IconPainterStateImage]：使用 [IconPainter] 作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
+* [IconAnimatablePainterStateImage]：使用 [IconAnimatablePainter]
   作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
 
 Generic:
@@ -39,7 +39,7 @@ Generic:
 ImageRequest(context, "https://example.com/image.jpg") {
     placeholder(R.drawable.placeholder)
     placeholder(context.getEqualityDrawable(R.drawable.placeholder))
-    placeholder(IntColorDrawableStateImage(Color.RED))
+    placeholder(IntColorDrawableStateImage(Color.Gray))
     placeholder(DrawableStateImage(R.drawable.placeholder))
     placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
 
@@ -47,22 +47,36 @@ ImageRequest(context, "https://example.com/image.jpg") {
     fallback(context.getEqualityDrawable(R.drawable.fallback))
     fallback(IntColorDrawableStateImage(Color.RED))
     fallback(DrawableStateImage(R.drawable.fallback))
-    fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.GRAY)))
+    fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.RED)))
 
     error(R.drawable.error)
+    error(R.drawable.error) {
+        addState(MyCondition, R.drawable.mystate)
+    }
+    error(ErrorStateImage(R.drawable.error)) {
+        addState(MyCondition, R.drawable.mystate)
+    })
 }
 
 // Compose
-val placeholder = rememberPainterStateImage(Res.drawable.placeholder)
-//    val placeholder = rememberColorPainterStateImage(Color.Red)
-//    val placeholder = rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray)
-val fallback = rememberPainterStateImage(Res.drawable.fallback)
-//    val fallback = rememberColorPainterStateImage(Color.Red)
-//    val fallback = rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Gray)
 ComposableImageRequest("https://example.com/image.jpg") {
-    placeholder(placeholder)
-    fallback(fallback)
+    placeholder(Res.drawable.placeholder)
+    placeholder(rememberPainterStateImage(Res.drawable.placeholder))
+    placeholder(rememberColorPainterStateImage(Color.Gray))
+    placeholder(rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray))
+
+    fallback(Res.drawable.fallback)
+    fallback(rememberPainterStateImage(Res.drawable.fallback))
+    fallback(rememberColorPainterStateImage(Color.Red))
+    fallback(rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Red))
+  
     error(Res.drawable.error)
+    error(Res.drawable.error) {
+        addState(MyCondition, Res.drawable.mystate)
+    }
+    error(ErrorStateImage(R.drawable.error)) {
+        addState(MyCondition, Res.drawable.mystate)
+    })
 }
 ```
 
@@ -162,3 +176,11 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [CurrentStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/CurrentStateImage.kt
 
 [PainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/PainterStateImage.kt
+
+[IconPainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/IconPainter.common.kt
+
+[IconAnimatablePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/IconAnimatablePainter.common.kt
+
+[IconAnimatableDrawable]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/IconAnimatableDrawable.kt
+
+[IconDrawable]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/IconDrawable.kt

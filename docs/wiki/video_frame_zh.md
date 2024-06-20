@@ -24,18 +24,18 @@ Sketch 支持解码视频帧，由以下 Decoder 提供支持：
 // 在自定义 Sketch 时为所有 ImageRequest 注册
 Sketch.Builder(context).apply {
     components {
-        supportVideoFrame()
+        addDecoder(VideoFrameDecoder.Factory())
         //or
-        supportFFmpegVideoFrame()
+        addDecoder(FFmpegVideoFrameDecoder.Factory())
     }
 }.build()
 
 // 加载图片时为单个 ImageRequest 注册
 ImageRequest(context, "file:///sdcard/sample.mp4") {
     components {
-      supportVideoFrame()
-      //or
-      supportFFmpegVideoFrame()
+        addDecoder(VideoFrameDecoder.Factory())
+        //or
+        addDecoder(FFmpegVideoFrameDecoder.Factory())
     }
 }
 ```
