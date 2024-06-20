@@ -1,4 +1,4 @@
-# Jetpack Compose
+# Compose
 
 Translations: [简体中文](compose_zh.md)
 

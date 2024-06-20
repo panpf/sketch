@@ -98,7 +98,7 @@ AsyncImage(
 
 // config params
 AsyncImage(
-    rqeuest = ImageRequest(imageUri) {
+    rqeuest = ComposableImageRequest(imageUri) {
         placeholder(Res.drawable.placeholder)
         error(Res.drawable.error)
         crossfade()
@@ -109,7 +109,7 @@ AsyncImage(
 
 Image(
     painter = rememberAsyncImagePainter(
-        request = ImageRequest(imageUri) {
+        request = ComposableImageRequest(imageUri) {
             placeholder(Res.drawable.placeholder)
             error(Res.drawable.error)
             crossfade()
@@ -119,6 +119,9 @@ Image(
     contentDescription = "photo"
 )
 ```
+
+> [!TIP]
+> `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
 Android View：
 

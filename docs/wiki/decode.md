@@ -28,8 +28,6 @@ implementation, as shown in the following table:
 | Video frames  | [FFmpegVideoFrameDecoder]                          | sketch-video-ffmpeg      | ✅          | ❌                       | ❌                       | ❌                       |
 | Apk Icon      | [ApkIconDecoder]                                   | sketch-extensions-core   | ✅          | ❌                       | ❌                       | ❌                       |
 
-> [!TIP]
-
 * [ApkIconDecoder] Decoding the icon of an Apk file on
   Android ([Learn more](apk_app_icon.md#load-apk-icon))
 * [BitmapFactoryDecoder] Decode images on the Android platform using Android's
