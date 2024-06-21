@@ -6,9 +6,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
     repositories {
-        google()
+//        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
+//        maven { setUrl("https://maven.aliyun.com/repository/google") }  // google
+//        maven { setUrl("https://repo.huaweicloud.com/repository/maven/") }    // central、google、jcenter
+//        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
     }
     dependencies {
         classpath(libs.gradlePlugin.android)
@@ -19,6 +23,20 @@ buildscript {
         classpath(libs.gradlePlugin.kotlinComposeCompiler)
         classpath(libs.gradlePlugin.kotlinxAtomicfu)
         classpath(libs.gradlePlugin.mavenPublish)
+    }
+}
+
+allprojects {
+    repositories {
+//        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
+//        maven { setUrl("https://maven.aliyun.com/repository/google") }  // google
+//        maven { setUrl("https://repo.huaweicloud.com/repository/maven/") }    // central、google、jcenter
+        mavenCentral()
+        google()
+        maven { setUrl("https://www.jitpack.io") }
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.3.0-wasm2
+//        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
+//        mavenLocal()
     }
 }
 

@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
 
-addAllMultiplatformTargets(listOf(MultiplatformTargets.Android, MultiplatformTargets.Desktop))
+addAllMultiplatformTargets(MultiplatformTargets.Android, MultiplatformTargets.Desktop)
 
 kotlin {
     sourceSets {

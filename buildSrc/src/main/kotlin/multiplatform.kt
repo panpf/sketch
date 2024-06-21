@@ -50,12 +50,12 @@ enum class MultiplatformTargets {
     MacosArm64
 }
 
-fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = null) {
+fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         extensions.configure<KotlinMultiplatformExtension> {
             applyMyHierarchyTemplate()
 
-            if (targets == null || targets.contains(MultiplatformTargets.Android)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Android)) {
                 val isAndroidApp = plugins.hasPlugin("com.android.application")
                 val isAndroidLibrary = plugins.hasPlugin("com.android.library")
                 if (isAndroidApp || isAndroidLibrary) {
@@ -67,11 +67,11 @@ fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = nu
                 }
             }
 
-            if (targets == null || targets.contains(MultiplatformTargets.Desktop)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Desktop)) {
                 jvm("desktop")
             }
 
-            if (targets == null || targets.contains(MultiplatformTargets.Js)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {
                 js {
                     browser()
                     nodejs {
@@ -86,7 +86,7 @@ fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = nu
                 }
             }
 
-            if (targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
                 @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
                     // TODO: Fix wasm tests.
@@ -105,34 +105,34 @@ fun Project.addAllMultiplatformTargets(targets: List<MultiplatformTargets>? = nu
                 }
             }
 
-            if (targets == null || targets.contains(MultiplatformTargets.IosX64)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosX64)) {
                 iosX64()
             }
-            if (targets == null || targets.contains(MultiplatformTargets.IosArm64)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosArm64)) {
                 iosArm64()
             }
-            if (targets == null || targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
                 iosSimulatorArm64()
             }
 
-            if (targets == null || targets.contains(MultiplatformTargets.MacosX64)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosX64)) {
                 macosX64()
             }
-            if (targets == null || targets.contains(MultiplatformTargets.MacosArm64)) {
+            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosArm64)) {
                 macosArm64()
             }
         }
 
-        if (targets == null || targets.contains(MultiplatformTargets.Js)) {
+        if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {
             applyKotlinJsImplicitDependencyWorkaround()
         }
-        if (targets == null || targets.contains(MultiplatformTargets.WasmJs)) {
+        if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
             applyKotlinWasmJsImplicitDependencyWorkaround()
         }
         // An error occurs when compiling js or wasmJs:
         // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
         //Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
-//        if (targets == null || targets.contains(MultiplatformTargets.Js) || targets.contains(MultiplatformTargets.WasmJs)) {
+//        if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js) || targets.contains(MultiplatformTargets.WasmJs)) {
 //            createSkikoWasmJsRuntimeDependency()
 //        }
     }

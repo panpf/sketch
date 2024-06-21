@@ -11,7 +11,6 @@ kotlin {
         commonMain.dependencies {
             api(projects.sketchHttpCore)
             api(libs.jetbrains.lifecycle.common)
-//                compileOnly(libs.composeStableMarker)
         }
         androidMain.dependencies {
             api(libs.androidx.annotation)

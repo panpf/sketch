@@ -2,29 +2,7 @@
 rootProject.name = "sketch-root"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-pluginManagement {
-    repositories {
-//        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
-//        maven { setUrl("https://maven.aliyun.com/repository/google") }  // google
-//        maven { setUrl("https://repo.huaweicloud.com/repository/maven/") }    // central、google、jcenter
-        gradlePluginPortal()
-        mavenCentral()
-        google()
-    }
-}
 dependencyResolutionManagement {
-    @Suppress("UnstableApiUsage")
-    repositories {
-//        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
-//        maven { setUrl("https://maven.aliyun.com/repository/google") }  // google
-//        maven { setUrl("https://repo.huaweicloud.com/repository/maven/") }    // central、google、jcenter
-        mavenCentral()
-        google()
-        maven { setUrl("https://www.jitpack.io") }
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.3.0-wasm2
-//        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-//        mavenLocal()
-    }
     versionCatalogs {
         create("libs") {
             from(files("libs.versions.toml"))

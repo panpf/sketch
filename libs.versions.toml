@@ -22,13 +22,11 @@ androidgifdrawable = "1.2.15"
 androidsvg = "1.4"
 appdirs = "1.2.2"
 cashapp-paging = "3.3.0-alpha02-0.5.1"
-#composeStableMarker = "1.0.3"
 ffmpegMediaMetadataRetriever = "1.0.16"
 google-material = "1.12.0"
 
 jetbrains-compose = "1.6.11"
 jetbrains-lifecycle = "2.8.0"
-#jetbrains-compose-compiler = "1.5.10.1"
 
 junit = "4.13.2"
 
@@ -39,7 +37,7 @@ kotlinx-serialization-json = "1.7.0"
 ktor = "2.3.11"
 ktor-wasm = "3.0.0-wasm2"   # TODO Currently only versions with the '-wasm2' suffix support wasm
 
-leakcanary = "2.13"
+leakcanary = "2.14"
 mavenpublish = "0.28.0"
 okhttp3 = "4.12.0"
 okio = "3.9.0"
@@ -54,13 +52,13 @@ skiko = "0.8.4"    # sync with compose version
 voyager = "1.1.0-alpha03"
 
 [libraries]
+gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
+gradlePlugin-androidxNavigationSafeArgs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
+gradlePlugin-jetbrainsCompose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-kotlinComposeCompiler = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-kotlinSerialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 gradlePlugin-kotlinxAtomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
-gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
-gradlePlugin-androidxNavigationSafeArgs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
-gradlePlugin-jetbrainsCompose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenpublish" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -91,12 +89,10 @@ androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
 
 cashapp-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "cashapp-paging" }
-#composeStableMarker = { module = "com.github.skydoves:compose-stable-marker", version.ref = "composeStableMarker" }
 ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 
-#jetbrains-compose-compiler = { module = "org.jetbrains.compose.compiler:compiler", version.ref = "jetbrains-compose-compiler" }
 jetbrains-lifecycle-common = { module = "org.jetbrains.androidx.lifecycle:lifecycle-common", version.ref = "jetbrains-lifecycle" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -160,17 +156,3 @@ voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", vers
 #voyager-hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 #voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 #voyager-rxjava = { module = "cafe.adriel.voyager:voyager-rxjava", version.ref = "voyager" }
-
-[plugins]
-#com-android-application = { id = "com.android.application", version.ref = "android-plugin" }
-#com-android-library = { id = "com.android.library", version.ref = "android-plugin" }
-#androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }
-#org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-#org-jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-#org-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
-#org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-#mavenpublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenpublish" }
-#org-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-#org-jetbrains-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-
-[bundles]
