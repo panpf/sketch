@@ -10,10 +10,11 @@ import okio.buffer
 import okio.use
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
+import org.jetbrains.skia.impl.use
 
 class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy { readInfo() }
+    override val imageInfo: ImageInfo by lazy { readImageInfo() }
     override val supportRegion: Boolean = true
 
     private val bytes by lazy {
@@ -34,9 +35,11 @@ class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : 
         return skiaBitmap.asSketchImage()
     }
 
-    private fun readInfo(): ImageInfo {
-        val codec = Codec.makeFromData(Data.makeFromBytes(bytes))
-        val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
+    private fun readImageInfo(): ImageInfo {
+        val encodedImageFormat = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
+            it.encodedImageFormat
+        }
+        val mimeType = "image/${encodedImageFormat.name.lowercase()}"
         return ImageInfo(
             width = skiaImage.width,
             height = skiaImage.height,
@@ -45,7 +48,7 @@ class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : 
     }
 
     override fun close() {
-
+        skiaImage.close()
     }
 
     override fun toString(): String {
