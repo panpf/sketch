@@ -22,7 +22,7 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.painter.toLogString
 import kotlin.math.roundToInt
 
-fun Painter.asSketchImage(shareable: Boolean = false): Image {
+fun Painter.asSketchImage(shareable: Boolean = false): PainterImage {
     return PainterImage(this, shareable)
 }
 

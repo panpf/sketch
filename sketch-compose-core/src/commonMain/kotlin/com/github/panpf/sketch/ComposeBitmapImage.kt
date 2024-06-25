@@ -6,7 +6,7 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.painter.toLogString
 
 
-fun ComposeBitmap.asSketchImage(shareable: Boolean = true): Image {
+fun ComposeBitmap.asSketchImage(shareable: Boolean = true): ComposeBitmapImage {
     return ComposeBitmapImage(this, shareable)
 }
 
