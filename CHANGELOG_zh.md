@@ -5,6 +5,8 @@
 # new
 
 * change: ComposeBitmapValue 重命名为 ComposeBitmapImageValue
+* improve: Painter.asSketchImage() 现在返回 PainterImage; ComposeBitmap.asSketchImage() 现在返回 ComposeBitmapImage
+* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay()、size(IntSize) 扩展函数
 
 # 4.0.0-alpha02
 

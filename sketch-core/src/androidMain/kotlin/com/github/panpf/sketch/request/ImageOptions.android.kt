@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.request
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.os.Build
@@ -12,6 +13,16 @@ import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
+
+
+/**
+ * Set the resize size
+ */
+fun ImageOptions.Builder.sizeWithDisplay(context: Context): ImageOptions.Builder =
+    apply {
+        val displayMetrics = context.resources.displayMetrics
+        size(width = displayMetrics.widthPixels, height = displayMetrics.heightPixels)
+    }
 
 
 /**

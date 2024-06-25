@@ -21,6 +21,8 @@ import com.github.panpf.sketch.util.Size
 
 fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
 
+fun SizeResolver(width: Int, height: Int): SizeResolver = FixedSizeResolver(width, height)
+
 /**
  * An interface for measuring the target size for an image request.
  *

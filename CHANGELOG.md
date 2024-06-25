@@ -5,6 +5,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 # new
 
 * change: ComposeBitmapValue renamed to ComposeBitmapImageValue
+* improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now returns ComposeBitmapImage
+* new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
 
 # 4.0.0-alpha02
 

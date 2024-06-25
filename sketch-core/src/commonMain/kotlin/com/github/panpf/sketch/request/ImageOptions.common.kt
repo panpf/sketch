@@ -423,8 +423,7 @@ data class ImageOptions (
         /**
          * Set the resize size
          */
-        fun size(width: Int, height: Int): Builder =
-            size(FixedSizeResolver(width, height))
+        fun size(width: Int, height: Int): Builder = size(SizeResolver(width, height))
 
         /**
          * val finalSize = sizeResolver.size() * sizeMultiplier

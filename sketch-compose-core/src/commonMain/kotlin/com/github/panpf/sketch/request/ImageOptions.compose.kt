@@ -1,11 +1,17 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.state.ColorPainterStateImage
 import com.github.panpf.sketch.state.ComposableErrorStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
+import com.github.panpf.sketch.util.toSketchSize
 
 
 /**
@@ -17,6 +23,44 @@ fun ComposableImageOptions(
 ): ImageOptions = ImageOptions.Builder().apply {
     configBlock?.invoke(this)
 }.build()
+
+
+/**
+ * Set how to resize image
+ *
+ * @param size Expected Bitmap size
+ * @param precision precision of size, default is [Precision.LESS_PIXELS]
+ * @param scale Which part of the original image to keep when [precision] is
+ * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+ */
+fun ImageOptions.Builder.resize(
+    size: IntSize,
+    precision: Precision? = null,
+    scale: Scale? = null
+): ImageOptions.Builder =
+    apply {
+        resize(size.toSketchSize(), precision, scale)
+    }
+
+/**
+ * Set the resize size
+ */
+fun ImageOptions.Builder.size(size: IntSize): ImageOptions.Builder =
+    apply {
+        size(size.toSketchSize())
+    }
+
+/**
+ * Set the resize size
+ */
+@Composable
+@OptIn(ExperimentalComposeUiApi::class)
+fun ImageOptions.Builder.sizeWithWindow(): ImageOptions.Builder =
+    apply {
+        val size = LocalWindowInfo.current.containerSize.toSketchSize()
+        size(size.width, size.height)
+    }
+
 
 /**
  * Set Color placeholder image when loading
@@ -61,4 +105,5 @@ fun ImageOptions.Builder.composableError(
 fun ImageOptions.Builder.composableError(
     color: Color,
     configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageOptions.Builder = error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))
+): ImageOptions.Builder =
+    error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))

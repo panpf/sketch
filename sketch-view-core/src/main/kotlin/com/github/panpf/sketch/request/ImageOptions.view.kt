@@ -15,26 +15,14 @@
  */
 package com.github.panpf.sketch.request
 
-import android.widget.ImageView
-import com.github.panpf.sketch.target.ImageViewTarget
+import android.view.View
+import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 
 
 /**
- * Build and set the [ImageRequest], target is an ImageView
+ * Remove explicit type specification
  */
-fun ImageRequest(
-    imageView: ImageView,
-    uri: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): ImageRequest = ImageRequest.Builder(imageView.context, uri).apply {
-    target(imageView)
-    configBlock?.invoke(this)
-}.build()
-
-
-/**
- * Set the target to the ImageView
- */
-fun ImageRequest.Builder.target(imageView: ImageView): ImageRequest.Builder = apply {
-    target(ImageViewTarget(imageView))
-}
+fun ImageOptions.Builder.sizeWithView(view: View, subtractPadding: Boolean = true): ImageOptions.Builder =
+    apply {
+        size(ViewSizeResolver(view, subtractPadding))
+    }

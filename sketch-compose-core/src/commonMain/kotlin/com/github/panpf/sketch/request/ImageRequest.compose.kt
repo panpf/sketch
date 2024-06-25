@@ -1,13 +1,19 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.state.ColorPainterStateImage
 import com.github.panpf.sketch.state.ComposableErrorStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
+import com.github.panpf.sketch.util.toSketchSize
 
 @Composable
 fun ComposableImageRequest(
@@ -25,6 +31,43 @@ fun ComposableImageRequest(
 ): ImageRequest = ImageRequest.Builder(LocalPlatformContext.current, uri).apply {
     configBlock?.invoke(this)
 }.build()
+
+
+/**
+ * Set how to resize image
+ *
+ * @param size Expected Bitmap size
+ * @param precision precision of size, default is [Precision.LESS_PIXELS]
+ * @param scale Which part of the original image to keep when [precision] is
+ * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+ */
+fun ImageRequest.Builder.resize(
+    size: IntSize,
+    precision: Precision? = null,
+    scale: Scale? = null
+): ImageRequest.Builder =
+    apply {
+        resize(size.toSketchSize(), precision, scale)
+    }
+
+/**
+ * Set the resize size
+ */
+fun ImageRequest.Builder.size(size: IntSize): ImageRequest.Builder =
+    apply {
+        size(size.toSketchSize())
+    }
+
+/**
+ * Set the resize size
+ */
+@Composable
+@OptIn(ExperimentalComposeUiApi::class)
+fun ImageRequest.Builder.sizeWithWindow(): ImageRequest.Builder =
+    apply {
+        val size = LocalWindowInfo.current.containerSize.toSketchSize()
+        size(size.width, size.height)
+    }
 
 /**
  * Set Color placeholder image when loading
