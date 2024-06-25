@@ -2,6 +2,10 @@
 
 翻译：[English](CHANGELOG.md)
 
+# new
+
+* change: ComposeBitmapValue 重命名为 ComposeBitmapImageValue
+
 # 4.0.0-alpha02
 
 * change: ImageView.disposeLoad() 重命名为 ImageView.disposeLoad()

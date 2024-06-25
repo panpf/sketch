@@ -1,13 +1,12 @@
 package com.github.panpf.sketch.cache
 
-import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.ComposeBitmapImage
+import com.github.panpf.sketch.Image
 
-class ComposeBitmapValue(
+class ComposeBitmapImageValue(
     private val composeBitmapImage: ComposeBitmapImage,
     override val extras: Map<String, Any?>?
-) : Value {
+) : MemoryCache.Value {
 
     override val image: Image = composeBitmapImage
 

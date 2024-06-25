@@ -1,7 +1,7 @@
 package com.github.panpf.sketch
 
 import androidx.compose.runtime.Stable
-import com.github.panpf.sketch.cache.ComposeBitmapValue
+import com.github.panpf.sketch.cache.ComposeBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.painter.toLogString
 
@@ -26,7 +26,7 @@ data class ComposeBitmapImage(
 
     override fun cacheValue(
         extras: Map<String, Any?>?
-    ): Value = ComposeBitmapValue(this, extras)
+    ): Value = ComposeBitmapImageValue(this, extras)
 
     override fun checkValid(): Boolean = true
 
