@@ -1,9 +1,7 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
@@ -54,12 +52,7 @@ fun ImageOptions.Builder.size(size: IntSize): ImageOptions.Builder =
  * Set the resize size
  */
 @Composable
-@OptIn(ExperimentalComposeUiApi::class)
-fun ImageOptions.Builder.sizeWithWindow(): ImageOptions.Builder =
-    apply {
-        val size = LocalWindowInfo.current.containerSize.toSketchSize()
-        size(size.width, size.height)
-    }
+expect fun ImageOptions.Builder.sizeWithWindow(): ImageOptions.Builder
 
 
 /**

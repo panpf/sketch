@@ -1,9 +1,7 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
@@ -62,12 +60,7 @@ fun ImageRequest.Builder.size(size: IntSize): ImageRequest.Builder =
  * Set the resize size
  */
 @Composable
-@OptIn(ExperimentalComposeUiApi::class)
-fun ImageRequest.Builder.sizeWithWindow(): ImageRequest.Builder =
-    apply {
-        val size = LocalWindowInfo.current.containerSize.toSketchSize()
-        size(size.width, size.height)
-    }
+expect fun ImageRequest.Builder.sizeWithWindow(): ImageRequest.Builder
 
 /**
  * Set Color placeholder image when loading
