@@ -39,3 +39,4 @@ kotlin-js-store/yarn.lock
 webpack.config.d/
 
 .kotlin/
+.run/iosSample.run.xml

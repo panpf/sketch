@@ -224,7 +224,8 @@ Please review the [CHANGELOG.md] file
   prompt for upgrade
 * Version 4.0 is specially built for Compose Multiplatform, so there are many breaking changes in
   the API, please upgrade with caution
-* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, please check the update log for details
+* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, please check
+  the update log for details
 * Android minimum API raised to API 21
 * Kotlin version upgraded to 2.0.0
 
@@ -246,12 +247,18 @@ Prepare the environment:
    software
 4. Android Studio installs the `Kotlin Multiplatform` and `Compose Multiplatform IDE Support`plugins
 
-Execute code:
+Run the sample app:
 
 1. Clone the project and open it using Android Studio
 2. The running configurations of each platform have been added to the `.run` directory. After
    synchronization is completed, directly select the running configuration of the corresponding
    platform in the running configuration drop-down box at the top of Android Studio and click Run.
+3. The running configuration of the ios platform requires you to manually create it according to the
+   template, as follows:
+    1. Copy the `.run/iosSample.run.template.xml` file and remove the `.template` suffix.
+       The `.ignore` file has been configured to ignore `iosSample.run.xml`
+    2. Click `Edit Configurations` in the run configuration drop-down box at the top,
+       select `iosSample` and then configure `Execute target`
 
 ## My Projects
 

@@ -1,5 +1,4 @@
-// After turning on TYPESAFE_PROJECT_ACCESSORS, the root directory name and sketch module name cannot be the same.
-rootProject.name = "sketch-root"
+rootProject.name = "sketch"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {
