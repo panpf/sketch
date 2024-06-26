@@ -458,7 +458,8 @@ Basic functions:
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
-* [Preload][preload]
+* [Preload images into memory][preload]
+* [Download images][download]
 * [Lifecycle][lifecycle]
 * [Log][log]
 
@@ -542,6 +543,8 @@ Featured functions:
 [pause_load_when_scrolling]: pause_load_when_scrolling.md
 
 [preload]: preload.md
+
+[download]: download_image.md
 
 [progress_indicator]: progress_indicator.md
 

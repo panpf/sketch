@@ -1,51 +1,12 @@
 ## Preload
 
-## Pre-download to disk cache
+Translations: [简体中文](preload_zh.md)
 
-> [!IMPORTANT]
-> The `sketch-extensions-core` module must be imported
+Sometimes in order to improve the loading speed and prevent users from seeing the image loading
+process, it is necessary to load the image into memory in advance.
 
-You can pre-download network images to the disk cache through the [enqueueDownload]
-or [executeDownload] function, as follows:
-
-```kotlin
-val imageUri = "https://example.com/image.jpg"
-
-val disposable = sketch.enqueueDownload(imageUri)
-scope.launch {
-    disposable.job.await()
-    val snapshot = sketch.downloadCache.withLock {
-        openSnapshot(imageUri)
-    }
-    try {
-        val bytes: ByteArray = sketch.downloadCache.fileSystem
-            .source(snapshot.data).buffer().use { it.readByteArray() }
-        // ...
-    } finally {
-        snapshot.close()
-    }
-}
-
-// or
-scope.launch {
-    sketch.executeDownload(imageUri)
-    val snapshot = sketch.downloadCache.withLock {
-        openSnapshot(imageUri)
-    }
-    try {
-        val bytes: ByteArray = sketch.downloadCache.fileSystem
-            .source(snapshot.data).buffer().use { it.readByteArray() }
-        // ...
-    } finally {
-        snapshot.close()
-    }
-}
-```
-
-## Preload into memory cache
-
-If you want to preload the image into memory, you only need to not set [Target], but other
-parameters need to be the same as when used, as follows:
+We just need not to set [Target], and then ensure that the size, precision, and scale parameters are
+the same as when used, as follows:
 
 ```kotlin
 val request = ImageRequest(context, "https://example.com/image.jpg") {
@@ -70,7 +31,3 @@ scope.launch {
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [Target]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/target/Target.kt
-
-[enqueueDownload]: ../../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/util/download.kt
-
-[executeDownload]: ../../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/util/download.kt

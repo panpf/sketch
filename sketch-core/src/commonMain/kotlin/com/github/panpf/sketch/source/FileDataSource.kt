@@ -29,7 +29,7 @@ import okio.Source
 class FileDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    private val path: Path,
+    val path: Path,
     override val dataFrom: DataFrom = LOCAL,
 ) : DataSource {
 

@@ -2,11 +2,18 @@
 
 Translations: [简体中文](CHANGELOG_zh.md)
 
+> [!CAUTION]
+> 1. The 4.x version has undergone a lot of destructive reconstruction and simplification to be
+     compatible with Compose Multiplatform, and is not compatible with the 3.x version.
+> 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
+     prompt for upgrade.
+
 # new
 
 * change: ComposeBitmapValue renamed to ComposeBitmapImageValue
 * improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now returns ComposeBitmapImage
 * new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
+* change: Refactor enqueueDownload() and executeDownload() and move from sketch-extensions-core module to sketch-core module
 
 # 4.0.0-alpha02
 
@@ -15,12 +22,6 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: Added ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) extension function
 
 # 4.0.0-alpha01
-
-> [!CAUTION]
-> 1. The 4.x version has undergone a lot of destructive reconstruction and simplification to be
-     compatible with Compose Multiplatform, and is not compatible with the 3.x version.
-> 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
-     prompt for upgrade.
 
 ### sketch-core
 

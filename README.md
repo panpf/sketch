@@ -199,7 +199,8 @@ Basic functions:
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
-* [Preload][preload]
+* [Preload images into memory][preload]
+* [Download images][download]
 * [Lifecycle][lifecycle]
 * [Log][log]
 
@@ -324,6 +325,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling.md
 
 [preload]: docs/wiki/preload.md
+
+[download]: docs/wiki/download_image.md
 
 [progress_indicator]: docs/wiki/progress_indicator.md
 

@@ -188,7 +188,8 @@ context.sketch.enqueue(request)
 * [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
-* [预加载][preload]
+* [预加载图片到内存中][preload]
+* [下载图片][download]
 * [Lifecycle][lifecycle]
 * [日志][log]
 
@@ -306,6 +307,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling_zh.md
 
 [preload]: docs/wiki/preload_zh.md
+
+[download]: docs/wiki/download_image_zh.md
 
 [progress_indicator]: docs/wiki/progress_indicator_zh.md
 

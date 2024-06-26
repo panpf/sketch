@@ -17,6 +17,7 @@ package com.github.panpf.sketch
 
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.annotation.AnyThread
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
@@ -29,6 +30,7 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
+import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -37,7 +39,10 @@ import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.sketch.util.DownloadData
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Pipeline
@@ -50,6 +55,7 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
@@ -177,6 +183,60 @@ class Sketch private constructor(options: Options) {
         val requestManager = request.target?.getRequestManager()
         val disposable = requestManager?.getDisposable(job) ?: OneShotDisposable(job)
         return@coroutineScope disposable.job.await()
+    }
+
+
+    /**
+     * Download images
+     */
+    suspend fun executeDownload(request: ImageRequest): Result<DownloadData> = kotlin.runCatching {
+        val fetcher = components.newFetcherOrThrow(request)
+        val fetchResultResult = fetcher.fetch()
+        val fetchResult = fetchResultResult.getOrThrow()
+        @Suppress("MoveVariableDeclarationIntoWhen") val dataSource = fetchResult.dataSource
+        when (dataSource) {
+            is FileDataSource -> DownloadData.Cache(downloadCache.fileSystem, dataSource.path)
+            is ByteArrayDataSource -> DownloadData.Bytes(dataSource.data)
+            else -> throw IllegalArgumentException("Unknown dataSource: $dataSource")
+        }
+    }
+
+    /**
+     * Download images
+     */
+    suspend fun executeDownload(
+        uri: String,
+        cachePolicy: CachePolicy = CachePolicy.ENABLED
+    ): Result<DownloadData> {
+        val request = ImageRequest(context, uri) {
+            downloadCachePolicy(cachePolicy)
+            depth(Depth.NETWORK)
+        }
+        return executeDownload(request)
+    }
+
+    /**
+     * Download images
+     */
+    fun enqueueDownload(request: ImageRequest): Deferred<Result<DownloadData>> {
+        val job = scope.async {
+            executeDownload(request)
+        }
+        return job
+    }
+
+    /**
+     * Download images
+     */
+    fun enqueueDownload(
+        uri: String,
+        cachePolicy: CachePolicy = CachePolicy.ENABLED
+    ): Deferred<Result<DownloadData>> {
+        val request = ImageRequest(context, uri) {
+            downloadCachePolicy(cachePolicy)
+            depth(Depth.NETWORK)
+        }
+        return enqueueDownload(request)
     }
 
 
