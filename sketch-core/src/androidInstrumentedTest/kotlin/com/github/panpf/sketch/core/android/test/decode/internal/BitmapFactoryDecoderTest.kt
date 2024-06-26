@@ -34,7 +34,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
+import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -754,11 +754,11 @@ class BitmapFactoryDecoderTest {
             Assert.assertNotNull(transformeds?.getResizeTransformed())
         }
 
-        // precision = LongImageClipPrecisionDecider
+        // precision = LongImagePrecisionDecider
         ImageRequest(context, testFile.file.path) {
             size(300, 400)
             precision(
-                LongImageClipPrecisionDecider(
+                LongImagePrecisionDecider(
                     longImageDecider = DefaultLongImageDecider(
                         sameDirectionMultiple = 1f,
                         notSameDirectionMultiple = 5f

@@ -49,13 +49,13 @@ ImageRequest(context, "https://example.com/image.jpg") {
     // or
     resize(
         size = Size(100, 100),
-        precision = LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO),
+        precision = LongImagePrecisionDecider(Precision.SAME_ASPECT_RATIO),
         scale = LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP)
     )
     // or
     resize(
         size = FixedSizeResolver(100, 100),
-        precision = LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO),
+        precision = LongImagePrecisionDecider(Precision.SAME_ASPECT_RATIO),
         scale = LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP)
     )
 
@@ -69,7 +69,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
     /* Set precision properties only */
     precision(Precision.SAME_ASPECT_RATIO)
     // or
-    precision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
+    precision(LongImagePrecisionDecider(Precision.SAME_ASPECT_RATIO))
 
     /* Set only scale properties */
     scale(Scale.END_CROP)
@@ -95,7 +95,7 @@ The following implementations are provided by default:
 * [PrecisionDecider]: Determine which [Precision] to use based on the image size and [Size]
   of [Resize]
     * [FixedPrecisionDecider]: Always use the specified [Precision]
-    * [LongImageClipPrecisionDecider]: If it is a long image, use the specified [Precision],
+    * [LongImagePrecisionDecider]: If it is a long image, use the specified [Precision],
       otherwise always use LESS_PIXELS
 * [ScaleDecider]: Decide which [Scale] to use based on the image size and [Size] of [Resize]
     * [FixedScaleDecider]: Always use the specified [Scale]
@@ -103,10 +103,10 @@ The following implementations are provided by default:
       the second one is used
 
 > [!TIP]
-> 1. Using [LongImageClipPrecisionDecider] and [LongImageScaleDecider] helps improve the clarity of
+> 1. Using [LongImagePrecisionDecider] and [LongImageScaleDecider] helps improve the clarity of
      long images in grid lists. [Learn more][long_image_grid_thumbnails]
 > 2. The default implementation of long image rules is [DefaultLongImageDecider]. You can also use
-     custom rules when creating [LongImageClipPrecisionDecider] or [LongImageScaleDecider]
+     custom rules when creating [LongImagePrecisionDecider] or [LongImageScaleDecider]
 
 ## Build order and defaults
 
@@ -188,7 +188,7 @@ transition. [Understanding Perfect Transition](transition.md#perfect-transition)
 
 [FixedPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[LongImageClipPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[LongImagePrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
 [PrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 

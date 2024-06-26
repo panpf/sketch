@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.android.test.resize
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
-import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -80,7 +80,7 @@ class ScaleDeciderTest {
         val element1 = FixedScaleDecider(START_CROP)
         val element11 = FixedScaleDecider(START_CROP)
         val element2 = FixedScaleDecider(END_CROP)
-        val other = LongImageStartCropScaleDecider(END_CROP, CENTER_CROP)
+        val other = LongImageScaleDecider(END_CROP, CENTER_CROP)
         Assert.assertEquals(element1, element1)
         Assert.assertEquals(element1, element11)
         Assert.assertNotEquals(element1, element2)
@@ -100,26 +100,26 @@ class ScaleDeciderTest {
     @Test
     fun testLongImageScaleDeciderCreateFunction() {
         Assert.assertEquals(
-            LongImageStartCropScaleDecider(START_CROP, CENTER_CROP),
-            LongImageStartCropScaleDecider()
+            LongImageScaleDecider(START_CROP, CENTER_CROP),
+            LongImageScaleDecider()
         )
         Assert.assertEquals(
-            LongImageStartCropScaleDecider(START_CROP, CENTER_CROP),
-            LongImageStartCropScaleDecider(START_CROP, CENTER_CROP)
+            LongImageScaleDecider(START_CROP, CENTER_CROP),
+            LongImageScaleDecider(START_CROP, CENTER_CROP)
         )
         Assert.assertEquals(
-            LongImageStartCropScaleDecider(END_CROP, START_CROP),
-            LongImageStartCropScaleDecider(END_CROP, START_CROP)
+            LongImageScaleDecider(END_CROP, START_CROP),
+            LongImageScaleDecider(END_CROP, START_CROP)
         )
     }
 
     @Test
     fun testLongImageScaleDeciderGet() {
-        LongImageStartCropScaleDecider(START_CROP, CENTER_CROP).apply {
+        LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(CENTER_CROP, get(100, 50, 50, 50))
             Assert.assertEquals(START_CROP, get(100, 40, 50, 50))
         }
-        LongImageStartCropScaleDecider(END_CROP, CENTER_CROP).apply {
+        LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
             Assert.assertEquals(CENTER_CROP, get(100, 50, 50, 50))
             Assert.assertEquals(END_CROP, get(100, 40, 50, 50))
         }
@@ -127,13 +127,13 @@ class ScaleDeciderTest {
 
     @Test
     fun testLongImageScaleDeciderKey() {
-        LongImageStartCropScaleDecider(START_CROP, CENTER_CROP).apply {
+        LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
                 "LongImage(START_CROP,CENTER_CROP,Default(2.5,5.0))",
                 key
             )
         }
-        LongImageStartCropScaleDecider(END_CROP, CENTER_CROP).apply {
+        LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
                 "LongImage(END_CROP,CENTER_CROP,Default(2.5,5.0))",
                 key
@@ -143,13 +143,13 @@ class ScaleDeciderTest {
 
     @Test
     fun testLongImageScaleDeciderToString() {
-        LongImageStartCropScaleDecider(START_CROP, CENTER_CROP).apply {
+        LongImageScaleDecider(START_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
                 "LongImageScaleDecider(longImage=START_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
                 toString()
             )
         }
-        LongImageStartCropScaleDecider(END_CROP, CENTER_CROP).apply {
+        LongImageScaleDecider(END_CROP, CENTER_CROP).apply {
             Assert.assertEquals(
                 "LongImageScaleDecider(longImage=END_CROP, otherImage=CENTER_CROP, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
                 toString()
@@ -159,11 +159,11 @@ class ScaleDeciderTest {
 
     @Test
     fun testLongImageScaleDeciderEquals() {
-        val element1 = LongImageStartCropScaleDecider(START_CROP, CENTER_CROP)
-        val element11 = LongImageStartCropScaleDecider(START_CROP, CENTER_CROP)
-        val element2 = LongImageStartCropScaleDecider(END_CROP, CENTER_CROP)
-        val element3 = LongImageStartCropScaleDecider(START_CROP, END_CROP)
-        val element4 = LongImageStartCropScaleDecider(
+        val element1 = LongImageScaleDecider(START_CROP, CENTER_CROP)
+        val element11 = LongImageScaleDecider(START_CROP, CENTER_CROP)
+        val element2 = LongImageScaleDecider(END_CROP, CENTER_CROP)
+        val element3 = LongImageScaleDecider(START_CROP, END_CROP)
+        val element4 = LongImageScaleDecider(
             START_CROP,
             CENTER_CROP,
             longImageDecider = DefaultLongImageDecider(3f, 6f)
@@ -203,9 +203,9 @@ class ScaleDeciderTest {
 
     @Test
     fun testLongImageScaleDeciderHashCode() {
-        val element1 = LongImageStartCropScaleDecider(START_CROP, CENTER_CROP)
-        val element11 = LongImageStartCropScaleDecider(START_CROP, CENTER_CROP)
-        val element2 = LongImageStartCropScaleDecider(END_CROP, CENTER_CROP)
+        val element1 = LongImageScaleDecider(START_CROP, CENTER_CROP)
+        val element11 = LongImageScaleDecider(START_CROP, CENTER_CROP)
+        val element2 = LongImageScaleDecider(END_CROP, CENTER_CROP)
         Assert.assertEquals(element1.hashCode(), element1.hashCode())
         Assert.assertEquals(element1.hashCode(), element11.hashCode())
         Assert.assertNotEquals(element1.hashCode(), element2.hashCode())

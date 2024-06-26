@@ -169,7 +169,7 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
         DropdownSettingItem(
             title = "Resize Precision",
             desc = null,
-            values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
+            values = Precision.values().map { it.name }.plus(listOf("LongImageMode")),
             state = appSettings.precision,
         )
     )

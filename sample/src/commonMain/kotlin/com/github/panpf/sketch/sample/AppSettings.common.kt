@@ -7,8 +7,8 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
+import com.github.panpf.sketch.resize.LongImagePrecisionDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -83,7 +83,7 @@ class AppSettings(val context: PlatformContext) {
     }
 
     val precision by lazy {
-        stringSettingsStateFlow(context, "precision", "LongImageClipMode")
+        stringSettingsStateFlow(context, "precision1", "LongImageMode")
     }
     val scale by lazy {
         stringSettingsStateFlow(context, "scale", "LongImageMode")
@@ -239,14 +239,14 @@ class AppSettings(val context: PlatformContext) {
     companion object {
         fun precision(value: String): PrecisionDecider {
             return when (value) {
-                "LongImageClipMode" -> LongImageClipPrecisionDecider(longImage = SAME_ASPECT_RATIO)
+                "LongImageMode" -> LongImagePrecisionDecider(longImage = SAME_ASPECT_RATIO)
                 else -> PrecisionDecider(Precision.valueOf(value))
             }
         }
 
         fun scale(value: String, longImageScale: Scale, otherImageScale: Scale): ScaleDecider {
             return when (value) {
-                "LongImageMode" -> LongImageStartCropScaleDecider(
+                "LongImageMode" -> LongImageScaleDecider(
                     longImage = longImageScale,
                     otherImage = otherImageScale
                 )

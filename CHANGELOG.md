@@ -14,6 +14,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now returns ComposeBitmapImage
 * new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
 * change: Refactor enqueueDownload() and executeDownload() and move from sketch-extensions-core module to sketch-core module
+* change: LongImageClipPrecisionDecider renamed to LongImagePrecisionDecider, LongImageStartCropScaleDecider renamed to LongImageScaleDecider
 
 # 4.0.0-alpha02
 

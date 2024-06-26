@@ -149,7 +149,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = Precision.values().map { it.name }.plus(listOf("LongImageClipMode")),
+                values = Precision.values().map { it.name }.plus(listOf("LongImageMode")),
                 getValue = { appSettingsService.precision.value },
                 onSelect = { _, value -> appSettingsService.precision.value = value }
             )

@@ -40,13 +40,13 @@ ImageRequest(context, "https://example.com/image.jpg") {
     // 或
     resize(
         size = Size(100, 100),
-        precision = LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO),
+        precision = LongImagePrecisionDecider(Precision.SAME_ASPECT_RATIO),
         scale = LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP)
     )
     // 或
     resize(
         size = FixedSizeResolver(100, 100),
-        precision = LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO),
+        precision = LongImagePrecisionDecider(Precision.SAME_ASPECT_RATIO),
         scale = LongImageScaleDecider(longImage = Scale.START_CROP, otherImage = Scale.CENTER_CROP)
     )
 
@@ -60,7 +60,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
     /* 仅设置精度属性 */
     precision(Precision.SAME_ASPECT_RATIO)
     // 或
-    precision(LongImageClipPrecisionDecider(Precision.SAME_ASPECT_RATIO))
+    precision(LongImagePrecisionDecider(Precision.SAME_ASPECT_RATIO))
 
     /* 仅设置缩放属性 */
     scale(Scale.END_CROP)
@@ -83,15 +83,15 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 * [PrecisionDecider]：精度决策器。根据图片大小和 [Resize] 的 [Size] 决定使用何种 [Precision]
     * [FixedPrecisionDecider]：始终使用指定的 [Precision]
-    * [LongImageClipPrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
+    * [LongImagePrecisionDecider]：如果是长图就使用指定的 [Precision]，否则始终使用 LESS_PIXELS
 * [ScaleDecider]：缩放决策器。根据图片大小和 [Resize] 的 [Size] 决定使用何种 [Scale]
     * [FixedScaleDecider]：始终使用指定的 [Scale]
     * [LongImageScaleDecider]：指定两个 [Scale]，长图使用第一个，否则使用第二个
 
 > [!TIP]
-> 1. 使用 [LongImageClipPrecisionDecider] 和 [LongImageScaleDecider]
+> 1. 使用 [LongImagePrecisionDecider] 和 [LongImageScaleDecider]
      有助于提高长图在网格列表中的清晰度。[了解更多][long_image_grid_thumbnails]
-> 2. 长图规则的默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImageClipPrecisionDecider]
+> 2. 长图规则的默认实现为 [DefaultLongImageDecider]，你还可以在创建 [LongImagePrecisionDecider]
      或 [LongImageScaleDecider] 时使用自定义的规则
 
 ## 构建顺序和默认值
@@ -168,7 +168,7 @@ resizeOnDraw 搭配 [CrossfadeTransition]
 
 [FixedPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
-[LongImageClipPrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
+[LongImagePrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 
 [PrecisionDecider]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/PrecisionDecider.kt
 

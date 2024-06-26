@@ -66,8 +66,8 @@ import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
+import com.github.panpf.sketch.resize.LongImagePrecisionDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.OriginSizeResolver
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -898,9 +898,9 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
             }
 
-            precision(LongImageClipPrecisionDecider(EXACTLY))
+            precision(LongImagePrecisionDecider(EXACTLY))
             build().apply {
-                Assert.assertEquals(LongImageClipPrecisionDecider(EXACTLY), precisionDecider)
+                Assert.assertEquals(LongImagePrecisionDecider(EXACTLY), precisionDecider)
             }
 
             precision(SAME_ASPECT_RATIO)
@@ -955,10 +955,10 @@ class ImageRequestTest {
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
             }
 
-            scale(LongImageStartCropScaleDecider(START_CROP, END_CROP))
+            scale(LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 Assert.assertEquals(
-                    LongImageStartCropScaleDecider(START_CROP, END_CROP),
+                    LongImageScaleDecider(START_CROP, END_CROP),
                     scaleDecider
                 )
             }
@@ -1648,13 +1648,13 @@ class ImageRequestTest {
                 precision(EXACTLY)
             },
             ScopeAction {
-                precision(LongImageClipPrecisionDecider())
+                precision(LongImagePrecisionDecider())
             },
             ScopeAction {
                 scale(END_CROP)
             },
             ScopeAction {
-                scale(LongImageStartCropScaleDecider())
+                scale(LongImageScaleDecider())
             },
             ScopeAction {
                 transformations(CircleCropTransformation(), BlurTransformation())

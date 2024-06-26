@@ -33,8 +33,8 @@ import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
-import com.github.panpf.sketch.resize.LongImageClipPrecisionDecider
-import com.github.panpf.sketch.resize.LongImageStartCropScaleDecider
+import com.github.panpf.sketch.resize.LongImagePrecisionDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -1013,9 +1013,9 @@ class ImageOptionsTest {
                 assertNull(precisionDecider)
             }
 
-            precision(LongImageClipPrecisionDecider(EXACTLY))
+            precision(LongImagePrecisionDecider(EXACTLY))
             build().apply {
-                assertEquals(LongImageClipPrecisionDecider(EXACTLY), precisionDecider)
+                assertEquals(LongImagePrecisionDecider(EXACTLY), precisionDecider)
             }
 
             precision(SAME_ASPECT_RATIO)
@@ -1040,10 +1040,10 @@ class ImageOptionsTest {
                 assertNull(scaleDecider)
             }
 
-            scale(LongImageStartCropScaleDecider(START_CROP, END_CROP))
+            scale(LongImageScaleDecider(START_CROP, END_CROP))
             build().apply {
                 assertEquals(
-                    LongImageStartCropScaleDecider(START_CROP, END_CROP),
+                    LongImageScaleDecider(START_CROP, END_CROP),
                     scaleDecider
                 )
             }
