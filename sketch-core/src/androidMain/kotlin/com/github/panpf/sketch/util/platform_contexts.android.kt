@@ -49,3 +49,8 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
     val appCacheDirectory = externalCacheDir ?: cacheDir
     return appCacheDirectory.toOkioPath()
 }
+
+actual fun PlatformContext.screenSize(): Size {
+    return resources.displayMetrics
+        .let { Size(it.widthPixels, it.heightPixels) }
+}

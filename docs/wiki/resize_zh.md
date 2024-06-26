@@ -106,7 +106,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
     5. [Target].getSizeResolver()
         1. View 或 Compose 组件的宽高
         2. DisplayMetrics size 或 LocalWindow containerSize
-    6. [OriginSizeResolver]
+    6. [PlatformContext.screenSize()]
 * [Precision]：
     1. [ImageRequest].Builder.precisionDecider
     2. [Target].getImageOptions().precisionDecider
@@ -125,6 +125,14 @@ ImageRequest(context, "https://example.com/image.jpg") {
      的测量宽高，如果没有执行到绘制阶段那么请求也不会执行
 > 2. 假如组件的宽是固定值（例如 100），高是 wrap 时，Size 将会是 '100x屏幕或容器的高'
 > 3. 详细构建规则请参考 [ImageRequest].Builder.build() 方法
+
+## PlatformContext.screenSize()
+
+[PlatformContext.screenSize()] 方法用于获取屏幕的大小，构建 ImageRequest 时在无法获取 Size
+的情况下会使用屏幕大小作为最终的 Size
+
+> [!IMPORTANT]
+> screenSize() 在非 Js 平台都能获取到准确的屏幕大小，但在 Js 平台会始终返回 `Size(1920, 1080)`
 
 ## sizeMultiplier
 
@@ -196,12 +204,12 @@ resizeOnDraw 搭配 [CrossfadeTransition]
 
 [SizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
 
-[OriginSizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
-
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 
 [ResizeOnDrawHelper]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/ResizeOnDraw.kt
 
 [ResizePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/painter/ResizePainter.kt
+
+[PlatformContext.screenSize()]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/platform_contexts.common.kt
 
 [long_image_grid_thumbnails]: long_image_grid_thumbnails_zh.md

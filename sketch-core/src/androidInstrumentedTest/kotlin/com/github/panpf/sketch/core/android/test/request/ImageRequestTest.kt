@@ -68,7 +68,6 @@ import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
-import com.github.panpf.sketch.resize.OriginSizeResolver
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -76,6 +75,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
@@ -107,6 +107,7 @@ import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.screenSize
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -140,7 +141,7 @@ class ImageRequestTest {
                 Assert.assertNull(this.colorSpace)
             }
             Assert.assertFalse(this.preferQualityOverSpeed)
-            Assert.assertEquals(OriginSizeResolver, this.sizeResolver)
+            Assert.assertEquals(SizeResolver(context1.screenSize()), this.sizeResolver)
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.precisionDecider)
             Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.scaleDecider)
             Assert.assertNull(this.transformations)
@@ -704,7 +705,7 @@ class ImageRequestTest {
                 Assert.assertNull(definedOptions.sizeResolver)
                 Assert.assertNull(definedOptions.precisionDecider)
                 Assert.assertNull(definedOptions.scaleDecider)
-                Assert.assertEquals(OriginSizeResolver, sizeResolver)
+                Assert.assertEquals(SizeResolver(context1.screenSize()), sizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
             }
@@ -769,7 +770,7 @@ class ImageRequestTest {
                 Assert.assertNull(definedOptions.sizeResolver)
                 Assert.assertNull(definedOptions.precisionDecider)
                 Assert.assertNull(definedOptions.scaleDecider)
-                Assert.assertEquals(OriginSizeResolver, sizeResolver)
+                Assert.assertEquals(SizeResolver(context1.screenSize()), sizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
             }
@@ -846,7 +847,7 @@ class ImageRequestTest {
                 Assert.assertNull(definedOptions.sizeResolver)
                 Assert.assertNull(definedOptions.precisionDecider)
                 Assert.assertNull(definedOptions.scaleDecider)
-                Assert.assertEquals(OriginSizeResolver, sizeResolver)
+                Assert.assertEquals(SizeResolver(context1.screenSize()), sizeResolver)
                 Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
                 Assert.assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
             }
@@ -860,7 +861,7 @@ class ImageRequestTest {
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 Assert.assertNull(definedOptions.sizeResolver)
-                Assert.assertEquals(OriginSizeResolver, sizeResolver)
+                Assert.assertEquals(SizeResolver(context1.screenSize()), sizeResolver)
             }
 
             size(Size(100, 100))
@@ -884,7 +885,7 @@ class ImageRequestTest {
             size(null)
             build().apply {
                 Assert.assertNull(definedOptions.sizeResolver)
-                Assert.assertEquals(OriginSizeResolver, sizeResolver)
+                Assert.assertEquals(SizeResolver(context1.screenSize()), sizeResolver)
             }
         }
     }
@@ -918,7 +919,7 @@ class ImageRequestTest {
         }
 
         val request = ImageRequest(context, uri).apply {
-            Assert.assertEquals(OriginSizeResolver, sizeResolver)
+            Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)
             Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), precisionDecider)
         }
         val size = context.resources.displayMetrics.let {

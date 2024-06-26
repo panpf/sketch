@@ -22,3 +22,8 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
         )
     ) { "Failed to get the cache directory of the App" }.toPath()
 }
+
+actual fun PlatformContext.screenSize(): Size {
+    return java.awt.Toolkit.getDefaultToolkit().screenSize
+        .let { Size(it.width, it.height) }
+}

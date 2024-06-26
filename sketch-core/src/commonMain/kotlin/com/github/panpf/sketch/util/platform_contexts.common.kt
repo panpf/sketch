@@ -10,3 +10,5 @@ internal expect val PlatformContext.application: PlatformContext
 internal expect fun PlatformContext.totalAvailableMemoryBytes(): Long
 
 expect fun PlatformContext.appCacheDirectory(): Path?
+
+expect fun PlatformContext.screenSize(): Size

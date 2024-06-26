@@ -46,8 +46,8 @@ enum class MultiplatformTargets {
     IosX64,
     IosArm64,
     IosSimulatorArm64,
-    MacosX64,
-    MacosArm64
+//    MacosX64,
+//    MacosArm64
 }
 
 fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
@@ -115,12 +115,12 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
                 iosSimulatorArm64()
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosX64)) {
-                macosX64()
-            }
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosArm64)) {
-                macosArm64()
-            }
+//            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosX64)) {
+//                macosX64()
+//            }
+//            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosArm64)) {
+//                macosArm64()
+//            }
         }
 
         if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {

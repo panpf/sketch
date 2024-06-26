@@ -28,9 +28,10 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.resize.FixedSizeResolver
-import com.github.panpf.sketch.resize.OriginSizeResolver
+import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.util.screenSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -78,13 +79,13 @@ class RequestExecutorTest {
         val request = ImageRequest(context, MyImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
-            Assert.assertTrue(sizeResolver is OriginSizeResolver)
+            Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)
         }
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(sketch, request, false).apply {
                 Assert.assertEquals(Depth.NETWORK, this.request.depthHolder.depth)
                 Assert.assertEquals(CachePolicy.ENABLED, this.request.downloadCachePolicy)
-                Assert.assertTrue(this.request.sizeResolver is OriginSizeResolver)
+                Assert.assertEquals(SizeResolver(context.screenSize()), this.request.sizeResolver)
             }
         }
 
@@ -98,7 +99,7 @@ class RequestExecutorTest {
         val request2 = ImageRequest(context2, MyImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
-            Assert.assertTrue(sizeResolver is OriginSizeResolver)
+            Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)
         }
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(sketch2, request2, false).apply {

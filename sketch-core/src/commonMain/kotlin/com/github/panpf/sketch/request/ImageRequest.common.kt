@@ -27,7 +27,6 @@ import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.resize.OriginSizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
@@ -42,6 +41,7 @@ import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.keyOrNull
+import com.github.panpf.sketch.util.screenSize
 
 /**
  * Build and set the [ImageRequest]
@@ -796,7 +796,7 @@ data class ImageRequest(
         }
 
         private fun resolveSizeResolver(): SizeResolver =
-            target?.getSizeResolver() ?: OriginSizeResolver
+            target?.getSizeResolver() ?: SizeResolver(context.screenSize())
 
         private fun resolveLifecycleResolver(): LifecycleResolver =
             target?.getLifecycleResolver() ?: FixedLifecycleResolver(GlobalLifecycle)

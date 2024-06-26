@@ -50,6 +50,7 @@ open class Size(val width: Int, val height: Int) {
     companion object {
 
         val Empty = Size(0, 0)
+        val Origin = Size(0, 0)
 
         @Throws(NumberFormatException::class)
         fun parseSize(string: String): Size {

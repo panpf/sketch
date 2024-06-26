@@ -93,6 +93,7 @@ import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.ratio
+import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -105,6 +106,7 @@ import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Deferred
@@ -542,173 +544,126 @@ class ImageRequestExecuteTest {
     @Test
     fun testResize() {
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = MyImages.jpeg.uri
-        val imageSize = Size(1291, 1936)
 
         // default
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }
             .let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
-                    imageSize,
+                    samplingByTarget(MyImages.jpeg.size, context.screenSize()),
                     image.size
                 )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
 
         // size: small, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val smallSize1 = Size(600, 500)
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(smallSize1)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    Size(323, 484),
-                    image.size
-                )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(Size(323, 484), image.size)
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(smallSize1)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    Size(322, 268),
-                    image.size
-                )
-                Assert.assertEquals(
-                    smallSize1.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(Size(322, 268), image.size)
+                Assert.assertEquals(smallSize1.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(smallSize1)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    smallSize1,
-                    image.size
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(smallSize1, image.size)
             }
 
         val smallSize2 = Size(500, 600)
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(smallSize2)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(323, 484),
                     image.size
                 )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(smallSize2)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    Size(322, 387),
-                    image.size
-                )
-                Assert.assertEquals(
-                    smallSize2.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(Size(322, 387), image.size)
+                Assert.assertEquals(smallSize2.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(smallSize2)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    smallSize2,
-                    image.size
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(smallSize2, image.size)
             }
 
         // size: same, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
-        val sameSize = Size(imageSize.width, imageSize.height)
-        ImageRequest(context, imageUri) {
+        val sameSize = Size(MyImages.jpeg.size.width, MyImages.jpeg.size.height)
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(sameSize)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    sameSize,
-                    image.size
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(sameSize, image.size)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(sameSize)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    sameSize,
-                    image.size
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(sameSize, image.size)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(sameSize)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    sameSize,
-                    image.size
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(sameSize, image.size)
             }
 
         // size: big, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val bigSize1 = Size(2500, 2100)
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize1)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
-                Assert.assertEquals(
-                    imageSize,
-                    image.size
-                )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, image.size)
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize1)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(1291, 1084),
                     image.size
@@ -718,12 +673,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize1)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     bigSize1,
                     image.size
@@ -731,27 +686,24 @@ class ImageRequestExecuteTest {
             }
 
         val bigSize2 = Size(2100, 2500)
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize2)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
-                    imageSize,
+                    MyImages.jpeg.size,
                     image.size
                 )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize2)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(1291, 1537),
                     image.size
@@ -761,12 +713,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize2)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     bigSize2,
                     image.size
@@ -774,27 +726,24 @@ class ImageRequestExecuteTest {
             }
 
         val bigSize3 = Size(800, 2500)
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize3)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(646, 968),
                     image.size
                 )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize3)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(620, 1936),
                     image.size
@@ -804,12 +753,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize3)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     bigSize3,
                     image.size
@@ -817,27 +766,24 @@ class ImageRequestExecuteTest {
             }
 
         val bigSize4 = Size(2500, 800)
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize4)
             precision(LESS_PIXELS)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(646, 968),
                     image.size
                 )
-                Assert.assertEquals(
-                    imageInfo.size.ratio,
-                    image.size.ratio
-                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize4)
             precision(SAME_ASPECT_RATIO)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(1291, 413),
                     image.size
@@ -847,12 +793,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(bigSize4)
             precision(EXACTLY)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     bigSize4,
                     image.size
@@ -865,14 +811,14 @@ class ImageRequestExecuteTest {
         var sarCenterCropBitmap: Bitmap?
         var sarEndCropBitmap: Bitmap?
         var sarFillCropBitmap: Bitmap?
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarStartCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
                     image.size
@@ -882,14 +828,14 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarCenterCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
                     image.size
@@ -899,14 +845,14 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarEndCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     Size(322, 268),
                     image.size
@@ -916,14 +862,14 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarFillCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(
                     if (VERSION.SDK_INT >= 24)
                         Size(323, 269) else Size(322, 268),
@@ -945,44 +891,44 @@ class ImageRequestExecuteTest {
         var exactlyCenterCropBitmap: Bitmap?
         var exactlyEndCropBitmap: Bitmap?
         var exactlyFillCropBitmap: Bitmap?
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(START_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyStartCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(size, image.size)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(CENTER_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyCenterCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(size, image.size)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(END_CROP)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyEndCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(size, image.size)
             }
-        ImageRequest(context, imageUri) {
+        ImageRequest(context, MyImages.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(FILL)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyFillCropBitmap = image.getBitmapOrThrow()
-                Assert.assertEquals(imageSize, imageInfo.size)
+                Assert.assertEquals(MyImages.jpeg.size, imageInfo.size)
                 Assert.assertEquals(size, image.size)
             }
         Assert.assertNotEquals(
@@ -1003,6 +949,39 @@ class ImageRequestExecuteTest {
             exactlyFillCropBitmap!!.corners()
         )
         Assert.assertNotEquals(exactlyEndCropBitmap!!.corners(), exactlyFillCropBitmap!!.corners())
+
+        // origin
+        var size1: Size? = null
+        ImageRequest(context, MyImages.longQMSHT.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+        }
+            .let { runBlocking { sketch.execute(it) } }
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(MyImages.longQMSHT.size, imageInfo.size)
+                Assert.assertEquals(
+                    samplingByTarget(MyImages.longQMSHT.size, context.screenSize()),
+                    image.size
+                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio, 0.2f)
+                size1 = image.size
+            }
+        ImageRequest(context, MyImages.longQMSHT.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            size(Size.Origin)
+        }
+            .let { runBlocking { sketch.execute(it) } }
+            .asOrNull<ImageResult.Success>()!!.apply {
+                Assert.assertEquals(MyImages.longQMSHT.size, imageInfo.size)
+                Assert.assertEquals(
+                    samplingByTarget(MyImages.longQMSHT.size, Size.Origin),
+                    image.size
+                )
+                Assert.assertEquals(imageInfo.size.ratio, image.size.ratio)
+
+                Assert.assertNotEquals(size1!!, image.size)
+            }
     }
 
     @Test

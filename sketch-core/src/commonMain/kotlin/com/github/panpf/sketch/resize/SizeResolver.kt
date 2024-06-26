@@ -54,12 +54,3 @@ data class FixedSizeResolver constructor(private val size: Size) : SizeResolver 
 
     override fun toString(): String = "FixedSizeResolver($size)"
 }
-
-data object OriginSizeResolver : SizeResolver {
-
-    override val key: String by lazy { "Origin" }
-
-    override suspend fun size(): Size = Size(0, 0)
-
-    override fun toString(): String = "OriginSizeResolver"
-}

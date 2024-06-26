@@ -12,7 +12,8 @@
 * improve: Painter.asSketchImage() 现在返回 PainterImage; ComposeBitmap.asSketchImage() 现在返回 ComposeBitmapImage
 * new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay()、size(IntSize) 扩展函数
 * change: 重构 enqueueDownload() 和 executeDownload() 并从 sketch-extensions-core 模块移到 sketch-core 模块
-* change: LongImageClipPrecisionDecider 重命名为 LongImagePrecisionDecider, LongImageStartCropScaleDecider 重命名为 LongImageScaleDecider 
+* change: LongImageClipPrecisionDecider 重命名为 LongImagePrecisionDecider, LongImageStartCropScaleDecider 重命名为 LongImageScaleDecider
+* change: 恢复在构建 ImageRequest 时使用屏幕大小作为最终的 Size
 
 # 4.0.0-alpha02
 

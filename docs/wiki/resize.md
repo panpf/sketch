@@ -121,7 +121,7 @@ follows:
     5. [Target].getSizeResolver()
         1. View 或 Compose 组件的宽高
         2. DisplayMetrics size 或 LocalWindow containerSize
-    6. [OriginSizeResolver]
+    6. [PlatformContext.screenSize()]
 * [Precision]:
     1. [ImageRequest].Builder.precisionDecider
     2. [Target].getImageOptions().precisionDecider
@@ -142,6 +142,16 @@ follows:
 > 2. If the width of the component is a fixed value (for example, 100) and the height is wrap, Size
      will be '100xContainerHeight'
 > 3. For detailed build rules, please refer to the [ImageRequest].Builder.build() method
+
+## PlatformContext.screenSize()
+
+The [PlatformContext.screenSize()] method is used to obtain the size of the screen. When
+constructing the ImageRequest, if the Size cannot be obtained, the screen size will be used as the
+final Size.
+
+> [!IMPORTANT]
+> screenSize() can obtain the accurate screen size on non-JS platforms, but on JS platforms it will
+> always return `Size(1920, 1080)`
 
 ## sizeMultiplier
 
@@ -215,8 +225,6 @@ transition. [Understanding Perfect Transition](transition.md#perfect-transition)
 [Size]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/Size.kt
 
 [SizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
-
-[OriginSizeResolver]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/resize/SizeResolver.kt
 
 [Image]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Image.kt
 

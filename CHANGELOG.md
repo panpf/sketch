@@ -15,6 +15,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
 * change: Refactor enqueueDownload() and executeDownload() and move from sketch-extensions-core module to sketch-core module
 * change: LongImageClipPrecisionDecider renamed to LongImagePrecisionDecider, LongImageStartCropScaleDecider renamed to LongImageScaleDecider
+* change: Revert to using screen size as final Size when building ImageRequest
 
 # 4.0.0-alpha02
 
