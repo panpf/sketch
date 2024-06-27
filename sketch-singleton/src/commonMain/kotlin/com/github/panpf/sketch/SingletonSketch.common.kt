@@ -19,6 +19,8 @@ import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
 import kotlin.jvm.JvmStatic
 
+expect val PlatformContext.sketch: Sketch
+
 object SingletonSketch {
 
     private val reference = atomic<Any?>(null)

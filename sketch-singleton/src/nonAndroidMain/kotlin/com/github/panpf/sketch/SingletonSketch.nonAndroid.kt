@@ -20,3 +20,6 @@ internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.
 }
 
 fun SingletonSketch.get(): Sketch = get(PlatformContext.INSTANCE)
+
+actual val PlatformContext.sketch: Sketch
+    get() = SingletonSketch.get(this)

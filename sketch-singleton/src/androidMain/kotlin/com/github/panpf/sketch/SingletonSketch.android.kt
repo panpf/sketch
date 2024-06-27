@@ -16,13 +16,14 @@
 package com.github.panpf.sketch
 
 import android.content.Context
+import android.view.View
 
 internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory? {
     return applicationContext as? SingletonSketch.Factory
 }
 
-/**
- * Get Sketch singleton from any Context
- */
-val Context.sketch: Sketch
+actual val Context.sketch: Sketch
     get() = SingletonSketch.get(this)
+
+val View.sketch: Sketch
+    get() = SingletonSketch.get(context)
