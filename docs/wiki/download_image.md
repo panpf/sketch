@@ -12,7 +12,7 @@ follows:
 val imageUri = "https://example.com/image.jpg"
 
 val deferred: Deferred<Result<DownloadData>> = sketch
-    .enqueueDownload(imageUri, cachePolicy = CachePolicy.ENABLED)
+    .enqueueDownload(ImageRequest(context, imageUri))
 scope.launch {
     val result = deferred.await()
     val data: DownloadData = result.getOrNull()
@@ -31,7 +31,7 @@ scope.launch {
 
 // or
 scope.launch {
-    val result = sketch.executeDownload(imageUri, cachePolicy = CachePolicy.ENABLED)
+    val result = sketch.executeDownload(ImageRequest(context, imageUri))
     val data: DownloadData = result.getOrNull()
     if (data != null) {
         // success
@@ -49,8 +49,8 @@ scope.launch {
 
 > [!TIP]
 > 1. Prioritize returning [DownloadData] of type [DownloadData].Cache
-> 2. When [Sketch].downloadCache is not available (JS) or cachePolicy.readEnabled is
-     false, [DownloadData].Bytes is returned
+> 2. When [Sketch].downloadCache is not available (JS) or [ImageRequest]
+     .downloadCachePolicy.readEnabled is false, [DownloadData].Bytes is returned
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 

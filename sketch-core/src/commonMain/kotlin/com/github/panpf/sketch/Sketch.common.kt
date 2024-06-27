@@ -204,39 +204,11 @@ class Sketch private constructor(options: Options) {
     /**
      * Download images
      */
-    suspend fun executeDownload(
-        uri: String,
-        cachePolicy: CachePolicy = CachePolicy.ENABLED
-    ): Result<DownloadData> {
-        val request = ImageRequest(context, uri) {
-            downloadCachePolicy(cachePolicy)
-            depth(Depth.NETWORK)
-        }
-        return executeDownload(request)
-    }
-
-    /**
-     * Download images
-     */
     fun enqueueDownload(request: ImageRequest): Deferred<Result<DownloadData>> {
         val job = scope.async {
             executeDownload(request)
         }
         return job
-    }
-
-    /**
-     * Download images
-     */
-    fun enqueueDownload(
-        uri: String,
-        cachePolicy: CachePolicy = CachePolicy.ENABLED
-    ): Deferred<Result<DownloadData>> {
-        val request = ImageRequest(context, uri) {
-            downloadCachePolicy(cachePolicy)
-            depth(Depth.NETWORK)
-        }
-        return enqueueDownload(request)
     }
 
 

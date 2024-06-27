@@ -3,6 +3,7 @@ package com.github.panpf.sketch.core.test.util
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyImagesHttpStack
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
@@ -19,7 +20,7 @@ class DownloadTest {
 
     @Test
     fun test() = runTest {
-        val (_, defaultSketch) = getTestContextAndSketch()
+        val (context, defaultSketch) = getTestContextAndSketch()
         val (_, newSketch) = getTestContextAndNewSketch {
             httpStack(MyImagesHttpStack(defaultSketch))
         }
@@ -37,35 +38,45 @@ class DownloadTest {
             val imageUri4 = "http://${MyImages.bmp.uri.toUri().authority}"
             assertFalse(downloadCache.existWithLock(imageUri4))
 
-            val result1 = newSketch.enqueueDownload(imageUri1).await()
+            val result1 = newSketch.enqueueDownload(ImageRequest(context, imageUri1)).await()
             assertTrue(result1.getOrThrow() is DownloadData.Cache)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertFalse(downloadCache.existWithLock(imageUri2))
 
-            val result2 = newSketch.enqueueDownload(imageUri2, cachePolicy = CachePolicy.ENABLED).await()
+            val result2 = newSketch.enqueueDownload(ImageRequest(context, imageUri2) {
+                downloadCachePolicy(CachePolicy.ENABLED)
+            }).await()
             assertTrue(result2.getOrThrow() is DownloadData.Cache)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertTrue(downloadCache.existWithLock(imageUri2))
 
-            val result3 = newSketch.executeDownload(imageUri3, cachePolicy = CachePolicy.DISABLED)
+            val result3 = newSketch.executeDownload(ImageRequest(context, imageUri3) {
+                downloadCachePolicy(CachePolicy.DISABLED)
+            })
             assertTrue(result3.getOrThrow() is DownloadData.Bytes)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
 
-            val result21 = newSketch.executeDownload(imageUri2, cachePolicy = CachePolicy.WRITE_ONLY)
+            val result21 = newSketch.executeDownload(ImageRequest(context, imageUri2) {
+                downloadCachePolicy(CachePolicy.WRITE_ONLY)
+            })
             assertTrue(result21.getOrThrow() is DownloadData.Bytes)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
 
-            val result11 = newSketch.executeDownload(imageUri1, cachePolicy = CachePolicy.READ_ONLY)
+            val result11 = newSketch.executeDownload(ImageRequest(context, imageUri1) {
+                downloadCachePolicy(CachePolicy.READ_ONLY)
+            })
             assertTrue(result11.getOrThrow() is DownloadData.Cache)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
 
-            val result4 = newSketch.executeDownload(imageUri4, cachePolicy = CachePolicy.READ_ONLY)
+            val result4 = newSketch.executeDownload(ImageRequest(context, imageUri4) {
+                downloadCachePolicy(CachePolicy.READ_ONLY)
+            })
             assertTrue(result4.getOrThrow() is DownloadData.Bytes)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertTrue(downloadCache.existWithLock(imageUri2))

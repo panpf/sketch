@@ -10,7 +10,7 @@
 val imageUri = "https://example.com/image.jpg"
 
 val deferred: Deferred<Result<DownloadData>> = sketch
-    .enqueueDownload(imageUri, cachePolicy = CachePolicy.ENABLED)
+    .enqueueDownload(ImageRequest(context, imageUri))
 scope.launch {
     val result = deferred.await()
     val data: DownloadData = result.getOrNull()
@@ -29,7 +29,7 @@ scope.launch {
 
 // or
 scope.launch {
-    val result = sketch.executeDownload(imageUri, cachePolicy = CachePolicy.ENABLED)
+    val result = sketch.executeDownload(ImageRequest(context, imageUri))
     val data: DownloadData = result.getOrNull()
     if (data != null) {
         // success
@@ -47,7 +47,7 @@ scope.launch {
 
 > [!TIP]
 > 1. 优先返回 [DownloadData].Cache 类型的 [DownloadData]
-> 2. [Sketch].downloadCache 不可用（JS）或 cachePolicy.readEnabled 为 false
+> 2. [Sketch].downloadCache 不可用（JS）或 [ImageRequest].downloadCachePolicy.readEnabled 为 false
      时返回的是 [DownloadData].Bytes
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
