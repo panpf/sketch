@@ -8,14 +8,14 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
-# new
+# 4.0.0-alpha03
 
 * change: ComposeBitmapValue renamed to ComposeBitmapImageValue
-* improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now returns ComposeBitmapImage
-* new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
-* change: Refactor enqueueDownload() and executeDownload() and move from sketch-extensions-core module to sketch-core module
+* change: Refactor Sketch.enqueueDownload() and executeDownload() and move from sketch-extensions-core module to sketch-core module
 * change: LongImageClipPrecisionDecider renamed to LongImagePrecisionDecider, LongImageStartCropScaleDecider renamed to LongImageScaleDecider
 * change: Revert to using screen size as final Size when building ImageRequest
+* improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now returns ComposeBitmapImage
+* new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
 
 # 4.0.0-alpha02
 

@@ -6,14 +6,14 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
-# new
+# 4.0.0-alpha03
 
 * change: ComposeBitmapValue 重命名为 ComposeBitmapImageValue
-* improve: Painter.asSketchImage() 现在返回 PainterImage; ComposeBitmap.asSketchImage() 现在返回 ComposeBitmapImage
-* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay()、size(IntSize) 扩展函数
-* change: 重构 enqueueDownload() 和 executeDownload() 并从 sketch-extensions-core 模块移到 sketch-core 模块
+* change: 重构 Sketch.enqueueDownload() 和 executeDownload() 并从 sketch-extensions-core 模块移到 sketch-core 模块
 * change: LongImageClipPrecisionDecider 重命名为 LongImagePrecisionDecider, LongImageStartCropScaleDecider 重命名为 LongImageScaleDecider
 * change: 恢复在构建 ImageRequest 时使用屏幕大小作为最终的 Size
+* improve: Painter.asSketchImage() 现在返回 PainterImage; ComposeBitmap.asSketchImage() 现在返回 ComposeBitmapImage
+* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay()、size(IntSize) 扩展函数
 
 # 4.0.0-alpha02
 
