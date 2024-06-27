@@ -7,6 +7,7 @@ internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = NoopSyste
 
 private class NoopSystemCallbacks : SystemCallbacks {
 
+    // TODO Implement network type detection for non-Android platforms
     override val isCellularNetworkConnected get() = false
 
     private val _isShutdown = atomic(false)

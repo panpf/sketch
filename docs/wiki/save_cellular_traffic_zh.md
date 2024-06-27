@@ -3,7 +3,8 @@
 翻译：[English](save_cellular_traffic.md)
 
 > [!IMPORTANT]
-> 必须导入 `sketch-extensions-core` 模块
+> 1. 必须导入 `sketch-extensions-core` 模块
+> 2. 非安卓平台暂时不可用
 
 节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [Depth].LOCAL，这样就不会再从网络下载图片
 
