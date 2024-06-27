@@ -24,7 +24,7 @@ import okio.buffer
 import okio.source
 import okio.use
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch_root.sample.generated.resources.Res
+import sketch.sample.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(

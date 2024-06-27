@@ -32,8 +32,8 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch_root.sample.generated.resources.Res.drawable
-import sketch_root.sample.generated.resources.ic_image_outline
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_image_outline
 
 class ExifOrientationTestScreen : BaseScreen() {
 

@@ -20,7 +20,7 @@ import platform.Foundation.NSBundle
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
-import sketch_root.sample.generated.resources.Res
+import sketch.sample.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: Boolean): List<FetcherTestItem> {

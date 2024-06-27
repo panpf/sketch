@@ -48,8 +48,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch_root.sample.generated.resources.Res.drawable
-import sketch_root.sample.generated.resources.ic_image_outline
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_image_outline
 import kotlin.random.Random
 
 

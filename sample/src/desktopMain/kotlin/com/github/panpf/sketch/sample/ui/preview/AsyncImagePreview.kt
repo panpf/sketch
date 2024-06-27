@@ -19,8 +19,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.sample.ui.util.PreviewWrapper
 import com.github.panpf.sketch.state.rememberPainterStateImage
-import sketch_root.sample.generated.resources.Res
-import sketch_root.sample.generated.resources.ic_image2_outline
+import sketch.sample.generated.resources.Res
+import sketch.sample.generated.resources.ic_image2_outline
 
 
 @Preview

@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.harawata.appdirs.AppDirsFactory
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch_root.sample.generated.resources.Res
+import sketch.sample.generated.resources.Res
 import java.io.File
 
 @OptIn(ExperimentalResourceApi::class)

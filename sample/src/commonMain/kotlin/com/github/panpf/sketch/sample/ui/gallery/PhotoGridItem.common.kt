@@ -41,10 +41,10 @@ import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import sketch_root.sample.generated.resources.Res
-import sketch_root.sample.generated.resources.ic_image_outline
-import sketch_root.sample.generated.resources.ic_image_outline_broken
-import sketch_root.sample.generated.resources.ic_signal_cellular
+import sketch.sample.generated.resources.Res
+import sketch.sample.generated.resources.ic_image_outline
+import sketch.sample.generated.resources.ic_image_outline_broken
+import sketch.sample.generated.resources.ic_signal_cellular
 
 @Composable
 expect fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): StateImage?

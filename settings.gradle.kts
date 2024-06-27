@@ -1,4 +1,7 @@
+// The name of the root project cannot be changed because the sample app needs to rely on
+// it when generating compose resources.
 rootProject.name = "sketch"
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {

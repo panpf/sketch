@@ -4,7 +4,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.images.MyImages
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch_root.sample.generated.resources.Res
+import sketch.sample.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(

@@ -20,8 +20,8 @@ import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.request.LoadState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_root.sample.generated.resources.Res.drawable
-import sketch_root.sample.generated.resources.ic_error_baseline
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_error_baseline
 
 @Composable
 fun LoadState(imageState: AsyncImageState, modifier: Modifier = Modifier) {

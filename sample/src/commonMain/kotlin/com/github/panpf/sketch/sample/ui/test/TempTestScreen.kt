@@ -15,8 +15,8 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_root.sample.generated.resources.Res
-import sketch_root.sample.generated.resources.ic_image_outline
+import sketch.sample.generated.resources.Res
+import sketch.sample.generated.resources.ic_image_outline
 
 class TempTestScreen : BaseScreen() {
 

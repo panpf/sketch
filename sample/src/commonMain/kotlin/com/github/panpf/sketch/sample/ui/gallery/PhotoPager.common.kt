@@ -65,10 +65,10 @@ import com.github.panpf.sketch.transform.BlurTransformation
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_root.sample.generated.resources.Res.drawable
-import sketch_root.sample.generated.resources.ic_image2_baseline
-import sketch_root.sample.generated.resources.ic_image2_outline
-import sketch_root.sample.generated.resources.ic_settings
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_image2_baseline
+import sketch.sample.generated.resources.ic_image2_outline
+import sketch.sample.generated.resources.ic_settings
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)

@@ -44,12 +44,12 @@ import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch_root.sample.generated.resources.Res.drawable
-import sketch_root.sample.generated.resources.ic_info_baseline
-import sketch_root.sample.generated.resources.ic_rotate_right
-import sketch_root.sample.generated.resources.ic_save
-import sketch_root.sample.generated.resources.ic_share
-import sketch_root.sample.generated.resources.ic_zoom_in
+import sketch.sample.generated.resources.Res.drawable
+import sketch.sample.generated.resources.ic_info_baseline
+import sketch.sample.generated.resources.ic_rotate_right
+import sketch.sample.generated.resources.ic_save
+import sketch.sample.generated.resources.ic_share
+import sketch.sample.generated.resources.ic_zoom_in
 
 @Composable
 actual fun PhotoViewer(
