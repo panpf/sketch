@@ -31,6 +31,7 @@ expect fun ExifOrientationHelper(exifOrientation: Int): ExifOrientationHelper
 /**
  * Rotate and flip the image according to the 'orientation' attribute of Exif so that the image is presented to the user at a normal angle
  */
+// TODO Remove
 interface ExifOrientationHelper {
 
     val exifOrientation: Int
