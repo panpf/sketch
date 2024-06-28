@@ -12,7 +12,7 @@ import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher.Factory
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
@@ -138,17 +138,17 @@ class ComponentsTest {
 
         Components(sketch, Builder().build()).apply {
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(ImageRequest(context, MyImages.jpeg.uri))
+                newFetcherOrThrow(ImageRequest(context, ResourceImages.jpeg.uri))
             }
             assertThrow(IllegalArgumentException::class) {
-                newFetcherOrThrow(ImageRequest(context, MyImages.jpeg.uri) {
+                newFetcherOrThrow(ImageRequest(context, ResourceImages.jpeg.uri) {
                     components {
                         addFetcher(Factory())
                     }
                 })
             }
             assertNoThrow {
-                newFetcherOrThrow(ImageRequest(context, MyImages.jpeg.uri) {
+                newFetcherOrThrow(ImageRequest(context, ResourceImages.jpeg.uri) {
                     components {
                         addFetcher(AssetUriFetcher.Factory())
                     }
@@ -182,7 +182,7 @@ class ComponentsTest {
                 newFetcherOrThrow(
                     ImageRequest(
                         context,
-                        MyImages.jpeg.uri
+                        ResourceImages.jpeg.uri
                     )
                 ) is AssetUriFetcher
             )
@@ -199,7 +199,7 @@ class ComponentsTest {
                 newFetcherOrThrow(
                     ImageRequest(
                         context,
-                        MyImages.jpeg.uri
+                        ResourceImages.jpeg.uri
                     ) {
                         components {
                             addFetcher(AllFetcher.Factory())
@@ -240,7 +240,7 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
             assertFails {
-                val request = ImageRequest(context, MyImages.jpeg.uri)
+                val request = ImageRequest(context, ResourceImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 runBlocking(Dispatchers.Main) {
@@ -253,13 +253,13 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
         }.build()).apply {
             assertFails {
-                val request = ImageRequest(context, MyImages.jpeg.uri)
+                val request = ImageRequest(context, ResourceImages.jpeg.uri)
                 val requestContext = request.toRequestContext(sketch)
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDecoderOrThrow(requestContext, fetchResult)
             }
             assertFails {
-                val request = ImageRequest(context, MyImages.jpeg.uri) {
+                val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                     components {
                         addDecoder(DrawableDecoder.Factory())
                     }
@@ -268,7 +268,7 @@ class ComponentsTest {
                 val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
                 newDecoderOrThrow(requestContext, fetchResult)
             }
-            val request = ImageRequest(context, MyImages.jpeg.uri) {
+            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                 components {
                     addDecoder(BitmapFactoryDecoder.Factory())
                 }
@@ -284,14 +284,14 @@ class ComponentsTest {
             addFetcher(AssetUriFetcher.Factory())
             addDecoder(BitmapFactoryDecoder.Factory())
         }.build()).apply {
-            val request = ImageRequest(context, MyImages.jpeg.uri)
+            val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val requestContext = request.toRequestContext(sketch)
             val fetchResult = runBlocking { newFetcherOrThrow(request).fetch() }.getOrThrow()
             Assert.assertTrue(
                 newDecoderOrThrow(requestContext, fetchResult) is BitmapFactoryDecoder
             )
 
-            val request2 = ImageRequest(context, MyImages.jpeg.uri) {
+            val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
                 components {
                     addDecoder(TestDecoder.Factory())
                 }

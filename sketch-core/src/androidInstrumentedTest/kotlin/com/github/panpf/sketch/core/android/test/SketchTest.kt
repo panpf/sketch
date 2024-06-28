@@ -22,7 +22,7 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
@@ -306,7 +306,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
-        val request1 = ImageRequest(context, MyImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
             registerListener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -329,7 +329,7 @@ class SketchTest {
         /* cancel */
         var disposable3: Disposable? = null
         val listenerSupervisor3 = ListenerSupervisor()
-        val request3 = ImageRequest(context, MyImages.jpeg.uri) {
+        val request3 = ImageRequest(context, ResourceImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
@@ -351,7 +351,7 @@ class SketchTest {
 
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
-        val request1 = ImageRequest(context, MyImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
             registerListener(listenerSupervisor1)
         }
         val result1 = runBlocking {
@@ -376,7 +376,7 @@ class SketchTest {
         val listenerSupervisor3 = ListenerSupervisor {
             deferred3?.cancel()
         }
-        val request3 = ImageRequest(context, MyImages.jpeg.uri) {
+        val request3 = ImageRequest(context, ResourceImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             registerListener(listenerSupervisor3)
@@ -392,7 +392,7 @@ class SketchTest {
         /* ViewTarget */
         val imageView = ImageView(context)
         val listenerSupervisor4 = ListenerSupervisor()
-        val request4 = ImageRequest(imageView, MyImages.jpeg.uri) {
+        val request4 = ImageRequest(imageView, ResourceImages.jpeg.uri) {
             registerListener(listenerSupervisor4)
             lifecycle(GlobalLifecycle)
         }

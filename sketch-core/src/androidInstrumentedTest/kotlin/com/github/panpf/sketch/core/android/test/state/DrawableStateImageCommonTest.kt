@@ -21,7 +21,7 @@ import android.graphics.drawable.StateListDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
@@ -37,7 +37,7 @@ class DrawableStateImageCommonTest {
     @Test
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, MyImages.jpeg.uri)
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
         DrawableStateImage(ColorDrawableEqualizer(Color.BLUE)).apply {
             Assert.assertEquals(

@@ -20,7 +20,7 @@ package com.github.panpf.sketch.core.android.test.request.internal
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.ImageOptions
@@ -48,7 +48,7 @@ class RequestExecutorTest {
         runBlocking(Dispatchers.Main) {
             RequestExecutor().execute(
                 sketch,
-                ImageRequest(context, MyImages.jpeg.uri),
+                ImageRequest(context, ResourceImages.jpeg.uri),
                 false
             ).apply {
                 Assert.assertTrue(this is ImageResult.Success)
@@ -76,7 +76,7 @@ class RequestExecutorTest {
     fun testGlobalImageOptions() {
         val (context, sketch) = getTestContextAndNewSketch {
         }
-        val request = ImageRequest(context, MyImages.jpeg.uri).apply {
+        val request = ImageRequest(context, ResourceImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
             Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)
@@ -96,7 +96,7 @@ class RequestExecutorTest {
                 resize(44, 67)
             })
         }
-        val request2 = ImageRequest(context2, MyImages.jpeg.uri).apply {
+        val request2 = ImageRequest(context2, ResourceImages.jpeg.uri).apply {
             Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
             Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
             Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)

@@ -19,7 +19,7 @@ import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.state.DrawableStateImage
@@ -136,7 +136,7 @@ class ErrorStateImageAndroidTest {
     @Test
     fun testDefaultCondition() {
         val context = getTestContext()
-        val request = ImageRequest(context, MyImages.jpeg.uri)
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
         ErrorStateImage.DefaultCondition.apply {
             Assert.assertTrue(accept(request, null))

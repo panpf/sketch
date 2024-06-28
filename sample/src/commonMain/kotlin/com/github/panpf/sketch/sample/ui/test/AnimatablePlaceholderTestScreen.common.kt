@@ -26,7 +26,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
@@ -50,7 +50,7 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                 ) {
                     var urlIndexState by remember { mutableStateOf(0) }
                     val images = remember {
-                        arrayOf(MyImages.jpeg.uri, MyImages.webp.uri, MyImages.bmp.uri)
+                        arrayOf(ResourceImages.jpeg.uri, ResourceImages.webp.uri, ResourceImages.bmp.uri)
                     }
                     val uri = images[urlIndexState % images.size]
                     val colorScheme = MaterialTheme.colorScheme

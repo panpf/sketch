@@ -25,7 +25,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMultiBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
@@ -135,7 +135,7 @@ class MultiTransformationTestFragment :
     }
 
     private fun updateImage(binding: FragmentTestTransformationMultiBinding) {
-        binding.myImage.loadImage(MyImages.statics.first().uri) {
+        binding.myImage.loadImage(ResourceImages.statics.first().uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addTransformations(

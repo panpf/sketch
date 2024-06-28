@@ -1,18 +1,18 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.graphics.RectF
-import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media
 import androidx.core.content.PermissionChecker
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.AndroidExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.tools4k.coroutines.withToIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,26 +30,26 @@ actual suspend fun readPhotosFromPhotoAlbum(
     }
     return withToIO {
         val cursor = context.contentResolver.query(
-            /* uri = */ MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            /* uri = */ Media.EXTERNAL_CONTENT_URI,
             /* projection = */
             arrayOf(
-                MediaStore.Images.Media.TITLE,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.SIZE,
-                MediaStore.Images.Media.DATE_TAKEN,
+                Media.TITLE,
+                Media.DATA,
+                Media.SIZE,
+                Media.DATE_TAKEN,
             ),
             /* selection = */
             null,
             /* selectionArgs = */
             null,
             /* sortOrder = */
-            MediaStore.Images.Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize
+            Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize
         )
         ArrayList<String>(cursor?.count ?: 0).apply {
             cursor?.use {
                 while (cursor.moveToNext()) {
                     val uri =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+                        cursor.getString(cursor.getColumnIndexOrThrow(Media.DATA))
                     add(uri)
                 }
             }

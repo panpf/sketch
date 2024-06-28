@@ -16,7 +16,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
@@ -28,7 +28,7 @@ class BitmapRegionDecoderTest {
     @Test
     fun testMutable() {
         val context = getTestContext()
-        val imageName = MyImages.jpeg.fileName
+        val imageName = ResourceImages.jpeg.resourceName
         val imageSize = Size(1291, 1936)
 
         val options = Options()
@@ -49,7 +49,7 @@ class BitmapRegionDecoderTest {
     @Test
     fun testInPreferredConfig() {
         val context = getTestContext()
-        val imageName = MyImages.jpeg.fileName
+        val imageName = ResourceImages.jpeg.resourceName
         val imageSize = Size(1291, 1936)
 
         val options = Options()
@@ -78,7 +78,7 @@ class BitmapRegionDecoderTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.jpeg.fileName,
+                assetName = ResourceImages.jpeg.resourceName,
                 size = Size(1291, 1936),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -86,7 +86,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 16,
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.png.fileName,
+                assetName = ResourceImages.png.resourceName,
                 size = Size(750, 719),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -94,7 +94,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 16,
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.bmp.fileName,
+                assetName = ResourceImages.bmp.resourceName,
                 size = Size(700, 1012),
                 minAPI = -1,
                 inSampleSizeMinAPI = -1,
@@ -102,7 +102,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1,
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.webp.fileName,
+                assetName = ResourceImages.webp.resourceName,
                 size = Size(1080, 1344),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -110,7 +110,7 @@ class BitmapRegionDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = 16,
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.heic.fileName,
+                assetName = ResourceImages.heic.resourceName,
                 size = Size(750, 932),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

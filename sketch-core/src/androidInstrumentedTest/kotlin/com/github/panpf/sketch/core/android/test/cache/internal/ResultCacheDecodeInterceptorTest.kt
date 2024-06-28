@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.source.DataFrom
@@ -67,7 +67,7 @@ class ResultCacheDecodeInterceptorTest {
             }.getOrThrow()
         }
 
-        val request = ImageRequest(context, MyImages.jpeg.uri) {
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
@@ -177,7 +177,7 @@ class ResultCacheDecodeInterceptorTest {
         }
         Assert.assertFalse(resultCache.exist(request.toRequestContext(sketch).resultCacheKey))
 
-        val request1 = ImageRequest(context, MyImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
             size(2000, 2000)
             precision(LESS_PIXELS)
             resultCachePolicy(ENABLED)

@@ -32,7 +32,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -50,7 +50,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             Assert.assertTrue(fitScale)
@@ -58,7 +58,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable,
             fitScale = false
         ).apply {
@@ -73,7 +73,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             val callback = object : Animatable2.AnimationCallback() {}
@@ -98,7 +98,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             mutate()
@@ -112,7 +112,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             setTint(Color.RED)
@@ -131,7 +131,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             val callbackAction = mutableListOf<String>()
@@ -174,7 +174,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
@@ -194,7 +194,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             level = 4
@@ -210,7 +210,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
@@ -230,7 +230,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
@@ -252,7 +252,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             Assert.assertEquals(Rect(0, 0, 0, 0), bounds)
@@ -268,7 +268,7 @@ class ScaledAnimatedImageDrawableTest {
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
             ImageDecoder.decodeDrawable(
-                ImageDecoder.createSource(context.assets, MyImages.animGif.fileName)
+                ImageDecoder.createSource(context.assets, ResourceImages.animGif.resourceName)
             ) as AnimatedImageDrawable
         ).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -291,13 +291,13 @@ class ScaledAnimatedImageDrawableTest {
         val animatedImageDrawable = ImageDecoder.decodeDrawable(
             ImageDecoder.createSource(
                 context.assets,
-                MyImages.animGif.fileName
+                ResourceImages.animGif.resourceName
             )
         ) as AnimatedImageDrawable
         val animatedImageDrawable2 = ImageDecoder.decodeDrawable(
             ImageDecoder.createSource(
                 context.assets,
-                MyImages.animGif.fileName
+                ResourceImages.animGif.resourceName
             )
         ) as AnimatedImageDrawable
         val element1 = com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
@@ -348,7 +348,7 @@ class ScaledAnimatedImageDrawableTest {
         val animatedImageDrawable = ImageDecoder.decodeDrawable(
             ImageDecoder.createSource(
                 context.assets,
-                MyImages.animGif.fileName
+                ResourceImages.animGif.resourceName
             )
         ) as AnimatedImageDrawable
         Assert.assertEquals(

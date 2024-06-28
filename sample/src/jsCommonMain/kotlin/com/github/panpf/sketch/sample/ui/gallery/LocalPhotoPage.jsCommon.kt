@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 
@@ -17,11 +17,11 @@ actual fun Screen.LocalPhotoPage() {
         pageSize = 80,
         load = { pageStart: Int, _: Int ->
             if (pageStart == 0) {
-                MyImages.statics
-                    .plus(MyImages.anims)
-                    .plus(MyImages.longQMSHT)
-                    .plus(MyImages.clockExifs)
-                    .plus(MyImages.mp4)
+                ResourceImages.statics
+                    .plus(ResourceImages.anims)
+                    .plus(ResourceImages.longQMSHT)
+                    .plus(ResourceImages.clockExifs)
+                    .plus(ResourceImages.mp4)
                     .map {
                         Photo(
                             originalUrl = it.uri,

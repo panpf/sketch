@@ -25,7 +25,7 @@ import android.graphics.drawable.StateListDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidDrawableImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
@@ -44,7 +44,7 @@ class CurrentStateImageAndroidTest {
     fun testConstructor() {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
-        val request = ImageRequest(imageView, MyImages.jpeg.uri)
+        val request = ImageRequest(imageView, ResourceImages.jpeg.uri)
 
         CurrentStateImage().apply {
             Assert.assertNull(
@@ -80,7 +80,7 @@ class CurrentStateImageAndroidTest {
             )
         }
 
-        val request1 = ImageRequest(context, MyImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
             target(TestTarget())
         }
         CurrentStateImage(ColorDrawableEqualizer(Color.RED)).apply {
@@ -95,7 +95,7 @@ class CurrentStateImageAndroidTest {
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
-        val request = ImageRequest(imageView, MyImages.jpeg.uri)
+        val request = ImageRequest(imageView, ResourceImages.jpeg.uri)
         val drawable1 = ColorDrawableEqualizer(Color.BLUE)
         val drawable2 = ColorDrawableEqualizer(Color.GREEN)
 

@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.android.test.request.internal
 import android.graphics.Bitmap.Config.RGB_565
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
@@ -36,7 +36,7 @@ class RequestContextTest {
     fun testRequest() {
         val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            val request0 = ImageRequest(context, MyImages.jpeg.uri)
+            val request0 = ImageRequest(context, ResourceImages.jpeg.uri)
             request0.toRequestContext(sketch).apply {
                 Assert.assertSame(request0, request)
                 Assert.assertEquals(listOf(request0), requestList)
@@ -69,7 +69,7 @@ class RequestContextTest {
     fun testCacheKey() {
         val (context, sketch) = getTestContextAndSketch()
         runBlocking {
-            ImageRequest(context, MyImages.jpeg.uri).toRequestContext(sketch).apply {
+            ImageRequest(context, ResourceImages.jpeg.uri).toRequestContext(sketch).apply {
                 val cacheKey0 = cacheKey
 
                 setNewRequest(request.newRequest())

@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItem
@@ -17,7 +17,7 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 fun buildDisplayInsanityTestPhotos(): List<Photo> = buildList {
     var index = 0
     repeat(100) {
-        MyImages.numbers.forEach { image ->
+        ResourceImages.numbers.forEach { image ->
             val photo = Photo(
                 originalUrl = image.uri,
                 mediumUrl = null,

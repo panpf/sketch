@@ -21,7 +21,7 @@ import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.copy
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -105,7 +105,7 @@ class SvgDecoderTest {
 
         // normal
         val factory = SvgDecoder.Factory(false)
-        ImageRequest(context, MyImages.svg.uri)
+        ImageRequest(context, ResourceImages.svg.uri)
             .let {
                 val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 factory.create(it.toRequestContext(sketch), fetchResult)
@@ -114,7 +114,7 @@ class SvgDecoderTest {
             }
 
         // data error
-        ImageRequest(context, MyImages.png.uri)
+        ImageRequest(context, ResourceImages.png.uri)
             .let {
                 val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 factory.create(it.toRequestContext(sketch), fetchResult)
@@ -123,7 +123,7 @@ class SvgDecoderTest {
             }
 
         // mimeType error
-        ImageRequest(context, MyImages.svg.uri).let {
+        ImageRequest(context, ResourceImages.svg.uri).let {
             val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
                 .copy(mimeType = "image/svg")
             factory.create(it.toRequestContext(sketch), fetchResult)
@@ -162,7 +162,7 @@ class SvgDecoderTest {
         val factory = SvgDecoder.Factory()
 
         // normal
-        ImageRequest(context, MyImages.svg.uri)
+        ImageRequest(context, ResourceImages.svg.uri)
             .decode(sketch, factory).apply {
                 assertEquals(
                     "ImageInfo(256x225,'image/svg+xml')",
@@ -181,7 +181,7 @@ class SvgDecoderTest {
             }
 
         // error: png
-        ImageRequest(context, MyImages.png.uri).let {
+        ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult = it.fetch(sketch)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
@@ -201,7 +201,7 @@ class SvgDecoderTest {
             SketchSize(0, 0) to (1f to Size(256, 225)),
         ).forEach { (targetSize, expected) ->
             val (expectedScaleFactor, expectedSize) = expected
-            ImageRequest(context, MyImages.svg.uri) {
+            ImageRequest(context, ResourceImages.svg.uri) {
                 size(targetSize)
             }.decode(sketch, factory).apply {
                 assertEquals(
@@ -237,7 +237,7 @@ class SvgDecoderTest {
             Precision.SMALLER_SIZE to (2.34f to Size(600, 527)),
         ).forEach { (precision, expected) ->
             val (expectedScaleFactor, expectedSize) = expected
-            ImageRequest(context, MyImages.svg.uri) {
+            ImageRequest(context, ResourceImages.svg.uri) {
                 size(SketchSize(600, 600))
                 precision(precision)
             }.decode(sketch, factory).apply {

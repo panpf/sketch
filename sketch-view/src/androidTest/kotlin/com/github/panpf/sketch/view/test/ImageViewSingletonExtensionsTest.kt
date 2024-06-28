@@ -20,7 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.loadAssetImage
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.loadResourceImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
@@ -45,7 +45,7 @@ class ImageViewSingletonExtensionsTest {
 
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.loadImage(MyImages.jpeg.uri).job.join()
+            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
 
@@ -54,7 +54,7 @@ class ImageViewSingletonExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.loadImage(Uri.parse(MyImages.png.uri)).job.join()
+            imageView.loadImage(Uri.parse(ResourceImages.png.uri)).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -117,7 +117,7 @@ class ImageViewSingletonExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.loadImage(MyImages.animGif.uri).job.join()
+            imageView.loadImage(ResourceImages.animGif.uri).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
@@ -135,7 +135,7 @@ class ImageViewSingletonExtensionsTest {
         Assert.assertNull(imageView.drawable)
 
         val file = runBlocking {
-            sketch.components.newFetcherOrThrow(ImageRequest(context, MyImages.png.uri))
+            sketch.components.newFetcherOrThrow(ImageRequest(context, ResourceImages.png.uri))
                 .fetch().getOrThrow().dataSource.getFile().toFile()
         }
         runBlocking {

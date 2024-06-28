@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportApkIcon
 import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -107,7 +107,7 @@ class ApkIconDecoderTest {
         Assert.assertEquals("ApkIconDecoder", factory.toString())
 
         // mimeType normal
-        ImageRequest(context, MyImages.svg.uri).let {
+        ImageRequest(context, ResourceImages.svg.uri).let {
             val fetchResult =
                 it.fetch(sketch).copy(mimeType = "application/vnd.android.package-archive")
             factory.create(it.toRequestContext(sketch), fetchResult)
@@ -116,7 +116,7 @@ class ApkIconDecoderTest {
         }
 
         // mimeType null
-        ImageRequest(context, MyImages.png.uri).let {
+        ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult = it.fetch(sketch).copy(mimeType = null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
@@ -124,7 +124,7 @@ class ApkIconDecoderTest {
         }
 
         // mimeType error
-        ImageRequest(context, MyImages.png.uri).let {
+        ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult = it.fetch(sketch).copy(mimeType = "image/svg+xml")
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
@@ -253,7 +253,7 @@ class ApkIconDecoderTest {
                 )
             }
 
-        ImageRequest(context, MyImages.png.uri).run {
+        ImageRequest(context, ResourceImages.png.uri).run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {

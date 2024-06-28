@@ -45,7 +45,7 @@ import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -854,7 +854,7 @@ class DecodeUtilsTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val hasExifFile =
-            ExifOrientationTestFileHelper(context, MyImages.jpeg.fileName)
+            ExifOrientationTestFileHelper(context, ResourceImages.jpeg.resourceName)
                 .files().find { it.exifOrientation == ExifInterface.ORIENTATION_ROTATE_90 }!!
 
         val result1 = ImageRequest(context, hasExifFile.file.path) {
@@ -1161,7 +1161,7 @@ class DecodeUtilsTest {
             )
         }
 
-        val result9 = ImageRequest(context, MyImages.bmp.uri) {
+        val result9 = ImageRequest(context, ResourceImages.bmp.uri) {
             size(100, 200)
             precision(EXACTLY)
         }.let { request ->
@@ -1187,7 +1187,7 @@ class DecodeUtilsTest {
             Assert.assertEquals(listOf(createInSampledTransformed(8)), transformeds)
         }
 
-        ImageRequest(context, MyImages.bmp.uri).newRequest {
+        ImageRequest(context, ResourceImages.bmp.uri).newRequest {
             size(100, 200)
             precision(EXACTLY)
         }.let { request ->
@@ -1221,7 +1221,7 @@ class DecodeUtilsTest {
     @Test
     fun testAppliedResize() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        var request = ImageRequest(context, MyImages.jpeg.uri)
+        var request = ImageRequest(context, ResourceImages.jpeg.uri)
         val newResult: () -> DecodeResult = {
             DecodeResult(
                 image = Bitmap.createBitmap(80, 50, ARGB_8888).asSketchImage(),
@@ -1305,8 +1305,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactory().apply {
                 Assert.assertEquals(1291, width)
@@ -1316,8 +1316,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.webp.uri),
-            MyImages.webp.fileName
+            ImageRequest(context, ResourceImages.webp.uri),
+            ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactory().apply {
                 Assert.assertEquals(1080, width)
@@ -1351,8 +1351,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
                 Assert.assertEquals(1291, width)
@@ -1361,8 +1361,8 @@ class DecodeUtilsTest {
             }
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.webp.uri),
-            MyImages.webp.fileName
+            ImageRequest(context, ResourceImages.webp.uri),
+            ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
                 Assert.assertEquals(1080, width)
@@ -1394,8 +1394,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
                 Assert.assertEquals(1291, width)
@@ -1405,8 +1405,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.webp.uri),
-            MyImages.webp.fileName
+            ImageRequest(context, ResourceImages.webp.uri),
+            ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
                 Assert.assertEquals(1080, width)
@@ -1438,8 +1438,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .decodeBitmap()!!.apply {
                 Assert.assertEquals(1291, width)
@@ -1448,8 +1448,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
@@ -1459,8 +1459,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.webp.uri),
-            MyImages.webp.fileName
+            ImageRequest(context, ResourceImages.webp.uri),
+            ResourceImages.webp.resourceName
         )
             .decodeBitmap()!!.apply {
                 Assert.assertEquals(1080, width)
@@ -1487,8 +1487,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 600, 600))!!.apply {
                 Assert.assertEquals(100, width)
@@ -1497,8 +1497,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.jpeg.uri),
-            MyImages.jpeg.fileName
+            ImageRequest(context, ResourceImages.jpeg.uri),
+            ResourceImages.jpeg.resourceName
         )
             .decodeRegionBitmap(
                 android.graphics.Rect(500, 500, 600, 600),
@@ -1510,8 +1510,8 @@ class DecodeUtilsTest {
 
         AssetDataSource(
             sketch,
-            ImageRequest(context, MyImages.webp.uri),
-            MyImages.webp.fileName
+            ImageRequest(context, ResourceImages.webp.uri),
+            ResourceImages.webp.resourceName
         )
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 700, 700))!!.apply {
                 Assert.assertEquals(200, width)

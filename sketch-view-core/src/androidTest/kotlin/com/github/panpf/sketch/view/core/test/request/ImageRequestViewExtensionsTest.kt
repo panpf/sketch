@@ -4,7 +4,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ViewLifecycleResolver
@@ -26,7 +26,7 @@ class ImageRequestViewExtensionsTest {
     @Test
     fun testFun() {
         val context1 = getTestContext()
-        val uri = MyImages.jpeg.uri
+        val uri = ResourceImages.jpeg.uri
         val imageView1 = ImageView(context1)
         ImageRequest(imageView1, uri).apply {
             Assert.assertSame(context1, this.context)

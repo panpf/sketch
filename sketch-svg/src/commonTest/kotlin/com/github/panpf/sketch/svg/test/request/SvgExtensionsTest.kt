@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.svg.test.request
 
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.svgBackgroundColor
@@ -35,28 +35,28 @@ class SvgExtensionsTest {
     fun testSvgBackgroundColor() {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, MyImages.svg.uri).apply {
+        ImageRequest(context, ResourceImages.svg.uri).apply {
             assertNull(svgBackgroundColor)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             this.svgBackgroundColor(TestColor.BLUE)
         }.apply {
             assertEquals(TestColor.BLUE, svgBackgroundColor)
         }
 
-        ImageRequest(context, MyImages.svg.uri).apply {
+        ImageRequest(context, ResourceImages.svg.uri).apply {
             assertNull(svgBackgroundColor)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             svgBackgroundColor(TestColor.BLUE)
         }.apply {
             assertEquals(TestColor.BLUE, svgBackgroundColor)
         }
 
-        ImageRequest(context, MyImages.svg.uri).apply {
+        ImageRequest(context, ResourceImages.svg.uri).apply {
             assertNull(svgBackgroundColor)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             svgBackgroundColor(TestColor.BLUE)
         }.apply {
             assertEquals(TestColor.BLUE, svgBackgroundColor)
@@ -71,16 +71,16 @@ class SvgExtensionsTest {
             assertEquals(TestColor.BLUE, svgBackgroundColor)
         }
 
-        val key1 = ImageRequest(context, MyImages.svg.uri).key
-        val key2 = ImageRequest(context, MyImages.svg.uri) {
+        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
+        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
             svgBackgroundColor(TestColor.BLUE)
         }.key
         assertNotEquals(key1, key2)
 
         runTest {
             val cacheKey1 =
-                ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
-            val cacheKey2 = ImageRequest(context, MyImages.svg.uri) {
+                ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+            val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
                 svgBackgroundColor(TestColor.BLUE)
             }.toRequestContext(sketch).cacheKey
             assertNotEquals(cacheKey1, cacheKey2)
@@ -91,28 +91,28 @@ class SvgExtensionsTest {
     fun testSvgCss() {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, MyImages.svg.uri).apply {
+        ImageRequest(context, ResourceImages.svg.uri).apply {
             assertNull(svgCss)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             this.svgCss("css1")
         }.apply {
             assertEquals("css1", svgCss)
         }
 
-        ImageRequest(context, MyImages.svg.uri).apply {
+        ImageRequest(context, ResourceImages.svg.uri).apply {
             assertNull(svgCss)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             svgCss("css1")
         }.apply {
             assertEquals("css1", svgCss)
         }
 
-        ImageRequest(context, MyImages.svg.uri).apply {
+        ImageRequest(context, ResourceImages.svg.uri).apply {
             assertNull(svgCss)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             svgCss("css1")
         }.apply {
             assertEquals("css1", svgCss)
@@ -127,16 +127,16 @@ class SvgExtensionsTest {
             assertEquals("css1", svgCss)
         }
 
-        val key1 = ImageRequest(context, MyImages.svg.uri).key
-        val key2 = ImageRequest(context, MyImages.svg.uri) {
+        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
+        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
             svgCss("css1")
         }.key
         assertNotEquals(key1, key2)
 
         runTest {
             val cacheKey1 =
-                ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
-            val cacheKey2 = ImageRequest(context, MyImages.svg.uri) {
+                ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+            val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
                 svgCss("css1")
             }.toRequestContext(sketch).cacheKey
             assertNotEquals(cacheKey1, cacheKey2)

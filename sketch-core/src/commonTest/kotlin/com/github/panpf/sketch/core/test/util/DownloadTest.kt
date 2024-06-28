@@ -2,7 +2,7 @@ package com.github.panpf.sketch.core.test.util
 
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyImagesHttpStack
@@ -29,13 +29,13 @@ class DownloadTest {
             downloadCache.clear()
             assertEquals(expected = 0L, actual = downloadCache.size)
 
-            val imageUri1 = "http://${MyImages.jpeg.uri.toUri().authority}"
+            val imageUri1 = "http://${ResourceImages.jpeg.uri.toUri().authority}"
             assertFalse(downloadCache.existWithLock(imageUri1))
-            val imageUri2 = "http://${MyImages.png.uri.toUri().authority}"
+            val imageUri2 = "http://${ResourceImages.png.uri.toUri().authority}"
             assertFalse(downloadCache.existWithLock(imageUri2))
-            val imageUri3 = "http://${MyImages.webp.uri.toUri().authority}"
+            val imageUri3 = "http://${ResourceImages.webp.uri.toUri().authority}"
             assertFalse(downloadCache.existWithLock(imageUri3))
-            val imageUri4 = "http://${MyImages.bmp.uri.toUri().authority}"
+            val imageUri4 = "http://${ResourceImages.bmp.uri.toUri().authority}"
             assertFalse(downloadCache.existWithLock(imageUri4))
 
             val result1 = newSketch.enqueueDownload(ImageRequest(context, imageUri1)).await()

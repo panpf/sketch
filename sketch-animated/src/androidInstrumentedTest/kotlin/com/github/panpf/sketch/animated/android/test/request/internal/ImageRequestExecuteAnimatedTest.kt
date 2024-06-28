@@ -22,7 +22,7 @@ import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.decode.GifAnimatedDecoder
 import com.github.panpf.sketch.drawable.AnimatableDrawable
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.utils.TestHttpStack
@@ -48,7 +48,7 @@ class ImageRequestExecuteAnimatedTest {
             }
             httpStack(TestHttpStack(context))
         }
-        val imageUri = MyImages.animGif.uri
+        val imageUri = ResourceImages.animGif.uri
         val request = ImageRequest(context, imageUri)
 
         request.let { runBlocking { sketch.execute(it) } }

@@ -20,7 +20,7 @@ import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
@@ -107,9 +107,9 @@ class RoundedCornersTransformationTest {
     @Test
     fun testTransform() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, MyImages.jpeg.uri)
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
-        val inBitmap = context.assets.open(MyImages.jpeg.fileName).use {
+        val inBitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it)
         }.apply {
             Assert.assertNotEquals(

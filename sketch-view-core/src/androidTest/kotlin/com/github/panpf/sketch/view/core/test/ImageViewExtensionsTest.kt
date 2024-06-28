@@ -19,7 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.disposeLoad
 import com.github.panpf.sketch.imageResult
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.singleton.loadImage
 import com.github.panpf.sketch.test.utils.DelayTransformation
@@ -42,7 +42,7 @@ class ImageViewExtensionsTest {
 
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.loadImage(MyImages.jpeg.uri).job.join()
+            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         }
         Assert.assertNotNull(imageView.drawable)
 
@@ -51,7 +51,7 @@ class ImageViewExtensionsTest {
         }
         Assert.assertNull(imageView.drawable)
         runBlocking {
-            imageView.loadImage(MyImages.png.uri) {
+            imageView.loadImage(ResourceImages.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {
@@ -70,7 +70,7 @@ class ImageViewExtensionsTest {
         Assert.assertNull(imageView.imageResult)
 
         runBlocking {
-            imageView.loadImage(MyImages.jpeg.uri).job.join()
+            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         }
         Assert.assertTrue(imageView.imageResult is ImageResult.Success)
 
@@ -80,7 +80,7 @@ class ImageViewExtensionsTest {
         Assert.assertTrue(imageView.imageResult is ImageResult.Error)
 
         runBlocking {
-            imageView.loadImage(MyImages.png.uri) {
+            imageView.loadImage(ResourceImages.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 addTransformations(DelayTransformation {

@@ -24,7 +24,7 @@ import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -51,7 +51,7 @@ class DecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor2(this),
                 TestBitmapDecoderInterceptor3(this)
             )
-            val request = ImageRequest(context, MyImages.jpeg.uri)
+            val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
                 sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )
@@ -74,7 +74,7 @@ class DecodeInterceptorChainTest {
                 TestBitmapDecoderInterceptor1(this),
                 TestBitmapDecoderInterceptor3(this),
             )
-            val request = ImageRequest(context, MyImages.jpeg.uri)
+            val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
                 sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )

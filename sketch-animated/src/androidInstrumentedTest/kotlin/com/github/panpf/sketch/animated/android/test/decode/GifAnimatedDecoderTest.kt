@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.supportAnimatedGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.getDrawableOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.onAnimationEnd
@@ -104,27 +104,27 @@ class GifAnimatedDecoderTest {
         Assert.assertEquals("GifAnimatedDecoder", factory.toString())
 
         // normal
-        ImageRequest(context, MyImages.animGif.uri).let {
+        ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.animGif.fileName), "image/gif")
+                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), "image/gif")
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // no mimeType
-        ImageRequest(context, MyImages.animGif.uri).let {
+        ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.animGif.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
         }
 
         // Disguised mimeType
-        ImageRequest(context, MyImages.animGif.uri).let {
+        ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, MyImages.animGif.fileName),
+                AssetDataSource(sketch, it, ResourceImages.animGif.resourceName),
                 "image/jpeg",
             )
             factory.create(it.toRequestContext(sketch), fetchResult)
@@ -133,20 +133,20 @@ class GifAnimatedDecoderTest {
         }
 
         // disallowAnimatedImage true
-        ImageRequest(context, MyImages.animGif.uri) {
+        ImageRequest(context, ResourceImages.animGif.uri) {
             disallowAnimatedImage()
         }.let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.animGif.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
         }
 
         // data error
-        ImageRequest(context, MyImages.png.uri).let {
+        ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, MyImages.png.fileName), null)
+                FetchResult(AssetDataSource(sketch, it, ResourceImages.png.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -161,7 +161,7 @@ class GifAnimatedDecoderTest {
         val sketch = context.sketch
         val factory = GifAnimatedDecoder.Factory()
 
-        val request = ImageRequest(context, MyImages.animGif.uri) {
+        val request = ImageRequest(context, ResourceImages.animGif.uri) {
             colorSpace(ColorSpace.Named.SRGB)
             onAnimationEnd { }
             onAnimationStart { }
@@ -179,7 +179,7 @@ class GifAnimatedDecoderTest {
                 Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
             }
 
-        val request1 = ImageRequest(context, MyImages.animGif.uri) {
+        val request1 = ImageRequest(context, ResourceImages.animGif.uri) {
             repeatCount(3)
             size(300, 300)
         }

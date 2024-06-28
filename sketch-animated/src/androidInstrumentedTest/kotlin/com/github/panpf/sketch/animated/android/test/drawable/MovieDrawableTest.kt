@@ -21,8 +21,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.images.MyResourceImage
+import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
@@ -44,7 +44,7 @@ class MovieDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val callbackList = mutableListOf<String>()
-        val movie = context.assets.open(MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
             .use { Movie.decodeStream(it) }
         val movieDrawable = MovieDrawable(movie).apply {
             clearAnimationCallbacks()
@@ -105,7 +105,7 @@ class MovieDrawableTest {
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val movie = context.assets.open(MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
             .use { Movie.decodeStream(it) }
         val movieDrawable = MovieDrawable(movie)
 
@@ -128,10 +128,10 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = context.assets.open(MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
             .use { Movie.decodeStream(it) }
         val movie2 =
-            context.assets.open(MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+            context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
                 .use { Movie.decodeStream(it) }
         val element1 = MovieDrawable(movie, ARGB_8888)
         val element11 = MovieDrawable(movie, ARGB_8888)
@@ -166,7 +166,7 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = context.assets.open(MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
             .use { Movie.decodeStream(it) }
         Assert.assertEquals(
             "MovieDrawable(size=480x480, config=ARGB_8888)",

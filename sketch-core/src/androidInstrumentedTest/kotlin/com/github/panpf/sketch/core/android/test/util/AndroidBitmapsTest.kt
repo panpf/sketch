@@ -20,7 +20,7 @@ import android.graphics.BitmapFactory
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.allocationByteCountCompat
@@ -114,7 +114,7 @@ class AndroidBitmapsTest {
     @Test
     fun testBlur() {
         val context = getTestContext()
-        val bitmap = context.assets.open(MyImages.jpeg.fileName).use {
+        val bitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it)
         }
         bitmap.copy(Bitmap.Config.ARGB_8888, true).apply { blur(15) }.apply {

@@ -19,7 +19,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.util.MimeTypeMap
@@ -36,7 +36,7 @@ class MyImagesHttpStack(val sketch: Sketch) : HttpStack {
         extras: Extras?
     ): HttpStack.Response {
         val fileName = url.toUri().authority
-        val myImage = MyImages.values.find { it.fileName == fileName } ?: throw IllegalArgumentException("Unknown image: $fileName")
+        val myImage = ResourceImages.values.find { it.resourceName == fileName } ?: throw IllegalArgumentException("Unknown image: $fileName")
         val request = ImageRequest(sketch.context, myImage.uri)
         val fetchResult = sketch.components.newFetcherOrThrow(request).fetch().getOrThrow()
         return MyImageResponse(url, fetchResult)

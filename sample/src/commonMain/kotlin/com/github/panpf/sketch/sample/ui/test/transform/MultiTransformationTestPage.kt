@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
@@ -40,7 +40,7 @@ fun MultiTransformationTestPage() {
         var maskColorName by remember { mutableStateOf("RED") }
         var rotateDegrees by remember { mutableStateOf(45) }
         MyAsyncImage(
-            request = ImageRequest(LocalPlatformContext.current, MyImages.jpeg.uri) {
+            request = ImageRequest(LocalPlatformContext.current, ResourceImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 val maskColor = when (maskColorName) {

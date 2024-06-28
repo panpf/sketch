@@ -26,7 +26,7 @@ import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.drawable.getEqualityDrawable
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -316,7 +316,7 @@ class IconDrawableStateImageCommonTest {
     @Test
     fun testGetDrawable() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, MyImages.jpeg.uri)
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
         val iconDrawable = BitmapDrawable(
             context.resources,
             Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565)

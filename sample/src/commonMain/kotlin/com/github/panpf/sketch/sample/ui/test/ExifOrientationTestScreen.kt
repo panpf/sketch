@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.resources.Res.drawable
@@ -37,7 +37,7 @@ class ExifOrientationTestScreen : BaseScreen() {
     @Composable
     override fun DrawContent() {
         ToolbarScaffold(title = "ExifOrientationTest") {
-            val exifImages = MyImages.clockExifs
+            val exifImages = ResourceImages.clockExifs
             val gridState = rememberLazyGridState()
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),

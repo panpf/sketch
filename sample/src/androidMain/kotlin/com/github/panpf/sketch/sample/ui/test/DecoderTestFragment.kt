@@ -40,7 +40,7 @@ import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.decode.WebpAnimatedDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
@@ -99,21 +99,21 @@ class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
 actual suspend fun buildDecoderTestItems(
     context: PlatformContext
 ): List<DecoderTestItem> = buildList {
-    add(DecoderTestItem(name = "JPEG", imageUri = MyImages.jpeg.uri))
-    add(DecoderTestItem(name = "PNG", imageUri = MyImages.png.uri))
-    add(DecoderTestItem(name = "WEBP", imageUri = MyImages.webp.uri))
-    add(DecoderTestItem(name = "BMP", imageUri = MyImages.bmp.uri))
+    add(DecoderTestItem(name = "JPEG", imageUri = ResourceImages.jpeg.uri))
+    add(DecoderTestItem(name = "PNG", imageUri = ResourceImages.png.uri))
+    add(DecoderTestItem(name = "WEBP", imageUri = ResourceImages.webp.uri))
+    add(DecoderTestItem(name = "BMP", imageUri = ResourceImages.bmp.uri))
     add(
         DecoderTestItem(
             name = "SVG",
-            imageUri = MyImages.svg.uri,
+            imageUri = ResourceImages.svg.uri,
             imageDecoder = Factory()
         )
     )
     add(
         DecoderTestItem(
             name = "HEIC",
-            imageUri = MyImages.heic.uri,
+            imageUri = ResourceImages.heic.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
         )
@@ -121,14 +121,14 @@ actual suspend fun buildDecoderTestItems(
     add(
         DecoderTestItem(
             name = "GIF_KORAL",
-            imageUri = MyImages.animGif.uri,
+            imageUri = ResourceImages.animGif.uri,
             imageDecoder = GifDrawableDecoder.Factory()
         )
     )
     add(
         DecoderTestItem(
             name = "GIF_MOVIE",
-            imageUri = MyImages.animGif.uri,
+            imageUri = ResourceImages.animGif.uri,
             minAPI = VERSION_CODES.KITKAT,
             currentApi = VERSION.SDK_INT,
             imageDecoder = GifMovieDecoder.Factory()
@@ -137,7 +137,7 @@ actual suspend fun buildDecoderTestItems(
     add(
         DecoderTestItem(
             name = "GIF_ANIMATED",
-            imageUri = MyImages.animGif.uri,
+            imageUri = ResourceImages.animGif.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
             imageDecoder = GifAnimatedDecoder.Factory()
@@ -146,7 +146,7 @@ actual suspend fun buildDecoderTestItems(
     add(
         DecoderTestItem(
             name = "WEBP_ANIMATED",
-            imageUri = MyImages.animWebp.uri,
+            imageUri = ResourceImages.animWebp.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
             imageDecoder = WebpAnimatedDecoder.Factory()
@@ -155,7 +155,7 @@ actual suspend fun buildDecoderTestItems(
     add(
         DecoderTestItem(
             name = "HEIF_ANIMATED",
-            imageUri = MyImages.animHeif.uri,
+            imageUri = ResourceImages.animHeif.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
             imageDecoder = HeifAnimatedDecoder.Factory()
@@ -164,14 +164,14 @@ actual suspend fun buildDecoderTestItems(
     add(
         DecoderTestItem(
             name = "MP4_FFMPEG",
-            imageUri = MyImages.mp4.uri,
+            imageUri = ResourceImages.mp4.uri,
             imageDecoder = FFmpegVideoFrameDecoder.Factory()
         )
     )
     add(
         DecoderTestItem(
             name = "MP4_BUILTIN",
-            imageUri = MyImages.mp4.uri,
+            imageUri = ResourceImages.mp4.uri,
             minAPI = VERSION_CODES.O_MR1,
             currentApi = VERSION.SDK_INT,
             imageDecoder = VideoFrameDecoder.Factory()

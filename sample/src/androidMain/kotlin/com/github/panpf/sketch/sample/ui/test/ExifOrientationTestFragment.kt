@@ -24,7 +24,7 @@ import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
@@ -63,7 +63,7 @@ class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
 
             adapter = AssemblyRecyclerAdapter(
                 itemFactoryList = listOf(ExifOrientationGridItemFactory()),
-                initDataList = MyImages.clockExifs.toList(),
+                initDataList = ResourceImages.clockExifs.toList(),
             )
         }
     }

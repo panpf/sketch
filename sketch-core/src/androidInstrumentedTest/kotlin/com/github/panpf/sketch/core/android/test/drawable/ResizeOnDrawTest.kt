@@ -9,7 +9,7 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.resizeOnDraw
@@ -35,7 +35,7 @@ class ResizeOnDrawTest {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
-        val imageUri = MyImages.jpeg.uri
+        val imageUri = ResourceImages.jpeg.uri
         val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
 
         val request = ImageRequest(imageView, imageUri)

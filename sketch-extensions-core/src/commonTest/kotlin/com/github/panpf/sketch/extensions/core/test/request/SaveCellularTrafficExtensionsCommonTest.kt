@@ -15,7 +15,7 @@
  */
 package com.github.panpf.sketch.extensions.core.test.request
 
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
@@ -81,14 +81,14 @@ class SaveCellularTrafficExtensionsCommonTest {
             assertFalse(isSaveCellularTraffic)
         }
 
-        val key1 = ImageRequest(context, MyImages.svg.uri).key
-        val key2 = ImageRequest(context, MyImages.svg.uri) {
+        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
+        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
             saveCellularTraffic()
         }.key
         assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, MyImages.svg.uri) {
+        val cacheKey1 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             saveCellularTraffic(true)
         }.toRequestContext(sketch).cacheKey
         assertEquals(cacheKey1, cacheKey2)
@@ -139,14 +139,14 @@ class SaveCellularTrafficExtensionsCommonTest {
             assertFalse(isIgnoredSaveCellularTraffic)
         }
 
-        val key1 = ImageRequest(context, MyImages.svg.uri).key
-        val key2 = ImageRequest(context, MyImages.svg.uri) {
+        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
+        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
             ignoreSaveCellularTraffic()
         }.key
         assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, MyImages.svg.uri) {
+        val cacheKey1 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             ignoreSaveCellularTraffic(true)
         }.toRequestContext(sketch).cacheKey
         assertEquals(cacheKey1, cacheKey2)
@@ -197,26 +197,26 @@ class SaveCellularTrafficExtensionsCommonTest {
             assertFalse(isDepthFromSaveCellularTraffic)
         }
 
-        val key1 = ImageRequest(context, MyImages.svg.uri).key
-        val key2 = ImageRequest(context, MyImages.svg.uri) {
+        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
+        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.key
         assertEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, MyImages.svg.uri) {
+        val cacheKey1 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext(sketch).cacheKey
         assertEquals(cacheKey1, cacheKey2)
 
-        val key11 = ImageRequest(context, MyImages.svg.uri).key
-        val key22 = ImageRequest(context, MyImages.svg.uri) {
+        val key11 = ImageRequest(context, ResourceImages.svg.uri).key
+        val key22 = ImageRequest(context, ResourceImages.svg.uri) {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.key
         assertNotEquals(key11, key22)
 
-        val cacheKey11 = ImageRequest(context, MyImages.svg.uri).toRequestContext(sketch).cacheKey
-        val cacheKey22 = ImageRequest(context, MyImages.svg.uri) {
+        val cacheKey11 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey22 = ImageRequest(context, ResourceImages.svg.uri) {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext(sketch).cacheKey
         assertEquals(cacheKey11, cacheKey22)

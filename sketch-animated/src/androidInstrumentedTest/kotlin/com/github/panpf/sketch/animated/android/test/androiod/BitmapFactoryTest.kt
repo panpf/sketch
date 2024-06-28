@@ -9,7 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ImageFormat.GIF
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
@@ -26,7 +26,7 @@ class BitmapFactoryTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             ImageDecodeCompatibility(
-                assetName = MyImages.animGif.fileName,
+                assetName = ResourceImages.animGif.resourceName,
                 size = Size(480, 480),
                 minAPI = 16,
                 inSampleSizeMinAPI = 21,
@@ -34,7 +34,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 21,
             ),
             ImageDecodeCompatibility(
-                assetName = MyImages.animWebp.fileName,
+                assetName = ResourceImages.animWebp.resourceName,
                 size = Size(480, 270),
                 minAPI = 26,
                 inSampleSizeMinAPI = 26,
@@ -42,7 +42,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 26,
             ),
             ImageDecodeCompatibility(
-                assetName = MyImages.animHeif.fileName,
+                assetName = ResourceImages.animHeif.resourceName,
                 size = Size(256, 144),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

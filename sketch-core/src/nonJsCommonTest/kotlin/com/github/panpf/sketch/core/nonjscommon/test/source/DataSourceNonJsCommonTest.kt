@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.core.nonjscommon.test.source
 
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.getDataSourceCacheFile
@@ -19,7 +19,7 @@ class DataSourceNonJsCommonTest {
     @Test
     fun testGetCacheFileFromStreamDataSource() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        ImageRequest(context, MyImages.jpeg.uri).fetch(sketch).dataSource.apply {
+        ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch).dataSource.apply {
             val file = getDataSourceCacheFile(sketch, request, this)
             assertTrue(file.toString().contains("/sketch4/result/"))
             val file1 = getDataSourceCacheFile(sketch, request, this)

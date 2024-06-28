@@ -16,7 +16,7 @@
 package com.github.panpf.sketch.core.android.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
@@ -39,7 +39,7 @@ class DisposableTest {
                 delay(100)
                 delay(100)
                 delay(100)
-                ImageResult.Error(ImageRequest(context, MyImages.jpeg.uri), null, Exception("test"))
+                ImageResult.Error(ImageRequest(context, ResourceImages.jpeg.uri), null, Exception("test"))
             }
             val disposable = OneShotDisposable(job)
             Assert.assertFalse(disposable.isDisposed)

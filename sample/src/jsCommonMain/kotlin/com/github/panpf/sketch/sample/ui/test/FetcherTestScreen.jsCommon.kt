@@ -2,7 +2,9 @@ package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.fetch.newComposeResourceUri
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.Base64Images
+import com.github.panpf.sketch.images.HttpImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -11,11 +13,11 @@ actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
 ): List<FetcherTestItem> {
-//    val fileUriTestFile = getFileUriTestFile(MyImages.jpeg)
-//    val fileUriTestFile2 = getFileUriTestFile(MyImages.bmp)
+//    val fileUriTestFile = getFileUriTestFile(ResourceImages.jpeg)
+//    val fileUriTestFile2 = getFileUriTestFile(ResourceImages.bmp)
     return buildList {
-        add(FetcherTestItem(title = "HTTP", MyImages.HTTP))
-        add(FetcherTestItem(title = "HTTPS", MyImages.HTTPS))
+        add(FetcherTestItem(title = "HTTP", HttpImages.HTTP))
+        add(FetcherTestItem(title = "HTTPS", HttpImages.HTTPS))
 //        add(FetcherTestItem(title = "FILE_URI", newFileUri(fileUriTestFile)))
 //        add(FetcherTestItem(title = "FILE_PATH", fileUriTestFile2.toString()))
 //        add(FetcherTestItem(title = "RES_KOTLIN", newKotlinResourceUri("sample.jpeg")))
@@ -25,7 +27,7 @@ actual suspend fun buildFetcherTestItems(
                 newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))
             )
         )
-        add(FetcherTestItem(title = "BASE64", MyImages.BASE64_IMAGE))
+        add(FetcherTestItem(title = "BASE64", Base64Images.KOTLIN_ICON))
     }
 }
 

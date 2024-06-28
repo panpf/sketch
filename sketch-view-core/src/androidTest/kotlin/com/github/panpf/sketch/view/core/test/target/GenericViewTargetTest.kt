@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.GlobalLifecycle
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.request.ImageRequest
@@ -35,7 +35,7 @@ class GenericViewTargetTest {
     @Test
     fun testUpdateDrawable() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, MyImages.jpeg.uri) {
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             allowNullImage()
         }
         val requestContext = request.toRequestContextSync(sketch)

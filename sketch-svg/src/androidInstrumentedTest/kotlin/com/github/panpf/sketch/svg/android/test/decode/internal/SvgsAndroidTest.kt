@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.source.DataFrom.LOCAL
@@ -28,7 +28,7 @@ class SvgsAndroidTest {
 
         val factory = SvgDecoder.Factory()
 
-        ImageRequest(context, MyImages.svg.uri)
+        ImageRequest(context, ResourceImages.svg.uri)
             .decode(sketch, factory).apply {
                 assertEquals(
                     expected = "ImageInfo(256x225,'image/svg+xml')",
@@ -45,7 +45,7 @@ class SvgsAndroidTest {
         val displaySize = context.resources.displayMetrics.let {
             Size(it.widthPixels, it.heightPixels)
         }
-        ImageRequest(context, MyImages.svg.uri) {
+        ImageRequest(context, ResourceImages.svg.uri) {
             size(displaySize)
             bitmapConfig(Bitmap.Config.RGB_565)
         }.decode(sketch, factory).apply {

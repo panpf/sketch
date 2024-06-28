@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.images.MyResourceImage
+import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.test.utils.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -29,9 +29,9 @@ class GifDrawableWrapperDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = GifDrawable(context.assets, MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
-        val movie2 = GifDrawable(context.assets, MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
-        val movie3 = GifDrawable(context.assets, MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+        val movie = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+        val movie2 = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+        val movie3 = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
         val element1 = GifDrawableWrapperDrawable(movie)
         val element11 = GifDrawableWrapperDrawable(movie)
         val element2 = GifDrawableWrapperDrawable(movie2)
@@ -65,7 +65,7 @@ class GifDrawableWrapperDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val gifDrawable = GifDrawable(context.assets, MyImages.animGif.asOrThrow<MyResourceImage>().fileName)
+        val gifDrawable = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
         Assert.assertEquals(
             "GifDrawableWrapperDrawable(480x480)",
             GifDrawableWrapperDrawable(gifDrawable).toString()

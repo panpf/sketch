@@ -15,7 +15,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
 
@@ -25,7 +25,7 @@ class BitmapFactoryTest {
     @Test
     fun testMutable() {
         val context = getTestContext()
-        val imageName = MyImages.jpeg.fileName
+        val imageName = ResourceImages.jpeg.resourceName
 
         val options = Options()
         Assert.assertFalse(options.inMutable)
@@ -45,7 +45,7 @@ class BitmapFactoryTest {
     @Test
     fun testInPreferredConfig() {
         val context = getTestContext()
-        val imageName = MyImages.jpeg.fileName
+        val imageName = ResourceImages.jpeg.resourceName
 
         val options = Options()
         Assert.assertEquals(ARGB_8888, options.inPreferredConfig)
@@ -70,14 +70,14 @@ class BitmapFactoryTest {
     fun testHasAlpha() {
         val context = getTestContext()
 
-        context.assets.open(MyImages.jpeg.fileName).use {
+        context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertEquals(ARGB_8888, config)
             Assert.assertFalse(hasAlpha())
         }
 
-        context.assets.open(MyImages.png.fileName).use {
+        context.assets.open(ResourceImages.png.resourceName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
             Assert.assertEquals(ARGB_8888, config)
@@ -89,7 +89,7 @@ class BitmapFactoryTest {
     fun testInBitmapAndInSampleSize() {
         listOf(
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.jpeg.fileName,
+                assetName = ResourceImages.jpeg.resourceName,
                 size = Size(1291, 1936),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -97,7 +97,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.png.fileName,
+                assetName = ResourceImages.png.resourceName,
                 size = Size(750, 719),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -105,7 +105,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.bmp.fileName,
+                assetName = ResourceImages.bmp.resourceName,
                 size = Size(700, 1012),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -113,7 +113,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19,
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.webp.fileName,
+                assetName = ResourceImages.webp.resourceName,
                 size = Size(1080, 1344),
                 minAPI = 16,
                 inSampleSizeMinAPI = 16,
@@ -121,7 +121,7 @@ class BitmapFactoryTest {
                 inSampleSizeOnInBitmapMinAPI = 19,
             ),
             com.github.panpf.sketch.test.utils.ImageDecodeCompatibility(
-                assetName = MyImages.heic.fileName,
+                assetName = ResourceImages.heic.resourceName,
                 size = Size(750, 932),
                 minAPI = 28,
                 inSampleSizeMinAPI = 28,

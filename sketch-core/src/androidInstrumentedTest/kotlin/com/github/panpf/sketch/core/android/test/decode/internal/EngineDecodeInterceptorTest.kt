@@ -19,7 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.source.DataFrom
@@ -38,7 +38,7 @@ class EngineDecodeInterceptorTest {
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val interceptors = listOf(EngineDecodeInterceptor())
-        val request = ImageRequest(context, MyImages.jpeg.uri) {
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
         }

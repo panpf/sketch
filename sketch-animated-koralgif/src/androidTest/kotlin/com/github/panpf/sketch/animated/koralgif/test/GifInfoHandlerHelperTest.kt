@@ -20,8 +20,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.images.MyImages
-import com.github.panpf.sketch.images.MyResourceImage
+import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
@@ -53,10 +53,10 @@ class GifInfoHandlerHelperTest {
 
         AssetDataSource(
             sketch = sketch,
-            request = ImageRequest(context, MyImages.animGif.uri),
-            assetFileName = MyImages.animGif.asOrThrow<MyResourceImage>().fileName
+            request = ImageRequest(context, ResourceImages.animGif.uri),
+            assetFileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
         ).getFile()
-        val snapshot = sketch.resultCache.openSnapshot(MyImages.animGif.uri + "_data_source")!!
+        val snapshot = sketch.resultCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
 
         GifInfoHandleHelper(
             ByteArrayDataSource(
@@ -81,7 +81,7 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             FileDataSource(
                 sketch = sketch,
-                request = ImageRequest(context, MyImages.animGif.uri),
+                request = ImageRequest(context, ResourceImages.animGif.uri),
                 path = snapshot.data,
                 dataFrom = LOCAL,
             )
@@ -163,8 +163,8 @@ class GifInfoHandlerHelperTest {
         GifInfoHandleHelper(
             AssetDataSource(
                 sketch = sketch,
-                request = ImageRequest(context, MyImages.animGif.uri),
-                assetFileName = MyImages.animGif.asOrThrow<MyResourceImage>().fileName
+                request = ImageRequest(context, ResourceImages.animGif.uri),
+                assetFileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
             )
         ).apply {
             Assert.assertEquals(480, width)

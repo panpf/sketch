@@ -23,7 +23,7 @@ import app.cash.paging.createPagingSourceLoadResultPage
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 expect suspend fun readPhotosFromPhotoAlbum(
@@ -45,11 +45,11 @@ class LocalPhotoListPagingSource(
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
     private val builtInPhotos: List<String> by lazy {
-        MyImages.statics
-            .plus(MyImages.anims)
-            .plus(MyImages.longQMSHT)
-            .plus(MyImages.clockExifs)
-            .plus(MyImages.mp4)
+        ResourceImages.statics
+            .plus(ResourceImages.anims)
+            .plus(ResourceImages.longQMSHT)
+            .plus(ResourceImages.clockExifs)
+            .plus(ResourceImages.mp4)
             .map { it.uri }
     }
 

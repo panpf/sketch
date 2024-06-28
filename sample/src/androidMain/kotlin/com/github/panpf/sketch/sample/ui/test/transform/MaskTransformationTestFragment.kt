@@ -23,7 +23,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMaskBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
@@ -47,7 +47,7 @@ class MaskTransformationTestFragment :
             binding.greenButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.GREEN
             binding.blueButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.BLUE
 
-            binding.myImage.loadImage(MyImages.png.uri) {
+            binding.myImage.loadImage(ResourceImages.png.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(MaskTransformation(it.colorInt))

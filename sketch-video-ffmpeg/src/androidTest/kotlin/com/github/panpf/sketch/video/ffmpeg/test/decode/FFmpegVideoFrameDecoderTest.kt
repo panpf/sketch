@@ -27,7 +27,7 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
@@ -98,7 +98,7 @@ class FFmpegVideoFrameDecoderTest {
 
         Assert.assertEquals("FFmpegVideoFrameDecoder", factory.toString())
 
-        val mp4Request = ImageRequest(context, MyImages.mp4.uri)
+        val mp4Request = ImageRequest(context, ResourceImages.mp4.uri)
         val mp4RequestContext = runBlocking {
             mp4Request.toRequestContext(sketch)
         }
@@ -111,7 +111,7 @@ class FFmpegVideoFrameDecoderTest {
             )
         }
 
-        val pngRequest = ImageRequest(context, MyImages.png.uri)
+        val pngRequest = ImageRequest(context, ResourceImages.png.uri)
         val pngRequestContext = runBlocking {
             pngRequest.toRequestContext(sketch)
         }
@@ -172,7 +172,7 @@ class FFmpegVideoFrameDecoderTest {
         val sketch = context.sketch
         val factory = FFmpegVideoFrameDecoder.Factory()
 
-        ImageRequest(context, MyImages.mp4.uri).run {
+        ImageRequest(context, ResourceImages.mp4.uri).run {
             runBlocking {
                 val fetcher = sketch.components.newFetcherOrThrow(this@run)
                 val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
@@ -192,7 +192,7 @@ class FFmpegVideoFrameDecoderTest {
             Assert.assertNull(transformeds)
         }
 
-        ImageRequest(context, MyImages.mp4.uri) {
+        ImageRequest(context, ResourceImages.mp4.uri) {
             resize(300, 300, LESS_PIXELS)
         }.run {
             runBlocking {
@@ -213,7 +213,7 @@ class FFmpegVideoFrameDecoderTest {
             Assert.assertEquals(listOf(createInSampledTransformed(2)), transformeds)
         }
 
-        ImageRequest(context, MyImages.png.uri).run {
+        ImageRequest(context, ResourceImages.png.uri).run {
             val fetcher = sketch.components.newFetcherOrThrow(this)
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
@@ -236,7 +236,7 @@ class FFmpegVideoFrameDecoderTest {
 
         val sketch = context.sketch
         val factory = FFmpegVideoFrameDecoder.Factory()
-        val bitmap1 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -247,7 +247,7 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        val bitmap11 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -258,7 +258,7 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        val bitmap2 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -285,7 +285,7 @@ class FFmpegVideoFrameDecoderTest {
 
         val sketch = context.sketch
         val factory = FFmpegVideoFrameDecoder.Factory()
-        val bitmap1 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -296,7 +296,7 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        val bitmap11 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -307,7 +307,7 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        val bitmap2 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -334,7 +334,7 @@ class FFmpegVideoFrameDecoderTest {
 
         val sketch = context.sketch
         val factory = FFmpegVideoFrameDecoder.Factory()
-        val bitmap1 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)
@@ -345,7 +345,7 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrNull()
         }?.image?.getBitmapOrThrow()
-        val bitmap2 = ImageRequest(context, MyImages.mp4.uri) {
+        val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)

@@ -28,7 +28,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
@@ -79,7 +79,7 @@ class MemoryCacheRequestInterceptorTest {
         Assert.assertEquals(0, memoryCache.size)
 
         /* ImageRequest */
-        executeRequest(ImageRequest(context, MyImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>()
         Assert.assertEquals(40000, memoryCache.size)
@@ -90,7 +90,7 @@ class MemoryCacheRequestInterceptorTest {
         /* ImageRequest - ENABLED */
         val cacheImage: AndroidBitmapImage
         val imageData: ImageData
-        val request = ImageRequest(context, MyImages.jpeg.uri) {
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             target(TestCountTarget())
         }
         executeRequest(request.newRequest {

@@ -20,7 +20,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTempBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 
@@ -42,7 +42,7 @@ class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
         toolbar.title = "Temp"
 
         binding.myImage.apply {
-            loadImage(MyImages.jpeg.uri) {
+            loadImage(ResourceImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
             }

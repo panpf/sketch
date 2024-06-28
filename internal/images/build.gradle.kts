@@ -16,6 +16,7 @@ kotlin {
         iosMain {
             resources.srcDirs("files")
         }
+        // js and wasmJs are configured in sample's build.gradle.kts
     }
 }
 

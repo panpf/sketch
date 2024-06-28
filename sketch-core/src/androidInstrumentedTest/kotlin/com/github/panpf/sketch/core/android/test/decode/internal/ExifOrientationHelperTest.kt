@@ -25,7 +25,7 @@ import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -61,20 +61,20 @@ class ExifOrientationHelperTest {
         Assert.assertEquals(
             ExifOrientationHelper.NORMAL,
             AssetDataSource(
-                sketch, ImageRequest(context, MyImages.jpeg.uri), MyImages.jpeg.fileName
+                sketch, ImageRequest(context, ResourceImages.jpeg.uri), ResourceImages.jpeg.resourceName
             ).readExifOrientation()
         )
 
         Assert.assertEquals(
             ExifOrientationHelper.UNDEFINED,
             AssetDataSource(
-                sketch, ImageRequest(context, MyImages.webp.uri), MyImages.webp.fileName
+                sketch, ImageRequest(context, ResourceImages.webp.uri), ResourceImages.webp.resourceName
             ).readExifOrientation()
         )
 
         ExifOrientationTestFileHelper(
             context,
-            MyImages.clockHor.fileName
+            ResourceImages.clockHor.resourceName
         ).files()
             .forEach {
                 Assert.assertEquals(
@@ -110,7 +110,7 @@ class ExifOrientationHelperTest {
             ExifOrientationHelper.NORMAL,
             AssetDataSource(
                 sketch,
-                ImageRequest(context, MyImages.jpeg.uri), MyImages.jpeg.fileName
+                ImageRequest(context, ResourceImages.jpeg.uri), ResourceImages.jpeg.resourceName
             ).readExifOrientationWithMimeType("image/jpeg")
         )
 
@@ -118,7 +118,7 @@ class ExifOrientationHelperTest {
             ExifOrientationHelper.UNDEFINED,
             AssetDataSource(
                 sketch,
-                ImageRequest(context, MyImages.jpeg.uri), MyImages.jpeg.fileName
+                ImageRequest(context, ResourceImages.jpeg.uri), ResourceImages.jpeg.resourceName
             ).readExifOrientationWithMimeType("image/bmp")
         )
 
@@ -126,13 +126,13 @@ class ExifOrientationHelperTest {
             ExifOrientationHelper.UNDEFINED,
             AssetDataSource(
                 sketch,
-                ImageRequest(context, MyImages.webp.uri), MyImages.webp.fileName
+                ImageRequest(context, ResourceImages.webp.uri), ResourceImages.webp.resourceName
             ).readExifOrientationWithMimeType("image/webp")
         )
 
         ExifOrientationTestFileHelper(
             context,
-            MyImages.clockHor.fileName
+            ResourceImages.clockHor.resourceName
         ).files()
             .forEach {
                 Assert.assertEquals(
@@ -1135,7 +1135,7 @@ class ExifOrientationHelperTest {
     @Test
     fun testApplyToBitmap() {
         val context = getTestContext()
-        val inBitmap = context.assets.open(MyImages.jpeg.fileName).use {
+        val inBitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it)
         }
         Assert.assertTrue(
@@ -1216,7 +1216,7 @@ class ExifOrientationHelperTest {
     @Test
     fun testAddToBitmap() {
         val context = getTestContext()
-        val inBitmap = context.assets.open(MyImages.jpeg.fileName).use {
+        val inBitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it)
         }
         Assert.assertTrue(
@@ -1297,7 +1297,7 @@ class ExifOrientationHelperTest {
     @Test
     fun testAddAndApplyToBitmap() {
         val context = getTestContext()
-        val inBitmap = context.assets.open(MyImages.jpeg.fileName).use {
+        val inBitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it)
         }
         Assert.assertTrue(

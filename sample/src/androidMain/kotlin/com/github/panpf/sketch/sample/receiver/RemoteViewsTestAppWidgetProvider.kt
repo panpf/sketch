@@ -26,7 +26,7 @@ import android.widget.RemoteViews
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.target.RemoteViewsTarget
@@ -42,9 +42,9 @@ class RemoteViewsTestAppWidgetProvider : AppWidgetProvider() {
     }
 
     private val imageUris = arrayOf(
-        MyImages.statics[0].uri,
-        MyImages.statics[2].uri,
-        MyImages.statics[3].uri,
+        ResourceImages.statics[0].uri,
+        ResourceImages.statics[2].uri,
+        ResourceImages.statics[3].uri,
     )
     private var imageUriIndex = 0
 

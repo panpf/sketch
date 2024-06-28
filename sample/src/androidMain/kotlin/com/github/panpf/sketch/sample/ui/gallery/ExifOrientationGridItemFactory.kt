@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.ability.showDataFromLogo
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.images.MyImage
+import com.github.panpf.sketch.images.ImageFile
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.GridItemExifOrientationBinding
@@ -38,7 +38,7 @@ import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
 class ExifOrientationGridItemFactory :
-    BaseBindingItemFactory<MyImage, GridItemExifOrientationBinding>(MyImage::class) {
+    BaseBindingItemFactory<ImageFile, GridItemExifOrientationBinding>(ImageFile::class) {
 
     private var itemSize: Point? = null
 
@@ -74,7 +74,7 @@ class ExifOrientationGridItemFactory :
     override fun initItem(
         context: Context,
         binding: GridItemExifOrientationBinding,
-        item: BindingItem<MyImage, GridItemExifOrientationBinding>
+        item: BindingItem<ImageFile, GridItemExifOrientationBinding>
     ) {
         binding.myListImage.apply {
             updateImageOptions {
@@ -97,10 +97,10 @@ class ExifOrientationGridItemFactory :
     override fun bindItemData(
         context: Context,
         binding: GridItemExifOrientationBinding,
-        item: BindingItem<MyImage, GridItemExifOrientationBinding>,
+        item: BindingItem<ImageFile, GridItemExifOrientationBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: MyImage
+        data: ImageFile
     ) {
         binding.root.updateLayoutParams<LayoutParams> {
             val itemSize = itemSize!!

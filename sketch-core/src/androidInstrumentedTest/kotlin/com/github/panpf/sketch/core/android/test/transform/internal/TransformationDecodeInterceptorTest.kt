@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.getBitmapOrThrow
-import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -53,7 +53,7 @@ class TransformationDecodeInterceptorTest {
             listOf(EngineDecodeInterceptor())
 
         runBlocking {
-            val request = ImageRequest(context, MyImages.jpeg.uri) {
+            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
             }
@@ -76,7 +76,7 @@ class TransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = ImageRequest(context, MyImages.jpeg.uri) {
+            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
@@ -100,7 +100,7 @@ class TransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = ImageRequest(context, MyImages.jpeg.uri) {
+            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -133,7 +133,7 @@ class TransformationDecodeInterceptorTest {
         }
 
         runBlocking {
-            val request = ImageRequest(context, MyImages.jpeg.uri) {
+            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
                 transformations(object : Transformation {
