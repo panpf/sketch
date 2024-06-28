@@ -102,12 +102,13 @@ fun Project.composeConfig() {
 }
 
 fun Project.publishConfig() {
-    if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
-        && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
-        && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
-        && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
-        && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
-        && hasProperty("versionName")    // configured in the rootProject/gradle.properties file
+    if (
+//        hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
+//        && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
+//        && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
+//        && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
+//        && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
+        hasProperty("versionName")    // configured in the rootProject/gradle.properties file
         && hasProperty("GROUP")    // configured in the rootProject/gradle.properties file
         && hasProperty("POM_ARTIFACT_ID")    // configured in the project/gradle.properties file
     ) {
