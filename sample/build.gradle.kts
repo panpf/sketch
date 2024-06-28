@@ -146,6 +146,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    packageOfResClass = "com.github.panpf.sketch.sample.resources"
+}
+
 compose.desktop {
     application {
         mainClass = "com.github.panpf.sketch.sample.MainKt"

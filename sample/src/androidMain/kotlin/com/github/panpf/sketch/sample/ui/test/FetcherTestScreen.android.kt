@@ -5,14 +5,15 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.newAppIconUri
+import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.images.MyImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.images.MyResourceImage
 import com.github.panpf.sketch.sample.R.mipmap
+import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.util.versionCodeCompat
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,6 @@ import okio.buffer
 import okio.source
 import okio.use
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch.sample.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(
@@ -45,7 +45,12 @@ actual suspend fun buildFetcherTestItems(
         add(FetcherTestItem(title = "RES_ID", newResourceUri(mipmap.ic_launcher)))
         add(FetcherTestItem(title = "RES_NAME", newResourceUri("drawable", "bg_circle_accent")))
         if (fromCompose) {
-            add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))))
+            add(
+                FetcherTestItem(
+                    title = "RES_COMPOSE",
+                    newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))
+                )
+            )
         }
         add(
             FetcherTestItem(

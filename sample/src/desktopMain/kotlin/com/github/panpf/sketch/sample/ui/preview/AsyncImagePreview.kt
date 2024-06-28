@@ -17,10 +17,10 @@ import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.placeholder
+import com.github.panpf.sketch.sample.resources.Res
+import com.github.panpf.sketch.sample.resources.ic_image2_outline
 import com.github.panpf.sketch.sample.ui.util.PreviewWrapper
 import com.github.panpf.sketch.state.rememberPainterStateImage
-import sketch.sample.generated.resources.Res
-import sketch.sample.generated.resources.ic_image2_outline
 
 
 @Preview

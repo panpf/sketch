@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalResourceApi::class)
-
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.background
@@ -20,19 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.ic_layout_grid
+import com.github.panpf.sketch.sample.resources.ic_layout_grid_staggered
+import com.github.panpf.sketch.sample.resources.ic_pause
+import com.github.panpf.sketch.sample.resources.ic_play
+import com.github.panpf.sketch.sample.resources.ic_settings
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_layout_grid
-import sketch.sample.generated.resources.ic_layout_grid_staggered
-import sketch.sample.generated.resources.ic_pause
-import sketch.sample.generated.resources.ic_play
-import sketch.sample.generated.resources.ic_settings
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MainMenu(modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme

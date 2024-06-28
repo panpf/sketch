@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalResourceApi::class)
-
 package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.background
@@ -27,13 +25,12 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.ic_image_outline
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_image_outline
 
 class ExifOrientationTestScreen : BaseScreen() {
 

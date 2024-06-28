@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalResourceApi::class)
-
 package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.Image
@@ -35,6 +33,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.rememberAsyncImageState
+import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.ic_image_outline
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
@@ -47,11 +47,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_image_outline
 import kotlin.random.Random
-
 
 class ProgressIndicatorTestScreen : BaseScreen() {
 

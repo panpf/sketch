@@ -11,16 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.painter.rememberIconPainter
+import com.github.panpf.sketch.sample.resources.Res
+import com.github.panpf.sketch.sample.resources.ic_image_outline
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res
-import sketch.sample.generated.resources.ic_image_outline
 
 class TempTestScreen : BaseScreen() {
 
-    @OptIn(ExperimentalResourceApi::class)
     @Composable
     override fun DrawContent() {
         ToolbarScaffold(title = "TempTest") {

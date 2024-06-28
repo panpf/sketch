@@ -7,6 +7,7 @@ import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.images.MyImage
 import com.github.panpf.sketch.images.MyImages
 import com.github.panpf.sketch.images.MyResourceImage
+import com.github.panpf.sketch.sample.resources.Res
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -20,10 +21,12 @@ import platform.Foundation.NSBundle
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
-import sketch.sample.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
-actual suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: Boolean): List<FetcherTestItem> {
+actual suspend fun buildFetcherTestItems(
+    context: PlatformContext,
+    fromCompose: Boolean
+): List<FetcherTestItem> {
     val fileUriTestFile = getFileUriTestFile(MyImages.jpeg)
     val fileUriTestFile2 = getFileUriTestFile(MyImages.bmp)
     return buildList {
@@ -32,7 +35,12 @@ actual suspend fun buildFetcherTestItems(context: PlatformContext, fromCompose: 
         add(FetcherTestItem(title = "FILE_URI", newFileUri(fileUriTestFile)))
         add(FetcherTestItem(title = "FILE_PATH", fileUriTestFile2.toString()))
         add(FetcherTestItem(title = "RES_KOTLIN", newKotlinResourceUri("sample.jpeg")))
-        add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))))
+        add(
+            FetcherTestItem(
+                title = "RES_COMPOSE",
+                newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))
+            )
+        )
         add(FetcherTestItem(title = "BASE64", MyImages.BASE64_IMAGE))
     }
 }

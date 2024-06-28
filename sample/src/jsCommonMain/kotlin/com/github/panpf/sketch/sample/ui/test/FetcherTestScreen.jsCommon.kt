@@ -3,8 +3,8 @@ package com.github.panpf.sketch.sample.ui.test
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.images.MyImages
+import com.github.panpf.sketch.sample.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sketch.sample.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(
@@ -19,7 +19,12 @@ actual suspend fun buildFetcherTestItems(
 //        add(FetcherTestItem(title = "FILE_URI", newFileUri(fileUriTestFile)))
 //        add(FetcherTestItem(title = "FILE_PATH", fileUriTestFile2.toString()))
 //        add(FetcherTestItem(title = "RES_KOTLIN", newKotlinResourceUri("sample.jpeg")))
-        add(FetcherTestItem(title = "RES_COMPOSE", newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))))
+        add(
+            FetcherTestItem(
+                title = "RES_COMPOSE",
+                newComposeResourceUri(Res.getUri("files/liuyifei.jpg"))
+            )
+        )
         add(FetcherTestItem(title = "BASE64", MyImages.BASE64_IMAGE))
     }
 }

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalResourceApi::class)
-
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.background
@@ -27,13 +25,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.ic_info_baseline
+import com.github.panpf.sketch.sample.resources.ic_rotate_right
+import com.github.panpf.sketch.sample.resources.ic_save
+import com.github.panpf.sketch.sample.resources.ic_share
+import com.github.panpf.sketch.sample.resources.ic_zoom_in
+import com.github.panpf.sketch.sample.resources.ic_zoom_out
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -48,15 +53,7 @@ import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_info_baseline
-import sketch.sample.generated.resources.ic_rotate_right
-import sketch.sample.generated.resources.ic_save
-import sketch.sample.generated.resources.ic_share
-import sketch.sample.generated.resources.ic_zoom_in
-import sketch.sample.generated.resources.ic_zoom_out
 import kotlin.math.roundToInt
 
 @Composable

@@ -34,6 +34,10 @@ import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.resources.Res
+import com.github.panpf.sketch.sample.resources.ic_image_outline
+import com.github.panpf.sketch.sample.resources.ic_image_outline_broken
+import com.github.panpf.sketch.sample.resources.ic_signal_cellular
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
@@ -41,10 +45,6 @@ import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import sketch.sample.generated.resources.Res
-import sketch.sample.generated.resources.ic_image_outline
-import sketch.sample.generated.resources.ic_image_outline_broken
-import sketch.sample.generated.resources.ic_signal_cellular
 
 @Composable
 expect fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): StateImage?

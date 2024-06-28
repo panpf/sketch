@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalResourceApi::class)
+@file:Suppress("EnumValuesSoftDeprecate")
 
 package com.github.panpf.sketch.sample.ui.gallery
 
@@ -27,17 +27,16 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.resources.Res
+import com.github.panpf.sketch.sample.resources.ic_debug
+import com.github.panpf.sketch.sample.resources.ic_giphy
+import com.github.panpf.sketch.sample.resources.ic_pexels
+import com.github.panpf.sketch.sample.resources.ic_phone
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.test.TestPage
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res
-import sketch.sample.generated.resources.ic_debug
-import sketch.sample.generated.resources.ic_giphy
-import sketch.sample.generated.resources.ic_pexels
-import sketch.sample.generated.resources.ic_phone
 
 expect val gridCellsMinSize: Dp
 

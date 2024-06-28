@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalResourceApi::class)
-
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -45,10 +43,10 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -56,6 +54,10 @@ import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
+import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.ic_image2_baseline
+import com.github.panpf.sketch.sample.resources.ic_image2_outline
+import com.github.panpf.sketch.sample.resources.ic_settings
 import com.github.panpf.sketch.sample.ui.MyEvents
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
@@ -63,12 +65,7 @@ import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.isEmpty
 import com.github.panpf.sketch.transform.BlurTransformation
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import sketch.sample.generated.resources.Res.drawable
-import sketch.sample.generated.resources.ic_image2_baseline
-import sketch.sample.generated.resources.ic_image2_outline
-import sketch.sample.generated.resources.ic_settings
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
