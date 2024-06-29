@@ -5,6 +5,8 @@ plugins {
 
 addAllMultiplatformTargets()
 
+androidLibrary(nameSpace = "com.github.panpf.sketch.animated")
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -19,5 +21,3 @@ kotlin {
         }
     }
 }
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.animated")

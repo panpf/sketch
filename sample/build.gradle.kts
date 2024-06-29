@@ -2,14 +2,14 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
+    id("com.android.application")
+    id("kotlinx-atomicfu")
+    id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.compose")
-    id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("androidx.navigation.safeargs.kotlin")
-    id("kotlinx-atomicfu")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("androidx.navigation.safeargs.kotlin")      // Must be after kotlin plugin
 }
 
 kotlin {
@@ -71,9 +71,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.material)
             implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
-            implementation(compose.uiUtil)
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.serialization.kotlinxJson)
             implementation(libs.voyager.navigator)
@@ -86,7 +83,7 @@ kotlin {
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)
             implementation(projects.sketchView)
-            implementation(compose.preview)
+            implementation(compose.preview) // Only available on Android and desktop platforms
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
@@ -96,6 +93,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime)
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.navigation.fragment)
             implementation(libs.androidx.navigation.ui)
             implementation(libs.androidx.recyclerview)
@@ -120,20 +118,21 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(compose.preview)
+            implementation(compose.preview) // Only available on Android and desktop platforms
         }
         jvmCommonMain.dependencies {
             implementation(projects.sketchHttpOkhttp)
             implementation(libs.panpf.zoomimage.compose)
         }
         iosMain {
-            // It will not be transferred automatically and needs to be actively configured.. This may be a bug of kmp.
+            // It has been configured in the internal:images module, but it is still inaccessible in the sample module.
+            // This may be a bug of kmp.
             resources.srcDirs("../internal/images/files")
         }
         nonJsCommonMain.dependencies {
-            implementation(libs.cashapp.paging.compose.common)
             implementation(libs.androidx.datastore.core.okio)
             implementation(libs.androidx.datastore.preferences.core)
+            implementation(libs.cashapp.paging.compose.common)
         }
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.contentNegotiation.wasm)

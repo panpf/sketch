@@ -5,6 +5,11 @@ plugins {
 
 addAllMultiplatformTargets()
 
+androidLibrary(nameSpace = "com.github.panpf.sketch.images") {
+    // Android does not support resources folders, so you can only use assets folders
+    sourceSets["main"].assets.srcDirs("files")
+}
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -18,9 +23,4 @@ kotlin {
         }
         // js and wasmJs are configured in sample's build.gradle.kts
     }
-}
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.images") {
-    // Android does not support resources folders, so you can only use assets folders
-    sourceSets["main"].assets.srcDirs("files")
 }

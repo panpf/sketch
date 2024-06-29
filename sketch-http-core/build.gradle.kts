@@ -5,6 +5,8 @@ plugins {
 
 addAllMultiplatformTargets()
 
+androidLibrary(nameSpace = "com.github.panpf.sketch.http.core")
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -18,5 +20,3 @@ kotlin {
         }
     }
 }
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.core")

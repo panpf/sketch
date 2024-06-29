@@ -7,5 +7,6 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.view.core")
 
 dependencies {
     api(projects.sketchCore)
+
     androidTestImplementation(projects.internal.testUtils)
 }

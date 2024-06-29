@@ -8,5 +8,6 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.animated.koralgif")
 dependencies {
     api(projects.sketchAnimated)
     api(libs.androidgifdrawable)
+
     androidTestImplementation(projects.internal.testUtils)
 }

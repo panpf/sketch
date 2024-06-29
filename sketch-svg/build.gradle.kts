@@ -5,6 +5,8 @@ plugins {
 
 addAllMultiplatformTargets()
 
+androidLibrary(nameSpace = "com.github.panpf.sketch.svg")
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -22,5 +24,3 @@ kotlin {
         }
     }
 }
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.svg")

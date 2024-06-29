@@ -5,6 +5,8 @@ plugins {
 
 addAllMultiplatformTargets()
 
+androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor")
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -33,5 +35,3 @@ kotlin {
         }
     }
 }
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor")

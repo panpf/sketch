@@ -10,5 +10,6 @@ dependencies {
     api(projects.sketchVideo)
     api(libs.ffmpegMediaMetadataRetriever.core)
     api(libs.ffmpegMediaMetadataRetriever.native)
+
     androidTestImplementation(projects.internal.testUtils)
 }

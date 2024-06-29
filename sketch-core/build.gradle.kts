@@ -1,10 +1,20 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.multiplatform")
     id("kotlinx-atomicfu")
+    id("org.jetbrains.kotlin.multiplatform")
 }
 
 addAllMultiplatformTargets()
+
+androidLibrary(nameSpace = "com.github.panpf.sketch.core") {
+    buildFeatures {
+        buildConfig = true
+    }
+    defaultConfig {
+        buildConfigField("String", "VERSION_NAME", "\"${project.versionName}\"")
+        buildConfigField("int", "VERSION_CODE", project.versionCode.toString())
+    }
+}
 
 kotlin {
     sourceSets {
@@ -20,8 +30,8 @@ kotlin {
             api(libs.kotlinx.coroutines.android)
         }
         desktopMain.dependencies {
-            api(libs.kotlinx.coroutines.swing)
             api(libs.appdirs)
+            api(libs.kotlinx.coroutines.swing)
         }
         nonAndroidMain.dependencies {
             api(libs.skiko)
@@ -36,15 +46,5 @@ kotlin {
         androidInstrumentedTest.dependencies {
             implementation(projects.internal.testUtils)
         }
-    }
-}
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.core") {
-    buildFeatures {
-        buildConfig = true
-    }
-    defaultConfig {
-        buildConfigField("String", "VERSION_NAME", "\"${project.versionName}\"")
-        buildConfigField("int", "VERSION_CODE", project.versionCode.toString())
     }
 }

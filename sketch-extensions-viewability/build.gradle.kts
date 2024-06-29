@@ -8,5 +8,6 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.viewability")
 dependencies {
     api(projects.sketchCore)
     api(libs.androidx.appcompat)
+
     androidTestImplementation(projects.internal.testUtils)
 }
