@@ -57,7 +57,6 @@ kotlin {
         binaries.executable()
     }
 
-    // TODO Clean up dependencies
     sourceSets {
         commonMain.dependencies {
             implementation(projects.internal.images)
@@ -69,7 +68,7 @@ kotlin {
             implementation(projects.sketchHttpKtor)
             implementation(projects.sketchSvg)
             implementation(compose.components.resources)
-            implementation(compose.material)
+            implementation(compose.material)    // pull refresh
             implementation(compose.material3)
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.serialization.kotlinxJson)
@@ -104,8 +103,8 @@ kotlin {
             implementation(libs.panpf.assemblyadapter4.recycler.paging)
             implementation(libs.panpf.tools4a.activity)
             implementation(libs.panpf.tools4a.device)
-            implementation(libs.panpf.tools4a.display)
             implementation(libs.panpf.tools4a.dimen)
+            implementation(libs.panpf.tools4a.display)
             implementation(libs.panpf.tools4a.fileprovider)
             implementation(libs.panpf.tools4a.network)
             implementation(libs.panpf.tools4a.toast)
