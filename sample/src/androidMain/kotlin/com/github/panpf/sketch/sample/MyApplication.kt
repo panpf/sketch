@@ -15,10 +15,10 @@
  */
 package com.github.panpf.sketch.sample
 
+import android.app.Application
 import android.content.Context
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.multidex.MultiDexApplication
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.supportAnimatedGif
@@ -42,8 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-// TODO The app crashes when it starts. It seems to be caused by the mismatch between 2.8.1 viewmodel and activity.
-class MyApplication : MultiDexApplication(), SingletonSketch.Factory {
+class MyApplication : Application(), SingletonSketch.Factory {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 

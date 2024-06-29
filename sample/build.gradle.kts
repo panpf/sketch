@@ -57,6 +57,7 @@ kotlin {
         binaries.executable()
     }
 
+    // TODO Clean up dependencies
     sourceSets {
         commonMain.dependencies {
             implementation(projects.internal.images)
@@ -95,7 +96,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime)
-            implementation(libs.androidx.multidex)
             implementation(libs.androidx.navigation.fragment)
             implementation(libs.androidx.navigation.ui)
             implementation(libs.androidx.recyclerview)
