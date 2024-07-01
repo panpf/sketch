@@ -19,6 +19,7 @@ import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
 
+// TODO remove
 val Context.appSettingsService: AppSettings
     get() = safeContext.appSettings
 val Fragment.appSettingsService: AppSettings

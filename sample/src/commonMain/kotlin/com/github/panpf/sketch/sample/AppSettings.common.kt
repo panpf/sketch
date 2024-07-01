@@ -155,6 +155,7 @@ class AppSettings(val context: PlatformContext) {
     val composePage: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "composePage", false)
     }
+
     val currentPageIndex: SettingsStateFlow<Int> by lazy {
         intSettingsStateFlow(context, "currentPageIndex", 0)
     }

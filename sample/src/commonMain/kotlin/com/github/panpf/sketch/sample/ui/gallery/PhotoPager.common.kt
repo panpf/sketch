@@ -58,7 +58,7 @@ import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_image2_baseline
 import com.github.panpf.sketch.sample.resources.ic_image2_outline
 import com.github.panpf.sketch.sample.resources.ic_settings
-import com.github.panpf.sketch.sample.ui.MyEvents
+import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
@@ -229,9 +229,9 @@ private fun PagerTools(
                 appSettings.showOriginImage.value = newValue
                 coroutineScope.launch {
                     if (newValue) {
-                        MyEvents.toastFlow.emit("Now show original image")
+                        EventBus.toastFlow.emit("Now show original image")
                     } else {
-                        MyEvents.toastFlow.emit("Now show thumbnails image")
+                        EventBus.toastFlow.emit("Now show thumbnails image")
                     }
                 }
             }) {

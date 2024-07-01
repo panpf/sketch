@@ -36,7 +36,7 @@ import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_image_outline
-import com.github.panpf.sketch.sample.resources.ic_image_outline_broken
+import com.github.panpf.sketch.sample.resources.ic_image_broken_outline
 import com.github.panpf.sketch.sample.resources.ic_signal_cellular
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
@@ -130,7 +130,7 @@ fun PhotoGridItem(
         placeholder(placeholderStateImage)
         composableError(
             rememberIconPainterStateImage(
-                icon = Res.drawable.ic_image_outline_broken,
+                icon = Res.drawable.ic_image_broken_outline,
                 background = colorScheme.primaryContainer,
                 iconTint = colorScheme.onPrimaryContainer
             )

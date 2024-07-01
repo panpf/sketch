@@ -7,7 +7,7 @@ import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 
 @Composable
-fun AppendState(loadState: LoadState, onClick: () -> Unit) {
+fun PagingAppendState(loadState: LoadState, onClick: () -> Unit) {
     val state = when (loadState) {
         is LoadStateLoading -> AppendState.LOADING
         is LoadStateError -> AppendState.ERROR

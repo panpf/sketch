@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.PagingData
+import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 
 @Composable
 actual fun Screen.GiphyPhotoPage() {

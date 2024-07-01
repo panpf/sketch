@@ -13,7 +13,7 @@ actual suspend fun readPhotosFromPhotoAlbum(
     context: PlatformContext,
     startPosition: Int,
     pageSize: Int
-): List<String> = emptyList()
+): List<String> = emptyList()   // TODO Read ios photo album
 
 actual suspend fun readImageInfoOrNull(
     context: PlatformContext,

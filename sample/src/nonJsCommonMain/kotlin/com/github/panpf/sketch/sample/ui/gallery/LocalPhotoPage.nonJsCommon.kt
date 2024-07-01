@@ -13,6 +13,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 
 
 @Composable

@@ -1,6 +1,6 @@
 @file:Suppress("EnumValuesSoftDeprecate")
 
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -33,12 +33,21 @@ import com.github.panpf.sketch.sample.resources.ic_giphy
 import com.github.panpf.sketch.sample.resources.ic_pexels
 import com.github.panpf.sketch.sample.resources.ic_phone
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoPage
+import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoPage
+import com.github.panpf.sketch.sample.ui.gallery.MainMenu
+import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoPage
 import com.github.panpf.sketch.sample.ui.test.TestPage
+import com.github.panpf.sketch.sample.util.RuntimePlatform
+import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-expect val gridCellsMinSize: Dp
+val gridCellsMinSize: Dp = when (runtimePlatformInstance) {
+    RuntimePlatform.Android, RuntimePlatform.Ios -> 100.dp
+    else -> 150.dp
+}
 
 @Composable
 expect fun HomeHeader()

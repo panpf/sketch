@@ -39,7 +39,7 @@ import com.github.panpf.sketch.sample.resources.ic_rotate_right
 import com.github.panpf.sketch.sample.resources.ic_save
 import com.github.panpf.sketch.sample.resources.ic_share
 import com.github.panpf.sketch.sample.resources.ic_zoom_in
-import com.github.panpf.sketch.sample.ui.MyEvents
+import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
@@ -113,7 +113,7 @@ actual fun PhotoViewer(
             val buttonTextColor = Color.White
             IconButton(onClick = {
                 coroutineScope.launch {
-                    MyEvents.sharePhotoFlow.emit(imageUri)
+                    EventBus.sharePhotoFlow.emit(imageUri)
                 }
             }) {
                 Icon(
@@ -131,7 +131,7 @@ actual fun PhotoViewer(
 
             IconButton(onClick = {
                 coroutineScope.launch {
-                    MyEvents.savePhotoFlow.emit(imageUri)
+                    EventBus.savePhotoFlow.emit(imageUri)
                 }
             }) {
                 Icon(
@@ -157,7 +157,7 @@ actual fun PhotoViewer(
 //                    val zoomable = zoomState.zoomable
 //                    val nextStepScale = zoomable.getNextStepScale()
 //                    zoomable.scale(nextStepScale, animated = true)
-                    MyEvents.toastFlow.emit("Not supported yet zoom")
+                    EventBus.toastFlow.emit("Not supported yet zoom")
                 }
             }) {
                 Icon(
@@ -182,7 +182,7 @@ actual fun PhotoViewer(
                 coroutineScope.launch {
 //                    val zoomable = zoomState.zoomable
 //                    zoomable.rotate(zoomable.transform.rotation.roundToInt() + 90)
-                    MyEvents.toastFlow.emit("Not supported yet rotate")
+                    EventBus.toastFlow.emit("Not supported yet rotate")
                 }
             }) {
                 Icon(

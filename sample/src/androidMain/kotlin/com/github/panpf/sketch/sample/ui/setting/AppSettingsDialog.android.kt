@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.ui.MyEvents
+import com.github.panpf.sketch.sample.EventBus
 
 @Composable
 actual fun getSettingsDialogHeight(): Dp {
@@ -57,7 +57,7 @@ actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem
             values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
             state = appSettings.httpClient,
             onItemClick = {
-                MyEvents.toastFlow.emit("Restart the app to take effect")
+                EventBus.toastFlow.emit("Restart the app to take effect")
             }
         )
     )
@@ -68,7 +68,7 @@ actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem
             values = listOf("FFmpeg", "AndroidBuiltIn"),
             state = appSettings.videoFrameDecoder,
             onItemClick = {
-                MyEvents.toastFlow.emit("Restart the app to take effect")
+                EventBus.toastFlow.emit("Restart the app to take effect")
             }
         )
     )
@@ -79,7 +79,7 @@ actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem
             values = listOf("KoralGif", "ImageDecoder+Movie"),
             state = appSettings.gifDecoder,
             onItemClick = {
-                MyEvents.toastFlow.emit("Restart the app to take effect")
+                EventBus.toastFlow.emit("Restart the app to take effect")
             }
         )
     )

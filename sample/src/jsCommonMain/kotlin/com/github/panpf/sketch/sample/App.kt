@@ -16,8 +16,7 @@ import cafe.adriel.voyager.transitions.ScaleTransition
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.sample.ui.MyEvents
-import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
+import com.github.panpf.sketch.sample.ui.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 
 @Composable
@@ -34,7 +33,7 @@ fun App() {
                 modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 100.dp)
             )
             LaunchedEffect(Unit) {
-                MyEvents.toastFlow.collect {
+                EventBus.toastFlow.collect {
                     snackbarHostState.showSnackbar(it)
                 }
             }
@@ -43,12 +42,12 @@ fun App() {
 
     val context = LocalPlatformContext.current
     LaunchedEffect(Unit) {
-        MyEvents.savePhotoFlow.collect {
+        EventBus.savePhotoFlow.collect {
             savePhoto(SingletonSketch.get(context), it)
         }
     }
     LaunchedEffect(Unit) {
-        MyEvents.sharePhotoFlow.collect {
+        EventBus.sharePhotoFlow.collect {
             sharePhoto(SingletonSketch.get(context), it)
         }
     }
@@ -56,10 +55,10 @@ fun App() {
 
 @Suppress("UNUSED_PARAMETER")
 private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
-    MyEvents.toastFlow.emit("JS platform does not support save photo")
+    EventBus.toastFlow.emit("JS platform does not support save photo")
 }
 
 @Suppress("UNUSED_PARAMETER")
 private suspend fun sharePhoto(sketch: Sketch, imageUri: String) {
-    MyEvents.toastFlow.emit("JS platform does not support sharing photo")
+    EventBus.toastFlow.emit("JS platform does not support sharing photo")
 }

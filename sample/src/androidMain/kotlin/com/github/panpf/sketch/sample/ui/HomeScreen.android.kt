@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,8 +22,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.sample.appSettingsService
-
-actual val gridCellsMinSize: Dp = 100.dp
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

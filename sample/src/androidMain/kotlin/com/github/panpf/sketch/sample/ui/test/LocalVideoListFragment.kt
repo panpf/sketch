@@ -183,7 +183,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 )
                 error(
                     IconDrawableStateImage(
-                        icon = R.drawable.ic_image_outline_broken,
+                        icon = R.drawable.ic_image_broken_outline,
                         background = R.color.placeholder_bg
                     )
                 ) {

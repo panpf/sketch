@@ -16,14 +16,11 @@ import cafe.adriel.voyager.transitions.ScaleTransition
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
-import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.supportComposeResources
-import com.github.panpf.sketch.sample.ui.MyEvents
-import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
+import com.github.panpf.sketch.sample.ui.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -44,20 +41,20 @@ fun MainViewController(): UIViewController {
                     modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 100.dp)
                 )
                 LaunchedEffect(Unit) {
-                    MyEvents.toastFlow.collect {
+                    EventBus.toastFlow.collect {
                         snackbarHostState.showSnackbar(it)
                     }
                 }
             }
 
             LaunchedEffect(Unit) {
-                MyEvents.savePhotoFlow.collect {
-                    MyEvents.toastFlow.emit("Saving is not supported yet")
+                EventBus.savePhotoFlow.collect {
+                    EventBus.toastFlow.emit("Saving is not supported yet")
                 }
             }
             LaunchedEffect(Unit) {
-                MyEvents.sharePhotoFlow.collect {
-                    MyEvents.toastFlow.emit("Sharing is not supported yet")
+                EventBus.sharePhotoFlow.collect {
+                    EventBus.toastFlow.emit("Sharing is not supported yet")
                 }
             }
         }

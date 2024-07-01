@@ -26,7 +26,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.sample.ui.MyEvents
+import com.github.panpf.sketch.sample.EventBus
 import kotlinx.coroutines.launch
 
 actual fun getTopMargin(context: PlatformContext): Int {
@@ -41,7 +41,7 @@ actual fun BoxScope.PlatformPagerTools(
     pagerState: PagerState
 ) {
     LaunchedEffect(Unit) {
-        MyEvents.keyEvent.collect { keyEvent ->
+        EventBus.keyEvent.collect { keyEvent ->
             if (keyEvent.type == KeyEventType.KeyUp && !keyEvent.isMetaPressed) {
                 when (keyEvent.key) {
                     Key.PageUp, Key.DirectionLeft -> {

@@ -10,6 +10,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow
 

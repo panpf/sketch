@@ -32,7 +32,7 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.common.list.AppendState
+import com.github.panpf.sketch.sample.ui.common.list.PagingAppendState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
@@ -128,7 +128,7 @@ private fun PhotoSquareGrid(
                     span = { GridItemSpan(this.maxLineSpan) },
                     contentType = 2
                 ) {
-                    AppendState(pagingItems.loadState.append) {
+                    PagingAppendState(pagingItems.loadState.append) {
                         pagingItems.retry()
                     }
                 }
@@ -185,7 +185,7 @@ private fun PhotoStaggeredGrid(
                     span = StaggeredGridItemSpan.FullLine,
                     contentType = 2
                 ) {
-                    AppendState(pagingItems.loadState.append) {
+                    PagingAppendState(pagingItems.loadState.append) {
                         pagingItems.retry()
                     }
                 }

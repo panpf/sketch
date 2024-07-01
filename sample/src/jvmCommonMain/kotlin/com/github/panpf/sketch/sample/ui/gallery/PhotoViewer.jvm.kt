@@ -39,7 +39,7 @@ import com.github.panpf.sketch.sample.resources.ic_save
 import com.github.panpf.sketch.sample.resources.ic_share
 import com.github.panpf.sketch.sample.resources.ic_zoom_in
 import com.github.panpf.sketch.sample.resources.ic_zoom_out
-import com.github.panpf.sketch.sample.ui.MyEvents
+import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
@@ -154,7 +154,7 @@ actual fun PhotoViewer(
             val buttonTextColor = Color.White
             IconButton(onClick = {
                 coroutineScope.launch {
-                    MyEvents.sharePhotoFlow.emit(imageUri)
+                    EventBus.sharePhotoFlow.emit(imageUri)
                 }
             }) {
                 Icon(
@@ -172,7 +172,7 @@ actual fun PhotoViewer(
 
             IconButton(onClick = {
                 coroutineScope.launch {
-                    MyEvents.savePhotoFlow.emit(imageUri)
+                    EventBus.savePhotoFlow.emit(imageUri)
                 }
             }) {
                 Icon(

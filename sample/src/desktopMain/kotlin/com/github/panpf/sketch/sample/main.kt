@@ -21,8 +21,6 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
-import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.decode.supportSvg
@@ -32,8 +30,7 @@ import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.ui.MyEvents
-import com.github.panpf.sketch.sample.ui.gallery.HomeScreen
+import com.github.panpf.sketch.sample.ui.HomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.sample.util.sha256String
@@ -58,7 +55,7 @@ fun main() {
             state = rememberWindowState(size = DpSize(1000.dp, 800.dp)),
             onKeyEvent = {
                 coroutineScope.launch {
-                    MyEvents.keyEvent.emit(it)
+                    EventBus.keyEvent.emit(it)
                 }
                 false
             }
@@ -75,7 +72,7 @@ fun main() {
                         modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 100.dp)
                     )
                     LaunchedEffect(Unit) {
-                        MyEvents.toastFlow.collect {
+                        EventBus.toastFlow.collect {
                             snackbarHostState.showSnackbar(it)
                         }
                     }
@@ -84,12 +81,12 @@ fun main() {
 
             val context = LocalPlatformContext.current
             LaunchedEffect(Unit) {
-                MyEvents.savePhotoFlow.collect {
+                EventBus.savePhotoFlow.collect {
                     savePhoto(SingletonSketch.get(context), it)
                 }
             }
             LaunchedEffect(Unit) {
-                MyEvents.sharePhotoFlow.collect {
+                EventBus.sharePhotoFlow.collect {
                     sharePhoto(SingletonSketch.get(context), it)
                 }
             }
@@ -135,14 +132,14 @@ private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
         sketch.components.newFetcherOrThrow(ImageRequest(sketch.context, imageUri))
     }
     if (fetcher is FileUriFetcher) {
-        return MyEvents.toastFlow.emit("Local files do not need to be saved")
+        return EventBus.toastFlow.emit("Local files do not need to be saved")
     }
 
     val fetchResult = withContext(Dispatchers.IO) {
         fetcher.fetch()
     }.let {
         it.getOrNull()
-            ?: return MyEvents.toastFlow.emit("Failed to save picture: ${it.exceptionOrNull()!!.message}")
+            ?: return EventBus.toastFlow.emit("Failed to save picture: ${it.exceptionOrNull()!!.message}")
     }
     val userHomeDir = File(System.getProperty("user.home"))
     val userPicturesDir = File(userHomeDir, "Pictures")
@@ -161,14 +158,14 @@ private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
         }
     }
     return if (result.isSuccess) {
-        MyEvents.toastFlow.emit("Saved to the '${imageFile.parentFile?.path}' directory")
+        EventBus.toastFlow.emit("Saved to the '${imageFile.parentFile?.path}' directory")
     } else {
         val exception = result.exceptionOrNull()
-        MyEvents.toastFlow.emit("Failed to save picture: ${exception?.message}")
+        EventBus.toastFlow.emit("Failed to save picture: ${exception?.message}")
     }
 }
 
 @Suppress("UNUSED_PARAMETER")
 private suspend fun sharePhoto(sketch: Sketch, imageUri: String) {
-    MyEvents.toastFlow.emit("Desktop platform does not support sharing photo")
+    EventBus.toastFlow.emit("Desktop platform does not support sharing photo")
 }

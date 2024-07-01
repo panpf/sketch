@@ -25,7 +25,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
-import com.github.panpf.sketch.sample.ui.MyEvents
+import com.github.panpf.sketch.sample.EventBus
+import com.github.panpf.sketch.sample.ui.HomeScreen
 import com.github.panpf.sketch.sample.ui.base.BaseFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
@@ -58,17 +59,17 @@ class ComposeHomeFragment : BaseFragment() {
 
         val context = view.context
         viewLifecycleOwner.lifecycleScope.launch {
-            MyEvents.toastFlow.collect {
+            EventBus.toastFlow.collect {
                 Toast.makeText(context, it, Toast.LENGTH_LONG).show()
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            MyEvents.savePhotoFlow.collect {
+            EventBus.savePhotoFlow.collect {
                 save(it)
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            MyEvents.sharePhotoFlow.collect {
+            EventBus.sharePhotoFlow.collect {
                 share(it)
             }
         }

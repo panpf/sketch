@@ -34,10 +34,15 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_github
 import com.github.panpf.sketch.sample.ui.components.AutoLinkText
+import com.github.panpf.sketch.sample.util.RuntimePlatform
+import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-expect val testItemGridCells: Int
+val testItemGridCells: Int = when(runtimePlatformInstance) {
+    RuntimePlatform.Android, RuntimePlatform.Ios -> 2
+    else -> 4
+}
 
 @Composable
 fun TestPage() {
