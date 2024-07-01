@@ -11,7 +11,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.task
-import org.jetbrains.compose.experimental.web.tasks.ExperimentalUnpackSkikoWasmRuntimeTask
+import org.jetbrains.compose.web.tasks.UnpackSkikoWasmRuntimeTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 
@@ -49,7 +49,7 @@ private fun Collection<KotlinJsIrTarget>.configureExperimentalWebApplication(pro
         testCompilation.defaultSourceSet.resources.srcDir(unpackedRuntimeDir)
 
         val taskName = "unpackSkikoWasmRuntime${it.targetName.uppercaseFirstChar()}"
-        val unpackRuntime = project.task<ExperimentalUnpackSkikoWasmRuntimeTask>(taskName) {
+        val unpackRuntime = project.task<UnpackSkikoWasmRuntimeTask>(taskName) {
             skikoRuntimeFiles = skikoJsWasmRuntimeConfiguration
             outputDir.set(unpackedRuntimeDir)
         }
@@ -80,7 +80,7 @@ private fun isSkikoDependency(dep: DependencyDescriptor): Boolean {
 private val Configuration.allDependenciesDescriptors: Sequence<DependencyDescriptor>
     get() = with(resolvedConfiguration.lenientConfiguration) {
         allModuleDependencies.asSequence().map(::ResolvedDependencyDescriptor) +
-            unresolvedModuleDependencies.asSequence().map(::UnresolvedDependencyDescriptor)
+                unresolvedModuleDependencies.asSequence().map(::UnresolvedDependencyDescriptor)
     }
 
 private interface DependencyDescriptor {
@@ -109,10 +109,10 @@ private value class UnresolvedDependencyDescriptor(
     private val dependency: UnresolvedDependency,
 ) : DependencyDescriptor {
 
-    override val group: String?
+    override val group: String
         get() = dependency.selector.group
 
-    override val name: String?
+    override val name: String
         get() = dependency.selector.name
 
     override val version: String?

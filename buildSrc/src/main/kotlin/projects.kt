@@ -30,13 +30,9 @@
  */
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.TestExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun Project.androidLibrary(
     nameSpace: String,
@@ -69,6 +65,20 @@ fun Project.androidApplication(
     action()
 }
 
+fun Project.androidTest(
+    name: String,
+    config: Boolean = false,
+    action: TestExtension.() -> Unit = {},
+) = androidBase<TestExtension>(name) {
+    buildFeatures {
+        buildConfig = config
+    }
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+    }
+    action()
+}
+
 private fun <T : BaseExtension> Project.androidBase(
     nameSpace: String,
     action: T.() -> Unit,
@@ -77,9 +87,9 @@ private fun <T : BaseExtension> Project.androidBase(
         this.namespace = nameSpace
         compileSdkVersion(project.compileSdk)
         defaultConfig {
-            this.minSdk = project.minSdk
-            this.targetSdk = project.targetSdk
-            this.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            minSdk = project.minSdk
+            targetSdk = project.targetSdk
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
         packagingOptions {
             resources.pickFirsts += listOf(
@@ -90,10 +100,6 @@ private fun <T : BaseExtension> Project.androidBase(
         }
         testOptions {
             unitTests.isIncludeAndroidResources = true
-        }
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
         }
 //        lint {
 //            warningsAsErrors = true
