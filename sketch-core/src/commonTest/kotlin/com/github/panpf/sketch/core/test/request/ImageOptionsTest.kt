@@ -25,8 +25,8 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Extras
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.isNotEmpty
@@ -1411,7 +1411,7 @@ class ImageOptionsTest {
         }
     }
 
-    // TODO test mergeComponents
+    // TODO test addComponents
     // TODO test sizeMultiplier
     // TODO test crossfade
 }

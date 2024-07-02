@@ -44,17 +44,18 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
+import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.PairListener
@@ -62,7 +63,6 @@ import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -1766,7 +1766,7 @@ class ImageRequestTest {
         }
     }
 
-    // TODO test mergeComponents
+    // TODO test addComponents
     // TODO test sizeMultiplier
     // TODO test crossfade
 }

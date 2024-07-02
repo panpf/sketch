@@ -628,15 +628,15 @@ data class ImageOptions (
         /**
          * Merge the [ComponentRegistry]
          */
-        fun mergeComponents(components: ComponentRegistry?): Builder = apply {
+        fun addComponents(components: ComponentRegistry?): Builder = apply {
             this.componentRegistry = this.componentRegistry.merged(components)
         }
 
         /**
          * Merge the [ComponentRegistry]
          */
-        fun mergeComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
-            mergeComponents(ComponentRegistry.Builder().apply(configBlock).build())
+        fun addComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            addComponents(ComponentRegistry.Builder().apply(configBlock).build())
 
 
         /**

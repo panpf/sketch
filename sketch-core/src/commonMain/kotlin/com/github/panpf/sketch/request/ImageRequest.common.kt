@@ -719,15 +719,15 @@ data class ImageRequest(
         /**
          * Merge the [ComponentRegistry]
          */
-        fun mergeComponents(components: ComponentRegistry?): Builder = apply {
-            definedOptionsBuilder.mergeComponents(components)
+        fun addComponents(components: ComponentRegistry?): Builder = apply {
+            definedOptionsBuilder.addComponents(components)
         }
 
         /**
          * Build and merge the [ComponentRegistry]
          */
-        fun mergeComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
-            definedOptionsBuilder.mergeComponents(configBlock)
+        fun addComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+            definedOptionsBuilder.addComponents(configBlock)
         }
 
 

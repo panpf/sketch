@@ -11,6 +11,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 # new
 
 new: Add PlatformContext.sketch and View.sketch extension functions
+change: The mergeComponents() method of ImageOptions and ImageRequest has been renamed to
+addComponents()
 
 # 4.0.0-alpha03
 
