@@ -51,6 +51,7 @@ import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
+import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
@@ -58,7 +59,6 @@ import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_image2_baseline
 import com.github.panpf.sketch.sample.resources.ic_image2_outline
 import com.github.panpf.sketch.sample.resources.ic_settings
-import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
@@ -246,7 +246,7 @@ private fun PagerTools(
                 )
             }
 
-            Spacer(modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.size(10.dp))
 
             Box(
                 Modifier
@@ -255,11 +255,26 @@ private fun PagerTools(
                         color = buttonBgColor,
                         shape = RoundedCornerShape(50)
                     )
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 20.dp),
                 contentAlignment = Alignment.Center
             ) {
+                val number by remember {
+                    derivedStateOf {
+                        pageNumber.coerceAtMost(999)
+                    }
+                }
+                val numberCount by remember {
+                    derivedStateOf {
+                        pageCount.coerceAtMost(999)
+                    }
+                }
+                val numberText by remember {
+                    derivedStateOf {
+                        "${number}\n·\n$numberCount"
+                    }
+                }
                 Text(
-                    text = "${pageNumber.coerceAtMost(999)}\n·\n${pageCount.coerceAtMost(999)}",
+                    text = numberText,
                     textAlign = TextAlign.Center,
                     color = buttonTextColor,
                     style = TextStyle(lineHeight = 12.sp),
@@ -267,7 +282,7 @@ private fun PagerTools(
                 )
             }
 
-            Spacer(modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.size(10.dp))
 
             IconButton(onClick = { showSettingsDialog = true }) {
                 Icon(

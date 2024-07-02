@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,10 @@ import com.github.panpf.sketch.sample.resources.ic_expand_more
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.formatFileSize
+import com.github.panpf.sketch.sample.util.RuntimePlatform
+import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.screenSize
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -63,7 +67,19 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-expect fun getSettingsDialogHeight(): Dp
+fun getSettingsDialogHeight(): Dp {
+    return if (runtimePlatformInstance == RuntimePlatform.Js) {
+        600.dp
+    } else {
+        val density = LocalDensity.current
+        val context = LocalPlatformContext.current
+        remember {
+            with(density) {
+                (context.screenSize().height * 0.8f).toInt().toDp()
+            }
+        }
+    }
+}
 
 @Composable
 fun AppSettingsDialog(

@@ -34,15 +34,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_github
 import com.github.panpf.sketch.sample.ui.components.AutoLinkText
-import com.github.panpf.sketch.sample.util.RuntimePlatform
+import com.github.panpf.sketch.sample.util.isMobile
 import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-
-val testItemGridCells: Int = when(runtimePlatformInstance) {
-    RuntimePlatform.Android, RuntimePlatform.Ios -> 2
-    else -> 4
-}
 
 @Composable
 fun TestPage() {
@@ -61,7 +56,7 @@ fun TestPage() {
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Fixed(testItemGridCells),
+        columns = GridCells.Fixed(if (runtimePlatformInstance.isMobile()) 2 else 4),
         state = gridState,
         contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),

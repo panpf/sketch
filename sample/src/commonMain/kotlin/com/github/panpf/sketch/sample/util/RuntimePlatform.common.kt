@@ -9,3 +9,6 @@ enum class RuntimePlatform {
 }
 
 expect val runtimePlatformInstance: RuntimePlatform
+
+fun RuntimePlatform.isMobile(): Boolean =
+    this == RuntimePlatform.Android || this == RuntimePlatform.Ios

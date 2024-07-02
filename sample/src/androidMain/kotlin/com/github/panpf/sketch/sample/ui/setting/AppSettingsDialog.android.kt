@@ -3,19 +3,8 @@ package com.github.panpf.sketch.sample.ui.setting
 import android.graphics.ColorSpace.Named
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.EventBus
-
-@Composable
-actual fun getSettingsDialogHeight(): Dp {
-    return with(LocalDensity.current) {
-        (LocalContext.current.resources.displayMetrics.heightPixels * 0.8f).toInt().toDp()
-    }
-}
 
 actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(

@@ -38,16 +38,13 @@ import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoPage
 import com.github.panpf.sketch.sample.ui.gallery.MainMenu
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoPage
 import com.github.panpf.sketch.sample.ui.test.TestPage
-import com.github.panpf.sketch.sample.util.RuntimePlatform
+import com.github.panpf.sketch.sample.util.isMobile
 import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-val gridCellsMinSize: Dp = when (runtimePlatformInstance) {
-    RuntimePlatform.Android, RuntimePlatform.Ios -> 100.dp
-    else -> 150.dp
-}
+val gridCellsMinSize: Dp = if (runtimePlatformInstance.isMobile()) 100.dp else 150.dp
 
 @Composable
 expect fun HomeHeader()
