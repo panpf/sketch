@@ -219,6 +219,24 @@ open class ComponentRegistry private constructor(
                 this.decodeInterceptorList.add(decodeInterceptor)
             }
 
+        /**
+         * Merge the [ComponentRegistry]
+         */
+        fun addComponents(components: ComponentRegistry) {
+            components.decodeInterceptorList.forEach {
+                addDecodeInterceptor(it)
+            }
+            components.requestInterceptorList.forEach {
+                addRequestInterceptor(it)
+            }
+            components.decoderFactoryList.forEach {
+                addDecoder(it)
+            }
+            components.fetcherFactoryList.forEach {
+                addFetcher(it)
+            }
+        }
+
         fun build(): ComponentRegistry = ComponentRegistry(
             fetcherFactoryList = fetcherFactoryList.toList(),
             decoderFactoryList = decoderFactoryList.toList(),

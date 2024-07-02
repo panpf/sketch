@@ -17,7 +17,6 @@ package com.github.panpf.sketch
 
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.annotation.AnyThread
-import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
@@ -30,9 +29,9 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageOptions.Builder
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
@@ -358,6 +357,19 @@ class Sketch private constructor(options: Options) {
          */
         fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
             components(ComponentRegistry.Builder().apply(configBlock).build())
+
+        /**
+         * Merge the [ComponentRegistry]
+         */
+        fun addComponents(components: ComponentRegistry?): Builder = apply {
+            this.componentRegistry = this.componentRegistry.merged(components)
+        }
+
+        /**
+         * Merge the [ComponentRegistry]
+         */
+        fun addComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            addComponents(ComponentRegistry.Builder().apply(configBlock).build())
 
         /**
          * Set the [HttpStack] used for network requests.
