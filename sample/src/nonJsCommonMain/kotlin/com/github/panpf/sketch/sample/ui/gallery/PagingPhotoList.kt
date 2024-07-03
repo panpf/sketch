@@ -49,7 +49,7 @@ fun PagingPhotoList(
 ) {
     val pagingItems = photoPagingFlow.collectAsLazyPagingItems()
     val context = LocalPlatformContext.current
-    val appSettingsService = context.appSettings
+    val appSettings = context.appSettings
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pagingItems.loadState.refresh is Loading,
@@ -60,7 +60,7 @@ fun PagingPhotoList(
             .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
-        val photoGridMode by appSettingsService.photoGridMode.collectAsState()
+        val photoGridMode by appSettings.photoGridMode.collectAsState()
         if (photoGridMode == PhotoGridMode.SQUARE) {
             PhotoSquareGrid(
                 pagingItems = pagingItems,

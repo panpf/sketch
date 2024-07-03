@@ -49,13 +49,11 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.appSettingsService
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
-import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoDiffCallback
 import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
@@ -89,14 +87,14 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
         binding.toolbar.subtitle = "View"
 
         binding.playImage.apply {
-            appSettingsService.disallowAnimatedImageInList
+            appSettings.disallowAnimatedImageInList
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     val iconResId = if (it) R.drawable.ic_play else R.drawable.ic_pause
                     setImageResource(iconResId)
                 }
             setOnClickListener {
-                appSettingsService.disallowAnimatedImageInList.value =
-                    !appSettingsService.disallowAnimatedImageInList.value
+                appSettings.disallowAnimatedImageInList.value =
+                    !appSettings.disallowAnimatedImageInList.value
             }
         }
 
@@ -119,7 +117,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
         }
 
         binding.composePageIconLayout.setOnClickListener {
-            appSettingsService.composePage.value = true
+            appSettings.composePage.value = true
         }
 
         binding.settingsImage.setOnClickListener {
@@ -135,7 +133,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    appSettingsService.currentPageIndex.value = position
+                    appSettings.currentPageIndex.value = position
                     when (position) {
                         0 -> binding.navigation.selectedItemId = R.id.local
                         1 -> binding.navigation.selectedItemId = R.id.pexels
@@ -145,7 +143,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                 }
             })
             setCurrentItem(
-                appSettingsService.currentPageIndex.value.coerceIn(
+                appSettings.currentPageIndex.value.coerceIn(
                     0,
                     fragmentMap.size - 1
                 ), false
@@ -265,7 +263,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                 setPadding(0, 0, 0, 80.dp2px)
                 clipToPadding = false
 
-                appSettingsService.photoGridMode
+                appSettings.photoGridMode
                     .repeatCollectWithLifecycle(
                         viewLifecycleOwner,
                         State.STARTED
@@ -287,7 +285,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                         bindRefreshAndAdapter(binding, pagingAdapter)
                     }
 
-                appSettingsService.listsCombinedFlow.ignoreFirst()
+                appSettings.listsCombinedFlow.ignoreFirst()
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         adapter?.notifyDataSetChanged()
                     }

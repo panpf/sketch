@@ -3,12 +3,19 @@ package com.github.panpf.sketch.sample
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+
+val Fragment.appSettings: AppSettings
+    get() = this.requireContext().appSettings
+val View.appSettings: AppSettings
+    get() = this.context.appSettings
 
 actual fun isDebugMode(): Boolean = BuildConfig.DEBUG
 

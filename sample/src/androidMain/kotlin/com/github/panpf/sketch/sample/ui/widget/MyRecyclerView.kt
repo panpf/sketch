@@ -18,9 +18,9 @@ package com.github.panpf.sketch.sample.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.sketch.sample.appSettingsService
-import com.github.panpf.sketch.sample.util.collectWithLifecycle
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
+import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
 
 class MyRecyclerView @JvmOverloads constructor(
@@ -31,7 +31,7 @@ class MyRecyclerView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        appSettingsService.pauseLoadWhenScrollInList.collectWithLifecycle(lifecycleOwner) {
+        appSettings.pauseLoadWhenScrollInList.collectWithLifecycle(lifecycleOwner) {
             setEnabledPauseLoadWhenScrolling(it)
         }
     }

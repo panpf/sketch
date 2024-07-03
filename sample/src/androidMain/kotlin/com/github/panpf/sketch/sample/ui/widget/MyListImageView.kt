@@ -25,7 +25,7 @@ import com.github.panpf.sketch.ability.removeProgressIndicator
 import com.github.panpf.sketch.ability.showDataFromLogo
 import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.ability.showProgressIndicator
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
@@ -63,19 +63,19 @@ class MyListImageView @JvmOverloads constructor(
     init {
         // When the first request is executed, it has not yet reached onAttachedToWindow,
         // so it must be initialized here in advance to ensure that the first request can also display progress.
-        setShowProgressIndicator(show = appSettingsService.showProgressIndicatorInList.value)
+        setShowProgressIndicator(show = appSettings.showProgressIndicatorInList.value)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        appSettingsService.showProgressIndicatorInList.collectWithLifecycle(lifecycleOwner) { show ->
+        appSettings.showProgressIndicatorInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowProgressIndicator(show = show)
         }
-        appSettingsService.showMimeTypeLogoInList.collectWithLifecycle(lifecycleOwner) { show ->
+        appSettings.showMimeTypeLogoInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowMimeTypeLogo(show = show)
         }
-        appSettingsService.showDataFromLogoInList.collectWithLifecycle(lifecycleOwner) { show ->
+        appSettings.showDataFromLogoInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowDataFromLogo(show = show)
         }
     }

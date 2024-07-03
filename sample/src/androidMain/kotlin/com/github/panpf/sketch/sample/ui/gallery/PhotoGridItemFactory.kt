@@ -28,7 +28,7 @@ import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -143,7 +143,7 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
             }
 
             loadImage(data.listThumbnailUrl) {
-                merge(appSettingsService.buildListImageOptions())
+                merge(context.appSettings.buildListImageOptions())
             }
         }
     }

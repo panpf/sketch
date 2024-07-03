@@ -40,7 +40,7 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.databinding.ListItemVideoBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
@@ -109,7 +109,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
 
-            appSettingsService.listsCombinedFlow.ignoreFirst()
+            appSettings.listsCombinedFlow.ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }
@@ -208,7 +208,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             data: VideoInfo
         ) {
             binding.thumbnailImage.loadImage(data.path) {
-                merge(context.appSettingsService.buildListImageOptions())
+                merge(context.appSettings.buildListImageOptions())
             }
             binding.nameText.text = data.title
             binding.sizeText.text = data.getTempFormattedSize(context)

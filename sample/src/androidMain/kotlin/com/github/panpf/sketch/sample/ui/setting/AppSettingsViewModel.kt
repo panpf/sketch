@@ -27,7 +27,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
@@ -47,40 +47,41 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
-class AppSettingsViewModel(application1: Application, val page: Page) :
+class AppSettingsViewModel(application1: Application, private val page: Page) :
     LifecycleAndroidViewModel(application1) {
 
-    class Factory(val application: Application, val page: Page) : ViewModelProvider.Factory {
+    class Factory(val application: Application, private val page: Page) :
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
             @Suppress("UNCHECKED_CAST")
             return AppSettingsViewModel(application, page) as T
         }
     }
 
-    private val appSettingsService = application1.appSettingsService
+    private val appSettings = application1.appSettings
 
     private val _menuListData = MutableStateFlow<List<Any>>(emptyList())
     val menuListData: StateFlow<List<Any>> = _menuListData
 
     init {
         val states = listOfNotNull(
-            appSettingsService.showMimeTypeLogoInList.ignoreFirst(),
-            appSettingsService.showProgressIndicatorInList.ignoreFirst(),
-            appSettingsService.saveCellularTrafficInList.ignoreFirst(),
-            appSettingsService.pauseLoadWhenScrollInList.ignoreFirst(),
-            appSettingsService.precision.ignoreFirst(),
-            appSettingsService.scale.ignoreFirst(),
-            appSettingsService.longImageScale.ignoreFirst(),
-            appSettingsService.otherImageScale.ignoreFirst(),
-            appSettingsService.inPreferQualityOverSpeed.ignoreFirst(),
-            appSettingsService.bitmapQuality.ignoreFirst(),
-            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettingsService.colorSpace.ignoreFirst() else null,
-            appSettingsService.memoryCache.ignoreFirst(),
-            appSettingsService.resultCache.ignoreFirst(),
-            appSettingsService.downloadCache.ignoreFirst(),
-            appSettingsService.showDataFromLogoInList.ignoreFirst(),
-            appSettingsService.showTileBounds.ignoreFirst(),
-            appSettingsService.logLevel.ignoreFirst(),
+            appSettings.showMimeTypeLogoInList.ignoreFirst(),
+            appSettings.showProgressIndicatorInList.ignoreFirst(),
+            appSettings.saveCellularTrafficInList.ignoreFirst(),
+            appSettings.pauseLoadWhenScrollInList.ignoreFirst(),
+            appSettings.precision.ignoreFirst(),
+            appSettings.scale.ignoreFirst(),
+            appSettings.longImageScale.ignoreFirst(),
+            appSettings.otherImageScale.ignoreFirst(),
+            appSettings.inPreferQualityOverSpeed.ignoreFirst(),
+            appSettings.bitmapQuality.ignoreFirst(),
+            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpace.ignoreFirst() else null,
+            appSettings.memoryCache.ignoreFirst(),
+            appSettings.resultCache.ignoreFirst(),
+            appSettings.downloadCache.ignoreFirst(),
+            appSettings.showDataFromLogoInList.ignoreFirst(),
+            appSettings.showTileBounds.ignoreFirst(),
+            appSettings.logLevel.ignoreFirst(),
         )
         viewModelScope.launch {
             merge(*states.toTypedArray()).collect {
@@ -113,35 +114,35 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
         add(
             SwitchMenuFlow(
                 title = "MimeType Logo",
-                data = appSettingsService.showMimeTypeLogoInList,
+                data = appSettings.showMimeTypeLogoInList,
                 desc = "Displays the image type in the lower right corner of the ImageView"
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Data From Logo",
-                data = appSettingsService.showDataFromLogoInList,
+                data = appSettings.showDataFromLogoInList,
                 desc = "A different color triangle is displayed in the lower right corner of the ImageView according to DataFrom"
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Progress Indicator",
-                data = appSettingsService.showProgressIndicatorInList,
+                data = appSettings.showProgressIndicatorInList,
                 desc = "A black translucent mask is displayed on the ImageView surface to indicate progress"
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Save Cellular Traffic",
-                data = appSettingsService.saveCellularTrafficInList,
+                data = appSettings.saveCellularTrafficInList,
                 desc = "Mobile cell traffic does not download pictures"
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Pause Load When Scrolling",
-                data = appSettingsService.pauseLoadWhenScrollInList,
+                data = appSettings.pauseLoadWhenScrollInList,
                 desc = "No image is loaded during list scrolling to improve the smoothness"
             )
         )
@@ -150,8 +151,8 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Resize Precision",
                 desc = null,
                 values = Precision.values().map { it.name }.plus(listOf("LongImageMode")),
-                getValue = { appSettingsService.precision.value },
-                onSelect = { _, value -> appSettingsService.precision.value = value }
+                getValue = { appSettings.precision.value },
+                onSelect = { _, value -> appSettings.precision.value = value }
             )
         )
         add(
@@ -159,19 +160,19 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Resize Scale",
                 desc = null,
                 values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
-                getValue = { appSettingsService.scale.value },
-                onSelect = { _, value -> appSettingsService.scale.value = value }
+                getValue = { appSettings.scale.value },
+                onSelect = { _, value -> appSettings.scale.value = value }
             )
         )
-        if (appSettingsService.scale.value == "LongImageMode") {
+        if (appSettings.scale.value == "LongImageMode") {
             add(
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { appSettingsService.longImageScale.value.name },
+                    getValue = { appSettings.longImageScale.value.name },
                     onSelect = { _, value ->
-                        appSettingsService.longImageScale.value = Scale.valueOf(value)
+                        appSettings.longImageScale.value = Scale.valueOf(value)
                     }
                 )
             )
@@ -180,9 +181,9 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
                     values = Scale.values().map { it.name },
-                    getValue = { appSettingsService.otherImageScale.value.name },
+                    getValue = { appSettings.otherImageScale.value.name },
                     onSelect = { _, value ->
-                        appSettingsService.otherImageScale.value = Scale.valueOf(value)
+                        appSettings.otherImageScale.value = Scale.valueOf(value)
                     }
                 )
             )
@@ -204,9 +205,9 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Content Scale",
                 desc = null,
                 values = contentScales.map { it.name },
-                getValue = { appSettingsService.contentScale.value },
+                getValue = { appSettings.contentScale.value },
                 onSelect = { _, value ->
-                    appSettingsService.contentScale.value = value
+                    appSettings.contentScale.value = value
                 }
             )
         )
@@ -227,9 +228,9 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Alignment",
                 desc = null,
                 values = alignments.map { it.name },
-                getValue = { appSettingsService.alignment.value },
+                getValue = { appSettings.alignment.value },
                 onSelect = { _, value ->
-                    appSettingsService.alignment.value = value
+                    appSettings.alignment.value = value
                 }
             )
         )
@@ -237,13 +238,13 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Scroll Bar",
                 desc = null,
-                data = appSettingsService.scrollBarEnabled,
+                data = appSettings.scrollBarEnabled,
             )
         )
         add(
             SwitchMenuFlow(
                 title = "Read Mode",
-                data = appSettingsService.readModeEnabled,
+                data = appSettings.readModeEnabled,
                 desc = "Long images are displayed in full screen by default"
             )
         )
@@ -251,7 +252,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
             SwitchMenuFlow(
                 title = "Show Tile Bounds",
                 desc = "Overlay the state and area of the tile on the View",
-                data = appSettingsService.showTileBounds,
+                data = appSettings.showTileBounds,
             )
         )
     }
@@ -262,8 +263,8 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Bitmap Quality",
                 desc = null,
                 values = listOf("Default", "LOW", "HIGH"),
-                getValue = { appSettingsService.bitmapQuality.value },
-                onSelect = { _, value -> appSettingsService.bitmapQuality.value = value }
+                getValue = { appSettings.bitmapQuality.value },
+                onSelect = { _, value -> appSettings.bitmapQuality.value = value }
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -274,8 +275,8 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                     title = "Color Space",
                     desc = null,
                     values = items,
-                    getValue = { appSettingsService.colorSpace.value },
-                    onSelect = { _, value -> appSettingsService.colorSpace.value = value }
+                    getValue = { appSettings.colorSpace.value },
+                    onSelect = { _, value -> appSettings.colorSpace.value = value }
                 )
             )
         }
@@ -284,7 +285,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 SwitchMenuFlow(
                     title = "inPreferQualityOverSpeed",
                     desc = null,
-                    data = appSettingsService.inPreferQualityOverSpeed
+                    data = appSettings.inPreferQualityOverSpeed
                 )
             )
         }
@@ -308,7 +309,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettingsService.memoryCache,
+                data = appSettings.memoryCache,
                 onLongClick = {
                     sketch.memoryCache.clear()
                     updateList()
@@ -331,7 +332,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettingsService.resultCache,
+                data = appSettings.resultCache,
                 onLongClick = {
                     sketch.resultCache.clear()
                     updateList()
@@ -354,7 +355,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettingsService.downloadCache,
+                data = appSettings.downloadCache,
                 onLongClick = {
                     sketch.downloadCache.clear()
                     updateList()
@@ -372,7 +373,7 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 values = Logger.Level.values().map { it.name },
                 getValue = { application1.sketch.logger.level.name },
                 onSelect = { _, value ->
-                    appSettingsService.logLevel.value = Logger.Level.valueOf(value)
+                    appSettings.logLevel.value = Logger.Level.valueOf(value)
                 }
             )
         )
@@ -381,9 +382,9 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Http Client",
                 desc = null,
                 values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
-                getValue = { appSettingsService.httpClient.value },
+                getValue = { appSettings.httpClient.value },
                 onSelect = { _, value ->
-                    appSettingsService.httpClient.value = value
+                    appSettings.httpClient.value = value
                     Toastx.showLong(application1, "Restart the app to take effect")
                 }
             )
@@ -393,9 +394,9 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Video Frame Decoder",
                 desc = null,
                 values = listOf("FFmpeg", "AndroidBuiltIn"),
-                getValue = { appSettingsService.videoFrameDecoder.value },
+                getValue = { appSettings.videoFrameDecoder.value },
                 onSelect = { _, value ->
-                    appSettingsService.videoFrameDecoder.value = value
+                    appSettings.videoFrameDecoder.value = value
                     Toastx.showLong(application1, "Restart the app to take effect")
                 }
             )
@@ -405,9 +406,9 @@ class AppSettingsViewModel(application1: Application, val page: Page) :
                 title = "Gif Decoder",
                 desc = null,
                 values = listOf("KoralGif", "ImageDecoder+Movie"),
-                getValue = { appSettingsService.gifDecoder.value },
+                getValue = { appSettings.gifDecoder.value },
                 onSelect = { _, value ->
-                    appSettingsService.gifDecoder.value = value
+                    appSettings.gifDecoder.value = value
                     Toastx.showLong(application1, "Restart the app to take effect")
                 }
             )

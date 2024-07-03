@@ -27,11 +27,10 @@ import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
-import com.github.panpf.sketch.sample.ui.common.list.findPagingAdapter
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItemFactory
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -72,7 +71,7 @@ class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
                 initDataList = buildDisplayInsanityTestPhotos(),
             )
 
-            appSettingsService.listsCombinedFlow.ignoreFirst()
+            appSettings.listsCombinedFlow.ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     adapter?.notifyDataSetChanged()
                 }

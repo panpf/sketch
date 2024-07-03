@@ -35,8 +35,8 @@ import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.resources.Res
-import com.github.panpf.sketch.sample.resources.ic_image_outline
 import com.github.panpf.sketch.sample.resources.ic_image_broken_outline
+import com.github.panpf.sketch.sample.resources.ic_image_outline
 import com.github.panpf.sketch.sample.resources.ic_signal_cellular
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
@@ -63,10 +63,10 @@ fun PhotoGridItem(
     val imageState = rememberAsyncImageState()
     val mimeTypeLogoMap = rememberMimeTypeLogoMap()
     val progressPainter = rememberThemeSectorProgressPainter(hiddenWhenIndeterminate = true)
-    val appSettingsService = context.appSettings
-    val showDataFromLogo by appSettingsService.showDataFromLogoInList.collectAsState()
-    val showMimeTypeLogo by appSettingsService.showMimeTypeLogoInList.collectAsState()
-    val showProgressIndicator by appSettingsService.showProgressIndicatorInList.collectAsState()
+    val appSettings = context.appSettings
+    val showDataFromLogo by appSettings.showDataFromLogoInList.collectAsState()
+    val showMimeTypeLogo by appSettings.showMimeTypeLogoInList.collectAsState()
+    val showProgressIndicator by appSettings.showProgressIndicatorInList.collectAsState()
     val modifier = Modifier
         .fillMaxWidth()
         .let {
@@ -100,16 +100,16 @@ fun PhotoGridItem(
         }
 
     val colorScheme = MaterialTheme.colorScheme
-    val memoryCacheEnabled by appSettingsService.memoryCache.collectAsState()
-    val resultCacheEnabled by appSettingsService.resultCache.collectAsState()
-    val downloadCacheEnabled by appSettingsService.downloadCache.collectAsState()
-    val precision by appSettingsService.precision.collectAsState()
-    val scale by appSettingsService.scale.collectAsState()
-    val longImageScale by appSettingsService.longImageScale.collectAsState()
-    val otherImageScale by appSettingsService.otherImageScale.collectAsState()
-    val pauseLoadWhenScroll by appSettingsService.pauseLoadWhenScrollInList.collectAsState()
-    val saveCellularTraffic by appSettingsService.saveCellularTrafficInList.collectAsState()
-    val disallowAnimatedImage by appSettingsService.disallowAnimatedImageInList.collectAsState()
+    val memoryCacheEnabled by appSettings.memoryCache.collectAsState()
+    val resultCacheEnabled by appSettings.resultCache.collectAsState()
+    val downloadCacheEnabled by appSettings.downloadCache.collectAsState()
+    val precision by appSettings.precision.collectAsState()
+    val scale by appSettings.scale.collectAsState()
+    val longImageScale by appSettings.longImageScale.collectAsState()
+    val otherImageScale by appSettings.otherImageScale.collectAsState()
+    val pauseLoadWhenScroll by appSettings.pauseLoadWhenScrollInList.collectAsState()
+    val saveCellularTraffic by appSettings.saveCellularTrafficInList.collectAsState()
+    val disallowAnimatedImage by appSettings.disallowAnimatedImageInList.collectAsState()
     val request = ComposableImageRequest(photo.listThumbnailUrl) {
         memoryCachePolicy(if (memoryCacheEnabled) ENABLED else DISABLED)
         resultCachePolicy(if (resultCacheEnabled) ENABLED else DISABLED)
@@ -146,7 +146,7 @@ fun PhotoGridItem(
         crossfade()
         resizeOnDraw()
         sizeMultiplier(2f)  // To get a clearer thumbnail
-        PlatformListImageSettings(appSettingsService, this)
+        PlatformListImageSettings(appSettings, this)
     }
     when (index % 3) {
         0 -> {

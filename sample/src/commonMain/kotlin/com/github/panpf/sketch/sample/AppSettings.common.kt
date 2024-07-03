@@ -25,10 +25,10 @@ import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
-private val appSettingsServiceLazy = ParamLazy<PlatformContext, AppSettings> { AppSettings(it) }
+private val appSettingsLazy = ParamLazy<PlatformContext, AppSettings> { AppSettings(it) }
 
 val PlatformContext.appSettings: AppSettings
-    get() = appSettingsServiceLazy.get(this)
+    get() = appSettingsLazy.get(this)
 
 expect fun isDebugMode(): Boolean
 

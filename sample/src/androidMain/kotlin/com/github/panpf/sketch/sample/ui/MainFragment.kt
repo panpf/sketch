@@ -17,11 +17,11 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Build
 import android.os.Bundle
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.ui.common.ErrorStateFragment
+import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
 class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {
@@ -30,7 +30,7 @@ class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {
         binding: FragmentContainerBinding,
         savedInstanceState: Bundle?
     ) {
-        appSettingsService.composePage.collectWithLifecycle(viewLifecycleOwner) {
+        appSettings.composePage.collectWithLifecycle(viewLifecycleOwner) {
             val fragment = if (it) {
                 if (Build.VERSION.SDK_INT >= 21) {
                     ComposeHomeFragment()

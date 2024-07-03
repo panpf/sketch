@@ -18,10 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +35,7 @@ actual fun HomeHeader() {
             },
         )
 
-        val appSettings = LocalContext.current.appSettingsService
+        val appSettings = LocalContext.current.appSettings
         val top = with(LocalDensity.current) { TopAppBarDefaults.windowInsets.getTop(this).toDp() }
         Box(
             modifier = Modifier

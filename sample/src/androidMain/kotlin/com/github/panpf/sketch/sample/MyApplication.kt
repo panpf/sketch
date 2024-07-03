@@ -47,11 +47,11 @@ class MyApplication : Application(), SingletonSketch.Factory {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
-        val httpStack = when (appSettingsService.httpClient.value) {
+        val httpStack = when (appSettings.httpClient.value) {
             "Ktor" -> KtorStack()
             "OkHttp" -> OkHttpStack.Builder().build()
             "HttpURLConnection" -> HurlStack.Builder().build()
-            else -> throw IllegalArgumentException("Unknown httpClient: ${appSettingsService.httpClient.value}")
+            else -> throw IllegalArgumentException("Unknown httpClient: ${appSettings.httpClient.value}")
         }
         httpStack(httpStack)
         components {
@@ -65,17 +65,17 @@ class MyApplication : Application(), SingletonSketch.Factory {
             supportSvg()
 
             // video
-            when (appSettingsService.videoFrameDecoder.value) {
+            when (appSettings.videoFrameDecoder.value) {
                 "FFmpeg" -> supportFFmpegVideoFrame()
                 "AndroidBuiltIn" -> supportVideoFrame()
-                else -> throw IllegalArgumentException("Unknown videoFrameDecoder: ${appSettingsService.videoFrameDecoder.value}")
+                else -> throw IllegalArgumentException("Unknown videoFrameDecoder: ${appSettings.videoFrameDecoder.value}")
             }
 
             // gif
-            when (appSettingsService.gifDecoder.value) {
+            when (appSettings.gifDecoder.value) {
                 "KoralGif" -> supportKoralGif()
                 "ImageDecoder+Movie" -> if (VERSION.SDK_INT >= VERSION_CODES.P) supportAnimatedGif() else supportMovieGif()
-                else -> throw IllegalArgumentException("Unknown animatedDecoder: ${appSettingsService.gifDecoder.value}")
+                else -> throw IllegalArgumentException("Unknown animatedDecoder: ${appSettings.gifDecoder.value}")
             }
 
             // webp animated
@@ -89,10 +89,10 @@ class MyApplication : Application(), SingletonSketch.Factory {
             }
         }
         // To be able to print the Sketch initialization log
-        logger(level = appSettingsService.logLevel.value)
+        logger(level = appSettings.logLevel.value)
     }.build().apply {
         coroutineScope.launch {
-            appSettingsService.logLevel.collect {
+            appSettings.logLevel.collect {
                 logger.level = it
             }
         }

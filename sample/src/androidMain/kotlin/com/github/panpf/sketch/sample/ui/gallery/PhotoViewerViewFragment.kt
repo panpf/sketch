@@ -28,11 +28,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.panpf.assemblyadapter.pager.FragmentItemFactory
 import com.github.panpf.sketch.ability.showProgressIndicator
-import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.imageResult
+import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.parentViewModels
@@ -67,36 +67,36 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
         screenMode = false
     }
 
-    override fun getNavigationBarInsetsView(binding: FragmentImageViewerBinding): View? {
+    override fun getNavigationBarInsetsView(binding: FragmentImageViewerBinding): View {
         return binding.navigationBarInsetsLayout
     }
 
     @SuppressLint("RestrictedApi")
     override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.zoomImage.apply {
-            listOf(appSettingsService.scrollBarEnabled, photoPagerViewModel.buttonBgColor)
+            listOf(appSettings.scrollBarEnabled, photoPagerViewModel.buttonBgColor)
                 .merge()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    scrollBar = if (appSettingsService.scrollBarEnabled.value) ScrollBarSpec.Default.copy(
+                    scrollBar = if (appSettings.scrollBarEnabled.value) ScrollBarSpec.Default.copy(
                         color = photoPagerViewModel.buttonBgColor.value
                     ) else null
                 }
             zoomable.apply {
-                appSettingsService.readModeEnabled
+                appSettings.readModeEnabled
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         readModeState.value = if (it) ReadMode.Default else null
                     }
-                appSettingsService.contentScale
+                appSettings.contentScale
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         contentScaleState.value = ContentScaleCompat.valueOf(it)
                     }
-                appSettingsService.alignment
+                appSettings.alignment
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         alignmentState.value = AlignmentCompat.valueOf(it)
                     }
             }
             subsampling.apply {
-                appSettingsService.showTileBounds
+                appSettings.showTileBounds
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         showTileBoundsState.value = it
                     }
@@ -114,12 +114,12 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
                 true
             }
 
-            appSettingsService.viewersCombinedFlow
+            appSettings.viewersCombinedFlow
                 .ignoreFirst()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     loadImage(binding)
                 }
-            appSettingsService.showOriginImage
+            appSettings.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     loadImage(binding)
                 }
@@ -181,7 +181,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
     }
 
     private fun getImageUrl(): String {
-        return if (appSettingsService.showOriginImage.value) {
+        return if (appSettings.showOriginImage.value) {
             args.originImageUri
         } else {
             args.previewImageUri ?: args.originImageUri
@@ -191,7 +191,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
     private fun loadImage(binding: FragmentImageViewerBinding) {
         val imageUri = getImageUrl()
         binding.zoomImage.loadImage(imageUri) {
-            merge(appSettingsService.buildViewerImageOptions())
+            merge(appSettings.buildViewerImageOptions())
             placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
             crossfade(fadeStart = false)
         }

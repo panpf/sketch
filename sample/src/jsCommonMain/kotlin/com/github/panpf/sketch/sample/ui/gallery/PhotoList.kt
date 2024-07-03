@@ -55,7 +55,7 @@ fun PhotoList(
 ) {
     var photos: List<Photo> by remember { mutableStateOf(emptyList()) }
     val context = LocalPlatformContext.current
-    val appSettingsService = context.appSettings
+    val appSettings = context.appSettings
     var pageStart by remember { mutableStateOf(initialPageStart) }
     var nextPageStart: Int? by remember { mutableStateOf(null) }
     var refreshing: Boolean by remember { mutableStateOf(false) }
@@ -87,7 +87,7 @@ fun PhotoList(
             .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
-        val photoGridMode by appSettingsService.photoGridMode.collectAsState()
+        val photoGridMode by appSettings.photoGridMode.collectAsState()
         if (photoGridMode == PhotoGridMode.SQUARE) {
             val gridState = rememberLazyGridState()
             LaunchedEffect(gridState.layoutInfo, photos) {

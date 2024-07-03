@@ -32,7 +32,7 @@ import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettingsService
+import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.simplePalette
@@ -127,14 +127,14 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
         }
 
         binding.originImage.apply {
-            appSettingsService.showOriginImage
+            appSettings.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     setImageResource(if (it) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline)
                 }
 
             setOnClickListener {
-                val newValue = !appSettingsService.showOriginImage.value
-                appSettingsService.showOriginImage.value = newValue
+                val newValue = !appSettings.showOriginImage.value
+                appSettings.showOriginImage.value = newValue
                 if (newValue) {
                     showLongToast("Now show original image")
                 } else {
