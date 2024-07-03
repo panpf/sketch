@@ -1,16 +1,21 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.util.PlatformParcelize
 import kotlinx.serialization.Serializable
 
-@PlatformParcelize
 @Serializable
-data class PhotoPagerParams(
-    val photos: List<Photo>,
-    val startPosition: Int,
+expect class PhotoPagerParams {
+
+    val photos: List<Photo>
+    val startPosition: Int
     val initialPosition: Int
-)
+
+    constructor(
+        photos: List<Photo>,
+        startPosition: Int,
+        initialPosition: Int
+    )
+}
 
 fun buildPhotoPagerParams(
     items: List<Photo>, position: Int

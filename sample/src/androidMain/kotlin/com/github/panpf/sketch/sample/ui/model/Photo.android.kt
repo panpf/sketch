@@ -15,20 +15,23 @@
  */
 package com.github.panpf.sketch.sample.ui.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Photo constructor(
-    @SerialName("originalUrl") val originalUrl: String,
-    @SerialName("mediumUrl") val mediumUrl: String?,
-    @SerialName("thumbnailUrl") val thumbnailUrl: String?,
-    @SerialName("width") val width: Int?,
-    @SerialName("height") val height: Int?,
-    @SerialName("index") val index: Int? = null,
-) {
+@Parcelize
+actual data class Photo actual constructor(
+    @SerialName("originalUrl") actual val originalUrl: String,
+    @SerialName("mediumUrl") actual val mediumUrl: String?,
+    @SerialName("thumbnailUrl") actual val thumbnailUrl: String?,
+    @SerialName("width") actual val width: Int?,
+    @SerialName("height") actual val height: Int?,
+    @SerialName("index") actual val index: Int?,
+) : Parcelable {
 
-    val listThumbnailUrl: String = thumbnailUrl ?: mediumUrl ?: originalUrl
+    actual val listThumbnailUrl: String = thumbnailUrl ?: mediumUrl ?: originalUrl
 
-    val detailPreviewUrl: String = mediumUrl ?: originalUrl
+    actual val detailPreviewUrl: String = mediumUrl ?: originalUrl
 }
