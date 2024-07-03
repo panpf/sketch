@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.data
 
 import android.graphics.RectF
 import android.provider.MediaStore.Images.Media
@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
 
-actual suspend fun readPhotosFromPhotoAlbum(
+actual suspend fun localImages(
     context: PlatformContext,
     startPosition: Int,
     pageSize: Int

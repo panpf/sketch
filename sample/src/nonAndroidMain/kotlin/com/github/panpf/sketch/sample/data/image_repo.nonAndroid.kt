@@ -1,25 +1,19 @@
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.data
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.request.ImageRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-actual suspend fun readPhotosFromPhotoAlbum(
-    context: PlatformContext,
-    startPosition: Int,
-    pageSize: Int
-): List<String> = emptyList()   // TODO Read ios photo album
 
 actual suspend fun readImageInfoOrNull(
     context: PlatformContext,
     sketch: Sketch,
     uri: String,
-): ImageInfo? = withContext(Dispatchers.IO) {
+): ImageInfo? = withContext(ioCoroutineDispatcher()) {
     runCatching {
         val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
         val dataSource = fetcher.fetch().getOrThrow().dataSource

@@ -22,21 +22,10 @@ import app.cash.paging.PagingState
 import app.cash.paging.createPagingSourceLoadResultPage
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.sample.data.builtinImages
+import com.github.panpf.sketch.sample.data.localImages
+import com.github.panpf.sketch.sample.data.readImageInfoOrNull
 import com.github.panpf.sketch.sample.ui.model.Photo
-
-expect suspend fun readPhotosFromPhotoAlbum(
-    context: PlatformContext,
-    startPosition: Int,
-    pageSize: Int
-): List<String>
-
-expect suspend fun readImageInfoOrNull(
-    context: PlatformContext,
-    sketch: Sketch,
-    uri: String,
-): ImageInfo?
 
 class LocalPhotoListPagingSource(
     val context: PlatformContext,
@@ -45,12 +34,7 @@ class LocalPhotoListPagingSource(
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
     private val builtInPhotos: List<String> by lazy {
-        ResourceImages.statics
-            .plus(ResourceImages.anims)
-            .plus(ResourceImages.longQMSHT)
-            .plus(ResourceImages.clockExifs)
-            .plus(ResourceImages.mp4)
-            .map { it.uri }
+        builtinImages().map { it.uri }
     }
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
@@ -67,7 +51,7 @@ class LocalPhotoListPagingSource(
             val fromPhotoAlbumPhotos = if (fromBuiltInPhotos.size < pageSize) {
                 val photoAlbumStartPosition = 0
                 val photoAlbumPageSize = pageSize - fromBuiltInPhotos.size
-                readPhotosFromPhotoAlbum(context, photoAlbumStartPosition, photoAlbumPageSize)
+                localImages(context, photoAlbumStartPosition, photoAlbumPageSize)
             } else {
                 emptyList()
             }
@@ -76,8 +60,7 @@ class LocalPhotoListPagingSource(
             }
         } else {
             val photoAlbumStartPosition = startPosition - builtInPhotos.size
-            val photoAlbumPageSize = pageSize
-            readPhotosFromPhotoAlbum(context, photoAlbumStartPosition, photoAlbumPageSize)
+            localImages(context, photoAlbumStartPosition, pageSize)
         }.map { uri -> uriToPhoto(uri) }
         val nextKey = if (photos.isNotEmpty()) startPosition + pageSize else null
         val filteredPhotos = photos.filter { keySet.add(it.originalUrl) }
@@ -85,7 +68,7 @@ class LocalPhotoListPagingSource(
             filteredPhotos,
             null,
             nextKey
-        ) as PagingSourceLoadResult<Int, Photo>
+        )
     }
 
     private suspend fun uriToPhoto(uri: String): Photo {
