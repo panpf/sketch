@@ -24,7 +24,6 @@ import com.github.panpf.sketch.sample.resources.ic_layout_grid_staggered
 import com.github.panpf.sketch.sample.resources.ic_pause
 import com.github.panpf.sketch.sample.resources.ic_play
 import com.github.panpf.sketch.sample.resources.ic_settings
-import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import org.jetbrains.compose.resources.painterResource
@@ -42,16 +41,16 @@ fun MainMenu(modifier: Modifier = Modifier) {
         val appSettings = context.appSettings
         val modifier1 = Modifier.size(40.dp).padding(10.dp)
         val disallowAnimatedImageInList by appSettings.disallowAnimatedImageInList.collectAsState()
-        val photoListLayoutMode by appSettings.photoGridMode.collectAsState()
+        val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
         val playIcon = if (disallowAnimatedImageInList) {
             painterResource(drawable.ic_play)
         } else {
             painterResource(drawable.ic_pause)
         }
-        val photoGridModeIcon = if (photoListLayoutMode == PhotoGridMode.SQUARE) {
-            painterResource(drawable.ic_layout_grid_staggered)
-        } else {
+        val staggeredGridModeIcon = if (staggeredGridMode) {
             painterResource(drawable.ic_layout_grid)
+        } else {
+            painterResource(drawable.ic_layout_grid_staggered)
         }
         Icon(
             painter = playIcon,
@@ -62,15 +61,10 @@ fun MainMenu(modifier: Modifier = Modifier) {
             tint = colorScheme.onTertiaryContainer
         )
         Icon(
-            painter = photoGridModeIcon,
+            painter = staggeredGridModeIcon,
             contentDescription = null,
             modifier = modifier1.clickable {
-                appSettings.photoGridMode.value =
-                    if (photoListLayoutMode == PhotoGridMode.SQUARE) {
-                        PhotoGridMode.STAGGERED
-                    } else {
-                        PhotoGridMode.SQUARE
-                    }
+                appSettings.staggeredGridMode.value = !staggeredGridMode
             },
             tint = colorScheme.onTertiaryContainer
         )

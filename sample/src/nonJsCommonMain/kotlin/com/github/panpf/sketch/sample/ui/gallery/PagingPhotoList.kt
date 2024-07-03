@@ -35,7 +35,6 @@ import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.common.list.PagingAppendState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -60,16 +59,16 @@ fun PagingPhotoList(
             .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
-        val photoGridMode by appSettings.photoGridMode.collectAsState()
-        if (photoGridMode == PhotoGridMode.SQUARE) {
-            PhotoSquareGrid(
+        val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
+        if (staggeredGridMode) {
+            PhotoStaggeredGrid(
                 pagingItems = pagingItems,
                 animatedPlaceholder = animatedPlaceholder,
                 gridCellsMinSize = gridCellsMinSize,
                 onClick = onClick,
             )
         } else {
-            PhotoStaggeredGrid(
+            PhotoSquareGrid(
                 pagingItems = pagingItems,
                 animatedPlaceholder = animatedPlaceholder,
                 gridCellsMinSize = gridCellsMinSize,

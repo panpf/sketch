@@ -14,7 +14,6 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
@@ -34,12 +33,11 @@ expect fun isDebugMode(): Boolean
 
 class AppSettings(val context: PlatformContext) {
 
-    val photoGridMode: SettingsStateFlow<PhotoGridMode> by lazy {
-        enumSettingsStateFlow(
+    val staggeredGridMode: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(
             context = context,
-            key = "photoGridMode",
-            initialize = PhotoGridMode.SQUARE,
-            convert = { PhotoGridMode.valueOf(it) },
+            key = "staggeredGridMode",
+            initialize = false,
         )
     }
 

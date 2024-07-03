@@ -61,7 +61,7 @@
         tools:targetApi="n">
 
         <activity
-            android:name="com.github.panpf.sketch.sample.ui.MainActivity"
+            android:name="com.github.panpf.sketch.sample.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

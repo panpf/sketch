@@ -38,7 +38,6 @@ import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.common.list.AppendState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.model.PhotoGridMode
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -87,8 +86,24 @@ fun PhotoList(
             .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
-        val photoGridMode by appSettings.photoGridMode.collectAsState()
-        if (photoGridMode == PhotoGridMode.SQUARE) {
+        val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
+        if (staggeredGridMode) {
+            val staggeredGridState = rememberLazyStaggeredGridState()
+            LaunchedEffect(staggeredGridState.layoutInfo, photos) {
+                val nextPageStart1 = nextPageStart
+                if (nextPageStart1 != null && staggeredGridState.layoutInfo.visibleItemsInfo.last().index == photos.size - 1) {
+                    pageStart = nextPageStart1
+                }
+            }
+            PhotoStaggeredGrid(
+                staggeredGridState = staggeredGridState,
+                photos = photos,
+                animatedPlaceholder = animatedPlaceholder,
+                gridCellsMinSize = gridCellsMinSize,
+                appendState = appendState,
+                onClick = onClick,
+            )
+        } else {
             val gridState = rememberLazyGridState()
             LaunchedEffect(gridState.layoutInfo, photos) {
                 val nextPageStart1 = nextPageStart
@@ -98,16 +113,6 @@ fun PhotoList(
             }
             PhotoSquareGrid(
                 gridState = gridState,
-                photos = photos,
-                animatedPlaceholder = animatedPlaceholder,
-                gridCellsMinSize = gridCellsMinSize,
-                appendState = appendState,
-                onClick = onClick,
-            )
-        } else {
-            val staggeredGridState = rememberLazyStaggeredGridState()
-            PhotoStaggeredGrid(
-                staggeredGridState = staggeredGridState,
                 photos = photos,
                 animatedPlaceholder = animatedPlaceholder,
                 gridCellsMinSize = gridCellsMinSize,
