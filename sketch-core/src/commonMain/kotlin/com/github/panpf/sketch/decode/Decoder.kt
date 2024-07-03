@@ -15,17 +15,19 @@
  */
 package com.github.panpf.sketch.decode
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Key
 
 /**
  * Decode Image from [DataSource].
  */
 fun interface Decoder {
+
+    // TODO Add a method to get the ImageInfo of the Image for LocalPhotoListPagingSource.readImageInfo
 
     /**
      * Decode Image from [DataSource] and wrap it as a [DecodeResult] return.
