@@ -57,7 +57,7 @@ import kotlin.math.roundToInt
 class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<PhotoViewerViewFragmentArgs>()
-    private val photoPagerViewModel by parentViewModels<PhotoPagerViewModel>()
+    private val photoPaletteViewModel by parentViewModels<PhotoPaletteViewModel>()
     private val photoActionViewModel by parentViewModels<PhotoActionViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
@@ -74,12 +74,14 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
     @SuppressLint("RestrictedApi")
     override fun onViewCreated(binding: FragmentImageViewerBinding, savedInstanceState: Bundle?) {
         binding.zoomImage.apply {
-            listOf(appSettings.scrollBarEnabled, photoPagerViewModel.buttonBgColor)
+            listOf(appSettings.scrollBarEnabled, photoPaletteViewModel.photoPaletteState)
                 .merge()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    scrollBar = if (appSettings.scrollBarEnabled.value) ScrollBarSpec.Default.copy(
-                        color = photoPagerViewModel.buttonBgColor.value
-                    ) else null
+                    scrollBar = if (appSettings.scrollBarEnabled.value) {
+                        ScrollBarSpec.Default.copy(color = photoPaletteViewModel.photoPaletteState.value.containerColorInt)
+                    } else {
+                        null
+                    }
                 }
             zoomable.apply {
                 appSettings.readModeEnabled
@@ -164,10 +166,10 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             startImageInfoDialog(binding.zoomImage)
         }
 
-        photoPagerViewModel.buttonBgColor.repeatCollectWithLifecycle(
+        photoPaletteViewModel.photoPaletteState.repeatCollectWithLifecycle(
             owner = viewLifecycleOwner,
             state = State.STARTED
-        ) { color ->
+        ) { photoPalette ->
             listOf(
                 binding.shareIcon,
                 binding.saveIcon,
@@ -175,7 +177,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
                 binding.rotateIcon,
                 binding.infoIcon
             ).forEach {
-                it.background.asOrThrow<GradientDrawable>().setColor(color)
+                it.background.asOrThrow<GradientDrawable>().setColor(photoPalette.containerColorInt)
             }
         }
     }

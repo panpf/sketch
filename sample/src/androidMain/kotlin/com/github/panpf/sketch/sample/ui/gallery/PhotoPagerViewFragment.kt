@@ -35,6 +35,7 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
+import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -52,7 +53,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
     private val photoList by lazy {
         Json.decodeFromString<List<Photo>>(args.photos)
     }
-    private val viewModel by viewModels<PhotoPagerViewModel>()
+    private val photoPaletteViewModel by viewModels<PhotoPaletteViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +79,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    val imageUrl = photoList[position]
-                        .let { it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl }
+                    val imageUrl = photoList[position].listThumbnailUrl
                     loadBgImage(binding, imageUrl)
                 }
             })
@@ -95,19 +95,13 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             State.STARTED
         ) {
             if (it is LoadState.Success) {
-                val preferredSwatch = it.result.simplePalette?.run {
-                    listOfNotNull(
-                        darkMutedSwatch,
-                        mutedSwatch,
-                        lightMutedSwatch,
-                        darkVibrantSwatch,
-                        vibrantSwatch,
-                        lightVibrantSwatch,
-                    ).firstOrNull()
-                }
-                if (preferredSwatch != null) {
-                    viewModel.setButtonBgColor(preferredSwatch.rgb)
-                }
+                photoPaletteViewModel.setPhotoPalette(
+                    PhotoPalette(
+                        palette = it.result.simplePalette,
+                        primaryColor = resources.getColor(R.color.md_theme_primary),
+                        primaryContainerColor = resources.getColor(R.color.md_theme_primaryContainer)
+                    )
+                )
             }
         }
 
@@ -157,17 +151,17 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
             findNavController().popBackStack()
         }
 
-        viewModel.buttonBgColor.repeatCollectWithLifecycle(
+        photoPaletteViewModel.photoPaletteState.repeatCollectWithLifecycle(
             owner = viewLifecycleOwner,
             state = State.STARTED
-        ) { color ->
+        ) { photoPalette ->
             listOf(
                 binding.backImage,
                 binding.settingsImage,
                 binding.originImage,
                 binding.pageNumberText
             ).forEach {
-                it.background.asOrThrow<GradientDrawable>().setColor(color)
+                it.background.asOrThrow<GradientDrawable>().setColor(photoPalette.containerColorInt)
             }
         }
     }

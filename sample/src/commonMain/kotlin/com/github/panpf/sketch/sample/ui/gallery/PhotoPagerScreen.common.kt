@@ -36,7 +36,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isMetaPressed
@@ -62,6 +61,7 @@ import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
+import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_arrow_left
@@ -88,19 +88,16 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun DrawContent() {
         Box(Modifier.fillMaxSize()) {
-            val photos = params.photos
             Box(modifier = Modifier.fillMaxSize()) {
-                val pagerState =
-                    rememberPagerState(initialPage = params.initialPosition - params.startPosition) {
-                        photos.size
-                    }
-
-                val uri = photos[pagerState.currentPage].let {
-                    it.thumbnailUrl ?: it.mediumUrl ?: it.originalUrl
+                val initialPage = params.initialPosition - params.startPosition
+                val pagerState = rememberPagerState(initialPage = initialPage) {
+                    params.photos.size
                 }
+
+                val uri = params.photos[pagerState.currentPage].listThumbnailUrl
                 val colorScheme = MaterialTheme.colorScheme
-                val buttonBgColorState = remember { mutableStateOf(colorScheme.primary) }
-                PagerBackground(uri, buttonBgColorState)
+                val photoPaletteState = remember { mutableStateOf(PhotoPalette(colorScheme)) }
+                PagerBackground(uri, photoPaletteState)
 
                 HorizontalPager(
                     state = pagerState,
@@ -108,13 +105,13 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                     modifier = Modifier.fillMaxSize()
                 ) { index ->
                     PhotoViewer(
-                        photo = photos[index],
-                        buttonBgColorState = buttonBgColorState,
+                        photo = params.photos[index],
+                        photoPaletteState = photoPaletteState,
                     )
                 }
 
-                Headers(buttonBgColorState, pagerState)
-                TurnPageIndicator(buttonBgColorState, pagerState)
+                Headers(pagerState, photoPaletteState)
+                TurnPageIndicator(pagerState, photoPaletteState)
             }
         }
     }
@@ -122,25 +119,15 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
     @Composable
     fun PagerBackground(
         imageUri: String,
-        buttonBgColorState: MutableState<Color>,
+        photoPaletteState: MutableState<PhotoPalette>,
     ) {
+        val colorScheme = MaterialTheme.colorScheme
         val imageState = rememberAsyncImageState()
         LaunchedEffect(Unit) {
             snapshotFlow { imageState.result }.collect {
                 if (it is ImageResult.Success) {
-                    val preferredSwatch = it.simplePalette?.run {
-                        listOfNotNull(
-                            darkMutedSwatch,
-                            mutedSwatch,
-                            lightMutedSwatch,
-                            darkVibrantSwatch,
-                            vibrantSwatch,
-                            lightVibrantSwatch,
-                        ).firstOrNull()
-                    }
-                    if (preferredSwatch != null) {
-                        buttonBgColorState.value = Color(preferredSwatch.rgb).copy(0.6f)
-                    }
+                    photoPaletteState.value =
+                        PhotoPalette(it.simplePalette, colorScheme = colorScheme)
                 }
             }
         }
@@ -193,8 +180,8 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
     @Composable
     @OptIn(ExperimentalFoundationApi::class)
     private fun Headers(
-        buttonBgColorState: MutableState<Color>,
-        pagerState: PagerState
+        pagerState: PagerState,
+        photoPaletteState: MutableState<PhotoPalette>,
     ) {
         val context = LocalPlatformContext.current
         val density = LocalDensity.current
@@ -202,20 +189,22 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             val toolbarTopMargin = getTopMargin(context)
             with(density) { toolbarTopMargin.toDp() }
         }
-        val buttonBgColor = buttonBgColorState.value
-        val buttonTextColor = Color.White
-        val navigator = LocalNavigator.current!!
-
+        val photoPalette by photoPaletteState
         Box(modifier = Modifier.fillMaxSize().padding(top = toolbarTopMarginDp)) {
             Column(modifier = Modifier.padding(20.dp)) {
-                IconButton(onClick = { navigator.pop() }) {
+                val navigator = LocalNavigator.current!!
+                IconButton(
+                    onClick = { navigator.pop() },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = photoPalette.containerColor,
+                        contentColor = photoPalette.contentColor
+                    ),
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color.White,
                         modifier = Modifier
                             .size(40.dp)
-                            .background(color = buttonBgColorState.value)
                             .padding(8.dp),
                     )
                 }
@@ -232,24 +221,28 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                 val image2IconPainter = if (showOriginImage)
                     painterResource(Res.drawable.ic_image2_baseline) else painterResource(Res.drawable.ic_image2_outline)
                 val coroutineScope = rememberCoroutineScope()
-                IconButton(onClick = {
-                    val newValue = !appSettings.showOriginImage.value
-                    appSettings.showOriginImage.value = newValue
-                    coroutineScope.launch {
-                        if (newValue) {
-                            EventBus.toastFlow.emit("Now show original image")
-                        } else {
-                            EventBus.toastFlow.emit("Now show thumbnails image")
+                IconButton(
+                    onClick = {
+                        val newValue = !appSettings.showOriginImage.value
+                        appSettings.showOriginImage.value = newValue
+                        coroutineScope.launch {
+                            if (newValue) {
+                                EventBus.toastFlow.emit("Now show original image")
+                            } else {
+                                EventBus.toastFlow.emit("Now show thumbnails image")
+                            }
                         }
-                    }
-                }) {
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = photoPalette.containerColor,
+                        contentColor = photoPalette.contentColor
+                    ),
+                ) {
                     Icon(
                         painter = image2IconPainter,
                         contentDescription = "show origin image",
-                        tint = buttonTextColor,
                         modifier = Modifier
                             .size(40.dp)
-                            .background(color = buttonBgColor)
                             .padding(8.dp)
                     )
                 }
@@ -260,7 +253,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                     Modifier
                         .width(40.dp)
                         .background(
-                            color = buttonBgColor,
+                            color = photoPalette.containerColor,
                             shape = RoundedCornerShape(50)
                         )
                         .padding(vertical = 20.dp),
@@ -284,7 +277,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                     Text(
                         text = numberText,
                         textAlign = TextAlign.Center,
-                        color = buttonTextColor,
+                        color = photoPalette.contentColor,
                         style = TextStyle(lineHeight = 12.sp),
                         modifier = Modifier
                     )
@@ -293,14 +286,18 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                 Spacer(modifier = Modifier.size(10.dp))
 
                 var showSettingsDialog by remember { mutableStateOf(false) }
-                IconButton(onClick = { showSettingsDialog = true }) {
+                IconButton(
+                    onClick = { showSettingsDialog = true },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = photoPalette.containerColor,
+                        contentColor = photoPalette.contentColor
+                    ),
+                ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_settings),
                         contentDescription = "settings",
-                        tint = buttonTextColor,
                         modifier = Modifier
                             .size(40.dp)
-                            .background(color = buttonBgColor)
                             .padding(8.dp)
                     )
                 }
@@ -316,8 +313,8 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
     @Composable
     @OptIn(ExperimentalFoundationApi::class)
     fun BoxScope.TurnPageIndicator(
-        buttonBgColorState: MutableState<Color>,
-        pagerState: PagerState
+        pagerState: PagerState,
+        photoPaletteState: MutableState<PhotoPalette>,
     ) {
         if (runtimePlatformInstance.isMobile()) return
         val turnPage = remember { MutableSharedFlow<Boolean>() }
@@ -348,12 +345,13 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             .padding(20.dp)
             .size(50.dp)
             .clip(CircleShape)
+        val photoPalette by photoPaletteState
         IconButton(
             onClick = { coroutineScope.launch { turnPage.emit(false) } },
             modifier = turnPageIconModifier.align(Alignment.CenterStart),
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = buttonBgColorState.value,
-                contentColor = Color.White
+                containerColor = photoPalette.containerColor,
+                contentColor = photoPalette.contentColor
             ),
         ) {
             Icon(
@@ -365,8 +363,8 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             onClick = { coroutineScope.launch { turnPage.emit(true) } },
             modifier = turnPageIconModifier.align(Alignment.CenterEnd),
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = buttonBgColorState.value,
-                contentColor = Color.White
+                containerColor = photoPalette.containerColor,
+                contentColor = photoPalette.contentColor
             ),
         ) {
             Icon(
