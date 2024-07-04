@@ -25,14 +25,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 
-fun <T> Flow<T>.collectWithLifecycle(owner: LifecycleOwner, collector: FlowCollector<T>) {
-    owner.lifecycleScope.launch {
-        collect(collector)
-    }
-}
-
-fun <T> Flow<T>.collectWithLifecycle(lifecycle: Lifecycle, collector: FlowCollector<T>) {
-    lifecycle.coroutineScope.launch {
+fun <T> Flow<T>.collectWithLifecycle(owner: LifecycleOwner, collector: FlowCollector<T>): Job {
+    return owner.lifecycleScope.launch {
         collect(collector)
     }
 }

@@ -59,6 +59,10 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
         lightStatusAndNavigationBar = false
     }
 
+    override fun getStatusBarInsetsView(binding: FragmentImagePagerBinding): View {
+        return binding.statusBarInsetsLayout
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(
         binding: FragmentImagePagerBinding,
@@ -166,10 +170,6 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
                 it.background.asOrThrow<GradientDrawable>().setColor(color)
             }
         }
-    }
-
-    override fun getStatusBarInsetsView(binding: FragmentImagePagerBinding): View {
-        return binding.statusBarInsetsLayout
     }
 
     private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {

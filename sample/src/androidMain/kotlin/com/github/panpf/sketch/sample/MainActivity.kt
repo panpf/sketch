@@ -20,15 +20,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import com.github.panpf.sketch.sample.databinding.ActivityMainBinding
 import com.github.panpf.sketch.sample.service.NotificationService
-import com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+import com.github.panpf.sketch.sample.ui.MainFragment
+import com.github.panpf.sketch.sample.ui.base.BaseActivity
 import com.google.android.material.internal.EdgeToEdgeUtils
 
-class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
+class MainActivity : BaseActivity() {
 
     @SuppressLint("RestrictedApi")
-    override fun onCreate(binding: ActivityMainBinding, savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window,/* edgeToEdgeEnabled = */ true)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             window.statusBarColor = Color.parseColor("#60000000")
@@ -36,6 +38,11 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding>() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
             window.navigationBarColor = Color.TRANSPARENT
         }
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(android.R.id.content, MainFragment())
+            .commit()
     }
 
     override fun onFirstResume() {

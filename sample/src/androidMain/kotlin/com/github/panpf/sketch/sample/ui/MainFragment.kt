@@ -15,34 +15,30 @@
  */
 package com.github.panpf.sketch.sample.ui
 
-import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.common.ErrorStateFragment
 import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
 class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {
 
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+            appSettings.composePage.collectWithLifecycle(viewLifecycleOwner) {
+                val fragment = if (it) ComposeHomeFragment() else ViewNavHostFragment()
+                childFragmentManager.beginTransaction()
+                    .replace(binding!!.fragmentContainer.id, fragment)
+                    .commit()
+            }
+        }
+
     override fun onViewCreated(
         binding: FragmentContainerBinding,
         savedInstanceState: Bundle?
     ) {
-        appSettings.composePage.collectWithLifecycle(viewLifecycleOwner) {
-            val fragment = if (it) {
-                if (Build.VERSION.SDK_INT >= 21) {
-                    ComposeHomeFragment()
-                } else {
-                    ErrorStateFragment.create("This feature requires Android 5.0 or later")
-                }
-            } else {
-                ViewNavHostFragment()
-            }
-            childFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainer.id, fragment)
-                .commit()
-        }
+        permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 }
