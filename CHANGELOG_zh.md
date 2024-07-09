@@ -11,6 +11,7 @@
 new: 添加 PlatformContext.sketch 和 View.sketch 扩展函数
 change: ImageOptions 和 ImageRequest 的 mergeComponents() 方法重命名为 addComponents()
 new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
+improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
 
 
 # 4.0.0-alpha03

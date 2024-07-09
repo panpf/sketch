@@ -31,7 +31,6 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageOptions.Builder
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
@@ -123,6 +122,8 @@ class Sketch private constructor(options: Options) {
     val decodeTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().limitedParallelism(4)
 
     init {
+        checkPlatformContext(context)
+
         val componentRegistry = options.componentRegistry
             .merged(platformComponents())
             .merged(defaultComponents())
@@ -238,8 +239,9 @@ class Sketch private constructor(options: Options) {
         val globalImageOptions: ImageOptions?,
     )
 
-    class Builder constructor(private val context: PlatformContext) {
+    class Builder constructor(context: PlatformContext) {
 
+        private val context: PlatformContext = context.application
         private var logger: Logger? = null
         private var fileSystem: FileSystem? = null
         private var memoryCacheLazy: Lazy<MemoryCache>? = null
@@ -251,6 +253,10 @@ class Sketch private constructor(options: Options) {
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
+
+        init {
+            checkPlatformContext(this.context)
+        }
 
         /**
          * Set the [Logger] to write logs to.
@@ -386,7 +392,6 @@ class Sketch private constructor(options: Options) {
         }
 
         fun build(): Sketch {
-            val context = context.application
             val finalFileSystem = fileSystem ?: defaultFileSystem()
             val options = Options(
                 context = context,

@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.checkPlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
@@ -40,6 +41,7 @@ import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.keyOrNull
 import com.github.panpf.sketch.util.screenSize
 
@@ -224,6 +226,10 @@ data class ImageRequest(
      */
     override val key: String by lazy { newKey() }
 
+    init {
+        checkPlatformContext(context)
+    }
+
     /**
      * Create a new [ImageRequest.Builder] based on the current [ImageRequest].
      *
@@ -258,7 +264,8 @@ data class ImageRequest(
         private val definedRequestOptionsBuilder: RequestOptions.Builder
 
         constructor(context: PlatformContext, uri: String?) {
-            this.context = context
+            this.context = context.application
+            checkPlatformContext(this.context)
             this.uri = uri.orEmpty()
             this.definedOptionsBuilder = ImageOptions.Builder()
             this.definedRequestOptionsBuilder = RequestOptions.Builder()

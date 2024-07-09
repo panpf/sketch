@@ -14,6 +14,7 @@ new: Add PlatformContext.sketch and View.sketch extension functions
 change: The mergeComponents() method of ImageOptions and ImageRequest has been renamed to
 addComponents()
 new: Sketch.Builder and ComponentRegistry.Builder added addComponents() function
+improve: Check the type of PlatformContext to prevent passing Activity to Sketch or ImageRequest
 
 # 4.0.0-alpha03
 

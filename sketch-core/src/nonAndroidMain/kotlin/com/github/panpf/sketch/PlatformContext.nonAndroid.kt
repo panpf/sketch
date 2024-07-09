@@ -5,3 +5,7 @@ actual abstract class PlatformContext private constructor() {
         val INSTANCE = object : PlatformContext() {}
     }
 }
+
+
+actual fun checkPlatformContext(context: PlatformContext) {
+}
