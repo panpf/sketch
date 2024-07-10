@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 actual data class PhotoPagerParams actual constructor(
     actual val photos: List<Photo>,
+    actual val totalCount: Int,
     actual val startPosition: Int,
     actual val initialPosition: Int
 )

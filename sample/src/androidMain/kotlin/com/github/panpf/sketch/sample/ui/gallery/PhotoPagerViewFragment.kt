@@ -20,6 +20,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
@@ -98,8 +99,12 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
                 photoPaletteViewModel.setPhotoPalette(
                     PhotoPalette(
                         palette = it.result.simplePalette,
-                        primaryColor = resources.getColor(R.color.md_theme_primary),
-                        primaryContainerColor = resources.getColor(R.color.md_theme_primaryContainer)
+                        primaryColor = ResourcesCompat.getColor(
+                            resources, R.color.md_theme_primary, null
+                        ),
+                        primaryContainerColor = ResourcesCompat.getColor(
+                            resources, R.color.md_theme_primaryContainer, null
+                        )
                     )
                 )
             }
@@ -108,11 +113,7 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
         binding.pageNumberText.apply {
             val updateCurrentPageNumber: () -> Unit = {
                 val pageNumber = args.startPosition + binding.pager.currentItem + 1
-                text = context.resources.getString(
-                    R.string.pager_number_ver,
-                    pageNumber.coerceAtMost(999),
-                    (args.startPosition + photoList.size).coerceAtMost(999)
-                )
+                text = resources.getString(R.string.pager_number_ver, pageNumber, args.totalCount)
             }
             binding.pager.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {

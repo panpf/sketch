@@ -7,19 +7,23 @@ import kotlinx.serialization.Serializable
 expect class PhotoPagerParams {
 
     val photos: List<Photo>
+    val totalCount: Int
     val startPosition: Int
     val initialPosition: Int
 
     constructor(
         photos: List<Photo>,
+        totalCount: Int,
         startPosition: Int,
         initialPosition: Int
     )
 }
 
 fun buildPhotoPagerParams(
-    items: List<Photo>, position: Int
+    items: List<Photo>,
+    position: Int
 ): PhotoPagerParams {
+    val totalCount = items.size
     val startPosition = (position - 100).coerceAtLeast(0)
     val endPosition = (position + 100).coerceAtMost(items.size - 1)
     val photos = items.asSequence()
@@ -27,6 +31,7 @@ fun buildPhotoPagerParams(
         .toList()
     return PhotoPagerParams(
         photos = photos,
+        totalCount = totalCount,
         startPosition = startPosition,
         initialPosition = position
     )

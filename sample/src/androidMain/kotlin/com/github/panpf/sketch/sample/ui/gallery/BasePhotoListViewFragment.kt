@@ -190,15 +190,18 @@ abstract class BasePhotoListViewFragment :
             .adapter!!.asOrThrow<ConcatAdapter>()
             .adapters.first().asOrThrow<AssemblyPagingDataAdapter<Photo>>()
             .currentList
+        val totalCount = items.size
         val startPosition = (position - 100).coerceAtLeast(0)
         val endPosition = (position + 100).coerceAtMost(items.size - 1)
-        val imageList = items.asSequence()
+        val photos = items.asSequence()
             .filterNotNull()
             .filterIndexed { index, _ -> index in startPosition..endPosition }
             .toList()
+        val photosJsonString = Json.encodeToString(photos)
         findNavController().navigate(
             NavMainDirections.actionPhotoPagerViewFragment(
-                photos = Json.encodeToString(imageList),
+                photos = photosJsonString,
+                totalCount = totalCount,
                 startPosition = startPosition,
                 initialPosition = position
             ),
