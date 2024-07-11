@@ -18,20 +18,21 @@ fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Build
 }
 
 /**
- * Sample: 'compose.resource://composeResources/sketch_root.sample.generated.resources/drawable/sample.png'
+ * Build a uri that loads images from the compose resources folder
  *
  * @param resourcePath The path of the file to read in the compose resource's directory. For example:
- * * 'composeResources/sketch_root.sample.generated.resources/drawable/sample.png'
- * * Res.getUri("drawable/sample.png")
+ * * 'composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * * Res.getUri("files/huge_china.jpg") on android: 'jar:file:/data/app/com.github.panpf.sketch4.sample-1==/base.apk!/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * * Res.getUri("files/huge_china.jpg") on desktop: 'file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * * Res.getUri("files/huge_china.jpg") on js: 'http://localhost:8080/./composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * * Res.getUri("files/huge_china.jpg") on ios: 'file:///Users/panpf/Library/Developer/ CoreSimulator/Devices/F828C881-A750-432B-8210-93A84C45E/data/Containers/Bundle/Application/CBD75605-D35E-47A7-B56B-6C5690B062CC/SketchSample.app/compose-resources/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * @return 'compose.resource://composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  */
 fun newComposeResourceUri(resourcePath: String): String {
-    // "composeResources/sketch_root.sample.generated.resources/drawable/sample.png"
     if (resourcePath.startsWith("composeResources/")) {
         return "${ComposeResourceUriFetcher.SCHEME}://$resourcePath"
     }
 
-    // file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/sketch_root.sample.generated.resources/drawable/sample.png
-    // jar:file:/data/app/com.github.panpf.sketch4.sample-kz2o4eobaLdvBww0SkguMw==/base.apk!/composeResources/sketch_root.sample.generated.resources/drawable/sample.png
     val index = resourcePath.indexOf("/composeResources/")
     if (index != -1) {
         val realResourcePath = resourcePath.substring(index + 1)
