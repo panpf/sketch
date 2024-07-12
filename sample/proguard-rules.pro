@@ -15,7 +15,25 @@
 
 -keep enum * {*;}
 
-##---------------Begain: Retrofit
+
+# --------------- Begain: createViewBinding
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+-keep class * implements androidx.viewbinding.ViewBinding{
+    public *;
+}
+# --------------- End: createViewBinding
+
+
+# ---------------Begain: Retrofit
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
 -keepattributes Signature, InnerClasses, EnclosingMethod
@@ -57,9 +75,10 @@
 # kept. Suspend functions are wrapped in continuations where the type argument
 # is used.
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
-##---------------End: Retrofit
+# ---------------End: Retrofit
 
-##---------------Begain: OkHttp
+
+# ---------------Begain: OkHttp
 # JSR 305 annotations are for embedding nullability information.
 -dontwarn javax.annotation.**
 
@@ -74,19 +93,21 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
-##---------------End: OkHttp
+# ---------------End: OkHttp
 
-##---------------Begain: Okio
+
+# ---------------Begain: Okio
 # Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
 -dontwarn org.codehaus.mojo.animal_sniffer.*
-##---------------End: Okio
+# ---------------End: Okio
 
-##---------------Begain: FFmpegMediaMetadataRetriever
+
+# ---------------Begain: FFmpegMediaMetadataRetriever
 -keep public class wseemann.media.**{*;}
-##---------------End: FFmpegMediaMetadataRetriever
+# ---------------End: FFmpegMediaMetadataRetriever
 
 
-##---------------Begain: kotlin serialization
+# ---------------Begain: kotlin serialization
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.AnnotationsKt # core serialization annotations
 
@@ -113,22 +134,8 @@
 -keepclassmembers class com.github.panpf.sketch.sample.<1>$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
+# ---------------End: kotlin serialization
 
-# ################### for createViewBinding - start ###################
--keep class com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
--keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingActivity
--keep class com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
--keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
--keep class com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
--keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
--keep class com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
--keep class * extends com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
--keep class com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
--keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
--keep class * implements androidx.viewbinding.ViewBinding{
-    public *;
-}
-# ################### for createViewBinding - end ###################
 
 # Please add these rules to your existing keep rules in order to suppress warnings.
 # This is generated automatically by the Android Gradle plugin.
