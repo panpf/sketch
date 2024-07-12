@@ -19,12 +19,8 @@ class Logger(
             if (value != field) {
                 val oldValue = field
                 field = value
-                pipeline.log(
-                    level = Level.Warn,
-                    tag = TAG,
-                    msg = "Logger. setLevel. $oldValue -> $value",
-                    tr = null,
-                )
+                val msg = "Logger. setLevel. $oldValue -> $value"
+                pipeline.log(level = Level.Warn, tag = TAG, msg = msg, tr = null)
             }
         }
 
@@ -300,7 +296,6 @@ class Logger(
         /**
          * Priority constant for the println method; use Log.d.
          */
-        // The name cannot be in all uppercase 'DEBUG'. This will cause the ComposeApp.h file to fail to compile in Kotlin/Native.
         Debug,
 
         /**

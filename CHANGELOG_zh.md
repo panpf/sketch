@@ -13,6 +13,7 @@
 * new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
 * improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
 * change: ImageView.loadImage() 和 newResourceUri() 函数的 drawableResId 参数重命名为 resId
+* change: AndroidLogPipeline 和 PrintLogPipeline 改为单例模式
 
 # 4.0.0-alpha03
 

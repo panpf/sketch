@@ -17,6 +17,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * improve: Check the type of PlatformContext to prevent passing Activity to Sketch or ImageRequest
 * change: The drawableResId parameter of ImageView.loadImage() and newResourceUri() functions was
   renamed to resId
+* change: AndroidLogPipeline and PrintLogPipeline are changed to singleton mode
 
 # 4.0.0-alpha03
 

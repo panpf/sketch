@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.util
 
-actual fun platformLogPipeline(): Logger.Pipeline = PrintLogPipeline()
+actual fun platformLogPipeline(): Logger.Pipeline = PrintLogPipeline
 
-class PrintLogPipeline : Logger.Pipeline {
+object PrintLogPipeline : Logger.Pipeline {
 
     override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
         if (tr != null) {
@@ -17,13 +17,16 @@ class PrintLogPipeline : Logger.Pipeline {
 
     }
 
+    @Suppress("RedundantOverride")
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return other is PrintLogPipeline
+        // If you add construction parameters to this class, you need to change it here
+        return super.equals(other)
     }
 
+    @Suppress("RedundantOverride")
     override fun hashCode(): Int {
-        return this@PrintLogPipeline::class.hashCode()
+        // If you add construction parameters to this class, you need to change it here
+        return super.hashCode()
     }
 
     override fun toString(): String = "PrintLogPipeline"

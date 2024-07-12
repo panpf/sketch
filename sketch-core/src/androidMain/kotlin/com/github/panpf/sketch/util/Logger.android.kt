@@ -2,9 +2,9 @@ package com.github.panpf.sketch.util
 
 import android.util.Log
 
-actual fun platformLogPipeline(): Logger.Pipeline = AndroidLogPipeline()
+actual fun platformLogPipeline(): Logger.Pipeline = AndroidLogPipeline
 
-class AndroidLogPipeline : Logger.Pipeline {
+object AndroidLogPipeline : Logger.Pipeline {
 
     override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
         when (level) {
@@ -21,13 +21,16 @@ class AndroidLogPipeline : Logger.Pipeline {
 
     }
 
+    @Suppress("RedundantOverride")
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return other is AndroidLogPipeline
+        // If you add construction parameters to this class, you need to change it here
+        return super.equals(other)
     }
 
+    @Suppress("RedundantOverride")
     override fun hashCode(): Int {
-        return this@AndroidLogPipeline::class.hashCode()
+        // If you add construction parameters to this class, you need to change it here
+        return super.hashCode()
     }
 
     override fun toString(): String = "AndroidLogPipeline"
