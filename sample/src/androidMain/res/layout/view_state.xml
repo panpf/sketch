@@ -10,11 +10,18 @@
 
     <LinearLayout
         android:id="@+id/errorLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="50dp"
+        android:background="@drawable/bg_container_rounded_tertiary"
         android:gravity="center"
-        android:orientation="vertical">
+        android:minWidth="250dp"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="50dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="50dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="50dp"
@@ -23,29 +30,35 @@
 
         <TextView
             android:id="@+id/errorMessageText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:textColor="@color/md_theme_onTertiaryContainer"
             tools:text="Display failure" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/errorActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="50dp"
             tools:text="Retry" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/emptyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="50dp"
+        android:background="@drawable/bg_container_rounded_tertiary"
         android:gravity="center"
-        android:orientation="vertical">
+        android:minWidth="250dp"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="50dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="50dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="50dp"
@@ -54,19 +67,18 @@
 
         <TextView
             android:id="@+id/emptyMessageText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:textColor="@color/md_theme_onTertiaryContainer"
             tools:text="No Content" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/emptyActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="50dp"
             tools:text="Retry" />
     </LinearLayout>
 
@@ -76,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </FrameLayout>
