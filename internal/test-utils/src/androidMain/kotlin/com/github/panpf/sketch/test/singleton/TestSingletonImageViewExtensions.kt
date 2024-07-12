@@ -21,8 +21,8 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.ImageRequest
 import java.io.File
 
 /**
@@ -53,10 +53,10 @@ fun ImageView.loadImage(
  * You can set request params with a trailing lambda function [configBlock]
  */
 fun ImageView.loadImage(
-    @DrawableRes drawableResId: Int?,
+    @DrawableRes resId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    loadImage(drawableResId?.let { newResourceUri(it) }, configBlock)
+    loadImage(resId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from local file and display it on this [ImageView]
@@ -86,10 +86,10 @@ fun ImageView.loadAssetImage(
  * You can set request params with a trailing lambda function [configBlock]
  */
 fun ImageView.loadResourceImage(
-    @DrawableRes drawableResId: Int?,
+    @DrawableRes resId: Int?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    loadImage(drawableResId?.let { newResourceUri(it) }, configBlock)
+    loadImage(resId?.let { newResourceUri(it) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
@@ -98,7 +98,7 @@ fun ImageView.loadResourceImage(
  */
 fun ImageView.loadResourceImage(
     packageName: String,
-    @DrawableRes drawableResId: Int,
+    @DrawableRes resId: Int,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable =
-    loadImage(newResourceUri(packageName, drawableResId), configBlock)
+    loadImage(newResourceUri(packageName, resId), configBlock)

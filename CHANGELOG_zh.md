@@ -8,20 +8,24 @@
 
 # new
 
-new: 添加 PlatformContext.sketch 和 View.sketch 扩展函数
-change: ImageOptions 和 ImageRequest 的 mergeComponents() 方法重命名为 addComponents()
-new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
-improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
-
+* new: 添加 PlatformContext.sketch 和 View.sketch 扩展函数
+* change: ImageOptions 和 ImageRequest 的 mergeComponents() 方法重命名为 addComponents()
+* new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
+* improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
+* change: ImageView.loadImage() 和 newResourceUri() 函数的 drawableResId 参数重命名为 resId
 
 # 4.0.0-alpha03
 
 * change: ComposeBitmapValue 重命名为 ComposeBitmapImageValue
-* change: 重构 Sketch.enqueueDownload() 和 executeDownload() 并从 sketch-extensions-core 模块移到 sketch-core 模块
-* change: LongImageClipPrecisionDecider 重命名为 LongImagePrecisionDecider, LongImageStartCropScaleDecider 重命名为 LongImageScaleDecider
+* change: 重构 Sketch.enqueueDownload() 和 executeDownload() 并从 sketch-extensions-core 模块移到
+  sketch-core 模块
+* change: LongImageClipPrecisionDecider 重命名为 LongImagePrecisionDecider,
+  LongImageStartCropScaleDecider 重命名为 LongImageScaleDecider
 * change: 恢复在构建 ImageRequest 时使用屏幕大小作为最终的 Size
-* improve: Painter.asSketchImage() 现在返回 PainterImage; ComposeBitmap.asSketchImage() 现在返回 ComposeBitmapImage
-* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay()、size(IntSize) 扩展函数
+* improve: Painter.asSketchImage() 现在返回 PainterImage; ComposeBitmap.asSketchImage() 现在返回
+  ComposeBitmapImage
+* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay()、size(
+  IntSize) 扩展函数
 
 # 4.0.0-alpha02
 
@@ -64,6 +68,7 @@ cache:
 * change: 重构 MemoryCache.Value
 
 state:
+
 * change: ImageRequest 和 ImageOptions 的 uriEmpty 属性重命名为 fallback
 * delete: 移除 ErrorStateImage.Builder.uriEmptyError()
 

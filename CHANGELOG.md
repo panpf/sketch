@@ -10,25 +10,32 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
-new: Add PlatformContext.sketch and View.sketch extension functions
-change: The mergeComponents() method of ImageOptions and ImageRequest has been renamed to
-addComponents()
-new: Sketch.Builder and ComponentRegistry.Builder added addComponents() function
-improve: Check the type of PlatformContext to prevent passing Activity to Sketch or ImageRequest
+* new: Add PlatformContext.sketch and View.sketch extension functions
+* change: The mergeComponents() method of ImageOptions and ImageRequest has been renamed to
+  addComponents()
+* new: Sketch.Builder and ComponentRegistry.Builder added addComponents() function
+* improve: Check the type of PlatformContext to prevent passing Activity to Sketch or ImageRequest
+* change: The drawableResId parameter of ImageView.loadImage() and newResourceUri() functions was
+  renamed to resId
 
 # 4.0.0-alpha03
 
 * change: ComposeBitmapValue renamed to ComposeBitmapImageValue
-* change: Refactor Sketch.enqueueDownload() and executeDownload() and move from sketch-extensions-core module to sketch-core module
-* change: LongImageClipPrecisionDecider renamed to LongImagePrecisionDecider, LongImageStartCropScaleDecider renamed to LongImageScaleDecider
+* change: Refactor Sketch.enqueueDownload() and executeDownload() and move from
+  sketch-extensions-core module to sketch-core module
+* change: LongImageClipPrecisionDecider renamed to LongImagePrecisionDecider,
+  LongImageStartCropScaleDecider renamed to LongImageScaleDecider
 * change: Revert to using screen size as final Size when building ImageRequest
-* improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now returns ComposeBitmapImage
-* new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(IntSize) extension functions
+* improve: Painter.asSketchImage() now returns PainterImage; ComposeBitmap.asSketchImage() now
+  returns ComposeBitmapImage
+* new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView(), sizeWithDisplay(), size(
+  IntSize) extension functions
 
 # 4.0.0-alpha02
 
 * change: ImageView.disposeLoad() renamed to ImageView.disposeLoad()
-* new: Added ImageRequest.Builder.composableError() and ImageOptions.Builder.composableError() extension functions
+* new: Added ImageRequest.Builder.composableError() and ImageOptions.Builder.composableError()
+  extension functions
 * new: Added ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) extension function
 
 # 4.0.0-alpha01
@@ -68,6 +75,7 @@ cache:
 * change: Refactor MemoryCache.Value
 
 state:
+
 * change: uriEmpty attribute of ImageRequest and ImageOptions renamed to fallback
 * delete: Delete ErrorStateImage.Builder.uriEmptyError()
 

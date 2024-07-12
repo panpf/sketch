@@ -38,47 +38,47 @@ import com.github.panpf.sketch.util.ifOrNull
  * <br>
  * Use ImageRequest.context.packageName to get Resources by default
  */
-fun newResourceUri(resType: String, drawableResName: String): String =
-    "$SCHEME://resource?resType=$resType&resName=$drawableResName"
+fun newResourceUri(resType: String, resName: String): String =
+    "$SCHEME://resource?resType=$resType&resName=$resName"
 
 /**
  * Sample: 'android.resource://resource?resId=1031232'
  * <br>
  * Use ImageRequest.context.packageName to get Resources by default
  */
-fun newResourceUri(drawableResId: Int): String =
-    "$SCHEME://resource?resId=$drawableResId"
+fun newResourceUri(resId: Int): String =
+    "$SCHEME://resource?resId=$resId"
 
 /**
  * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resType=drawable&resName=ic_launcher'
  * <br>
  * Use [packageName] to get Resources
  */
-fun newResourceUri(packageName: String, resType: String, drawableResName: String): String =
-    "$SCHEME://resource?packageName=$packageName&resType=$resType&resName=$drawableResName"
+fun newResourceUri(packageName: String, resType: String, resName: String): String =
+    "$SCHEME://resource?packageName=$packageName&resType=$resType&resName=$resName"
 
 /**
  * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resId=1031232'
  * <br>
  * Use [packageName] to get Resources
  */
-fun newResourceUri(packageName: String, drawableResId: Int): String =
-    "$SCHEME://resource?packageName=$packageName&resId=$drawableResId"
+fun newResourceUri(packageName: String, resId: Int): String =
+    "$SCHEME://resource?packageName=$packageName&resId=$resId"
 
 /**
  * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resType=drawable&resName=ic_launcher'
  * <br>
  * Use current Context's packageName to get Resources
  */
-fun Context.newResourceUri(resType: String, drawableResName: String): String =
-    newResourceUri(packageName, resType, drawableResName)
+fun Context.newResourceUri(resType: String, resName: String): String =
+    newResourceUri(packageName, resType, resName)
 
 /**
  * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resId=1031232'
  * <br>
  * Use current Context's packageName to get Resources
  */
-fun Context.newResourceUri(drawableResId: Int): String = newResourceUri(packageName, drawableResId)
+fun Context.newResourceUri(resId: Int): String = newResourceUri(packageName, resId)
 
 /**
  * Support the following uri:
