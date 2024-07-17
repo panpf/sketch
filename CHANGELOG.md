@@ -8,23 +8,23 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
-# new
+# 4.0.0-alpha04
 
-* new: Add PlatformContext.sketch and View.sketch extension functions
+* fix: Fixed the issue where HurlStack and OkHttpStack failed to control network concurrency due to
+  switching threads again. [#199](https://github.com/panpf/sketch/issues/199)
+* fix: Fixed the bug that decoding pictures will not start until all network tasks are
+  completed. [#201](https://github.com/panpf/sketch/issues/201)
 * change: The mergeComponents() method of ImageOptions and ImageRequest has been renamed to
   addComponents()
-* new: Sketch.Builder and ComponentRegistry.Builder added addComponents() function
-* improve: Check the type of PlatformContext to prevent passing Activity to Sketch or ImageRequest
 * change: The drawableResId parameter of ImageView.loadImage() and newResourceUri() functions was
   renamed to resId
 * change: AndroidLogPipeline and PrintLogPipeline are changed to singleton mode
-* fix: Fixed the issue where HurlStack and OkHttpStack failed to control network concurrency due to
-  switching threads again. [#199](https://github.com/panpf/sketch/issues/199)
+* improve: Check the type of PlatformContext to prevent passing Activity to Sketch or ImageRequest
+* new: Add PlatformContext.sketch and View.sketch extension functions
+* new: Sketch.Builder and ComponentRegistry.Builder added addComponents() function
 * new: Sketch.Builder adds networkParallelismLimited() and decodeParallelismLimited() methods to
   control the number of network and decoding
   concurrency. [#200](https://github.com/panpf/sketch/issues/200)
-* fix: Fixed the bug that decoding pictures will not start until all network tasks are
-  completed. [#201](https://github.com/panpf/sketch/issues/201)
 
 # 4.0.0-alpha03
 

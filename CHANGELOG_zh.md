@@ -6,20 +6,20 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
-# new
+# 4.0.0-alpha04
 
-* new: 添加 PlatformContext.sketch 和 View.sketch 扩展函数
-* change: ImageOptions 和 ImageRequest 的 mergeComponents() 方法重命名为 addComponents()
-* new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
-* improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
-* change: ImageView.loadImage() 和 newResourceUri() 函数的 drawableResId 参数重命名为 resId
-* change: AndroidLogPipeline 和 PrintLogPipeline 改为单例模式
 * fix: 修复 HurlStack 和 OkHttpStack
   因再次切换线程导致网络并发控制失败的问题 [#199](https://github.com/panpf/sketch/issues/199)
-* new: Sketch.Builder 增加 networkParallelismLimited() 和 decodeParallelismLimited()
-  方法控制网络和解码并发数量 [#200](https://github.com/panpf/sketch/issues/200)
 * fix: 修复所有网络任务完成后才会开始解码图片的
   bug. [#201](https://github.com/panpf/sketch/issues/201)
+* change: ImageOptions 和 ImageRequest 的 mergeComponents() 方法重命名为 addComponents()
+* change: ImageView.loadImage() 和 newResourceUri() 函数的 drawableResId 参数重命名为 resId
+* change: AndroidLogPipeline 和 PrintLogPipeline 改为单例模式
+* improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
+* new: 添加 PlatformContext.sketch 和 View.sketch 扩展函数
+* new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
+* new: Sketch.Builder 增加 networkParallelismLimited() 和 decodeParallelismLimited()
+  方法控制网络和解码并发数量 [#200](https://github.com/panpf/sketch/issues/200)
 
 # 4.0.0-alpha03
 
