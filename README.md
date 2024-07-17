@@ -218,26 +218,7 @@ Featured functions:
 
 Please review the [CHANGELOG.md] file
 
-## About version 4.0
-
-* The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
-  prompt for upgrade
-* Version 4.0 is specially built for Compose Multiplatform, so there are many breaking changes in
-  the API, please upgrade with caution
-* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, please check
-  the update log for details
-* Android minimum API raised to API 21
-* Kotlin version upgraded to 2.0.0
-
-## Special thanks
-
-* [coil-kt/coil][coil]: Sketch uses some code from Coil, including framework, compose and
-  sketch-animated movie part
-* [koral--/android-gif-drawable][android-gif-drawable]: animated-koralgif
-* [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: video-ffmpeg
-* [BigBadaboom/androidsvg][androidsvg]: svg
-
-## Run source code
+## Run Sample App
 
 Prepare the environment:
 
@@ -259,6 +240,25 @@ Run the sample app:
        The `.ignore` file has been configured to ignore `iosSample.run.xml`
     2. Click `Edit Configurations` in the run configuration drop-down box at the top,
        select `iosSample` and then configure `Execute target`
+
+## About version 4.0
+
+* The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
+  prompt for upgrade
+* Version 4.0 is specially built for Compose Multiplatform, so there are many breaking changes in
+  the API, please upgrade with caution
+* Version 4.0 has made a lot of simplifications and is much simpler than version 3.0, please check
+  the update log for details
+* Android minimum API raised to API 21
+* Kotlin version upgraded to 2.0.0
+
+## Special thanks
+
+* [coil-kt/coil][coil]: Sketch uses some code from Coil, including framework, compose and
+  sketch-animated movie part
+* [koral--/android-gif-drawable][android-gif-drawable]: animated-koralgif
+* [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: video-ffmpeg
+* [BigBadaboom/androidsvg][androidsvg]: svg
 
 ## My Projects
 

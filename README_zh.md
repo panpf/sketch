@@ -207,23 +207,7 @@ context.sketch.enqueue(request)
 
 请查看 [CHANGELOG.md] 文件
 
-## 关于 4.0 版本
-
-* maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
-* 4.0 版本专为 Compose Multiplatform 打造，所以 API 有很多破坏性改动，请谨慎升级
-* 4.0 版本做了大量的简化，比 3.0 版本简单很多，详情请查看更新日志
-* Android 最低 API 升到了 API 21
-* Kotlin 版本升级到了 2.0.0
-
-## 特别感谢
-
-* [coil-kt/coil][coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及
-  sketch-animated 的 movie 部分
-* [koral--/android-gif-drawable][android-gif-drawable]: sketch-animated-koralgif
-* [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: sketch-video-ffmpeg
-* [BigBadaboom/androidsvg][androidsvg]: sketch-svg
-
-## 运行源码
+## 运行示例 App
 
 准备环境：
 
@@ -240,6 +224,22 @@ context.sketch.enqueue(request)
 3. ios 平台的运行配置需要你根据模版手动创建，如下：
    1. 拷贝 `.run/iosSample.run.template.xml` 文件，并去掉 `.template` 后缀，`.ignore` 文件中已经配置了忽略 `iosSample.run.xml` 
    2. 在顶部运行配置下拉框点击 `Edit Configurations` 选择 `iosSample` 然后配置 `Execute target` 即可
+
+## 关于 4.0 版本
+
+* maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
+* 4.0 版本专为 Compose Multiplatform 打造，所以 API 有很多破坏性改动，请谨慎升级
+* 4.0 版本做了大量的简化，比 3.0 版本简单很多，详情请查看更新日志
+* Android 最低 API 升到了 API 21
+* Kotlin 版本升级到了 2.0.0
+
+## 特别感谢
+
+* [coil-kt/coil][coil]: Sketch 使用了来自 Coil 的部分代码，包括 framework、compose 以及
+  sketch-animated 的 movie 部分
+* [koral--/android-gif-drawable][android-gif-drawable]: sketch-animated-koralgif
+* [wseemann/FFmpegMediaMetadataRetriever][FFmpegMediaMetadataRetriever]: sketch-video-ffmpeg
+* [BigBadaboom/androidsvg][androidsvg]: sketch-svg
 
 ## 我的项目
 
