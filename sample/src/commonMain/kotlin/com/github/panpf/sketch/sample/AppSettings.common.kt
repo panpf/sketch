@@ -14,7 +14,6 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
@@ -24,10 +23,7 @@ import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
-private val appSettingsLazy = ParamLazy<PlatformContext, AppSettings> { AppSettings(it) }
-
-val PlatformContext.appSettings: AppSettings
-    get() = appSettingsLazy.get(this)
+expect val PlatformContext.appSettings: AppSettings
 
 expect fun isDebugMode(): Boolean
 
