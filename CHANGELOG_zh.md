@@ -14,6 +14,8 @@
 * improve: 检查 PlatformContext 的类型以防止将 Activity 传递给 Sketch 或 ImageRequest
 * change: ImageView.loadImage() 和 newResourceUri() 函数的 drawableResId 参数重命名为 resId
 * change: AndroidLogPipeline 和 PrintLogPipeline 改为单例模式
+* fix: 修复 HurlStack 和 OkHttpStack
+  因再次切换线程导致网络并发控制失败的问题 [#199](https://github.com/panpf/sketch/issues/199)
 
 # 4.0.0-alpha03
 

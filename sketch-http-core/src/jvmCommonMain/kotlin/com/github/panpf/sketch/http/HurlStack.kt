@@ -18,8 +18,6 @@ package com.github.panpf.sketch.http
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.http.internal.TlsCompatSocketFactory
 import com.github.panpf.sketch.request.Extras
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -72,58 +70,49 @@ class HurlStack private constructor(
         httpHeaders: HttpHeaders?,
         extras: Extras?
     ): Response {
-        val result = withContext(Dispatchers.IO) {
-            runCatching {
-                var newUri = url
-                while (newUri.isNotEmpty()) {
-                    val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
-                        this@apply.connectTimeout = this@HurlStack.connectTimeoutMillis
-                        this@apply.readTimeout = this@HurlStack.readTimeoutMillis
-                        doInput = true
-                        if (this@HurlStack.userAgent != null) {
-                            setRequestProperty("User-Agent", this@HurlStack.userAgent)
-                        }
-                        if (!addHeaders.isNullOrEmpty()) {
-                            for ((key, value) in addHeaders) {
-                                addRequestProperty(key, value)
-                            }
-                        }
-                        if (!headers.isNullOrEmpty()) {
-                            for ((key, value) in headers) {
-                                setRequestProperty(key, value)
-                            }
-                        }
-                        httpHeaders?.apply {
-                            addList.forEach {
-                                addRequestProperty(it.first, it.second)
-                            }
-                            setList.forEach {
-                                setRequestProperty(it.first, it.second)
-                            }
-                        }
-                        val enabledTlsProtocols = enabledTlsProtocols
-                        if (this is HttpsURLConnection && enabledTlsProtocols?.isNotEmpty() == true) {
-                            sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
-                        }
-                    }
-                    onBeforeConnect?.invoke(url, connection)
-                    // Currently running on a limited number of IO contexts, so this warning can be ignored
-                    connection.connect()
-                    val code = connection.responseCode
-                    if (code == 301 || code == 302 || code == 307) {
-                        newUri = connection.getHeaderField("Location")
-                    } else {
-                        return@runCatching HurlResponse(connection)
+        var newUri = url
+        while (newUri.isNotEmpty()) {
+            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
+                this@apply.connectTimeout = this@HurlStack.connectTimeoutMillis
+                this@apply.readTimeout = this@HurlStack.readTimeoutMillis
+                doInput = true
+                if (this@HurlStack.userAgent != null) {
+                    setRequestProperty("User-Agent", this@HurlStack.userAgent)
+                }
+                if (!addHeaders.isNullOrEmpty()) {
+                    for ((key, value) in addHeaders) {
+                        addRequestProperty(key, value)
                     }
                 }
-                return@runCatching null
+                if (!headers.isNullOrEmpty()) {
+                    for ((key, value) in headers) {
+                        setRequestProperty(key, value)
+                    }
+                }
+                httpHeaders?.apply {
+                    addList.forEach {
+                        addRequestProperty(it.first, it.second)
+                    }
+                    setList.forEach {
+                        setRequestProperty(it.first, it.second)
+                    }
+                }
+                val enabledTlsProtocols = enabledTlsProtocols
+                if (this is HttpsURLConnection && enabledTlsProtocols?.isNotEmpty() == true) {
+                    sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
+                }
+            }
+            onBeforeConnect?.invoke(url, connection)
+            // Currently running on a limited number of IO contexts, so this warning can be ignored
+            connection.connect()
+            val code = connection.responseCode
+            if (code == 301 || code == 302 || code == 307) {
+                newUri = connection.getHeaderField("Location")
+            } else {
+                return HurlResponse(connection)
             }
         }
-        if (result.isSuccess) {
-            return result.getOrNull() ?: throw IOException("Unable to get response")
-        } else {
-            throw result.exceptionOrNull()!!
-        }
+        throw throw IOException("Unable to get response")
     }
 
     override fun toString(): String =
@@ -177,16 +166,7 @@ class HurlStack private constructor(
     class Content(private val inputStream: InputStream) : HttpStack.Content {
 
         override suspend fun read(buffer: ByteArray): Int {
-            val result = withContext(Dispatchers.IO) {
-                runCatching {
-                    inputStream.read(buffer)
-                }
-            }
-            if (result.isSuccess) {
-                return result.getOrNull()!!
-            } else {
-                throw result.exceptionOrNull()!!
-            }
+            return inputStream.read(buffer)
         }
 
         override fun close() {

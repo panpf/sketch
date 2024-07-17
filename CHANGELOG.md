@@ -18,6 +18,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: The drawableResId parameter of ImageView.loadImage() and newResourceUri() functions was
   renamed to resId
 * change: AndroidLogPipeline and PrintLogPipeline are changed to singleton mode
+* fix: Fixed the issue where HurlStack and OkHttpStack failed to control network concurrency due to
+  switching threads again. [#199](https://github.com/panpf/sketch/issues/199)
 
 # 4.0.0-alpha03
 

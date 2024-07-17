@@ -16,8 +16,6 @@
 package com.github.panpf.sketch.http
 
 import com.github.panpf.sketch.request.Extras
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.OkHttpClient
@@ -34,27 +32,18 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         httpHeaders: HttpHeaders?,
         extras: Extras?
     ): HttpStack.Response {
-        val result = withContext(Dispatchers.IO) {
-            runCatching {
-                val httpRequest = Request.Builder().apply {
-                    url(url)
-                    httpHeaders?.apply {
-                        addList.forEach {
-                            addHeader(it.first, it.second)
-                        }
-                        setList.forEach {
-                            header(it.first, it.second)
-                        }
-                    }
-                }.build()
-                Response(okHttpClient.newCall(httpRequest).execute())
+        val httpRequest = Request.Builder().apply {
+            url(url)
+            httpHeaders?.apply {
+                addList.forEach {
+                    addHeader(it.first, it.second)
+                }
+                setList.forEach {
+                    header(it.first, it.second)
+                }
             }
-        }
-        if (result.isSuccess) {
-            return result.getOrNull()!!
-        } else {
-            throw result.exceptionOrNull()!!
-        }
+        }.build()
+        return Response(okHttpClient.newCall(httpRequest).execute())
     }
 
     override fun toString(): String =
@@ -94,16 +83,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     class Content(private val inputStream: InputStream) : HttpStack.Content {
 
         override suspend fun read(buffer: ByteArray): Int {
-            val result = withContext(Dispatchers.IO) {
-                runCatching {
-                    inputStream.read(buffer)
-                }
-            }
-            if (result.isSuccess) {
-                return result.getOrNull()!!
-            } else {
-                throw result.exceptionOrNull()!!
-            }
+            return inputStream.read(buffer)
         }
 
         override fun close() {
