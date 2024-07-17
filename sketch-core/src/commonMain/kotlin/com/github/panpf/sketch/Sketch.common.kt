@@ -74,11 +74,7 @@ import okio.FileSystem
  * application via the built-in extension function `Context.sketch`
  */
 class Sketch private constructor(options: Options) {
-    private val scope = CoroutineScope(
-        SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
-            logger.e(throwable, "CoroutineScope. An uncaught exception")
-        }
-    )
+
     private val requestExecutor = RequestExecutor()
     private val isShutdown = atomic(false)
 
@@ -130,6 +126,12 @@ class Sketch private constructor(options: Options) {
             ?.let { parallelism -> dispatcher.limitedParallelism(parallelism) }
             ?: dispatcher
     }
+
+    val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
+            logger.e(throwable, "CoroutineScope. An uncaught exception")
+        }
+    )
 
     init {
         checkPlatformContext(context)

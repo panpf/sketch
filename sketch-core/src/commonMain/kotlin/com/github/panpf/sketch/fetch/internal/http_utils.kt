@@ -15,6 +15,7 @@
  */
 package com.github.panpf.sketch.fetch.internal
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack.Content
 import com.github.panpf.sketch.request.ImageRequest
@@ -32,16 +33,19 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 internal suspend fun writeAllWithProgress(
     sink: BufferedSink,
     content: Content,
+    sketch: Sketch,
     request: ImageRequest,
     contentLength: Long,
     bufferSize: Int = 1024 * 8,
-): Long = coroutineScope {
+): Long = coroutineScope {  // for access isActive
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
     var bytes = content.read(buffer)
     var lastTimeMark: ValueTimeMark? = null
     val progressListenerDelegate = request.progressListener?.let {
-        ProgressListenerDelegate(this@coroutineScope, it)
+        // This@coroutineScope cannot be used, it will cause all download tasks to be completed before returning to the decoding task
+        // This is because coroutineScope will wait for all sub-coroutines to complete before returning
+        ProgressListenerDelegate(sketch.scope, it)
     }
     var lastUpdateProgressBytesCopied = 0L
     while (bytes >= 0 && isActive) {

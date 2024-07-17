@@ -177,7 +177,7 @@ open class HttpUriFetcher(
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
                 downloadCache.fileSystem.sink(editor.data).buffer().use { sink ->
-                    writeAllWithProgress(sink, content, request, contentLength)
+                    writeAllWithProgress(sink, content, sketch, request, contentLength)
                 }
             }
             // 'Transform-Encoding: chunked' contentLength is -1
@@ -226,7 +226,7 @@ open class HttpUriFetcher(
         val contentLength = response.contentLength
         val buffer = Buffer()
         val readLength = response.content().use { content ->
-            writeAllWithProgress(buffer, content, request, contentLength)
+            writeAllWithProgress(buffer, content, sketch, request, contentLength)
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =

@@ -23,6 +23,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: Sketch.Builder adds networkParallelismLimited() and decodeParallelismLimited() methods to
   control the number of network and decoding
   concurrency. [#200](https://github.com/panpf/sketch/issues/200)
+* fix: Fixed the bug that decoding pictures will not start until all network tasks are
+  completed. [#201](https://github.com/panpf/sketch/issues/201)
 
 # 4.0.0-alpha03
 

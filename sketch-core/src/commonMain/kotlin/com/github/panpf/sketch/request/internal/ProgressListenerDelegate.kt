@@ -19,23 +19,23 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class ProgressListenerDelegate(
     private val coroutineScope: CoroutineScope,
     private val progressListener: ProgressListener
 ) {
 
-    private var lastDeferred: Deferred<*>? = null
+    private var lastJob: Job? = null
 
     fun onUpdateProgress(request: ImageRequest, totalLength: Long, completedLength: Long) {
-        val lastDeferred = this.lastDeferred
-        if (lastDeferred?.isActive == true) {
-            lastDeferred.cancel()
+        val lastJob = this.lastJob
+        if (lastJob?.isActive == true) {
+            lastJob.cancel()
         }
-        this.lastDeferred = coroutineScope.async(Dispatchers.Main) {
+        this.lastJob = coroutineScope.launch(Dispatchers.Main) {
             progressListener.onUpdateProgress(request, Progress(totalLength, completedLength))
         }
     }

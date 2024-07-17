@@ -19,10 +19,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.SlowInputStream
 import com.github.panpf.sketch.test.utils.content
-import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okio.buffer
@@ -38,7 +38,7 @@ class HttpUtilsTest {
 
     @Test
     fun testWriteAllWithProgress() {
-        val context = getTestContext()
+        val (context, sketch) = getTestContextAndSketch()
         val string = "abcdefghijklmnopqrstuvwxyz"
         val progressListener = ProgressListenerSupervisor()
 
@@ -51,6 +51,7 @@ class HttpUtilsTest {
                     writeAllWithProgress(
                         sink = sink,
                         content = content,
+                        sketch = sketch,
                         request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                             registerProgressListener(progressListener)
                         },
@@ -73,6 +74,7 @@ class HttpUtilsTest {
                     writeAllWithProgress(
                         sink = sink,
                         content = content,
+                        sketch = sketch,
                         request = ImageRequest(context, "http://sample.com/sample.jpeg"),
                         contentLength = string.length.toLong(),
                         bufferSize = ceil(string.length / 3f).toInt(),
@@ -93,6 +95,7 @@ class HttpUtilsTest {
                     writeAllWithProgress(
                         sink = sink,
                         content = content,
+                        sketch = sketch,
                         request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                             registerProgressListener(progressListener)
                         },
@@ -115,6 +118,7 @@ class HttpUtilsTest {
                     writeAllWithProgress(
                         sink = sink,
                         content = content,
+                        sketch = sketch,
                         request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                             registerProgressListener(progressListener)
                         },
