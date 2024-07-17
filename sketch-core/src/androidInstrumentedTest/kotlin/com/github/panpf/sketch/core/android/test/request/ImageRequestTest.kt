@@ -122,7 +122,8 @@ class ImageRequestTest {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         ImageRequest(context1, uri).apply {
-            Assert.assertSame(context1, this.context)
+            Assert.assertNotEquals(context1, this.context)
+            Assert.assertEquals(context1.applicationContext, this.context)
             Assert.assertEquals("asset://sample.jpeg", uri)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
@@ -256,8 +257,8 @@ class ImageRequestTest {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         ImageRequest(context1, uri).apply {
-            Assert.assertEquals(context1, context)
-            Assert.assertNotEquals(context1, context.applicationContext)
+            Assert.assertEquals(context1.applicationContext, context)
+            Assert.assertNotEquals(context1, context)
         }
     }
 
