@@ -271,7 +271,7 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
 /**
  * Use with [ImageRequest] and the global [ComponentRegistry]
  */
-class Components(private val sketch: Sketch, internal val registry: ComponentRegistry) {
+class Components(private val sketch: Sketch, val registry: ComponentRegistry) {
 
     /**
      * Get the [ImageRequest] plus the global [RequestInterceptor] list

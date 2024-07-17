@@ -90,6 +90,8 @@ class MyApplication : Application(), SingletonSketch.Factory {
         }
         // To be able to print the Sketch initialization log
         logger(level = appSettings.logLevel.value)
+        networkParallelismLimited(appSettings.networkParallelismLimited.value)
+        decodeParallelismLimited(appSettings.decodeParallelismLimited.value)
     }.build().apply {
         coroutineScope.launch {
             appSettings.logLevel.collect {

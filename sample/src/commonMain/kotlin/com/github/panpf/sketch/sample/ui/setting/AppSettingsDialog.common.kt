@@ -50,6 +50,7 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
+import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_expand_more
@@ -285,6 +286,28 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
                 "DEBUG and below will reduce UI fluency" else null,
             values = Logger.Level.values().toList(),
             state = appSettings.logLevel,
+        )
+    )
+    add(
+        DropdownSettingItem(
+            title = "Network Parallelism Limited",
+            desc = "No limit when less than or equal to 0",
+            values = listOf(-1, 1, 2, 4, 10, 20),
+            state = appSettings.networkParallelismLimited,
+            onItemClick = {
+                EventBus.toastFlow.emit("Restart the app to take effect")
+            }
+        )
+    )
+    add(
+        DropdownSettingItem(
+            title = "Decode Parallelism Limited",
+            desc = "No limit when less than or equal to 0",
+            values = listOf(-1, 1, 2, 4, 10, 20),
+            state = appSettings.decodeParallelismLimited,
+            onItemClick = {
+                EventBus.toastFlow.emit("Restart the app to take effect")
+            }
         )
     )
 }

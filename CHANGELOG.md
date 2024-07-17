@@ -20,6 +20,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: AndroidLogPipeline and PrintLogPipeline are changed to singleton mode
 * fix: Fixed the issue where HurlStack and OkHttpStack failed to control network concurrency due to
   switching threads again. [#199](https://github.com/panpf/sketch/issues/199)
+* new: Sketch.Builder adds networkParallelismLimited() and decodeParallelismLimited() methods to
+  control the number of network and decoding
+  concurrency. [#200](https://github.com/panpf/sketch/issues/200)
 
 # 4.0.0-alpha03
 

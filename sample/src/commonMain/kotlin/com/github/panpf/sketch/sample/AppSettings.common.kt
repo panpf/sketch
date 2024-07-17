@@ -148,6 +148,12 @@ class AppSettings(val context: PlatformContext) {
     val gifDecoder by lazy {
         stringSettingsStateFlow(context, key = "gifDecoder", initialize = "KoralGif")
     }
+    val networkParallelismLimited by lazy {
+        intSettingsStateFlow(context, key = "networkParallelismLimited", initialize = 10)
+    }
+    val decodeParallelismLimited by lazy {
+        intSettingsStateFlow(context, key = "decodeParallelismLimited", initialize = 4)
+    }
 
     // Only for Android
     val composePage: SettingsStateFlow<Boolean> by lazy {

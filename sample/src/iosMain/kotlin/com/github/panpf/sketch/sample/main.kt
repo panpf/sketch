@@ -74,6 +74,8 @@ private fun initialSketch() {
             }
             // To be able to print the Sketch initialization log
             logger(level = appSettings.logLevel.value)
+            networkParallelismLimited(appSettings.networkParallelismLimited.value)
+            decodeParallelismLimited(appSettings.decodeParallelismLimited.value)
         }.build().apply {
             @Suppress("OPT_IN_USAGE")
             GlobalScope.launch {

@@ -61,6 +61,8 @@ class SketchTest {
 
     @Test
     fun testBuilder() {
+        // TODO networkParallelismLimited
+        // TODO decodeParallelismLimited
         val activity = TestActivity::class.launchActivity().getActivitySync()
         Builder(activity).build().apply {
             Assert.assertNotEquals(activity, context)

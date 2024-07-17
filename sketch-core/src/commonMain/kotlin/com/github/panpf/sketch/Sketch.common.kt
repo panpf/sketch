@@ -108,30 +108,32 @@ class Sketch private constructor(options: Options) {
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
      * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
-    val components: Components
+    val components: Components = Components(this, options.componentRegistry)
 
     /** Monitor network connection and system status */
     val systemCallbacks = SystemCallbacks(this)
 
-    /* Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
+    /** Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val networkTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().limitedParallelism(10)
+    val networkTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().let { dispatcher ->
+        options.networkParallelismLimited
+            .takeIf { parallelism -> parallelism > 0 }
+            ?.let { parallelism -> dispatcher.limitedParallelism(parallelism) }
+            ?: dispatcher
+    }
 
-    /* Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
+    /** Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val decodeTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().limitedParallelism(4)
+    val decodeTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().let { dispatcher ->
+        options.decodeParallelismLimited
+            .takeIf { parallelism -> parallelism > 0 }
+            ?.let { parallelism -> dispatcher.limitedParallelism(parallelism) }
+            ?: dispatcher
+    }
 
     init {
         checkPlatformContext(context)
-
-        val componentRegistry = options.componentRegistry
-            .merged(platformComponents())
-            .merged(defaultComponents())
-            ?: ComponentRegistry.Builder().build()
-        components = Components(this, componentRegistry)
-
         systemCallbacks.register()
-
         logger.d {
             buildString {
                 append("Configuration. ")
@@ -140,10 +142,12 @@ class Sketch private constructor(options: Options) {
                 appendLine().append("memoryCache: $memoryCache")
                 appendLine().append("resultCache: $resultCache")
                 appendLine().append("downloadCache: $downloadCache")
-                appendLine().append("fetchers: ${componentRegistry.fetcherFactoryList}")
-                appendLine().append("decoders: ${componentRegistry.decoderFactoryList}")
-                appendLine().append("requestInterceptors: ${componentRegistry.requestInterceptorList}")
-                appendLine().append("decodeInterceptors: ${componentRegistry.decodeInterceptorList}")
+                appendLine().append("fetchers: ${options.componentRegistry.fetcherFactoryList}")
+                appendLine().append("decoders: ${options.componentRegistry.decoderFactoryList}")
+                appendLine().append("requestInterceptors: ${options.componentRegistry.requestInterceptorList}")
+                appendLine().append("decodeInterceptors: ${options.componentRegistry.decodeInterceptorList}")
+                appendLine().append("networkParallelismLimited: ${options.networkParallelismLimited}")
+                appendLine().append("decodeTaskDispatcher: ${options.decodeParallelismLimited}")
             }
         }
     }
@@ -235,8 +239,10 @@ class Sketch private constructor(options: Options) {
         val downloadCacheLazy: Lazy<DiskCache>,
         val resultCacheLazy: Lazy<DiskCache>,
         val httpStack: HttpStack,
-        val componentRegistry: ComponentRegistry?,
+        val componentRegistry: ComponentRegistry,
         val globalImageOptions: ImageOptions?,
+        val networkParallelismLimited: Int,
+        val decodeParallelismLimited: Int,
     )
 
     class Builder constructor(context: PlatformContext) {
@@ -253,6 +259,8 @@ class Sketch private constructor(options: Options) {
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
+        private var networkParallelismLimited: Int? = null
+        private var decodeParallelismLimited: Int? = null
 
         init {
             checkPlatformContext(this.context)
@@ -391,8 +399,26 @@ class Sketch private constructor(options: Options) {
             this.globalImageOptions = globalImageOptions
         }
 
+        /**
+         * Set the maximum number of concurrent network tasks. No limit when less than or equal to 0
+         */
+        fun networkParallelismLimited(parallelism: Int?): Builder = apply {
+            this.networkParallelismLimited = parallelism
+        }
+
+        /**
+         * Set the maximum number of concurrent decode tasks. No limit when less than or equal to 0
+         */
+        fun decodeParallelismLimited(parallelism: Int?): Builder = apply {
+            this.decodeParallelismLimited = parallelism
+        }
+
         fun build(): Sketch {
             val finalFileSystem = fileSystem ?: defaultFileSystem()
+            val componentRegistry1 = componentRegistry
+                .merged(platformComponents())
+                .merged(defaultComponents())
+                ?: ComponentRegistry.Builder().build()
             val options = Options(
                 context = context,
                 logger = this.logger ?: Logger(),
@@ -415,8 +441,10 @@ class Sketch private constructor(options: Options) {
                     }.build()
                 },
                 httpStack = httpStack ?: defaultHttpStack(),
-                componentRegistry = componentRegistry,
+                componentRegistry = componentRegistry1,
                 globalImageOptions = globalImageOptions,
+                networkParallelismLimited = networkParallelismLimited ?: 10,
+                decodeParallelismLimited = decodeParallelismLimited ?: 4,
             )
             return Sketch(options)
         }

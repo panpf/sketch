@@ -16,6 +16,8 @@
 * change: AndroidLogPipeline 和 PrintLogPipeline 改为单例模式
 * fix: 修复 HurlStack 和 OkHttpStack
   因再次切换线程导致网络并发控制失败的问题 [#199](https://github.com/panpf/sketch/issues/199)
+* new: Sketch.Builder 增加 networkParallelismLimited() 和 decodeParallelismLimited()
+  方法控制网络和解码并发数量 [#200](https://github.com/panpf/sketch/issues/200)
 
 # 4.0.0-alpha03
 

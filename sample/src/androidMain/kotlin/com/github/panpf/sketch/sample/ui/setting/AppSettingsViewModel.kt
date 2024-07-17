@@ -379,6 +379,30 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         )
         add(
             MultiSelectMenu(
+                title = "Network Parallelism Limited",
+                desc = "No limit when less than or equal to 0",
+                values = listOf(-1, 1, 2, 4, 10, 20).map { it.toString() },
+                getValue = { appSettings.networkParallelismLimited.value.toString() },
+                onSelect = { _, value ->
+                    appSettings.networkParallelismLimited.value = value.toInt()
+                    Toastx.showLong(application1, "Restart the app to take effect")
+                }
+            )
+        )
+        add(
+            MultiSelectMenu(
+                title = "Decode Parallelism Limited",
+                desc = "No limit when less than or equal to 0",
+                values = listOf(-1, 1, 2, 4, 10, 20).map { it.toString() },
+                getValue = { appSettings.decodeParallelismLimited.value.toString() },
+                onSelect = { _, value ->
+                    appSettings.decodeParallelismLimited.value = value.toInt()
+                    Toastx.showLong(application1, "Restart the app to take effect")
+                }
+            )
+        )
+        add(
+            MultiSelectMenu(
                 title = "Http Client",
                 desc = null,
                 values = listOf("Ktor", "OkHttp", "HttpURLConnection"),

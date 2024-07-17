@@ -5,8 +5,6 @@ import androidx.compose.ui.window.CanvasBasedWindow
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.GifSkiaAnimatedDecoder
-import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.decode.supportSvg
@@ -35,6 +33,8 @@ private fun initialSketch() {
             }
             // To be able to print the Sketch initialization log
             logger(level = appSettings.logLevel.value)
+            networkParallelismLimited(appSettings.networkParallelismLimited.value)
+            decodeParallelismLimited(appSettings.decodeParallelismLimited.value)
         }.build().apply {
             @Suppress("OPT_IN_USAGE")
             GlobalScope.launch {
