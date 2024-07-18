@@ -3,6 +3,7 @@ package com.github.panpf.zoomimage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -26,20 +27,14 @@ import com.github.panpf.sketch.internal.AsyncImageContent
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.ui.components.zoomimage.core.SketchImageSource
-import com.github.panpf.zoomimage.compose.ZoomState
-import com.github.panpf.zoomimage.compose.rememberZoomState
 import com.github.panpf.zoomimage.compose.subsampling.subsampling
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.compose.zoom.zoom
 import com.github.panpf.zoomimage.compose.zoom.zoomScrollBar
-import com.github.panpf.zoomimage.subsampling.TileBitmapCache
+import com.github.panpf.zoomimage.sketch.SketchImageSource
+import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
+import com.github.panpf.zoomimage.subsampling.ImageSource
 import kotlin.math.roundToInt
-
-expect fun createTileBitmapCache(
-    sketch: Sketch,
-    caller: String
-): TileBitmapCache?
 
 /**
  * An image component that integrates the Sketch image loading framework that zoom and subsampling huge images
@@ -48,14 +43,14 @@ expect fun createTileBitmapCache(
  *
  * ```kotlin
  * SketchZoomAsyncImage(
- *     imageUri = "http://sample.com/sample.jpg",
+ *     uri = "http://sample.com/huge_world.jpeg",
  *     contentDescription = "view image",
  *     sketch = context.sketch,
  *     modifier = Modifier.fillMaxSize(),
  * )
  * ```
  *
- * @param imageUri [ImageRequest.uri] value.
+ * @param uri [ImageRequest.uri] value.
  * @param contentDescription Text used by accessibility services to describe what this image
  *  represents. This should always be provided unless this image is used for decorative purposes,
  *  and does not represent a meaningful action that a user can take.
@@ -70,7 +65,7 @@ expect fun createTileBitmapCache(
  *  rendered onscreen.
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
- * @param state The state to control zoom
+ * @param zoomState The state to control zoom
  * @param scrollBar Controls whether scroll bars are displayed and their style
  * @param onLongPress Called when the user long presses the image
  * @param onTap Called when the user taps the image
@@ -78,30 +73,32 @@ expect fun createTileBitmapCache(
 @Composable
 @NonRestartableComposable
 fun SketchZoomAsyncImage(
-    imageUri: String?,
+    uri: String?,
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
+    state: AsyncImageState = rememberAsyncImageState(),
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
-    state: ZoomState = rememberZoomState(),
+    zoomState: SketchZoomState = rememberSketchZoomState(),
     scrollBar: ScrollBarSpec? = ScrollBarSpec.Default,
     onLongPress: ((Offset) -> Unit)? = null,
     onTap: ((Offset) -> Unit)? = null,
 ) = SketchZoomAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, imageUri),
+    request = ImageRequest(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
+    state = state,
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
     colorFilter = colorFilter,
     filterQuality = filterQuality,
-    state = state,
+    zoomState = zoomState,
     scrollBar = scrollBar,
     onLongPress = onLongPress,
     onTap = onTap,
@@ -114,8 +111,8 @@ fun SketchZoomAsyncImage(
  *
  * ```kotlin
  * SketchZoomAsyncImage(
- *     request = ImageRequest(LocalContext.current, "http://sample.com/sample.jpg") {
- *         placeholder(R.drawable.placeholder)
+ *     request = ComposableImageRequest("http://sample.com/huge_world.jpeg") {
+ *         placeholder(Res.drawable.placeholder)
  *         crossfade()
  *     },
  *     contentDescription = "view image",
@@ -139,7 +136,7 @@ fun SketchZoomAsyncImage(
  *  rendered onscreen.
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
- * @param state The state to control zoom
+ * @param zoomState The state to control zoom
  * @param scrollBar Controls whether scroll bars are displayed and their style
  * @param onLongPress Called when the user long presses the image
  * @param onTap Called when the user taps the image
@@ -150,57 +147,56 @@ fun SketchZoomAsyncImage(
     contentDescription: String?,
     sketch: Sketch,
     modifier: Modifier = Modifier,
-    imageState: AsyncImageState = rememberAsyncImageState(),
+    state: AsyncImageState = rememberAsyncImageState(),
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
-    state: ZoomState = rememberZoomState(),
+    zoomState: SketchZoomState = rememberSketchZoomState(),
     scrollBar: ScrollBarSpec? = ScrollBarSpec.Default,
     onLongPress: ((Offset) -> Unit)? = null,
     onTap: ((Offset) -> Unit)? = null,
 ) {
-    state.zoomable.contentScale = contentScale
-    state.zoomable.alignment = alignment
+    zoomState.zoomable.contentScale = contentScale
+    zoomState.zoomable.alignment = alignment
 
     val context = LocalPlatformContext.current
     LaunchedEffect(Unit) {
-        state.subsampling.tileBitmapCache = createTileBitmapCache(sketch, "SketchZoomAsyncImage")
+        zoomState.subsampling.tileBitmapCache = SketchTileBitmapCache(sketch)
     }
-
-    LaunchedEffect(imageState.painterState) {
-        onPainterState(context, sketch, state, request, imageState.painterState)
+    LaunchedEffect(Unit) {
+        snapshotFlow { state.painterState }.collect {
+            onPainterState(context, sketch, zoomState, request, it)
+        }
     }
 
     BaseZoomAsyncImage(
         request = request,
         contentDescription = contentDescription,
         sketch = sketch,
-        state = imageState,
+        state = state,
         contentScale = contentScale,
         alpha = alpha,
         colorFilter = colorFilter,
         filterQuality = filterQuality,
         modifier = modifier
-            .let { if (scrollBar != null) it.zoomScrollBar(state.zoomable, scrollBar) else it }
-            .zoom(state.zoomable, onLongPress = onLongPress, onTap = onTap)
-            .subsampling(state.zoomable, state.subsampling),
+            .let { if (scrollBar != null) it.zoomScrollBar(zoomState.zoomable, scrollBar) else it }
+            .zoom(zoomState.zoomable, onLongPress = onLongPress, onTap = onTap)
+            .subsampling(zoomState.zoomable, zoomState.subsampling),
     )
 }
 
 private fun onPainterState(
     context: PlatformContext,
     sketch: Sketch,
-    state: ZoomState,
+    zoomState: SketchZoomState,
     request: ImageRequest,
     loadState: PainterState,
 ) {
-    state.zoomable.logger.d {
-        "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uri}'"
-    }
-    val zoomableState = state.zoomable
-    val subsamplingState = state.subsampling
+    zoomState.zoomable.logger.d { "SketchZoomAsyncImage. onPainterState. state=${loadState.name}. uri='${request.uri}'" }
+    val zoomableState = zoomState.zoomable
+    val subsamplingState = zoomState.subsampling
     val painterSize = loadState.painter
         ?.intrinsicSize
         ?.takeIf { it.isSpecified }
@@ -212,12 +208,12 @@ private fun onPainterState(
         is PainterState.Success -> {
             subsamplingState.disabledTileBitmapCache =
                 request.memoryCachePolicy != CachePolicy.ENABLED
-            val imageSource = SketchImageSource(context, sketch, request.uri)
+            val imageSource = SketchImageSource.Factory(context, sketch, request.uri)
             subsamplingState.setImageSource(imageSource)
         }
 
         else -> {
-            subsamplingState.setImageSource(null)
+            subsamplingState.setImageSource(null as ImageSource?)
         }
     }
 }

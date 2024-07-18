@@ -72,6 +72,7 @@ kotlin {
             implementation(compose.material3)
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.serialization.kotlinxJson)
+            implementation(libs.panpf.zoomimage.compose)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
             implementation(libs.voyager.transitions)
@@ -121,7 +122,6 @@ kotlin {
         }
         jvmCommonMain.dependencies {
             implementation(projects.sketchHttpOkhttp)
-            implementation(libs.panpf.zoomimage.compose)
         }
         iosMain {
             // It has been configured in the internal:images module, but it is still inaccessible in the sample module.

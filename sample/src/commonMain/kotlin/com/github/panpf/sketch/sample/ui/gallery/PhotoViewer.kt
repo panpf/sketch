@@ -46,8 +46,8 @@ import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
 import com.github.panpf.zoomimage.compose.internal.toPlatform
-import com.github.panpf.zoomimage.compose.rememberZoomState
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
+import com.github.panpf.zoomimage.rememberSketchZoomState
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.ReadMode
@@ -57,7 +57,7 @@ import org.jetbrains.compose.resources.painterResource
 import kotlin.math.roundToInt
 
 @Composable
-actual fun PhotoViewer(
+fun PhotoViewer(
     photo: Photo,
     photoPaletteState: MutableState<PhotoPalette>,
 ) {
@@ -81,7 +81,7 @@ actual fun PhotoViewer(
             AlignmentCompat.valueOf(alignmentName).toPlatform()
         }
     }
-    val zoomState = rememberZoomState().apply {
+    val zoomState = rememberSketchZoomState().apply {
         LaunchedEffect(showTileBounds) {
             subsampling.showTileBounds = showTileBounds
         }
@@ -131,10 +131,10 @@ actual fun PhotoViewer(
             modifier = Modifier
                 .fillMaxSize()
                 .progressIndicator(imageState, progressPainter),
-            imageState = imageState,
+            state = imageState,
             contentScale = contentScale,
             alignment = alignment,
-            state = zoomState,
+            zoomState = zoomState,
             scrollBar = scrollBar,
             onLongPress = {
                 val imageResult = imageState.result

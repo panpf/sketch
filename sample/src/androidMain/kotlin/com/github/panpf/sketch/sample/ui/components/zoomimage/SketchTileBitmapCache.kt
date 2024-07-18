@@ -20,33 +20,31 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
-import com.github.panpf.zoomimage.subsampling.CacheTileBitmap
+import com.github.panpf.zoomimage.subsampling.BitmapFrom
+import com.github.panpf.zoomimage.subsampling.ImageInfo
 import com.github.panpf.zoomimage.subsampling.TileBitmap
 import com.github.panpf.zoomimage.subsampling.TileBitmapCache
 
-class SketchTileBitmapCache constructor(
+actual class SketchTileBitmapCache actual constructor(
     private val sketch: Sketch,
-    private val caller: String
 ) : TileBitmapCache {
 
-    override fun get(key: String): CacheTileBitmap? {
-        val bitmap = (sketch.memoryCache[key] as? AndroidBitmapImageValue)
-            ?.image?.bitmap ?: return null
-        return SketchTileBitmap(key = key, bitmap = bitmap, caller = caller)
+    actual override fun get(key: String): TileBitmap? {
+        val cacheValue = sketch.memoryCache[key] ?: return null
+        cacheValue as AndroidBitmapImageValue
+        return AndroidTileBitmap(cacheValue.image.bitmap, key, BitmapFrom.MEMORY_CACHE)
     }
 
-    override fun put(
+    actual override fun put(
         key: String,
         tileBitmap: TileBitmap,
         imageUrl: String,
-        imageInfo: com.github.panpf.zoomimage.subsampling.ImageInfo,
-        disallowReuseBitmap: Boolean
-    ): CacheTileBitmap? {
-        val bitmap = (tileBitmap as AndroidTileBitmap).bitmap ?: return null
-        val newCacheValue = AndroidBitmapImageValue(bitmap.asSketchImage())
-        if (sketch.memoryCache.put(key, newCacheValue) != 0) {
-            return null
-        }
-        return SketchTileBitmap(key, bitmap, caller)
+        imageInfo: ImageInfo,
+    ): TileBitmap? {
+        tileBitmap as AndroidTileBitmap
+        val bitmap = tileBitmap.bitmap!!
+        val cacheValue = AndroidBitmapImageValue(bitmap.asSketchImage())
+        sketch.memoryCache.put(key, cacheValue)
+        return null
     }
 }

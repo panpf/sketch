@@ -61,6 +61,9 @@ import com.github.panpf.sketch.sample.util.RuntimePlatform
 import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.screenSize
+import com.github.panpf.zoomimage.zoom.AlignmentCompat
+import com.github.panpf.zoomimage.zoom.ContentScaleCompat
+import com.github.panpf.zoomimage.zoom.name
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -217,7 +220,66 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
     )
 }
 
-expect fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem>
+fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList{
+    val contentScales = listOf(
+        ContentScaleCompat.Fit,
+        ContentScaleCompat.Crop,
+        ContentScaleCompat.Inside,
+        ContentScaleCompat.FillWidth,
+        ContentScaleCompat.FillHeight,
+        ContentScaleCompat.FillBounds,
+        ContentScaleCompat.None,
+    )
+    add(
+        DropdownSettingItem(
+            title = "Content Scale",
+            desc = null,
+            values = contentScales.map { it.name },
+            state = appSettings.contentScale,
+        )
+    )
+
+    val alignments = listOf(
+        AlignmentCompat.TopStart,
+        AlignmentCompat.TopCenter,
+        AlignmentCompat.TopEnd,
+        AlignmentCompat.CenterStart,
+        AlignmentCompat.Center,
+        AlignmentCompat.CenterEnd,
+        AlignmentCompat.BottomStart,
+        AlignmentCompat.BottomCenter,
+        AlignmentCompat.BottomEnd,
+    )
+    add(
+        DropdownSettingItem(
+            title = "Alignment",
+            desc = null,
+            values = alignments.map { it.name },
+            state = appSettings.alignment,
+        )
+    )
+    add(
+        SwitchSettingItem(
+            title = "Scroll Bar",
+            desc = null,
+            state = appSettings.scrollBarEnabled,
+        )
+    )
+    add(
+        SwitchSettingItem(
+            title = "Read Mode",
+            state = appSettings.readModeEnabled,
+            desc = "Long images are displayed in full screen by default"
+        )
+    )
+    add(
+        SwitchSettingItem(
+            title = "Show Tile Bounds",
+            desc = "Overlay the state and area of the tile on the View",
+            state = appSettings.showTileBounds,
+        )
+    )
+}
 
 expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem>
 
