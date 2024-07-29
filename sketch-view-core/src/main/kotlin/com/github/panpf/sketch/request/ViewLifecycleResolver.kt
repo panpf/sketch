@@ -40,7 +40,7 @@ class ViewLifecycleResolver constructor(
     private fun resolveLifecycle(view: View?): Lifecycle? {
         // findViewTreeLifecycleOwner can only return the correct Lifecycle after the view is attached to the window
         return view?.findViewTreeLifecycleOwner()?.lifecycle
-            ?: view?.context.findLifecycle()
+            ?: view?.context?.findLifecycle()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -58,13 +58,8 @@ class ViewLifecycleResolver constructor(
     }
 }
 
-internal fun Context?.findLifecycle(): Lifecycle? {
-    var context: Context? = this
-    while (true) {
-        when (context) {
-            is LifecycleOwner -> return context.lifecycle
-            is ContextWrapper -> context = context.baseContext
-            else -> return null
-        }
-    }
+internal fun Context.findLifecycle(): Lifecycle? = when (this) {
+    is LifecycleOwner -> this.lifecycle
+    is ContextWrapper -> this.baseContext.findLifecycle()
+    else -> null
 }
