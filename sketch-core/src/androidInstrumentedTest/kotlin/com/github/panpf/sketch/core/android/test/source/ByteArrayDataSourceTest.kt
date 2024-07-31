@@ -43,17 +43,20 @@ class ByteArrayDataSourceTest {
         }
     }
 
+    // TODO equals and hashCode
+
     @Test
     fun testToString() {
         val (context, sketch) = getTestContextAndSketch()
+        val data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
         ByteArrayDataSource(
             sketch = sketch,
             request = ImageRequest(context, "http://sample.jpeg"),
             dataFrom = MEMORY,
-            data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
+            data = data
         ).apply {
             Assert.assertEquals(
-                "ByteArrayDataSource(from=MEMORY,length=37)",
+                "ByteArrayDataSource(data=${data}, from=MEMORY)",
                 toString()
             )
         }

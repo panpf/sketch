@@ -92,6 +92,8 @@ class ResourceDataSourceTest {
         }
     }
 
+    // TODO equals and hashCode
+
     @Test
     fun testToString() {
         val (context, sketch) = getTestContextAndSketch()
@@ -106,7 +108,7 @@ class ResourceDataSourceTest {
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             Assert.assertEquals(
-                "ResourceDataSource(${com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher})",
+                "ResourceDataSource(packageName='${context.packageName}', resId=${com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher})",
                 toString()
             )
         }
@@ -118,7 +120,10 @@ class ResourceDataSourceTest {
             resources = context.resources,
             resId = 42
         ).apply {
-            Assert.assertEquals("ResourceDataSource(42)", toString())
+            Assert.assertEquals(
+                "ResourceDataSource(packageName='${context.packageName}', resId=42)",
+                toString()
+            )
         }
     }
 }

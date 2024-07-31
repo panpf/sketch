@@ -1,19 +1,19 @@
 package com.github.panpf.sketch.core.android.test.source
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import java.io.FileNotFoundException
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.FileNotFoundException
 
 @RunWith(AndroidJUnit4::class)
 class AssetDataSourceTest {
@@ -57,6 +57,8 @@ class AssetDataSourceTest {
             }
         }
     }
+
+    // TODO equals and hashCode
 
     @Test
     fun testToString() {

@@ -16,13 +16,13 @@
 package com.github.panpf.sketch.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.FetchResultImpl
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.source.FileDataSource
-import com.github.panpf.sketch.fetch.FetchResultImpl
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import okio.Path.Companion.toOkioPath
 import org.junit.Assert
@@ -83,12 +83,13 @@ class FetchResultTest {
             )
         }
 
+        val data = byteArrayOf()
         FetchResult(
-            ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()),
+            ByteArrayDataSource(sketch, request, DataFrom.NETWORK, data),
             "image/jpeg"
         ).apply {
             Assert.assertEquals(
-                "FetchResult(source=ByteArrayDataSource(from=NETWORK,length=0),mimeType='image/jpeg')",
+                "FetchResult(source=ByteArrayDataSource(data=$data, from=NETWORK),mimeType='image/jpeg')",
                 this.toString()
             )
         }

@@ -17,8 +17,8 @@ package com.github.panpf.sketch.source
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import okio.Path
 import okio.Source
 import okio.source
@@ -38,14 +38,28 @@ class AssetDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-//    override fun openInputStream(): InputStream = request.context.assets.open(assetFileName)
     override fun openSourceOrNull(): Source = request.context.assets.open(assetFileName).source()
 
     @WorkerThread
     @Throws(IOException::class)
-//    override fun getFile(): File = getCacheFileFromStreamDataSource(sketch, request, this)
     override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
 
-    override fun toString(): String =
-        "AssetDataSource('$assetFileName')"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as AssetDataSource
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (assetFileName != other.assetFileName) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + assetFileName.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "AssetDataSource('$assetFileName')"
 }

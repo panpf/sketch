@@ -40,5 +40,24 @@ class DrawableDataSource constructor(
 
     override fun getFileOrNull(): Path? = null
 
-    override fun toString(): String = "DrawableDataSource"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as DrawableDataSource
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (dataFrom != other.dataFrom) return false
+        if (drawableFetcher != other.drawableFetcher) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + dataFrom.hashCode()
+        result = 31 * result + drawableFetcher.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "DrawableDataSource(drawable=${drawable}, from=$dataFrom)"
 }

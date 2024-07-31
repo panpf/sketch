@@ -15,8 +15,8 @@
  */
 package com.github.panpf.sketch.source
 
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageRequest
 import okio.Buffer
 import okio.IOException
@@ -41,6 +41,24 @@ class ByteArrayDataSource constructor(
     @Throws(IOException::class)
     override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
 
-    override fun toString(): String =
-        "ByteArrayDataSource(from=$dataFrom,length=${data.size.toLong()})"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as ByteArrayDataSource
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (dataFrom != other.dataFrom) return false
+        if (!data.contentEquals(other.data)) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + dataFrom.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
+
+    override fun toString(): String = "ByteArrayDataSource(data=${data}, from=$dataFrom)"
 }
