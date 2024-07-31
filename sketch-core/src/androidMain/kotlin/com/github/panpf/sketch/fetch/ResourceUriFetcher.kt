@@ -64,17 +64,22 @@ fun newResourceUri(packageName: String, resId: Int): String =
 
 /**
  * Check if the uri is a resource uri
+ *
+ * Support the following uri:
+ * * 'android.resource:///drawable/ic_launcher'
+ * * 'android.resource:///1031232'
+ * * 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
+ * * 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
 fun isResourceUri(uri: Uri): Boolean =
     ResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
 /**
  * Support the following uri:
- *
- * 'android.resource:///drawable/ic_launcher'
- * 'android.resource:///1031232'
- * 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
- * 'android.resource://com.github.panpf.sketch.sample/1031232'
+ * * 'android.resource:///drawable/ic_launcher'
+ * * 'android.resource:///1031232'
+ * * 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
+ * * 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
 class ResourceUriFetcher(
     val sketch: Sketch,

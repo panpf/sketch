@@ -23,6 +23,13 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ContentDataSource
 
 /**
+ * Check if the uri is a android content uri
+ *
+ * Support 'content://sample.jpg' uri
+ */
+fun isContentUri(uri: Uri): Boolean = ContentUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
+
+/**
  * Support 'content://sample.jpg' uri
  */
 class ContentUriFetcher(
@@ -45,7 +52,7 @@ class ContentUriFetcher(
 
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {
             val uri = request.uri.toUri()
-            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
+            return if (isContentUri(uri)) {
                 ContentUriFetcher(sketch, request, uri)
             } else {
                 null

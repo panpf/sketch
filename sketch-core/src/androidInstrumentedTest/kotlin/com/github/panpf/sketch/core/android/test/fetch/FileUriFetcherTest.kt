@@ -15,6 +15,8 @@
  */
 package com.github.panpf.sketch.core.android.test.fetch
 
+import android.net.Uri
+import androidx.core.net.toUri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.fetch.FileUriFetcher
@@ -26,12 +28,30 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class FileUriFetcherTest {
 
     @Test
-    fun testNewUri() {
+    fun test() {
+        val file = File("/sdcard/sample s.jpeg")
+        assertEquals(
+            expected = "file:///sdcard/sample%20s.jpeg",
+            actual = Uri.fromFile(file).toString()
+        )
+        assertEquals(
+            expected = "file:///sdcard/sample%20s.jpeg",
+            actual = "file:///sdcard/sample%20s.jpeg".toUri().toString()
+        )
+        assertEquals(
+            expected = "/sdcard/sample s.jpeg",
+            actual = "file:///sdcard/sample%20s.jpeg".toUri().path
+        )
+    }
+
+    @Test
+    fun testNewFileUri() {
         Assert.assertEquals(
             "file:///sdcard/sample.jpg",
             newFileUri("/sdcard/sample.jpg")

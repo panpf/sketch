@@ -18,9 +18,10 @@ package com.github.panpf.sketch.source
 import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.util.toUri
 import okio.Path
 import okio.Path.Companion.toOkioPath
 import okio.Source
@@ -47,13 +48,15 @@ class ContentDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path? =
-        if (contentUri.scheme.equals("file", ignoreCase = true)) {
-            val filePath = FileUriFetcher.parseFilePathFromFileUri(contentUri.toString())!!
+    override fun getFileOrNull(): Path? {
+        val sketchUri = contentUri.toString().toUri()
+        return if (isFileUri(sketchUri)) {
+            val filePath = sketchUri.path!!
             File(filePath).toOkioPath()
         } else {
             getDataSourceCacheFile(sketch, request, this)
         }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -44,6 +44,11 @@ fun newComposeResourceUri(resourcePath: String): String {
     throw IllegalArgumentException("Unsupported compose resource path: $resourcePath")
 }
 
+/**
+ * Check if the uri is a compose resource uri
+ *
+ * Support 'file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ */
 fun isComposeResourceUri(uri: Uri): Boolean =
     ComposeResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && ComposeResourceUriFetcher.AUTHORITY.equals(uri.authority, ignoreCase = true)

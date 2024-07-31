@@ -15,6 +15,9 @@ import com.github.panpf.sketch.util.toUri
 fun newKotlinResourceUri(resourceName: String): String =
     "${KotlinResourceUriFetcher.SCHEME}://${KotlinResourceUriFetcher.AUTHORITY}/$resourceName"
 
+/**
+ * Check if the uri is a Kotlin resource uri
+ */
 fun isKotlinResourceUri(uri: Uri): Boolean =
     KotlinResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && KotlinResourceUriFetcher.AUTHORITY.equals(uri.authority, ignoreCase = true)

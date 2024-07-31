@@ -20,16 +20,17 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.DrawableFetcher
-import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.internal.versionCodeCompat
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
+import com.github.panpf.sketch.util.Uri
+import com.github.panpf.sketch.util.pathSegments
+import com.github.panpf.sketch.util.toUri
 
 /**
  * Adds App icon support
@@ -42,7 +43,14 @@ fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = appl
  * Sample: 'app.icon://com.github.panpf.sketch.sample/1120'
  */
 fun newAppIconUri(packageName: String, versionCode: Int): String =
-    "$SCHEME://$packageName/$versionCode"
+    "${AppIconUriFetcher.SCHEME}://$packageName/$versionCode"
+
+/**
+ * Check if the uri is an app icon uri
+ *
+ * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
+ */
+fun isAppIconUri(uri: Uri): Boolean = AppIconUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
 /**
  * Extract the icon of the installed app
@@ -78,7 +86,7 @@ class AppIconUriFetcher(
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
             val uri = request.uri.toUri()
-            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
+            return if (isAppIconUri(uri)) {
                 val packageName = uri.authority
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                     ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uri}")

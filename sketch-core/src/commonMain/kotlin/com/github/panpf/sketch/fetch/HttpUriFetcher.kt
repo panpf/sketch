@@ -31,6 +31,7 @@ import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.source.FileDataSource
+import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.CancellationException
@@ -41,6 +42,13 @@ import okio.IOException
 import okio.Path
 import okio.buffer
 import okio.use
+
+/**
+ * Check if the uri is a http or https uri
+ */
+fun isHttpUri(uri: Uri): Boolean =
+    HttpUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
+            || HttpUriFetcher.SCHEME_HTTPS.equals(uri.scheme, ignoreCase = true)
 
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpg' uri
@@ -242,11 +250,8 @@ open class HttpUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
-            val scheme = request.uri.toUri().scheme
-            return if (
-                SCHEME.equals(scheme, ignoreCase = true)
-                || SCHEME_HTTPS.equals(scheme, ignoreCase = true)
-            ) {
+            val uri = request.uri.toUri()
+            return if (isHttpUri(uri)) {
                 HttpUriFetcher(sketch, request, request.uri)
             } else {
                 null
