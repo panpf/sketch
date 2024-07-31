@@ -17,13 +17,13 @@ package com.github.panpf.sketch.extensions.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataFrom
-import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.fetch.supportAppIcon
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -101,12 +101,10 @@ class AppIconUriFetcherTest {
                 Assert.assertEquals("packageName1", packageName)
                 Assert.assertEquals(12412, versionCode)
             }
-        fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
-            .apply {
-                Assert.assertEquals("packageName1", packageName)
-                Assert.assertEquals(12412, versionCode)
-            }
-        fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
+        fetcherFactory.create(
+            sketch,
+            ImageRequest(context, "app.icon://packageName1/12412/87467")
+        )!!
             .apply {
                 Assert.assertEquals("packageName1", packageName)
                 Assert.assertEquals(12412, versionCode)

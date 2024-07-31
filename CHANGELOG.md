@@ -8,6 +8,12 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+* improve: All implementation classes of DataSource implement equals and hashCode methods
+* fix: Fix the bug of exception when AppIconUriFetcher.Factory parses
+  versionCode. [#204](https://github.com/panpf/sketch/issues/204)
+
 # 4.0.0-alpha04
 
 * fix: Fixed the issue where HurlStack and OkHttpStack failed to control network concurrency due to

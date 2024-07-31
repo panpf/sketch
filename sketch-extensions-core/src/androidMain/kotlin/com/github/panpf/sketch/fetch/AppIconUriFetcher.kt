@@ -23,13 +23,13 @@ import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.source.DataFrom
-import com.github.panpf.sketch.source.DrawableDataSource
+import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.fetch.AppIconUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.internal.versionCodeCompat
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.drawable.DrawableFetcher
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DrawableDataSource
 
 /**
  * Adds App icon support
@@ -82,7 +82,7 @@ class AppIconUriFetcher(
                 val packageName = uri.authority
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                     ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uri}")
-                val versionCode = uri.lastPathSegment
+                val versionCode = uri.pathSegments.firstOrNull()
                     ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                     ?.toIntOrNull()
                     ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uri}")

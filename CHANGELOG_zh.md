@@ -6,6 +6,12 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
+# new
+
+* improve: DataSource 的所有实现类都实现了 equals 和 hashCode 方法
+* fix: 修复 AppIconUriFetcher.Factory 解析 versionCode 时异常的
+  bug。[#204](https://github.com/panpf/sketch/issues/204)
+
 # 4.0.0-alpha04
 
 * fix: 修复 HurlStack 和 OkHttpStack
