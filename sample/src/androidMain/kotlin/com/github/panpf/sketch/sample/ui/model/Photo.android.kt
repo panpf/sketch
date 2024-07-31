@@ -29,7 +29,7 @@ actual data class Photo actual constructor(
     @SerialName("width") actual val width: Int?,
     @SerialName("height") actual val height: Int?,
     @SerialName("index") actual val index: Int?,
-) : Parcelable {
+) : Parcelable, java.io.Serializable {
 
     actual val listThumbnailUrl: String = thumbnailUrl ?: mediumUrl ?: originalUrl
 
