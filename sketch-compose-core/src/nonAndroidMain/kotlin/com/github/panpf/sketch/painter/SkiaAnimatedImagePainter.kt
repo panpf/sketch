@@ -19,6 +19,7 @@ import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -51,6 +52,7 @@ class SkiaAnimatedImagePainter(
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
     private var repeatIndex = 0
+    private var receiveJob: Job? = null
 
     /**
      * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
@@ -97,7 +99,7 @@ class SkiaAnimatedImagePainter(
         running = true
         repeatIndex = 0
         // When decoding webp animations, readPixels takes a long time, so use the IO thread to decode to avoid getting stuck in the UI thread.
-        coroutineScope?.launch(ioCoroutineDispatcher()) {
+        receiveJob = coroutineScope?.launch(ioCoroutineDispatcher()) {
             // TODO Reading frame data in Dispatchers.IO will cause screen confusion on the ios platform.
             decodeFlow.collectLatest { frame ->
                 codec.readPixels(skiaBitmap, frame)
@@ -120,6 +122,7 @@ class SkiaAnimatedImagePainter(
     }
 
     private fun stopAnimation() {
+        receiveJob?.cancel()
         coroutineScope ?: return
         if (!running) return
         running = false
