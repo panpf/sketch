@@ -11,7 +11,7 @@ Sketch is an image loading library specially designed for Compose Multiplatform 
 has the following features:
 
 * `Multiple sources`: Supports loading images from multiple sources such as http, file,
-  compose.resource, android asset/content/resource, etc.
+  compose resource, android asset/content/resource, etc.
 * `Powerful functions`: Supports three-level caching, automatically cancels requests, automatically
   adjusts image size, automatically rotates images according to Exif Orientation, etc.
 * `Rich functions`: Supports Animated image, SVG images, Base64 images, and video frames
@@ -100,7 +100,7 @@ Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
-// val imageUri = "compose.resource://files/sample.png"
+// val imageUri = file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/sample.png
 val imageUri = "https://www.sample.com/image.jpg"
 
 AsyncImage(

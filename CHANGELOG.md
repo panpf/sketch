@@ -15,6 +15,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   versionCode. [#204](https://github.com/panpf/sketch/issues/204)
 * change: KotlinResourceUriFetcher supported uri changed from 'kotlin.resource://'
   to 'file://kotlin_resource/'
+* change: ComposeResourceUriFetcher supported uri changed from 'compose.resource://'
+  to 'file://compose_resource/'
 
 # 4.0.0-alpha04
 

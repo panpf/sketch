@@ -16,5 +16,5 @@
 package com.github.panpf.sketch.images
 
 actual fun resourceNameToUri(name: String): String {
-    return "compose.resource://files/$name"
+    return "file://compose_resource/files/$name"
 }

@@ -9,7 +9,7 @@ results. You can use it directly to load and load images, as follows:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
-// val imageUri = "compose.resource://files/sample.png"
+// val imageUri = file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/sample.png
 val imageUri = "https://example.com/image.jpg"
 
 AsyncImage(

@@ -10,7 +10,7 @@ Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
-// val imageUri = "compose.resource://files/sample.png"
+// val imageUri = file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/sample.png
 val imageUri = "https://example.com/image.jpg"
 
 AsyncImage(
@@ -119,17 +119,17 @@ Each image type has a corresponding Decoder support for it, [Learn more about De
 [Sketch] supports loading images from different data sources such as the network, local machine, and
 resources, as follows:
 
-| URI                     | Describe                 | Create Function         | Dependent Modules        |
-|:------------------------|:-------------------------|:------------------------|:-------------------------|
-| http://, https://       | File in network          | _                       | _                        |
-| file://, /              | File in SDCard           | newFileUri()            | _                        |
-| content://              | Android Content Resolver | _                       | _                        |
-| asset://                | Android Asset            | newAssetUri()           | _                        |
-| android.resource://     | Android Resource         | newResourceUri()        | _                        |
-| data:image/, data:img/  | Base64                   | newBase64Uri()          | _                        |
-| compose.resource://     | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| file://kotlin_resource/ | Kotlin Resource          | newKotlinResourceUri()  | _                        |
-| app.icon://             | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
+| URI                      | Describe                 | Create Function         | Dependent Modules        |
+|:-------------------------|:-------------------------|:------------------------|:-------------------------|
+| http://, https://        | File in network          | _                       | _                        |
+| file://, /               | File in SDCard           | newFileUri()            | _                        |
+| content://               | Android Content Resolver | _                       | _                        |
+| asset://                 | Android Asset            | newAssetUri()           | _                        |
+| android.resource://      | Android Resource         | newResourceUri()        | _                        |
+| data:image/, data:img/   | Base64                   | newBase64Uri()          | _                        |
+| file://compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
+| file://kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                        |
+| app.icon://              | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
 
 Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 
@@ -138,24 +138,24 @@ Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 Due to limitations of platform characteristics, the functions on different platforms are also
 different, as follows:
 
-| Feature                                                                                | Android       | iOS                     | Desktop                 | Web                     |
-|:---------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|
-| jpeg<br/>png<br/>webp<br/>bmp                                                          | ✅             | ✅                       | ✅                       | ✅                       |
-| heif                                                                                   | ✅ (API 28)    | ❌                       | ❌                       | ❌                       |
-| gif                                                                                    | ✅             | ✅                       | ✅                       | ✅                       |
-| Animated webp                                                                          | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
-| Animated heif                                                                          | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
-| svg                                                                                    | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
-| Video frames                                                                           | ✅             | ❌                       | ❌                       | ❌                       |
-| http://<br/>https://<br/>file://, /<br/>compose.resource://<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
-| asset://<br/>content://<br/>android.resource://                                        | ✅             | ❌                       | ❌                       | ❌                       |
-| file://kotlin_resource/                                                                | ❌             | ✅                       | ✅                       | ❌                       |
-| Exif Orientation                                                                       | ✅             | ✅                       | ✅                       | ✅                       |
-| Memory Cache                                                                           | ✅             | ✅                       | ✅                       | ✅                       |
-| Result Cache                                                                           | ✅             | ✅                       | ✅                       | ❌                       |
-| Download Cache                                                                         | ✅             | ✅                       | ✅                       | ❌                       |
-| Default image decoder                                                                  | BitmapFactory | Skia Image              | Skia Image              | Skia Image              |
-| Minimum API                                                                            | API 21        | -                       | JDK 1.8                 | -                       |
+| Feature                                                                                     | Android       | iOS                     | Desktop                 | Web                     |
+|:--------------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|
+| jpeg<br/>png<br/>webp<br/>bmp                                                               | ✅             | ✅                       | ✅                       | ✅                       |
+| heif                                                                                        | ✅ (API 28)    | ❌                       | ❌                       | ❌                       |
+| gif                                                                                         | ✅             | ✅                       | ✅                       | ✅                       |
+| Animated webp                                                                               | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
+| Animated heif                                                                               | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
+| svg                                                                                         | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
+| Video frames                                                                                | ✅             | ❌                       | ❌                       | ❌                       |
+| http://<br/>https://<br/>file://, /<br/>file://compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
+| asset://<br/>content://<br/>android.resource://                                             | ✅             | ❌                       | ❌                       | ❌                       |
+| file://kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
+| Exif Orientation                                                                            | ✅             | ✅                       | ✅                       | ✅                       |
+| Memory Cache                                                                                | ✅             | ✅                       | ✅                       | ✅                       |
+| Result Cache                                                                                | ✅             | ✅                       | ✅                       | ❌                       |
+| Download Cache                                                                              | ✅             | ✅                       | ✅                       | ❌                       |
+| Default image decoder                                                                       | BitmapFactory | Skia Image              | Skia Image              | Skia Image              |
+| Minimum API                                                                                 | API 21        | -                       | JDK 1.8                 | -                       |
 
 > The minimum API is '-' to synchronize with Compose Multiplatform
 

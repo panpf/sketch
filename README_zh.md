@@ -9,7 +9,7 @@
 
 Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库，它有以下特点：
 
-* `多加载源`：支持从 http、file、compose.resource、android asset/content/resource 等多种来源加载图片
+* `多加载源`：支持从 http、file、compose resource、android asset/content/resource 等多种来源加载图片
 * `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸、自动根据 Exif Orientation 旋转图片等
 * `功能丰富`：支持动图、SVG 图片、Base64 图片、视频帧
 * `易于扩展`：支持对缓存、解码、转换、过渡、占位图等各个环节的扩展
@@ -89,7 +89,7 @@ Compose Multiplatform：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
-// val imageUri = "compose.resource://files/sample.png"
+// val imageUri = file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/sample.png
 val imageUri = "https://www.sample.com/image.jpg"
 
 AsyncImage(

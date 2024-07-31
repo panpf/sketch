@@ -6,6 +6,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.Uri
+import com.github.panpf.sketch.util.pathSegments
 import com.github.panpf.sketch.util.toUri
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.jetbrains.compose.resources.readResourceBytes
@@ -26,21 +28,25 @@ fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Build
  * * Res.getUri("files/huge_china.jpg") on desktop: 'file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * * Res.getUri("files/huge_china.jpg") on js: 'http://localhost:8080/./composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * * Res.getUri("files/huge_china.jpg") on ios: 'file:///Users/panpf/Library/Developer/ CoreSimulator/Devices/F828C881-A750-432B-8210-93A84C45E/data/Containers/Bundle/Application/CBD75605-D35E-47A7-B56B-6C5690B062CC/SketchSample.app/compose-resources/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
- * @return 'compose.resource://composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * @return 'file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  */
 fun newComposeResourceUri(resourcePath: String): String {
     if (resourcePath.startsWith("composeResources/")) {
-        return "${ComposeResourceUriFetcher.SCHEME}://$resourcePath"
+        return "${ComposeResourceUriFetcher.SCHEME}://${ComposeResourceUriFetcher.AUTHORITY}/$resourcePath"
     }
 
     val index = resourcePath.indexOf("/composeResources/")
     if (index != -1) {
         val realResourcePath = resourcePath.substring(index + 1)
-        return "${ComposeResourceUriFetcher.SCHEME}://$realResourcePath"
+        return "${ComposeResourceUriFetcher.SCHEME}://${ComposeResourceUriFetcher.AUTHORITY}/$realResourcePath"
     }
 
     throw IllegalArgumentException("Unsupported compose resource path: $resourcePath")
 }
+
+fun isComposeResourceUri(uri: Uri): Boolean =
+    ComposeResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
+            && ComposeResourceUriFetcher.AUTHORITY.equals(uri.authority, ignoreCase = true)
 
 class ComposeResourceUriFetcher(
     val sketch: Sketch,
@@ -49,12 +55,13 @@ class ComposeResourceUriFetcher(
 ) : Fetcher {
 
     companion object {
-        const val SCHEME = "compose.resource"
+        const val SCHEME = "file"
+        const val AUTHORITY = "compose_resource"
     }
 
     @OptIn(InternalResourceApi::class)
     override suspend fun fetch(): Result<FetchResult> {
-        val bytes = readResourceBytes(resourcePath)
+        val bytes = readResourceBytes(resourcePath) // TODO Just use 'files/huge_china.jpg' on js
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourcePath)
         val dataSource = ByteArrayDataSource(sketch, request, LOCAL, bytes)
         return Result.success(FetchResult(dataSource, mimeType))
@@ -64,8 +71,8 @@ class ComposeResourceUriFetcher(
 
         override fun create(sketch: Sketch, request: ImageRequest): ComposeResourceUriFetcher? {
             val uri = request.uri.toUri()
-            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
-                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
+            return if (isComposeResourceUri(uri)) {
+                val resourcePath = uri.pathSegments.joinToString("/")
                 ComposeResourceUriFetcher(sketch, request, resourcePath)
             } else {
                 null
