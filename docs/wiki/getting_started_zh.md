@@ -19,14 +19,14 @@ AsyncImage(
 )
 
 AsyncImage(
-     uri = imageUri,
-     state = rememberAsyncImageState(ComposableImageOptions {
-          placeholder(Res.drawable.placeholder)
-          error(Res.drawable.error)
-          crossfade()
-          // There is a lot more...
-     }),
-     contentDescription = "photo"
+    uri = imageUri,
+    state = rememberAsyncImageState(ComposableImageOptions {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
+        // There is a lot more...
+    }),
+    contentDescription = "photo"
 )
 
 AsyncImage(
@@ -113,17 +113,17 @@ context.sketch.enqueue(request)
 
 [Sketch] 支持从网络、本机、资源等不同的数据源加载图片，如下：
 
-| URI                    | 描述                       | 创建函数                    | 依赖模块                     |
-|:-----------------------|:-------------------------|:------------------------|:-------------------------|
-| http://, https://      | File in network          | _                       | _                        |
-| file://, /             | File in SDCard           | newFileUri()            | _                        |
-| content://             | Android Content Resolver | _                       | _                        |
-| asset://               | Android Asset            | newAssetUri()           | _                        |
-| android.resource://    | Android Resource         | newResourceUri()        | _                        |
-| data:image/, data:img/ | Base64                   | newBase64Uri()          | _                        |
-| compose.resource://    | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                        |
-| app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
+| URI                     | 描述                       | 创建函数                    | 依赖模块                     |
+|:------------------------|:-------------------------|:------------------------|:-------------------------|
+| http://, https://       | File in network          | _                       | _                        |
+| file://, /              | File in SDCard           | newFileUri()            | _                        |
+| content://              | Android Content Resolver | _                       | _                        |
+| asset://                | Android Asset            | newAssetUri()           | _                        |
+| android.resource://     | Android Resource         | newResourceUri()        | _                        |
+| data:image/, data:img/  | Base64                   | newBase64Uri()          | _                        |
+| compose.resource://     | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
+| file://kotlin_resource/ | Kotlin Resource          | newKotlinResourceUri()  | _                        |
+| app.icon://             | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[详细了解 Fetcher][fetcher]
 
@@ -142,7 +142,7 @@ context.sketch.enqueue(request)
 | 视频帧                                                                                 | ✅             | ❌               | ❌               | ❌               |
 | http://, https://<br/>file://, /<br/>compose.resource://<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
 | asset://<br/>content://<br/>android.resource://                                     | ✅             | ❌               | ❌               | ❌               |
-| kotlin.resource://                                                                  | ❌             | ✅               | ✅               | ❌               |
+| file://kotlin_resource/                                                             | ❌             | ✅               | ✅               | ❌               |
 | Exif Orientation                                                                    | ✅             | ✅               | ✅               | ✅               |
 | 内存缓存                                                                                | ✅             | ✅               | ✅               | ✅               |
 | 结果缓存                                                                                | ✅             | ✅               | ✅               | ❌               |

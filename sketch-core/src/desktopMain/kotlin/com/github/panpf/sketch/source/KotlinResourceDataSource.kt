@@ -13,7 +13,7 @@ import java.io.IOException
 class KotlinResourceDataSource(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    val resourceName: String,
+    val resourcePath: String,
 ) : DataSource {
 
     override val dataFrom: DataFrom
@@ -22,7 +22,7 @@ class KotlinResourceDataSource(
     @WorkerThread
     @Throws(IOException::class)
     override fun openSourceOrNull(): Source =
-        ClassLoaderResourceLoader.Default.load(resourceName).source()
+        ClassLoaderResourceLoader.Default.load(resourcePath).source()
 
     @WorkerThread
     @Throws(IOException::class)
@@ -34,16 +34,16 @@ class KotlinResourceDataSource(
         other as KotlinResourceDataSource
         if (sketch != other.sketch) return false
         if (request != other.request) return false
-        if (resourceName != other.resourceName) return false
+        if (resourcePath != other.resourcePath) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = sketch.hashCode()
         result = 31 * result + request.hashCode()
-        result = 31 * result + resourceName.hashCode()
+        result = 31 * result + resourcePath.hashCode()
         return result
     }
 
-    override fun toString(): String = "ResourceDataSource('$resourceName')"
+    override fun toString(): String = "KotlinResourceDataSource('$resourcePath')"
 }

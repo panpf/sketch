@@ -119,17 +119,17 @@ Each image type has a corresponding Decoder support for it, [Learn more about De
 [Sketch] supports loading images from different data sources such as the network, local machine, and
 resources, as follows:
 
-| URI                    | Describe                 | Create Function         | Dependent Modules        |
-|:-----------------------|:-------------------------|:------------------------|:-------------------------|
-| http://, https://      | File in network          | _                       | _                        |
-| file://, /             | File in SDCard           | newFileUri()            | _                        |
-| content://             | Android Content Resolver | _                       | _                        |
-| asset://               | Android Asset            | newAssetUri()           | _                        |
-| android.resource://    | Android Resource         | newResourceUri()        | _                        |
-| data:image/, data:img/ | Base64                   | newBase64Uri()          | _                        |
-| compose.resource://    | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| kotlin.resource://     | Kotlin Resource          | newKotlinResourceUri()  | _                        |
-| app.icon://            | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
+| URI                     | Describe                 | Create Function         | Dependent Modules        |
+|:------------------------|:-------------------------|:------------------------|:-------------------------|
+| http://, https://       | File in network          | _                       | _                        |
+| file://, /              | File in SDCard           | newFileUri()            | _                        |
+| content://              | Android Content Resolver | _                       | _                        |
+| asset://                | Android Asset            | newAssetUri()           | _                        |
+| android.resource://     | Android Resource         | newResourceUri()        | _                        |
+| data:image/, data:img/  | Base64                   | newBase64Uri()          | _                        |
+| compose.resource://     | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
+| file://kotlin_resource/ | Kotlin Resource          | newKotlinResourceUri()  | _                        |
+| app.icon://             | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
 
 Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 
@@ -149,7 +149,7 @@ different, as follows:
 | Video frames                                                                           | ✅             | ❌                       | ❌                       | ❌                       |
 | http://<br/>https://<br/>file://, /<br/>compose.resource://<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
 | asset://<br/>content://<br/>android.resource://                                        | ✅             | ❌                       | ❌                       | ❌                       |
-| kotlin.resource://                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
+| file://kotlin_resource/                                                                | ❌             | ✅                       | ✅                       | ❌                       |
 | Exif Orientation                                                                       | ✅             | ✅                       | ✅                       | ✅                       |
 | Memory Cache                                                                           | ✅             | ✅                       | ✅                       | ✅                       |
 | Result Cache                                                                           | ✅             | ✅                       | ✅                       | ❌                       |
@@ -277,7 +277,8 @@ Image(
 ```
 
 > [!CAUTION]
-> You cannot call the target() function in [AsyncImage] and [AsyncImagePainter], which will cause the
+> You cannot call the target() function in [AsyncImage] and [AsyncImagePainter], which will cause
+> the
 > app to crash
 
 In the Android View system, you need to actively call the target() function and pass in the

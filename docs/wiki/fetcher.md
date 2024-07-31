@@ -7,27 +7,27 @@ Translations: [简体中文](fetcher_zh.md)
 Each uri supported by [Sketch] has a corresponding [Fetcher] implementation, as shown in the
 following table:
 
-| URI                    | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
-|:-----------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
-| http://, https://      | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
-| file://, /             | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
-| compose.resource://    | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
-| data:image/, data:img/ | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
-| asset://               | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
-| content://             | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
-| android.resource://    | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
-| app.icon://            | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
-| kotlin.resource://     | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
+| URI                     | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
+|:------------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
+| http://, https://       | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
+| file://, /              | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
+| compose.resource://     | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
+| data:image/, data:img/  | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
+| asset://                | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
+| content://              | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
+| android.resource://     | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
+| app.icon://             | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
+| file://kotlin_resource/ | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
 * [AssetUriFetcher] is used to load images from the Android assets directory
 * [ContentUriFetcher] ContentResolver for Android to load images
 * [ResourceUriFetcher] is used to load images from Android's resources directory
 * [AppIconUriFetcher] is used to load the icon of the installed App. It also needs to rely
-    on `sketch-extensions-core`
-    module. [Learn more](apk_app_icon.md#load-the-icon-of-the-installed-app)
+  on `sketch-extensions-core`
+  module. [Learn more](apk_app_icon.md#load-the-icon-of-the-installed-app)
 * [Base64UriFetcher] is used to load images from the base64 data block of the uri itself
 * [ComposeResourceUriFetcher] is used to load images from the composeResources directory of
-    Compose Multiplatform, it also needs to depend on the `sketch-compose-resources` module.
+  Compose Multiplatform, it also needs to depend on the `sketch-compose-resources` module.
 * [KotlinResourceUriFetcher] is used to load images from the resources directory of kotlin
 
 ## Register Fetcher
