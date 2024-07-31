@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.fetch
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.net.Uri
@@ -25,129 +24,114 @@ import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.ResDrawable
-import com.github.panpf.sketch.fetch.ResourceUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
-import com.github.panpf.sketch.util.ifOrNull
+
 
 /**
- * Sample: 'android.resource://resource?resType=drawable&resName=ic_launcher'
+ * Get image resources from [ImageRequest].context.resources using resource type and resource name
  * <br>
- * Use ImageRequest.context.packageName to get Resources by default
+ * Sample: 'android.resource:///drawable/ic_launcher'
  */
 fun newResourceUri(resType: String, resName: String): String =
-    "$SCHEME://resource?resType=$resType&resName=$resName"
+    "${ResourceUriFetcher.SCHEME}:///$resType/$resName"
 
 /**
- * Sample: 'android.resource://resource?resId=1031232'
+ * Get image resources from [ImageRequest].context.resources using resource id
  * <br>
- * Use ImageRequest.context.packageName to get Resources by default
+ * Sample: 'android.resource:///1031232'
  */
-fun newResourceUri(resId: Int): String =
-    "$SCHEME://resource?resId=$resId"
+fun newResourceUri(resId: Int): String = "${ResourceUriFetcher.SCHEME}:///$resId"
 
 /**
- * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resType=drawable&resName=ic_launcher'
+ * Get the image resource from the specified package using the resource type and resource name
  * <br>
- * Use [packageName] to get Resources
+ * Sample: 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
  */
 fun newResourceUri(packageName: String, resType: String, resName: String): String =
-    "$SCHEME://resource?packageName=$packageName&resType=$resType&resName=$resName"
+    "${ResourceUriFetcher.SCHEME}://$packageName/$resType/$resName"
 
 /**
- * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resId=1031232'
+ * Get the image resource from the specified package using the resource id
  * <br>
- * Use [packageName] to get Resources
+ * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
 fun newResourceUri(packageName: String, resId: Int): String =
-    "$SCHEME://resource?packageName=$packageName&resId=$resId"
+    "${ResourceUriFetcher.SCHEME}://$packageName/$resId"
 
 /**
- * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resType=drawable&resName=ic_launcher'
- * <br>
- * Use current Context's packageName to get Resources
+ * Check if the uri is a resource uri
  */
-fun Context.newResourceUri(resType: String, resName: String): String =
-    newResourceUri(packageName, resType, resName)
-
-/**
- * Sample: 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resId=1031232'
- * <br>
- * Use current Context's packageName to get Resources
- */
-fun Context.newResourceUri(resId: Int): String = newResourceUri(packageName, resId)
+fun isResourceUri(uri: Uri): Boolean =
+    ResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
 /**
  * Support the following uri:
  *
- * 'android.resource://resource?resType=drawable&resName=ic_launcher'
- * 'android.resource://resource?resId=1031232'
- * 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resType=drawable&resName=ic_launcher'
- * 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resId=1031232'
+ * 'android.resource:///drawable/ic_launcher'
+ * 'android.resource:///1031232'
+ * 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
+ * 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
 class ResourceUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
-    val contentUri: Uri,
+    val resourceUri: Uri,
 ) : Fetcher {
 
     companion object {
         const val SCHEME = "android.resource"
     }
 
-    @SuppressLint("DiscouragedApi")
     @WorkerThread
+    @SuppressLint("DiscouragedApi")
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val packageName = contentUri.getQueryParameters("packageName")
-            .firstOrNull()
+        val packageName = resourceUri.authority
             ?.takeIf { it.isNotEmpty() }
             ?: request.context.packageName
+
         val resources: Resources = try {
             request.context.packageManager.getResourcesForApplication(packageName)
         } catch (ex: NameNotFoundException) {
-            throw Resources.NotFoundException("Not found Resources by packageName: $contentUri")
+            throw Resources.NotFoundException("Not found Resources by packageName: $resourceUri")
         }
 
-        val resId = contentUri.getQueryParameters("resId").firstOrNull()?.toIntOrNull()
-        val finalResId = if (resId != null) {
-            resId
-        } else {
-            val resType =
-                contentUri.getQueryParameters("resType").firstOrNull()
-                    ?.takeIf { it.isNotEmpty() }
-            val resName =
-                contentUri.getQueryParameters("resName").firstOrNull()
-                    ?.takeIf { it.isNotEmpty() }
-            if (resType == null || resName == null) {
-                throw Resources.NotFoundException("Invalid resource uri: $contentUri")
-            }
-            resources.getIdentifier(resName, resType, packageName).takeIf { it != 0 }
-                ?: throw Resources.NotFoundException("No found resource identifier by resType, resName: $contentUri")
+        val paths = resourceUri.pathSegments
+        val resId = when (paths.size) {
+            1 -> paths.first().toInt()
+            2 -> resources.getIdentifier(
+                /* name= */ paths.last(),
+                /* defType= */ paths.first(),
+                /* defPackage= */ packageName
+            ).takeIf { it != 0 }
+                ?: throw Resources.NotFoundException("No found resource identifier by resType, resName: $resourceUri")
+
+            else -> throw Resources.NotFoundException("Invalid resource uri: $resourceUri")
         }
 
         val path =
-            TypedValue().apply { resources.getValue(finalResId, this, true) }.string ?: ""
+            TypedValue().apply { resources.getValue(resId, this, true) }.string ?: ""
         val entryName = path.lastIndexOf('/').takeIf { it != -1 }
             ?.let { path.substring(it + 1) }
             ?: path.toString()
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(entryName)
-        val dataSource = if (resources.getResourceTypeName(finalResId) == "raw") {
+        val dataSource = if (resources.getResourceTypeName(resId) == "raw") {
             ResourceDataSource(
                 sketch = sketch,
                 request = request,
                 packageName = packageName,
                 resources = resources,
-                resId = finalResId,
+                resId = resId,
             )
         } else {
             DrawableDataSource(
                 sketch = sketch,
                 request = request,
                 dataFrom = DataFrom.LOCAL,
-                drawableFetcher = ResDrawable(packageName, resources, finalResId)
+                drawableFetcher = ResDrawable(packageName, resources, resId)
             )
         }
         FetchResult(dataSource, mimeType)
@@ -157,8 +141,10 @@ class ResourceUriFetcher(
 
         override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
             val uri = request.uri.toUri()
-            return ifOrNull(SCHEME.equals(uri.scheme, ignoreCase = true)) {
+            return if (isResourceUri(uri)) {
                 ResourceUriFetcher(sketch, request, uri)
+            } else {
+                null
             }
         }
 

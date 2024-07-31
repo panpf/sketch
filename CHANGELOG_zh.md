@@ -14,6 +14,9 @@
 * change: KotlinResourceUriFetcher 支持的 uri 从 'kotlin.resource://' 改为 'file://kotlin_resource/'
 * change: ComposeResourceUriFetcher 支持的 uri 从 'compose.resource://'
   改为 'file://compose_resource/'
+* change: ResourceUriFetcher 支持的 uri 从 'android.resource:
+  //resource?resType=drawable&resName=ic_launcher' 和 'android.resource://resource?resId=1031232'
+  改为 'android.resource:///drawable/ic_launcher' 和 'android.resource:///1031232'
 
 # 4.0.0-alpha04
 
