@@ -54,7 +54,7 @@ class GifInfoHandlerHelperTest {
         AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.animGif.uri),
-            assetFileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+            fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
         ).getFile()
         val snapshot = sketch.resultCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
 
@@ -164,7 +164,7 @@ class GifInfoHandlerHelperTest {
             AssetDataSource(
                 sketch = sketch,
                 request = ImageRequest(context, ResourceImages.animGif.uri),
-                assetFileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+                fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
             )
         ).apply {
             Assert.assertEquals(480, width)

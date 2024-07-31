@@ -26,11 +26,11 @@ class AssetDataSourceTest {
         AssetDataSource(
             sketch = sketch,
             request = request,
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).apply {
             Assert.assertTrue(sketch === this.sketch)
             Assert.assertTrue(request === this.request)
-            Assert.assertEquals(ResourceImages.jpeg.resourceName, this.assetFileName)
+            Assert.assertEquals(ResourceImages.jpeg.resourceName, this.fileName)
             Assert.assertEquals(LOCAL, this.dataFrom)
         }
     }
@@ -42,7 +42,7 @@ class AssetDataSourceTest {
         AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).apply {
             openSource().asOrThrow<Closeable>().close()
         }
@@ -51,7 +51,7 @@ class AssetDataSourceTest {
             AssetDataSource(
                 sketch = sketch,
                 request = ImageRequest(context, newAssetUri("not_found.jpeg")),
-                assetFileName = "not_found.jpeg"
+                fileName = "not_found.jpeg"
             ).apply {
                 openSource()
             }
@@ -67,7 +67,7 @@ class AssetDataSourceTest {
         AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).apply {
             Assert.assertEquals(
                 "AssetDataSource('sample.jpeg')",
@@ -78,7 +78,7 @@ class AssetDataSourceTest {
         AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, newAssetUri("not_found.jpeg")),
-            assetFileName = "not_found.jpeg"
+            fileName = "not_found.jpeg"
         ).apply {
             Assert.assertEquals("AssetDataSource('not_found.jpeg')", toString())
         }

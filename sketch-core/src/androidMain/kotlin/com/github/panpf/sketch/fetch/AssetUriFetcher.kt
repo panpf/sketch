@@ -16,44 +16,57 @@
 package com.github.panpf.sketch.fetch
 
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.fetch.AssetUriFetcher.Companion.SCHEME
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.Uri
+import com.github.panpf.sketch.util.pathSegments
+import com.github.panpf.sketch.util.toUri
 
 /**
- * Sample: 'asset://test.png'
+ * Sample: 'file:///android_asset/test.png'
  */
-fun newAssetUri(assetFilePath: String): String = "$SCHEME://$assetFilePath"
+fun newAssetUri(fileName: String): String =
+    "${AssetUriFetcher.SCHEME}:///${AssetUriFetcher.AUTHORITY}/$fileName"
 
 /**
- * Support 'asset://test.png' uri
+ * Check if the uri is a android asset uri
+ *
+ * Support 'file:///android_asset/test.png' uri
+ */
+fun isAssetUri(uri: Uri): Boolean =
+    AssetUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
+            && uri.authority?.takeIf { it.isNotEmpty() } == null
+            && AssetUriFetcher.AUTHORITY.equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
+
+/**
+ * Support 'file:///android_asset/test.png' uri
  */
 class AssetUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
-    val assetFileName: String
+    val fileName: String
 ) : Fetcher {
 
     companion object {
-        const val SCHEME = "asset"
+        const val SCHEME = "file"
+        const val AUTHORITY = "android_asset"
     }
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val mimeType = MimeTypeMap.getMimeTypeFromUrl(assetFileName)
-        FetchResult(AssetDataSource(sketch, request, assetFileName), mimeType)
+        val mimeType = MimeTypeMap.getMimeTypeFromUrl(fileName)
+        FetchResult(AssetDataSource(sketch, request, fileName), mimeType)
     }
 
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {
             val uri = request.uri.toUri()
-            return if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
-                val resourcePath = "${uri.authority.orEmpty()}${uri.path.orEmpty()}"
-                AssetUriFetcher(sketch, request, resourcePath)
+            return if (isAssetUri(uri)) {
+                val fileName = uri.pathSegments.drop(1).joinToString("/")
+                AssetUriFetcher(sketch = sketch, request = request, fileName = fileName)
             } else {
                 null
             }

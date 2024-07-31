@@ -1581,13 +1581,13 @@ class ImageRequestExecuteTest {
             Assert.assertTrue(transformeds?.contains("TestDecodeInterceptor") == true)
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri.replace("asset", "test")) {
+        ImageRequest(context, ResourceImages.jpeg.uri.replace("android_asset", "test_asset")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
         }.let { runBlocking { it.execute() } }.apply {
             Assert.assertTrue(this is ImageResult.Error)
         }
-        ImageRequest(context, ResourceImages.jpeg.uri.replace("asset", "test")) {
+        ImageRequest(context, ResourceImages.jpeg.uri.replace("android_asset", "test_asset")) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {

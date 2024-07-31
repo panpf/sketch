@@ -40,7 +40,7 @@ class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
             }
 
             is AssetDataSource -> {
-                GifInfoHandle(context.assets.openFd(dataSource.assetFileName))
+                GifInfoHandle(context.assets.openFd(dataSource.fileName))
             }
 
             is FileDataSource -> {

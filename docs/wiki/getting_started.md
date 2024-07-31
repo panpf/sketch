@@ -19,14 +19,14 @@ AsyncImage(
 )
 
 AsyncImage(
-     uri = imageUri,
-     state = rememberAsyncImageState(ComposableImageOptions {
-          placeholder(Res.drawable.placeholder)
-          error(Res.drawable.error)
-          crossfade()
-          // There is a lot more...
-     }),
-     contentDescription = "photo"
+    uri = imageUri,
+    state = rememberAsyncImageState(ComposableImageOptions {
+        placeholder(Res.drawable.placeholder)
+        error(Res.drawable.error)
+        crossfade()
+        // There is a lot more...
+    }),
+    contentDescription = "photo"
 )
 
 AsyncImage(
@@ -66,7 +66,7 @@ Android View:
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
-// val imageUri = "asset://image.jpg"
+// val imageUri = "file:///android_asset/image.jpg"
 // val imageUri = "content://media/external/images/media/88484"
 val imageUri = "https://example.com/image.jpg"
 
@@ -124,7 +124,7 @@ resources, as follows:
 | http://, https://        | File in network          | _                       | _                        |
 | file://, /               | File in SDCard           | newFileUri()            | _                        |
 | content://               | Android Content Resolver | _                       | _                        |
-| asset://                 | Android Asset            | newAssetUri()           | _                        |
+| file:///android_asset/   | Android Asset            | newAssetUri()           | _                        |
 | android.resource://      | Android Resource         | newResourceUri()        | _                        |
 | data:image/, data:img/   | Base64                   | newBase64Uri()          | _                        |
 | file://compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
@@ -148,7 +148,7 @@ different, as follows:
 | svg                                                                                         | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
 | Video frames                                                                                | ✅             | ❌                       | ❌                       | ❌                       |
 | http://<br/>https://<br/>file://, /<br/>file://compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
-| asset://<br/>content://<br/>android.resource://                                             | ✅             | ❌                       | ❌                       | ❌                       |
+| file:///android_asset/<br/>content://<br/>android.resource://                               | ✅             | ❌                       | ❌                       | ❌                       |
 | file://kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
 | Exif Orientation                                                                            | ✅             | ✅                       | ✅                       | ✅                       |
 | Memory Cache                                                                                | ✅             | ✅                       | ✅                       | ✅                       |
@@ -381,7 +381,7 @@ if (imageResult is ImageResult.Success) {
     val cacheKey: String = imageResult.cacheKey
     val imageInfo: ImageInfo = imageResult.imageInfo
     val dataFrom: DataFrom = imageResult.dataFrom
-     val resize: Resize = imageResult.resize
+    val resize: Resize = imageResult.resize
     val transformeds: List<String>? = imageResult.transformeds
     val extras: Map<String, String>? = imageResult.extras
 } else if (imageResult is ImageResult.Error) {

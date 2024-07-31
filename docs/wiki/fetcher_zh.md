@@ -12,7 +12,7 @@
 | file://, /               | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
 | file://compose_resource/ | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
 | data:image/jpeg;base64   | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
-| asset://                 | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
+| file:///android_asset/   | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
 | content://               | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
 | android.resource://      | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
 | app.icon://              | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |

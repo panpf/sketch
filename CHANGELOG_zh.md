@@ -17,6 +17,7 @@
 * change: ResourceUriFetcher 支持的 uri 从 'android.resource:
   //resource?resType=drawable&resName=ic_launcher' 和 'android.resource://resource?resId=1031232'
   改为 'android.resource:///drawable/ic_launcher' 和 'android.resource:///1031232'
+* change: AssetUriFetcher 支持的 uri 从 'asset://' 改为 'file:///android_asset/'
 
 # 4.0.0-alpha04
 

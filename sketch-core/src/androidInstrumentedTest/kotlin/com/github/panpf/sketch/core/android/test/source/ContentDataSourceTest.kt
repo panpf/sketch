@@ -27,7 +27,7 @@ class ContentDataSourceTest {
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile().let { Uri.fromFile(it.toFile()) }
         val request = ImageRequest(context, contentUri.toString())
         ContentDataSource(
@@ -48,7 +48,7 @@ class ContentDataSourceTest {
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile().let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
             sketch = sketch,
@@ -78,7 +78,7 @@ class ContentDataSourceTest {
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile().let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
             sketch = sketch,
@@ -86,7 +86,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             val file = getFile()
-            Assert.assertEquals("01d95711e2e30d06b88b93f82e3e1bde.0", file.name)
+            Assert.assertEquals("4d0b3d81c4eacfc1252f7112ca8833b3.0", file.name)
         }
 
         val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
@@ -117,7 +117,7 @@ class ContentDataSourceTest {
         val contentUri = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile().let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
             sketch = sketch,

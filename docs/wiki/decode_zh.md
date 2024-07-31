@@ -66,7 +66,7 @@ Sketch.Builder(context).apply {
 }.build()
 
 // 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "asset://sample.mypng") {
+ImageRequest(context, "file:///android_asset/sample.mypng") {
     components {
         addDecoder(SvgDecoder.Factory())
     }
@@ -116,7 +116,7 @@ Sketch.Builder(context).apply {
 }.build()
 
 // 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "asset://sample.mypng") {
+ImageRequest(context, "file:///android_asset/sample.mypng") {
     components {
         addDecoder(MyDecoder.Factory())
     }

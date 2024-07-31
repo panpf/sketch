@@ -124,7 +124,7 @@ class ImageRequestTest {
         ImageRequest(context1, uri).apply {
             Assert.assertNotEquals(context1, this.context)
             Assert.assertEquals(context1.applicationContext, this.context)
-            Assert.assertEquals("asset://sample.jpeg", uri)
+            Assert.assertEquals("file:///android_asset/sample.jpeg", uri)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)
             Assert.assertNull(this.target)

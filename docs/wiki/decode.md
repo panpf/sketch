@@ -70,7 +70,7 @@ Sketch.Builder(context).apply {
 }.build()
 
 // Register for a single ImageRequest when loading an image
-ImageRequest(context, "asset://sample.mypng") {
+ImageRequest(context, "file:///android_asset/sample.mypng") {
     components {
         addDecoder(SvgDecoder.Factory())
     }
@@ -121,7 +121,7 @@ Sketch.Builder(context).apply {
 }.build()
 
 // Register for a single ImageRequest when loading an image
-ImageRequest(context, "asset://sample.mypng") {
+ImageRequest(context, "file:///android_asset/sample.mypng") {
     components {
         addDecoder(MyDecoder.Factory())
     }

@@ -20,6 +20,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: The uri supported by ResourceUriFetcher has been changed from 'android.resource:
   //resource?resType=drawable&resName=ic_launcher' and 'android.resource://resource?resId=1031232'
   to 'android.resource:///drawable/ic_launcher' and ' android.resource:///1031232'
+* change: AssetUriFetcher supported uri changed from 'asset://' to 'file:///android_asset/'
 
 # 4.0.0-alpha04
 

@@ -64,7 +64,7 @@ Android View：
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
-// val imageUri = "asset://image.jpg"
+// val imageUri = "file:///android_asset/image.jpg"
 // val imageUri = "content://media/external/images/media/88484"
 val imageUri = "https://example.com/image.jpg"
 
@@ -118,7 +118,7 @@ context.sketch.enqueue(request)
 | http://, https://        | File in network          | _                       | _                        |
 | file://, /               | File in SDCard           | newFileUri()            | _                        |
 | content://               | Android Content Resolver | _                       | _                        |
-| asset://                 | Android Asset            | newAssetUri()           | _                        |
+| file:///android_asset/   | Android Asset            | newAssetUri()           | _                        |
 | android.resource://      | Android Resource         | newResourceUri()        | _                        |
 | data:image/, data:img/   | Base64                   | newBase64Uri()          | _                        |
 | file://compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
@@ -141,7 +141,7 @@ context.sketch.enqueue(request)
 | svg                                                                                      | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
 | 视频帧                                                                                      | ✅             | ❌               | ❌               | ❌               |
 | http://, https://<br/>file://, /<br/>file://compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
-| asset://<br/>content://<br/>android.resource://                                          | ✅             | ❌               | ❌               | ❌               |
+| file:///android_asset/<br/>content://<br/>android.resource://                            | ✅             | ❌               | ❌               | ❌               |
 | file://kotlin_resource/                                                                  | ❌             | ✅               | ✅               | ❌               |
 | Exif Orientation                                                                         | ✅             | ✅               | ✅               | ✅               |
 | 内存缓存                                                                                     | ✅             | ✅               | ✅               | ✅               |

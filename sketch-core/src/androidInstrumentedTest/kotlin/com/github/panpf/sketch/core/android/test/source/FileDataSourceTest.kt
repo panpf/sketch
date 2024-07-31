@@ -27,7 +27,7 @@ class FileDataSourceTest {
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile()
         val request = ImageRequest(context, newFileUri(file))
         FileDataSource(
@@ -48,7 +48,7 @@ class FileDataSourceTest {
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile()
         FileDataSource(
             sketch = sketch,
@@ -75,7 +75,7 @@ class FileDataSourceTest {
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile()
         FileDataSource(
             sketch = sketch,
@@ -95,7 +95,7 @@ class FileDataSourceTest {
         val file = AssetDataSource(
             sketch = sketch,
             request = ImageRequest(context, ResourceImages.jpeg.uri),
-            assetFileName = ResourceImages.jpeg.resourceName
+            fileName = ResourceImages.jpeg.resourceName
         ).getFile()
         FileDataSource(
             sketch = sketch,

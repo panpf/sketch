@@ -68,7 +68,7 @@ open class ImageDecoderAnimatedDecoder(
         val request = requestContext.request
         val source = when (dataSource) {
             is AssetDataSource -> {
-                ImageDecoder.createSource(request.context.assets, dataSource.assetFileName)
+                ImageDecoder.createSource(request.context.assets, dataSource.fileName)
             }
 
             is ResourceDataSource -> {

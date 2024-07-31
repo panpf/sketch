@@ -75,7 +75,7 @@ class ImageViewExtensionsTest {
         Assert.assertTrue(imageView.imageResult is ImageResult.Success)
 
         runBlocking {
-            imageView.loadImage("asset://fake.jpeg").job.join()
+            imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
         }
         Assert.assertTrue(imageView.imageResult is ImageResult.Error)
 

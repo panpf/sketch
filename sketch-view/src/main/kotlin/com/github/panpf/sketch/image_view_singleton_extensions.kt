@@ -71,9 +71,9 @@ fun ImageView.loadImage(
  * You can set request params with a trailing lambda function [configBlock]
  */
 fun ImageView.loadAssetImage(
-    assetFileName: String?,
+    fileName: String?,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(assetFileName?.let { newAssetUri(assetFileName) }, configBlock)
+): Disposable = loadImage(fileName?.let { newAssetUri(fileName) }, configBlock)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]

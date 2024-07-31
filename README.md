@@ -149,7 +149,7 @@ Android View:
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
-// val imageUri = "asset://image.jpg"
+// val imageUri = "file:///android_asset/image.jpg"
 // val imageUri = "content://media/external/images/media/88484"
 val imageUri = "https://www.sample.com/image.jpg"
 

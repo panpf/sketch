@@ -30,7 +30,7 @@ import java.io.IOException
 class AssetDataSource constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,
-    val assetFileName: String
+    val fileName: String
 ) : DataSource {
 
     override val dataFrom: DataFrom
@@ -38,7 +38,7 @@ class AssetDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = request.context.assets.open(assetFileName).source()
+    override fun openSourceOrNull(): Source = request.context.assets.open(fileName).source()
 
     @WorkerThread
     @Throws(IOException::class)
@@ -50,16 +50,16 @@ class AssetDataSource constructor(
         other as AssetDataSource
         if (sketch != other.sketch) return false
         if (request != other.request) return false
-        if (assetFileName != other.assetFileName) return false
+        if (fileName != other.fileName) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = sketch.hashCode()
         result = 31 * result + request.hashCode()
-        result = 31 * result + assetFileName.hashCode()
+        result = 31 * result + fileName.hashCode()
         return result
     }
 
-    override fun toString(): String = "AssetDataSource('$assetFileName')"
+    override fun toString(): String = "AssetDataSource('$fileName')"
 }
