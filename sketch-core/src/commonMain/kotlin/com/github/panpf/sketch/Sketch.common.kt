@@ -460,8 +460,8 @@ internal expect fun defaultHttpStack(): HttpStack
 internal fun defaultComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(HttpUriFetcher.Factory())
-        addFetcher(FileUriFetcher.Factory())
         addFetcher(Base64UriFetcher.Factory())
+        addFetcher(FileUriFetcher.Factory())
 
         addRequestInterceptor(MemoryCacheRequestInterceptor())
         addRequestInterceptor(EngineRequestInterceptor())
