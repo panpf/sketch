@@ -103,9 +103,6 @@ fun Project.composeConfig() {
 
 fun Project.publishConfig() {
     if (
-//        hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
-//        && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
-//        && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
 //        && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
 //        && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
         hasProperty("versionName")    // configured in the rootProject/gradle.properties file
@@ -116,6 +113,12 @@ fun Project.publishConfig() {
 
         configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
             version = property("versionName").toString()
+            if (hasProperty("signing.keyId")    // configured in the ~/.gradle/gradle.properties file
+                && hasProperty("signing.password")    // configured in the ~/.gradle/gradle.properties file
+                && hasProperty("signing.secretKeyRingFile")    // configured in the ~/.gradle/gradle.properties file
+            ) {
+                signAllPublications()
+            }
         }
     }
 }
