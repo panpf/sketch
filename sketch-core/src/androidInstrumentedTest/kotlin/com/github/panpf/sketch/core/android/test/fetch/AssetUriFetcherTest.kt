@@ -44,6 +44,8 @@ class AssetUriFetcherTest {
         )
     }
 
+    // TODO isAssetUri
+
     @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()

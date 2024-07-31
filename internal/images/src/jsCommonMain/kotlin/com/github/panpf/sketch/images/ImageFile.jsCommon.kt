@@ -18,5 +18,5 @@ package com.github.panpf.sketch.images
 actual fun resourceNameToUri(name: String): String {
     // The images in images have not been compiled,
     // so there is no need to add 'composeResources/com.github.panpf.sketch.sample.resources/' to the path.
-    return "file://compose_resource/files/$name"
+    return "file:///compose_resource/files/$name"
 }

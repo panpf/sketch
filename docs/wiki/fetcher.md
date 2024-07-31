@@ -7,17 +7,17 @@ Translations: [简体中文](fetcher_zh.md)
 Each uri supported by [Sketch] has a corresponding [Fetcher] implementation, as shown in the
 following table:
 
-| URI                      | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
-|:-------------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
-| http://, https://        | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
-| file://, /               | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
-| file://compose_resource/ | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
-| data:image/, data:img/   | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
-| file:///android_asset/   | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
-| content://               | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
-| android.resource://      | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
-| app.icon://              | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
-| file://kotlin_resource/  | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
+| URI                       | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
+|:--------------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
+| http://, https://         | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
+| file://, /                | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
+| file:///compose_resource/ | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
+| data:image/, data:img/    | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
+| file:///android_asset/    | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
+| content://                | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
+| android.resource://       | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
+| app.icon://               | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
+| file://kotlin_resource/   | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
 * [AssetUriFetcher] is used to load images from the Android assets directory
 * [ContentUriFetcher] ContentResolver for Android to load images

@@ -100,7 +100,7 @@ Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
-// val imageUri = file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/sample.png
+// val imageUri = file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/sample.png
 val imageUri = "https://www.sample.com/image.jpg"
 
 AsyncImage(

@@ -29,6 +29,7 @@ class Uri internal constructor(
 /**
  * Return the separate segments of the [Uri.path].
  */
+// TODO Move to Uri.kt
 val Uri.pathSegments: List<String>
     get() {
         val path = path ?: return emptyList()

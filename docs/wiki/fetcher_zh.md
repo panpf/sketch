@@ -6,17 +6,17 @@
 
 [Sketch] 支持的每一种 uri 都有对应的 [Fetcher] 实现，如下表所示：
 
-| URI                      | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
-|:-------------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
-| http://, https://        | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
-| file://, /               | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
-| file://compose_resource/ | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
-| data:image/jpeg;base64   | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
-| file:///android_asset/   | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
-| content://               | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
-| android.resource://      | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
-| app.icon://              | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
-| file://kotlin_resource/  | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
+| URI                       | Fetcher                     | Create                  | Dependent modules        | Android | iOS | Desktop | Web |
+|:--------------------------|-----------------------------|-------------------------|--------------------------|---------|:----|:--------|:----|
+| http://, https://         | [HttpUriFetcher]            | -                       | -                        | ✅       | ✅   | ✅       | ✅   |
+| file://, /                | [FileUriFetcher]            | newFileUri()            | -                        | ✅       | ✅   | ✅       | ✅   |
+| file:///compose_resource/ | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources | ✅       | ✅   | ✅       | ✅   |
+| data:image/jpeg;base64    | [Base64UriFetcher]          | newBase64Uri()          | -                        | ✅       | ✅   | ✅       | ✅   |
+| file:///android_asset/    | [AssetUriFetcher]           | newAssetUri()           | -                        | ✅       | ❌   | ❌       | ❌   |
+| content://                | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
+| android.resource://       | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
+| app.icon://               | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
+| file://kotlin_resource/   | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
 * [AssetUriFetcher] 用于从 Android 的 assets 目录加载图片
 * [ContentUriFetcher] 用于 Android 的 ContentResolver 加载图片

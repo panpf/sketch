@@ -16,7 +16,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: KotlinResourceUriFetcher supported uri changed from 'kotlin.resource://'
   to 'file://kotlin_resource/'
 * change: ComposeResourceUriFetcher supported uri changed from 'compose.resource://'
-  to 'file://compose_resource/'
+  to file:///compose_resource/
 * change: The uri supported by ResourceUriFetcher has been changed from 'android.resource:
   //resource?resType=drawable&resName=ic_launcher' and 'android.resource://resource?resId=1031232'
   to 'android.resource:///drawable/ic_launcher' and ' android.resource:///1031232'

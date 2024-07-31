@@ -15,27 +15,27 @@ class ComposeResourceUriFetcherTest {
     @Test
     fun testNewComposeResourceUri() {
         assertEquals(
-            expected = "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
+            expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
             actual = newComposeResourceUri("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
         )
         assertEquals(
-            expected = "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
+            expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
             actual = newComposeResourceUri("jar:file:/data/app/com.github.panpf.sketch4.sample-1==/base.apk!/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
         )
         assertEquals(
-            expected = "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
+            expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
             actual = newComposeResourceUri("file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
         )
         assertEquals(
-            expected = "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
+            expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
             actual = newComposeResourceUri("http://localhost:8080/./composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
         )
         assertEquals(
-            expected = "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
+            expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
             actual = newComposeResourceUri("file:///Users/panpf/Library/Developer/ CoreSimulator/Devices/F828C881-A750-432B-8210-93A84C45E/data/Containers/Bundle/Application/CBD75605-D35E-47A7-B56B-6C5690B062CC/SketchSample.app/compose-resources/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
         )
         assertEquals(
-            expected = "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg?from=home",
+            expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg?from=home",
             actual = newComposeResourceUri("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg?from=home")
         )
 
@@ -48,20 +48,24 @@ class ComposeResourceUriFetcherTest {
     fun testIsComposeResourceUri() {
         assertEquals(
             expected = true,
-            actual = isComposeResourceUri("file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpgg".toUri())
+            actual = isComposeResourceUri("file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpgg".toUri())
         )
         assertEquals(
             expected = true,
-            actual = isComposeResourceUri("file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpgg?from=home".toUri())
+            actual = isComposeResourceUri("file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpgg?from=home".toUri())
         )
 
         assertEquals(
             expected = false,
-            actual = isComposeResourceUri("file1://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg".toUri())
+            actual = isComposeResourceUri("file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpgg?from=home".toUri())
         )
         assertEquals(
             expected = false,
-            actual = isComposeResourceUri("file://compose_resource2/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg".toUri())
+            actual = isComposeResourceUri("file1:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg".toUri())
+        )
+        assertEquals(
+            expected = false,
+            actual = isComposeResourceUri("file:///compose_resource2/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg".toUri())
         )
         assertEquals(
             expected = false,
@@ -69,7 +73,7 @@ class ComposeResourceUriFetcherTest {
         )
         assertEquals(
             expected = false,
-            actual = isComposeResourceUri("file://composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg".toUri())
+            actual = isComposeResourceUri("file:///composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg".toUri())
         )
     }
 
@@ -82,7 +86,7 @@ class ComposeResourceUriFetcherTest {
             sketch,
             ImageRequest(
                 context,
-                "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
+                "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
             )
         )!!
             .apply {
@@ -95,7 +99,7 @@ class ComposeResourceUriFetcherTest {
             sketch,
             ImageRequest(
                 context,
-                "file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg?from=home"
+                "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg?from=home"
             )
         )!!
             .apply {
@@ -111,7 +115,7 @@ class ComposeResourceUriFetcherTest {
                 sketch,
                 ImageRequest(
                     context,
-                    "file1://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
+                    "file1:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
                 )
             )
         )
@@ -121,7 +125,7 @@ class ComposeResourceUriFetcherTest {
                 sketch,
                 ImageRequest(
                     context,
-                    "file://compose_resource1/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
+                    "file:///compose_resource1/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
                 )
             )
         )
@@ -132,16 +136,6 @@ class ComposeResourceUriFetcherTest {
                 ImageRequest(
                     context,
                     "file:///composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
-                )
-            )
-        )
-        assertEquals(
-            expected = null,
-            actual = factory.create(
-                sketch,
-                ImageRequest(
-                    context,
-                    "file://composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
                 )
             )
         )
