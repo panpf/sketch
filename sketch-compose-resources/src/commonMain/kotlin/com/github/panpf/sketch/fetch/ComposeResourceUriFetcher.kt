@@ -61,7 +61,7 @@ class ComposeResourceUriFetcher(
 
     @OptIn(InternalResourceApi::class)
     override suspend fun fetch(): Result<FetchResult> {
-        val bytes = readResourceBytes(resourcePath) // TODO Just use 'files/huge_china.jpg' on js
+        val bytes = readResourceBytes(resourcePath)
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourcePath)
         val dataSource = ByteArrayDataSource(sketch, request, LOCAL, bytes)
         return Result.success(FetchResult(dataSource, mimeType))
