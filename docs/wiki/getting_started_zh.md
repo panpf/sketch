@@ -122,7 +122,7 @@ context.sketch.enqueue(request)
 | android.resource://       | Android Resource         | newResourceUri()        | _                        |
 | data:image/, data:img/    | Base64                   | newBase64Uri()          | _                        |
 | file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| file://kotlin_resource/   | Kotlin Resource          | newKotlinResourceUri()  | _                        |
+| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                        |
 | app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[详细了解 Fetcher][fetcher]
@@ -142,7 +142,7 @@ context.sketch.enqueue(request)
 | 视频帧                                                                                       | ✅             | ❌               | ❌               | ❌               |
 | http://, https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
 | file:///android_asset/<br/>content://<br/>android.resource://                             | ✅             | ❌               | ❌               | ❌               |
-| file://kotlin_resource/                                                                   | ❌             | ✅               | ✅               | ❌               |
+| file:///kotlin_resource/                                                                  | ❌             | ✅               | ✅               | ❌               |
 | Exif Orientation                                                                          | ✅             | ✅               | ✅               | ✅               |
 | 内存缓存                                                                                      | ✅             | ✅               | ✅               | ✅               |
 | 结果缓存                                                                                      | ✅             | ✅               | ✅               | ❌               |

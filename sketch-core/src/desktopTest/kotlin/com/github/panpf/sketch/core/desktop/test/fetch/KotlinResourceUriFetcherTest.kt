@@ -14,15 +14,15 @@ class KotlinResourceUriFetcherTest {
     @Test
     fun testNewKotlinResourceUri() {
         assertEquals(
-            expected = "file://kotlin_resource/sample.jpeg",
+            expected = "file:///kotlin_resource/sample.jpeg",
             actual = newKotlinResourceUri("sample.jpeg")
         )
         assertEquals(
-            expected = "file://kotlin_resource/images/sample.jpeg",
+            expected = "file:///kotlin_resource/images/sample.jpeg",
             actual = newKotlinResourceUri("images/sample.jpeg")
         )
         assertEquals(
-            expected = "file://kotlin_resource/sample.jpeg?from=home",
+            expected = "file:///kotlin_resource/sample.jpeg?from=home",
             actual = newKotlinResourceUri("sample.jpeg?from=home")
         )
     }
@@ -31,32 +31,28 @@ class KotlinResourceUriFetcherTest {
     fun testIsKotlinResourceUri() {
         assertEquals(
             expected = true,
-            actual = isKotlinResourceUri("file://kotlin_resource/sample.jpeg".toUri())
+            actual = isKotlinResourceUri("file:///kotlin_resource/sample.jpeg".toUri())
         )
         assertEquals(
             expected = true,
-            actual = isKotlinResourceUri("file://kotlin_resource/images/sample.jpeg".toUri())
+            actual = isKotlinResourceUri("file:///kotlin_resource/images/sample.jpeg".toUri())
         )
         assertEquals(
             expected = true,
-            actual = isKotlinResourceUri("file://kotlin_resource/sample.jpeg?from=home".toUri())
+            actual = isKotlinResourceUri("file:///kotlin_resource/sample.jpeg?from=home".toUri())
         )
 
         assertEquals(
             expected = false,
-            actual = isKotlinResourceUri("file1://kotlin_resource/sample.jpeg".toUri())
+            actual = isKotlinResourceUri("file1:///kotlin_resource/sample.jpeg".toUri())
         )
         assertEquals(
             expected = false,
-            actual = isKotlinResourceUri("file://kotlin_resource1/sample.jpeg".toUri())
+            actual = isKotlinResourceUri("file:///kotlin_resource1/sample.jpeg".toUri())
         )
         assertEquals(
             expected = false,
             actual = isKotlinResourceUri("file:///sample.jpeg".toUri())
-        )
-        assertEquals(
-            expected = false,
-            actual = isKotlinResourceUri("file://sample.jpeg".toUri())
         )
     }
 
@@ -65,17 +61,17 @@ class KotlinResourceUriFetcherTest {
         val factory = KotlinResourceUriFetcher.Factory()
         val (context, sketch) = getTestContextAndSketch()
 
-        factory.create(sketch, ImageRequest(context, "file://kotlin_resource/sample.jpeg"))!!
+        factory.create(sketch, ImageRequest(context, "file:///kotlin_resource/sample.jpeg"))!!
             .apply {
                 assertEquals("sample.jpeg", resourcePath)
             }
-        factory.create(sketch, ImageRequest(context, "file://kotlin_resource/images/sample.jpeg"))!!
+        factory.create(sketch, ImageRequest(context, "file:///kotlin_resource/images/sample.jpeg"))!!
             .apply {
                 assertEquals("images/sample.jpeg", resourcePath)
             }
         factory.create(
             sketch,
-            ImageRequest(context, "file://kotlin_resource/sample.jpeg?from=home")
+            ImageRequest(context, "file:///kotlin_resource/sample.jpeg?from=home")
         )!!
             .apply {
                 assertEquals("sample.jpeg", resourcePath)
@@ -85,23 +81,19 @@ class KotlinResourceUriFetcherTest {
             expected = null,
             actual = factory.create(
                 sketch,
-                ImageRequest(context, "file1://kotlin_resource/sample.jpeg")
+                ImageRequest(context, "file1:///kotlin_resource/sample.jpeg")
             )
         )
         assertEquals(
             expected = null,
             actual = factory.create(
                 sketch,
-                ImageRequest(context, "file://kotlin_resource1/sample.jpeg")
+                ImageRequest(context, "file:///kotlin_resource1/sample.jpeg")
             )
         )
         assertEquals(
             expected = null,
             actual = factory.create(sketch, ImageRequest(context, "file:///sample.jpeg"))
-        )
-        assertEquals(
-            expected = null,
-            actual = factory.create(sketch, ImageRequest(context, "file://sample.jpeg"))
         )
     }
 

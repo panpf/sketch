@@ -128,7 +128,7 @@ resources, as follows:
 | android.resource://       | Android Resource         | newResourceUri()        | _                        |
 | data:image/, data:img/    | Base64                   | newBase64Uri()          | _                        |
 | file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| file://kotlin_resource/   | Kotlin Resource          | newKotlinResourceUri()  | _                        |
+| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                        |
 | app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
 
 Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
@@ -149,7 +149,7 @@ different, as follows:
 | Video frames                                                                                 | ✅             | ❌                       | ❌                       | ❌                       |
 | http://<br/>https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
 | file:///android_asset/<br/>content://<br/>android.resource://                                | ✅             | ❌                       | ❌                       | ❌                       |
-| file://kotlin_resource/                                                                      | ❌             | ✅                       | ✅                       | ❌                       |
+| file:///kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
 | Exif Orientation                                                                             | ✅             | ✅                       | ✅                       | ✅                       |
 | Memory Cache                                                                                 | ✅             | ✅                       | ✅                       | ✅                       |
 | Result Cache                                                                                 | ✅             | ✅                       | ✅                       | ❌                       |

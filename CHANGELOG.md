@@ -14,7 +14,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * fix: Fix the bug of exception when AppIconUriFetcher.Factory parses
   versionCode. [#204](https://github.com/panpf/sketch/issues/204)
 * change: KotlinResourceUriFetcher supported uri changed from 'kotlin.resource://'
-  to 'file://kotlin_resource/'
+  to 'file:///kotlin_resource/'
 * change: ComposeResourceUriFetcher supported uri changed from 'compose.resource://'
   to file:///compose_resource/
 * change: The uri supported by ResourceUriFetcher has been changed from 'android.resource:

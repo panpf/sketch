@@ -10,17 +10,19 @@ import com.github.panpf.sketch.util.pathSegments
 import com.github.panpf.sketch.util.toUri
 
 /**
- * Sample: 'file://kotlin_resource/test.png'
+ * Sample: 'file:///kotlin_resource/test.png'
  */
 fun newKotlinResourceUri(resourceName: String): String =
-    "${KotlinResourceUriFetcher.SCHEME}://${KotlinResourceUriFetcher.AUTHORITY}/$resourceName"
+    "${KotlinResourceUriFetcher.SCHEME}:///${KotlinResourceUriFetcher.PATH_ROOT}/$resourceName"
 
 /**
  * Check if the uri is a Kotlin resource uri
  */
 fun isKotlinResourceUri(uri: Uri): Boolean =
     KotlinResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
-            && KotlinResourceUriFetcher.AUTHORITY.equals(uri.authority, ignoreCase = true)
+            && uri.authority?.takeIf { it.isNotEmpty() } == null
+            && KotlinResourceUriFetcher.PATH_ROOT
+        .equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
 
 class KotlinResourceUriFetcher(
     val sketch: Sketch,
@@ -30,7 +32,7 @@ class KotlinResourceUriFetcher(
 
     companion object {
         const val SCHEME = "file"
-        const val AUTHORITY = "kotlin_resource"
+        const val PATH_ROOT = "kotlin_resource"
     }
 
     @WorkerThread
@@ -45,7 +47,7 @@ class KotlinResourceUriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): KotlinResourceUriFetcher? {
             val uri = request.uri.toUri()
             return if (isKotlinResourceUri(uri)) {
-                val resourcePath = uri.pathSegments.joinToString("/")
+                val resourcePath = uri.pathSegments.drop(1).joinToString("/")
                 KotlinResourceUriFetcher(sketch, request, resourcePath)
             } else {
                 null

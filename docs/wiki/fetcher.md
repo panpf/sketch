@@ -17,7 +17,7 @@ following table:
 | content://                | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
 | android.resource://       | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
 | app.icon://               | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
-| file://kotlin_resource/   | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
+| file:///kotlin_resource/  | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
 * [AssetUriFetcher] is used to load images from the Android assets directory
 * [ContentUriFetcher] ContentResolver for Android to load images

@@ -16,7 +16,7 @@
 | content://                | [ContentUriFetcher]         | -                       | -                        | ✅       | ❌   | ❌       | ❌   |
 | android.resource://       | [ResourceUriFetcher]        | newResourceUri()        | -                        | ✅       | ❌   | ❌       | ❌   |
 | app.icon://               | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-core   | ✅       | ❌   | ❌       | ❌   |
-| file://kotlin_resource/   | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
+| file:///kotlin_resource/  | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                        | ❌       | ✅   | ✅       | ❌   |
 
 * [AssetUriFetcher] 用于从 Android 的 assets 目录加载图片
 * [ContentUriFetcher] 用于 Android 的 ContentResolver 加载图片

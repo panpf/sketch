@@ -11,7 +11,7 @@
 * improve: DataSource 的所有实现类都实现了 equals 和 hashCode 方法
 * fix: 修复 AppIconUriFetcher.Factory 解析 versionCode 时异常的
   bug。[#204](https://github.com/panpf/sketch/issues/204)
-* change: KotlinResourceUriFetcher 支持的 uri 从 'kotlin.resource://' 改为 'file://kotlin_resource/'
+* change: KotlinResourceUriFetcher 支持的 uri 从 'kotlin.resource://' 改为 'file:///kotlin_resource/'
 * change: ComposeResourceUriFetcher 支持的 uri 从 'compose.resource://'
   改为 'file:///compose_resource/'
 * change: ResourceUriFetcher 支持的 uri 从 'android.resource:
