@@ -82,6 +82,29 @@ class AppIconUriFetcher(
         )
     )
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as AppIconUriFetcher
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (packageName != other.packageName) return false
+        if (versionCode != other.versionCode) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + packageName.hashCode()
+        result = 31 * result + versionCode
+        return result
+    }
+
+    override fun toString(): String {
+        return "AppIconUriFetcher(packageName='$packageName', versionCode=$versionCode)"
+    }
+
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {

@@ -60,6 +60,27 @@ class AssetUriFetcher(
         FetchResult(AssetDataSource(sketch, request, fileName), mimeType)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as AssetUriFetcher
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (fileName != other.fileName) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + fileName.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "AssetUriFetcher('$fileName')"
+    }
+
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {

@@ -106,6 +106,29 @@ class Base64UriFetcher constructor(
         )
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as Base64UriFetcher
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (mimeType != other.mimeType) return false
+        if (imageDataBase64String != other.imageDataBase64String) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + mimeType.hashCode()
+        result = 31 * result + imageDataBase64String.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "Base64UriFetcher('$imageDataBase64String')"
+    }
+
     /**
      * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
      */

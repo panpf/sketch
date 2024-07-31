@@ -77,6 +77,8 @@ class ComposeResourceUriFetcherTest {
         )
     }
 
+    // TODO test
+
     @Test
     fun testFactoryCreate() {
         val factory = ComposeResourceUriFetcher.Factory()
@@ -142,7 +144,7 @@ class ComposeResourceUriFetcherTest {
     }
 
     @Test
-    fun testEqualsAndHashCode() {
+    fun testFactoryEqualsAndHashCode() {
         val factory1 = ComposeResourceUriFetcher.Factory()
         val factory2 = ComposeResourceUriFetcher.Factory()
         assertEquals(expected = factory1, actual = factory2)
@@ -150,7 +152,7 @@ class ComposeResourceUriFetcherTest {
     }
 
     @Test
-    fun testToString() {
+    fun testFactoryToString() {
         assertEquals(
             expected = "ComposeResourceUriFetcher",
             actual = ComposeResourceUriFetcher.Factory().toString()

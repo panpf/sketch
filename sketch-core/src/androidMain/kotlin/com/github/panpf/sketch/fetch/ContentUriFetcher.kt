@@ -48,6 +48,27 @@ class ContentUriFetcher(
         FetchResult(ContentDataSource(sketch, request, contentUri), mimeType)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as ContentUriFetcher
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (contentUri != other.contentUri) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + contentUri.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "ContentUriFetcher('$contentUri')"
+    }
+
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {

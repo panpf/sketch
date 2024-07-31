@@ -247,6 +247,27 @@ open class HttpUriFetcher(
         return Result.success(result)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as HttpUriFetcher
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (url != other.url) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + url.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "HttpUriFetcher('$url')"
+    }
+
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {

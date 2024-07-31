@@ -71,6 +71,9 @@ class FileUriFetcherTest {
         )
     }
 
+    // TODO isFileUri
+    // TODO test
+
     @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()

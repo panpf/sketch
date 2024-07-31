@@ -38,7 +38,7 @@ import kotlin.test.assertTrue
 class ResourceUriFetcherTest {
 
     @Test
-    fun testNewUri() {
+    fun testNewResourceUri() {
         assertEquals(
             expected = "android.resource:///drawable/ic_launcher",
             actual = newResourceUri("drawable", "ic_launcher")
@@ -59,8 +59,10 @@ class ResourceUriFetcherTest {
         )
     }
 
+    // TODO isResourceUri
+
     @Test
-    fun testFactory() {
+    fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
         val testAppPackage = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
@@ -196,4 +198,6 @@ class ResourceUriFetcherTest {
                 .getOrThrow()
         }
     }
+
+    // TODO test
 }

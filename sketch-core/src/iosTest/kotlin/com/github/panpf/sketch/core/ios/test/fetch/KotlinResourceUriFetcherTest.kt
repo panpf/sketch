@@ -98,7 +98,7 @@ class KotlinResourceUriFetcherTest {
     }
 
     @Test
-    fun testEqualsAndHashCode() {
+    fun testFactoryEqualsAndHashCode() {
         val factory1 = KotlinResourceUriFetcher.Factory()
         val factory2 = KotlinResourceUriFetcher.Factory()
         assertEquals(expected = factory1, actual = factory2)
@@ -106,10 +106,12 @@ class KotlinResourceUriFetcherTest {
     }
 
     @Test
-    fun testToString() {
+    fun testFactoryToString() {
         assertEquals(
             expected = "KotlinResourceUriFetcher",
             actual = KotlinResourceUriFetcher.Factory().toString()
         )
     }
+
+    // TODO test
 }

@@ -44,6 +44,9 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class HttpUriFetcherTest {
 
+    // TODO isHttpUri
+    // TODO test
+
     @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()

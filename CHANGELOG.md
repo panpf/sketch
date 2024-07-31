@@ -10,7 +10,6 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
-* improve: All implementation classes of DataSource implement equals and hashCode methods
 * fix: Fix the bug of exception when AppIconUriFetcher.Factory parses
   versionCode. [#204](https://github.com/panpf/sketch/issues/204)
 * change: KotlinResourceUriFetcher supported uri changed from 'kotlin.resource://'
@@ -21,6 +20,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   //resource?resType=drawable&resName=ic_launcher' and 'android.resource://resource?resId=1031232'
   to 'android.resource:///drawable/ic_launcher' and ' android.resource:///1031232'
 * change: AssetUriFetcher supported uri changed from 'asset://' to 'file:///android_asset/'
+* improve: All implementation classes of DataSource implement equals and hashCode methods
+* improve: All implementation classes of Fetcher implement equals and hashCode methods
 
 # 4.0.0-alpha04
 

@@ -51,6 +51,27 @@ class FileUriFetcher(
         FetchResult(FileDataSource(sketch, request, path, LOCAL), mimeType)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as FileUriFetcher
+        if (sketch != other.sketch) return false
+        if (request != other.request) return false
+        if (path != other.path) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = sketch.hashCode()
+        result = 31 * result + request.hashCode()
+        result = 31 * result + path.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "FileUriFetcher('$path')"
+    }
+
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {

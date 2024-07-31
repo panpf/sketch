@@ -8,7 +8,6 @@
 
 # new
 
-* improve: DataSource 的所有实现类都实现了 equals 和 hashCode 方法
 * fix: 修复 AppIconUriFetcher.Factory 解析 versionCode 时异常的
   bug。[#204](https://github.com/panpf/sketch/issues/204)
 * change: KotlinResourceUriFetcher 支持的 uri 从 'kotlin.resource://' 改为 'file:///kotlin_resource/'
@@ -18,6 +17,7 @@
   //resource?resType=drawable&resName=ic_launcher' 和 'android.resource://resource?resId=1031232'
   改为 'android.resource:///drawable/ic_launcher' 和 'android.resource:///1031232'
 * change: AssetUriFetcher 支持的 uri 从 'asset://' 改为 'file:///android_asset/'
+* improve: Fetcher 的所有实现类都实现了 equals 和 hashCode 方法
 
 # 4.0.0-alpha04
 

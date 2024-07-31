@@ -29,13 +29,13 @@ class DownloadTest {
             downloadCache.clear()
             assertEquals(expected = 0L, actual = downloadCache.size)
 
-            val imageUri1 = "http://${ResourceImages.jpeg.uri.toUri().authority}"
+            val imageUri1 = "http://${ResourceImages.jpeg.resourceName}"
             assertFalse(downloadCache.existWithLock(imageUri1))
-            val imageUri2 = "http://${ResourceImages.png.uri.toUri().authority}"
+            val imageUri2 = "http://${ResourceImages.png.resourceName}"
             assertFalse(downloadCache.existWithLock(imageUri2))
-            val imageUri3 = "http://${ResourceImages.webp.uri.toUri().authority}"
+            val imageUri3 = "http://${ResourceImages.webp.resourceName}"
             assertFalse(downloadCache.existWithLock(imageUri3))
-            val imageUri4 = "http://${ResourceImages.bmp.uri.toUri().authority}"
+            val imageUri4 = "http://${ResourceImages.bmp.resourceName}"
             assertFalse(downloadCache.existWithLock(imageUri4))
 
             val result1 = newSketch.enqueueDownload(ImageRequest(context, imageUri1)).await()

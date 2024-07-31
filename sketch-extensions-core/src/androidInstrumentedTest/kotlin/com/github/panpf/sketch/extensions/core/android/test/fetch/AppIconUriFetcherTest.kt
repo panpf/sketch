@@ -89,6 +89,8 @@ class AppIconUriFetcherTest {
         )
     }
 
+    // TODO isAppIconUri
+
     @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()
@@ -175,4 +177,6 @@ class AppIconUriFetcherTest {
             )
         }
     }
+
+    // TODO test
 }

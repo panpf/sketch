@@ -33,7 +33,7 @@ import org.junit.runner.RunWith
 class AssetUriFetcherTest {
 
     @Test
-    fun testNewUri() {
+    fun testNewAssetUri() {
         Assert.assertEquals(
             "file:///android_asset/sample.jpeg",
             ResourceImages.jpeg.uri
@@ -126,4 +126,6 @@ class AssetUriFetcherTest {
 
         source.openSource().buffer().use { it.readByteArray() }
     }
+
+    // TODO test
 }

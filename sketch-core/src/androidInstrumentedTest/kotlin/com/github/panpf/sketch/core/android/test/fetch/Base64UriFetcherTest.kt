@@ -33,7 +33,7 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 class Base64UriFetcherTest {
 
     @Test
-    fun testNewUri() {
+    fun testNewBase64Uri() {
         Assert.assertEquals(
             "data:image/png;base64,4y2u1412421089084901240129",
             newBase64Uri("image/png", "4y2u1412421089084901240129")
@@ -111,4 +111,6 @@ class Base64UriFetcherTest {
         }.getOrThrow().dataSource
         Assert.assertTrue(source is ByteArrayDataSource)
     }
+
+    // TODO test
 }
