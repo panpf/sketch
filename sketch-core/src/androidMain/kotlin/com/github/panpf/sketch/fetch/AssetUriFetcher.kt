@@ -21,8 +21,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
-import com.github.panpf.sketch.util.pathSegments
-import com.github.panpf.sketch.util.toUri
 
 /**
  * Sample: 'file:///android_asset/test.png'
@@ -84,13 +82,10 @@ class AssetUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isAssetUri(uri)) {
-                val fileName = uri.pathSegments.drop(1).joinToString("/")
-                AssetUriFetcher(sketch = sketch, request = request, fileName = fileName)
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isAssetUri(uri)) return null
+            val fileName = uri.pathSegments.drop(1).joinToString("/")
+            return AssetUriFetcher(sketch = sketch, request = request, fileName = fileName)
         }
 
         override fun equals(other: Any?): Boolean {

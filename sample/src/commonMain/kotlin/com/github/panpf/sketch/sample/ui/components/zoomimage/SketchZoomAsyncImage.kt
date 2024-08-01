@@ -16,13 +16,13 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.AsyncImagePainter
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PainterState
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.internal.AsyncImageContent
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
@@ -208,7 +208,7 @@ private fun onPainterState(
         is PainterState.Success -> {
             subsamplingState.disabledTileBitmapCache =
                 request.memoryCachePolicy != CachePolicy.ENABLED
-            val imageSource = SketchImageSource.Factory(context, sketch, request.uri)
+            val imageSource = SketchImageSource.Factory(context, sketch, request.uri.toString())
             subsamplingState.setImageSource(imageSource)
         }
 

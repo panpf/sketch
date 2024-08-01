@@ -7,5 +7,6 @@ import com.github.panpf.sketch.state.ErrorStateImage
 data object UriInvalidCondition : ErrorStateImage.Condition {
 
     override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
-        throwable is UriInvalidException && (request.uri.isEmpty() || request.uri.isBlank())
+        throwable is UriInvalidException && request.uri.toString()
+            .let { it.isEmpty() || it.isBlank() }
 }

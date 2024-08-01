@@ -18,10 +18,8 @@ package com.github.panpf.sketch.fetch
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
-import android.net.Uri
 import android.util.TypedValue
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
@@ -29,6 +27,7 @@ import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.Uri
 
 
 /**
@@ -166,12 +165,9 @@ class ResourceUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isResourceUri(uri)) {
-                ResourceUriFetcher(sketch, request, uri)
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isResourceUri(uri)) return null
+            return ResourceUriFetcher(sketch, request, uri)
         }
 
         override fun equals(other: Any?): Boolean {

@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.core.android.test.fetch
 
 import android.content.res.Resources
-import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.fetch.newResourceUri
@@ -24,6 +23,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.runBlocking
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -115,85 +115,85 @@ class ResourceUriFetcherTest {
 
         assertTrue(
             newResourceUri("drawable", "ic_launcher")
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow().dataSource is DrawableDataSource
         )
         assertTrue(
             newResourceUri(resId)
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow().dataSource is DrawableDataSource
         )
 
         assertTrue(
             newResourceUri(context.packageName, "drawable", "ic_launcher")
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow().dataSource is DrawableDataSource
         )
         assertTrue(
             newResourceUri(context.packageName, resId)
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow().dataSource is DrawableDataSource
         )
 
         assertTrue(
             newResourceUri(com.github.panpf.sketch.test.utils.core.R.raw.sample)
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow().dataSource is ResourceDataSource
         )
 
         assertFailsWith(Resources.NotFoundException::class) {
             "${ResourceUriFetcher.SCHEME}://"
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
         assertFailsWith(Resources.NotFoundException::class) {
             "${ResourceUriFetcher.SCHEME}://fakePackageName"
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
 
         assertFailsWith(NumberFormatException::class) {
             "${ResourceUriFetcher.SCHEME}:///errorResId"
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
         assertFailsWith(NumberFormatException::class) {
             "${ResourceUriFetcher.SCHEME}://${context.packageName}/errorResId"
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
 
         assertFailsWith(Resources.NotFoundException::class) {
             newResourceUri("drawable1", "ic_launcher")
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
         assertFailsWith(Resources.NotFoundException::class) {
             newResourceUri("drawable", "ic_launcher1")
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
 
         assertFailsWith(Resources.NotFoundException::class) {
             "${ResourceUriFetcher.SCHEME}:///drawable/ic_launcher/error"
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }
         assertFailsWith(Resources.NotFoundException::class) {
             "${ResourceUriFetcher.SCHEME}://${context.packageName}/drawable/ic_launcher/error"
-                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), Uri.parse(it)) }
+                .let { ResourceUriFetcher(sketch, ImageRequest(context, it), it.toUri()) }
                 .let { runBlocking { it.fetch() } }
                 .getOrThrow()
         }

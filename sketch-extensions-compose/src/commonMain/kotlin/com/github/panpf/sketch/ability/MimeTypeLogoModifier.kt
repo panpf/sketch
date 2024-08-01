@@ -81,7 +81,7 @@ internal class MimeTypeLogoNode(
     override fun ContentDrawScope.draw() {
         drawContent()
 
-        val mimeType = getMimeTypeFromImageResult(state.result, state.request?.uri)
+        val mimeType = getMimeTypeFromImageResult(state.result, state.request?.uri?.toString())
         if (mimeType != null) {
             val painter = mimeTypeIconMap[mimeType]
             if (painter != null) {

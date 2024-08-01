@@ -8,8 +8,6 @@ import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.ContentDataSource
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
@@ -17,6 +15,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
+import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import kotlin.math.roundToInt
@@ -153,7 +153,7 @@ class VideoFrameDecodeHelper(
     }
 
     override fun toString(): String {
-        return "VideoFrameDecodeHelper(uri=${request.uri}, dataSource=$dataSource, mimeType=$mimeType)"
+        return "VideoFrameDecodeHelper(uri='${request.uri}', dataSource=$dataSource, mimeType=$mimeType)"
     }
 
     override fun close() {

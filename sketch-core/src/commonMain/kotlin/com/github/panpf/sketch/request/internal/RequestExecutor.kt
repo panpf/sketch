@@ -76,7 +76,7 @@ class RequestExecutor {
             onStart(requestContext)
 
             // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
-            val uri = request.uri
+            val uri = request.uri.toString()
             if (uri.isEmpty() || uri.isBlank()) {
                 throw UriInvalidException(URI_EMPTY_MESSAGE)
             }

@@ -2,9 +2,9 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import okio.buffer
 import okio.use
@@ -52,6 +52,6 @@ class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : 
     }
 
     override fun toString(): String {
-        return "SkiaDecodeHelper(uri=${request.uri}, imageInfo=$imageInfo, supportRegion=$supportRegion)"
+        return "SkiaDecodeHelper(uri='${request.uri}', imageInfo=$imageInfo, supportRegion=$supportRegion)"
     }
 }

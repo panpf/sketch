@@ -16,6 +16,7 @@
 * change: ResourceUriFetcher 支持的 uri 从 'android.resource:
   //resource?resType=drawable&resName=ic_launcher' 和 'android.resource://resource?resId=1031232'
   改为 'android.resource:///drawable/ic_launcher' 和 'android.resource:///1031232'
+* change: ImageRequest.uri 属性的类型从 String 改为 Uri
 * change: AssetUriFetcher 支持的 uri 从 'asset://' 改为 'file:///android_asset/'
 * improve: Fetcher 的所有实现类都实现了 equals 和 hashCode 方法
 

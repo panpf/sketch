@@ -29,8 +29,6 @@ import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Uri
-import com.github.panpf.sketch.util.pathSegments
-import com.github.panpf.sketch.util.toUri
 
 /**
  * Adds App icon support
@@ -108,19 +106,16 @@ class AppIconUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isAppIconUri(uri)) {
-                val packageName = uri.authority
-                    ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-                    ?: throw UriInvalidException("App icon uri 'packageName' part invalid: ${request.uri}")
-                val versionCode = uri.pathSegments.firstOrNull()
-                    ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-                    ?.toIntOrNull()
-                    ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: ${request.uri}")
-                AppIconUriFetcher(sketch, request, packageName, versionCode)
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isAppIconUri(uri)) return null
+            val packageName = uri.authority
+                ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+                ?: throw UriInvalidException("App icon uri 'packageName' part invalid: '${request.uri}'")
+            val versionCode = uri.pathSegments.firstOrNull()
+                ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+                ?.toIntOrNull()
+                ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: '${request.uri}'")
+            return AppIconUriFetcher(sketch, request, packageName, versionCode)
         }
 
         override fun equals(other: Any?): Boolean {

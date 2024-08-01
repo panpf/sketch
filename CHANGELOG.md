@@ -20,6 +20,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
   //resource?resType=drawable&resName=ic_launcher' and 'android.resource://resource?resId=1031232'
   to 'android.resource:///drawable/ic_launcher' and ' android.resource:///1031232'
 * change: AssetUriFetcher supported uri changed from 'asset://' to 'file:///android_asset/'
+* change: ImageRequest.uri property type changed from String to Uri
 * improve: All implementation classes of DataSource implement equals and hashCode methods
 * improve: All implementation classes of Fetcher implement equals and hashCode methods
 

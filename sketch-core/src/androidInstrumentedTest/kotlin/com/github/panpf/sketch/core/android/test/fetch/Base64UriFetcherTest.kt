@@ -16,13 +16,13 @@
 package com.github.panpf.sketch.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.fetch.Base64UriFetcher
+import com.github.panpf.sketch.fetch.isBase64Uri
 import com.github.panpf.sketch.fetch.newBase64Uri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.tools4j.test.ktx.assertThrow
+import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -42,43 +42,65 @@ class Base64UriFetcherTest {
             "data:image/jpeg;base64,4y2u1412421089084901240128",
             newBase64Uri("image/jpeg", "4y2u1412421089084901240128")
         )
+        // TODO newBase64Uri(ByteArray)
     }
 
     // TODO base64Specification
 
     @Test
+    fun testIsBase64Uri() {
+        Assert.assertEquals(
+            true,
+            isBase64Uri("data:image/png;base64,4y2u1412421089084901240129".toUri())
+        )
+        Assert.assertEquals(
+            true,
+            isBase64Uri("data:img/png;base64,4y2u1412421089084901240129".toUri())
+        )
+
+        Assert.assertEquals(
+            false,
+            isBase64Uri("data:application/zip;base64,4y2u1412421089084901240129".toUri())
+        )
+        Assert.assertEquals(
+            false,
+            isBase64Uri("data:image/png;string,4y2u1412421089084901240129".toUri())
+        )
+        Assert.assertEquals(
+            false,
+            isBase64Uri("data:img/pngbase64,4y2u1412421089084901240129".toUri())
+        )
+        Assert.assertEquals(
+            false,
+            isBase64Uri("data:img/png;base644y2u1412421089084901240129".toUri())
+        )
+    }
+
+    @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = Base64UriFetcher.Factory()
-        val base64Uri = "data:image/png;base64,4y2u1412421089084901240129"
-        val contentUri = "content://sample_app/sample"
 
-        fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!.apply {
+        val base64Uri1 = "data:image/png;base64,4y2u1412421089084901240129"
+        val base64Uri2 = "data:img/png;base64,4y2u1412421089084901240129"
+        Assert.assertNotEquals(base64Uri1, base64Uri2)
+        fetcherFactory.create(sketch, ImageRequest(context, base64Uri1))!!.apply {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64String)
         }
-        fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!.apply {
+        fetcherFactory.create(sketch, ImageRequest(context, base64Uri2))!!.apply {
             Assert.assertEquals("image/png", mimeType)
             Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64String)
         }
-        fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!.apply {
-            Assert.assertEquals("image/png", mimeType)
-            Assert.assertEquals("4y2u1412421089084901240129", imageDataBase64String)
-        }
-        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, contentUri)))
+        val base64ErrorUri1 = "content://sample_app/sample"
+        val base64ErrorUri2 = "data:image/pngbase64,4y2u1412421089084901240129"
+        val base64ErrorUri3 = "data:image/png;base54,4y2u1412421089084901240129"
+        val base64ErrorUri4 = "data:image/png;base644y2u1412421089084901240129"
 
-        assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(
-                sketch,
-                ImageRequest(context, "data:image/pngbase64,4y2u1412421089084901240129")
-            )
-        }
-        assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(
-                sketch,
-                ImageRequest(context, "data:image/png;base54,4y2u1412421089084901240129")
-            )
-        }
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri1)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri2)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri3)))
+        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri4)))
     }
 
     @Test

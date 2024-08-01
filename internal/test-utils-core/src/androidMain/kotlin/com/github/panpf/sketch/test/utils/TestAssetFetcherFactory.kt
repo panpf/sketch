@@ -19,13 +19,11 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.pathSegments
-import com.github.panpf.sketch.util.toUri
 
 class TestAssetFetcherFactory : Fetcher.Factory {
 
     override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
-        val uri = request.uri.toUri()
+        val uri = request.uri
         if (AssetUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && uri.authority?.takeIf { it.isNotEmpty() } == null
             && "test_asset".equals(uri.pathSegments.firstOrNull(), ignoreCase = true)) {

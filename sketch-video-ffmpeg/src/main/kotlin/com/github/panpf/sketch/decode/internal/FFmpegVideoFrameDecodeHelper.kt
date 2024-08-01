@@ -5,8 +5,6 @@ package com.github.panpf.sketch.decode.internal
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.ContentDataSource
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
@@ -14,6 +12,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
+import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import wseemann.media.FFmpegMediaMetadataRetriever
@@ -126,7 +126,7 @@ class FFmpegVideoFrameDecodeHelper(
     }
 
     override fun toString(): String {
-        return "FFmpegVideoFrameDecodeHelper(uri=${request.uri}, dataSource=$dataSource, mimeType=$mimeType)"
+        return "FFmpegVideoFrameDecodeHelper(uri='${request.uri}', dataSource=$dataSource, mimeType=$mimeType)"
     }
 
     override fun close() {

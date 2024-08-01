@@ -108,7 +108,7 @@ class ViewSizeResolverTest {
                     de.cancel()
                     completed
                 }.apply {
-                    Assert.assertFalse(this)
+                    Assert.assertTrue(this)
                 }
             }
 

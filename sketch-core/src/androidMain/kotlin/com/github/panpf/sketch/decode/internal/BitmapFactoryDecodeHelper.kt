@@ -5,10 +5,10 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.BitmapFactory
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toAndroidRect
@@ -65,6 +65,6 @@ class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataS
     }
 
     override fun toString(): String {
-        return "BitmapFactoryDecodeHelper(uri=${request.uri}, dataSource=$dataSource)"
+        return "BitmapFactoryDecodeHelper(uri='${request.uri}', dataSource=$dataSource)"
     }
 }

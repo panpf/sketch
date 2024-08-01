@@ -41,9 +41,11 @@ import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.keyOrNull
 import com.github.panpf.sketch.util.screenSize
+import com.github.panpf.sketch.util.toUri
 
 /**
  * Build and set the [ImageRequest]
@@ -69,7 +71,7 @@ data class ImageRequest(
     /**
      * The uri of the image to be loaded.
      */
-    val uri: String,
+    val uri: Uri,
 
     /**
      * [Target] is used to receive Drawable and draw it
@@ -255,7 +257,7 @@ data class ImageRequest(
     class Builder {
 
         private val context: PlatformContext
-        private val uri: String
+        private val uri: Uri
 
         private var target: Target? = null
 
@@ -266,7 +268,7 @@ data class ImageRequest(
         constructor(context: PlatformContext, uri: String?) {
             this.context = context.application
             checkPlatformContext(this.context)
-            this.uri = uri.orEmpty()
+            this.uri = uri.orEmpty().toUri()
             this.definedOptionsBuilder = ImageOptions.Builder()
             this.definedRequestOptionsBuilder = RequestOptions.Builder()
         }

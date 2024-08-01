@@ -15,12 +15,11 @@
  */
 package com.github.panpf.sketch.fetch
 
-import android.net.Uri
 import androidx.annotation.WorkerThread
-import androidx.core.net.toUri
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.util.Uri
 
 /**
  * Check if the uri is a android content uri
@@ -35,7 +34,7 @@ fun isContentUri(uri: Uri): Boolean = ContentUriFetcher.SCHEME.equals(uri.scheme
 class ContentUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
-    val contentUri: Uri,
+    val contentUri: android.net.Uri,
 ) : Fetcher {
 
     companion object {
@@ -72,12 +71,9 @@ class ContentUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isContentUri(uri)) {
-                ContentUriFetcher(sketch, request, uri)
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isContentUri(uri)) return null
+            return ContentUriFetcher(sketch, request, android.net.Uri.parse(uri.toString()))
         }
 
         override fun equals(other: Any?): Boolean {

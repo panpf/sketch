@@ -16,12 +16,10 @@
 package com.github.panpf.sketch.extensions.core.android.test.decode
 
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.ApkIconDecoder
-import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportApkIcon
@@ -38,10 +36,10 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
-import com.github.panpf.sketch.test.utils.intrinsicSize
-import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.times
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -49,8 +47,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.math.ceil
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 @RunWith(AndroidJUnit4::class)
 class ApkIconDecoderTest {
@@ -157,11 +153,16 @@ class ApkIconDecoderTest {
         val apkFilePath = context.applicationInfo.publicSourceDir
         val iconDrawable = context.applicationInfo.loadIcon(context.packageManager)!!
 
+        val screenSize = context.resources.displayMetrics.let {
+            Size(it.widthPixels, it.heightPixels)
+        }
         ImageRequest(context, apkFilePath)
             .decode(sketch, factory)
             .apply {
+                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
+                val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 Assert.assertEquals(
-                    "Bitmap(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},ARGB_8888)",
+                    "Bitmap(${bitmapSize},ARGB_8888)",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 Assert.assertEquals(
@@ -169,15 +170,17 @@ class ApkIconDecoderTest {
                     imageInfo.toShortString()
                 )
                 Assert.assertEquals(LOCAL, dataFrom)
-                Assert.assertNull(transformeds)
+                Assert.assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
             }
 
         ImageRequest(context, apkFilePath) {
             bitmapConfig(Bitmap.Config.RGB_565)
         }.decode(sketch, factory)
             .apply {
+                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
+                val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 Assert.assertEquals(
-                    "Bitmap(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},RGB_565)",
+                    "Bitmap(${bitmapSize},RGB_565)",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 Assert.assertEquals(
@@ -185,39 +188,37 @@ class ApkIconDecoderTest {
                     imageInfo.toShortString()
                 )
                 Assert.assertEquals(LOCAL, dataFrom)
-                Assert.assertNull(transformeds)
+                Assert.assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
+            }
+
+        ImageRequest(context, apkFilePath) {
+            size(Size.Origin)
+        }.decode(sketch, factory)
+            .apply {
+                Assert.assertEquals(
+                    "Bitmap(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},ARGB_8888)",
+                    image.getBitmapOrThrow().toShortInfoString()
+                )
+                Assert.assertNull(null, transformeds)
+                Assert.assertEquals(
+                    "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
+                    imageInfo.toShortString()
+                )
+                Assert.assertEquals(LOCAL, dataFrom)
             }
 
         ImageRequest(context, apkFilePath) {
             resize(100, 100, LESS_PIXELS)
         }.decode(sketch, factory)
             .apply {
-                if (iconDrawable is BitmapDrawable) {
-                    val bitmapSize =
-                        samplingByTarget(
-                            iconDrawable.intrinsicSize,
-                            Size(100, 100),
-                            imageInfo.mimeType
-                        )
-                    Assert.assertEquals(
-                        "Bitmap(${bitmapSize.height}x${bitmapSize.height},ARGB_8888)",
-                        image.getBitmapOrThrow().toShortInfoString()
-                    )
-                    Assert.assertEquals(
-                        listOf(createInSampledTransformed(2)),
-                        transformeds
-                    )
-                } else {
-                    val scale = min(
-                        100 / iconDrawable.intrinsicWidth.toFloat(),
-                        100 / iconDrawable.intrinsicHeight.toFloat()
-                    )
-                    Assert.assertEquals(
-                        "Bitmap(${(iconDrawable.intrinsicWidth * scale).roundToInt()}x${(iconDrawable.intrinsicHeight * scale).roundToInt()},ARGB_8888)",
-                        image.getBitmapOrThrow().toShortInfoString()
-                    )
-                    Assert.assertEquals(listOf(createScaledTransformed(scale)), transformeds)
-                }
+                val sizeMultiplier =
+                    computeScaleMultiplierWithOneSide(imageInfo.size, Size(100, 100))
+                val bitmapSize = imageInfo.size.times(sizeMultiplier)
+                Assert.assertEquals(
+                    "Bitmap(${bitmapSize},ARGB_8888)",
+                    image.getBitmapOrThrow().toShortInfoString()
+                )
+                Assert.assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
                 Assert.assertEquals(
                     "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
                     imageInfo.toShortString()

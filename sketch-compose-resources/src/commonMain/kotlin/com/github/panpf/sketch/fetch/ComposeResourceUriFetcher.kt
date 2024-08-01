@@ -7,8 +7,6 @@ import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
-import com.github.panpf.sketch.util.pathSegments
-import com.github.panpf.sketch.util.toUri
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.jetbrains.compose.resources.readResourceBytes
 
@@ -97,13 +95,10 @@ class ComposeResourceUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): ComposeResourceUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isComposeResourceUri(uri)) {
-                val resourcePath = uri.pathSegments.drop(1).joinToString("/")
-                ComposeResourceUriFetcher(sketch, request, resourcePath)
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isComposeResourceUri(uri)) return null
+            val resourcePath = uri.pathSegments.drop(1).joinToString("/")
+            return ComposeResourceUriFetcher(sketch, request, resourcePath)
         }
 
         override fun equals(other: Any?): Boolean {

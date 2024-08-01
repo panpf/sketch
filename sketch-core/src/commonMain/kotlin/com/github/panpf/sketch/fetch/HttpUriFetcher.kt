@@ -33,7 +33,6 @@ import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.requiredWorkThread
-import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -121,7 +120,7 @@ open class HttpUriFetcher(
             }
 
             // Save to download cache
-            val mimeType = getMimeType(request.uri, response.contentType)
+            val mimeType = getMimeType(url, response.contentType)
             if (request.downloadCachePolicy.writeEnabled) {
                 val result = writeCache(response, mimeType)
                 if (result != null) {
@@ -159,7 +158,7 @@ open class HttpUriFetcher(
                                 "'${request.uri}'"
                     }
                 }.getOrNull()
-                val mimeType = getMimeType(request.uri, contentType)
+                val mimeType = getMimeType(url, contentType)
                 val dataSource = FileDataSource(
                     sketch = sketch,
                     request = request,
@@ -271,12 +270,9 @@ open class HttpUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isHttpUri(uri)) {
-                HttpUriFetcher(sketch, request, request.uri)
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isHttpUri(uri)) return null
+            return HttpUriFetcher(sketch, request, request.uri.toString())
         }
 
         override fun equals(other: Any?): Boolean {

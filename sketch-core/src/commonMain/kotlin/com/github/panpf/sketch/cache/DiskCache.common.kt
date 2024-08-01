@@ -268,4 +268,4 @@ val RequestContext.resultCacheKey: String
     get() = cacheKey
 
 val ImageRequest.downloadCacheKey: String
-    get() = uri
+    get() = uri.toString()

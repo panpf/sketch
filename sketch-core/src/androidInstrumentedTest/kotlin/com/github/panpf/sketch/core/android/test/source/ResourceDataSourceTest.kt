@@ -86,7 +86,7 @@ class ResourceDataSourceTest {
         ).apply {
             val file = getFile()
             Assert.assertEquals(
-                (request.uri + "_data_source").md5() + ".0",
+                (request.uri.toString() + "_data_source").md5() + ".0",
                 file.name
             )
         }

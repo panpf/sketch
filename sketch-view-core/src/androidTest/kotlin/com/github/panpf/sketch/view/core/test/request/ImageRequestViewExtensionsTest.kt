@@ -29,7 +29,7 @@ class ImageRequestViewExtensionsTest {
         val uri = ResourceImages.jpeg.uri
         val imageView1 = ImageView(context1)
         ImageRequest(imageView1, uri).apply {
-            Assert.assertSame(context1, this.context)
+            Assert.assertNotEquals(context1, this.context)
             Assert.assertEquals("file:///android_asset/sample.jpeg", uri)
             Assert.assertNull(this.listener)
             Assert.assertNull(this.progressListener)

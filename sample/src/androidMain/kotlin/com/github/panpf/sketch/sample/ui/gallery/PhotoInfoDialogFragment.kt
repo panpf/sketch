@@ -78,7 +78,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
     companion object {
 
         fun createNavDirections(imageResult: ImageResult?): NavDirections {
-            val uri: String? = imageResult?.request?.uri
+            val uri: String? = imageResult?.request?.uri?.toString()
             var optionsInfo: String? = null
             var sourceImageInfo: String? = null
             var resultImageInfo: String? = null
@@ -91,7 +91,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                 }
 
                 optionsInfo = imageResult.cacheKey
-                    .replace(imageResult.request.uri, "")
+                    .replace(imageResult.request.uri.toString(), "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")
                     .filter { it.trim().isNotEmpty() }

@@ -7,7 +7,6 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
-import com.github.panpf.sketch.util.toUri
 import okio.Path
 import okio.Path.Companion.toPath
 
@@ -75,12 +74,9 @@ class FileUriFetcher(
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
-            val uri = request.uri.toUri()
-            return if (isFileUri(uri)) {
-                FileUriFetcher(sketch, request, uri.path!!.toPath())
-            } else {
-                null
-            }
+            val uri = request.uri
+            if (!isFileUri(uri)) return null
+            return FileUriFetcher(sketch, request, uri.path!!.toPath())
         }
 
         override fun equals(other: Any?): Boolean {

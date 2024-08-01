@@ -105,7 +105,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
             logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is Animatable" }
             return null
         }
-        return SketchImageSource.Factory(context, sketch, result.request.uri)
+        return SketchImageSource.Factory(context, sketch, result.request.uri.toString())
     }
 
     override fun getLogTag(): String? = "SketchZoomImageView"

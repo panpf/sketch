@@ -1,16 +1,86 @@
+/*
+ * Copyright 2023 Coil Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.panpf.sketch.util
+
+/**
+ * Parse this [String] into a [Uri].
+ *
+ * This method will not throw if the URI is malformed.
+ */
+fun String.toUri(): Uri = Uri(this)
 
 /**
  * A uniform resource locator.
  */
-class Uri internal constructor(
-    private val data: String,
-    val scheme: String?,
-    val authority: String?,
-    val path: String?,
-    val query: String?,
-    val fragment: String?,
-) {
+class Uri internal constructor(private val data: String) {
+
+    private val elements: Elements by lazy { parseUri(data) }
+
+    val scheme: String?
+        get() = elements.scheme
+    val authority: String?
+        get() = elements.authority
+    val path: String?
+        get() = elements.path
+    val query: String?
+        get() = elements.query
+    val fragment: String?
+        get() = elements.fragment
+
+    /**
+     * Return the separate segments of the [Uri.path].
+     */
+    val pathSegments: List<String> by lazy {
+        val path = path
+        if (path != null) {
+            val segments = mutableListOf<String>()
+            var index = 0
+            while (index < path.length) {
+                val startIndex = index + 1
+                index = path.indexOf('/', startIndex)
+                if (index == -1) {
+                    index = path.length
+                }
+
+                val segment = path.substring(startIndex, index)
+                if (segment.isNotEmpty()) {
+                    segments += segment
+                }
+            }
+            segments
+        } else {
+            emptyList()
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -24,41 +94,17 @@ class Uri internal constructor(
     override fun toString(): String {
         return data
     }
+
+    class Elements(
+        val scheme: String?,
+        val authority: String?,
+        val path: String?,
+        val query: String?,
+        val fragment: String?,
+    )
 }
 
-/**
- * Return the separate segments of the [Uri.path].
- */
-// TODO Move to Uri.kt
-val Uri.pathSegments: List<String>
-    get() {
-        val path = path ?: return emptyList()
-
-        val segments = mutableListOf<String>()
-        var index = 0
-        while (index < path.length) {
-            val startIndex = index + 1
-            index = path.indexOf('/', startIndex)
-            if (index == -1) {
-                index = path.length
-            }
-
-            val segment = path.substring(startIndex, index)
-            if (segment.isNotEmpty()) {
-                segments += segment
-            }
-        }
-        return segments
-    }
-
-/**
- * Parse this [String] into a [Uri].
- *
- * This method will not throw if the URI is malformed.
- */
-fun String.toUri(): Uri = parseUri(this)
-
-private fun parseUri(data: String): Uri {
+private fun parseUri(data: String): Uri.Elements {
     var authorityStartIndex = -1
     var pathStartIndex = -1
     var queryStartIndex = -1
@@ -80,6 +126,7 @@ private fun parseUri(data: String): Uri {
                     index += 2
                 }
             }
+
             '/' -> {
                 if (queryStartIndex == -1 &&
                     fragmentStartIndex == -1 &&
@@ -88,6 +135,7 @@ private fun parseUri(data: String): Uri {
                     pathStartIndex = index
                 }
             }
+
             '?' -> {
                 if (fragmentStartIndex == -1 &&
                     queryStartIndex == -1
@@ -95,6 +143,7 @@ private fun parseUri(data: String): Uri {
                     queryStartIndex = index + 1
                 }
             }
+
             '#' -> {
                 if (fragmentStartIndex == -1) {
                     fragmentStartIndex = index + 1
@@ -140,17 +189,16 @@ private fun parseUri(data: String): Uri {
     }
 
     val size = maxOf(
-        scheme.length,
-        authority.length,
+        scheme?.length ?: 0,
+        authority?.length ?: 0,
         maxOf(
-            path.length,
-            query.length,
-            fragment.length,
+            path?.length ?: 0,
+            query?.length ?: 0,
+            fragment?.length ?: 0,
         ),
     )
     val bytes = ByteArray(size)
-    return Uri(
-        data = data,
+    return Uri.Elements(
         scheme = scheme?.percentDecode(bytes),
         authority = authority?.percentDecode(bytes),
         path = path?.percentDecode(bytes),
@@ -171,7 +219,8 @@ private fun String.percentDecode(bytes: ByteArray): String {
                 size++
                 index += 3
                 continue
-            } catch (_: NumberFormatException) {}
+            } catch (_: NumberFormatException) {
+            }
         }
 
         bytes[size] = get(index).code.toByte()
@@ -187,6 +236,3 @@ private fun String.percentDecode(bytes: ByteArray): String {
         return bytes.decodeToString(endIndex = size)
     }
 }
-
-private val String?.length: Int
-    get() = this?.length ?: 0

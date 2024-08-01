@@ -27,7 +27,7 @@ class ThumbnailMemoryCacheStateImage(
         request: ImageRequest,
         throwable: Throwable?
     ): Image? {
-        val uri = uri ?: request.uri
+        val uri: String = uri ?: request.uri.toString()
         val keys = sketch.memoryCache.keys()
         var targetCachedValue: MemoryCache.Value? = null
         var count = 0

@@ -94,8 +94,8 @@ class ThumbnailMemoryCacheStateImageTest {
 
         runBlocking(Dispatchers.Main) {
             val inexactlyStateImage = ThumbnailMemoryCacheStateImage()
-            val inexactlyStateImage1 = ThumbnailMemoryCacheStateImage(requests1[0].uri)
-            val inexactlyStateImage2 = ThumbnailMemoryCacheStateImage(requests2[0].uri)
+            val inexactlyStateImage1 = ThumbnailMemoryCacheStateImage(requests1[0].uri.toString())
+            val inexactlyStateImage2 = ThumbnailMemoryCacheStateImage(requests2[0].uri.toString())
 
             Assert.assertEquals(0, memoryCache.keys().size)
             requests1.plus(requests2).forEach { request ->
@@ -376,7 +376,7 @@ class ThumbnailMemoryCacheStateImageTest {
     fun testToString() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
-        val uri = request.uri
+        val uri = request.uri.toString()
 
         ThumbnailMemoryCacheStateImage(uri, IntColorDrawableStateImage(Color.BLUE)).apply {
             Assert.assertEquals(

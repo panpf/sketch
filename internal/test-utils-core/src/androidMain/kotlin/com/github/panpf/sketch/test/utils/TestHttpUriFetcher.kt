@@ -21,7 +21,6 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
-import com.github.panpf.sketch.util.toUri
 
 class TestHttpUriFetcher(sketch: Sketch, request: ImageRequest, url: String) :
     HttpUriFetcher(sketch, request, url) {
@@ -38,12 +37,13 @@ class TestHttpUriFetcher(sketch: Sketch, request: ImageRequest, url: String) :
     class Factory : Fetcher.Factory {
 
         override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
-            val scheme = request.uri.toUri().scheme
+            val uri = request.uri
+            val scheme = uri.scheme
             return if (
                 SCHEME.equals(scheme, ignoreCase = true)
                 || SCHEME_HTTPS.equals(scheme, ignoreCase = true)
             ) {
-                TestHttpUriFetcher(sketch, request, request.uri)
+                TestHttpUriFetcher(sketch, request, request.uri.toString())
             } else {
                 null
             }

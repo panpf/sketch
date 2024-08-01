@@ -59,7 +59,7 @@ internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuild
 
 private class ImageRequestKeyBuilder(private val request: ImageRequest) {
 
-    private val keyBuilder = StringBuilder(request.uri)
+    private val keyBuilder = StringBuilder(request.uri.toString())
 
     private fun appendQueryParameter(name: String, value: String) {
         val askIndex = keyBuilder.lastIndexOf("?")
