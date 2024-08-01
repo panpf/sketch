@@ -21,21 +21,37 @@ enum class Precision {
 
     /**
      * Try to keep the number of pixels of the returned image smaller than resize. A 10% margin of error is allowed
+     *
+     * * The aspect ratio of the loaded image is the same as the original image
+     * * The number of pixels of the loaded image is less than or slightly greater than resize (10% error)
+     * * The width and height of the loaded image are smaller than or slightly larger than resize
      */
     LESS_PIXELS,
 
     /**
      * The size of the returned image must be smaller than [Resize]
+     *
+     * * The aspect ratio of the loaded image is the same as the original image
+     * * The number of pixels of the loaded image is less than or equal to resize
+     * * The width and height of the loaded image are less than or equal to resize
      */
     SMALLER_SIZE,
 
     /**
      * The size of the new image will not be larger than [Resize], but the aspect ratio will be the same
+     *
+     * * The aspect ratio of the loaded image is different from the original image, but the same as resize
+     * * The number of pixels of the loaded image is less than or equal to resize
+     * * The width and height of the loaded image are less than or equal to resize
      */
     SAME_ASPECT_RATIO,
 
     /**
      * The size of the [Image] returned is exactly the same as [Resize]
+     *
+     * * The aspect ratio of the loaded image is different from the original image, but the same as resize
+     * * The number of image pixels loaded is equal to resize
+     * * The width and height of the loaded image are equal to resize
      */
     EXACTLY,
 }

@@ -7,7 +7,7 @@ internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = NoopSyste
 
 private class NoopSystemCallbacks : SystemCallbacks {
 
-    // TODO Implement network type detection for non-Android platforms
+    // TODO Implement network type detection for non-Android platforms. https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
     override val isCellularNetworkConnected get() = false
 
     private val _isShutdown = atomic(false)
