@@ -15,6 +15,8 @@ fun newKotlinResourceUri(resourceName: String): String =
 
 /**
  * Check if the uri is a Kotlin resource uri
+ *
+ * Sample: 'file:///kotlin_resource/test.png'
  */
 fun isKotlinResourceUri(uri: Uri): Boolean =
     KotlinResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
