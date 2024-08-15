@@ -6,11 +6,17 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
+# new
+
+* fix: 修复 SkiaAnimatedImagePainter 在遇到伪装的 gif 图片时崩溃的
+  bug。[#205](https://github.com/panpf/sketch/issues/205)
+
 # 4.0.0-alpha05
 
 * fix: 修复 AppIconUriFetcher.Factory 解析 versionCode 时异常的
   bug。[#204](https://github.com/panpf/sketch/issues/204)
-* change: KotlinResourceUriFetcher 支持的 uri 从 'kotlin.resource://' 改为 'file:///kotlin_resource/'
+* change: KotlinResourceUriFetcher 支持的 uri 从 'kotlin.resource://' 改为 'file:
+  ///kotlin_resource/'
 * change: ComposeResourceUriFetcher 支持的 uri 从 'compose.resource://'
   改为 'file:///compose_resource/'
 * change: ResourceUriFetcher 支持的 uri 从 'android.resource:

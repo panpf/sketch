@@ -25,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okio.ArrayIndexOutOfBoundsException
 import org.jetbrains.skia.AnimationFrameInfo
 import kotlin.math.roundToInt
 
@@ -52,7 +53,8 @@ class SkiaAnimatedImagePainter(
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
     private var repeatIndex = 0
-    private var receiveJob: Job? = null
+    private var decodeJob: Job? = null
+    private var timerJob: Job? = null
 
     /**
      * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
@@ -86,44 +88,54 @@ class SkiaAnimatedImagePainter(
     private fun startAnimation() {
         coroutineScope ?: return
         if (running) return
-        if (codec.frameCount == 0) return
-
-        if (codec.frameCount == 1) {
-            coroutineScope?.launch(ioCoroutineDispatcher()) {
-                codec.readPixels(skiaBitmap, 0)
-                invalidateSelf()
-            }
-            return
-        }
+        if (codec.frameCount <= 0) return
 
         running = true
         repeatIndex = 0
         // When decoding webp animations, readPixels takes a long time, so use the IO thread to decode to avoid getting stuck in the UI thread.
-        receiveJob = coroutineScope?.launch(ioCoroutineDispatcher()) {
+        decodeJob = coroutineScope?.launch(ioCoroutineDispatcher()) {
             // TODO Reading frame data in Dispatchers.IO will cause screen confusion on the ios platform.
             decodeFlow.collectLatest { frame ->
-                codec.readPixels(skiaBitmap, frame)
+                try {
+                    codec.readPixels(skiaBitmap, frame)
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                    stopAnimation()
+                }
                 invalidateSelf()
             }
         }
-        coroutineScope?.launch {
-            while (running && (repeatCount < 0 || repeatIndex <= repeatCount)) {
-                frameIndex = (frameIndex + 1) % codec.frameCount
-                decodeFlow.emit(frameIndex)
-                if (frameIndex == codec.frameCount - 1) {
-                    repeatIndex++
+        if (codec.frameCount == 1) {
+            timerJob = coroutineScope?.launch {
+                decodeFlow.emit(0)
+            }
+        } else {
+            timerJob = coroutineScope?.launch {
+                while (running && (repeatCount < 0 || repeatIndex <= repeatCount)) {
+                    frameIndex = (frameIndex + 1) % codec.frameCount
+                    decodeFlow.emit(frameIndex)
+                    if (frameIndex == codec.frameCount - 1) {
+                        repeatIndex++
+                    }
+                    val frameInfo = try {
+                        codec.getFrameInfo(frameIndex)
+                    } catch (e: ArrayIndexOutOfBoundsException) {
+                        e.printStackTrace()
+                        stopAnimation()
+                        break
+                    }
+                    val duration = frameInfo.safetyDuration
+                    delay(duration.toLong())
                 }
-                val frameInfo = codec.getFrameInfo(frameIndex)
-                val duration = frameInfo.safetyDuration
-                delay(duration.toLong())
             }
         }
         animatedImage.animationStartCallback?.invoke()
     }
 
     private fun stopAnimation() {
-        receiveJob?.cancel()
         coroutineScope ?: return
+        timerJob?.cancel()
+        decodeJob?.cancel()
         if (!running) return
         running = false
         animatedImage.animationEndCallback?.invoke()
