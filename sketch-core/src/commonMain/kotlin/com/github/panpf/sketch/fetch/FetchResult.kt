@@ -35,6 +35,9 @@ interface FetchResult {
 
     val dataSource: DataSource
 
+    /**
+     * This mimeType is extracted from the uri and may not be accurate
+     */
     val mimeType: String?
 
     val dataFrom: DataFrom

@@ -22,14 +22,13 @@ import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
-import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
@@ -38,6 +37,7 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -85,7 +85,7 @@ class GifDrawableDecoder(
             height = imageHeight,
             mimeType = ImageFormat.GIF.mimeType,
         )
-        val resize= requestContext.computeResize(imageInfo.size)
+        val resize = requestContext.computeResize(imageInfo.size)
         val inSampleSize = calculateSampleSize(
             imageSize = imageSize,
             targetSize = size,
@@ -144,12 +144,11 @@ class GifDrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            if (!requestContext.request.disallowAnimatedImage) {
-                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                val isGif = imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()
-                if (isGif) {
-                    return GifDrawableDecoder(requestContext, fetchResult.dataSource)
-                }
+            if (
+                !requestContext.request.disallowAnimatedImage
+                && fetchResult.headerBytes.isGif()
+            ) {
+                return GifDrawableDecoder(requestContext, fetchResult.dataSource)
             }
             return null
         }

@@ -18,12 +18,11 @@ package com.github.panpf.sketch.decode
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds animation heif support by AnimatedImageDrawable
@@ -62,13 +61,9 @@ class HeifAnimatedDecoder(
             if (
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                 && !requestContext.request.disallowAnimatedImage
+                && fetchResult.headerBytes.isAnimatedHeif()
             ) {
-                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                if ((imageFormat == null || imageFormat == ImageFormat.HEIC || imageFormat == ImageFormat.HEIF)
-                    && fetchResult.headerBytes.isAnimatedHeif()
-                ) {
-                    return HeifAnimatedDecoder(requestContext, dataSource)
-                }
+                return HeifAnimatedDecoder(requestContext, dataSource)
             }
             return null
         }

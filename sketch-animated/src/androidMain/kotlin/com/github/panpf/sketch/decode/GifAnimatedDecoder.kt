@@ -18,12 +18,11 @@ package com.github.panpf.sketch.decode
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds gif support by AnimatedImageDrawable
@@ -62,12 +61,9 @@ class GifAnimatedDecoder(
             if (
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                 && !requestContext.request.disallowAnimatedImage
+                && fetchResult.headerBytes.isGif()
             ) {
-                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                val isGif = imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()
-                if (isGif) {
-                    return GifAnimatedDecoder(requestContext, dataSource)
-                }
+                return GifAnimatedDecoder(requestContext, dataSource)
             }
             return null
         }

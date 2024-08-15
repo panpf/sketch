@@ -130,6 +130,15 @@ class SvgDecoderTest {
         }.apply {
             assertNotNull(this)
         }
+
+        // Disguised, mimeType; data error
+        ImageRequest(context, ResourceImages.png.uri).let {
+            val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
+                .copy(mimeType = "image/svg+xml")
+            factory.create(it.toRequestContext(sketch), fetchResult)
+        }.apply {
+            assertNull(this)
+        }
     }
 
     @Test

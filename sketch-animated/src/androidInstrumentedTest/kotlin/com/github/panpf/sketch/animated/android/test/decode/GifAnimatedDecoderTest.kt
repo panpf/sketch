@@ -151,6 +151,18 @@ class GifAnimatedDecoderTest {
         }.apply {
             Assert.assertNull(this)
         }
+
+        // Disguised, mimeType; data error
+        ImageRequest(context, ResourceImages.png.uri).let {
+            val fetchResult =
+                FetchResult(
+                    AssetDataSource(sketch, it, ResourceImages.png.resourceName),
+                    "image/gif"
+                )
+            factory.create(it.toRequestContext(sketch), fetchResult)
+        }.apply {
+            Assert.assertNull(this)
+        }
     }
 
     @Test

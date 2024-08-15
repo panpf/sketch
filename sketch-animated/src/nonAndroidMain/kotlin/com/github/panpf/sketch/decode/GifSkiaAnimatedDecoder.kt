@@ -1,12 +1,11 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds gif support by Skia
@@ -25,12 +24,11 @@ class GifSkiaAnimatedDecoder(
         override val key: String = "GifSkiaAnimatedDecoder"
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
-            if (!requestContext.request.disallowAnimatedImage) {
-                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                val isGif = imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()
-                if (isGif) {
-                    return GifSkiaAnimatedDecoder(requestContext, fetchResult.dataSource)
-                }
+            if (
+                !requestContext.request.disallowAnimatedImage
+                && fetchResult.headerBytes.isGif()
+            ) {
+                return GifSkiaAnimatedDecoder(requestContext, fetchResult.dataSource)
             }
             return null
         }

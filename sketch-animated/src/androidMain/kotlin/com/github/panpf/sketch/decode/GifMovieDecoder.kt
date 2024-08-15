@@ -22,21 +22,21 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isGif
-import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.source.DataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -68,7 +68,8 @@ class GifMovieDecoder(
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        val movie: Movie? = dataSource.openSource().buffer().inputStream().use { Movie.decodeStream(it) }
+        val movie: Movie? =
+            dataSource.openSource().buffer().inputStream().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0
         val height = movie?.height() ?: 0
@@ -123,14 +124,12 @@ class GifMovieDecoder(
             fetchResult: FetchResult
         ): Decoder? {
             val dataSource = fetchResult.dataSource
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && !requestContext.request.disallowAnimatedImage
+                && fetchResult.headerBytes.isGif()
             ) {
-                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                val isGif = imageFormat == ImageFormat.GIF || fetchResult.headerBytes.isGif()
-                if (isGif) {
-                    return GifMovieDecoder(requestContext, dataSource)
-                }
+                return GifMovieDecoder(requestContext, dataSource)
             }
             return null
         }

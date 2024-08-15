@@ -1,12 +1,11 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds animation webp support by Skia
@@ -25,13 +24,11 @@ class WebpSkiaAnimatedDecoder(
         override val key: String = "WebpSkiaAnimatedDecoder"
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
-            if (!requestContext.request.disallowAnimatedImage) {
-                val imageFormat = ImageFormat.parseMimeType(fetchResult.mimeType)
-                val isAnimatedWebp =
-                    (imageFormat == null || imageFormat == ImageFormat.WEBP) && fetchResult.headerBytes.isAnimatedWebP()
-                if (isAnimatedWebp) {
-                    return WebpSkiaAnimatedDecoder(requestContext, fetchResult.dataSource)
-                }
+            if (
+                !requestContext.request.disallowAnimatedImage
+                && fetchResult.headerBytes.isAnimatedWebP()
+            ) {
+                return WebpSkiaAnimatedDecoder(requestContext, fetchResult.dataSource)
             }
             return null
         }

@@ -10,6 +10,8 @@
 
 * fix: 修复 SkiaAnimatedImagePainter 在遇到伪装的 gif 图片时崩溃的
   bug。[#205](https://github.com/panpf/sketch/issues/205)
+* improve: 改进动图相关 Decoder 在判断图片类型时的准确性，不再依赖 FetchResult 的 mimeType
+  属性，因为它可能不准确
 
 # 4.0.0-alpha05
 

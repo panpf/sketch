@@ -67,10 +67,7 @@ class SvgDecoder(
             fetchResult: FetchResult
         ): SvgDecoder? {
             val dataSource = fetchResult.dataSource
-            return if (
-                MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)
-                || fetchResult.headerBytes.isSvg()
-            ) {
+            return if (fetchResult.headerBytes.isSvg()) {
                 SvgDecoder(
                     requestContext = requestContext,
                     dataSource = dataSource,

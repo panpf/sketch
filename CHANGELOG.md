@@ -12,6 +12,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fixed a bug where SkiaAnimatedImagePainter crashed when encountering disguised gif
   images. [#205](https://github.com/panpf/sketch/issues/205)
+* improve: Improve the accuracy of animation-related Decoder in determining the image type. No
+  longer rely on the mimeType attribute of FetchResult because it may be inaccurate.
 
 # 4.0.0-alpha05
 
