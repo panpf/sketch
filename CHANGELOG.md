@@ -8,7 +8,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
-# new
+# 4.0.0-alpha06
 
 * fix: Fixed a bug where SkiaAnimatedImagePainter crashed when encountering disguised gif
   images. [#205](https://github.com/panpf/sketch/issues/205)
