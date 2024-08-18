@@ -92,9 +92,12 @@ class SkiaAnimatedImagePainter(
 
         running = true
         repeatIndex = 0
+        // TODO 重新设计解码流程
+        //  1. 解码和绘制不共享 bitmap，使用两个 bitmap
+        //  2. 绘制任务循环从缓冲区读取帧 并绘制，当前没有已解码的帧就等待解码，绘制后根据帧持续时间等待一段时间
+        //  3. 解码帧后放入缓冲区，知道帧被读取后才解码下一帧
         // When decoding webp animations, readPixels takes a long time, so use the IO thread to decode to avoid getting stuck in the UI thread.
         decodeJob = coroutineScope?.launch(ioCoroutineDispatcher()) {
-            // TODO Reading frame data in Dispatchers.IO will cause screen confusion on the ios platform.
             decodeFlow.collectLatest { frame ->
                 try {
                     codec.readPixels(skiaBitmap, frame)
