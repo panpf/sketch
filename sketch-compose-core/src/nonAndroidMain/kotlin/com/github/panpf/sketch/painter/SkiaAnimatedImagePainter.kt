@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntOffset
@@ -15,18 +14,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import com.github.panpf.sketch.ComposeBitmap
 import com.github.panpf.sketch.SkiaAnimatedImage
-import com.github.panpf.sketch.SkiaBitmap
-import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import okio.ArrayIndexOutOfBoundsException
-import org.jetbrains.skia.AnimationFrameInfo
 import kotlin.math.roundToInt
 
 class SkiaAnimatedImagePainter(
@@ -39,27 +29,23 @@ class SkiaAnimatedImagePainter(
     /*
      * Why do you need to remember to count?
      *
-     * Because when RememberObserver is passed as a parameter of the Composable function, the onRemembered method will be called when the Composable function is executed for the first time, causing it to be remembered multiple times.
+     * Because when RememberObserver is passed as a parameter of the Composable function, the onRemembered method
+     * will be called when the Composable function is executed for the first time, causing it to be remembered multiple times.
      */
     private var rememberedCount = 0
     private val codec = animatedImage.codec
     private var coroutineScope: CoroutineScope? = null
-    private val decodeFlow = MutableSharedFlow<Int>()
-    private val skiaBitmap: SkiaBitmap = SkiaBitmap().apply { allocPixels(codec.imageInfo) }
-    private val composeBitmap: ComposeBitmap = skiaBitmap.asComposeImageBitmap()
-    private var running = false
-    private var frameIndex = -1
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
-    private var repeatIndex = 0
-    private var decodeJob: Job? = null
-    private var timerJob: Job? = null
-
-    /**
-     * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
-     */
-    private var repeatCount: Int = animatedImage.repeatCount ?: codec.repetitionCount
+    private var composeBitmap: ComposeBitmap? = null
+    private var animatedPlayer = AnimatedPlayer(
+        codec = codec,
+        repeatCount = animatedImage.repeatCount ?: codec.repetitionCount
+    ) {
+        composeBitmap = it
+        invalidateSelf()
+    }
 
     override val intrinsicSize: Size = srcSize.toSize()
 
@@ -69,78 +55,36 @@ class SkiaAnimatedImagePainter(
 
     override fun DrawScope.onDraw() {
         invalidateTick // Invalidate the scope when invalidateTick changes.
-        val dstSize = IntSize(
-            this@onDraw.size.width.roundToInt(),
-            this@onDraw.size.height.roundToInt()
-        )
-        drawImage(
-            image = composeBitmap,
-            srcOffset = srcOffset,
-            srcSize = srcSize,
-            dstOffset = IntOffset.Zero,
-            dstSize = dstSize,
-            alpha = alpha,
-            colorFilter = colorFilter,
-            filterQuality = filterQuality
-        )
+        val composeBitmap = composeBitmap
+        if (composeBitmap != null) {
+            val dstSize = IntSize(
+                this@onDraw.size.width.roundToInt(),
+                this@onDraw.size.height.roundToInt()
+            )
+            drawImage(
+                image = composeBitmap,
+                srcOffset = srcOffset,
+                srcSize = srcSize,
+                dstOffset = IntOffset.Zero,
+                dstSize = dstSize,
+                alpha = alpha,
+                colorFilter = colorFilter,
+                filterQuality = filterQuality
+            )
+        }
     }
 
     private fun startAnimation() {
         coroutineScope ?: return
-        if (running) return
-        if (codec.frameCount <= 0) return
-
-        running = true
-        repeatIndex = 0
-        // TODO 重新设计解码流程
-        //  1. 解码和绘制不共享 bitmap，使用两个 bitmap
-        //  2. 绘制任务循环从缓冲区读取帧 并绘制，当前没有已解码的帧就等待解码，绘制后根据帧持续时间等待一段时间
-        //  3. 解码帧后放入缓冲区，知道帧被读取后才解码下一帧
-        // When decoding webp animations, readPixels takes a long time, so use the IO thread to decode to avoid getting stuck in the UI thread.
-        decodeJob = coroutineScope?.launch(ioCoroutineDispatcher()) {
-            decodeFlow.collectLatest { frame ->
-                try {
-                    codec.readPixels(skiaBitmap, frame)
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    stopAnimation()
-                }
-                invalidateSelf()
-            }
-        }
-        if (codec.frameCount == 1) {
-            timerJob = coroutineScope?.launch {
-                decodeFlow.emit(0)
-            }
-        } else {
-            timerJob = coroutineScope?.launch {
-                while (running && (repeatCount < 0 || repeatIndex <= repeatCount)) {
-                    frameIndex = (frameIndex + 1) % codec.frameCount
-                    decodeFlow.emit(frameIndex)
-                    if (frameIndex == codec.frameCount - 1) {
-                        repeatIndex++
-                    }
-                    val frameInfo = try {
-                        codec.getFrameInfo(frameIndex)
-                    } catch (e: ArrayIndexOutOfBoundsException) {
-                        e.printStackTrace()
-                        stopAnimation()
-                        break
-                    }
-                    val duration = frameInfo.safetyDuration
-                    delay(duration.toLong())
-                }
-            }
-        }
+        if (animatedPlayer.running) return
+        animatedPlayer.start(coroutineScope!!)
         animatedImage.animationStartCallback?.invoke()
     }
 
     private fun stopAnimation() {
         coroutineScope ?: return
-        timerJob?.cancel()
-        decodeJob?.cancel()
-        if (!running) return
-        running = false
+        if (!animatedPlayer.running) return
+        animatedPlayer.stop()
         animatedImage.animationEndCallback?.invoke()
     }
 
@@ -192,13 +136,6 @@ class SkiaAnimatedImagePainter(
         return srcSize
     }
 
-    private val AnimationFrameInfo.safetyDuration: Int
-        get() {
-            // If the frame does not contain information about a duration, set a reasonable constant duration
-            val frameDuration = duration
-            return if (frameDuration == 0) DEFAULT_FRAME_DURATION else frameDuration
-        }
-
     override fun applyAlpha(alpha: Float): Boolean {
         this.alpha = alpha
         return true
@@ -221,7 +158,7 @@ class SkiaAnimatedImagePainter(
         }
     }
 
-    override fun isRunning(): Boolean = running
+    override fun isRunning(): Boolean = animatedPlayer.running
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -244,9 +181,5 @@ class SkiaAnimatedImagePainter(
     override fun toString(): String {
         return "SkiaAnimatedImagePainter(codec=$codec, srcOffset=$srcOffset, srcSize=$srcSize, " +
                 "filterQuality=$filterQuality)"
-    }
-
-    companion object {
-        private const val DEFAULT_FRAME_DURATION = 100
     }
 }

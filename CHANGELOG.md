@@ -8,6 +8,12 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+* improve: SkiaAnimatedImagePainter now does not share Bitmap for decoding and drawing, which can
+  avoid screen tearing and cache frames that take a long time to decode to improve playback
+  smoothness.
+
 # 4.0.0-alpha06
 
 * fix: Fixed a bug where SkiaAnimatedImagePainter crashed when encountering disguised gif
