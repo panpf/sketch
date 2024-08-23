@@ -165,6 +165,10 @@ class AppSettings(val context: PlatformContext) {
         booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)
     }
 
+    val pagerGuideShowed by lazy {
+        booleanSettingsStateFlow(context, "pagerGuideShowed", false)
+    }
+
     private val memoryCacheValue: CachePolicy
         get() = if (memoryCache.value) ENABLED else DISABLED
     private val downloadCacheValue: CachePolicy
