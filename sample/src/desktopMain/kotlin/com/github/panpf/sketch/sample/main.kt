@@ -7,7 +7,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
@@ -30,7 +29,7 @@ import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.ui.HomeScreen
+import com.github.panpf.sketch.sample.ui.HorHomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import com.github.panpf.sketch.sample.util.sha256String
@@ -48,15 +47,14 @@ const val appId = "com.github.panpf.sketch4.sample"
 fun main() {
     initialSketch()
     application {
-        val coroutineScope = rememberCoroutineScope()
         Window(
             title = "Sketch4",
             onCloseRequest = ::exitApplication,
-            state = rememberWindowState(size = DpSize(1000.dp, 800.dp)),
+            state = rememberWindowState(size = DpSize(1200.dp, 800.dp)),
         ) {
             AppTheme {
                 Box(Modifier.fillMaxSize()) {
-                    Navigator(HomeScreen) { navigator ->
+                    Navigator(HorHomeScreen) { navigator ->
                         ScaleTransition(navigator = navigator)
                     }
 

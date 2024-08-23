@@ -52,15 +52,36 @@ expect fun HomeHeader()
 enum class HomeTab(
     val title: String,
     val icon: DrawableResource,
+    val padding: Dp,
     val content: @Composable Screen.() -> Unit
 ) {
-    LOCAL("Local", Res.drawable.ic_phone, { LocalPhotoPage() }),
-    PEXELS("Pexels", Res.drawable.ic_pexels, { PexelsPhotoPage() }),
-    GIPHY("Giphy", Res.drawable.ic_giphy, { GiphyPhotoPage() }),
-    TEST("Test", Res.drawable.ic_debug, { TestPage() }),
+    PEXELS(
+        title = "Pexels",
+        icon = Res.drawable.ic_pexels,
+        padding = 1.5.dp,
+        content = { PexelsPhotoPage() }
+    ),
+    GIPHY(
+        title = "Giphy",
+        icon = Res.drawable.ic_giphy,
+        padding = 1.5.dp,
+        content = { GiphyPhotoPage() }
+    ),
+    LOCAL(
+        title = "Local",
+        icon = Res.drawable.ic_phone,
+        padding = 0.dp,
+        content = { LocalPhotoPage() }
+    ),
+    TEST(
+        title = "Test",
+        icon = Res.drawable.ic_debug,
+        padding = 1.dp,
+        content = { TestPage() }
+    ),
 }
 
-object HomeScreen : BaseScreen() {
+object VerHomeScreen : BaseScreen() {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -90,7 +111,7 @@ object HomeScreen : BaseScreen() {
                         state = pagerState,
                         modifier = Modifier.fillMaxSize(),
                     ) { pageIndex ->
-                        homeTabs[pageIndex].content.invoke(this@HomeScreen)
+                        homeTabs[pageIndex].content.invoke(this@VerHomeScreen)
                     }
 
                     MainMenu(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))

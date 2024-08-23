@@ -20,7 +20,7 @@ import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.fetch.supportComposeResources
-import com.github.panpf.sketch.sample.ui.HomeScreen
+import com.github.panpf.sketch.sample.ui.VerHomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ fun MainViewController(): UIViewController {
     return ComposeUIViewController {
         AppTheme {
             Box(Modifier.fillMaxSize()) {
-                Navigator(HomeScreen) { navigator ->
+                Navigator(VerHomeScreen) { navigator ->
                     ScaleTransition(navigator = navigator)
                 }
 

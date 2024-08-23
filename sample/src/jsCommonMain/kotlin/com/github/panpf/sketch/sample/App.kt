@@ -13,17 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.sample.ui.HomeScreen
+import com.github.panpf.sketch.sample.ui.HorHomeScreen
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 
 @Composable
 fun App() {
     AppTheme {
         Box(Modifier.fillMaxSize()) {
-            Navigator(HomeScreen) { navigator ->
+            Navigator(HorHomeScreen) { navigator ->
                 ScaleTransition(navigator = navigator)
             }
 
