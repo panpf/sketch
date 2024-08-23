@@ -15,14 +15,17 @@
  */
 package com.github.panpf.sketch.sample.ui.test
 
+import android.graphics.ImageDecoder
+import android.graphics.drawable.Animatable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.loadImage
+import androidx.core.graphics.decodeDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.databinding.FragmentTestTempBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import pl.droidsonroids.gif.GifDrawable
 
 class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
 
@@ -41,11 +44,24 @@ class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
     ) {
         toolbar.title = "Temp"
 
-        binding.myImage.apply {
-            loadImage(ResourceImages.jpeg.uri) {
-                memoryCachePolicy(DISABLED)
-                resultCachePolicy(DISABLED)
-            }
+        val drawable = GifDrawable(requireContext().assets, ResourceImages.animGif.resourceName)
+        binding.myImage.setImageDrawable(drawable)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val imageSource = ImageDecoder.createSource(
+                requireContext().assets,
+                ResourceImages.animGif.resourceName
+            )
+            val drawable2 = imageSource.decodeDrawable { _, _ -> }
+            (drawable2 as Animatable).start()
+            binding.myImage2.setImageDrawable(drawable2)
         }
+
+//        binding.myImage.apply {
+//            loadImage(ResourceImages.jpeg.uri) {
+//                memoryCachePolicy(DISABLED)
+//                resultCachePolicy(DISABLED)
+//            }
+//        }
     }
 }

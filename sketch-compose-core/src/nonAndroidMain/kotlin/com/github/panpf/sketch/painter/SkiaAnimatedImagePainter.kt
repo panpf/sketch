@@ -19,11 +19,13 @@ import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Color
 import kotlin.math.roundToInt
@@ -48,15 +50,20 @@ class SkiaAnimatedImagePainter constructor(
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
+    private var loadFirstFrameJob: Job? = null
     private var composeBitmap: ComposeBitmap? = null
     private var animatedPlayer = AnimatedPlayer(
         codec = codec,
         cacheDecodeTimeoutFrame = animatedImage.cacheDecodeTimeoutFrame,
-        repeatCount = animatedImage.repeatCount ?: codec.repetitionCount
-    ) {
-        composeBitmap = it
-        invalidateSelf()
-    }
+        repeatCount = animatedImage.repeatCount ?: codec.repetitionCount,
+        onFrame = {
+            composeBitmap = it
+            invalidateSelf()
+        },
+        onRepeatEnd = {
+            stopAnimation()
+        },
+    )
 
     override val intrinsicSize: Size = srcSize.toSize()
 
@@ -82,12 +89,31 @@ class SkiaAnimatedImagePainter constructor(
                 colorFilter = colorFilter,
                 filterQuality = filterQuality
             )
+        } else if (!animatedPlayer.running && loadFirstFrameJob == null) {
+            loadFirstFrame()
+        }
+    }
+
+    private fun loadFirstFrame() {
+        if (loadFirstFrameJob?.isActive == true) return
+        @Suppress("OPT_IN_USAGE")
+        loadFirstFrameJob = GlobalScope.launch(Dispatchers.Main) {
+            val bitmap = withContext(ioCoroutineDispatcher()) {
+                val bitmap = SkiaBitmap(codec.imageInfo)
+                codec.readPixels(bitmap, 0)
+                bitmap
+            }
+            composeBitmap = bitmap.asComposeImageBitmap()
+            invalidateSelf()
         }
     }
 
     private fun startAnimation() {
         coroutineScope ?: return
         if (animatedPlayer.running) return
+        if (loadFirstFrameJob?.isActive == true) {
+            loadFirstFrameJob?.cancel("startAnimation")
+        }
         animatedPlayer.start(coroutineScope!!)
         animatedImage.animationStartCallback?.invoke()
     }
@@ -190,7 +216,10 @@ class SkiaAnimatedImagePainter constructor(
     }
 
     override fun toString(): String {
-        return "SkiaAnimatedImagePainter(codec=$codec, srcOffset=$srcOffset, srcSize=$srcSize, " +
+        return "SkiaAnimatedImagePainter(" +
+                "codec=$codec, " +
+                "srcOffset=$srcOffset, " +
+                "srcSize=$srcSize, " +
                 "filterQuality=$filterQuality)"
     }
 
@@ -199,6 +228,7 @@ class SkiaAnimatedImagePainter constructor(
         private val repeatCount: Int,
         private val cacheDecodeTimeoutFrame: Boolean,
         private val onFrame: (ComposeBitmap) -> Unit,
+        private val onRepeatEnd: () -> Unit,
     ) {
 
         private val frameInfos = codec.framesInfo
@@ -252,6 +282,8 @@ class SkiaAnimatedImagePainter constructor(
 
                         val fameDuration = frameDuration(newFrame.index)
                         delay(fameDuration)
+                    } else {
+                        onRepeatEnd()
                     }
                 }
             }

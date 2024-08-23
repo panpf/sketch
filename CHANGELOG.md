@@ -15,6 +15,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: SkiaAnimatedImagePainter now supports caching frames that take longer to decode than the
   frame duration to improve playback smoothness, but this uses more memory, closed by default,
   enabled through 'cacheDecodeTimeoutFrame()' function
+* improve: SkiaAnimatedImagePainter now still does not start animation when drawing, it will
+  automatically load the first frame
 
 # 4.0.0-alpha06
 

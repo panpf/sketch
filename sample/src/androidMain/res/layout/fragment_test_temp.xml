@@ -12,5 +12,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name" />
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+            android:id="@+id/myImage2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 </ScrollView>

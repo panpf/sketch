@@ -13,6 +13,7 @@
 * new: SkiaAnimatedImagePainter
   现在支持缓存解码耗时超过帧持续时间的帧以提高播放流畅度，但这会使用更多的内存，默认关闭，通过 '
   cacheDecodeTimeoutFrame()' 函数开启
+* improve: SkiaAnimatedImagePainter 现在走到绘制时依然没有启动动画，则会自动加载第一帧
 
 # 4.0.0-alpha06
 

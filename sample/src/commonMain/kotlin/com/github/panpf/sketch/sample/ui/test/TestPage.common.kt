@@ -39,6 +39,8 @@ import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
+expect fun platformTestScreens(): List<TestItem>
+
 @Composable
 fun TestPage() {
     val testItems = remember {
@@ -51,7 +53,7 @@ fun TestPage() {
             TestItem("ProgressIndicator", ProgressIndicatorTestScreen()),
             TestItem("Transformation", TransformationTestScreen()),
             TestItem("Temp", TempTestScreen()),
-        )
+        ).plus(platformTestScreens())
     }
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
