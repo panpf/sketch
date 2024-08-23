@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui.gallery
 import androidx.compose.runtime.Composable
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.state.StateImage
 
@@ -13,6 +14,9 @@ actual fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): Stat
 }
 
 @Composable
-actual inline fun PlatformListImageSettings(appSettings: AppSettings, builder: ImageRequest.Builder) {
-
+actual inline fun PlatformListImageSettings(
+    appSettings: AppSettings,
+    builder: ImageRequest.Builder
+) {
+    builder.cacheDecodeTimeoutFrame(appSettings.cacheDecodeTimeoutFrame.value)
 }

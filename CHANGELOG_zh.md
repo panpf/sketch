@@ -8,7 +8,11 @@
 
 # new
 
-* improve: SkiaAnimatedImagePainter 现在解码和绘制不共享 Bitmap 了，可以避免画面撕裂，并且缓存解码耗时较长的帧提高播放流畅度
+* improve: SkiaAnimatedImagePainter 现在解码和绘制不共享 Bitmap
+  了，以避免画面错乱。 [#206](https://github.com/panpf/sketch/issues/206)
+* new: SkiaAnimatedImagePainter
+  现在支持缓存解码耗时超过帧持续时间的帧以提高播放流畅度，但这会使用更多的内存，默认关闭，通过 '
+  cacheDecodeTimeoutFrame()' 函数开启
 
 # 4.0.0-alpha06
 

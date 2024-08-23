@@ -207,9 +207,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             absoluteAdapterPosition: Int,
             data: VideoInfo
         ) {
-            binding.thumbnailImage.loadImage(data.path) {
-                merge(context.appSettings.buildListImageOptions())
-            }
+            binding.thumbnailImage.loadImage(data.path)
             binding.nameText.text = data.title
             binding.sizeText.text = data.getTempFormattedSize(context)
             binding.dateText.text = data.tempFormattedDate

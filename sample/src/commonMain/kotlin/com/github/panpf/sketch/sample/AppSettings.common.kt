@@ -160,6 +160,11 @@ class AppSettings(val context: PlatformContext) {
         intSettingsStateFlow(context, "currentPageIndex", 0)
     }
 
+    // Only fro non Android
+    val cacheDecodeTimeoutFrame: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)
+    }
+
     private val memoryCacheValue: CachePolicy
         get() = if (memoryCache.value) ENABLED else DISABLED
     private val downloadCacheValue: CachePolicy
@@ -180,6 +185,8 @@ class AppSettings(val context: PlatformContext) {
         bitmapQuality,  // Only for Android
         colorSpace,  // Only for Android
         inPreferQualityOverSpeed,  // Only for Android
+
+        cacheDecodeTimeoutFrame,    // Only for non Android
 
         memoryCache,
         resultCache,
@@ -202,6 +209,8 @@ class AppSettings(val context: PlatformContext) {
         bitmapQuality,  // Only for Android
         colorSpace,  // Only for Android
         inPreferQualityOverSpeed,  // Only for Android
+
+        cacheDecodeTimeoutFrame,  // Only for non Android
 
         memoryCache,
         resultCache,

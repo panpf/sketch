@@ -4,9 +4,10 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
 
-data class SkiaAnimatedImage(
+data class SkiaAnimatedImage constructor(
     val codec: Codec,
     val repeatCount: Int? = null,
+    val cacheDecodeTimeoutFrame: Boolean = false,
     val animationStartCallback: (() -> Unit)? = null,
     val animationEndCallback: (() -> Unit)? = null,
 ) : Image {

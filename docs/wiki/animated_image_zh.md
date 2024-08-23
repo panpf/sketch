@@ -108,6 +108,19 @@ stop() 方法控制播放，通过 isRunning() 方法判断播放状态
 [GenericViewTarget] 和 [GenericComposeTarget] 会监听 [ImageRequest].lifecycle 的 start 和 stop
 状态自动控制播放
 
+#### 缓存解码超时帧
+
+Sketch 在非 Android 平台使用 skiko 的 Codec 解码动图，但 Codec 在越靠近动图末尾的帧时解码越慢
+
+当解码耗时超过上一帧的持续时间时用户就会感觉到播放卡顿，因此为了提高播放流畅度，Sketch 支持了缓存解码超时帧功能
+
+但此功能会大幅增加内存消耗，因此默认关闭，你可以通过 cacheDecodeTimeoutFrame() 函数开启，如下：
+
+```kotlin
+ImageRequest(context, "https://www.example.com/image.gif") {
+    cacheDecodeTimeoutFrame(true)
+}
+```
 
 [comment]: <> (classs)
 

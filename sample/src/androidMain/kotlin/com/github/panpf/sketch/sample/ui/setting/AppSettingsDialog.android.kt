@@ -38,6 +38,8 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
     }
 }
 
+actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+
 actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(

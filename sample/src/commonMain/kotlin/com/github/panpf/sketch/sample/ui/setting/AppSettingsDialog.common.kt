@@ -141,6 +141,10 @@ fun createSettingItems(
     }
     add(GroupSettingItem("Cache"))
     addAll(makeCacheMenuList(context, appSettings, recreateSettingItems))
+    platformAnimatedMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
+        add(GroupSettingItem("Animated"))
+        addAll(it)
+    }
     add(GroupSettingItem("Other"))
     addAll(makeOtherMenuList(appSettings))
     addAll(platformMakeOtherMenuList(appSettings))
@@ -282,6 +286,8 @@ fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList{
 }
 
 expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem>
+
+expect fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
 
 
 private fun makeCacheMenuList(

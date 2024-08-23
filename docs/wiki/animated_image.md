@@ -114,6 +114,23 @@ wait until lifecycle. Play again when the status changes to start
 [GenericViewTarget] and [GenericComposeTarget] will listen to the start and stop of [ImageRequest]
 .lifecycle Status automatic control playback
 
+#### Cache Decoding Timeout Frame
+
+Sketch uses skiko's Codec to decode animations on non-Android platforms, but Codec decodes slower
+frames closer to the end of the animation.
+
+When the decoding time exceeds the duration of the previous frame, the user will feel that the
+playback is stuck. Therefore, in order to improve the smoothness of playback, Sketch supports the
+function of caching decoding timeout frames.
+
+However, this feature will significantly increase memory consumption, so it is turned off by
+default. You can enable it through the cacheDecodeTimeoutFrame() function, as follows:
+
+```kotlin
+ImageRequest(context, "https://www.example.com/image.gif") {
+    cacheDecodeTimeoutFrame(true)
+}
+```
 
 [comment]: <> (classs)
 

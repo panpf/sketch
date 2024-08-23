@@ -10,9 +10,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
-* improve: SkiaAnimatedImagePainter now does not share Bitmap for decoding and drawing, which can
-  avoid screen tearing and cache frames that take a long time to decode to improve playback
-  smoothness.
+* improve: SkiaAnimatedImagePainter now does not share Bitmap for decoding and drawing to avoid
+  cluttered images. [#206](https://github.com/panpf/sketch/issues/206)
+* new: SkiaAnimatedImagePainter now supports caching frames that take longer to decode than the
+  frame duration to improve playback smoothness, but this uses more memory, closed by default,
+  enabled through 'cacheDecodeTimeoutFrame()' function
 
 # 4.0.0-alpha06
 
