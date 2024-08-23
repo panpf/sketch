@@ -149,7 +149,7 @@ class Sketch private constructor(options: Options) {
                 appendLine().append("requestInterceptors: ${options.componentRegistry.requestInterceptorList}")
                 appendLine().append("decodeInterceptors: ${options.componentRegistry.decodeInterceptorList}")
                 appendLine().append("networkParallelismLimited: ${options.networkParallelismLimited}")
-                appendLine().append("decodeTaskDispatcher: ${options.decodeParallelismLimited}")
+                appendLine().append("decodeParallelismLimited: ${options.decodeParallelismLimited}")
             }
         }
     }
