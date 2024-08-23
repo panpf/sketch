@@ -3,6 +3,11 @@ package com.github.panpf.zoomimage.sketch
 import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.cache.MemoryCache
 
+/**
+ * [SkiaBitmapImage] MemoryCache.Value
+ *
+ * @see com.github.panpf.zoomimage.core.sketch.nonandroid.test.SkiaBitmapImageValueTest
+ */
 class SkiaBitmapImageValue(
     override val image: SkiaBitmapImage,
     override val extras: Map<String, Any?>? = null,
@@ -16,7 +21,8 @@ class SkiaBitmapImageValue(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SkiaBitmapImageValue) return false
+        if (other == null || this::class != other::class) return false
+        other as SkiaBitmapImageValue
         if (image != other.image) return false
         return extras == other.extras
     }

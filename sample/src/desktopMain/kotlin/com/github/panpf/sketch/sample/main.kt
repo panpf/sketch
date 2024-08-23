@@ -53,12 +53,6 @@ fun main() {
             title = "Sketch4",
             onCloseRequest = ::exitApplication,
             state = rememberWindowState(size = DpSize(1000.dp, 800.dp)),
-            onKeyEvent = {
-                coroutineScope.launch {
-                    EventBus.keyEvent.emit(it)
-                }
-                false
-            }
         ) {
             AppTheme {
                 Box(Modifier.fillMaxSize()) {

@@ -45,8 +45,9 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
-import com.github.panpf.zoomimage.compose.internal.toPlatform
+import com.github.panpf.zoomimage.compose.util.toPlatform
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
+import com.github.panpf.zoomimage.compose.zoom.bindKeyZoomWithKeyEventFlow
 import com.github.panpf.zoomimage.rememberSketchZoomState
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
@@ -60,6 +61,7 @@ import kotlin.math.roundToInt
 fun PhotoViewer(
     photo: Photo,
     photoPaletteState: MutableState<PhotoPalette>,
+    pageSelected: Boolean,
 ) {
     val context = LocalPlatformContext.current
     val appSettings = context.appSettings
@@ -143,6 +145,10 @@ fun PhotoViewer(
                 }
             }
         )
+
+        if (pageSelected) {
+            bindKeyZoomWithKeyEventFlow(EventBus.keyEvent, zoomState.zoomable)
+        }
 
         Row(
             Modifier

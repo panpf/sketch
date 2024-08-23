@@ -17,18 +17,15 @@
 package com.github.panpf.zoomimage
 
 import android.content.Context
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.sketch.util.findLeafChildDrawable
-import com.github.panpf.zoomimage.internal.AbsStateZoomImageView
 import com.github.panpf.zoomimage.sketch.SketchImageSource
 import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
+import com.github.panpf.zoomimage.util.Logger
+import com.github.panpf.zoomimage.view.sketch.internal.AbsStateZoomImageView
 
 /**
  * An ImageView that integrates the Sketch image loading framework that zoom and subsampling huge images
@@ -37,11 +34,13 @@ import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
  *
  * ```kotlin
  * val sketchZoomImageView = SketchZoomImageView(context)
- * sketchZoomImageView.loadImage("http://sample.com/huge_world.jpeg") {
+ * sketchZoomImageView.loadImage("https://sample.com/sample.jpeg") {
  *     placeholder(R.drawable.placeholder)
  *     crossfade()
  * }
  * ```
+ *
+ * @see com.github.panpf.zoomimage.view.sketch.core.test.SketchZoomImageViewTest
  */
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
@@ -49,64 +48,62 @@ open class SketchZoomImageView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : AbsStateZoomImageView(context, attrs, defStyle) {
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (drawable != null) {
-            resetImageSource()
-        }
-    }
+    private var resetImageSourceOnAttachedToWindow: Boolean = false
+
+    override fun newLogger(): Logger = Logger(tag = "SketchZoomImageView")
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
         super.onDrawableChanged(oldDrawable, newDrawable)
         if (isAttachedToWindow) {
             resetImageSource()
+        } else {
+            resetImageSourceOnAttachedToWindow = true
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (resetImageSourceOnAttachedToWindow) {
+            resetImageSourceOnAttachedToWindow = false
+            resetImageSource()
         }
     }
 
     private fun resetImageSource() {
+        // You must use post to delay execution because 'SketchUtils.getResult' may not be ready when onDrawableChanged is executed.
         post {
             if (!isAttachedToWindow) {
-                return@post
-            }
-            val result: ImageResult? = imageResult
-            if (result == null) {
-                logger.d { "SketchZoomImageView. Can't use Subsampling, result is null" }
-                return@post
-            }
-            if (result !is ImageResult.Success) {
-                logger.d { "SketchZoomImageView. Can't use Subsampling, result is not Success" }
+                resetImageSourceOnAttachedToWindow = true
                 return@post
             }
             val sketch = SketchUtils.getSketch(this)
-            if (sketch == null) {
-                logger.d { "SketchZoomImageView. Can't use Subsampling, sketch is null" }
-                return@post
-            }
-
+            val result = SketchUtils.getResult(this)
             _subsamplingEngine?.apply {
-                if (tileBitmapCacheState.value == null) {
+                if (tileBitmapCacheState.value == null && sketch != null) {
                     tileBitmapCacheState.value = SketchTileBitmapCache(sketch)
                 }
-                disabledTileBitmapCacheState.value =
-                    result.request.memoryCachePolicy != CachePolicy.ENABLED
                 setImageSource(newImageSource(sketch, result))
             }
         }
     }
 
-    private fun newImageSource(sketch: Sketch, result: ImageResult): SketchImageSource.Factory? {
+    private fun newImageSource(
+        sketch: Sketch?,
+        result: ImageResult?
+    ): SketchImageSource.Factory? {
         val drawable = drawable
         if (drawable == null) {
             logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is null" }
             return null
         }
-        val leafDrawable = drawable.findLeafChildDrawable() ?: drawable
-        if (leafDrawable is Animatable) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is Animatable" }
+        if (sketch == null) {
+            logger.d { "SketchZoomImageView. Can't use Subsampling, sketch is null" }
             return null
         }
-        return SketchImageSource.Factory(context, sketch, result.request.uri.toString())
+        if (result !is ImageResult.Success) {
+            logger.d { "SketchZoomImageView. Can't use Subsampling, result is not Success" }
+            return null
+        }
+        return SketchImageSource.Factory(sketch, result.request.uri.toString())
     }
-
-    override fun getLogTag(): String? = "SketchZoomImageView"
 }

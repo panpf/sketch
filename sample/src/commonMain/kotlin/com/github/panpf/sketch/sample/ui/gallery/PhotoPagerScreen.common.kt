@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -36,11 +37,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.isMetaPressed
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -76,7 +76,10 @@ import com.github.panpf.sketch.sample.ui.util.isEmpty
 import com.github.panpf.sketch.sample.util.isMobile
 import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import com.github.panpf.sketch.transform.BlurTransformation
-import kotlinx.coroutines.flow.MutableSharedFlow
+import com.github.panpf.zoomimage.compose.util.AssistKey
+import com.github.panpf.zoomimage.compose.util.KeyMatcher
+import com.github.panpf.zoomimage.compose.util.matcherKeyHandler
+import com.github.panpf.zoomimage.compose.util.platformAssistKey
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -87,7 +90,14 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
     @Composable
     @OptIn(ExperimentalFoundationApi::class)
     override fun DrawContent() {
-        Box(Modifier.fillMaxSize()) {
+        val coroutineScope = rememberCoroutineScope()
+        val focusRequest = remember { androidx.compose.ui.focus.FocusRequester() }
+        Box(Modifier.fillMaxSize().focusable().focusRequester(focusRequest).onKeyEvent {
+            coroutineScope.launch {
+                EventBus.keyEvent.emit(it)
+            }
+            true
+        }) {
             Box(modifier = Modifier.fillMaxSize()) {
                 val initialPage = params.initialPosition - params.startPosition
                 val pagerState = rememberPagerState(initialPage = initialPage) {
@@ -104,15 +114,27 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                     beyondBoundsPageCount = 0,
                     modifier = Modifier.fillMaxSize()
                 ) { index ->
+                    val pageSelected by remember {
+                        derivedStateOf {
+                            pagerState.currentPage == index
+                        }
+                    }
                     PhotoViewer(
                         photo = params.photos[index],
                         photoPaletteState = photoPaletteState,
+                        pageSelected = pageSelected,
                     )
                 }
 
                 Headers(pagerState, photoPaletteState)
-                TurnPageIndicator(pagerState, photoPaletteState)
+
+                if (!runtimePlatformInstance.isMobile()) {
+                    TurnPageIndicator(pagerState, photoPaletteState)
+                }
             }
+        }
+        LaunchedEffect(Unit) {
+            focusRequest.requestFocus()
         }
     }
 
@@ -307,28 +329,51 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
         pagerState: PagerState,
         photoPaletteState: MutableState<PhotoPalette>,
     ) {
-        if (runtimePlatformInstance.isMobile()) return
-        val turnPage = remember { MutableSharedFlow<Boolean>() }
         val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
-            EventBus.keyEvent.collect { keyEvent ->
-                if (keyEvent.type == KeyEventType.KeyUp && !keyEvent.isMetaPressed) {
-                    when (keyEvent.key) {
-                        Key.PageUp, Key.DirectionLeft -> turnPage.emit(true)
-                        Key.PageDown, Key.DirectionRight -> turnPage.emit(false)
+            val keyHandlers = listOf(
+                matcherKeyHandler(
+                    listOf(
+                        KeyMatcher(Key.PageUp, type = KeyEventType.KeyUp),
+                        KeyMatcher(Key.LeftBracket, AssistKey.Alt, type = KeyEventType.KeyUp),
+                        KeyMatcher(Key.LeftBracket, platformAssistKey(), type = KeyEventType.KeyUp),
+                        KeyMatcher(Key.DirectionLeft, AssistKey.Alt, type = KeyEventType.KeyUp),
+                        KeyMatcher(
+                            Key.DirectionLeft,
+                            platformAssistKey(),
+                            type = KeyEventType.KeyUp
+                        ),
+                    )
+                ) {
+                    coroutineScope.launch {
+                        pagerState.previousPage()
+                    }
+                },
+                matcherKeyHandler(
+                    listOf(
+                        KeyMatcher(Key.PageDown, type = KeyEventType.KeyUp),
+                        KeyMatcher(Key.RightBracket, AssistKey.Alt, type = KeyEventType.KeyUp),
+                        KeyMatcher(
+                            Key.RightBracket,
+                            platformAssistKey(),
+                            type = KeyEventType.KeyUp
+                        ),
+                        KeyMatcher(Key.DirectionRight, AssistKey.Alt, type = KeyEventType.KeyUp),
+                        KeyMatcher(
+                            Key.DirectionRight,
+                            platformAssistKey(),
+                            type = KeyEventType.KeyUp
+                        ),
+                    )
+                ) {
+                    coroutineScope.launch {
+                        pagerState.nextPage()
                     }
                 }
-            }
-        }
-        LaunchedEffect(Unit) {
-            turnPage.collect { previousPage ->
-                if (previousPage) {
-                    val nextPageIndex = (pagerState.currentPage + 1) % pagerState.pageCount
-                    pagerState.animateScrollToPage(nextPageIndex)
-                } else {
-                    val nextPageIndex =
-                        (pagerState.currentPage - 1).let { if (it < 0) pagerState.pageCount + it else it }
-                    pagerState.animateScrollToPage(nextPageIndex)
+            )
+            EventBus.keyEvent.collect { keyEvent ->
+                keyHandlers.any {
+                    it.handle(keyEvent)
                 }
             }
         }
@@ -338,7 +383,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             .clip(CircleShape)
         val photoPalette by photoPaletteState
         IconButton(
-            onClick = { coroutineScope.launch { turnPage.emit(false) } },
+            onClick = { coroutineScope.launch { pagerState.previousPage() } },
             modifier = turnPageIconModifier.align(Alignment.CenterStart),
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = photoPalette.containerColor,
@@ -351,7 +396,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             )
         }
         IconButton(
-            onClick = { coroutineScope.launch { turnPage.emit(true) } },
+            onClick = { coroutineScope.launch { pagerState.nextPage() } },
             modifier = turnPageIconModifier.align(Alignment.CenterEnd),
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = photoPalette.containerColor,
@@ -364,4 +409,16 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             )
         }
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+suspend fun PagerState.nextPage() {
+    val nextPageIndex = (currentPage + 1) % pageCount
+    animateScrollToPage(nextPageIndex)
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+suspend fun PagerState.previousPage() {
+    val nextPageIndex = (currentPage - 1).let { if (it < 0) pageCount + it else it }
+    animateScrollToPage(nextPageIndex)
 }

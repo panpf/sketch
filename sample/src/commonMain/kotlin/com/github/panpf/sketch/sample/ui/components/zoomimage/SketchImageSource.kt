@@ -16,7 +16,6 @@
 
 package com.github.panpf.zoomimage.sketch
 
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.Depth
@@ -25,6 +24,11 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.zoomimage.subsampling.ImageSource
 import okio.Source
 
+/**
+ * [ImageSource] implementation that uses Sketch to load images
+ *
+ * @see com.github.panpf.zoomimage.core.sketch.desktop.test.SketchImageSourceTest
+ */
 class SketchImageSource(
     val imageUri: String,
     val dataSource: DataSource,
@@ -38,9 +42,9 @@ class SketchImageSource(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SketchImageSource) return false
-        if (imageUri != other.imageUri) return false
-        return true
+        if (other == null || this::class != other::class) return false
+        other as SketchImageSource
+        return imageUri == other.imageUri
     }
 
     override fun hashCode(): Int {
@@ -54,7 +58,6 @@ class SketchImageSource(
     }
 
     class Factory(
-        val context: PlatformContext,
         val sketch: Sketch,
         val imageUri: String,
     ) : ImageSource.Factory {
@@ -62,7 +65,7 @@ class SketchImageSource(
         override val key: String = imageUri
 
         override suspend fun create(): SketchImageSource {
-            val request = ImageRequest(context, imageUri) {
+            val request = ImageRequest(sketch.context, imageUri) {
                 downloadCachePolicy(CachePolicy.ENABLED)
                 depth(Depth.NETWORK)
             }
@@ -74,16 +77,15 @@ class SketchImageSource(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is Factory) return false
-            if (context != other.context) return false
+            if (other == null || this::class != other::class) return false
+            other as Factory
             if (sketch != other.sketch) return false
             if (imageUri != other.imageUri) return false
             return true
         }
 
         override fun hashCode(): Int {
-            var result = context.hashCode()
-            result = 31 * result + sketch.hashCode()
+            var result = sketch.hashCode()
             result = 31 * result + imageUri.hashCode()
             return result
         }

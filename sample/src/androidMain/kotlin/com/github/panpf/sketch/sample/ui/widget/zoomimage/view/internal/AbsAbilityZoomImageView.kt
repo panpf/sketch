@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.zoomimage.internal
+package com.github.panpf.zoomimage.view.sketch.internal
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -30,16 +30,18 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.Keep
-import com.github.panpf.sketch.request.Listener
-import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.ability.ViewAbility
 import com.github.panpf.sketch.ability.ViewAbilityContainer
 import com.github.panpf.sketch.ability.ViewAbilityManager
 import com.github.panpf.sketch.ability.internal.RealViewAbilityManager
+import com.github.panpf.sketch.request.Listener
+import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.zoomimage.ZoomImageView
 
 /**
  * ImageView base class that supports [ViewAbility]
+ *
+ * Copy from Sketch
  */
 abstract class AbsAbilityZoomImageView @JvmOverloads constructor(
     context: Context,

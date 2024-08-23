@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.zoomimage.internal
+package com.github.panpf.zoomimage.view.sketch.internal
 
 import android.content.Context
 import android.util.AttributeSet
@@ -28,6 +28,12 @@ import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
 
+
+/**
+ * Convert Sketch's Request Listener to StateFlow's ZoomImageView.
+ *
+ * Copy from Sketch
+ */
 open class AbsStateZoomImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
