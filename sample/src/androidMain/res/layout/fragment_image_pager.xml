@@ -20,6 +20,7 @@
         android:id="@+id/statusBarInsetsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolsLayout"
             android:layout_width="match_parent"
@@ -42,30 +43,18 @@
                 app:srcCompat="@drawable/ic_arrow_back"
                 app:tint="@android:color/white" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/originImage"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_circle_accent"
-                android:padding="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_image2_outline"
-                app:tint="@android:color/white" />
-
             <TextView
                 android:id="@+id/pageNumberText"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
                 android:background="@drawable/bg_circle_accent"
                 android:gravity="center"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@id/originImage"
-                app:layout_constraintTop_toBottomOf="@id/originImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="RtlHardcoded"
                 tools:text="@string/pager_number_ver" />
 
@@ -73,12 +62,24 @@
                 android:id="@+id/settingsImage"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/bg_circle_accent"
                 android:padding="8dp"
-                app:layout_constraintStart_toStartOf="@id/originImage"
-                app:layout_constraintTop_toBottomOf="@id/pageNumberText"
+                app:layout_constraintEnd_toStartOf="@id/pageNumberText"
+                app:layout_constraintTop_toTopOf="@id/pageNumberText"
                 app:srcCompat="@drawable/ic_settings"
+                app:tint="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/originImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_circle_accent"
+                android:padding="8dp"
+                app:layout_constraintEnd_toStartOf="@id/settingsImage"
+                app:layout_constraintTop_toTopOf="@id/settingsImage"
+                app:srcCompat="@drawable/ic_image2_outline"
                 app:tint="@android:color/white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

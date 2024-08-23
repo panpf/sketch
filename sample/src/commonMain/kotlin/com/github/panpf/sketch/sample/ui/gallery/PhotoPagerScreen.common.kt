@@ -4,12 +4,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -210,7 +210,10 @@ fun Headers(
     }
     val photoPalette by photoPaletteState
     Box(modifier = Modifier.fillMaxSize().padding(top = toolbarTopMarginDp)) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             val navigator = LocalNavigator.current!!
             IconButton(
                 onClick = { navigator.pop() },
@@ -227,14 +230,9 @@ fun Headers(
                         .padding(8.dp),
                 )
             }
-        }
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(20.dp), // margin,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            Spacer(Modifier.weight(1f))
+
             val appSettings = LocalPlatformContext.current.appSettings
             val showOriginImage by appSettings.showOriginImage.collectAsState()
             val image2IconPainter = if (showOriginImage)
@@ -268,33 +266,6 @@ fun Headers(
 
             Spacer(modifier = Modifier.size(10.dp))
 
-            Box(
-                Modifier
-                    .width(40.dp)
-                    .background(
-                        color = photoPalette.containerColor,
-                        shape = RoundedCornerShape(50)
-                    )
-                    .padding(vertical = 20.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                val numberText by remember {
-                    derivedStateOf {
-                        val number = params.startPosition + pagerState.currentPage + 1
-                        "${number}/${params.totalCount}"
-                    }
-                }
-                Text(
-                    text = numberText,
-                    textAlign = TextAlign.Center,
-                    color = photoPalette.contentColor,
-                    style = TextStyle(lineHeight = 12.sp),
-                    modifier = Modifier
-                )
-            }
-
-            Spacer(modifier = Modifier.size(10.dp))
-
             var showSettingsDialog by remember { mutableStateOf(false) }
             IconButton(
                 onClick = { showSettingsDialog = true },
@@ -315,6 +286,32 @@ fun Headers(
                 AppSettingsDialog(page = ZOOM) {
                     showSettingsDialog = false
                 }
+            }
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Box(
+                Modifier
+                    .height(40.dp)
+                    .background(
+                        color = photoPalette.containerColor,
+                        shape = RoundedCornerShape(50)
+                    )
+                    .padding(horizontal = 14.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                val numberText by remember {
+                    derivedStateOf {
+                        val number = params.startPosition + pagerState.currentPage + 1
+                        "${number}/${params.totalCount}"
+                    }
+                }
+                Text(
+                    text = numberText,
+                    textAlign = TextAlign.Center,
+                    color = photoPalette.contentColor,
+                    style = TextStyle(lineHeight = 12.sp),
+                )
             }
         }
     }
