@@ -8,15 +8,15 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
-# new
+# 4.0.0-alpha07
 
 * improve: SkiaAnimatedImagePainter now does not share Bitmap for decoding and drawing to avoid
   cluttered images. [#206](https://github.com/panpf/sketch/issues/206)
+* improve: SkiaAnimatedImagePainter now still does not start animation when drawing, it will
+  automatically load the first frame
 * new: SkiaAnimatedImagePainter now supports caching frames that take longer to decode than the
   frame duration to improve playback smoothness, but this uses more memory, closed by default,
   enabled through 'cacheDecodeTimeoutFrame()' function
-* improve: SkiaAnimatedImagePainter now still does not start animation when drawing, it will
-  automatically load the first frame
 
 # 4.0.0-alpha06
 

@@ -6,14 +6,14 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
-# new
+# 4.0.0-alpha07
 
 * improve: SkiaAnimatedImagePainter 现在解码和绘制不共享 Bitmap
   了，以避免画面错乱。 [#206](https://github.com/panpf/sketch/issues/206)
+* improve: SkiaAnimatedImagePainter 现在走到绘制时依然没有启动动画，则会自动加载第一帧
 * new: SkiaAnimatedImagePainter
   现在支持缓存解码耗时超过帧持续时间的帧以提高播放流畅度，但这会使用更多的内存，默认关闭，通过 '
   cacheDecodeTimeoutFrame()' 函数开启
-* improve: SkiaAnimatedImagePainter 现在走到绘制时依然没有启动动画，则会自动加载第一帧
 
 # 4.0.0-alpha06
 
