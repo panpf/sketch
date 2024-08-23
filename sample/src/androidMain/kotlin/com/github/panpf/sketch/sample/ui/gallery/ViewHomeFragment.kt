@@ -33,9 +33,9 @@ import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
     private val fragmentMap = mapOf(
-        "Local" to LocalPhotoListViewFragment(),
         "Pexels" to PexelsPhotoListViewFragment(),
         "Giphy" to GiphyPhotoListViewFragment(),
+        "Local" to LocalPhotoListViewFragment(),
         "Test" to TestHomeFragment(),
     )
 
