@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
@@ -18,5 +20,6 @@ actual inline fun PlatformListImageSettings(
     appSettings: AppSettings,
     builder: ImageRequest.Builder
 ) {
-    builder.cacheDecodeTimeoutFrame(appSettings.cacheDecodeTimeoutFrame.value)
+    val cache by appSettings.cacheDecodeTimeoutFrame.collectAsState()
+    builder.cacheDecodeTimeoutFrame(cache)
 }
