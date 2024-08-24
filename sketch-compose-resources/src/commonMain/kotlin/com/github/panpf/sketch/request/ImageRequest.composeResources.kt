@@ -21,24 +21,24 @@ fun ImageRequest.Builder.fallback(resource: DrawableResource): ImageRequest.Buil
     fallback(rememberPainterStateImage(resource))
 
 /**
- * Set Drawable image to display when loading fails.
+ * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
  */
 @Composable
 fun ImageRequest.Builder.error(
     defaultResource: DrawableResource,
-    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(ComposableErrorStateImage(defaultResource, configBlock))
-
+): ImageRequest.Builder = error(ComposableErrorStateImage(defaultResource))
 
 /**
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
-fun ImageRequest.Builder.composableError(
+inline fun ImageRequest.Builder.composableError(
     defaultResource: DrawableResource,
-    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
 ): ImageRequest.Builder = error(ComposableErrorStateImage(defaultResource, configBlock))

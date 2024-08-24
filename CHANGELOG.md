@@ -8,6 +8,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+* fix: Fixed the bug that the ComposableImageRequest() and ComposableImageOptions() functions cannot
+  listen and update the Compose State. [#207](https://github.com/panpf/sketch/issues/207)
+
 # 4.0.0-alpha07
 
 * improve: SkiaAnimatedImagePainter now does not share Bitmap for decoding and drawing to avoid

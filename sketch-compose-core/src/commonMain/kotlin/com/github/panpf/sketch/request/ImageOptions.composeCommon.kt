@@ -14,12 +14,14 @@ import com.github.panpf.sketch.util.toSketchSize
 
 /**
  * Build and set the [ImageOptions]
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
-fun ComposableImageOptions(
-    configBlock: @Composable (ImageOptions.Builder.() -> Unit)? = null
+inline fun ComposableImageOptions(
+    crossinline configBlock: @Composable (ImageOptions.Builder.() -> Unit)
 ): ImageOptions = ImageOptions.Builder().apply {
-    configBlock?.invoke(this)
+    configBlock.invoke(this)
 }.build()
 
 
@@ -81,11 +83,13 @@ fun ImageOptions.Builder.error(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
-fun ImageOptions.Builder.composableError(
+inline fun ImageOptions.Builder.composableError(
     stateImage: StateImage,
-    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
 ): ImageOptions.Builder = error(ComposableErrorStateImage(stateImage, configBlock))
 
 
@@ -93,10 +97,12 @@ fun ImageOptions.Builder.composableError(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
-fun ImageOptions.Builder.composableError(
+inline fun ImageOptions.Builder.composableError(
     color: Color,
-    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
 ): ImageOptions.Builder =
     error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))

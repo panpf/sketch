@@ -118,7 +118,7 @@ fun PhotoGridItem(
         scale(AppSettings.scale(scale, longImageScale, otherImageScale))
         pauseLoadWhenScrolling(pauseLoadWhenScroll)
         saveCellularTraffic(saveCellularTraffic)
-        disallowAnimatedImage(disallowAnimatedImage)    // TODO List will not be refreshed after switching
+        disallowAnimatedImage(disallowAnimatedImage)
 
         val animatedPlaceholderStateImage =
             if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null

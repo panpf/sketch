@@ -17,18 +17,34 @@ import com.github.panpf.sketch.util.toSketchSize
 fun ComposableImageRequest(
     context: PlatformContext,
     uri: String?,
-    configBlock: @Composable (ImageRequest.Builder.() -> Unit)? = null
+): ImageRequest = ImageRequest.Builder(context, uri).build()
+
+/**
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ */
+@Composable
+inline fun ComposableImageRequest(
+    context: PlatformContext,
+    uri: String?,
+    crossinline configBlock: @Composable (ImageRequest.Builder.() -> Unit)
 ): ImageRequest = ImageRequest.Builder(context, uri).apply {
-    configBlock?.invoke(this)
+    configBlock.invoke(this)
+}.build()
+
+/**
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ */
+@Composable
+inline fun ComposableImageRequest(
+    uri: String?,
+    crossinline configBlock: @Composable (ImageRequest.Builder.() -> Unit)
+): ImageRequest = ImageRequest.Builder(LocalPlatformContext.current, uri).apply {
+    configBlock.invoke(this)
 }.build()
 
 @Composable
-fun ComposableImageRequest(
-    uri: String?,
-    configBlock: @Composable (ImageRequest.Builder.() -> Unit)? = null
-): ImageRequest = ImageRequest.Builder(LocalPlatformContext.current, uri).apply {
-    configBlock?.invoke(this)
-}.build()
+fun ComposableImageRequest(uri: String?): ImageRequest =
+    ImageRequest.Builder(LocalPlatformContext.current, uri).build()
 
 
 /**
@@ -88,11 +104,13 @@ fun ImageRequest.Builder.error(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
-fun ImageRequest.Builder.composableError(
+inline fun ImageRequest.Builder.composableError(
     stateImage: StateImage,
-    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
 ): ImageRequest.Builder = error(ComposableErrorStateImage(stateImage, configBlock))
 
 
@@ -100,10 +118,12 @@ fun ImageRequest.Builder.composableError(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
-fun ImageRequest.Builder.composableError(
+inline fun ImageRequest.Builder.composableError(
     color: Color,
-    configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)? = null
+    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
 ): ImageRequest.Builder =
     error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))

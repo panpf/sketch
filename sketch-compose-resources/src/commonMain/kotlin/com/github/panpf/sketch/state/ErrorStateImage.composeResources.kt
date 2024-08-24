@@ -1,8 +1,6 @@
 package com.github.panpf.sketch.state
 
 import androidx.compose.runtime.Composable
-import com.github.panpf.sketch.state.ErrorStateImage.Builder
-import com.github.panpf.sketch.state.ErrorStateImage.Condition
 import org.jetbrains.compose.resources.DrawableResource
 
 
@@ -12,10 +10,21 @@ import org.jetbrains.compose.resources.DrawableResource
 @Composable
 fun ComposableErrorStateImage(
     defaultResource: DrawableResource? = null,
-    configBlock: @Composable (Builder.() -> Unit)? = null
 ): ErrorStateImage =
-    Builder(defaultResource?.let { rememberPainterStateImage(it) }).apply {
-        configBlock?.invoke(this)
+    ErrorStateImage.Builder(defaultResource?.let { rememberPainterStateImage(it) }).build()
+
+/**
+ * Create an ErrorStateImage
+ *
+ * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ */
+@Composable
+inline fun ComposableErrorStateImage(
+    defaultResource: DrawableResource? = null,
+    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
+): ErrorStateImage =
+    ErrorStateImage.Builder(defaultResource?.let { rememberPainterStateImage(it) }).apply {
+        configBlock.invoke(this)
     }.build()
 
 /**
@@ -23,7 +32,7 @@ fun ComposableErrorStateImage(
  */
 @Composable
 fun ErrorStateImage.Builder.addState(
-    condition: Condition,
+    condition: ErrorStateImage.Condition,
     resource: DrawableResource
 ): ErrorStateImage.Builder = apply {
     addState(condition, rememberPainterStateImage(resource))
