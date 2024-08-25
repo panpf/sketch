@@ -70,7 +70,7 @@ class RequestExecutor {
             // resolve resize size
             val size = request.sizeResolver.size()
                 .coerceAtLeast(Size.Empty)
-                .times(request.sizeMultiplier ?: 1f)
+                .times(request.sizeMultiplier ?: 1f)    // TODO sizeMultiplier cannot be used here, it must be used during computeResize
             requestContext.size = size
 
             onStart(requestContext)
