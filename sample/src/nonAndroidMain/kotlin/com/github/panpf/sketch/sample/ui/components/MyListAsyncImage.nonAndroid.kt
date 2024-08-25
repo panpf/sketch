@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,10 +16,7 @@ actual fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): Stat
 }
 
 @Composable
-actual inline fun PlatformListImageSettings(
-    appSettings: AppSettings,
-    builder: ImageRequest.Builder
-) {
+actual inline fun ImageRequest.Builder.platformListImageRequest(appSettings: AppSettings) {
     val cache by appSettings.cacheDecodeTimeoutFrame.collectAsState()
-    builder.cacheDecodeTimeoutFrame(cache)
+    cacheDecodeTimeoutFrame(cache)
 }

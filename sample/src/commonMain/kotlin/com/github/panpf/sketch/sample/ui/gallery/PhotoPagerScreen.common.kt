@@ -65,8 +65,10 @@ import com.github.panpf.sketch.sample.resources.ic_image2_baseline
 import com.github.panpf.sketch.sample.resources.ic_image2_outline
 import com.github.panpf.sketch.sample.resources.ic_settings
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
+import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.TurnPageIndicator
-import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
+import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.isEmpty
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -266,9 +268,10 @@ fun Headers(
 
             Spacer(modifier = Modifier.size(10.dp))
 
-            var showSettingsDialog by remember { mutableStateOf(false) }
+
+            val settingsDialogState = rememberMyDialogState()
             IconButton(
-                onClick = { showSettingsDialog = true },
+                onClick = { settingsDialogState.show() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = photoPalette.containerColor,
                     contentColor = photoPalette.contentColor
@@ -282,10 +285,8 @@ fun Headers(
                         .padding(8.dp)
                 )
             }
-            if (showSettingsDialog) {
-                AppSettingsDialog(page = ZOOM) {
-                    showSettingsDialog = false
-                }
+            MyDialog(settingsDialogState) {
+                AppSettingsList(ZOOM)
             }
 
             Spacer(modifier = Modifier.size(10.dp))

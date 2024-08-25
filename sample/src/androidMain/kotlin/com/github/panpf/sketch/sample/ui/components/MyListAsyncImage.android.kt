@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.ui.components
 
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -27,17 +27,14 @@ actual fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): Stat
 }
 
 @Composable
-actual inline fun PlatformListImageSettings(
-    appSettings: AppSettings,
-    builder: ImageRequest.Builder
-) {
+actual inline fun ImageRequest.Builder.platformListImageRequest(appSettings: AppSettings) {
     val bitmapQuality by appSettings.bitmapQuality.collectAsState()
-    builder.bitmapConfig(AppSettings.bitmapQualityValue(bitmapQuality))
+    bitmapConfig(AppSettings.bitmapQualityValue(bitmapQuality))
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         val colorSpace by appSettings.colorSpace.collectAsState()
-        builder.colorSpace(AppSettings.colorSpaceValue(colorSpace))
+        colorSpace(AppSettings.colorSpaceValue(colorSpace))
     }
     val inPreferQualityOverSpeed by appSettings.inPreferQualityOverSpeed.collectAsState()
     @Suppress("DEPRECATION")
-    builder.preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed)
+    preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed)
 }

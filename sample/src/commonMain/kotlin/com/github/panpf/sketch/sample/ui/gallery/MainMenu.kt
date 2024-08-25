@@ -11,9 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
@@ -24,7 +21,9 @@ import com.github.panpf.sketch.sample.resources.ic_layout_grid_staggered
 import com.github.panpf.sketch.sample.resources.ic_pause
 import com.github.panpf.sketch.sample.resources.ic_play
 import com.github.panpf.sketch.sample.resources.ic_settings
-import com.github.panpf.sketch.sample.ui.setting.AppSettingsDialog
+import com.github.panpf.sketch.sample.ui.components.MyDialog
+import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import org.jetbrains.compose.resources.painterResource
 
@@ -68,19 +67,17 @@ fun MainMenu(modifier: Modifier = Modifier) {
             },
             tint = colorScheme.onTertiaryContainer
         )
-        var showSettingsDialog by remember { mutableStateOf(false) }
+        val settingsDialogState = rememberMyDialogState()
         Icon(
             painter = painterResource(drawable.ic_settings),
             contentDescription = null,
             modifier = modifier1.clickable {
-                showSettingsDialog = !showSettingsDialog
+                settingsDialogState.show()
             },
             tint = colorScheme.onTertiaryContainer
         )
-        if (showSettingsDialog) {
-            AppSettingsDialog(LIST) {
-                showSettingsDialog = !showSettingsDialog
-            }
+        MyDialog(settingsDialogState) {
+            AppSettingsList(LIST)
         }
     }
 }

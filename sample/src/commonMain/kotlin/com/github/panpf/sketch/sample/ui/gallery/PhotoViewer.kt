@@ -17,10 +17,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,7 +27,6 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
@@ -41,6 +38,8 @@ import com.github.panpf.sketch.sample.resources.ic_share
 import com.github.panpf.sketch.sample.resources.ic_zoom_in
 import com.github.panpf.sketch.sample.resources.ic_zoom_out
 import com.github.panpf.sketch.sample.ui.common.list.LoadState
+import com.github.panpf.sketch.sample.ui.components.MyDialog
+import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
@@ -124,7 +123,7 @@ fun PhotoViewer(
         }
     }
 
-    var photoInfoImageResult by remember { mutableStateOf<ImageResult?>(null) }
+    val infoDialogState = rememberMyDialogState()
     Box(modifier = Modifier.fillMaxSize()) {
         SketchZoomAsyncImage(
             request = request,
@@ -138,12 +137,7 @@ fun PhotoViewer(
             alignment = alignment,
             zoomState = zoomState,
             scrollBar = scrollBar,
-            onLongPress = {
-                val imageResult = imageState.result
-                if (imageResult != null) {
-                    photoInfoImageResult = imageResult
-                }
-            }
+            onLongPress = { infoDialogState.show() }
         )
 
         if (pageSelected) {
@@ -261,7 +255,7 @@ fun PhotoViewer(
                 onClick = {
                     val imageResult = imageState.result
                     if (imageResult != null) {
-                        photoInfoImageResult = imageResult
+                        infoDialogState.show()
                     }
                 },
                 colors = IconButtonDefaults.iconButtonColors(
@@ -285,9 +279,7 @@ fun PhotoViewer(
         )
     }
 
-    if (photoInfoImageResult != null) {
-        PhotoInfoDialog(photoInfoImageResult) {
-            photoInfoImageResult = null
-        }
+    MyDialog(infoDialogState) {
+        PhotoInfo(imageState.result)
     }
 }

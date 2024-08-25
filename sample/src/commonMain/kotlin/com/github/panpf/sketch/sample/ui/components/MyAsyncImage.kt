@@ -2,10 +2,6 @@ package com.github.panpf.sketch.sample.ui.components
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -20,8 +16,7 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.sample.ui.gallery.PhotoInfoDialog
+import com.github.panpf.sketch.sample.ui.gallery.PhotoInfo
 
 @Composable
 fun MyAsyncImage(
@@ -35,21 +30,17 @@ fun MyAsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
     clipToBounds: Boolean = true,
+    onClick: (() -> Unit)? = null
 ) {
-    var photoInfoImageResult: ImageResult? by remember { mutableStateOf(null) }
-
+    val infoDialogState = rememberMyDialogState()
     AsyncImage(
         uri = uri,
         contentDescription = contentDescription,
         sketch = SingletonSketch.get(LocalPlatformContext.current),
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(
-                onLongPress = {
-                    val imageResult = state.result
-                    if (imageResult != null) {
-                        photoInfoImageResult = imageResult
-                    }
-                }
+                onTap = { onClick?.invoke() },
+                onLongPress = { infoDialogState.show() }
             )
         },
         state = state,
@@ -60,11 +51,8 @@ fun MyAsyncImage(
         filterQuality = filterQuality,
         clipToBounds = clipToBounds,
     )
-
-    if (photoInfoImageResult != null) {
-        PhotoInfoDialog(photoInfoImageResult) {
-            photoInfoImageResult = null
-        }
+    MyDialog(infoDialogState) {
+        PhotoInfo(state.result)
     }
 }
 
@@ -80,21 +68,17 @@ fun MyAsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
     clipToBounds: Boolean = true,
+    onClick: (() -> Unit)? = null
 ) {
-    var photoInfoImageResult: ImageResult? by remember { mutableStateOf(null) }
-
+    val infoDialogState = rememberMyDialogState()
     AsyncImage(
         request = request,
         contentDescription = contentDescription,
         sketch = SingletonSketch.get(LocalPlatformContext.current),
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(
-                onLongPress = {
-                    val imageResult = state.result
-                    if (imageResult != null) {
-                        photoInfoImageResult = imageResult
-                    }
-                }
+                onTap = { onClick?.invoke() },
+                onLongPress = { infoDialogState.show() }
             )
         },
         state = state,
@@ -105,10 +89,7 @@ fun MyAsyncImage(
         filterQuality = filterQuality,
         clipToBounds = clipToBounds,
     )
-
-    if (photoInfoImageResult != null) {
-        PhotoInfoDialog(photoInfoImageResult) {
-            photoInfoImageResult = null
-        }
+    MyDialog(infoDialogState) {
+        PhotoInfo(state.result)
     }
 }

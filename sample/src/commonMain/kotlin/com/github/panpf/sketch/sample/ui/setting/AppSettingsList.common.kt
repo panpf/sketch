@@ -16,13 +16,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,15 +33,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
@@ -56,11 +49,8 @@ import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_expand_more
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
-import com.github.panpf.sketch.sample.ui.util.formatFileSize
-import com.github.panpf.sketch.sample.util.RuntimePlatform
-import com.github.panpf.sketch.sample.util.runtimePlatformInstance
+import com.github.panpf.sketch.sample.util.formatFileSize
 import com.github.panpf.sketch.util.Logger
-import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import com.github.panpf.zoomimage.zoom.name
@@ -71,52 +61,25 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun getSettingsDialogHeight(): Dp {
-    return if (runtimePlatformInstance == RuntimePlatform.Js) {
-        600.dp
-    } else {
-        val density = LocalDensity.current
+fun AppSettingsList(page: Page) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        val recreateSettingItems = remember { mutableStateOf(0) }
         val context = LocalPlatformContext.current
-        remember {
-            with(density) {
-                (context.screenSize().height * 0.8f).toInt().toDp()
-            }
+        val appSettings = context.appSettings
+        val logLevel by appSettings.logLevel.collectAsState()
+        val recreateCount by recreateSettingItems
+        val settingItems = remember(logLevel, recreateCount) {
+            createSettingItems(context, appSettings, page, recreateSettingItems)
         }
-    }
-}
-
-@Composable
-fun AppSettingsDialog(
-    page: Page,
-    onDismissRequest: () -> Unit
-) {
-    Dialog(onDismissRequest = onDismissRequest, properties = DialogProperties()) {
-        Surface(
-            Modifier
-                .fillMaxWidth()
-                .height(getSettingsDialogHeight())
-                .clip(RoundedCornerShape(20.dp))
-        ) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                val recreateSettingItems = remember { mutableStateOf(0) }
-                val context = LocalPlatformContext.current
-                val appSettings = context.appSettings
-                val logLevel by appSettings.logLevel.collectAsState()
-                val recreateCount by recreateSettingItems
-                val settingItems = remember(logLevel, recreateCount) {
-                    createSettingItems(context, appSettings, page, recreateSettingItems)
-                }
-                settingItems.forEach { settingItem ->
-                    when (settingItem) {
-                        is SwitchSettingItem -> SwitchSetting(settingItem)
-                        is DropdownSettingItem<*> -> DropdownSetting(settingItem)
-                        is GroupSettingItem -> GroupSetting(settingItem)
-                    }
-                }
+        settingItems.forEach { settingItem ->
+            when (settingItem) {
+                is SwitchSettingItem -> SwitchSetting(settingItem)
+                is DropdownSettingItem<*> -> DropdownSetting(settingItem)
+                is GroupSettingItem -> GroupSetting(settingItem)
             }
         }
     }
@@ -224,7 +187,7 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
     )
 }
 
-fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList{
+fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     val contentScales = listOf(
         ContentScaleCompat.Fit,
         ContentScaleCompat.Crop,
