@@ -32,7 +32,7 @@ import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
-    private val fragmentMap = mapOf(
+    private val fragments = listOf(
         "Pexels" to PexelsPhotoListViewFragment(),
         "Giphy" to GiphyPhotoListViewFragment(),
         "Local" to LocalPhotoListViewFragment(),
@@ -83,33 +83,32 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             adapter = ArrayFragmentStateAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
-                templateFragmentList = fragmentMap.values.toList()
+                templateFragmentList = fragments.map { it.second }
             )
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     appSettings.currentPageIndex.value = position
                     when (position) {
-                        0 -> binding.navigation.selectedItemId = R.id.local
-                        1 -> binding.navigation.selectedItemId = R.id.pexels
-                        2 -> binding.navigation.selectedItemId = R.id.giphy
+                        0 -> binding.navigation.selectedItemId = R.id.pexels
+                        1 -> binding.navigation.selectedItemId = R.id.giphy
+                        2 -> binding.navigation.selectedItemId = R.id.local
                         3 -> binding.navigation.selectedItemId = R.id.test
                     }
                 }
             })
             setCurrentItem(
-                appSettings.currentPageIndex.value.coerceIn(
-                    0,
-                    fragmentMap.size - 1
-                ), false
+                /* item = */ appSettings.currentPageIndex.value
+                    .coerceIn(minimumValue = 0, maximumValue = fragments.size - 1),
+                /* smoothScroll = */ false
             )
         }
 
         binding.navigation.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.local -> binding.pager.setCurrentItem(0, false)
-                R.id.pexels -> binding.pager.setCurrentItem(1, false)
-                R.id.giphy -> binding.pager.setCurrentItem(2, false)
+                R.id.pexels -> binding.pager.setCurrentItem(0, false)
+                R.id.giphy -> binding.pager.setCurrentItem(1, false)
+                R.id.local -> binding.pager.setCurrentItem(2, false)
                 R.id.test -> binding.pager.setCurrentItem(3, false)
             }
             true

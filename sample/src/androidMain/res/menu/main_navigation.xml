@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/local"
-        android:icon="@drawable/ic_phone"
-        android:title="Local" />
-    <item
         android:id="@+id/pexels"
         android:icon="@drawable/ic_pexels"
         android:title="Pexels" />
@@ -12,6 +8,10 @@
         android:id="@+id/giphy"
         android:icon="@drawable/ic_giphy"
         android:title="Giphy" />
+    <item
+        android:id="@+id/local"
+        android:icon="@drawable/ic_phone"
+        android:title="Local" />
     <item
         android:id="@+id/test"
         android:icon="@drawable/ic_debug"
