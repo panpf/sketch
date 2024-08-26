@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.panpf.sketch.sample.ui.util
 
 /*
@@ -792,7 +794,7 @@ internal fun lerp(
 /* ************************************** ContentScale ****************************************** */
 
 /**
- * Returns the name of [ContentScaleCompat], which can also be converted back via the [valueOf] method
+ * Returns the name of [ContentScale], which can also be converted back via the [valueOf] method
  */
 @Stable
 internal val ContentScale.name: String
@@ -808,7 +810,7 @@ internal val ContentScale.name: String
     }
 
 /**
- * Returns the [ContentScaleCompat] corresponding to the given [name], or throws [IllegalArgumentException]. see [name] property
+ * Returns the [ContentScale] corresponding to the given [name], or throws [IllegalArgumentException]. see [name] property
  */
 @Stable
 internal fun ContentScale.Companion.valueOf(name: String): ContentScale {

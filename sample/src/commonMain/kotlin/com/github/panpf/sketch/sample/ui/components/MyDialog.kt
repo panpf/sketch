@@ -16,8 +16,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.github.panpf.sketch.sample.ui.util.windowSize
-import com.github.panpf.sketch.sample.util.RuntimePlatform
-import com.github.panpf.sketch.sample.util.runtimePlatformInstance
+import com.github.panpf.sketch.sample.util.Platform
+import com.github.panpf.sketch.sample.util.current
+import com.github.panpf.sketch.sample.util.isJs
 
 
 @Composable
@@ -59,7 +60,7 @@ fun MyDialog(
 
 @Composable
 fun dialogMaxHeight(): Dp {
-    return if (runtimePlatformInstance == RuntimePlatform.Js) {
+    return if (Platform.current.isJs()) {
         600.dp
     } else {
         val windowSize = windowSize()

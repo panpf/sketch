@@ -1,12 +1,11 @@
 package com.github.panpf.sketch.sample
 
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.pauseLoadWhenScrolling
-import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
@@ -14,72 +13,78 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
+import com.github.panpf.sketch.sample.ui.util.stateCombine
+import com.github.panpf.sketch.sample.ui.util.stateMap
+import com.github.panpf.sketch.sample.ui.util.valueOf
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
 import com.github.panpf.sketch.sample.util.intSettingsStateFlow
+import com.github.panpf.sketch.sample.util.isDebugMode
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.StateFlow
 
 expect val PlatformContext.appSettings: AppSettings
 
-expect fun isDebugMode(): Boolean
-
+// TODO expect class AppSettings
 class AppSettings(val context: PlatformContext) {
 
-    val staggeredGridMode: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(
-            context = context,
-            key = "staggeredGridMode",
-            initialize = false,
-        )
-    }
+    // -------------------------------------- image --------------------------------------
 
-    /*
-     * list config
-     */
-    val showMimeTypeLogoInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "showMimeTypeLogoInList", true)
+    val memoryCacheName: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "memoryCache", true)
     }
-    val showProgressIndicatorInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "showProgressIndicatorInList", true)
-    }
-    val showDataFromLogoInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "showDataFromLogoInList", true)
-    }
-    val pauseLoadWhenScrollInList: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "pauseLoadWhenScrollInList", false)
-    }
+    val memoryCache: StateFlow<CachePolicy> =
+        memoryCacheName.stateMap { if (it) ENABLED else DISABLED }
 
-    /*
-     * image load
-     */
-    val bitmapQuality by lazy {
+    val resultCacheName: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "resultCache", true)
+    }
+    val resultCache: StateFlow<CachePolicy> =
+        resultCacheName.stateMap { if (it) ENABLED else DISABLED }
+
+    val downloadCacheName: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "downloadCache", true)
+    }
+    val downloadCache: StateFlow<CachePolicy> =
+        downloadCacheName.stateMap { if (it) ENABLED else DISABLED }
+
+    val bitmapQuality: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "bitmapQuality", "Default")
     }
-    val colorSpace by lazy {
+    // TODO actual class AppSettings.android {
+    //     val bitmapQualityName
+    //     val bitmapQuality
+    //    }
+
+    val colorSpace: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "colorSpace", "Default")
     }
+
     val inPreferQualityOverSpeed: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "inPreferQualityOverSpeed", false)
     }
 
-    val memoryCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "memoryCache", true)
-    }
-    val resultCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "resultCache", true)
-    }
-    val downloadCache: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "downloadCache", true)
+    val cacheDecodeTimeoutFrame: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)
     }
 
-    val precision by lazy {
+
+    // -------------------------------------- list image --------------------------------------
+
+    val precisionName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "precision1", "LongImageMode")
     }
-    val scale by lazy {
+    val precision: StateFlow<PrecisionDecider> = precisionName.stateMap {
+        if (it == "LongImageMode") {
+            LongImagePrecisionDecider(longImage = SAME_ASPECT_RATIO)
+        } else {
+            PrecisionDecider(Precision.valueOf(it))
+        }
+    }
+
+    val scaleName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "scale", "LongImageMode")
     }
     val longImageScale: SettingsStateFlow<Scale> by lazy {
@@ -98,60 +103,111 @@ class AppSettings(val context: PlatformContext) {
             convert = { Scale.valueOf(it) },
         )
     }
+    val scale: StateFlow<ScaleDecider> =
+        stateCombine(listOf(scaleName, longImageScale, otherImageScale)) {
+            val scaleName: String = it[0] as String
+            val longImageScale: Scale = it[1] as Scale
+            val otherImageScale: Scale = it[2] as Scale
+            if (scaleName == "LongImageMode") {
+                LongImageScaleDecider(
+                    longImage = longImageScale,
+                    otherImage = otherImageScale
+                )
+            } else {
+                ScaleDecider(Scale.valueOf(value = scaleName))
+            }
+        }
 
     val saveCellularTrafficInList: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "saveCellularTrafficInList", false)
     }
+
     val disallowAnimatedImageInList: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "disallowAnimatedImageInList", false)
     }
 
-    /*
-     * detail
-     */
-    val contentScale: SettingsStateFlow<String> by lazy {
+    val showMimeTypeLogoInList: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "showMimeTypeLogoInList", true)
+    }
+
+    val showProgressIndicatorInList: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "showProgressIndicatorInList", true)
+    }
+
+    val showDataFromLogoInList: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "showDataFromLogoInList", true)
+    }
+
+    val pauseLoadWhenScrollInList: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "pauseLoadWhenScrollInList", false)
+    }
+
+
+    // -------------------------------------- viewer image --------------------------------------
+
+    val contentScaleName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "contentScale", "Fit")
     }
-    val alignment: SettingsStateFlow<String> by lazy {
+    val contentScale: StateFlow<ContentScale> =
+        contentScaleName.stateMap { ContentScale.valueOf(it) }
+
+    val alignmentName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "alignment", "Center")
     }
+    val alignment: StateFlow<Alignment> = alignmentName.stateMap { Alignment.valueOf(it) }
+
     val scrollBarEnabled: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "scrollBarEnabled", true)
     }
+
     val readModeEnabled: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "readModeEnabled", true)
     }
+
     val showTileBounds: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "showTileBounds", false)
     }
+
     val showOriginImage: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "showOriginImage", false)
     }
 
-    /*
-     * other
-     */
-    val logLevel by lazy {
+
+    // -------------------------------------- other --------------------------------------
+
+    val staggeredGridMode: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(
+            context = context,
+            key = "staggeredGridMode",
+            initialize = false,
+        )
+    }
+
+    val logLevel: SettingsStateFlow<Logger.Level> by lazy {
         val defaultState = if (isDebugMode()) Logger.Level.Debug else Logger.Level.Info
         enumSettingsStateFlow(context, "newNewLogLevel2", defaultState) { Logger.Level.valueOf(it) }
     }
-    val httpClient by lazy {
+
+    val httpClient: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, key = "httpClient", initialize = "Ktor")
     }
-    val videoFrameDecoder by lazy {
+
+    val videoFrameDecoder: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, key = "videoFrameDecoder", initialize = "FFmpeg")
     }
-    val gifDecoder by lazy {
+
+    val gifDecoder: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, key = "gifDecoder", initialize = "KoralGif")
     }
-    val networkParallelismLimited by lazy {
+
+    val networkParallelismLimited: SettingsStateFlow<Int> by lazy {
         intSettingsStateFlow(context, key = "networkParallelismLimited", initialize = 10)
     }
-    val decodeParallelismLimited by lazy {
+
+    val decodeParallelismLimited: SettingsStateFlow<Int> by lazy {
         intSettingsStateFlow(context, key = "decodeParallelismLimited", initialize = 4)
     }
 
-    // Only for Android
     val composePage: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "composePage", true)
     }
@@ -160,115 +216,9 @@ class AppSettings(val context: PlatformContext) {
         intSettingsStateFlow(context, "currentPageIndex", 0)
     }
 
-    // Only fro non Android
-    val cacheDecodeTimeoutFrame: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)
-    }
-
-    val pagerGuideShowed by lazy {
+    val pagerGuideShowed: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "pagerGuideShowed", false)
     }
 
-    private val memoryCacheValue: CachePolicy
-        get() = if (memoryCache.value) ENABLED else DISABLED
-    private val downloadCacheValue: CachePolicy
-        get() = if (downloadCache.value) ENABLED else DISABLED
-    private val resultCacheValue: CachePolicy
-        get() = if (resultCache.value) ENABLED else DISABLED
-    private val precisionValue: PrecisionDecider
-        get() = precision(precision.value)
-    private val scaleValue: ScaleDecider
-        get() = scale(
-            value = scale.value,
-            longImageScale = longImageScale.value,
-            otherImageScale = otherImageScale.value
-        )
-
-    // TODO try to remove it
-    private val listSettingFlows = listOf(
-        bitmapQuality,  // Only for Android
-        colorSpace,  // Only for Android
-        inPreferQualityOverSpeed,  // Only for Android
-
-        cacheDecodeTimeoutFrame,    // Only for non Android
-
-        memoryCache,
-        resultCache,
-        downloadCache,
-
-        precision,
-        scale,
-        longImageScale,
-        otherImageScale,
-
-        saveCellularTrafficInList,
-        disallowAnimatedImageInList,
-    )
-
-    // TODO try to remove it
-    val listsCombinedFlow: Flow<Any> = combine(listSettingFlows) { it.joinToString() }
-
-    // TODO try to remove it
-    private val viewerSettingFlows = listOf(
-        bitmapQuality,  // Only for Android
-        colorSpace,  // Only for Android
-        inPreferQualityOverSpeed,  // Only for Android
-
-        cacheDecodeTimeoutFrame,  // Only for non Android
-
-        memoryCache,
-        resultCache,
-        downloadCache,
-    )
-    // TODO try to remove it
-    val viewersCombinedFlow: Flow<Any> =
-        combine(viewerSettingFlows) { it.joinToString() }
-
-    // TODO try to remove it
-    fun buildListImageOptions(): ImageOptions = ImageOptions {
-
-        memoryCachePolicy(memoryCacheValue)
-        resultCachePolicy(resultCacheValue)
-        downloadCachePolicy(downloadCacheValue)
-
-        precision(precisionValue)
-        scale(scaleValue)
-
-        pauseLoadWhenScrolling(pauseLoadWhenScrollInList.value)
-        saveCellularTraffic(saveCellularTrafficInList.value)
-        disallowAnimatedImage(disallowAnimatedImageInList.value)
-
-        platformBuildImageOptions(this@AppSettings)
-    }
-
-    // TODO try to remove it
-    fun buildViewerImageOptions(): ImageOptions = ImageOptions {
-        platformBuildImageOptions(this@AppSettings)
-
-        memoryCachePolicy(memoryCacheValue)
-        resultCachePolicy(resultCacheValue)
-        downloadCachePolicy(downloadCacheValue)
-    }
-
-    companion object {
-        fun precision(value: String): PrecisionDecider {
-            return when (value) {
-                "LongImageMode" -> LongImagePrecisionDecider(longImage = SAME_ASPECT_RATIO)
-                else -> PrecisionDecider(Precision.valueOf(value))
-            }
-        }
-
-        fun scale(value: String, longImageScale: Scale, otherImageScale: Scale): ScaleDecider {
-            return when (value) {
-                "LongImageMode" -> LongImageScaleDecider(
-                    longImage = longImageScale,
-                    otherImage = otherImageScale
-                )
-
-                else -> ScaleDecider(Scale.valueOf(value = value))
-            }
-        }
-    }
+    companion object
 }
-
-expect fun ImageOptions.Builder.platformBuildImageOptions(appSettings: AppSettings)

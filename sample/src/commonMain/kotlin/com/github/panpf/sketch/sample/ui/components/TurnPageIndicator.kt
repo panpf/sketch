@@ -26,8 +26,9 @@ import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_arrow_left
 import com.github.panpf.sketch.sample.resources.ic_arrow_right
+import com.github.panpf.sketch.sample.util.Platform
+import com.github.panpf.sketch.sample.util.current
 import com.github.panpf.sketch.sample.util.isMobile
-import com.github.panpf.sketch.sample.util.runtimePlatformInstance
 import com.github.panpf.zoomimage.compose.util.AssistKey
 import com.github.panpf.zoomimage.compose.util.KeyMatcher
 import com.github.panpf.zoomimage.compose.util.matcherKeyHandler
@@ -88,7 +89,7 @@ fun TurnPageIndicator(
             }
         }
     }
-    if (!runtimePlatformInstance.isMobile()) {
+    if (!Platform.current.isMobile()) {
         Box(Modifier.fillMaxSize()) {
             val turnPageIconModifier = Modifier
                 .padding(20.dp)

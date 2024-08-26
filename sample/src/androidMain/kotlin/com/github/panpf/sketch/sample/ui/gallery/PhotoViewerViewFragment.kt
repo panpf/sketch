@@ -31,6 +31,7 @@ import com.github.panpf.sketch.ability.showProgressIndicator
 import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState.Error
+import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
@@ -39,7 +40,6 @@ import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
-import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
@@ -88,11 +88,11 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         readModeState.value = if (it) ReadMode.Default else null
                     }
-                appSettings.contentScale
+                appSettings.contentScaleName
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         contentScaleState.value = ContentScaleCompat.valueOf(it)
                     }
-                appSettings.alignment
+                appSettings.alignmentName
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                         alignmentState.value = AlignmentCompat.valueOf(it)
                     }
@@ -116,15 +116,15 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
                 true
             }
 
-            appSettings.viewersCombinedFlow
-                .ignoreFirst()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    loadImage(binding)
-                }
             appSettings.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
                     loadImage(binding)
                 }
+
+            updateImageOptions {
+                placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
+                crossfade(fadeStart = false)
+            }
         }
 
         binding.shareIcon.setOnClickListener {
@@ -192,11 +192,7 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
 
     private fun loadImage(binding: FragmentImageViewerBinding) {
         val imageUri = getImageUrl()
-        binding.zoomImage.loadImage(imageUri) {
-            merge(appSettings.buildViewerImageOptions())
-            placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
-            crossfade(fadeStart = false)
-        }
+        binding.zoomImage.loadImage(imageUri)
 
         binding.smallState.apply {
             binding.zoomImage.requestState.loadState

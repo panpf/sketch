@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.panpf.zoomimage.SketchZoomImageView
+    <com.github.panpf.sketch.sample.ui.widget.MyZoomImageView
         android:id="@+id/zoomImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -40,7 +40,6 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
 import com.github.panpf.sketch.sample.databinding.ListItemVideoBinding
 import com.github.panpf.sketch.sample.model.VideoInfo
@@ -48,10 +47,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.setting.Page
-import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.github.panpf.sketch.state.IconDrawableStateImage
-import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import java.io.File
 
@@ -108,11 +104,6 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             adapter = pagingAdapter.withLoadStateFooter(MyLoadStateAdapter().apply {
                 noDisplayLoadStateWhenPagingEmpty(pagingAdapter)
             })
-
-            appSettings.listsCombinedFlow.ignoreFirst()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    adapter?.notifyDataSetChanged()
-                }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -175,26 +166,6 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             item: BindingItem<VideoInfo, ListItemVideoBinding>
         ) {
             binding.thumbnailImage.updateImageOptions {
-                placeholder(
-                    IconDrawableStateImage(
-                        icon = R.drawable.ic_image_outline,
-                        background = R.color.placeholder_bg
-                    )
-                )
-                error(
-                    IconDrawableStateImage(
-                        icon = R.drawable.ic_image_broken_outline,
-                        background = R.color.placeholder_bg
-                    )
-                ) {
-                    saveCellularTrafficError(
-                        IconDrawableStateImage(
-                            icon = R.drawable.im_save_cellular_traffic,
-                            background = R.color.placeholder_bg
-                        )
-                    )
-                }
-                crossfade()
                 videoFramePercent(0.5f)
             }
         }

@@ -18,8 +18,6 @@ import com.github.panpf.sketch.SubcomposeAsyncImage
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.mimeTypeLogo
 import com.github.panpf.sketch.ability.progressIndicator
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
@@ -27,14 +25,12 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.composableError
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_image_broken_outline
 import com.github.panpf.sketch.sample.resources.ic_image_outline
 import com.github.panpf.sketch.sample.resources.ic_signal_cellular
 import com.github.panpf.sketch.sample.ui.gallery.PhotoInfo
-import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.ifLet
@@ -45,9 +41,10 @@ import com.github.panpf.sketch.state.saveCellularTrafficError
 
 @Composable
 fun MyListAsyncImage(
-    photo: Photo,
-    animatedPlaceholder: Boolean = false,
+    uri: String,
+    contentDescription: String,
     modifier: Modifier = Modifier,
+    animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
     val infoDialogState = rememberMyDialogState()
@@ -59,13 +56,13 @@ fun MyListAsyncImage(
                 onLongPress = { infoDialogState.show() }
             )
         }.buildListImageModifier(imageState)
-    val request = buildListImageRequest(photo, animatedPlaceholder)
+    val request = buildListImageRequest(uri, animatedPlaceholder)
     AsyncImage(
         request = request,
         state = imageState,
         modifier = modifier1,
         contentScale = ContentScale.Crop,
-        contentDescription = "photo",
+        contentDescription = contentDescription
     )
     MyDialog(infoDialogState) {
         PhotoInfo(imageState.result)
@@ -74,9 +71,10 @@ fun MyListAsyncImage(
 
 @Composable
 fun MyListSubcomposeAsyncImage(
-    photo: Photo,
-    animatedPlaceholder: Boolean = false,
+    uri: String,
+    contentDescription: String,
     modifier: Modifier = Modifier,
+    animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
     val infoDialogState = rememberMyDialogState()
@@ -88,13 +86,13 @@ fun MyListSubcomposeAsyncImage(
                 onLongPress = { infoDialogState.show() }
             )
         }.buildListImageModifier(imageState)
-    val request = buildListImageRequest(photo, animatedPlaceholder)
+    val request = buildListImageRequest(uri, animatedPlaceholder)
     SubcomposeAsyncImage(
         request = request,
         state = imageState,
         modifier = modifier1,
         contentScale = ContentScale.Crop,
-        contentDescription = "photo",
+        contentDescription = contentDescription
     )
     MyDialog(infoDialogState) {
         PhotoInfo(imageState.result)
@@ -103,9 +101,10 @@ fun MyListSubcomposeAsyncImage(
 
 @Composable
 fun MyListAsyncImagePainterImage(
-    photo: Photo,
-    animatedPlaceholder: Boolean = false,
+    uri: String,
+    contentDescription: String,
     modifier: Modifier = Modifier,
+    animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
     val infoDialogState = rememberMyDialogState()
@@ -117,7 +116,7 @@ fun MyListAsyncImagePainterImage(
                 onLongPress = { infoDialogState.show() }
             )
         }.buildListImageModifier(imageState)
-    val request = buildListImageRequest(photo, animatedPlaceholder)
+    val request = buildListImageRequest(uri, animatedPlaceholder)
     Image(
         painter = rememberAsyncImagePainter(
             request = request,
@@ -126,7 +125,7 @@ fun MyListAsyncImagePainterImage(
         ),
         modifier = modifier1,
         contentScale = ContentScale.Crop,
-        contentDescription = "photo"
+        contentDescription = contentDescription
     )
     MyDialog(infoDialogState) {
         PhotoInfo(imageState.result)
@@ -156,64 +155,70 @@ private fun Modifier.buildListImageModifier(imageState: AsyncImageState): Modifi
 
 @Composable
 private fun buildListImageRequest(
-    photo: Photo,
+    uri: String,
     animatedPlaceholder: Boolean
 ): ImageRequest {
     val context = LocalPlatformContext.current
     val appSettings = context.appSettings
     val colorScheme = MaterialTheme.colorScheme
-    val memoryCacheEnabled by appSettings.memoryCache.collectAsState()
-    val resultCacheEnabled by appSettings.resultCache.collectAsState()
-    val downloadCacheEnabled by appSettings.downloadCache.collectAsState()
-    val precision by appSettings.precision.collectAsState()
-    val scale by appSettings.scale.collectAsState()
-    val longImageScale by appSettings.longImageScale.collectAsState()
-    val otherImageScale by appSettings.otherImageScale.collectAsState()
-    val pauseLoadWhenScroll by appSettings.pauseLoadWhenScrollInList.collectAsState()
-    val saveCellularTraffic by appSettings.saveCellularTrafficInList.collectAsState()
-    val disallowAnimatedImage by appSettings.disallowAnimatedImageInList.collectAsState()
-    return ComposableImageRequest(photo.listThumbnailUrl) {
-        memoryCachePolicy(if (memoryCacheEnabled) ENABLED else DISABLED)
-        resultCachePolicy(if (resultCacheEnabled) ENABLED else DISABLED)
-        downloadCachePolicy(if (downloadCacheEnabled) ENABLED else DISABLED)
-        precision(AppSettings.precision(precision))
-        scale(AppSettings.scale(scale, longImageScale, otherImageScale))
+    return ComposableImageRequest(uri) {
+        val memoryCache by appSettings.memoryCache.collectAsState()
+        memoryCachePolicy(memoryCache)
+
+        val resultCache by appSettings.resultCache.collectAsState()
+        resultCachePolicy(resultCache)
+
+        val downloadCache by appSettings.downloadCache.collectAsState()
+        downloadCachePolicy(downloadCache)
+
+        val precision by appSettings.precision.collectAsState()
+        precision(precision)
+
+        val scale by appSettings.scale.collectAsState()
+        scale(scale)
+
+        val pauseLoadWhenScroll by appSettings.pauseLoadWhenScrollInList.collectAsState()
         pauseLoadWhenScrolling(pauseLoadWhenScroll)
+
+        val saveCellularTraffic by appSettings.saveCellularTrafficInList.collectAsState()
         saveCellularTraffic(saveCellularTraffic)
+
+        val disallowAnimatedImage by appSettings.disallowAnimatedImageInList.collectAsState()
         disallowAnimatedImage(disallowAnimatedImage)
 
         val animatedPlaceholderStateImage =
             if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
-        val placeholderStateImage = animatedPlaceholderStateImage ?: rememberIconPainterStateImage(
-            icon = Res.drawable.ic_image_outline,
-            background = colorScheme.primaryContainer,
-            iconTint = colorScheme.onPrimaryContainer
-        )
-        placeholder(placeholderStateImage)
-        composableError(
-            rememberIconPainterStateImage(
-                icon = Res.drawable.ic_image_broken_outline,
+        val placeholderStateImage = animatedPlaceholderStateImage
+            ?: rememberIconPainterStateImage(
+                icon = Res.drawable.ic_image_outline,
                 background = colorScheme.primaryContainer,
                 iconTint = colorScheme.onPrimaryContainer
             )
-        ) {
-            saveCellularTrafficError(
-                rememberIconPainterStateImage(
-                    icon = Res.drawable.ic_signal_cellular,
-                    background = colorScheme.primaryContainer,
-                    iconTint = colorScheme.onPrimaryContainer
-                )
-            )
+        placeholder(placeholderStateImage)
+
+        val errorStateImage = rememberIconPainterStateImage(
+            icon = Res.drawable.ic_image_broken_outline,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
+        )
+        val saveCellularTrafficErrorStateImage = rememberIconPainterStateImage(
+            icon = Res.drawable.ic_signal_cellular,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
+        )
+        composableError(errorStateImage) {
+            saveCellularTrafficError(saveCellularTrafficErrorStateImage)
         }
+
         crossfade()
         resizeOnDraw()
+
         sizeMultiplier(2f)  // To get a clearer thumbnail
-        platformListImageRequest(appSettings)
+
+        val platformAsyncImageSettings = composablePlatformAsyncImageSettings(appSettings)
+        merge(platformAsyncImageSettings)
     }
 }
 
 @Composable
 expect fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): StateImage?
-
-@Composable
-expect inline fun ImageRequest.Builder.platformListImageRequest(appSettings: AppSettings)

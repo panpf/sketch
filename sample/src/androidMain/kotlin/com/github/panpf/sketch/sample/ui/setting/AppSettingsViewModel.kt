@@ -69,16 +69,16 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             appSettings.showProgressIndicatorInList.ignoreFirst(),
             appSettings.saveCellularTrafficInList.ignoreFirst(),
             appSettings.pauseLoadWhenScrollInList.ignoreFirst(),
-            appSettings.precision.ignoreFirst(),
-            appSettings.scale.ignoreFirst(),
+            appSettings.precisionName.ignoreFirst(),
+            appSettings.scaleName.ignoreFirst(),
             appSettings.longImageScale.ignoreFirst(),
             appSettings.otherImageScale.ignoreFirst(),
             appSettings.inPreferQualityOverSpeed.ignoreFirst(),
             appSettings.bitmapQuality.ignoreFirst(),
             if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpace.ignoreFirst() else null,
-            appSettings.memoryCache.ignoreFirst(),
-            appSettings.resultCache.ignoreFirst(),
-            appSettings.downloadCache.ignoreFirst(),
+            appSettings.memoryCacheName.ignoreFirst(),
+            appSettings.resultCacheName.ignoreFirst(),
+            appSettings.downloadCacheName.ignoreFirst(),
             appSettings.showDataFromLogoInList.ignoreFirst(),
             appSettings.showTileBounds.ignoreFirst(),
             appSettings.logLevel.ignoreFirst(),
@@ -151,8 +151,8 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 title = "Resize Precision",
                 desc = null,
                 values = Precision.values().map { it.name }.plus(listOf("LongImageMode")),
-                getValue = { appSettings.precision.value },
-                onSelect = { _, value -> appSettings.precision.value = value }
+                getValue = { appSettings.precisionName.value },
+                onSelect = { _, value -> appSettings.precisionName.value = value }
             )
         )
         add(
@@ -160,11 +160,11 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 title = "Resize Scale",
                 desc = null,
                 values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
-                getValue = { appSettings.scale.value },
-                onSelect = { _, value -> appSettings.scale.value = value }
+                getValue = { appSettings.scaleName.value },
+                onSelect = { _, value -> appSettings.scaleName.value = value }
             )
         )
-        if (appSettings.scale.value == "LongImageMode") {
+        if (appSettings.scaleName.value == "LongImageMode") {
             add(
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
@@ -205,9 +205,9 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 title = "Content Scale",
                 desc = null,
                 values = contentScales.map { it.name },
-                getValue = { appSettings.contentScale.value },
+                getValue = { appSettings.contentScaleName.value },
                 onSelect = { _, value ->
-                    appSettings.contentScale.value = value
+                    appSettings.contentScaleName.value = value
                 }
             )
         )
@@ -228,9 +228,9 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 title = "Alignment",
                 desc = null,
                 values = alignments.map { it.name },
-                getValue = { appSettings.alignment.value },
+                getValue = { appSettings.alignmentName.value },
                 onSelect = { _, value ->
-                    appSettings.alignment.value = value
+                    appSettings.alignmentName.value = value
                 }
             )
         )
@@ -309,7 +309,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettings.memoryCache,
+                data = appSettings.memoryCacheName,
                 onLongClick = {
                     sketch.memoryCache.clear()
                     updateList()
@@ -332,7 +332,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettings.resultCache,
+                data = appSettings.resultCacheName,
                 onLongClick = {
                     sketch.resultCache.clear()
                     updateList()
@@ -355,7 +355,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                         compact = true
                     )
                 ),
-                data = appSettings.downloadCache,
+                data = appSettings.downloadCacheName,
                 onLongClick = {
                     sketch.downloadCache.clear()
                     updateList()

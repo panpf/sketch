@@ -28,7 +28,6 @@ import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.model.PhotoDiffCallback
-import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4k.lang.asOrThrow
@@ -76,11 +75,6 @@ abstract class BasePhotoListViewFragment :
                     adapter = pagingAdapter.withLoadStateFooter(loadStateAdapter)
 
                     bindRefreshAndAdapter(binding, pagingAdapter)
-                }
-
-            appSettings.listsCombinedFlow.ignoreFirst()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED) {
-                    adapter?.notifyDataSetChanged()
                 }
         }
     }

@@ -16,7 +16,6 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.content.Context
-import android.graphics.Point
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
@@ -24,48 +23,43 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.state.IconAnimatableDrawableStateImage
-import com.github.panpf.sketch.state.IconDrawableStateImage
-import com.github.panpf.sketch.state.saveCellularTrafficError
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
 class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false) :
     BaseBindingItemFactory<Photo, GridItemImageBinding>(Photo::class) {
 
-    private var itemSize: Point? = null
+    private var baseItemSize: Size? = null
 
     override fun createItemViewBinding(
         context: Context,
         inflater: LayoutInflater,
         parent: ViewGroup
     ): GridItemImageBinding {
-        if (itemSize == null && parent is RecyclerView) {
+        if (baseItemSize == null && parent is RecyclerView) {
             val screenWidth = context.getScreenWidth()
             val gridDivider = context.resources.getDimensionPixelSize(R.dimen.grid_divider)
-            itemSize = when (val layoutManager = parent.layoutManager) {
+            baseItemSize = when (val layoutManager = parent.layoutManager) {
                 is GridLayoutManager -> {
                     val spanCount = layoutManager.spanCount
                     val itemSize1 = (screenWidth - (gridDivider * (spanCount + 1))) / spanCount
-                    Point(itemSize1, itemSize1)
+                    Size(itemSize1, itemSize1)
                 }
 
                 is StaggeredGridLayoutManager -> {
                     val spanCount = layoutManager.spanCount
                     val itemSize1 = (screenWidth - (gridDivider * (spanCount + 1))) / spanCount
-                    Point(itemSize1, -1)
+                    Size(itemSize1, -1)
                 }
 
                 else -> {
-                    Point(screenWidth, -1)
+                    Size(screenWidth, -1)
                 }
             }
         }
@@ -77,42 +71,7 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
         binding: GridItemImageBinding,
         item: BindingItem<Photo, GridItemImageBinding>
     ) {
-        binding.myListImage.apply {
-            setClickIgnoreSaveCellularTrafficEnabled(true)
-            updateImageOptions {
-                if (animatedPlaceholder) {
-                    placeholder(
-                        IconAnimatableDrawableStateImage(
-                            icon = R.drawable.ic_placeholder_eclipse_animated,
-                            background = R.color.placeholder_bg
-                        )
-                    )
-                } else {
-                    placeholder(
-                        IconDrawableStateImage(
-                            icon = R.drawable.ic_image_outline,
-                            background = R.color.placeholder_bg,
-                        )
-                    )
-                }
-                error(
-                    defaultImage = IconDrawableStateImage(
-                        icon = R.drawable.ic_image_broken_outline,
-                        background = R.color.placeholder_bg
-                    )
-                ) {
-                    saveCellularTrafficError(
-                        IconDrawableStateImage(
-                            icon = R.drawable.ic_signal_cellular,
-                            background = R.color.placeholder_bg
-                        )
-                    )
-                }
-                crossfade()
-                resizeOnDraw()
-                sizeMultiplier(2f)  // To get a clearer thumbnail
-            }
-        }
+        binding.myListImage.setAnimatedPlaceholder(animatedPlaceholder)
     }
 
     override fun bindItemData(
@@ -125,26 +84,29 @@ class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false)
     ) {
         binding.myListImage.apply {
             updateLayoutParams<LayoutParams> {
-                val photoWidth = data.width
-                val photoHeight = data.height
-                val itemSize = itemSize!!
-                if (photoWidth != null && photoHeight != null) {
-                    width = itemSize.x
-                    height = if (itemSize.y == -1) {
-                        val previewAspectRatio = photoWidth.toFloat() / photoHeight.toFloat()
-                        (itemSize.x / previewAspectRatio).roundToInt()
-                    } else {
-                        itemSize.y
-                    }
-                } else {
-                    width = itemSize.x
-                    height = itemSize.x
-                }
+                val gridItemSize = computeGridItemSize(data.photoSize, baseItemSize!!)
+                width = gridItemSize.width
+                height = gridItemSize.height
             }
-
-            loadImage(data.listThumbnailUrl) {
-                merge(context.appSettings.buildListImageOptions())
-            }
+            loadImage(data.listThumbnailUrl)
         }
+    }
+
+    private fun computeGridItemSize(photoSize: Size?, baseItemSize: Size): Size {
+        val width: Int
+        val height: Int
+        if (photoSize != null) {
+            width = baseItemSize.width
+            height = if (baseItemSize.height == -1) {
+                val photoAspectRatio = photoSize.width.toFloat() / photoSize.height.toFloat()
+                (baseItemSize.width / photoAspectRatio).roundToInt()
+            } else {
+                baseItemSize.height
+            }
+        } else {
+            width = baseItemSize.width
+            height = baseItemSize.width
+        }
+        return Size(width, height)
     }
 }

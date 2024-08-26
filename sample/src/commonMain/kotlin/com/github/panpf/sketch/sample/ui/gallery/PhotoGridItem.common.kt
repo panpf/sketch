@@ -31,23 +31,26 @@ fun PhotoGridItem(
 
     when (index % 3) {
         0 -> MyListAsyncImage(
-            photo = photo,
-            animatedPlaceholder = animatedPlaceholder,
+            uri = photo.listThumbnailUrl,
+            contentDescription = "photo",
             modifier = modifier,
+            animatedPlaceholder = animatedPlaceholder,
             onClick = { onClick(photo, index) }
         )
 
         1 -> MyListSubcomposeAsyncImage(
-            photo = photo,
-            animatedPlaceholder = animatedPlaceholder,
+            uri = photo.listThumbnailUrl,
+            contentDescription = "photo",
             modifier = modifier,
+            animatedPlaceholder = animatedPlaceholder,
             onClick = { onClick(photo, index) }
         )
 
         else -> MyListAsyncImagePainterImage(
-            photo = photo,
-            animatedPlaceholder = animatedPlaceholder,
+            uri = photo.listThumbnailUrl,
+            contentDescription = "photo",
             modifier = modifier,
+            animatedPlaceholder = animatedPlaceholder,
             onClick = { onClick(photo, index) }
         )
     }

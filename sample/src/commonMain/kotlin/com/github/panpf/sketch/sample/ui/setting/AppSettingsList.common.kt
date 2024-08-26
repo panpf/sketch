@@ -155,7 +155,7 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
             title = "Resize Precision",
             desc = null,
             values = Precision.values().map { it.name }.plus(listOf("LongImageMode")),
-            state = appSettings.precision,
+            state = appSettings.precisionName,
         )
     )
     add(
@@ -163,10 +163,10 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
             title = "Resize Scale",
             desc = null,
             values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
-            state = appSettings.scale,
+            state = appSettings.scaleName,
         )
     )
-    val enabled = appSettings.scale.map { it == "LongImageMode" }
+    val enabled = appSettings.scaleName.map { it == "LongImageMode" }
     add(
         DropdownSettingItem(
             title = "Long Image Resize Scale",
@@ -202,7 +202,7 @@ fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
             title = "Content Scale",
             desc = null,
             values = contentScales.map { it.name },
-            state = appSettings.contentScale,
+            state = appSettings.contentScaleName,
         )
     )
 
@@ -222,7 +222,7 @@ fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
             title = "Alignment",
             desc = null,
             values = alignments.map { it.name },
-            state = appSettings.alignment,
+            state = appSettings.alignmentName,
         )
     )
     add(
@@ -268,7 +268,7 @@ private fun makeCacheMenuList(
                     0
                 )
             }（Long Click Clean）",
-            state = appSettings.memoryCache,
+            state = appSettings.memoryCacheName,
             onLongClick = {
                 sketch.memoryCache.clear()
                 recreateSettingItems.value += 1
@@ -284,7 +284,7 @@ private fun makeCacheMenuList(
                     0
                 )
             }（Long Click Clean）",
-            state = appSettings.resultCache,
+            state = appSettings.resultCacheName,
             onLongClick = {
                 sketch.resultCache.clear()
                 recreateSettingItems.value += 1
@@ -300,7 +300,7 @@ private fun makeCacheMenuList(
                     0
                 )
             }（Long Click Clean）",
-            state = appSettings.downloadCache,
+            state = appSettings.downloadCacheName,
             onLongClick = {
                 sketch.downloadCache.clear()
                 recreateSettingItems.value += 1

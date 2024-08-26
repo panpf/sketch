@@ -19,7 +19,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Lifecycle.State
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
@@ -27,13 +26,10 @@ import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItemFactory
-import com.github.panpf.sketch.sample.util.ignoreFirst
-import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
@@ -70,11 +66,6 @@ class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
                 itemFactoryList = listOf(PhotoGridItemFactory()),
                 initDataList = buildDisplayInsanityTestPhotos(),
             )
-
-            appSettings.listsCombinedFlow.ignoreFirst()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
-                    adapter?.notifyDataSetChanged()
-                }
         }
     }
 }
