@@ -17,8 +17,8 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.sample.ui.util.stateCombine
-import com.github.panpf.sketch.sample.ui.util.stateMap
+import com.github.panpf.sketch.sample.util.stateCombine
+import com.github.panpf.sketch.sample.util.stateMap
 import com.github.panpf.sketch.sample.ui.util.valueOf
 import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
@@ -175,7 +175,8 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     actual val alignmentName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "alignment", "Center")
     }
-    actual val alignment: StateFlow<Alignment> = alignmentName.stateMap { Alignment.valueOf(it) }
+    actual val alignment: StateFlow<Alignment> =
+        alignmentName.stateMap { Alignment.valueOf(it) }
 
     actual val scrollBarEnabled: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "scrollBarEnabled", true)

@@ -104,7 +104,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
             val uri = params.photos[pagerState.currentPage].listThumbnailUrl
             val colorScheme = MaterialTheme.colorScheme
             val photoPaletteState = remember { mutableStateOf(PhotoPalette(colorScheme)) }
-            PagerBackground(uri, photoPaletteState)
+            PhotoPagerBackground(uri, photoPaletteState)
 
             HorizontalPager(
                 state = pagerState,
@@ -123,7 +123,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                 )
             }
 
-            Headers(params, pagerState, photoPaletteState)
+            PhotoPagerHeaders(params, pagerState, photoPaletteState)
 
             TurnPageIndicator(pagerState, photoPaletteState)
 
@@ -137,7 +137,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
 
 
 @Composable
-fun PagerBackground(
+fun PhotoPagerBackground(
     imageUri: String,
     photoPaletteState: MutableState<PhotoPalette>,
 ) {
@@ -199,7 +199,7 @@ fun PagerBackground(
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-fun Headers(
+fun PhotoPagerHeaders(
     params: PhotoPagerParams,
     pagerState: PagerState,
     photoPaletteState: MutableState<PhotoPalette>,

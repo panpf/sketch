@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.util
+package com.github.panpf.sketch.sample.util
 
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow

@@ -12,8 +12,8 @@ import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
+import com.github.panpf.sketch.sample.ui.util.parentViewModels
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
 

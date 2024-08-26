@@ -1,6 +1,9 @@
 package com.github.panpf.sketch.sample.util
 
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind.EXACTLY_ONCE
+import kotlin.contracts.contract
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -56,4 +59,12 @@ internal fun Long.formatFileSize(decimals: Int = 1): String {
         }
     }
     throw IllegalStateException("Can't format file size: $this")
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <T> T.ifLet(predicate: Boolean, block: (T) -> T): T {
+    contract {
+        callsInPlace(block, EXACTLY_ONCE)
+    }
+    return if (predicate) block(this) else this
 }

@@ -28,8 +28,8 @@ import cafe.adriel.voyager.transitions.ScaleTransition
 import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.ui.VerHomeScreen
 import com.github.panpf.sketch.sample.ui.base.BaseFragment
-import com.github.panpf.sketch.sample.ui.base.parentViewModels
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
+import com.github.panpf.sketch.sample.ui.util.parentViewModels
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import kotlinx.coroutines.launch

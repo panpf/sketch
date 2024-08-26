@@ -17,16 +17,10 @@ package com.github.panpf.sketch.sample.ui.base
 
 import android.annotation.SuppressLint
 import android.app.Application
-import androidx.annotation.MainThread
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import java.util.LinkedList
 
 open class LifecycleAndroidViewModel(val application1: Application) :
@@ -72,15 +66,3 @@ open class LifecycleAndroidViewModel(val application1: Application) :
         fun onCleared()
     }
 }
-
-@MainThread
-inline fun <reified VM : ViewModel> Fragment.parentViewModels(
-    noinline ownerProducer: () -> ViewModelStoreOwner = {
-        this.parentFragment ?: requireActivity()
-    },
-    noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
-): Lazy<VM> = createViewModelLazy(
-    viewModelClass = VM::class,
-    storeProducer = { ownerProducer().viewModelStore },
-    factoryProducer = factoryProducer
-)

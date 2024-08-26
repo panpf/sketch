@@ -49,3 +49,16 @@ internal fun Context.getDrawableCompat(@DrawableRes resId: Int): Drawable {
 internal fun Context.isDarkTheme(): Boolean {
     return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 }
+
+fun Context.getWindowBackgroundColor(): Int {
+    val array = theme.obtainStyledAttributes(
+        intArrayOf(android.R.attr.windowBackground)
+    )
+    val windowBackground = array.getColor(0, 0xFF00FF)
+    array.recycle()
+    return windowBackground
+}
+
+fun Context.isNightMode(): Boolean {
+    return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+}

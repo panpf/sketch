@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.github.panpf.sketch.sample.ui.theme.getWindowBackgroundColor
+import com.github.panpf.sketch.sample.ui.util.getWindowBackgroundColor
 import com.github.panpf.sketch.sample.ui.util.isDarkTheme
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.google.android.material.internal.EdgeToEdgeUtils
@@ -94,13 +94,15 @@ abstract class BaseFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 EdgeToEdgeUtils.setLightStatusBar(
                     /* window = */ requireActivity().window,
-                    /* isLight = */ lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
+                    /* isLight = */
+                    lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
                 )
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 EdgeToEdgeUtils.setLightNavigationBar(
                     /* window = */ requireActivity().window,
-                    /* isLight = */ lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
+                    /* isLight = */
+                    lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
                 )
             }
         }

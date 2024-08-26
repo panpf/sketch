@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.github.panpf.sketch.sample.R
 
-
 val View.lifecycleOwner: LifecycleOwner
     get() {
         synchronized(this) {
