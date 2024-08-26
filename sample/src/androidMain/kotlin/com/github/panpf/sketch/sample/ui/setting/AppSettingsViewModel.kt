@@ -46,14 +46,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
+import kotlin.reflect.KClass
 
 class AppSettingsViewModel(application1: Application, private val page: Page) :
     LifecycleAndroidViewModel(application1) {
 
     class Factory(val application: Application, private val page: Page) :
         ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-            @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
             return AppSettingsViewModel(application, page) as T
         }
     }
@@ -74,8 +74,8 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             appSettings.longImageScale.ignoreFirst(),
             appSettings.otherImageScale.ignoreFirst(),
             appSettings.inPreferQualityOverSpeed.ignoreFirst(),
-            appSettings.bitmapQuality.ignoreFirst(),
-            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpace.ignoreFirst() else null,
+            appSettings.bitmapQualityName.ignoreFirst(),
+            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpaceName.ignoreFirst() else null,
             appSettings.memoryCacheName.ignoreFirst(),
             appSettings.resultCacheName.ignoreFirst(),
             appSettings.downloadCacheName.ignoreFirst(),
@@ -263,8 +263,8 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 title = "Bitmap Quality",
                 desc = null,
                 values = listOf("Default", "LOW", "HIGH"),
-                getValue = { appSettings.bitmapQuality.value },
-                onSelect = { _, value -> appSettings.bitmapQuality.value = value }
+                getValue = { appSettings.bitmapQualityName.value },
+                onSelect = { _, value -> appSettings.bitmapQualityName.value = value }
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -275,8 +275,8 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                     title = "Color Space",
                     desc = null,
                     values = items,
-                    getValue = { appSettings.colorSpace.value },
-                    onSelect = { _, value -> appSettings.colorSpace.value = value }
+                    getValue = { appSettings.colorSpaceName.value },
+                    onSelect = { _, value -> appSettings.colorSpaceName.value = value }
                 )
             )
         }

@@ -12,7 +12,7 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
             title = "Bitmap Quality",
             desc = null,
             values = listOf("Default", "LOW", "HIGH"),
-            state = appSettings.bitmapQuality,
+            state = appSettings.bitmapQualityName,
         )
     )
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -23,7 +23,7 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
                 title = "Color Space",
                 desc = null,
                 values = items,
-                state = appSettings.colorSpace,
+                state = appSettings.colorSpaceName,
             )
         )
     }

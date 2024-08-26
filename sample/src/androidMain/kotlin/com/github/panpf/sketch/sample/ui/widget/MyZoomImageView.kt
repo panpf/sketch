@@ -26,8 +26,6 @@ import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.components.bitmapQualityValue
-import com.github.panpf.sketch.sample.ui.components.colorSpaceValue
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -44,9 +42,9 @@ class MyZoomImageView @JvmOverloads constructor(
             memoryCachePolicy(appSettings.memoryCache.value)
             resultCachePolicy(appSettings.resultCache.value)
             downloadCachePolicy(appSettings.downloadCache.value)
-            bitmapConfig(bitmapQualityValue(appSettings.bitmapQuality.value))
+            bitmapConfig(appSettings.bitmapQuality.value)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                colorSpace(colorSpaceValue(appSettings.colorSpace.value))
+                colorSpace(appSettings.colorSpace.value)
             }
             @Suppress("DEPRECATION")
             preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && appSettings.inPreferQualityOverSpeed.value)
@@ -67,11 +65,11 @@ class MyZoomImageView @JvmOverloads constructor(
         }
 
         listenSettings(appSettings.bitmapQuality) { bitmapQuality ->
-            bitmapConfig(bitmapQualityValue(bitmapQuality))
+            bitmapConfig(bitmapQuality)
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             listenSettings(appSettings.colorSpace) { colorSpace ->
-                colorSpace(colorSpaceValue(colorSpace))
+                colorSpace(colorSpace)
             }
         }
         listenSettings(appSettings.inPreferQualityOverSpeed) { inPreferQualityOverSpeed ->
