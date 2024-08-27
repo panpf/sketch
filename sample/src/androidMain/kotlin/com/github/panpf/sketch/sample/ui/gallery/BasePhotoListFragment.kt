@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-abstract class BasePhotoListViewFragment :
+abstract class BasePhotoListFragment :
     BaseBindingFragment<FragmentRecyclerRefreshBinding>() {
 
     abstract val animatedPlaceholder: Boolean

@@ -48,9 +48,9 @@ import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.github.panpf.tools4k.lang.asOrThrow
 import kotlinx.serialization.json.Json
 
-class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
+class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
-    private val args by navArgs<PhotoPagerViewFragmentArgs>()
+    private val args by navArgs<PhotoPagerFragmentArgs>()
     private val photoList by lazy {
         Json.decodeFromString<List<Photo>>(args.photos)
     }
@@ -72,8 +72,8 @@ class PhotoPagerViewFragment : BaseBindingFragment<FragmentImagePagerBinding>() 
     ) {
         binding.pager.apply {
             adapter = AssemblyFragmentStateAdapter(
-                fragment = this@PhotoPagerViewFragment,
-                itemFactoryList = listOf(PhotoViewerViewFragment.ItemFactory()),
+                fragment = this@PhotoPagerFragment,
+                itemFactoryList = listOf(PhotoViewerFragment.ItemFactory()),
                 initDataList = photoList
             )
 

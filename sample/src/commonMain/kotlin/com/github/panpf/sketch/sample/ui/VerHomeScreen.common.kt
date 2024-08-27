@@ -33,10 +33,12 @@ import com.github.panpf.sketch.sample.resources.ic_giphy
 import com.github.panpf.sketch.sample.resources.ic_pexels
 import com.github.panpf.sketch.sample.resources.ic_phone
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoPage
-import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoPage
+import com.github.panpf.sketch.sample.ui.components.PermissionContainer
+import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListPage
+import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListPage
 import com.github.panpf.sketch.sample.ui.gallery.MainMenu
-import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoPage
+import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListPage
+import com.github.panpf.sketch.sample.ui.gallery.localPhotoListPermission
 import com.github.panpf.sketch.sample.ui.test.TestPage
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
@@ -48,7 +50,7 @@ import org.jetbrains.compose.resources.painterResource
 val gridCellsMinSize: Dp = if (Platform.current.isMobile()) 100.dp else 150.dp
 
 @Composable
-expect fun HomeHeader()
+expect fun VerHomeHeader()
 
 enum class HomeTab(
     val title: String,
@@ -60,19 +62,25 @@ enum class HomeTab(
         title = "Pexels",
         icon = Res.drawable.ic_pexels,
         padding = 1.5.dp,
-        content = { PexelsPhotoPage() }
+        content = { PexelsPhotoListPage(this) }
     ),
     GIPHY(
         title = "Giphy",
         icon = Res.drawable.ic_giphy,
         padding = 1.5.dp,
-        content = { GiphyPhotoPage() }
+        content = { GiphyPhotoListPage(this) }
     ),
     LOCAL(
         title = "Local",
         icon = Res.drawable.ic_phone,
         padding = 0.dp,
-        content = { LocalPhotoPage() }
+        content = {
+            PermissionContainer(
+                permission = localPhotoListPermission(),
+                permissionRequired = false,
+                content = { LocalPhotoListPage(this) }
+            )
+        }
     ),
     TEST(
         title = "Test",
@@ -88,7 +96,7 @@ object VerHomeScreen : BaseScreen() {
     @Composable
     override fun DrawContent() {
         Column {
-            HomeHeader()
+            VerHomeHeader()
 
             val coroutineScope = rememberCoroutineScope()
             val context = LocalPlatformContext.current

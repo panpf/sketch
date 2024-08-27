@@ -9,20 +9,19 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.flow.Flow
 
-class LocalPhotoListViewFragment : BasePhotoListViewFragment() {
+class PexelsPhotoListFragment : BasePhotoListFragment() {
 
-    private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
+    private val pexelsImageListViewModel by viewModels<PexelsPhotoListViewModel>()
 
     override val animatedPlaceholder: Boolean
         get() = false
 
     override val photoPagingFlow: Flow<PagingData<Photo>>
-        get() = localPhotoListViewModel.pagingFlow
+        get() = pexelsImageListViewModel.pagingFlow
 
-    class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
+    class PexelsPhotoListViewModel(application: Application) : AndroidViewModel(application) {
         val pagingFlow = Pager(
             config = PagingConfig(
                 pageSize = 60,
@@ -30,7 +29,7 @@ class LocalPhotoListViewFragment : BasePhotoListViewFragment() {
             ),
             initialKey = 0,
             pagingSourceFactory = {
-                LocalPhotoListPagingSource(application, application.sketch)
+                PexelsPhotoListPagingSource()
             }
         ).flow.cachedIn(viewModelScope)
     }

@@ -6,12 +6,12 @@
 
     <fragment
         android:id="@+id/viewHomeFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.ViewHomeFragment"
+        android:name="com.github.panpf.sketch.sample.ui.ViewHomeFragment"
         android:label="ViewHomeFragment" />
 
     <fragment
         android:id="@+id/photoPagerViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoPagerFragment"
         android:label="PhotoPagerViewFragment">
         <argument
             android:name="photos"
@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/photoViewerViewFragment"
-        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewFragment"
+        android:name="com.github.panpf.sketch.sample.ui.gallery.PhotoViewerFragment"
         android:label="PhotoViewerViewFragment">
         <argument
             android:name="itemIndex"

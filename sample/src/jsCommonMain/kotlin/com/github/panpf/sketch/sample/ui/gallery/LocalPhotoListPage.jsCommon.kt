@@ -7,9 +7,10 @@ import com.github.panpf.sketch.sample.data.builtinImages
 import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 import com.github.panpf.sketch.sample.ui.model.Photo
 
+actual fun localPhotoListPermission(): Any? = null
 
 @Composable
-actual fun Screen.LocalPhotoPage() {
+actual fun LocalPhotoListPage(screen: Screen) {
     val navigator = LocalNavigator.current!!
     PhotoList(
         animatedPlaceholder = true,

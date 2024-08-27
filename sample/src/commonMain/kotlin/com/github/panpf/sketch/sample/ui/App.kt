@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample
+package com.github.panpf.sketch.sample.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,18 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.sample.ui.HorHomeScreen
+import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
+import com.github.panpf.sketch.sample.util.Platform
+import com.github.panpf.sketch.sample.util.current
+import com.github.panpf.sketch.sample.util.isMobile
 
 @Composable
-fun App() {
+fun App(onContentChanged: ((Navigator) -> Unit)? = null) {
     AppTheme {
         Box(Modifier.fillMaxSize()) {
-            Navigator(HorHomeScreen) { navigator ->
+            val homeScreen = if (Platform.current.isMobile()) VerHomeScreen else HorHomeScreen
+            Navigator(homeScreen) { navigator ->
                 ScaleTransition(navigator = navigator)
+                onContentChanged?.invoke(navigator)
             }
 
             val snackbarHostState = remember { SnackbarHostState() }
@@ -39,26 +41,4 @@ fun App() {
             }
         }
     }
-
-    val context = LocalPlatformContext.current
-    LaunchedEffect(Unit) {
-        EventBus.savePhotoFlow.collect {
-            savePhoto(SingletonSketch.get(context), it)
-        }
-    }
-    LaunchedEffect(Unit) {
-        EventBus.sharePhotoFlow.collect {
-            sharePhoto(SingletonSketch.get(context), it)
-        }
-    }
-}
-
-@Suppress("UNUSED_PARAMETER")
-private suspend fun savePhoto(sketch: Sketch, imageUri: String) {
-    EventBus.toastFlow.emit("JS platform does not support save photo")
-}
-
-@Suppress("UNUSED_PARAMETER")
-private suspend fun sharePhoto(sketch: Sketch, imageUri: String) {
-    EventBus.toastFlow.emit("JS platform does not support sharing photo")
 }

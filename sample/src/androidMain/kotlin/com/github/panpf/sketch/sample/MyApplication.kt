@@ -17,87 +17,18 @@ package com.github.panpf.sketch.sample
 
 import android.app.Application
 import android.content.Context
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.supportAnimatedGif
-import com.github.panpf.sketch.decode.supportAnimatedHeif
-import com.github.panpf.sketch.decode.supportAnimatedWebp
-import com.github.panpf.sketch.decode.supportApkIcon
-import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
-import com.github.panpf.sketch.decode.supportKoralGif
-import com.github.panpf.sketch.decode.supportMovieGif
-import com.github.panpf.sketch.decode.supportSvg
-import com.github.panpf.sketch.decode.supportVideoFrame
-import com.github.panpf.sketch.fetch.supportAppIcon
-import com.github.panpf.sketch.fetch.supportComposeResources
-import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.http.KtorStack
-import com.github.panpf.sketch.http.OkHttpStack
-import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
-import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 
 class MyApplication : Application(), SingletonSketch.Factory {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    override fun createSketch(context: Context): Sketch = Sketch.Builder(this).apply {
-        val httpStack = when (appSettings.httpClient.value) {
-            "Ktor" -> KtorStack()
-            "OkHttp" -> OkHttpStack.Builder().build()
-            "HttpURLConnection" -> HurlStack.Builder().build()
-            else -> throw IllegalArgumentException("Unknown httpClient: ${appSettings.httpClient.value}")
-        }
-        httpStack(httpStack)
-        components {
-            supportComposeResources()
-
-            supportSaveCellularTraffic()
-            supportPauseLoadWhenScrolling()
-
-            supportAppIcon()
-            supportApkIcon()
-            supportSvg()
-
-            // video
-            when (appSettings.videoFrameDecoder.value) {
-                "FFmpeg" -> supportFFmpegVideoFrame()
-                "AndroidBuiltIn" -> supportVideoFrame()
-                else -> throw IllegalArgumentException("Unknown videoFrameDecoder: ${appSettings.videoFrameDecoder.value}")
-            }
-
-            // gif
-            when (appSettings.gifDecoder.value) {
-                "KoralGif" -> supportKoralGif()
-                "ImageDecoder+Movie" -> if (VERSION.SDK_INT >= VERSION_CODES.P) supportAnimatedGif() else supportMovieGif()
-                else -> throw IllegalArgumentException("Unknown animatedDecoder: ${appSettings.gifDecoder.value}")
-            }
-
-            // webp animated
-            if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                supportAnimatedWebp()
-            }
-
-            // heif animated
-            if (VERSION.SDK_INT >= VERSION_CODES.R) {
-                supportAnimatedHeif()
-            }
-        }
-        // To be able to print the Sketch initialization log
-        logger(level = appSettings.logLevel.value)
-        networkParallelismLimited(appSettings.networkParallelismLimited.value)
-        decodeParallelismLimited(appSettings.decodeParallelismLimited.value)
-    }.build().apply {
-        coroutineScope.launch {
-            appSettings.logLevel.collect {
-                logger.level = it
-            }
-        }
+    override fun createSketch(context: Context): Sketch {
+        return newSketch(context)
     }
 
     override fun onTerminate() {

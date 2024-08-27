@@ -54,9 +54,9 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
+class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
-    private val args by navArgs<PhotoViewerViewFragmentArgs>()
+    private val args by navArgs<PhotoViewerFragmentArgs>()
     private val photoPaletteViewModel by parentViewModels<PhotoPaletteViewModel>()
     private val photoActionViewModel by parentViewModels<PhotoActionViewModel>()
     private val requestPermissionResult =
@@ -241,8 +241,8 @@ class PhotoViewerViewFragment : BaseBindingFragment<FragmentImageViewerBinding>(
             bindingAdapterPosition: Int,
             absoluteAdapterPosition: Int,
             data: Photo
-        ): Fragment = PhotoViewerViewFragment().apply {
-            arguments = PhotoViewerViewFragmentArgs(
+        ): Fragment = PhotoViewerFragment().apply {
+            arguments = PhotoViewerFragmentArgs(
                 itemIndex = bindingAdapterPosition,
                 originImageUri = data.originalUrl,
                 previewImageUri = data.mediumUrl,

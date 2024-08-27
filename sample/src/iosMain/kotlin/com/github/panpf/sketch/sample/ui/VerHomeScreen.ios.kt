@@ -9,11 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun HomeHeader() {
+actual fun VerHomeHeader() {
     Box(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
             title = {

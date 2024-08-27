@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.Flow
 
 
 @Composable
-actual fun Screen.PexelsPhotoPage() {
+actual fun PexelsPhotoListPage(screen: Screen) {
     val navigator = LocalNavigator.current!!
-    val screenModel = rememberScreenModel {
+    val screenModel = screen.rememberScreenModel {
         PexelsPhotoListScreenModel()
     }
     PagingPhotoList(

@@ -24,7 +24,7 @@ import com.github.panpf.sketch.sample.appSettings
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-actual fun HomeHeader() {
+actual fun VerHomeHeader() {
     Box(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
             title = {

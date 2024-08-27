@@ -5,4 +5,4 @@ import cafe.adriel.voyager.core.screen.Screen
 
 
 @Composable
-expect fun Screen.GiphyPhotoPage()
+expect fun PexelsPhotoListPage(screen: Screen)

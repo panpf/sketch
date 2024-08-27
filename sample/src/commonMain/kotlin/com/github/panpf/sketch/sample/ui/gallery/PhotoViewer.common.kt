@@ -25,10 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.rememberAsyncImageState
-import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
-import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_info_baseline
 import com.github.panpf.sketch.sample.resources.ic_rotate_right
 import com.github.panpf.sketch.sample.resources.ic_save
@@ -73,7 +72,7 @@ fun PhotoViewer(
             onLongPress = { infoDialogState.show() }
         )
 
-        PhotoViewerBottomBar(
+        PhotoViewerBottomBarWrapper(
             imageUri = imageUri,
             buttonBackgroundColor = photoPaletteState.value.containerColor,
             buttonContentColor = photoPaletteState.value.contentColor,
@@ -97,13 +96,24 @@ fun PhotoViewer(
 }
 
 @Composable
-fun PhotoViewerBottomBar(
+expect fun PhotoViewerBottomBarWrapper(
     imageUri: String,
-    modifier: Modifier = Modifier,
-    zoomState: SketchZoomState = rememberSketchZoomState(),
-    buttonBackgroundColor: Color? = null,
-    buttonContentColor: Color? = null,
-    onInfoClick: (() -> Unit)? = null,
+    modifier: Modifier,
+    zoomState: SketchZoomState,
+    buttonBackgroundColor: Color?,
+    buttonContentColor: Color?,
+    onInfoClick: (() -> Unit)?,
+)
+
+@Composable
+fun PhotoViewerBottomBar(
+    modifier: Modifier,
+    zoomState: SketchZoomState,
+    buttonBackgroundColor: Color?,
+    buttonContentColor: Color?,
+    onInfoClick: (() -> Unit)?,
+    onShareClick: (() -> Unit)?,
+    onSaveClick: (() -> Unit)?,
 ) {
     Row(modifier) {
         val coroutineScope = rememberCoroutineScope()
@@ -113,15 +123,11 @@ fun PhotoViewerBottomBar(
         )
 
         IconButton(
-            onClick = {
-                coroutineScope.launch {
-                    EventBus.sharePhotoFlow.emit(imageUri)
-                }
-            },
+            onClick = { onShareClick?.invoke() },
             colors = buttonColors
         ) {
             Icon(
-                painter = painterResource(drawable.ic_share),
+                painter = painterResource(Res.drawable.ic_share),
                 contentDescription = "share",
                 modifier = Modifier
                     .size(40.dp)
@@ -132,15 +138,11 @@ fun PhotoViewerBottomBar(
         Spacer(modifier = Modifier.size(16.dp))
 
         IconButton(
-            onClick = {
-                coroutineScope.launch {
-                    EventBus.savePhotoFlow.emit(imageUri)
-                }
-            },
+            onClick = { onSaveClick?.invoke() },
             colors = buttonColors
         ) {
             Icon(
-                painter = painterResource(drawable.ic_save),
+                painter = painterResource(Res.drawable.ic_save),
                 contentDescription = "save",
                 modifier = Modifier
                     .size(40.dp)
@@ -167,9 +169,9 @@ fun PhotoViewerBottomBar(
         ) {
             Icon(
                 painter = if (zoomIn) {
-                    painterResource(drawable.ic_zoom_in)
+                    painterResource(Res.drawable.ic_zoom_in)
                 } else {
-                    painterResource(drawable.ic_zoom_out)
+                    painterResource(Res.drawable.ic_zoom_out)
                 },
                 contentDescription = "zoom",
                 modifier = Modifier
@@ -190,7 +192,7 @@ fun PhotoViewerBottomBar(
             colors = buttonColors
         ) {
             Icon(
-                painter = painterResource(drawable.ic_rotate_right),
+                painter = painterResource(Res.drawable.ic_rotate_right),
                 contentDescription = "right rotate",
                 modifier = Modifier
                     .size(40.dp)
@@ -205,7 +207,7 @@ fun PhotoViewerBottomBar(
             colors = buttonColors
         ) {
             Icon(
-                painter = painterResource(drawable.ic_info_baseline),
+                painter = painterResource(Res.drawable.ic_info_baseline),
                 contentDescription = "info",
                 modifier = Modifier
                     .size(40.dp)

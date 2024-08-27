@@ -11,7 +11,7 @@ import androidx.paging.cachedIn
 import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow
 
-class GiphyPhotoListViewFragment : BasePhotoListViewFragment() {
+class GiphyPhotoListFragment : BasePhotoListFragment() {
 
     private val giphyPhotoListViewModel by viewModels<GiphyPhotoListViewModel>()
 

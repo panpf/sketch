@@ -11,7 +11,7 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 
 
 @Composable
-actual fun Screen.GiphyPhotoPage() {
+actual fun GiphyPhotoListPage(screen: Screen) {
     val navigator = LocalNavigator.current!!
     PhotoList(
         animatedPlaceholder = true,

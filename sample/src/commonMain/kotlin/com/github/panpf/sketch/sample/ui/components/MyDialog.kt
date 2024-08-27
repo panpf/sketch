@@ -25,12 +25,17 @@ fun rememberMyDialogState(showing: Boolean = false): MyDialogState =
 
 @Stable
 class MyDialogState(showing: Boolean = false) {
+
     var showing by mutableStateOf(showing)
 
     var contentReady = true
 
     fun show() {
         showing = true
+    }
+
+    fun dismiss() {
+        showing = false
     }
 }
 

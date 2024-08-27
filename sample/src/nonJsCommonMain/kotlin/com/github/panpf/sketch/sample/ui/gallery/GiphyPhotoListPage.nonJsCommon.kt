@@ -2,22 +2,22 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.runtime.Composable
 import androidx.paging.cachedIn
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingData
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingData
-import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 
 @Composable
-actual fun Screen.GiphyPhotoPage() {
+actual fun GiphyPhotoListPage(screen: Screen) {
     val navigator = LocalNavigator.current!!
-    val screenModel = rememberScreenModel {
+    val screenModel = screen.rememberScreenModel {
         GiphyPhotoListScreenModel()
     }
     PagingPhotoList(

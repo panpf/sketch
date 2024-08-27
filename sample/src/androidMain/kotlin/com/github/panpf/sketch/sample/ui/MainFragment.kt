@@ -16,29 +16,22 @@
 package com.github.panpf.sketch.sample.ui
 
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentContainerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.gallery.ComposeHomeFragment
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 
 class MainFragment : BaseBindingFragment<FragmentContainerBinding>() {
-
-    private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
-            appSettings.composePage.collectWithLifecycle(viewLifecycleOwner) {
-                val fragment = if (it) ComposeHomeFragment() else ViewNavHostFragment()
-                childFragmentManager.beginTransaction()
-                    .replace(binding!!.fragmentContainer.id, fragment)
-                    .commit()
-            }
-        }
 
     override fun onViewCreated(
         binding: FragmentContainerBinding,
         savedInstanceState: Bundle?
     ) {
-        permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        appSettings.composePage.collectWithLifecycle(viewLifecycleOwner) {
+            val fragment = if (it) ComposeHomeFragment() else ViewNavHostFragment()
+            childFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainer.id, fragment)
+                .commit()
+        }
     }
 }

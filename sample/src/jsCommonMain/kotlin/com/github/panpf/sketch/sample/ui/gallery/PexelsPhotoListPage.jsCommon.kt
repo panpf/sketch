@@ -10,7 +10,7 @@ import com.github.panpf.sketch.sample.data.api.pexels.PexelsPhoto
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 @Composable
-actual fun Screen.PexelsPhotoPage() {
+actual fun PexelsPhotoListPage(screen: Screen) {
     val navigator = LocalNavigator.current!!
     PhotoList(
         animatedPlaceholder = false,

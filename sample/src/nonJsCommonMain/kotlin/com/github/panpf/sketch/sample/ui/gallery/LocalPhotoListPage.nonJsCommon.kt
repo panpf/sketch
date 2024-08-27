@@ -9,19 +9,19 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 
 
 @Composable
-actual fun Screen.LocalPhotoPage() {
+actual fun LocalPhotoListPage(screen: Screen) {
     val navigator = LocalNavigator.current!!
     val context = LocalPlatformContext.current
     val sketch = SingletonSketch.get(context)
-    val screenModel = rememberScreenModel {
+    val screenModel = screen.rememberScreenModel {
         LocalPhotoListScreenModel(context, sketch)
     }
     PagingPhotoList(
