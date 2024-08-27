@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.cache.DiskCache
@@ -11,11 +26,16 @@ import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 
-class EmptyDiskCache constructor(override val fileSystem: FileSystem) : DiskCache {
+/**
+ * An empty implementation of [DiskCache].
+ *
+ * @see com.github.panpf.sketch.core.test.cache.internal.EmptyDiskCacheTest
+ */
+class EmptyDiskCache(override val fileSystem: FileSystem) : DiskCache {
 
-    // DiskCache is usually used in the decoding stage, and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
+    // DiskCache is usually used in the decoding stage,
+    //  and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
-    private val keyMapperCache = KeyMapperCache { it.md5() }
 
     override val maxSize: Long = 0L
 
@@ -38,7 +58,7 @@ class EmptyDiskCache constructor(override val fileSystem: FileSystem) : DiskCach
     }
 
     override suspend fun <R> withLock(key: String, action: suspend DiskCache.() -> R): R {
-        val encodedKey = keyMapperCache.mapKey(key)
+        val encodedKey = key.md5()
         val lock = mutexMap[encodedKey] ?: Mutex().apply {
             this@EmptyDiskCache.mutexMap.put(encodedKey, this)
         }
