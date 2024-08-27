@@ -33,7 +33,11 @@ import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.source.DataFrom
 
 /**
- * Although LruMemoryCache is thread-unsafe, Sketch requests are executed in the main thread, so there is no need to do thread-safety processing here.
+ * Memory cache request interceptor, used to read and write the decode result to the memory cache
+ *
+ * Note: Although LruMemoryCache is thread-unsafe, Sketch requests are executed in the main thread, so there is no need to do thread-safety processing here.
+ *
+ * @see com.github.panpf.sketch.core.test.cache.internal.MemoryCacheRequestInterceptorTest
  */
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
@@ -116,11 +120,13 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             // Usually AnimatedDrawable
             return false
         }
-        val saveState =
-            requestContext.sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
+        val sketch = requestContext.sketch
+        val saveState = sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
         if (saveState != 0) {
-            requestContext.sketch.logger.w(
-                "MemoryCacheRequestInterceptor. Memory cache save failed. state is $saveState. ${imageData.image}. ${request.key}"
+            sketch.logger.w(
+                "MemoryCacheRequestInterceptor. " +
+                        "Memory cache save failed. " +
+                        "state is $saveState. ${imageData.image}. ${request.key}"
             )
         }
         return saveState == 0

@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.core.android.test.cache.internal
+package com.github.panpf.sketch.core.test.cache.internal
 
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.AndroidBitmapImage
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.cache.AndroidBitmapImageValue
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
@@ -42,17 +37,19 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.createCacheValue
+import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
-@RunWith(AndroidJUnit4::class)
 class MemoryCacheRequestInterceptorTest {
 
     @Test
@@ -62,8 +59,8 @@ class MemoryCacheRequestInterceptorTest {
 
         val requestInterceptorList =
             listOf(MemoryCacheRequestInterceptor(), FakeRequestInterceptor())
-        val executeRequest: (ImageRequest) -> ImageData = { request ->
-            runBlocking(Dispatchers.Main) {
+        val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
+            withContext(Dispatchers.Main) {
                 RequestInterceptorChain(
                     sketch = sketch,
                     initialRequest = request,
@@ -76,19 +73,19 @@ class MemoryCacheRequestInterceptorTest {
         }
 
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest */
         executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>()
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest - ENABLED */
-        val cacheImage: AndroidBitmapImage
+        val cacheImage: Image
         val imageData: ImageData
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             target(TestCountTarget())
@@ -96,36 +93,35 @@ class MemoryCacheRequestInterceptorTest {
         executeRequest(request.newRequest {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
             imageData = this
-            cacheImage = image.asOrThrow()
+            cacheImage = image
         }
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         executeRequest(request.newRequest {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
+            assertEquals(expected = DataFrom.MEMORY_CACHE, actual = dataFrom)
         }
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest - DISABLED */
         executeRequest(request.newRequest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image is AndroidBitmapImage)
+            assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
         }
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         memoryCache.put(
-            request.toRequestContext(sketch).cacheKey,
-            AndroidBitmapImageValue(
-                cacheImage,
-                newCacheValueExtras(
+            key = request.toRequestContext(sketch).cacheKey,
+            value = createCacheValue(
+                image = cacheImage,
+                extras = newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
                     resize = imageData.resize,
                     transformeds = imageData.transformeds,
@@ -133,31 +129,30 @@ class MemoryCacheRequestInterceptorTest {
                 )
             )
         )
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
         executeRequest(request.newRequest {
             memoryCachePolicy(DISABLED)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
         }
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest - READ_ONLY */
         executeRequest(request.newRequest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image is AndroidBitmapImage)
+            assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
         }
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         memoryCache.put(
-            request.toRequestContext(sketch).cacheKey,
-            AndroidBitmapImageValue(
-                cacheImage,
-                newCacheValueExtras(
+            key = request.toRequestContext(sketch).cacheKey,
+            value = createCacheValue(
+                image = cacheImage,
+                extras = newCacheValueExtras(
                     imageInfo = imageData.imageInfo,
                     resize = imageData.resize,
                     transformeds = imageData.transformeds,
@@ -165,40 +160,37 @@ class MemoryCacheRequestInterceptorTest {
                 )
             )
         )
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
         executeRequest(request.newRequest {
             memoryCachePolicy(READ_ONLY)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
-            Assert.assertTrue(image is AndroidBitmapImage)
+            assertEquals(expected = DataFrom.MEMORY_CACHE, actual = dataFrom)
         }
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest - WRITE_ONLY */
         executeRequest(request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image is AndroidBitmapImage)
+            assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
         }
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         executeRequest(request.newRequest {
             memoryCachePolicy(WRITE_ONLY)
         }).asOrThrow<ImageData>().apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
-            Assert.assertTrue(image is AndroidBitmapImage)
+            assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
         }
-        Assert.assertEquals(40000, memoryCache.size)
+        assertEquals(expected = 40000, actual = memoryCache.size)
 
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.size)
+        assertEquals(expected = 0, actual = memoryCache.size)
 
         /* Depth.MEMORY */
-        assertThrow(DepthException::class) {
+        assertFailsWith(DepthException::class) {
             executeRequest(request.newRequest {
                 memoryCachePolicy(ENABLED)
                 depth(MEMORY)
@@ -214,35 +206,36 @@ class MemoryCacheRequestInterceptorTest {
         val element11 = MemoryCacheRequestInterceptor()
         val element2 = MemoryCacheRequestInterceptor()
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
+        assertNotSame(illegal = element1, actual = element11)
+        assertNotSame(illegal = element1, actual = element2)
+        assertNotSame(illegal = element2, actual = element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertEquals(element1, element2)
-        Assert.assertEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(expected = element1, actual = element1)
+        assertEquals(expected = element1, actual = element11)
+        assertEquals(expected = element1, actual = element2)
+        assertEquals(expected = element2, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertEquals(element2.hashCode(), element11.hashCode())
+        assertEquals(expected = element1.hashCode(), actual = element1.hashCode())
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+        assertEquals(expected = element1.hashCode(), actual = element2.hashCode())
+        assertEquals(expected = element2.hashCode(), actual = element11.hashCode())
     }
 
     @Test
     fun testSortWeight() {
-        MemoryCacheRequestInterceptor().apply {
-            Assert.assertEquals(90, sortWeight)
-        }
+        assertEquals(
+            expected = 90,
+            actual = MemoryCacheRequestInterceptor().sortWeight
+        )
     }
 
     @Test
     fun testToString() {
-        Assert.assertEquals(
-            "MemoryCacheRequestInterceptor(sortWeight=90)",
-            MemoryCacheRequestInterceptor().toString()
+        assertEquals(
+            expected = "MemoryCacheRequestInterceptor(sortWeight=90)",
+            actual = MemoryCacheRequestInterceptor().toString()
         )
     }
 
@@ -253,10 +246,10 @@ class MemoryCacheRequestInterceptorTest {
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {
-            val bitmap = Bitmap.createBitmap(100, 100, ARGB_8888)
+            val image = createImage(100, 100)
             val imageInfo = ImageInfo(100, 100, "image/png")
             ImageData(
-                bitmap.asSketchImage(),
+                image = image,
                 imageInfo = imageInfo,
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 dataFrom = DataFrom.LOCAL,

@@ -35,6 +35,11 @@ import com.github.panpf.sketch.util.closeQuietly
 import okio.buffer
 import okio.use
 
+/**
+ * Result cache decode interceptor, used to read and write the decode result to the disk cache
+ *
+ * @see com.github.panpf.sketch.core.test.cache.internal.MemoryCacheRequestInterceptorTest
+ */
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
     override val key: String? = null

@@ -8,7 +8,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Assert
 import org.junit.Test
 
-class MemoryCacheTest {
+class MemoryCacheAndroidTest {
     // TODO test Builder
 
     @Test
