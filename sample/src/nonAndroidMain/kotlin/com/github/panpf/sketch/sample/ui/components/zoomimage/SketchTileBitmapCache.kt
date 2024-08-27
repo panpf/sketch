@@ -18,6 +18,7 @@ package com.github.panpf.zoomimage.sketch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.cache.SkiaBitmapImageValue
 import com.github.panpf.zoomimage.subsampling.BitmapFrom
 import com.github.panpf.zoomimage.subsampling.ImageInfo
 import com.github.panpf.zoomimage.subsampling.SkiaTileBitmap
