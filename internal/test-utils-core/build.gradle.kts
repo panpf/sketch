@@ -15,6 +15,7 @@ kotlin {
             api(projects.internal.images)
             api(libs.kotlin.test)
             api(libs.kotlinx.coroutines.test)
+            api(libs.okio.fakefilesystem)
         }
         jvmCommonMain.dependencies {
             api(libs.junit)

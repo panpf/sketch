@@ -71,7 +71,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ImageOptionsTest {
-// TODO
 
     @Test
     fun testFun() {

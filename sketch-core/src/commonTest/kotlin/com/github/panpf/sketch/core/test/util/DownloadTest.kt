@@ -8,7 +8,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyImagesHttpStack
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.DownloadData
-import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
 import okio.use
 import kotlin.test.Test
