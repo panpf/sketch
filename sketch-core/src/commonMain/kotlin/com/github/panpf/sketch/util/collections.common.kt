@@ -11,8 +11,15 @@ internal expect fun <K : Any, V : Any> LruMutableMap(
 ): MutableMap<K, V>
 
 /** @see forEach */
+internal inline fun <T> List<T>.forEachIndices(action: (T) -> Unit) {
+    for (i in indices) {
+        action(get(i))
+    }
+}
+
+/** @see forEach */
 @PublishedApi // Used by extension modules.
-internal inline fun <T> List<T>.forEachIndices(action: (index: Int, T) -> Unit) {
+internal inline fun <T> List<T>.forEachIndexedIndices(action: (index: Int, T) -> Unit) {
     for (i in indices) {
         action(i, get(i))
     }

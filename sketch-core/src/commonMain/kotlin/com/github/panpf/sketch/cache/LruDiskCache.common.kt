@@ -72,7 +72,6 @@ class LruDiskCache constructor(
             maxSize = maxSize,
             appVersion = unionVersion,
             valueCount = 2,  // data and metadata
-            checkValueCount = 1,    // metadata not required
         )
     }
 

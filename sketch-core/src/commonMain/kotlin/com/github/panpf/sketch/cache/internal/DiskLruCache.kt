@@ -82,6 +82,8 @@ import okio.buffer
  * @param cleanupDispatcher the dispatcher to run cache size trim operations on.
  * @param valueCount the number of values per cache entry. Must be positive.
  * @param maxSize the maximum number of bytes this cache should use to store.
+ *
+ * @see com.github.panpf.sketch.core.test.cache.internal.DiskLruCacheTest
  */
 internal class DiskLruCache(
     fileSystem: FileSystem,
@@ -90,7 +92,6 @@ internal class DiskLruCache(
     private val maxSize: Long,
     private val appVersion: Int,
     private val valueCount: Int,
-    private val checkValueCount: Int,
 ) : Closeable {
 
     /*
@@ -838,8 +839,8 @@ internal class DiskLruCache(
             if (currentEditor != null || zombie) return null
 
             // Ensure that the entry's files still exist.
-            cleanFiles.forEachIndices { index, file ->
-                if (index < checkValueCount && !fileSystem.exists(file)) {
+            cleanFiles.forEachIndices { file ->
+                if (!fileSystem.exists(file)) {
                     // Since the entry is no longer valid, remove it so the metadata is accurate
                     // (i.e. the cache size).
                     try {
