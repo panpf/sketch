@@ -30,7 +30,7 @@ import okio.Path.Companion.toPath
 /**
  * An empty implementation of [DiskCache].
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.EmptyDiskCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.EmptyDiskCacheTest
  */
 class EmptyDiskCache(override val fileSystem: FileSystem) : DiskCache {
 

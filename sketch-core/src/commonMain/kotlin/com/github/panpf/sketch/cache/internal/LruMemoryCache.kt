@@ -30,7 +30,7 @@ import kotlin.math.roundToLong
  *
  * LruMemoryCache is not thread-safe. If you need to use it in multiple threads, please handle the thread-safety issues yourself.
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.LruMemoryCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.LruMemoryCacheTest
  */
 class LruMemoryCache constructor(
     override val maxSize: Long,

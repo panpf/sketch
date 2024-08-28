@@ -84,7 +84,7 @@ import okio.buffer
  * @param valueCount the number of values per cache entry. Must be positive.
  * @param maxSize the maximum number of bytes this cache should use to store.
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.DiskLruCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.DiskLruCacheTest
  */
 internal class DiskLruCache(
     fileSystem: FileSystem,

@@ -26,7 +26,7 @@ import kotlinx.coroutines.sync.withLock
 /**
  * An empty implementation of [MemoryCache].
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.EmptyMemoryCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.EmptyMemoryCacheTest
  */
 data object EmptyMemoryCache : MemoryCache {
 

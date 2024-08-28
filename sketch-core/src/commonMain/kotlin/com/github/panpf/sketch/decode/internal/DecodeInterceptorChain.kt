@@ -28,7 +28,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
 /**
  * DecodeInterceptor Chain
  *
- * @see com.github.panpf.sketch.core.test.decode.internal.DecodeInterceptorChainTest
+ * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodeInterceptorChainTest
  */
 internal class DecodeInterceptorChain constructor(
     override val sketch: Sketch,

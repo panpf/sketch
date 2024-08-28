@@ -38,7 +38,7 @@ import com.github.panpf.sketch.source.DataFrom
  *
  * Note: Although LruMemoryCache is thread-unsafe, Sketch requests are executed in the main thread, so there is no need to do thread-safety processing here.
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.MemoryCacheRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.MemoryCacheRequestInterceptorTest
  */
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 

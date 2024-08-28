@@ -19,7 +19,7 @@ package com.github.panpf.sketch.cache
 /**
  * Represents the read/write policy for a cache source.
  *
- * @see com.github.panpf.sketch.core.test.cache.CachePolicyTest
+ * @see com.github.panpf.sketch.core.common.test.cache.CachePolicyTest
  */
 enum class CachePolicy(
     val readEnabled: Boolean,

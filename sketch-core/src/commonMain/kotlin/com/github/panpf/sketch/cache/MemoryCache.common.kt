@@ -28,7 +28,7 @@ import kotlin.math.roundToLong
 /**
  * Memory cache for [Image]
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest
  */
 interface MemoryCache {
 
@@ -113,7 +113,7 @@ interface MemoryCache {
     /**
      * Builder for [MemoryCache]
      *
-     * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testBuilder
+     * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testBuilder
      */
     class Builder(val context: PlatformContext) {
         private var maxSizeBytes: Long? = null
@@ -165,7 +165,7 @@ internal expect fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Dou
 /**
  * Memory cache key
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testMemoryCacheKey
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testMemoryCacheKey
  */
 val RequestContext.memoryCacheKey: String
     get() = cacheKey
@@ -173,7 +173,7 @@ val RequestContext.memoryCacheKey: String
 /**
  * Get the image information from the cache value
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetImageInfo
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testGetImageInfo
  */
 fun MemoryCache.Value.getImageInfo(): ImageInfo? {
     return extras?.get("imageInfo") as? ImageInfo
@@ -182,7 +182,7 @@ fun MemoryCache.Value.getImageInfo(): ImageInfo? {
 /**
  * Get the resize from the cache value
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetResize
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testGetResize
  */
 fun MemoryCache.Value.getResize(): Resize? {
     return extras?.get("resize") as? Resize
@@ -191,7 +191,7 @@ fun MemoryCache.Value.getResize(): Resize? {
 /**
  * Get the transformed list from the cache value
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetTransformeds
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testGetTransformeds
  */
 fun MemoryCache.Value.getTransformeds(): List<String>? {
     @Suppress("UNCHECKED_CAST")
@@ -201,7 +201,7 @@ fun MemoryCache.Value.getTransformeds(): List<String>? {
 /**
  * Get the extras from the cache value
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetExtras
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testGetExtras
  */
 fun MemoryCache.Value.getExtras(): Map<String, String>? {
     @Suppress("UNCHECKED_CAST")
@@ -211,7 +211,7 @@ fun MemoryCache.Value.getExtras(): Map<String, String>? {
 /**
  * Create a new cache value extras
  *
- * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testNewCacheValueExtras
+ * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testNewCacheValueExtras
  */
 fun newCacheValueExtras(
     imageInfo: ImageInfo,

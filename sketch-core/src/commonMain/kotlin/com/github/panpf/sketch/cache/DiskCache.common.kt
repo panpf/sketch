@@ -30,7 +30,7 @@ import kotlin.math.roundToLong
 /**
  * Disk cache for bitmap or uri data
  *
- * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest
  */
 interface DiskCache : Closeable {
 
@@ -140,7 +140,7 @@ interface DiskCache : Closeable {
     }
 
     /**
-     * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testBuilder
+     * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testBuilder
      */
     open class Builder(
         val context: PlatformContext,
@@ -228,7 +228,7 @@ interface DiskCache : Closeable {
     }
 
     /**
-     * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testDownloadBuilder
+     * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testDownloadBuilder
      */
     class DownloadBuilder(
         context: PlatformContext,
@@ -248,7 +248,7 @@ interface DiskCache : Closeable {
     }
 
     /**
-     * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testResultBuilder
+     * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testResultBuilder
      */
     class ResultBuilder(
         context: PlatformContext,
@@ -276,18 +276,18 @@ interface DiskCache : Closeable {
 }
 
 /**
- * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testPlatformDefaultDiskCacheMaxSize
+ * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testPlatformDefaultDiskCacheMaxSize
  */
 expect fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long?
 
 /**
- * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testResultCacheKey
+ * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testResultCacheKey
  */
 val RequestContext.resultCacheKey: String
     get() = cacheKey
 
 /**
- * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testDownloadCacheKey
+ * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testDownloadCacheKey
  */
 val ImageRequest.downloadCacheKey: String
     get() = uri.toString()

@@ -40,7 +40,7 @@ import okio.use
 /**
  * Result cache decode interceptor, used to read and write the decode result to the disk cache
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.MemoryCacheRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.MemoryCacheRequestInterceptorTest
  */
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
 

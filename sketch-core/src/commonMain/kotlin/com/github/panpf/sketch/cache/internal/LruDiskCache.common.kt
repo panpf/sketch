@@ -44,7 +44,7 @@ expect fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): P
 /**
  * A disk cache that manages the cache according to a least-used rule
  *
- * @see com.github.panpf.sketch.core.test.cache.internal.LruDiskCacheTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.LruDiskCacheTest
  */
 @Suppress("FoldInitializerAndIfToElvis")
 class LruDiskCache(
