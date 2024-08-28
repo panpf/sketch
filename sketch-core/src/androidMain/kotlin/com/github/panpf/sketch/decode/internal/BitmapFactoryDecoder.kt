@@ -23,6 +23,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Decode image files using BitmapFactory
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecoderTest
  */
 open class BitmapFactoryDecoder(
     requestContext: RequestContext,

@@ -16,6 +16,11 @@
 
 package com.github.panpf.sketch.decode.internal
 
+/**
+ * Image format
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.ImageFormatTest
+ */
 enum class ImageFormat(val mimeType: String) {
     JPEG("image/jpeg"),
     PNG("image/png"),

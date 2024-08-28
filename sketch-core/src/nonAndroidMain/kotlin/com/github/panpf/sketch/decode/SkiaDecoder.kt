@@ -22,6 +22,11 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
 
+/**
+ * Decode image files using Skia Image
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.SkiaDecoderTest
+ */
 class SkiaDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,

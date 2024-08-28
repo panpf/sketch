@@ -46,15 +46,15 @@ fun interface Decoder {
      */
     interface Factory : Key {
 
+        /**
+         * The key of the current [Factory], which is used to distinguish different [Factory]
+         */
         override val key: String
 
         /**
          * If the current [Factory]'s [Decoder] can decode Image from the current [fetchResult],
          * create a [Decoder] and return it, otherwise return null
          */
-        fun create(
-            requestContext: RequestContext,
-            fetchResult: FetchResult,
-        ): Decoder?
+        fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder?
     }
 }

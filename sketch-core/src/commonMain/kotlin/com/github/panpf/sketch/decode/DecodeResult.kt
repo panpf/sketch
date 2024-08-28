@@ -22,8 +22,10 @@ import com.github.panpf.sketch.source.DataFrom
 
 /**
  * The result of [Decoder.decode]
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.DecodeResultTest
  */
-data class DecodeResult constructor(
+data class DecodeResult(
     val image: Image,
     val imageInfo: ImageInfo,
     val dataFrom: DataFrom,

@@ -18,4 +18,7 @@ package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.util.SketchException
 
-class ImageInvalidException constructor(message: String) : SketchException(message, null)
+/**
+ * Image invalid exception
+ */
+class ImageInvalidException(message: String) : SketchException(message, null)

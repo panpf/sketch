@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.fetch
+package com.github.panpf.sketch.core.common.test.fetch
 
 import android.net.Uri
 import androidx.core.net.toUri

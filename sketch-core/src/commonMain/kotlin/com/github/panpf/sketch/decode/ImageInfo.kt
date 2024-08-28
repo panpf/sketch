@@ -18,7 +18,12 @@ package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.util.Size
 
-data class ImageInfo constructor(
+/**
+ * Image information
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.ImageInfoTest
+ */
+data class ImageInfo(
     val size: Size,
     val mimeType: String,
 ) {

@@ -21,7 +21,7 @@ import com.github.panpf.sketch.util.SketchException
 /**
  * Decode related exception
  */
-class DecodeException constructor(
+class DecodeException(
     message: String,
     cause: Throwable? = null
 ) : SketchException(message, cause)

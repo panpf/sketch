@@ -30,6 +30,11 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
+/**
+ * Write all the content of the input stream to the output stream.
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.internal.HttpUtilsTest.testWriteAllWithProgress
+ */
 @Throws(IOException::class, CancellationException::class)
 internal suspend fun writeAllWithProgress(
     sink: BufferedSink,
@@ -82,6 +87,8 @@ internal suspend fun writeAllWithProgress(
  *
  * "text/plain" is often used as a default/fallback MIME type.
  * Attempt to guess a better MIME type from the file extension.
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.internal.HttpUtilsTest.testGetMimeType
  */
 internal fun getMimeType(url: String, contentType: String?): String? {
     if (contentType == null

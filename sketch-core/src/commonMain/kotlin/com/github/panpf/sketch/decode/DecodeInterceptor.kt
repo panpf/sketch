@@ -46,21 +46,39 @@ interface DecodeInterceptor : NullableKey {
      */
     val sortWeight: Int
 
+    /**
+     * Intercept the execution of Image decode
+     */
     @WorkerThread
     suspend fun intercept(chain: Chain): Result<DecodeResult>
 
+    /**
+     * The chain of interceptors to execute
+     */
     interface Chain {
 
+        /**
+         * The sketch instance that initiated the request
+         */
         val sketch: Sketch
 
+        /**
+         * The request that initiated the decode
+         */
         val request: ImageRequest
 
+        /**
+         * The context of the request
+         */
         val requestContext: RequestContext
 
+        /**
+         * The result of the fetch
+         */
         val fetchResult: FetchResult?
 
         /**
-         * Continue executing the chain.
+         * Proceed with the request
          */
         @WorkerThread
         suspend fun proceed(): Result<DecodeResult>

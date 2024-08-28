@@ -41,6 +41,8 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  *
  * Notes：ImageRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
  * The bitmapConfig attribute takes effect only on Android 30 or later
+ *
+ * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
 class VideoFrameDecoder(

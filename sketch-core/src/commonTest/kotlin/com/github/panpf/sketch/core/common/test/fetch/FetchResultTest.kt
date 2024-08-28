@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.fetch
+package com.github.panpf.sketch.core.common.test.fetch
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.FetchResultImpl
 import com.github.panpf.sketch.request.ImageRequest
@@ -25,13 +24,11 @@ import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import okio.Path.Companion.toOkioPath
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import java.io.File
+import okio.Path.Companion.toPath
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
 class FetchResultTest {
 
     @Test
@@ -40,10 +37,10 @@ class FetchResultTest {
         val request = ImageRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg").toOkioPath()),
+            FileDataSource(sketch, request, "/sdcard/sample.jpeg".toPath()),
             "image/jpeg"
         ).apply {
-            Assert.assertTrue(this is FetchResultImpl)
+            assertTrue(this is FetchResultImpl)
         }
     }
 
@@ -55,17 +52,17 @@ class FetchResultTest {
         val request = ImageRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg").toOkioPath()),
+            FileDataSource(sketch, request, "/sdcard/sample.jpeg".toPath()),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
         FetchResult(
             ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(DataFrom.NETWORK, dataFrom)
+            assertEquals(DataFrom.NETWORK, dataFrom)
         }
     }
 
@@ -75,10 +72,10 @@ class FetchResultTest {
         val request = ImageRequest(context, "")
 
         FetchResult(
-            FileDataSource(sketch, request, File("/sdcard/sample.jpeg").toOkioPath()),
+            FileDataSource(sketch, request, "/sdcard/sample.jpeg".toPath()),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "FetchResult(source=FileDataSource('/sdcard/sample.jpeg'),mimeType='image/jpeg')",
                 this.toString()
             )
@@ -89,7 +86,7 @@ class FetchResultTest {
             ByteArrayDataSource(sketch, request, DataFrom.NETWORK, data),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "FetchResult(source=ByteArrayDataSource(data=$data, from=NETWORK),mimeType='image/jpeg')",
                 this.toString()
             )
@@ -111,7 +108,7 @@ class FetchResultTest {
             ByteArrayDataSource(sketch, request, MEMORY, bytes),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 bytes.take(100).toTypedArray().contentToString(),
                 this.headerBytes.contentToString()
             )
@@ -127,7 +124,7 @@ class FetchResultTest {
             ByteArrayDataSource(sketch, request, MEMORY, bytes1),
             "image/jpeg"
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 bytes1.toTypedArray().contentToString(),
                 this.headerBytes.contentToString()
             )

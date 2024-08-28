@@ -23,6 +23,14 @@ import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import okio.use
 
+/**
+ * Using DecodeHelper to decode image
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecoderTest
+ * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest
+ * @see com.github.panpf.sketch.video.ffmpeg.test.decode.FFmpegVideoFrameDecoderTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.SkiaDecoderTest
+ */
 open class HelperDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,

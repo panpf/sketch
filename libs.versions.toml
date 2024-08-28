@@ -33,6 +33,7 @@ kotlin = "2.0.0"
 kotlinx-atomicfu = "0.24.0" # sync with kotlin version
 kotlinx-coroutines = "1.8.1"
 kotlinx-cover = "0.8.3"
+kotlinx-datetime = "0.6.1"
 kotlinx-serialization-json = "1.7.0"
 ktor = "2.3.11"
 ktor-wasm = "3.0.0-wasm2"   # TODO Currently only versions with the '-wasm2' suffix support wasm
@@ -107,6 +108,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }

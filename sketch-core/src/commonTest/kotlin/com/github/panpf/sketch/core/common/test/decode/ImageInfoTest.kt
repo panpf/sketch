@@ -14,85 +14,84 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.decode
+package com.github.panpf.sketch.core.common.test.decode
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Size
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
-@RunWith(AndroidJUnit4::class)
 class ImageInfoTest {
 
     @Test
     fun testConstructor() {
         ImageInfo(57, 34, "image/jpeg").apply {
-            Assert.assertEquals(57, width)
-            Assert.assertEquals(34, height)
-            Assert.assertEquals("image/jpeg", mimeType)
+            assertEquals(57, width)
+            assertEquals(34, height)
+            assertEquals("image/jpeg", mimeType)
         }
 
         ImageInfo(570, 340, "image/png").apply {
-            Assert.assertEquals(570, width)
-            Assert.assertEquals(340, height)
-            Assert.assertEquals("image/png", mimeType)
+            assertEquals(570, width)
+            assertEquals(340, height)
+            assertEquals("image/png", mimeType)
         }
     }
 
     @Test
     fun testNewResult() {
         val imageInfo = ImageInfo(300, 500, "image/jpeg").apply {
-            Assert.assertEquals(300, width)
-            Assert.assertEquals(500, height)
-            Assert.assertEquals("image/jpeg", mimeType)
+            assertEquals(300, width)
+            assertEquals(500, height)
+            assertEquals("image/jpeg", mimeType)
         }
 
         imageInfo.copy().apply {
-            Assert.assertNotSame(imageInfo, this)
-            Assert.assertEquals(imageInfo, this)
-            Assert.assertEquals(300, width)
-            Assert.assertEquals(500, height)
-            Assert.assertEquals("image/jpeg", mimeType)
+            assertNotSame(imageInfo, this)
+            assertEquals(imageInfo, this)
+            assertEquals(300, width)
+            assertEquals(500, height)
+            assertEquals("image/jpeg", mimeType)
         }
 
         imageInfo.copy(Size(200, 500)).apply {
-            Assert.assertNotSame(imageInfo, this)
-            Assert.assertNotEquals(imageInfo, this)
-            Assert.assertEquals(200, width)
-            Assert.assertEquals(500, height)
-            Assert.assertEquals("image/jpeg", mimeType)
+            assertNotSame(imageInfo, this)
+            assertNotEquals(imageInfo, this)
+            assertEquals(200, width)
+            assertEquals(500, height)
+            assertEquals("image/jpeg", mimeType)
         }
 
         imageInfo.copy(Size(300, 400)).apply {
-            Assert.assertNotSame(imageInfo, this)
-            Assert.assertNotEquals(imageInfo, this)
-            Assert.assertEquals(300, width)
-            Assert.assertEquals(400, height)
-            Assert.assertEquals("image/jpeg", mimeType)
+            assertNotSame(imageInfo, this)
+            assertNotEquals(imageInfo, this)
+            assertEquals(300, width)
+            assertEquals(400, height)
+            assertEquals("image/jpeg", mimeType)
         }
 
         imageInfo.copy(mimeType = "image/png").apply {
-            Assert.assertNotSame(imageInfo, this)
-            Assert.assertNotEquals(imageInfo, this)
-            Assert.assertEquals(300, width)
-            Assert.assertEquals(500, height)
-            Assert.assertEquals("image/png", mimeType)
+            assertNotSame(imageInfo, this)
+            assertNotEquals(imageInfo, this)
+            assertEquals(300, width)
+            assertEquals(500, height)
+            assertEquals("image/png", mimeType)
         }
     }
 
     @Test
     fun testToString() {
         ImageInfo(57, 34, "image/jpeg").apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ImageInfo(size=57x34, mimeType='image/jpeg')",
                 toString()
             )
         }
 
         ImageInfo(570, 340, "image/png").apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ImageInfo(size=570x340, mimeType='image/png')",
                 toString()
             )
@@ -102,14 +101,14 @@ class ImageInfoTest {
     @Test
     fun testToShortString() {
         ImageInfo(57, 34, "image/jpeg").apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ImageInfo(57x34,'image/jpeg')",
                 toShortString()
             )
         }
 
         ImageInfo(570, 340, "image/png").apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ImageInfo(570x340,'image/png')",
                 toShortString()
             )
