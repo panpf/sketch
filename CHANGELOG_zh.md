@@ -11,6 +11,7 @@
 * fix: 修复 ComposableImageRequest() 和 ComposableImageOptions() 函数内部无法监听并更新 Compose State 的
   bug。 [#207](https://github.com/panpf/sketch/issues/207)
 * new: SkiaBitmapImage 现在支持内存缓存
+* remove: 移除 SkiaExifOrientationHelper
 
 # 4.0.0-alpha07
 

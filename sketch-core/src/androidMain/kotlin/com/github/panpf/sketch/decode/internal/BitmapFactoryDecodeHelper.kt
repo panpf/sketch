@@ -42,7 +42,7 @@ class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataS
     }
 
     private val exifOrientation: Int by lazy { dataSource.readExifOrientation() }
-    private val exifOrientationHelper by lazy { AndroidExifOrientationHelper(exifOrientation) }
+    private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
 
     override fun decode(sampleSize: Int): Image {
         val config = request.newDecodeConfigByQualityParams(imageInfo.mimeType).apply {

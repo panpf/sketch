@@ -16,26 +16,67 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.RectF
+import androidx.annotation.WorkerThread
+import androidx.exifinterface.media.ExifInterface
+import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.reverse
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.flipped
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.rotateInSpace
+import com.github.panpf.sketch.util.safeConfig
+import okio.buffer
+import java.io.IOException
 import kotlin.math.abs
 
-expect fun ExifOrientationHelper(exifOrientation: Int): ExifOrientationHelper
+/**
+ * Read the Exif orientation attribute of the image
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.ExifOrientationHelperTest.testReadExifOrientation
+ */
+@Throws(IOException::class)
+fun DataSource.readExifOrientation(): Int =
+    openSource().buffer().inputStream().use {
+        ExifInterface(it).getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )
+    }
+
+/**
+ * Read the Exif orientation attribute of the image, if the mimeType is not supported, return [ExifInterface.ORIENTATION_UNDEFINED]
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.ExifOrientationHelperTest.testReadExifOrientationWithMimeType
+ */
+@Throws(IOException::class)
+fun DataSource.readExifOrientationWithMimeType(mimeType: String): Int =
+    if (ExifInterface.isSupportedMimeType(mimeType)) {
+        readExifOrientation()
+    } else {
+        ExifInterface.ORIENTATION_UNDEFINED
+    }
 
 /**
  * Rotate and flip the image according to the 'orientation' attribute of Exif so that the image is presented to the user at a normal angle
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.ExifOrientationHelperTest
  */
-// TODO Remove
-interface ExifOrientationHelper {
+class ExifOrientationHelper constructor(val exifOrientation: Int) {
 
-    val exifOrientation: Int
+    init {
+        require(values.any { it == exifOrientation }) { "Invalid exifOrientation: $exifOrientation" }
+    }
 
     /**
      * Returns if the current image orientation is flipped.
@@ -80,6 +121,7 @@ interface ExifOrientationHelper {
         return size.rotate(if (!reverse) rotationDegrees else -rotationDegrees)
     }
 
+    @Suppress("KotlinConstantConditions")
     fun applyToScale(scale: Scale, imageSize: Size, reverse: Boolean = false): Scale {
         val rotationDegrees = getRotationDegrees()
         val flipHorizontally = isFlipHorizontally()
@@ -124,7 +166,79 @@ interface ExifOrientationHelper {
         }
     }
 
-    fun applyToImage(image: Image, reverse: Boolean = false): Image?
+    @WorkerThread
+    fun applyToImage(image: Image, reverse: Boolean = false): Image? {
+        require(image is AndroidBitmapImage) { "Only AndroidBitmapImage is supported: ${image::class}" }
+        val inBitmap = image.bitmap
+        val rotationDegrees = getRotationDegrees().let {
+            if (reverse) it * -1 else it
+        }
+        val outBitmap = applyFlipAndRotation(
+            inBitmap = inBitmap,
+            isFlipHorizontally = isFlipHorizontally(),
+            rotationDegrees = rotationDegrees,
+            apply = !reverse
+        ) ?: return null
+        return outBitmap.asSketchImage()
+    }
+
+    @WorkerThread
+    private fun applyFlipAndRotation(
+        inBitmap: Bitmap,
+        isFlipHorizontally: Boolean,
+        rotationDegrees: Int,
+        apply: Boolean,
+    ): Bitmap? {
+        val isRotated = abs(rotationDegrees % 360) != 0
+        if (!isFlipHorizontally && !isRotated) {
+            return null
+        }
+
+        val matrix = Matrix().apply {
+            applyFlipAndRotationToMatrix(this, isFlipHorizontally, rotationDegrees, apply)
+        }
+        val newRect = RectF(0f, 0f, inBitmap.width.toFloat(), inBitmap.height.toFloat())
+        matrix.mapRect(newRect)
+        matrix.postTranslate(-newRect.left, -newRect.top)
+
+        val config = inBitmap.safeConfig
+        val newWidth = newRect.width().toInt()
+        val newHeight = newRect.height().toInt()
+        val outBitmap = Bitmap.createBitmap(
+            /* width = */ newWidth,
+            /* height = */ newHeight,
+            /* config = */ config,
+        )
+
+        val canvas = Canvas(outBitmap)
+        val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
+        canvas.drawBitmap(inBitmap, matrix, paint)
+        return outBitmap
+    }
+
+    private fun applyFlipAndRotationToMatrix(
+        matrix: Matrix,
+        isFlipped: Boolean,
+        rotationDegrees: Int,
+        apply: Boolean
+    ) {
+        val isRotated = abs(rotationDegrees % 360) != 0
+        if (apply) {
+            if (isFlipped) {
+                matrix.postScale(-1f, 1f)
+            }
+            if (isRotated) {
+                matrix.postRotate(rotationDegrees.toFloat())
+            }
+        } else {
+            if (isRotated) {
+                matrix.postRotate(rotationDegrees.toFloat())
+            }
+            if (isFlipped) {
+                matrix.postScale(-1f, 1f)
+            }
+        }
+    }
 
     companion object {
         /**
@@ -225,7 +339,7 @@ interface ExifOrientationHelper {
                 "ROTATE_90" -> ROTATE_90
                 "TRANSVERSE" -> TRANSVERSE
                 "ROTATE_270" -> ROTATE_270
-                else -> throw IllegalArgumentException("Unknown ExifOrientationHelper name: $name")
+                else -> throw IllegalArgumentException("Unknown ExifOrientation name: $name")
             }
 
         val values = intArrayOf(
@@ -242,6 +356,11 @@ interface ExifOrientationHelper {
     }
 }
 
+/**
+ * Add exif rotation to Resize
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.ExifOrientationHelperTest.testAddToResize
+ */
 fun ExifOrientationHelper.addToResize(resize: Resize, imageSize: Size): Resize {
     val newSize = applyToSize(resize.size, reverse = true)
     val newScale = applyToScale(resize.scale, imageSize, reverse = true)

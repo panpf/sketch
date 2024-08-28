@@ -8,7 +8,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder
-import com.github.panpf.sketch.decode.internal.AndroidExifOrientationHelper
+import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.request.ImageRequest
@@ -70,7 +70,7 @@ actual suspend fun readImageInfoOrNull(
         } else {
             val imageInfo = dataSource.readImageInfoWithBitmapFactoryOrThrow()
             val exifOrientation = dataSource.readExifOrientation()
-            val exifOrientationHelper = AndroidExifOrientationHelper(exifOrientation)
+            val exifOrientationHelper = ExifOrientationHelper(exifOrientation)
             val newSize = exifOrientationHelper.applyToSize(imageInfo.size)
             imageInfo.copy(size = newSize)
         }

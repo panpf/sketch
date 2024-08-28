@@ -82,7 +82,7 @@ class ExifOrientationTestFileHelper constructor(
         orientation: Int
     ) {
         val newBitmap = ExifOrientationHelper(orientation)
-            ?.applyToImage(image = sourceBitmap.asSketchImage(), reverse = true)
+            .applyToImage(image = sourceBitmap.asSketchImage(), reverse = true)
             ?.getBitmapOrThrow()
             ?: sourceBitmap
         file.parentFile?.mkdirs()

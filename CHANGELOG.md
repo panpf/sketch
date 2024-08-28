@@ -13,6 +13,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * fix: Fixed the bug that the ComposableImageRequest() and ComposableImageOptions() functions cannot
   listen and update the Compose State. [#207](https://github.com/panpf/sketch/issues/207)
 * new: SkiaBitmapImage now supports memory caching
+* remove: Remove SkiaExifOrientationHelper
 
 # 4.0.0-alpha07
 
