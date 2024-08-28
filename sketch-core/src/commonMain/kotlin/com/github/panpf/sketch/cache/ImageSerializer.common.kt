@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache.internal
+package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
@@ -24,11 +24,17 @@ import okio.BufferedSink
 
 /**
  * Create an ImageSerializer for a specific platform
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest.testCreateImageSerializer
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest.testCreateImageSerializer
  */
 expect fun createImageSerializer(): ImageSerializer?
 
 /**
  * Image serialization interface, used to serialize image objects into disk cache
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest
  */
 interface ImageSerializer {
 

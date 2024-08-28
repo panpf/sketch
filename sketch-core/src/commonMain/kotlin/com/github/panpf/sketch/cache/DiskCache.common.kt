@@ -17,6 +17,7 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
+import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.appCacheDirectory
@@ -27,6 +28,8 @@ import kotlin.math.roundToLong
 
 /**
  * Disk cache for bitmap or uri data
+ *
+ * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest
  */
 interface DiskCache : Closeable {
 
@@ -135,6 +138,9 @@ interface DiskCache : Closeable {
         fun abort()
     }
 
+    /**
+     * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testBuilder
+     */
     open class Builder(
         val context: PlatformContext,
         val fileSystem: FileSystem,
@@ -220,6 +226,9 @@ interface DiskCache : Closeable {
         }
     }
 
+    /**
+     * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testDownloadBuilder
+     */
     class DownloadBuilder(
         context: PlatformContext,
         fileSystem: FileSystem
@@ -237,6 +246,9 @@ interface DiskCache : Closeable {
         }
     }
 
+    /**
+     * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testResultBuilder
+     */
     class ResultBuilder(
         context: PlatformContext,
         fileSystem: FileSystem
@@ -262,10 +274,19 @@ interface DiskCache : Closeable {
     )
 }
 
+/**
+ * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testPlatformDefaultDiskCacheMaxSize
+ */
 expect fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long?
 
+/**
+ * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testResultCacheKey
+ */
 val RequestContext.resultCacheKey: String
     get() = cacheKey
 
+/**
+ * @see com.github.panpf.sketch.core.test.cache.DiskCacheTest.testDownloadCacheKey
+ */
 val ImageRequest.downloadCacheKey: String
     get() = uri.toString()

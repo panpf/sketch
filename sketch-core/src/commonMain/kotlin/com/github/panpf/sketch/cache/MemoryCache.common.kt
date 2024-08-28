@@ -17,6 +17,7 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Resize
@@ -24,7 +25,9 @@ import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong
 
 /**
- * Memory cache for bitmap
+ * Memory cache for [Image]
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest
  */
 interface MemoryCache {
 
@@ -81,17 +84,36 @@ interface MemoryCache {
      */
     suspend fun <R> withLock(key: String, action: suspend MemoryCache.() -> R): R
 
+    /**
+     * Memory cache value
+     */
     interface Value {
-
+        /**
+         * Cached image
+         */
         val image: Image
 
+        /**
+         * Size of the cache
+         */
         val size: Long
 
+        /**
+         * Extra information
+         */
         val extras: Map<String, Any?>?
 
+        /**
+         * Check if the cache is valid
+         */
         fun checkValid(): Boolean
     }
 
+    /**
+     * Builder for [MemoryCache]
+     *
+     * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testBuilder
+     */
     class Builder(val context: PlatformContext) {
         private var maxSizeBytes: Long? = null
         private var maxSizePercent: Double? = null
@@ -131,30 +153,65 @@ interface MemoryCache {
     }
 }
 
-/** Return the default percent of the application's total memory to use for the memory cache. */
+/**
+ * Return the default percent of the application's total memory to use for the memory cache.
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testPlatformDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.MemoryCacheNonAndroidTest.testPlatformDefaultMemoryCacheSizePercent
+ */
 internal expect fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double
 
+/**
+ * Memory cache key
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testMemoryCacheKey
+ */
 val RequestContext.memoryCacheKey: String
     get() = cacheKey
 
+/**
+ * Get the image information from the cache value
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetImageInfo
+ */
 fun MemoryCache.Value.getImageInfo(): ImageInfo? {
     return extras?.get("imageInfo") as? ImageInfo
 }
 
+/**
+ * Get the resize from the cache value
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetResize
+ */
 fun MemoryCache.Value.getResize(): Resize? {
     return extras?.get("resize") as? Resize
 }
 
+/**
+ * Get the transformed list from the cache value
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetTransformeds
+ */
 fun MemoryCache.Value.getTransformeds(): List<String>? {
     @Suppress("UNCHECKED_CAST")
     return extras?.get("transformeds") as? List<String>
 }
 
+/**
+ * Get the extras from the cache value
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testGetExtras
+ */
 fun MemoryCache.Value.getExtras(): Map<String, String>? {
     @Suppress("UNCHECKED_CAST")
     return extras?.get("extras") as? Map<String, String>
 }
 
+/**
+ * Create a new cache value extras
+ *
+ * @see com.github.panpf.sketch.core.test.cache.MemoryCacheTest.testNewCacheValueExtras
+ */
 fun newCacheValueExtras(
     imageInfo: ImageInfo,
     resize: Resize,

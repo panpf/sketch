@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
+import okio.Path
+import okio.Path.Companion.toOkioPath
 
 /**
- * @see com.github.panpf.sketch.core.nonandroid.test.cache.MemoryCacheNonAndroidTest.testPlatformDefaultMemoryCacheSizePercent
+ * Make the cache directory support multiple processes. If it is a non-main process, add the process name after the directory.
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.internal.LruDiskCacheAndroidTest.testCheckDiskCacheDirectory
  */
-internal actual fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double {
-    return 0.15
+actual fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): Path {
+    return fileNameCompatibilityMultiProcess(context, directory.toFile()).toOkioPath()
 }

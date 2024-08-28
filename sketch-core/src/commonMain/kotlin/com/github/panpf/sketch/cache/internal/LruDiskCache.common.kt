@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
-import com.github.panpf.sketch.cache.internal.DiskLruCache
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
@@ -31,10 +31,19 @@ import kotlinx.coroutines.sync.withLock
 import okio.FileSystem
 import okio.Path
 
+/**
+ * Check whether the disk cache directory meets the requirements of the platform.
+ * If it does not meet the requirements, it will try to repair it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.internal.LruDiskCacheAndroidTest.testCheckDiskCacheDirectory
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.internal.LruDiskCacheNonAndroidTest.testCheckDiskCacheDirectory
+ */
 expect fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): Path
 
 /**
  * A disk cache that manages the cache according to a least-used rule
+ *
+ * @see com.github.panpf.sketch.core.test.cache.internal.LruDiskCacheTest
  */
 @Suppress("FoldInitializerAndIfToElvis")
 class LruDiskCache(

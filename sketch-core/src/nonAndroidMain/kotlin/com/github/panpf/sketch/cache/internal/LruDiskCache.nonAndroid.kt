@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.PlatformContext
+import okio.Path
 
 /**
- * @see com.github.panpf.sketch.core.nonandroid.test.cache.MemoryCacheNonAndroidTest.testPlatformDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.internal.LruDiskCacheNonAndroidTest.testCheckDiskCacheDirectory
  */
-internal actual fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double {
-    return 0.15
-}
+actual fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): Path = directory

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.panpf.sketch.cache
+package com.github.panpf.sketch.cache.internal
 
+import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.requiredMainThread
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.math.roundToLong
@@ -29,15 +28,13 @@ import kotlin.math.roundToLong
  * A bitmap memory cache that manages the cache according to a least-used rule
  *
  * LruMemoryCache is not thread-safe. If you need to use it in multiple threads, please handle the thread-safety issues yourself.
+ *
+ * @see com.github.panpf.sketch.core.test.cache.internal.LruMemoryCacheTest
  */
 class LruMemoryCache constructor(
     override val maxSize: Long,
     val valueLimitedSize: Long = (maxSize * 0.3f).roundToLong()
 ) : MemoryCache {
-
-    companion object {
-        private const val MODULE = "LruMemoryCache"
-    }
 
     private val mutexMap = LruCache<String, Mutex>(200)
 
@@ -119,5 +116,5 @@ class LruMemoryCache constructor(
     }
 
     override fun toString(): String =
-        "$MODULE(maxSize=${maxSize.formatFileSize()},valueLimitedSize=${valueLimitedSize.formatFileSize()})"
+        "LruMemoryCache(maxSize=${maxSize.formatFileSize()},valueLimitedSize=${valueLimitedSize.formatFileSize()})"
 }

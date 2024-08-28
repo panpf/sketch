@@ -17,6 +17,11 @@ import kotlin.test.assertFailsWith
 class DiskCacheTest {
 
     @Test
+    fun testBuilder() {
+        // TODO test: Builder
+    }
+
+    @Test
     fun testDownloadBuilder() {
         val context = getTestContext()
         val fileSystem = defaultFileSystem()
@@ -190,5 +195,21 @@ class DiskCacheTest {
         assertFailsWith(IllegalArgumentException::class) {
             DiskCache.ResultBuilder(context, fileSystem).appVersion(-1)
         }
+    }
+
+
+    @Test
+    fun testPlatformDefaultDiskCacheMaxSize() {
+        // TODO test: platformDefaultDiskCacheMaxSize
+    }
+
+    @Test
+    fun testDownloadCacheKey() {
+        // TODO test: downloadCacheKey
+    }
+
+    @Test
+    fun testResultCacheKey() {
+        // TODO test: resultCacheKey
     }
 }

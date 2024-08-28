@@ -11,6 +11,8 @@ private const val LOW_MEMORY_MULTIPLIER = 0.25
 
 /**
  * Return the default percent of the application's total memory to use for the memory cache.
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testPlatformDefaultMemoryCacheSizePercent
  */
 internal actual fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double {
     return try {

@@ -19,6 +19,7 @@ package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.decode.DecodeInterceptor
