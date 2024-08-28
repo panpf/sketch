@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.rotated
 
 internal actual fun rotateTransformation(image: Image, degrees: Int): Image {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.github.panpf.sketch.sample.service
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.execute
-import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

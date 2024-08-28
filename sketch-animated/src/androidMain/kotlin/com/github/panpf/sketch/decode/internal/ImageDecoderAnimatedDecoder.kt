@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.ImageDecoder
@@ -21,17 +22,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.source.AssetDataSource
-import com.github.panpf.sketch.source.ByteArrayDataSource
-import com.github.panpf.sketch.source.ContentDataSource
-import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
@@ -40,6 +36,11 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers

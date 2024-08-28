@@ -1,7 +1,5 @@
-@file:Suppress("DEPRECATION")
-
 /*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@file:Suppress("DEPRECATION")
+
 package com.github.panpf.sketch.internal
 
 import android.content.Context
@@ -31,17 +32,17 @@ import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.extensions.view.R
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation

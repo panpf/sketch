@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.github.panpf.sketch.ability
 
 import android.content.Context
@@ -29,9 +30,9 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageView
+import com.github.panpf.sketch.ability.internal.RealViewAbilityManager
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.ability.internal.RealViewAbilityManager
 
 /**
  * ImageView base class that supports [ViewAbility]

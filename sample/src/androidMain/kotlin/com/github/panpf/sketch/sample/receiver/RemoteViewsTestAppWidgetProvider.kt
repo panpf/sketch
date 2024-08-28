@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 panpf <panpfpanpf@outlook.com>
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.github.panpf.sketch.sample.receiver
 
 import android.annotation.SuppressLint
@@ -23,10 +24,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.widget.RemoteViews
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.enqueue
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.BuildConfig
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.target.RemoteViewsTarget
