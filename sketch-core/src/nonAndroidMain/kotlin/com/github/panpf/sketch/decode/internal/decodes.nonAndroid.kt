@@ -35,12 +35,17 @@ import kotlin.math.ceil
 
 /* ************************************** sampling ********************************************** */
 
-actual fun getMaxBitmapSize(targetSize: Size): Size {
-    return Size(targetSize.width * 2, targetSize.height * 2)
-}
+/**
+ * Get the maximum Bitmap size allowed by the Skia platform
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testGetMaxBitmapSize
+ */
+actual fun getMaxBitmapSize(): Size? = null
 
 /**
- * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
+ * Calculate the size of the sampled Bitmap, support for Skia Image
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampledBitmapSize
  */
 actual fun calculateSampledBitmapSize(
     imageSize: Size,
@@ -55,7 +60,9 @@ actual fun calculateSampledBitmapSize(
 }
 
 /**
- * Calculate the size of the sampled Bitmap, support for BitmapRegionDecoder
+ * Calculate the size of the sampled Bitmap, support for Skia Image
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampledBitmapSizeForRegion
  */
 actual fun calculateSampledBitmapSizeForRegion(
     regionSize: Size,
@@ -69,6 +76,13 @@ actual fun calculateSampledBitmapSizeForRegion(
 )
 
 
+/* **************************************** decode ********************************************* */
+
+/**
+ * Decode the image by sampling
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecode
+ */
 internal fun Image.decode(sampleSize: Int): SkiaBitmap {
     val bitmapSize = calculateSampledBitmapSize(Size(width, height), sampleSize)
     val bitmap = Bitmap().apply {
@@ -83,6 +97,11 @@ internal fun Image.decode(sampleSize: Int): SkiaBitmap {
     return bitmap
 }
 
+/**
+ * Decode the specified region of the image by sampling
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecodeRegion
+ */
 internal fun Image.decodeRegion(srcRect: SketchRect, sampleSize: Int): SkiaBitmap {
     val bitmapSize = calculateSampledBitmapSize(Size(srcRect.width(), srcRect.height()), sampleSize)
     val bitmap = Bitmap().apply {
@@ -97,6 +116,11 @@ internal fun Image.decodeRegion(srcRect: SketchRect, sampleSize: Int): SkiaBitma
     return bitmap
 }
 
+/**
+ * Decode image width, height, MIME type and other information
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
+ */
 fun DataSource.readImageInfo(): ImageInfo {
     val bytes = openSource().buffer().use { it.readByteArray() }
     val image = Image.makeFromEncoded(bytes)

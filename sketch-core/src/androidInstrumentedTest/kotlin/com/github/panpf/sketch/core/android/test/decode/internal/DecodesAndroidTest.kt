@@ -19,16 +19,13 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
+import android.os.Build
 import androidx.exifinterface.media.ExifInterface
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.OpenGLTextureHelper
 import com.github.panpf.sketch.decode.internal.appliedResize
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
@@ -38,6 +35,7 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
+import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.newDecodeConfigByQualityParams
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactory
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrNull
@@ -68,24 +66,30 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
 import java.io.IOException
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
-class DecodeUtilsTest {
+class DecodesAndroidTest {
+
+    @Test
+    fun testGetMaxBitmapSize() {
+        // TODO test
+    }
 
     @Test
     fun testCalculateSampledBitmapSize() {
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
                 sampleSize = 2
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -93,7 +97,7 @@ class DecodeUtilsTest {
                 mimeType = "image/jpeg"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(502, 100),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -101,7 +105,7 @@ class DecodeUtilsTest {
                 mimeType = "image/png"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -109,7 +113,7 @@ class DecodeUtilsTest {
                 mimeType = "image/bmp"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -117,7 +121,7 @@ class DecodeUtilsTest {
                 mimeType = "image/gif"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -125,7 +129,7 @@ class DecodeUtilsTest {
                 mimeType = "image/webp"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -133,7 +137,7 @@ class DecodeUtilsTest {
                 mimeType = "image/heic"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(503, 101),
             calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
@@ -145,8 +149,8 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampledBitmapSizeForRegion() {
-        Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(503, 101) else Size(502, 100),
+        assertEquals(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) Size(503, 101) else Size(502, 100),
             calculateSampledBitmapSizeForRegion(
                 regionSize = Size(1005, 201),
                 sampleSize = 2,
@@ -154,7 +158,7 @@ class DecodeUtilsTest {
                 imageSize = Size(1005, 201)
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(502, 100),
             calculateSampledBitmapSizeForRegion(
                 regionSize = Size(1005, 201),
@@ -163,7 +167,7 @@ class DecodeUtilsTest {
                 imageSize = Size(1005, 201)
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(288, 100),
             calculateSampledBitmapSizeForRegion(
                 regionSize = Size(577, 201),
@@ -172,7 +176,7 @@ class DecodeUtilsTest {
                 imageSize = Size(1005, 201)
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(502, 55),
             calculateSampledBitmapSizeForRegion(
                 regionSize = Size(1005, 111),
@@ -181,7 +185,7 @@ class DecodeUtilsTest {
                 imageSize = Size(1005, 201)
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(288, 55),
             calculateSampledBitmapSizeForRegion(
                 regionSize = Size(577, 111),
@@ -190,7 +194,7 @@ class DecodeUtilsTest {
                 imageSize = Size(1005, 201)
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             Size(288, 55),
             calculateSampledBitmapSizeForRegion(
                 regionSize = Size(577, 111),
@@ -202,49 +206,319 @@ class DecodeUtilsTest {
 
     @Test
     fun testCalculateSampleSize() {
-        Assert.assertEquals(
+        assertEquals(
+            1,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            1,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(503, 101),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(252, 51),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            8,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+                smallerSizeMode = false
+            )
+        )
+
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/jpeg",
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/png",
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/bmp",
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/webp",
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/gif",
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heic",
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heif",
+                smallerSizeMode = false
+            )
+        )
+
+        // smallerSizeMode = true
+        assertEquals(
+            1,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            1,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(503, 101),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(252, 51),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            8,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+                smallerSizeMode = true
+            )
+        )
+
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/jpeg",
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/png",
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/bmp",
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/webp",
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/gif",
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heic",
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSize(
+                imageSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/heif",
+                smallerSizeMode = true
+            )
+        )
+
+
+        val maxSize = getMaxBitmapSize()?.width ?: 0
+        val expected = when {
+            maxSize <= 4096 -> 32
+            maxSize <= 8192 -> 16
+            else -> 4
+        }
+        assertEquals(
+            expected,
+            calculateSampleSize(
+                imageSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            32,
+            calculateSampleSize(
+                imageSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = true
+            )
+        )
+    }
+
+    @Test
+    fun testCalculateSampleSize2() {
+        assertEquals(
             1,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(1006, 202),
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             1,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(1005, 201),
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(1004, 200),
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(503, 101),
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(252, 51),
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             8,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -252,7 +526,7 @@ class DecodeUtilsTest {
             )
         )
 
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -260,7 +534,7 @@ class DecodeUtilsTest {
                 mimeType = "image/jpeg"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -268,7 +542,7 @@ class DecodeUtilsTest {
                 mimeType = "image/png"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -276,7 +550,7 @@ class DecodeUtilsTest {
                 mimeType = "image/bmp"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -284,7 +558,7 @@ class DecodeUtilsTest {
                 mimeType = "image/webp"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -292,7 +566,7 @@ class DecodeUtilsTest {
                 mimeType = "image/gif"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -300,7 +574,7 @@ class DecodeUtilsTest {
                 mimeType = "image/heic"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSize(
                 imageSize = Size(1005, 201),
@@ -311,541 +585,271 @@ class DecodeUtilsTest {
     }
 
     @Test
-    fun testCalculateSampleSize2() {
-        Assert.assertEquals(
-            1,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(1006, 202),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            1,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(1005, 201),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(1004, 200),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(503, 101),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(252, 51),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            8,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(251, 50),
-                smallerSizeMode = false
-            )
-        )
-
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/jpeg",
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/png",
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/bmp",
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/webp",
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/gif",
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/heic",
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/heif",
-                smallerSizeMode = false
-            )
-        )
-
-        // smallerSizeMode = true
-        Assert.assertEquals(
-            1,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(1006, 202),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            1,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(1005, 201),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(1004, 200),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(503, 101),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(252, 51),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            8,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(251, 50),
-                smallerSizeMode = true
-            )
-        )
-
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/jpeg",
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/png",
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/bmp",
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/webp",
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/gif",
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/heic",
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSize(
-                imageSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/heif",
-                smallerSizeMode = true
-            )
-        )
-
-
-        val maxSize = OpenGLTextureHelper.maxSize ?: 0
-        val expected = when {
-            maxSize <= 4096 -> 32
-            maxSize <= 8192 -> 16
-            else -> 4
-        }
-        Assert.assertEquals(
-            expected,
-            calculateSampleSize(
-                imageSize = Size(30000, 750),
-                targetSize = Size(1080, 1920),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            32,
-            calculateSampleSize(
-                imageSize = Size(30000, 750),
-                targetSize = Size(1080, 1920),
-                smallerSizeMode = true
-            )
-        )
-    }
-
-    @Test
     fun testCalculateSampleSizeForRegion() {
-        Assert.assertEquals(
+        assertEquals(
             1,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1006, 202),
+                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             1,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1005, 201),
+                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1004, 200),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(501, 99),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(251, 50),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             8,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(250, 49),
                 imageSize = Size(2005, 301),
+                smallerSizeMode = false
             )
         )
 
-        Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+        assertEquals(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) 4 else 2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 imageSize = Size(1005, 201),
+                smallerSizeMode = false
             )
         )
 
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 mimeType = "image/png",
                 imageSize = Size(1005, 201),
+                smallerSizeMode = false
+            )
+        )
+
+        // smallerSizeMode = true
+        assertEquals(
+            1,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1006, 202),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            1,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(1004, 200),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(501, 99),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            4,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(251, 50),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+        assertEquals(
+            8,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(250, 49),
+                imageSize = Size(2005, 301),
+                smallerSizeMode = true
+            )
+        )
+
+        assertEquals(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) 4 else 2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                imageSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+
+        assertEquals(
+            2,
+            calculateSampleSizeForRegion(
+                regionSize = Size(1005, 201),
+                targetSize = Size(502, 100),
+                mimeType = "image/png",
+                imageSize = Size(1005, 201),
+                smallerSizeMode = true
+            )
+        )
+
+        val maxSize = getMaxBitmapSize()?.width ?: 0
+        val expected = when {
+            maxSize <= 4096 -> 32
+            maxSize <= 8192 -> 16
+            else -> 4
+        }
+        assertEquals(
+            expected,
+            calculateSampleSizeForRegion(
+                regionSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = false
+            )
+        )
+        assertEquals(
+            32,
+            calculateSampleSizeForRegion(
+                regionSize = Size(30000, 750),
+                targetSize = Size(1080, 1920),
+                smallerSizeMode = true
             )
         )
     }
 
     @Test
     fun testCalculateSampleSizeForRegion2() {
-        Assert.assertEquals(
+        assertEquals(
             1,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1006, 202),
-                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             1,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1005, 201),
-                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(1004, 200),
                 imageSize = Size(2005, 301),
-                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 imageSize = Size(2005, 301),
-                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(501, 99),
                 imageSize = Size(2005, 301),
-                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             4,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(251, 50),
                 imageSize = Size(2005, 301),
-                smallerSizeMode = false
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             8,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(250, 49),
                 imageSize = Size(2005, 301),
-                smallerSizeMode = false
             )
         )
 
-        Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+        assertEquals(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) 4 else 2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 imageSize = Size(1005, 201),
-                smallerSizeMode = false
             )
         )
 
-        Assert.assertEquals(
+        assertEquals(
             2,
             calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
                 mimeType = "image/png",
                 imageSize = Size(1005, 201),
-                smallerSizeMode = false
-            )
-        )
-
-        // smallerSizeMode = true
-        Assert.assertEquals(
-            1,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(1006, 202),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            1,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(1005, 201),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(1004, 200),
-                imageSize = Size(2005, 301),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            2,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                imageSize = Size(2005, 301),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(501, 99),
-                imageSize = Size(2005, 301),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            4,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(251, 50),
-                imageSize = Size(2005, 301),
-                smallerSizeMode = true
-            )
-        )
-        Assert.assertEquals(
-            8,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(250, 49),
-                imageSize = Size(2005, 301),
-                smallerSizeMode = true
-            )
-        )
-
-        Assert.assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                imageSize = Size(1005, 201),
-                smallerSizeMode = true
-            )
-        )
-
-        Assert.assertEquals(
-            2,
-            calculateSampleSizeForRegion(
-                regionSize = Size(1005, 201),
-                targetSize = Size(502, 100),
-                mimeType = "image/png",
-                imageSize = Size(1005, 201),
-                smallerSizeMode = true
-            )
-        )
-
-        val maxSize = OpenGLTextureHelper.maxSize ?: 0
-        val expected = when {
-            maxSize <= 4096 -> 32
-            maxSize <= 8192 -> 16
-            else -> 4
-        }
-        Assert.assertEquals(
-            expected,
-            calculateSampleSizeForRegion(
-                regionSize = Size(30000, 750),
-                targetSize = Size(1080, 1920),
-                smallerSizeMode = false
-            )
-        )
-        Assert.assertEquals(
-            32,
-            calculateSampleSizeForRegion(
-                regionSize = Size(30000, 750),
-                targetSize = Size(1080, 1920),
-                smallerSizeMode = true
             )
         )
     }
@@ -885,10 +889,10 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformeds)
+            assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertNull(transformeds)
         }
 
         ImageRequest(context, hasExifFile.file.path) {
@@ -918,11 +922,11 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformeds)
-            Assert.assertEquals(
+            assertEquals(imageInfo.size, image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertNull(transformeds)
+            assertEquals(
                 result1.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -955,10 +959,10 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(
+            assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(
                 listOf(
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
@@ -994,17 +998,17 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(
+            assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(
                 listOf(
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
                 transformeds
             )
-            Assert.assertEquals(
+            assertEquals(
                 result3.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -1037,10 +1041,10 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(
+            assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(
                 listOf(
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
@@ -1076,17 +1080,17 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(
+            assertEquals(Size(80, 161), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(
                 listOf(
                     createInSampledTransformed(8),
                     createSubsamplingTransformed(Rect(645, 0, 1290, 1291))
                 ),
                 transformeds
             )
-            Assert.assertEquals(
+            assertEquals(
                 result5.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -1119,10 +1123,10 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(16)), transformeds)
+            assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(listOf(createInSampledTransformed(16)), transformeds)
         }
 
         ImageRequest(context, hasExifFile.file.path).newRequest {
@@ -1152,11 +1156,11 @@ class DecodeUtilsTest {
                 }
             )
         }.apply {
-            Assert.assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(16)), transformeds)
-            Assert.assertEquals(
+            assertEquals(Size(121, 81), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(1936, 1291, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(listOf(createInSampledTransformed(16)), transformeds)
+            assertEquals(
                 result7.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -1182,10 +1186,10 @@ class DecodeUtilsTest {
                 decodeRegion = null
             )
         }.apply {
-            Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(8)), transformeds)
+            assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(listOf(createInSampledTransformed(8)), transformeds)
         }
 
         ImageRequest(context, ResourceImages.bmp.uri).newRequest {
@@ -1208,11 +1212,11 @@ class DecodeUtilsTest {
                 decodeRegion = null
             )
         }.apply {
-            Assert.assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
-            Assert.assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(8)), transformeds)
-            Assert.assertEquals(
+            assertEquals(Size(87, 126), image.getBitmapOrThrow().size)
+            assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(listOf(createInSampledTransformed(8)), transformeds)
+            assertEquals(
                 result9.image.getBitmapOrThrow().corners(),
                 image.getBitmapOrThrow().corners()
             )
@@ -1243,8 +1247,8 @@ class DecodeUtilsTest {
         }
         var result = newResult()
         result.appliedResize(request.toRequestContext(sketch)).apply {
-            Assert.assertTrue(this !== result)
-            Assert.assertEquals("20x13", this.image.getBitmapOrThrow().toSizeString())
+            assertTrue(this !== result)
+            assertEquals("20x13", this.image.getBitmapOrThrow().toSizeString())
         }
         // big
         request = request.newRequest {
@@ -1252,7 +1256,7 @@ class DecodeUtilsTest {
         }
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch)).apply {
-            Assert.assertTrue(this === result)
+            assertTrue(this === result)
         }
 
         /*
@@ -1264,8 +1268,8 @@ class DecodeUtilsTest {
         }
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch)).apply {
-            Assert.assertTrue(this !== result)
-            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
+            assertTrue(this !== result)
+            assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
         }
         // big
         request = request.newRequest {
@@ -1273,8 +1277,8 @@ class DecodeUtilsTest {
         }
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch)).apply {
-            Assert.assertTrue(this !== result)
-            Assert.assertEquals("17x50", this.image.getBitmapOrThrow().toSizeString())
+            assertTrue(this !== result)
+            assertEquals("17x50", this.image.getBitmapOrThrow().toSizeString())
         }
 
         /*
@@ -1286,8 +1290,8 @@ class DecodeUtilsTest {
         }
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch)).apply {
-            Assert.assertTrue(this !== result)
-            Assert.assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
+            assertTrue(this !== result)
+            assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
         }
         // big
         request = request.newRequest {
@@ -1295,8 +1299,8 @@ class DecodeUtilsTest {
         }
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch)).apply {
-            Assert.assertTrue(this !== result)
-            Assert.assertEquals("50x150", this.image.getBitmapOrThrow().toSizeString())
+            assertTrue(this !== result)
+            assertEquals("50x150", this.image.getBitmapOrThrow().toSizeString())
         }
     }
 
@@ -1310,9 +1314,9 @@ class DecodeUtilsTest {
             ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactory().apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
-                Assert.assertEquals("image/jpeg", mimeType)
+                assertEquals(1291, width)
+                assertEquals(1936, height)
+                assertEquals("image/jpeg", mimeType)
             }
 
         AssetDataSource(
@@ -1321,12 +1325,12 @@ class DecodeUtilsTest {
             ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactory().apply {
-                Assert.assertEquals(1080, width)
-                Assert.assertEquals(1344, height)
-                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    Assert.assertEquals("image/webp", mimeType)
+                assertEquals(1080, width)
+                assertEquals(1344, height)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    assertEquals("image/webp", mimeType)
                 } else {
-                    Assert.assertEquals("", mimeType)
+                    assertEquals("", mimeType)
                 }
             }
 
@@ -1340,9 +1344,9 @@ class DecodeUtilsTest {
             context.resources,
             com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
         ).readImageInfoWithBitmapFactory().apply {
-            Assert.assertEquals(-1, width)
-            Assert.assertEquals(-1, height)
-            Assert.assertEquals("", mimeType)
+            assertEquals(-1, width)
+            assertEquals(-1, height)
+            assertEquals("", mimeType)
         }
     }
 
@@ -1356,9 +1360,9 @@ class DecodeUtilsTest {
             ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
-                Assert.assertEquals("image/jpeg", mimeType)
+                assertEquals(1291, width)
+                assertEquals(1936, height)
+                assertEquals("image/jpeg", mimeType)
             }
         AssetDataSource(
             sketch,
@@ -1366,12 +1370,12 @@ class DecodeUtilsTest {
             ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
-                Assert.assertEquals(1080, width)
-                Assert.assertEquals(1344, height)
-                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    Assert.assertEquals("image/webp", mimeType)
+                assertEquals(1080, width)
+                assertEquals(1344, height)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    assertEquals("image/webp", mimeType)
                 } else {
-                    Assert.assertEquals("", mimeType)
+                    assertEquals("", mimeType)
                 }
             }
 
@@ -1399,9 +1403,9 @@ class DecodeUtilsTest {
             ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
-                Assert.assertEquals("image/jpeg", mimeType)
+                assertEquals(1291, width)
+                assertEquals(1936, height)
+                assertEquals("image/jpeg", mimeType)
             }
 
         AssetDataSource(
@@ -1410,16 +1414,16 @@ class DecodeUtilsTest {
             ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactoryOrNull()!!.apply {
-                Assert.assertEquals(1080, width)
-                Assert.assertEquals(1344, height)
-                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    Assert.assertEquals("image/webp", mimeType)
+                assertEquals(1080, width)
+                assertEquals(1344, height)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    assertEquals("image/webp", mimeType)
                 } else {
-                    Assert.assertEquals("", mimeType)
+                    assertEquals("", mimeType)
                 }
             }
 
-        Assert.assertNull(
+        assertNull(
             ResourceDataSource(
                 sketch,
                 ImageRequest(
@@ -1443,8 +1447,8 @@ class DecodeUtilsTest {
             ResourceImages.jpeg.resourceName
         )
             .decodeBitmap()!!.apply {
-                Assert.assertEquals(1291, width)
-                Assert.assertEquals(1936, height)
+                assertEquals(1291, width)
+                assertEquals(1936, height)
             }
 
         AssetDataSource(
@@ -1454,8 +1458,8 @@ class DecodeUtilsTest {
         )
             .decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
-                Assert.assertEquals(646, width)
-                Assert.assertEquals(968, height)
+                assertEquals(646, width)
+                assertEquals(968, height)
             }
 
         AssetDataSource(
@@ -1464,11 +1468,11 @@ class DecodeUtilsTest {
             ResourceImages.webp.resourceName
         )
             .decodeBitmap()!!.apply {
-                Assert.assertEquals(1080, width)
-                Assert.assertEquals(1344, height)
+                assertEquals(1080, width)
+                assertEquals(1344, height)
             }
 
-        Assert.assertNull(
+        assertNull(
             ResourceDataSource(
                 sketch,
                 ImageRequest(
@@ -1492,8 +1496,8 @@ class DecodeUtilsTest {
             ResourceImages.jpeg.resourceName
         )
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 600, 600))!!.apply {
-                Assert.assertEquals(100, width)
-                Assert.assertEquals(100, height)
+                assertEquals(100, width)
+                assertEquals(100, height)
             }
 
         AssetDataSource(
@@ -1505,8 +1509,8 @@ class DecodeUtilsTest {
                 android.graphics.Rect(500, 500, 600, 600),
                 BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
-                Assert.assertEquals(50, width)
-                Assert.assertEquals(50, height)
+                assertEquals(50, width)
+                assertEquals(50, height)
             }
 
         AssetDataSource(
@@ -1515,8 +1519,8 @@ class DecodeUtilsTest {
             ResourceImages.webp.resourceName
         )
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 700, 700))!!.apply {
-                Assert.assertEquals(200, width)
-                Assert.assertEquals(200, height)
+                assertEquals(200, width)
+                assertEquals(200, height)
             }
 
         assertThrow(IOException::class) {
@@ -1534,21 +1538,26 @@ class DecodeUtilsTest {
     }
 
     @Test
+    fun testNewDecodeConfigByQualityParams() {
+        // TODO test
+    }
+
+    @Test
     fun testSupportBitmapRegionDecoder() {
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            Assert.assertTrue(ImageFormat.HEIC.supportBitmapRegionDecoder())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            assertTrue(ImageFormat.HEIC.supportBitmapRegionDecoder())
         } else {
-            Assert.assertFalse(ImageFormat.HEIC.supportBitmapRegionDecoder())
+            assertFalse(ImageFormat.HEIC.supportBitmapRegionDecoder())
         }
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            Assert.assertTrue(ImageFormat.HEIF.supportBitmapRegionDecoder())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            assertTrue(ImageFormat.HEIF.supportBitmapRegionDecoder())
         } else {
-            Assert.assertFalse(ImageFormat.HEIF.supportBitmapRegionDecoder())
+            assertFalse(ImageFormat.HEIF.supportBitmapRegionDecoder())
         }
-        Assert.assertFalse(ImageFormat.BMP.supportBitmapRegionDecoder())
-        Assert.assertFalse(ImageFormat.GIF.supportBitmapRegionDecoder())
-        Assert.assertTrue(ImageFormat.JPEG.supportBitmapRegionDecoder())
-        Assert.assertTrue(ImageFormat.PNG.supportBitmapRegionDecoder())
-        Assert.assertTrue(ImageFormat.WEBP.supportBitmapRegionDecoder())
+        assertFalse(ImageFormat.BMP.supportBitmapRegionDecoder())
+        assertFalse(ImageFormat.GIF.supportBitmapRegionDecoder())
+        assertTrue(ImageFormat.JPEG.supportBitmapRegionDecoder())
+        assertTrue(ImageFormat.PNG.supportBitmapRegionDecoder())
+        assertTrue(ImageFormat.WEBP.supportBitmapRegionDecoder())
     }
 }

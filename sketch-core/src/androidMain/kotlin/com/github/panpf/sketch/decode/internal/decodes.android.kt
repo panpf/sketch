@@ -46,14 +46,20 @@ import kotlin.math.floor
 
 /* ************************************** sampling ********************************************** */
 
-actual fun getMaxBitmapSize(targetSize: Size): Size {
+/**
+ * Get the maximum Bitmap size allowed by the Android platform
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testGetMaxBitmapSize
+ */
+actual fun getMaxBitmapSize(): Size? {
     return OpenGLTextureHelper.maxSize
         ?.let { Size(it, it) }
-        ?: Size(targetSize.width * 2, targetSize.height * 2)
 }
 
 /**
  * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampledBitmapSize
  */
 actual fun calculateSampledBitmapSize(
     imageSize: Size,
@@ -77,6 +83,8 @@ actual fun calculateSampledBitmapSize(
 
 /**
  * Calculate the size of the sampled Bitmap, support for BitmapRegionDecoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampledBitmapSizeForRegion
  */
 actual fun calculateSampledBitmapSizeForRegion(
     regionSize: Size,
@@ -102,6 +110,11 @@ actual fun calculateSampledBitmapSizeForRegion(
 
 /* **************************************** decode ********************************************* */
 
+/**
+ * Read image information using BitmapFactory
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithBitmapFactory
+ */
 @Throws(IOException::class)
 fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
@@ -116,6 +129,11 @@ fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
     )
 }
 
+/**
+ * Read image information using BitmapFactory, if the image is invalid, an exception will be thrown
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithBitmapFactoryOrThrow
+ */
 @Throws(IOException::class, ImageInvalidException::class)
 fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
     val imageInfo = readImageInfoWithBitmapFactory()
@@ -127,6 +145,11 @@ fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
     return imageInfo
 }
 
+/**
+ * Read image information using BitmapFactory, if the image is invalid, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithBitmapFactoryOrNull
+ */
 @WorkerThread
 fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
     try {
@@ -139,12 +162,22 @@ fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
     }
 
 
+/**
+ * Decode bitmap using BitmapFactory
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecodeBitmap
+ */
 @Throws(IOException::class)
 fun DataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
     openSource().buffer().inputStream().use {
         BitmapFactory.decodeStream(it, null, options)
     }
 
+/**
+ * Use BitmapRegionDecoder to decode part of a bitmap region
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecodeRegionBitmap
+ */
 @Throws(IOException::class)
 fun DataSource.decodeRegionBitmap(
     srcRect: Rect,
@@ -164,6 +197,11 @@ fun DataSource.decodeRegionBitmap(
         }
     }
 
+/**
+ * Create a DecodeConfig based on the parameters related to image quality in the request
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testNewDecodeConfigByQualityParams
+ */
 fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
     DecodeConfig().apply {
         @Suppress("DEPRECATION")
@@ -181,6 +219,11 @@ fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig 
         }
     }
 
+/**
+ * Check if the image format is supported by BitmapRegionDecoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testSupportBitmapRegionDecoder
+ */
 @SuppressLint("ObsoleteSdkInt")
 fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
     this == JPEG

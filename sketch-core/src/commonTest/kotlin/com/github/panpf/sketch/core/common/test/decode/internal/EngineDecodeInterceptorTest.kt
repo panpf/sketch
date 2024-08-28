@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.decode.internal
+package com.github.panpf.sketch.core.common.test.decode.internal
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
-@RunWith(AndroidJUnit4::class)
 class EngineDecodeInterceptorTest {
 
     @Test
@@ -51,23 +49,21 @@ class EngineDecodeInterceptorTest {
             interceptors = interceptors,
             index = 0
         )
-        val result = runBlocking {
-            chain.proceed()
-        }.getOrThrow()
-        Assert.assertEquals(1291, result.image.getBitmapOrThrow().width)
-        Assert.assertEquals(1936, result.image.getBitmapOrThrow().height)
-        Assert.assertEquals(
+        val result = chain.proceed().getOrThrow()
+        assertEquals(1291, result.image.width)
+        assertEquals(1936, result.image.height)
+        assertEquals(
             "ImageInfo(size=1291x1936, mimeType='image/jpeg')",
             result.imageInfo.toString()
         )
-        Assert.assertEquals(DataFrom.LOCAL, result.dataFrom)
-        Assert.assertNull(result.transformeds)
+        assertEquals(DataFrom.LOCAL, result.dataFrom)
+        assertNull(result.transformeds)
     }
 
     @Test
     fun testSortWeight() {
         EngineDecodeInterceptor().apply {
-            Assert.assertEquals(100, sortWeight)
+            assertEquals(100, sortWeight)
         }
     }
 
@@ -77,26 +73,26 @@ class EngineDecodeInterceptorTest {
         val element11 = EngineDecodeInterceptor()
         val element2 = EngineDecodeInterceptor()
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element2, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertEquals(element1, element2)
-        Assert.assertEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertEquals(element1, element2)
+        assertEquals(element2, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertEquals(element2.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element2.hashCode())
+        assertEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test
     fun testToString() {
-        Assert.assertEquals(
+        assertEquals(
             "EngineDecodeInterceptor(sortWeight=100)",
             EngineDecodeInterceptor().toString()
         )

@@ -20,6 +20,11 @@ import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 
+/**
+ * Engine decode interceptor, responsible for decoding images
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.internal.EngineDecodeInterceptorTest
+ */
 class EngineDecodeInterceptor : DecodeInterceptor {
 
     override val key: String? = null
@@ -43,7 +48,7 @@ class EngineDecodeInterceptor : DecodeInterceptor {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is EngineDecodeInterceptor
+        return other is EngineDecodeInterceptor // TODO equals class
     }
 
     override fun hashCode(): Int {

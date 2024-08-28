@@ -24,6 +24,7 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom
@@ -34,10 +35,29 @@ import com.github.panpf.sketch.util.requiredWorkThread
 
 /* ************************************** sampling ********************************************** */
 
-expect fun getMaxBitmapSize(targetSize: Size): Size
+/**
+ * Get the maximum Bitmap size allowed by the runtime platform
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testGetMaxBitmapSize
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testGetMaxBitmapSize
+ */
+expect fun getMaxBitmapSize(): Size?
 
 /**
- * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
+ * Get the maximum Bitmap size allowed by the runtime platform
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testGetMaxBitmapSize
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testGetMaxBitmapSize
+ */
+fun getMaxBitmapSize(targetSize: Size): Size {
+    return getMaxBitmapSize() ?: Size(targetSize.width * 2, targetSize.height * 2)
+}
+
+/**
+ * Calculate the size of the sampled Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampledBitmapSize
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampledBitmapSize
  */
 expect fun calculateSampledBitmapSize(
     imageSize: Size,
@@ -46,7 +66,10 @@ expect fun calculateSampledBitmapSize(
 ): Size
 
 /**
- * Calculate the size of the sampled Bitmap, support for BitmapRegionDecoder
+ * Calculate the size of the sampled Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampledBitmapSizeForRegion
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampledBitmapSizeForRegion
  */
 expect fun calculateSampledBitmapSizeForRegion(
     regionSize: Size,
@@ -57,7 +80,10 @@ expect fun calculateSampledBitmapSizeForRegion(
 
 
 /**
- * Calculate the sample size, support for BitmapFactory or ImageDecoder
+ * Calculate the sample size
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampleSize
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampleSize
  */
 fun calculateSampleSize(
     imageSize: Size,
@@ -92,6 +118,9 @@ fun calculateSampleSize(
 
 /**
  * Calculate the sample size, support for BitmapFactory or ImageDecoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampleSize2
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampleSize2
  */
 fun calculateSampleSize(
     imageSize: Size,
@@ -106,6 +135,9 @@ fun calculateSampleSize(
 
 /**
  * Calculate the sample size, support for BitmapRegionDecoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampleSizeForRegion
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampleSizeForRegion
  */
 fun calculateSampleSizeForRegion(
     regionSize: Size,
@@ -142,6 +174,9 @@ fun calculateSampleSizeForRegion(
 
 /**
  * Calculate the sample size, support for BitmapRegionDecoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampleSizeForRegion2
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testCalculateSampleSizeForRegion2
  */
 fun calculateSampleSizeForRegion(
     regionSize: Size,
@@ -156,6 +191,11 @@ fun calculateSampleSizeForRegion(
     imageSize = imageSize
 )
 
+/**
+ * Check if the sampled Bitmap size meets the requirements
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodesTest.testCheckSampledBitmapSize
+ */
 fun checkSampledBitmapSize(
     sampledBitmapSize: Size,
     targetSize: Size,
@@ -185,6 +225,12 @@ private fun Size.checkAreaLimit(limitSize: Size): Boolean {
 
 /* **************************************** decode ********************************************* */
 
+/**
+ * Decode the full image
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testRealDecode
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testRealDecode
+ */
 // TODO Merge to HelperDecoder
 @WorkerThread
 fun realDecode(
@@ -247,6 +293,12 @@ fun realDecode(
     )
 }
 
+/**
+ * Resize image according to [Resize]
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testAppliedResize
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testAppliedResize
+ */
 @WorkerThread
 fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     requiredWorkThread()
@@ -255,7 +307,7 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     if (size.isEmpty) {
         return this
     }
-    val resize = requestContext.computeResize(imageInfo.size)
+    val resize: Resize = requestContext.computeResize(imageInfo.size)
     val newImage = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             imageSize = image.size,
@@ -291,6 +343,9 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     }
 }
 
+/**
+ * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodesTest.testIsSmallerSizeMode
+ */
 fun Precision.isSmallerSizeMode(): Boolean {
     return this == Precision.SMALLER_SIZE
 }
