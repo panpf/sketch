@@ -35,6 +35,11 @@ import com.github.panpf.sketch.util.Size
 import wseemann.media.FFmpegMediaMetadataRetriever
 import kotlin.math.roundToInt
 
+/**
+ * Use FFmpegMediaMetadataRetriever to decode video frames
+ *
+ * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
+ */
 class FFmpegVideoFrameDecodeHelper(
     val request: ImageRequest,
     val dataSource: DataSource,

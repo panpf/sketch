@@ -29,6 +29,11 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toAndroidRect
 
+/**
+ * Use BitmapFactory to decode statics images
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecodeHelperTest
+ */
 class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : DecodeHelper {
 
     override val imageInfo: ImageInfo by lazy { decodeImageInfo() }

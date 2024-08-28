@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.decode.internal
+package com.github.panpf.sketch.core.test.decode.internal
 
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.RGB_565
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DecodeResult
@@ -32,14 +28,12 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.test.utils.toRequestContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@RunWith(AndroidJUnit4::class)
 class DecodeInterceptorChainTest {
 
     @Test
@@ -56,16 +50,15 @@ class DecodeInterceptorChainTest {
             val chain = DecodeInterceptorChain(
                 sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )
-            runBlocking {
-                chain.proceed()
-            }.getOrThrow()
+            chain.proceed().getOrThrow()
         }.apply {
-            Assert.assertEquals(
-                listOf(
+            assertEquals(
+                expected = listOf(
                     "TestDecoderInterceptor1",
                     "TestDecoderInterceptor2",
                     "TestDecoderInterceptor3",
-                ), this
+                ),
+                actual = this
             )
         }
 
@@ -79,11 +72,9 @@ class DecodeInterceptorChainTest {
             val chain = DecodeInterceptorChain(
                 sketch, request, request.toRequestContext(sketch), null, interceptors, 0
             )
-            runBlocking {
-                chain.proceed()
-            }.getOrThrow()
+            chain.proceed().getOrThrow()
         }.apply {
-            Assert.assertEquals(
+            assertEquals(
                 listOf(
                     "TestDecoderInterceptor2",
                     "TestDecoderInterceptor1",
@@ -138,7 +129,7 @@ class DecodeInterceptorChainTest {
             historyList.add("TestDecoderInterceptor3")
             return Result.success(
                 DecodeResult(
-                    image = Bitmap.createBitmap(12, 45, RGB_565).asSketchImage(),
+                    image = createImage(12, 45),
                     imageInfo = ImageInfo(12, 45, "image/jpeg"),
                     dataFrom = LOCAL,
                     resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),

@@ -25,6 +25,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
+/**
+ * DecodeInterceptor Chain
+ *
+ * @see com.github.panpf.sketch.core.test.decode.internal.DecodeInterceptorChainTest
+ */
 internal class DecodeInterceptorChain constructor(
     override val sketch: Sketch,
     override val request: ImageRequest,

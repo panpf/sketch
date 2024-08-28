@@ -28,6 +28,11 @@ import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.impl.use
 
+/**
+ * Use Skia Image to decode statics images
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.SkiaDecodeHelperTest
+ */
 class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : DecodeHelper {
 
     override val imageInfo: ImageInfo by lazy { readImageInfo() }

@@ -23,6 +23,14 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.util.Rect
 import okio.Closeable
 
+/**
+ * Encapsulates the most basic decoding operations for use by the decoder
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecodeHelperTest
+ * @see com.github.panpf.sketch.video.test.decode.internal.VideoFrameDecodeHelperTest
+ * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.SkiaDecodeHelperTest
+ */
 interface DecodeHelper : Closeable {
 
     val imageInfo: ImageInfo
