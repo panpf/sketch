@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.request.internal
+package com.github.panpf.sketch.core.common.test.request.internal
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@RunWith(AndroidJUnit4::class)
 class ProgressListenersTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val context = getTestContext()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
@@ -41,22 +39,22 @@ class ProgressListenersTest {
             ProgressListenerSupervisor("3"),
             ProgressListenerSupervisor("1"),
         )
-        Assert.assertEquals(listOf<String>(), list.flatMap { it.callbackActionList })
+        assertEquals(listOf(), list.flatMap { it.callbackActionList })
 
         val listeners = ProgressListeners(*list.toTypedArray())
-        Assert.assertEquals(list, listeners.list)
+        assertEquals(list, listeners.list)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             listeners.onUpdateProgress(request, Progress(100, 10))
         }
-        Assert.assertEquals(
+        assertEquals(
             listOf("10:2", "10:3", "10:1"),
             list.flatMap { it.callbackActionList })
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             listeners.onUpdateProgress(request, Progress(100, 20))
         }
-        Assert.assertEquals(
+        assertEquals(
             listOf("10:2", "20:2", "10:3", "20:3", "10:1", "20:1"),
             list.flatMap { it.callbackActionList })
     }

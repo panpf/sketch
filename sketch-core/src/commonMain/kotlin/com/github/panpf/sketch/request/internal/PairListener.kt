@@ -20,6 +20,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
+/**
+ * [Listener] Combination of two [Listener]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.PairListenerTest
+ */
 class PairListener constructor(
     val first: Listener,
     val second: Listener,

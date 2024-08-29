@@ -20,6 +20,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
+/**
+ * [ProgressListener] list, which can be used to merge multiple ProgressListeners into one [ProgressListener]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.ProgressListenersTest
+ */
 class ProgressListeners constructor(val list: List<ProgressListener>) : ProgressListener {
 
     constructor(vararg listeners: ProgressListener) : this(listeners.toList())

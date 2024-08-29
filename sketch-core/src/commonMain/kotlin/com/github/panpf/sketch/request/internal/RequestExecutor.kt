@@ -38,6 +38,11 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
 import kotlin.coroutines.coroutineContext
 
+/**
+ * All requests start and end here
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestExecutorTest
+ */
 class RequestExecutor {
 
     companion object {

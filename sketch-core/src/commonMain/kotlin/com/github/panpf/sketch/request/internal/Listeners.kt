@@ -20,6 +20,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Listener
 
+/**
+ * [Listener] list, which can be used to merge multiple listeners into one [Listener]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.ListenersTest
+ */
 class Listeners constructor(val list: List<Listener>) : Listener {
 
     constructor(vararg listeners: Listener) : this(listeners.toList())

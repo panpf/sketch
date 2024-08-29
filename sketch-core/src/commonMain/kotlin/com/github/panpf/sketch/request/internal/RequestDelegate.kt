@@ -30,6 +30,8 @@ import kotlinx.coroutines.Job
 /**
  * Wrap [initialRequest] to automatically dispose and/or restart the [ImageRequest]
  * based on its lifecycle.
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testRequestDelegate
  */
 internal fun requestDelegate(
     sketch: Sketch,
@@ -64,12 +66,24 @@ interface RequestDelegate {
     fun dispose()
 }
 
+/**
+ * A request delegate for requests without a [Target].
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testNoTargetRequestDelegate
+ */
 class NoTargetRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
     job: Job
 ) : BaseRequestDelegate(sketch, initialRequest, null, job)
 
+/**
+ * A base implementation of [RequestDelegate] that handles attaching to a [Lifecycle] and [Target].
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.internal.ViewRequestDelegateTest
+ * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestDelegateTest
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testNoTargetRequestDelegate
+ */
 open class BaseRequestDelegate(
     override val sketch: Sketch,
     override val initialRequest: ImageRequest,

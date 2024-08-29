@@ -21,6 +21,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ComposeTarget
 import kotlinx.coroutines.Job
 
+/**
+ * A request delegate for restartable requests with a [ComposeTarget].
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestDelegateTest
+ */
 class ComposeRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,

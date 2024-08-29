@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.request.internal
+package com.github.panpf.sketch.core.common.test.request.internal
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -29,18 +25,18 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
+import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@RunWith(AndroidJUnit4::class)
 class ListenersTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val context = getTestContext()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
@@ -49,22 +45,22 @@ class ListenersTest {
             ListenerSupervisor("3"),
             ListenerSupervisor("1"),
         )
-        Assert.assertEquals(listOf<String>(), list.flatMap { it.callbackActionList })
+        assertEquals(listOf(), list.flatMap { it.callbackActionList })
 
         val listeners = Listeners(*list.toTypedArray())
-        Assert.assertEquals(list, listeners.list)
+        assertEquals(list, listeners.list)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             listeners.onStart(request)
         }
-        Assert.assertEquals(
+        assertEquals(
             listOf("onStart:2", "onStart:3", "onStart:1"),
             list.flatMap { it.callbackActionList })
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             listeners.onCancel(request)
         }
-        Assert.assertEquals(
+        assertEquals(
             listOf(
                 "onStart:2",
                 "onCancel:2",
@@ -74,10 +70,10 @@ class ListenersTest {
                 "onCancel:1",
             ), list.flatMap { it.callbackActionList })
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             listeners.onError(request, ImageResult.Error(request, null, Exception("")))
         }
-        Assert.assertEquals(
+        assertEquals(
             listOf(
                 "onStart:2",
                 "onCancel:2",
@@ -91,12 +87,12 @@ class ListenersTest {
             ),
             list.flatMap { it.callbackActionList })
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             listeners.onSuccess(
                 request,
                 ImageResult.Success(
                     request = request,
-                    image = ColorDrawable(Color.BLACK).asSketchImage(),
+                    image = createImage(100, 100),
                     cacheKey = "",
                     imageInfo = ImageInfo(100, 100, "image/jpeg"),
                     dataFrom = MEMORY,
@@ -106,7 +102,7 @@ class ListenersTest {
                 )
             )
         }
-        Assert.assertEquals(
+        assertEquals(
             listOf(
                 "onStart:2",
                 "onCancel:2",

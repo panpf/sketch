@@ -60,7 +60,7 @@ import org.junit.runner.RunWith
 class RequestKeysTest {
 
     @Test
-    fun newRequestKey() {
+    fun testNewRequestKey() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uri = "http://sample.com/sample.jpeg?from=sketch"
 
@@ -300,7 +300,7 @@ class RequestKeysTest {
     }
 
     @Test
-    fun newCacheKey() {
+    fun testNewCacheKey() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val uri = "http://sample.com/sample.jpeg?from=sketch"
 

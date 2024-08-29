@@ -14,45 +14,44 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.http
+package com.github.panpf.sketch.core.common.test.request.internal
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
 class ProgressListenerDelegateTest {
 
     @Test
-    fun test() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+    fun test() = runTest {
+        val context = getTestContext()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
         val scope = CoroutineScope(SupervisorJob())
         val completedList = mutableListOf<Long>()
         val listener = ProgressListener { _, progress ->
-            Thread.sleep(100)
+            block(100)
             completedList.add(progress.completedLength)
         }
         val delegate = ProgressListenerDelegate(scope, listener)
 
         delegate.onUpdateProgress(request, 1000, 200)
-        Thread.sleep(40)
+        block(40)
         delegate.onUpdateProgress(request, 1000, 400)
-        Thread.sleep(40)
+        block(40)
         delegate.onUpdateProgress(request, 1000, 600)
-        Thread.sleep(40)
+        block(40)
         delegate.onUpdateProgress(request, 1000, 800)
-        Thread.sleep(40)
+        block(40)
         delegate.onUpdateProgress(request, 1000, 1000)
-        Thread.sleep(150)
-        Assert.assertTrue(completedList.size < 5)
+        block(150)
+        assertTrue(completedList.size < 5)
     }
 }

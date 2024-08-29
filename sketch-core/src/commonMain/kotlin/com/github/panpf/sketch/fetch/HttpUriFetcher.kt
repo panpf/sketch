@@ -45,6 +45,8 @@ import okio.use
 
 /**
  * Check if the uri is a http or https uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.HttpUriFetcherTest.testIsHttpUri
  */
 fun isHttpUri(uri: Uri): Boolean =
     HttpUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
@@ -52,6 +54,8 @@ fun isHttpUri(uri: Uri): Boolean =
 
 /**
  * Support 'http://pexels.com/sample.jpg', 'https://pexels.com/sample.jpg' uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.HttpUriFetcherTest
  */
 open class HttpUriFetcher(
     val sketch: Sketch,

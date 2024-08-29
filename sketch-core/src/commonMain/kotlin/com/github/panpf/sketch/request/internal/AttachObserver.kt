@@ -16,6 +16,9 @@
 
 package com.github.panpf.sketch.request.internal
 
+/**
+ * Attach status observer, used for RequestDelegate or Target to receive attach status
+ */
 fun interface AttachObserver {
     fun onAttachedChanged(attached: Boolean)
 }

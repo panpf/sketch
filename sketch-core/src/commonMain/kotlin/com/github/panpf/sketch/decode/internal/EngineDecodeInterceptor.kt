@@ -21,7 +21,7 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 
 /**
- * Engine decode interceptor, responsible for decoding images
+ * The final decode interceptor is used to actually execute the decode
  *
  * @see com.github.panpf.sketch.core.common.test.decode.internal.EngineDecodeInterceptorTest
  */

@@ -20,6 +20,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 
+/**
+ * [ProgressListener] Combination of two [ProgressListener]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.PairProgressListenerTest
+ */
 class PairProgressListener constructor(
     val first: ProgressListener,
     val second: ProgressListener,

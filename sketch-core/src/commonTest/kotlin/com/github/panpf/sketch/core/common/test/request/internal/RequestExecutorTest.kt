@@ -16,9 +16,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.request.internal
+package com.github.panpf.sketch.core.common.test.request.internal
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.images.ResourceImages
@@ -34,25 +33,25 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.util.screenSize
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
 class RequestExecutorTest {
 
     @Test
-    fun testErrorUri() {
+    fun testErrorUri() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             RequestExecutor().execute(
                 sketch,
                 ImageRequest(context, ResourceImages.jpeg.uri),
                 false
             ).apply {
-                Assert.assertTrue(this is ImageResult.Success)
+                assertTrue(this is ImageResult.Success)
             }
 
             RequestExecutor().execute(
@@ -60,7 +59,7 @@ class RequestExecutorTest {
                 ImageRequest(context, ""),
                 false
             ).apply {
-                Assert.assertTrue(this is ImageResult.Error)
+                assertTrue(this is ImageResult.Error)
             }
 
             RequestExecutor().execute(
@@ -68,25 +67,25 @@ class RequestExecutorTest {
                 ImageRequest(context, "  "),
                 false
             ).apply {
-                Assert.assertTrue(this is ImageResult.Error)
+                assertTrue(this is ImageResult.Error)
             }
         }
     }
 
     @Test
-    fun testGlobalImageOptions() {
+    fun testGlobalImageOptions() = runTest {
         val (context, sketch) = getTestContextAndNewSketch {
         }
         val request = ImageRequest(context, ResourceImages.jpeg.uri).apply {
-            Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
-            Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
-            Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)
+            assertEquals(Depth.NETWORK, depthHolder.depth)
+            assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
+            assertEquals(SizeResolver(context.screenSize()), sizeResolver)
         }
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             RequestExecutor().execute(sketch, request, false).apply {
-                Assert.assertEquals(Depth.NETWORK, this.request.depthHolder.depth)
-                Assert.assertEquals(CachePolicy.ENABLED, this.request.downloadCachePolicy)
-                Assert.assertEquals(SizeResolver(context.screenSize()), this.request.sizeResolver)
+                assertEquals(Depth.NETWORK, this.request.depthHolder.depth)
+                assertEquals(CachePolicy.ENABLED, this.request.downloadCachePolicy)
+                assertEquals(SizeResolver(context.screenSize()), this.request.sizeResolver)
             }
         }
 
@@ -98,15 +97,15 @@ class RequestExecutorTest {
             })
         }
         val request2 = ImageRequest(context2, ResourceImages.jpeg.uri).apply {
-            Assert.assertEquals(Depth.NETWORK, depthHolder.depth)
-            Assert.assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
-            Assert.assertEquals(SizeResolver(context.screenSize()), sizeResolver)
+            assertEquals(Depth.NETWORK, depthHolder.depth)
+            assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
+            assertEquals(SizeResolver(context.screenSize()), sizeResolver)
         }
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             RequestExecutor().execute(sketch2, request2, false).apply {
-                Assert.assertEquals(MEMORY, this.request.depthHolder.depth)
-                Assert.assertEquals(WRITE_ONLY, this.request.downloadCachePolicy)
-                Assert.assertTrue(this.request.sizeResolver is FixedSizeResolver)
+                assertEquals(MEMORY, this.request.depthHolder.depth)
+                assertEquals(WRITE_ONLY, this.request.downloadCachePolicy)
+                assertTrue(this.request.sizeResolver is FixedSizeResolver)
             }
         }
     }

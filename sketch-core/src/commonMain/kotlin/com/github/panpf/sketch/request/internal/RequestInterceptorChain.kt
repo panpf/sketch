@@ -24,6 +24,11 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.util.requiredMainThread
 
+/**
+ * Chain execution [RequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestInterceptorChainTest
+ */
 internal class RequestInterceptorChain(
     override val sketch: Sketch,
     override val initialRequest: ImageRequest,

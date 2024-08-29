@@ -53,37 +53,12 @@ class HttpUriFetcherTest {
     }
 
     @Test
-    fun testFactoryCreate() {
-        val (context, sketch) = getTestContextAndSketch()
-        val httpUri = "http://sample.com/sample.jpg"
-        val httpsUri = "https://sample.com/sample.jpg"
-        val ftpUri = "ftp://sample.com/sample.jpg"
-        val contentUri = "content://sample_app/sample"
-
-        val factory = HttpUriFetcher.Factory()
-        assertNotNull(factory.create(sketch, ImageRequest(context, httpsUri)))
-        assertNotNull(factory.create(sketch, ImageRequest(context, httpUri)))
-        assertNull(factory.create(sketch, ImageRequest(context, ftpUri)))
-        assertNull(factory.create(sketch, ImageRequest(context, contentUri)))
+    fun testConstructor() {
+        // TODO test
     }
 
     @Test
-    fun testFactoryEqualsAndHashCode() {
-        val element1 = HttpUriFetcher.Factory()
-        val element11 = HttpUriFetcher.Factory()
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-
-        assertNotEquals(element1, Any())
-        assertNotEquals(element1, null as Any?)
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-    }
-
-    @Test
-    fun testFactoryToString() {
+    fun testCompanion() {
         // TODO test
     }
 
@@ -495,6 +470,51 @@ class HttpUriFetcherTest {
         assertNotNull(progressList.find { it == testUri.contentLength + 1 })
 
         assertFalse(sketch.downloadCache.exist(request.downloadCacheKey))
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        // TODO test
+    }
+
+    @Test
+    fun testToString() {
+        // TODO test
+    }
+
+    @Test
+    fun testFactoryCreate() {
+        val (context, sketch) = getTestContextAndSketch()
+        val httpUri = "http://sample.com/sample.jpg"
+        val httpsUri = "https://sample.com/sample.jpg"
+        val ftpUri = "ftp://sample.com/sample.jpg"
+        val contentUri = "content://sample_app/sample"
+
+        val factory = HttpUriFetcher.Factory()
+        assertNotNull(factory.create(sketch, ImageRequest(context, httpsUri)))
+        assertNotNull(factory.create(sketch, ImageRequest(context, httpUri)))
+        assertNull(factory.create(sketch, ImageRequest(context, ftpUri)))
+        assertNull(factory.create(sketch, ImageRequest(context, contentUri)))
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = HttpUriFetcher.Factory()
+        val element11 = HttpUriFetcher.Factory()
+
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
+
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() {
+        // TODO test
     }
 
     private suspend fun <T> runBlock(block: suspend () -> T): T {

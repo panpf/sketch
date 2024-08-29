@@ -24,6 +24,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+/**
+ * [ProgressListener] Delegate, which can be used to prevent the progress from being updated too frequently
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.ProgressListenerDelegateTest
+ */
 class ProgressListenerDelegate(
     private val coroutineScope: CoroutineScope,
     private val progressListener: ProgressListener

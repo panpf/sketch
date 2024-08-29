@@ -22,6 +22,11 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import kotlinx.coroutines.withContext
 
+/**
+ * The final request interceptor is used to actually execute the request
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.EngineRequestInterceptorTest
+ */
 class EngineRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
