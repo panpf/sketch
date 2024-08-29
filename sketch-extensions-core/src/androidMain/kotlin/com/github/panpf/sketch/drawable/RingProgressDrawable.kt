@@ -121,7 +121,8 @@ class RingProgressDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RingProgressDrawable) return false
+        if (other == null || this::class != other::class) return false
+        other as RingProgressDrawable
         if (size != other.size) return false
         if (ringWidth != other.ringWidth) return false
         if (ringColor != other.ringColor) return false

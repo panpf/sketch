@@ -135,7 +135,8 @@ class LruDiskCache(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is LruDiskCache) return false
+        if (other == null || this::class != other::class) return false
+        other as LruDiskCache
         if (maxSize != other.maxSize) return false
         if (directory != other.directory) return false
         if (appVersion != other.appVersion) return false

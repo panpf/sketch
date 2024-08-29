@@ -28,10 +28,9 @@ class SizeColorPainter(val color: Color, val size: Size = Size.Unspecified) : Pa
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ColorPainter) return false
-
+        if (other == null || this::class != other::class) return false
+        other as ColorPainter
         if (color != other.color) return false
-
         return true
     }
 

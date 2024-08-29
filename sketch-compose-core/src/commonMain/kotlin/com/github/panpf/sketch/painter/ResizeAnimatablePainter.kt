@@ -51,7 +51,8 @@ class ResizeAnimatablePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ResizeAnimatablePainter) return false
+        if (other == null || this::class != other::class) return false
+        other as ResizeAnimatablePainter
         if (painter != other.painter) return false
         if (size != other.size) return false
         return scale == other.scale

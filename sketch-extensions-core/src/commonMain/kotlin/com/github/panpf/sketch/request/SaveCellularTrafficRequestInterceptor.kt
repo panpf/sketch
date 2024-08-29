@@ -101,7 +101,8 @@ class SaveCellularTrafficRequestInterceptor constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SaveCellularTrafficRequestInterceptor) return false
+        if (other == null || this::class != other::class) return false
+        other as SaveCellularTrafficRequestInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }

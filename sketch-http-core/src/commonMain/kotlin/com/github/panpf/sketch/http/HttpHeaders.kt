@@ -76,7 +76,8 @@ class HttpHeaders(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is HttpHeaders) return false
+        if (other == null || this::class != other::class) return false
+        other as HttpHeaders
         if (addList != other.addList) return false
         if (setList != other.setList) return false
         return true

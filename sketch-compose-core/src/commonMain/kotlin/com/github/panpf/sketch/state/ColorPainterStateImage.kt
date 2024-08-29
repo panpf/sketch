@@ -55,7 +55,8 @@ class ColorPainterStateImage(val color: Color) : StateImage {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ColorPainterStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as ColorPainterStateImage
         if (color != other.color) return false
         return true
     }

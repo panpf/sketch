@@ -36,7 +36,8 @@ class TestRequestInterceptor(override val sortWeight: Int = 0) : RequestIntercep
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TestRequestInterceptor) return false
+        if (other == null || this::class != other::class) return false
+        other as TestRequestInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }

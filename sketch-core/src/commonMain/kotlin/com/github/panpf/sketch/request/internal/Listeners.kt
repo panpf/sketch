@@ -50,7 +50,8 @@ class Listeners constructor(val list: List<Listener>) : Listener {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Listeners) return false
+        if (other == null || this::class != other::class) return false
+        other as Listeners
         if (list != other.list) return false
         return true
     }

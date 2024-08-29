@@ -43,7 +43,8 @@ class MemoryCacheStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is MemoryCacheStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as MemoryCacheStateImage
         if (cacheKey != other.cacheKey) return false
         if (defaultImage != other.defaultImage) return false
         return true

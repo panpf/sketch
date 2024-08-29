@@ -215,7 +215,8 @@ class SkiaAnimatedImagePainter constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SkiaAnimatedImagePainter) return false
+        if (other == null || this::class != other::class) return false
+        other as SkiaAnimatedImagePainter
         if (codec != other.codec) return false
         if (srcOffset != other.srcOffset) return false
         if (srcSize != other.srcSize) return false

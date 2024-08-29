@@ -47,11 +47,11 @@ object SkiaBitmapToComposeBitmapRequestInterceptor : RequestInterceptor {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is SkiaBitmapToComposeBitmapRequestInterceptor
+        return other != null && this::class == other::class
     }
 
     override fun hashCode(): Int {
-        return this@SkiaBitmapToComposeBitmapRequestInterceptor::class.hashCode()
+        return this::class.hashCode()
     }
 
     override fun toString(): String =

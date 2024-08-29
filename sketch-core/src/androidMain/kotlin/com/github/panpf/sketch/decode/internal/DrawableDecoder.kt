@@ -107,11 +107,11 @@ open class DrawableDecoder constructor(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            return other is Factory
+            return other != null && this::class == other::class
         }
 
         override fun hashCode(): Int {
-            return this@Factory::class.hashCode()
+            return this::class.hashCode()
         }
 
         override fun toString(): String = "DrawableDecoder"

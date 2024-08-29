@@ -32,7 +32,8 @@ class PairProgressListener constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is PairProgressListener) return false
+        if (other == null || this::class != other::class) return false
+        other as PairProgressListener
         if (first != other.first) return false
         if (second != other.second) return false
         return true

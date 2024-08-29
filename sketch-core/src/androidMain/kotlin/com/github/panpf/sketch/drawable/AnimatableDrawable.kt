@@ -37,7 +37,8 @@ class AnimatableDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AnimatableDrawable) return false
+        if (other == null || this::class != other::class) return false
+        other as AnimatableDrawable
         if (drawable != other.drawable) return false
         return true
     }

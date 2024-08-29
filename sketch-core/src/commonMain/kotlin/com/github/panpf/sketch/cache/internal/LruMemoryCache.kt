@@ -104,7 +104,8 @@ class LruMemoryCache constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is LruMemoryCache) return false
+        if (other == null || this::class != other::class) return false
+        other as LruMemoryCache
         if (maxSize != other.maxSize) return false
         if (valueLimitedSize != other.valueLimitedSize) return false
         return true

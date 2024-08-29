@@ -171,7 +171,8 @@ open class DrawablePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is DrawablePainter) return false
+        if (other == null || this::class != other::class) return false
+        other as DrawablePainter
         return drawable == other.drawable
     }
 

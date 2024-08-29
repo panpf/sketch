@@ -67,7 +67,8 @@ class TestHttpStack constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TestHttpStack) return false
+        if (other == null || this::class != other::class) return false
+        other as TestHttpStack
         if (readDelayMillis != other.readDelayMillis) return false
         return true
     }

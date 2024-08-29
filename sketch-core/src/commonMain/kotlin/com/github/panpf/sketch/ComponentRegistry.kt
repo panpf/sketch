@@ -129,7 +129,8 @@ open class ComponentRegistry private constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ComponentRegistry) return false
+        if (other == null || this::class != other::class) return false
+        other as ComponentRegistry
         if (fetcherFactoryList != other.fetcherFactoryList) return false
         if (decoderFactoryList != other.decoderFactoryList) return false
         if (requestInterceptorList != other.requestInterceptorList) return false
@@ -315,7 +316,8 @@ class Components(private val sketch: Sketch, val registry: ComponentRegistry) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Components) return false
+        if (other == null || this::class != other::class) return false
+        other as Components
         if (registry != other.registry) return false
         return true
     }

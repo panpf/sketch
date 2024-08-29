@@ -57,7 +57,8 @@ class ErrorStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ErrorStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as ErrorStateImage
         if (stateList != other.stateList) return false
         return true
     }

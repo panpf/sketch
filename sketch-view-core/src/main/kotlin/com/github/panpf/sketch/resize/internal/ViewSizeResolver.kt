@@ -57,7 +57,8 @@ internal class RealViewSizeResolver<T : View>(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RealViewSizeResolver<*>) return false
+        if (other == null || this::class != other::class) return false
+        other as RealViewSizeResolver<*>
         if (view != other.view) return false
         if (subtractPadding != other.subtractPadding) return false
         return true

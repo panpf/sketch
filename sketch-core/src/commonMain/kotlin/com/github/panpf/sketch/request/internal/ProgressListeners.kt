@@ -32,7 +32,8 @@ class ProgressListeners constructor(val list: List<ProgressListener>) : Progress
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ProgressListeners) return false
+        if (other == null || this::class != other::class) return false
+        other as ProgressListeners
         if (list != other.list) return false
         return true
     }

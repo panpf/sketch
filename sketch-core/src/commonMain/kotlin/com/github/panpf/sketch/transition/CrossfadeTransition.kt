@@ -63,11 +63,13 @@ class CrossfadeTransition(transition: Transition) : Transition by transition {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            return other is Factory
-                    && durationMillis == other.durationMillis
-                    && fadeStart == other.fadeStart
-                    && preferExactIntrinsicSize == other.preferExactIntrinsicSize
-                    && alwaysUse == other.alwaysUse
+            if (other == null || this::class != other::class) return false
+            other as Factory
+            if (durationMillis != other.durationMillis) return false
+            if (fadeStart != other.fadeStart) return false
+            if (preferExactIntrinsicSize != other.preferExactIntrinsicSize) return false
+            if (alwaysUse != other.alwaysUse) return false
+            return true
         }
 
         override fun hashCode(): Int {

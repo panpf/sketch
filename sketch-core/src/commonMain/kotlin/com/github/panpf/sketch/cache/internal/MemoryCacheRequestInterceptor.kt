@@ -135,11 +135,11 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is MemoryCacheRequestInterceptor
+        return other != null && this::class == other::class
     }
 
     override fun hashCode(): Int {
-        return this@MemoryCacheRequestInterceptor::class.hashCode()
+        return this::class.hashCode()
     }
 
     override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"

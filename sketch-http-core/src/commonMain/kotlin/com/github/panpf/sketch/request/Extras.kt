@@ -86,15 +86,6 @@ class Extras private constructor(
         return entries.map { (key, value) -> key to value }.iterator()
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return other is Extras && entries == other.entries
-    }
-
-    override fun hashCode() = entries.hashCode()
-
-    override fun toString() = "Extras($entries)"
-
     /**
      * Create a new [Extras.Builder] based on the current [Extras].
      */
@@ -112,6 +103,18 @@ class Extras private constructor(
     ): Extras = Builder(this).apply {
         configBlock?.invoke(this)
     }.build()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as Extras
+        if (entries != other.entries) return false
+        return true
+    }
+
+    override fun hashCode() = entries.hashCode()
+
+    override fun toString() = "Extras($entries)"
 
     data class Entry constructor(
         val value: Any?,

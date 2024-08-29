@@ -31,11 +31,11 @@ class TestDecodeInterceptor2 : DecodeInterceptor {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is TestDecodeInterceptor2
+        return other != null && this::class == other::class
     }
 
     override fun hashCode(): Int {
-        return this@TestDecodeInterceptor2::class.hashCode()
+        return this::class.hashCode()
     }
 
     override fun toString(): String {

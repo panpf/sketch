@@ -287,7 +287,8 @@ class IconDrawableStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconDrawableStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as IconDrawableStateImage
         if (icon != other.icon) return false
         if (iconSize != other.iconSize) return false
         if (background != other.background) return false

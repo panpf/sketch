@@ -128,7 +128,8 @@ class SectorProgressDrawable constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is SectorProgressDrawable) return false
+        if (other == null || this::class != other::class) return false
+        other as SectorProgressDrawable
         if (size != other.size) return false
         if (backgroundColor != other.backgroundColor) return false
         if (strokeColor != other.strokeColor) return false

@@ -78,7 +78,8 @@ open class DefaultLongImageDecider constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is DefaultLongImageDecider) return false
+        if (other == null || this::class != other::class) return false
+        other as DefaultLongImageDecider
         if (sameDirectionMultiple != other.sameDirectionMultiple) return false
         if (notSameDirectionMultiple != other.notSameDirectionMultiple) return false
         return true

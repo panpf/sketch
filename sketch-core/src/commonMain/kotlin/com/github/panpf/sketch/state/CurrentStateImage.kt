@@ -44,7 +44,8 @@ class CurrentStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is CurrentStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as CurrentStateImage
         if (defaultImage != other.defaultImage) return false
         return true
     }

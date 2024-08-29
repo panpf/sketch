@@ -162,7 +162,8 @@ class AsyncImagePainter internal constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AsyncImagePainter) return false
+        if (other == null || this::class != other::class) return false
+        other as AsyncImagePainter
         return state == other.state
     }
 

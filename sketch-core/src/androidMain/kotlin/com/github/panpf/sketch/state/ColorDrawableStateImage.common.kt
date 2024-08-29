@@ -57,7 +57,8 @@ class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ColorDrawableStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as ColorDrawableStateImage
         if (color != other.color) return false
         return true
     }

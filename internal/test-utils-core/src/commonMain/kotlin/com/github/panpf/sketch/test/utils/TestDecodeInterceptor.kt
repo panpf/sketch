@@ -35,13 +35,14 @@ class TestDecodeInterceptor(override val sortWeight: Int = 0) : DecodeIntercepto
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TestDecodeInterceptor) return false
+        if (other == null || this::class != other::class) return false
+        other as TestDecodeInterceptor
         if (sortWeight != other.sortWeight) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return sortWeight
+        return sortWeight.hashCode()
     }
 
     override fun toString(): String {

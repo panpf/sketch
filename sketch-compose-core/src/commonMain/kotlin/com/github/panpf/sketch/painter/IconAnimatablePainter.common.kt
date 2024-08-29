@@ -107,7 +107,8 @@ class IconAnimatablePainter(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is IconAnimatablePainter) return false
+        if (other == null || this::class != other::class) return false
+        other as IconAnimatablePainter
         if (icon != other.icon) return false
         if (background != other.background) return false
         if (iconSize != other.iconSize) return false

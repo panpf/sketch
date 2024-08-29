@@ -75,7 +75,8 @@ class LongImagePrecisionDecider constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is LongImagePrecisionDecider) return false
+        if (other == null || this::class != other::class) return false
+        other as LongImagePrecisionDecider
         if (longImage != other.longImage) return false
         if (otherImage != other.otherImage) return false
         if (longImageDecider != other.longImageDecider) return false

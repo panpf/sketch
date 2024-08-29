@@ -70,7 +70,8 @@ class Rect {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || other !is Rect) return false
+        if (other == null || this::class != other::class) return false
+        other as Rect
         return left == other.left && top == other.top && right == other.right && bottom == other.bottom
     }
 

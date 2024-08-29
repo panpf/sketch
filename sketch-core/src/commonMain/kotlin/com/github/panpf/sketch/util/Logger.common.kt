@@ -287,7 +287,8 @@ class Logger(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Logger) return false
+        if (other == null || this::class != other::class) return false
+        other as Logger
         if (level != other.level) return false
         if (pipeline != other.pipeline) return false
         return true

@@ -96,7 +96,8 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RoundedCornersTransformation) return false
+        if (other == null || this::class != other::class) return false
+        other as RoundedCornersTransformation
         if (!radiusArray.contentEquals(other.radiusArray)) return false
         return true
     }

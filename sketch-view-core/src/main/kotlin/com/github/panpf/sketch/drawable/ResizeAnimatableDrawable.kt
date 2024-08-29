@@ -68,7 +68,8 @@ open class ResizeAnimatableDrawable(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ResizeAnimatableDrawable) return false
+        if (other == null || this::class != other::class) return false
+        other as ResizeAnimatableDrawable
         if (size != other.size) return false
         if (drawable != other.drawable) return false
         return scale == other.scale

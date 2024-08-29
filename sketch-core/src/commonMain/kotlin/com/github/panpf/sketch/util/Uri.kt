@@ -70,7 +70,10 @@ class Uri internal constructor(private val data: String) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other is Uri && other.data == data
+        if (other == null || this::class != other::class) return false
+        other as Uri
+        if (data != other.data) return false
+        return true
     }
 
     override fun hashCode(): Int {

@@ -60,7 +60,8 @@ class DrawableStateImage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is DrawableStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as DrawableStateImage
         if (drawableFetcher != other.drawableFetcher) return false
         return true
     }

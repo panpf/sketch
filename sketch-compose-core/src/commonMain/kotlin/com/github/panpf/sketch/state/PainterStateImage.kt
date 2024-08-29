@@ -40,7 +40,8 @@ class PainterStateImage(val painter: PainterEqualizer) : StateImage {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is PainterStateImage) return false
+        if (other == null || this::class != other::class) return false
+        other as PainterStateImage
         return painter == other.painter
     }
 

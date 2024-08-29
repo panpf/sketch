@@ -31,7 +31,8 @@ class AndroidBitmapImageValue(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AndroidBitmapImageValue) return false
+        if (other == null || this::class != other::class) return false
+        other as AndroidBitmapImageValue
         if (image != other.image) return false
         return extras == other.extras
     }

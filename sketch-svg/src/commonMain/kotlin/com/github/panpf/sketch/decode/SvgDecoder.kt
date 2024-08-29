@@ -83,7 +83,8 @@ class SvgDecoder(
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is Factory) return false
+            if (other == null || this::class != other::class) return false
+            other as Factory
             if (useViewBoundsAsIntrinsicSize != other.useViewBoundsAsIntrinsicSize) return false
             return true
         }
