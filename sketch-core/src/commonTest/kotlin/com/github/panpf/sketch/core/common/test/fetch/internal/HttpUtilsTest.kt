@@ -5,9 +5,9 @@ import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
-import com.github.panpf.sketch.test.utils.SlowSource
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.content
+import com.github.panpf.sketch.test.utils.slow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import okio.Buffer
@@ -29,7 +29,7 @@ class HttpUtilsTest {
         assertEquals(listOf(), progressListener.callbackActionList)
         val buffer = Buffer()
         buffer.use { sink ->
-            SlowSource(Buffer().writeUtf8(string), 100).content().use { content ->
+            Buffer().writeUtf8(string).slow(100).content().use { content ->
                 writeAllWithProgress(
                     sink = sink,
                     content = content,
@@ -50,7 +50,7 @@ class HttpUtilsTest {
         assertEquals(listOf(), progressListener.callbackActionList)
         val buffer2 = Buffer()
         buffer2.use { sink ->
-            SlowSource(Buffer().writeUtf8(string), 100).content().use { content ->
+            Buffer().writeUtf8(string).slow(100).content().use { content ->
                 writeAllWithProgress(
                     sink = sink,
                     content = content,
@@ -69,7 +69,7 @@ class HttpUtilsTest {
         assertEquals(listOf(), progressListener.callbackActionList)
         val buffer3 = Buffer()
         buffer3.use { sink ->
-            SlowSource(Buffer().writeUtf8(string), 100).buffer().content().use { content ->
+            Buffer().writeUtf8(string).slow(100).buffer().content().use { content ->
                 writeAllWithProgress(
                     sink = sink,
                     content = content,
@@ -90,10 +90,7 @@ class HttpUtilsTest {
         assertEquals(listOf(), progressListener.callbackActionList)
         val buffer4 = Buffer()
         buffer4.use { sink ->
-            SlowSource(
-                Buffer().writeUtf8(string),
-                readDelayMillis = 400
-            ).content().use { content ->
+            Buffer().writeUtf8(string).slow(readDelayMillis = 400).content().use { content ->
                 writeAllWithProgress(
                     sink = sink,
                     content = content,

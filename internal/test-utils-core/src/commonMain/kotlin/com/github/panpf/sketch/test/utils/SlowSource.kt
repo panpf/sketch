@@ -6,7 +6,7 @@ import okio.Source
 import okio.Timeout
 import kotlin.time.TimeSource
 
-class SlowSource(
+class SlowSource constructor(
     private val source: Source,
     val readDelayMillis: Long
 ) : Source {
@@ -26,8 +26,8 @@ class SlowSource(
     }
 }
 
-fun Source.content(): HttpStack.Content {
-    return SourceContent(this)
+fun Source.slow(readDelayMillis: Long): SlowSource {
+    return SlowSource(this, readDelayMillis)
 }
 
 class SourceContent(private val source: Source) : HttpStack.Content {
@@ -46,20 +46,9 @@ class SourceContent(private val source: Source) : HttpStack.Content {
     }
 }
 
-//fun BufferedSource.content(): HttpStack.Content {
-//    return BufferedSourceContent(this)
-//}
-//
-//class BufferedSourceContent(private val source: BufferedSource) : HttpStack.Content {
-//
-//    override suspend fun read(buffer: ByteArray): Int {
-//        return source.read(buffer)
-//    }
-//
-//    override fun close() {
-//        source.close()
-//    }
-//}
+fun Source.content(): HttpStack.Content {
+    return SourceContent(this)
+}
 
 fun block(millis: Long) {
     if (millis > 0) {

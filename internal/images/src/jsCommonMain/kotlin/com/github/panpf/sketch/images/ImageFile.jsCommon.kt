@@ -16,8 +16,15 @@
 
 package com.github.panpf.sketch.images
 
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.source.DataSource
+
 actual fun resourceNameToUri(name: String): String {
     // The images in images have not been compiled,
     // so there is no need to add 'composeResources/com.github.panpf.sketch.sample.resources/' to the path.
     return "file:///compose_resource/files/$name"
+}
+
+actual fun ResourceImageFile.toDataSource(context: PlatformContext): DataSource {
+    throw UnsupportedOperationException("No implementation for js platform")
 }

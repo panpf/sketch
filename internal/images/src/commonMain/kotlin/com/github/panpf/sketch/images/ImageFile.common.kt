@@ -1,5 +1,7 @@
 package com.github.panpf.sketch.images
 
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 
 open class ImageFile(
@@ -22,3 +24,5 @@ class ResourceImageFile(
 )
 
 expect fun resourceNameToUri(name: String): String
+
+expect fun ResourceImageFile.toDataSource(context: PlatformContext): DataSource

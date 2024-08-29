@@ -16,8 +16,15 @@
 
 package com.github.panpf.sketch.images
 
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.fetch.newAssetUri
+import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.DataSource
 
 actual fun resourceNameToUri(name: String): String {
     return newAssetUri(name)
+}
+
+actual fun ResourceImageFile.toDataSource(context: PlatformContext): DataSource {
+    return AssetDataSource(context, resourceName)
 }
