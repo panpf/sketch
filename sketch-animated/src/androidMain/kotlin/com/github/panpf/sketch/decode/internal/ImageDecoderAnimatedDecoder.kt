@@ -41,6 +41,7 @@ import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.ResourceDataSource
+import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers

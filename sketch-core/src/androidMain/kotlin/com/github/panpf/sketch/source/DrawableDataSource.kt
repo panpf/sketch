@@ -22,6 +22,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import okio.Path
 import okio.Source
+import java.io.IOException
 
 /**
  * Provides access to local file image data
@@ -35,9 +36,12 @@ class DrawableDataSource constructor(
     val drawable: Drawable by lazy { drawableFetcher.getDrawable(context) }
     override val key: String by lazy { drawableFetcher.key }
 
-    override fun openSourceOrNull(): Source? = null
+    @Throws(IOException::class)
+    override fun openSource(): Source = throw UnsupportedOperationException("Not supported")
 
-    override fun getFileOrNull(sketch: Sketch): Path? = null
+    @Throws(IOException::class)
+    override fun getFile(sketch: Sketch): Path =
+        throw UnsupportedOperationException("Not supported")
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -17,21 +17,16 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.WorkerThread
 import kotlinx.coroutines.runBlocking
 import okio.IOException
 import okio.Path
 import okio.buffer
 import okio.use
 
-@WorkerThread
 @Throws(IOException::class)
-actual fun getDataSourceCacheFile(
-    sketch: Sketch,
-    dataSource: DataSource,
-): Path? = runBlocking {
+actual fun DataSource.cacheFile(sketch: Sketch): Path = runBlocking {
     val resultCache = sketch.resultCache
-    val resultCacheKey = "${dataSource.key}_data_source"
+    val resultCacheKey = "${key}_data_source"
     val snapshot = resultCache.withLock(resultCacheKey) {
         val snapshot = resultCache.openSnapshot(resultCacheKey)
         if (snapshot != null) {
@@ -40,7 +35,7 @@ actual fun getDataSourceCacheFile(
             val editor = resultCache.openEditor(resultCacheKey)
                 ?: throw IOException("Disk cache cannot be used")
             try {
-                dataSource.openSource().buffer().use { source ->
+                openSource().buffer().use { source ->
                     resultCache.fileSystem.sink(editor.data).buffer().use { sink ->
                         sink.writeAll(source)
                     }

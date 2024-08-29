@@ -3,7 +3,7 @@ package com.github.panpf.sketch.core.nonjscommon.test.source
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.FileDataSource
-import com.github.panpf.sketch.source.getDataSourceCacheFile
+import com.github.panpf.sketch.source.cacheFile
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.fetch
 import kotlinx.coroutines.test.runTest
@@ -17,18 +17,18 @@ class DataSourceNonJsCommonTest {
     // TODO test
 
     @Test
-    fun testGetCacheFileFromStreamDataSource() = runTest {
+    fun testCacheFile() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch).dataSource.apply {
-            val file = getDataSourceCacheFile(sketch, this)
+            val file = cacheFile(sketch)
             assertTrue(file.toString().contains("/sketch4/result/"))
-            val file1 = getDataSourceCacheFile(sketch, this)
+            val file1 = cacheFile(sketch)
             assertEquals(file, file1)
         }
 
         assertFails {
             FileDataSource(path = "/sdcard/fake.jpeg".toPath()).apply {
-                getDataSourceCacheFile(sketch, this)
+                cacheFile(sketch)
             }
         }
     }

@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.WorkerThread
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
 import okio.IOException
@@ -34,13 +33,11 @@ class ByteArrayDataSource constructor(
 
     override val key: String by lazy { data.toByteString().md5().hex() }
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = Buffer().write(data)
+    override fun openSource(): Source = Buffer().write(data)
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
+    override fun getFile(sketch: Sketch): Path = cacheFile(sketch)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -15,6 +15,7 @@
 * remove: DataSource 移除 sketch 和 request 属性
 * new: DataSource 新增 key 属性
 * change: DataSource 的 getFile() 和 getFileOrNull() 方法增加 Sketch 参数
+* change: DataSource 的 openSourceOrNull() 和 getFileOrNull() 方法现在以扩展函数的形式提供
 
 # 4.0.0-alpha07
 

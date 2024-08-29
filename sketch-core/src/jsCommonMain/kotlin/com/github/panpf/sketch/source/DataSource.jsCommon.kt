@@ -17,11 +17,10 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.WorkerThread
+import okio.IOException
 import okio.Path
 
-@WorkerThread
-actual fun getDataSourceCacheFile(
-    sketch: Sketch,
-    dataSource: DataSource,
-): Path? = null
+@Throws(IOException::class)
+actual fun DataSource.cacheFile(sketch: Sketch): Path {
+    throw UnsupportedOperationException("Disk cache is not supported in JS")
+}

@@ -23,6 +23,7 @@ import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
+import com.github.panpf.sketch.source.getFileOrNull
 
 class GifInfoHandleHelper constructor(val sketch: Sketch, val dataSource: DataSource) {
 

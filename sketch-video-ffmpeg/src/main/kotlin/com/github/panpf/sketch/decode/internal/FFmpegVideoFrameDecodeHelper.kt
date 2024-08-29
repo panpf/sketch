@@ -31,6 +31,7 @@ import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import wseemann.media.FFmpegMediaMetadataRetriever

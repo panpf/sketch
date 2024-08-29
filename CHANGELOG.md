@@ -17,6 +17,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * remove: DataSource removes sketch and request attributes
 * new: DataSource adds key attribute
 * change: DataSource's getFile() and getFileOrNull() methods add Sketch parameters
+* change: DataSource's openSourceOrNull() and getFileOrNull() methods are now available as extension
+  functions
 
 # 4.0.0-alpha07
 

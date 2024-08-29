@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -37,13 +36,11 @@ class FileDataSource constructor(
 
     override val key: String by lazy { newFileUri(path) }
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = fileSystem.source(path)
+    override fun openSource(): Source = fileSystem.source(path)
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(sketch: Sketch): Path = path
+    override fun getFile(sketch: Sketch): Path = path
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

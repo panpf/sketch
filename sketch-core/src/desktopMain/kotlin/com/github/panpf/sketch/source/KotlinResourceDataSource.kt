@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.ClassLoaderResourceLoader
@@ -34,14 +33,12 @@ class KotlinResourceDataSource constructor(
 
     override val dataFrom: DataFrom = LOCAL
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source =
+    override fun openSource(): Source =
         ClassLoaderResourceLoader.Default.load(resourcePath).source()
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
+    override fun getFile(sketch: Sketch): Path = cacheFile(sketch)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

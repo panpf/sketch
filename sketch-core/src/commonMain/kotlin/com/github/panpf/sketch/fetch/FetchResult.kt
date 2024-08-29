@@ -18,6 +18,7 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.openSourceOrNull
 import okio.buffer
 import okio.use
 

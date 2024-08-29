@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.source
 
 import android.content.Context
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
@@ -38,13 +37,11 @@ class AssetDataSource constructor(
 
     override val dataFrom: DataFrom = LOCAL
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = context.assets.open(fileName).source()
+    override fun openSource(): Source = context.assets.open(fileName).source()
 
-    @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
+    override fun getFile(sketch: Sketch): Path = cacheFile(sketch)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

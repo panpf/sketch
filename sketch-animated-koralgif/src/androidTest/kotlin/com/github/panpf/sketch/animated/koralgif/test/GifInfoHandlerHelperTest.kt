@@ -177,9 +177,10 @@ class GifInfoHandlerHelperTest {
                     override val key: String by lazy { newFileUri(snapshot.data) }
                     override val dataFrom: DataFrom = LOCAL
 
-                    override fun openSourceOrNull(): Source? = null
+                    override fun openSource(): Source = throw UnsupportedOperationException()
 
-                    override fun getFileOrNull(sketch: Sketch): Path? = null
+                    override fun getFile(sketch: Sketch): Path =
+                        throw UnsupportedOperationException()
                 }
             ).width
         }
