@@ -18,12 +18,10 @@ package com.github.panpf.sketch.core.common.test.fetch
 
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.FetchResultImpl
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.source.FileDataSource
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,11 +31,8 @@ class FetchResultTest {
 
     @Test
     fun testCreateFunction() {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "")
-
         FetchResult(
-            FileDataSource(sketch, request, "/sdcard/sample.jpeg".toPath()),
+            FileDataSource("/sdcard/sample.jpeg".toPath()),
             "image/jpeg"
         ).apply {
             assertTrue(this is FetchResultImpl)
@@ -51,18 +46,15 @@ class FetchResultTest {
 
     @Test
     fun testDataFrom() {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "")
-
         FetchResult(
-            FileDataSource(sketch, request, "/sdcard/sample.jpeg".toPath()),
+            FileDataSource("/sdcard/sample.jpeg".toPath()),
             "image/jpeg"
         ).apply {
             assertEquals(DataFrom.LOCAL, dataFrom)
         }
 
         FetchResult(
-            ByteArrayDataSource(sketch, request, DataFrom.NETWORK, byteArrayOf()),
+            ByteArrayDataSource(byteArrayOf(), DataFrom.NETWORK),
             "image/jpeg"
         ).apply {
             assertEquals(DataFrom.NETWORK, dataFrom)
@@ -71,22 +63,19 @@ class FetchResultTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "")
-
         FetchResult(
-            FileDataSource(sketch, request, "/sdcard/sample.jpeg".toPath()),
+            FileDataSource("/sdcard/sample.jpeg".toPath()),
             "image/jpeg"
         ).apply {
             assertEquals(
-                "FetchResult(source=FileDataSource('/sdcard/sample.jpeg'),mimeType='image/jpeg')",
+                "FetchResult(source=FileDataSource(path='/sdcard/sample.jpeg', from=LOCAL),mimeType='image/jpeg')",
                 this.toString()
             )
         }
 
         val data = byteArrayOf()
         FetchResult(
-            ByteArrayDataSource(sketch, request, DataFrom.NETWORK, data),
+            ByteArrayDataSource(data, DataFrom.NETWORK),
             "image/jpeg"
         ).apply {
             assertEquals(
@@ -98,9 +87,6 @@ class FetchResultTest {
 
     @Test
     fun testHeaderBytes() {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "")
-
         val bytes = buildList {
             var number = 1
             repeat(101) {
@@ -108,7 +94,7 @@ class FetchResultTest {
             }
         }.toByteArray()
         FetchResult(
-            ByteArrayDataSource(sketch, request, MEMORY, bytes),
+            ByteArrayDataSource(bytes, MEMORY),
             "image/jpeg"
         ).apply {
             assertEquals(
@@ -124,7 +110,7 @@ class FetchResultTest {
             }
         }.toByteArray()
         FetchResult(
-            ByteArrayDataSource(sketch, request, MEMORY, bytes1),
+            ByteArrayDataSource(bytes1, MEMORY),
             "image/jpeg"
         ).apply {
             assertEquals(

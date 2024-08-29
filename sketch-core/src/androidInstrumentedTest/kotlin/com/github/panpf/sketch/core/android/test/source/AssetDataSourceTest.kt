@@ -1,13 +1,11 @@
 package com.github.panpf.sketch.core.android.test.source
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
 import org.junit.Assert
@@ -20,28 +18,25 @@ class AssetDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
         AssetDataSource(
-            sketch = sketch,
-            request = request,
+            context = context,
             fileName = ResourceImages.jpeg.resourceName
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
-            Assert.assertTrue(request === this.request)
             Assert.assertEquals(ResourceImages.jpeg.resourceName, this.fileName)
             Assert.assertEquals(LOCAL, this.dataFrom)
         }
     }
 
+    // TODO test: key
+
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri),
+            context = context,
             fileName = ResourceImages.jpeg.resourceName
         ).apply {
             openSource().asOrThrow<Closeable>().close()
@@ -49,8 +44,7 @@ class AssetDataSourceTest {
 
         assertThrow(FileNotFoundException::class) {
             AssetDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, newAssetUri("not_found.jpeg")),
+                context = context,
                 fileName = "not_found.jpeg"
             ).apply {
                 openSource()
@@ -62,11 +56,10 @@ class AssetDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri),
+            context = context,
             fileName = ResourceImages.jpeg.resourceName
         ).apply {
             Assert.assertEquals(
@@ -76,8 +69,7 @@ class AssetDataSourceTest {
         }
 
         AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, newAssetUri("not_found.jpeg")),
+            context = context,
             fileName = "not_found.jpeg"
         ).apply {
             Assert.assertEquals("AssetDataSource('not_found.jpeg')", toString())

@@ -66,7 +66,10 @@ fun newComposeResourceUri(resourcePath: String): String {
 fun isComposeResourceUri(uri: Uri): Boolean =
     ComposeResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && uri.authority?.takeIf { it.isNotEmpty() } == null
-            && ComposeResourceUriFetcher.PATH_ROOT.equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
+            && ComposeResourceUriFetcher.PATH_ROOT.equals(
+        uri.pathSegments.firstOrNull(),
+        ignoreCase = true
+    )
 
 class ComposeResourceUriFetcher(
     val sketch: Sketch,
@@ -83,7 +86,7 @@ class ComposeResourceUriFetcher(
     override suspend fun fetch(): Result<FetchResult> {
         val bytes = readResourceBytes(resourcePath)
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourcePath)
-        val dataSource = ByteArrayDataSource(sketch, request, LOCAL, bytes)
+        val dataSource = ByteArrayDataSource(data = bytes, dataFrom = LOCAL)
         return Result.success(FetchResult(dataSource, mimeType))
     }
 

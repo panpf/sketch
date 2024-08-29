@@ -148,7 +148,7 @@ class GifDrawableDecoderTest {
         ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult =
                 FetchResult(
-                    AssetDataSource(sketch, it, ResourceImages.png.resourceName),
+                    AssetDataSource(context, ResourceImages.png.resourceName),
                     "image/gif"
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)

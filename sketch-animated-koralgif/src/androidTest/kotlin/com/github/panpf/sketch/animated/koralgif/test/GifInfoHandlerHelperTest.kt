@@ -20,10 +20,9 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.fetch.newResourceUri
+import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource
@@ -53,18 +52,17 @@ class GifInfoHandlerHelperTest {
         val sketch = context.sketch
 
         AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.animGif.uri),
+            context = context,
             fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
-        ).getFile()
-        val snapshot = sketch.resultCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
+        ).getFile(sketch)
+        val snapshot =
+            sketch.resultCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
 
         GifInfoHandleHelper(
+            sketch,
             ByteArrayDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, "http://sample.com/sample.gif"),
+                data = snapshot.data.toFile().readBytes(),
                 dataFrom = NETWORK,
-                data = snapshot.data.toFile().readBytes()
             )
         ).apply {
             Assert.assertEquals(480, width)
@@ -80,9 +78,8 @@ class GifInfoHandlerHelperTest {
         }
 
         GifInfoHandleHelper(
+            sketch,
             FileDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, ResourceImages.animGif.uri),
                 path = snapshot.data,
                 dataFrom = LOCAL,
             )
@@ -100,14 +97,10 @@ class GifInfoHandlerHelperTest {
         }
 
         GifInfoHandleHelper(
+            sketch,
             ResourceDataSource(
-                sketch = sketch,
-                request = ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.images.R.raw.sample_anim)
-                ),
-                packageName = context.packageName,
                 resources = context.resources,
+                packageName = context.packageName,
                 resId = com.github.panpf.sketch.images.R.raw.sample_anim
             )
         ).apply {
@@ -124,9 +117,9 @@ class GifInfoHandlerHelperTest {
         }
 
         GifInfoHandleHelper(
+            sketch,
             ContentDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, Uri.fromFile(snapshot.data.toFile()).toString()),
+                context = context,
                 contentUri = Uri.fromFile(snapshot.data.toFile()),
             )
         ).apply {
@@ -143,11 +136,8 @@ class GifInfoHandlerHelperTest {
         }
 
         GifInfoHandleHelper(
-            FileDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, Uri.fromFile(snapshot.data.toFile()).toString()),
-                path = snapshot.data,
-            )
+            sketch,
+            FileDataSource(path = snapshot.data)
         ).apply {
             Assert.assertEquals(480, width)
             Assert.assertEquals(480, height)
@@ -162,9 +152,9 @@ class GifInfoHandlerHelperTest {
         }
 
         GifInfoHandleHelper(
+            sketch,
             AssetDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, ResourceImages.animGif.uri),
+                context = context,
                 fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
             )
         ).apply {
@@ -182,20 +172,14 @@ class GifInfoHandlerHelperTest {
 
         assertThrow(Exception::class) {
             GifInfoHandleHelper(
+                sketch,
                 object : DataSource {
-                    override val sketch: Sketch
-                        get() = sketch
-                    override val request: ImageRequest
-                        get() = ImageRequest(
-                            context,
-                            Uri.fromFile(snapshot.data.toFile()).toString()
-                        )
-                    override val dataFrom: DataFrom
-                        get() = LOCAL
+                    override val key: String by lazy { newFileUri(snapshot.data) }
+                    override val dataFrom: DataFrom = LOCAL
 
                     override fun openSourceOrNull(): Source? = null
 
-                    override fun getFileOrNull(): Path? = null
+                    override fun getFileOrNull(sketch: Sketch): Path? = null
                 }
             ).width
         }

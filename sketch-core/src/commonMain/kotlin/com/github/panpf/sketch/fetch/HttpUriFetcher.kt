@@ -161,9 +161,8 @@ open class HttpUriFetcher(
                 }.getOrNull()
                 val mimeType = getMimeType(url, contentType)
                 val dataSource = FileDataSource(
-                    sketch = sketch,
-                    request = request,
                     path = snapshot.data,
+                    fileSystem = sketch.fileSystem,
                     dataFrom = DOWNLOAD_CACHE,
                 )
                 Result.success(FetchResult(dataSource, mimeType))
@@ -210,15 +209,14 @@ open class HttpUriFetcher(
         // Build FetchResult
         val dataSource = if (request.downloadCachePolicy.readEnabled) {
             FileDataSource(
-                sketch = sketch,
-                request = request,
                 path = cachePath,
+                fileSystem = sketch.fileSystem,
                 dataFrom = NETWORK,
             )
         } else {
             try {
                 val byteArray = sketch.fileSystem.source(cachePath).buffer().readByteArray()
-                ByteArrayDataSource(sketch, request, NETWORK, byteArray)
+                ByteArrayDataSource(data = byteArray, dataFrom = NETWORK)
             } catch (e: Throwable) {
                 return Result.failure(e)
             }
@@ -242,7 +240,7 @@ open class HttpUriFetcher(
             return Result.failure(IOException(message))
         }
         val bytes = buffer.readByteArray()
-        val dataSource = ByteArrayDataSource(sketch, request, NETWORK, bytes)
+        val dataSource = ByteArrayDataSource(data = bytes, dataFrom = NETWORK)
         val result = FetchResult(dataSource, mimeType)
         return Result.success(result)
     }

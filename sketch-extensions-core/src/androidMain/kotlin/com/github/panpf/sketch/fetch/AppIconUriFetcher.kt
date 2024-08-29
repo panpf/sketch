@@ -72,8 +72,7 @@ class AppIconUriFetcher(
     override suspend fun fetch(): Result<FetchResult> = Result.success(
         FetchResult(
             dataSource = DrawableDataSource(
-                sketch = sketch,
-                request = request,
+                context = request.context,
                 dataFrom = DataFrom.LOCAL,
                 drawableFetcher = AppIconDrawableFetcher(packageName, versionCode),
             ),

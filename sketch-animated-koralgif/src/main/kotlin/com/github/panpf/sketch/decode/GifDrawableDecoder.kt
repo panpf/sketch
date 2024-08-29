@@ -76,7 +76,7 @@ class GifDrawableDecoder(
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        val gifInfoHandleHelper = GifInfoHandleHelper(dataSource)
+        val gifInfoHandleHelper = GifInfoHandleHelper(requestContext.sketch, dataSource)
         val imageWidth = gifInfoHandleHelper.width
         val imageHeight = gifInfoHandleHelper.height
         val size = requestContext.size!!

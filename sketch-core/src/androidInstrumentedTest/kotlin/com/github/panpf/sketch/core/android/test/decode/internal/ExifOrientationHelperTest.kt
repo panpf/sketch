@@ -24,10 +24,8 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.addToResize
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
-import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -36,7 +34,6 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
@@ -57,20 +54,16 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientation() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         Assert.assertEquals(
             ExifOrientationHelper.NORMAL,
-            AssetDataSource(
-                sketch, ImageRequest(context, ResourceImages.jpeg.uri), ResourceImages.jpeg.resourceName
-            ).readExifOrientation()
+            AssetDataSource(context, ResourceImages.jpeg.resourceName).readExifOrientation()
         )
 
         Assert.assertEquals(
             ExifOrientationHelper.UNDEFINED,
-            AssetDataSource(
-                sketch, ImageRequest(context, ResourceImages.webp.uri), ResourceImages.webp.resourceName
-            ).readExifOrientation()
+            AssetDataSource(context, ResourceImages.webp.resourceName).readExifOrientation()
         )
 
         ExifOrientationTestFileHelper(
@@ -80,24 +73,15 @@ class ExifOrientationHelperTest {
             .forEach {
                 Assert.assertEquals(
                     it.exifOrientation,
-                    FileDataSource(
-                        sketch,
-                        ImageRequest(context, it.file.path),
-                        it.file.toOkioPath()
-                    ).readExifOrientation()
+                    FileDataSource(it.file.toOkioPath()).readExifOrientation()
                 )
             }
 
         Assert.assertEquals(
             ExifOrientationHelper.UNDEFINED,
             ResourceDataSource(
-                sketch,
-                ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-                ),
-                packageName = context.packageName,
                 context.resources,
+                packageName = context.packageName,
                 com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
             ).readExifOrientation()
         )
@@ -105,29 +89,29 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testReadExifOrientationWithMimeType() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         Assert.assertEquals(
             ExifOrientationHelper.NORMAL,
             AssetDataSource(
-                sketch,
-                ImageRequest(context, ResourceImages.jpeg.uri), ResourceImages.jpeg.resourceName
+                context,
+                ResourceImages.jpeg.resourceName
             ).readExifOrientationWithMimeType("image/jpeg")
         )
 
         Assert.assertEquals(
             ExifOrientationHelper.UNDEFINED,
             AssetDataSource(
-                sketch,
-                ImageRequest(context, ResourceImages.jpeg.uri), ResourceImages.jpeg.resourceName
+                context,
+                ResourceImages.jpeg.resourceName
             ).readExifOrientationWithMimeType("image/bmp")
         )
 
         Assert.assertEquals(
             ExifOrientationHelper.UNDEFINED,
             AssetDataSource(
-                sketch,
-                ImageRequest(context, ResourceImages.webp.uri), ResourceImages.webp.resourceName
+                context,
+                ResourceImages.webp.resourceName
             ).readExifOrientationWithMimeType("image/webp")
         )
 
@@ -138,35 +122,20 @@ class ExifOrientationHelperTest {
             .forEach {
                 Assert.assertEquals(
                     it.exifOrientation,
-                    FileDataSource(
-                        sketch,
-                        ImageRequest(context, it.file.path),
-                        it.file.toOkioPath()
-                    )
-                        .readExifOrientationWithMimeType("image/jpeg")
+                    FileDataSource(it.file.toOkioPath()).readExifOrientationWithMimeType("image/jpeg")
                 )
                 Assert.assertEquals(
                     ExifOrientationHelper.UNDEFINED,
-                    FileDataSource(
-                        sketch,
-                        ImageRequest(context, it.file.path),
-                        it.file.toOkioPath()
-                    )
-                        .readExifOrientationWithMimeType("image/bmp")
+                    FileDataSource(it.file.toOkioPath()).readExifOrientationWithMimeType("image/bmp")
                 )
             }
 
         Assert.assertEquals(
             ExifOrientationHelper.UNDEFINED,
             ResourceDataSource(
-                sketch,
-                ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-                ),
+                resources = context.resources,
                 packageName = context.packageName,
-                context.resources,
-                com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
             ).readExifOrientationWithMimeType("image/jpeg")
         )
     }
@@ -450,8 +419,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -470,8 +441,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -490,8 +463,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -510,8 +485,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -530,8 +507,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -550,8 +529,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -570,8 +551,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
 
@@ -590,8 +573,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = false)
             )
         }
     }
@@ -613,8 +598,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -633,8 +620,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -653,8 +642,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -673,8 +664,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -693,8 +686,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -713,8 +708,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -733,8 +730,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
 
@@ -753,8 +752,10 @@ class ExifOrientationHelperTest {
         ).forEach { (orientation, expected) ->
             Assert.assertEquals(
                 "scale=$scale, size=$size, orientation=${ExifOrientationHelper.name(orientation)},",
-                /* expected = */ expected,
-                /* actual = */ ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
+                /* expected = */
+                expected,
+                /* actual = */
+                ExifOrientationHelper(orientation).applyToScale(scale, size, reverse = true)
             )
         }
     }

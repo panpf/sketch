@@ -16,6 +16,7 @@
 
 package pl.droidsonroids.gif
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource
@@ -23,35 +24,34 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 
-class GifInfoHandleHelper constructor(private val dataSource: DataSource) {
+class GifInfoHandleHelper constructor(val sketch: Sketch, val dataSource: DataSource) {
 
     private val gifInfoHandle: GifInfoHandle by lazy {
-        val context = dataSource.request.context
         when (dataSource) {
             is ByteArrayDataSource -> {
                 GifInfoHandle(dataSource.data)
             }
 
             is ResourceDataSource -> {
-                GifInfoHandle(context.resources.openRawResourceFd(dataSource.resId))
+                GifInfoHandle(sketch.context.resources.openRawResourceFd(dataSource.resId))
             }
 
             is ContentDataSource -> {
-                GifInfoHandle.openUri(context.contentResolver, dataSource.contentUri)
+                GifInfoHandle.openUri(sketch.context.contentResolver, dataSource.contentUri)
             }
 
             is AssetDataSource -> {
-                GifInfoHandle(context.assets.openFd(dataSource.fileName))
+                GifInfoHandle(sketch.context.assets.openFd(dataSource.fileName))
             }
 
             is FileDataSource -> {
-                GifInfoHandle(dataSource.getFile().toFile().path)
+                GifInfoHandle(dataSource.path.toString())
             }
 
             else -> {
                 // This line of code will cause the memory to continue to be full under 6.0, so comment it out.
 //                dataSource.openSourceOrNull()?.let { GifInfoHandle(it.buffer().inputStream().buffered()) }
-                dataSource.getFileOrNull()?.let { GifInfoHandle(it.toFile().path) }
+                dataSource.getFileOrNull(sketch)?.let { GifInfoHandle(it.toFile().path) }
                     ?: throw Exception("Unsupported DataSource: ${dataSource::class}")
             }
         }

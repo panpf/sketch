@@ -42,7 +42,6 @@ import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrN
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.decode.internal.realDecode
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
-import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
@@ -58,6 +57,7 @@ import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toSizeString
@@ -1306,11 +1306,10 @@ class DecodesAndroidTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactory() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
+            context,
             ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactory().apply {
@@ -1320,8 +1319,7 @@ class DecodesAndroidTest {
             }
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.webp.uri),
+            context,
             ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactory().apply {
@@ -1335,14 +1333,9 @@ class DecodesAndroidTest {
             }
 
         ResourceDataSource(
-            sketch,
-            ImageRequest(
-                context,
-                newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-            ),
+            resources = context.resources,
             packageName = context.packageName,
-            context.resources,
-            com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+            resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
         ).readImageInfoWithBitmapFactory().apply {
             assertEquals(-1, width)
             assertEquals(-1, height)
@@ -1352,11 +1345,10 @@ class DecodesAndroidTest {
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrThrow() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
+            context,
             ResourceImages.jpeg.resourceName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -1365,8 +1357,7 @@ class DecodesAndroidTest {
                 assertEquals("image/jpeg", mimeType)
             }
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.webp.uri),
+            context,
             ResourceImages.webp.resourceName
         )
             .readImageInfoWithBitmapFactoryOrThrow().apply {
@@ -1381,118 +1372,92 @@ class DecodesAndroidTest {
 
         assertThrow(ImageInvalidException::class) {
             ResourceDataSource(
-                sketch,
-                ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-                ),
+                resources = context.resources,
                 packageName = context.packageName,
-                context.resources,
-                com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrThrow()
         }
     }
 
     @Test
     fun testReadImageInfoWithBitmapFactoryOrNull() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
+            context,
             ResourceImages.jpeg.resourceName
-        )
-            .readImageInfoWithBitmapFactoryOrNull()!!.apply {
-                assertEquals(1291, width)
-                assertEquals(1936, height)
-                assertEquals("image/jpeg", mimeType)
-            }
+        ).readImageInfoWithBitmapFactoryOrNull()!!.apply {
+            assertEquals(1291, width)
+            assertEquals(1936, height)
+            assertEquals("image/jpeg", mimeType)
+        }
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.webp.uri),
+            context,
             ResourceImages.webp.resourceName
-        )
-            .readImageInfoWithBitmapFactoryOrNull()!!.apply {
-                assertEquals(1080, width)
-                assertEquals(1344, height)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    assertEquals("image/webp", mimeType)
-                } else {
-                    assertEquals("", mimeType)
-                }
+        ).readImageInfoWithBitmapFactoryOrNull()!!.apply {
+            assertEquals(1080, width)
+            assertEquals(1344, height)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                assertEquals("image/webp", mimeType)
+            } else {
+                assertEquals("", mimeType)
             }
+        }
 
         assertNull(
             ResourceDataSource(
-                sketch,
-                ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-                ),
+                resources = context.resources,
                 packageName = context.packageName,
-                context.resources,
-                com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
             ).readImageInfoWithBitmapFactoryOrNull()
         )
     }
 
     @Test
     fun testDecodeBitmap() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
-            ResourceImages.jpeg.resourceName
-        )
-            .decodeBitmap()!!.apply {
-                assertEquals(1291, width)
-                assertEquals(1936, height)
-            }
+            context = context,
+            fileName = ResourceImages.jpeg.resourceName
+        ).decodeBitmap()!!.apply {
+            assertEquals(1291, width)
+            assertEquals(1936, height)
+        }
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
-            ResourceImages.jpeg.resourceName
-        )
-            .decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
+            context = context,
+            fileName = ResourceImages.jpeg.resourceName
+        ).decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
                 assertEquals(646, width)
                 assertEquals(968, height)
             }
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.webp.uri),
+            context,
             ResourceImages.webp.resourceName
-        )
-            .decodeBitmap()!!.apply {
-                assertEquals(1080, width)
-                assertEquals(1344, height)
-            }
+        ).decodeBitmap()!!.apply {
+            assertEquals(1080, width)
+            assertEquals(1344, height)
+        }
 
         assertNull(
             ResourceDataSource(
-                sketch,
-                ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-                ),
+                resources = context.resources,
                 packageName = context.packageName,
-                context.resources,
-                com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
             ).decodeBitmap()
         )
     }
 
     @Test
     fun testDecodeRegionBitmap() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
+            context,
             ResourceImages.jpeg.resourceName
         )
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 600, 600))!!.apply {
@@ -1501,8 +1466,7 @@ class DecodesAndroidTest {
             }
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.jpeg.uri),
+            context,
             ResourceImages.jpeg.resourceName
         )
             .decodeRegionBitmap(
@@ -1514,8 +1478,7 @@ class DecodesAndroidTest {
             }
 
         AssetDataSource(
-            sketch,
-            ImageRequest(context, ResourceImages.webp.uri),
+            context,
             ResourceImages.webp.resourceName
         )
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 700, 700))!!.apply {
@@ -1525,14 +1488,9 @@ class DecodesAndroidTest {
 
         assertThrow(IOException::class) {
             ResourceDataSource(
-                sketch,
-                ImageRequest(
-                    context,
-                    newResourceUri(com.github.panpf.sketch.test.utils.core.R.xml.network_security_config)
-                ),
+                resources = context.resources,
                 packageName = context.packageName,
-                context.resources,
-                com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
             ).decodeRegionBitmap(android.graphics.Rect(500, 500, 600, 600))
         }
     }

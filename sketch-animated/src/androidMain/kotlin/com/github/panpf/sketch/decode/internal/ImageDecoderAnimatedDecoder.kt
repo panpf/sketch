@@ -89,7 +89,7 @@ open class ImageDecoderAnimatedDecoder(
             }
 
             else -> {
-                dataSource.getFileOrNull()
+                dataSource.getFileOrNull(requestContext.sketch)
                     ?.let { ImageDecoder.createSource(it.toFile()) }
                     ?: throw Exception("Unsupported DataSource: ${dataSource::class}")
             }

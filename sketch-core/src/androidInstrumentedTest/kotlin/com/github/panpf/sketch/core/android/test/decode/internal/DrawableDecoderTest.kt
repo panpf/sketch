@@ -203,8 +203,7 @@ class DrawableDecoderTest {
                         requestContext = this@run.toRequestContext(sketch),
                         fetchResult = FetchResult(
                             dataSource = DrawableDataSource(
-                                sketch = sketch,
-                                request = this@run,
+                                context = context,
                                 dataFrom = LOCAL,
                                 drawableFetcher = ResDrawable(8801)
                             ),

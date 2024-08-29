@@ -165,7 +165,7 @@ class Base64UriFetcher constructor(
         }
         val bytes = base64.decode(base64String)
         return Result.success(
-            FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
+            FetchResult(ByteArrayDataSource(data = bytes, dataFrom = MEMORY), mimeType)
         )
     }
 

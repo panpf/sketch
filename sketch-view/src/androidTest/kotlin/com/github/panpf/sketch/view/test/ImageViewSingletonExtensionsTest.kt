@@ -137,7 +137,7 @@ class ImageViewSingletonExtensionsTest {
 
         val file = runBlocking {
             sketch.components.newFetcherOrThrow(ImageRequest(context, ResourceImages.png.uri))
-                .fetch().getOrThrow().dataSource.getFile().toFile()
+                .fetch().getOrThrow().dataSource.getFile(sketch).toFile()
         }
         runBlocking {
             imageView.loadImage(file).job.join()

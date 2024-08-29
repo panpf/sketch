@@ -88,9 +88,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         if (snapshot == null) return null
         val result = runCatching {
             val dataSource = FileDataSource(
-                sketch = sketch,
-                request = requestContext.request,
                 path = snapshot.data,
+                fileSystem = sketch.fileSystem,
                 dataFrom = RESULT_CACHE,
             )
             val metadataString = fileSystem.source(snapshot.metadata).buffer().use { it.readUtf8() }

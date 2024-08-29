@@ -21,7 +21,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RawRes
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import okio.Path
 import okio.Source
@@ -32,42 +32,36 @@ import java.io.IOException
  * Provides access to image data in android resources
  */
 class ResourceDataSource constructor(
-    override val sketch: Sketch,
-    override val request: ImageRequest,
-    val packageName: String,
     val resources: Resources,
+    val packageName: String,
     @RawRes @DrawableRes val resId: Int
 ) : DataSource {
 
-    override val dataFrom: DataFrom
-        get() = LOCAL
+    override val key: String by lazy { newResourceUri(packageName = packageName, resId = resId) }
+
+    override val dataFrom: DataFrom = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source =
-        resources.openRawResource(resId).source()
+    override fun openSourceOrNull(): Source = resources.openRawResource(resId).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
+    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ResourceDataSource
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
-        if (packageName != other.packageName) return false
         if (resources != other.resources) return false
+        if (packageName != other.packageName) return false
         if (resId != other.resId) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
+        var result = resources.hashCode()
         result = 31 * result + packageName.hashCode()
-        result = 31 * result + resources.hashCode()
         result = 31 * result + resId
         return result
     }

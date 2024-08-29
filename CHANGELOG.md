@@ -14,6 +14,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
   listen and update the Compose State. [#207](https://github.com/panpf/sketch/issues/207)
 * new: SkiaBitmapImage now supports memory caching
 * remove: Remove SkiaExifOrientationHelper
+* remove: DataSource removes sketch and request attributes
+* new: DataSource adds key attribute
+* change: DataSource's getFile() and getFileOrNull() methods add Sketch parameters
 
 # 4.0.0-alpha07
 

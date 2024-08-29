@@ -56,7 +56,7 @@ class AssetUriFetcher(
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(fileName)
-        FetchResult(AssetDataSource(sketch, request, fileName), mimeType)
+        FetchResult(AssetDataSource(request.context, fileName), mimeType)
     }
 
     override fun equals(other: Any?): Boolean {

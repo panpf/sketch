@@ -18,7 +18,7 @@ package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.ClassLoaderResourceLoader
 import okio.Path
@@ -26,14 +26,13 @@ import okio.Source
 import okio.source
 import java.io.IOException
 
-class KotlinResourceDataSource(
-    override val sketch: Sketch,
-    override val request: ImageRequest,
+class KotlinResourceDataSource constructor(
     val resourcePath: String,
 ) : DataSource {
 
-    override val dataFrom: DataFrom
-        get() = LOCAL
+    override val key: String by lazy { newKotlinResourceUri(resourcePath) }
+
+    override val dataFrom: DataFrom = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
@@ -42,23 +41,17 @@ class KotlinResourceDataSource(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
+    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as KotlinResourceDataSource
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
-        if (resourcePath != other.resourcePath) return false
-        return true
+        return resourcePath == other.resourcePath
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + resourcePath.hashCode()
-        return result
+        return resourcePath.hashCode()
     }
 
     override fun toString(): String = "KotlinResourceDataSource('$resourcePath')"

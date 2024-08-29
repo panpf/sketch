@@ -18,7 +18,6 @@ package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
 import okio.IOException
 import okio.Path
 import okio.Source
@@ -28,9 +27,7 @@ import okio.Source
  */
 interface DataSource {
 
-    val sketch: Sketch
-
-    val request: ImageRequest
+    val key: String
 
     val dataFrom: DataFrom
 
@@ -41,15 +38,54 @@ interface DataSource {
     fun openSourceOrNull(): Source?
 
     @Throws(IOException::class)
-    fun getFile(): Path = getFileOrNull() ?: throw IOException("Not supported File")
+    fun getFile(sketch: Sketch): Path =
+        getFileOrNull(sketch) ?: throw IOException("Not supported File")
 
     @Throws(IOException::class)
-    fun getFileOrNull(): Path?
+    fun getFileOrNull(sketch: Sketch): Path?
 }
 
+//suspend fun DataSource.cacheFileOrThrow(
+//    sketch: Sketch,
+//    request: ImageRequest,
+//): Path {
+//    val resultCache = sketch.resultCache
+//    val resultCacheKey = "${key}_data_source"
+//    val snapshot = resultCache.withLock(resultCacheKey) {
+//        val snapshot = resultCache.openSnapshot(resultCacheKey)
+//        if (snapshot != null) {
+//            snapshot
+//        } else {
+//            val editor = resultCache.openEditor(resultCacheKey)
+//                ?: throw IOException("Disk cache cannot be used")
+//            try {
+//                openSource().buffer().use { source ->
+//                    resultCache.fileSystem.sink(editor.data).buffer().use { sink ->
+//                        sink.writeAll(source)
+//                    }
+//                }
+//                editor.commitAndOpenSnapshot()
+//            } catch (e: Throwable) {
+//                editor.abort()
+//                throw e
+//            } ?: throw IOException("Disk cache cannot be used after edit")
+//        }
+//    }
+//    return snapshot.use { it.data }
+//}
+//
+//suspend fun DataSource.cacheFileOrNull(
+//    sketch: Sketch,
+//    request: ImageRequest,
+//): Path? = try {
+//    cacheFileOrThrow(sketch, request)
+//} catch (e: Throwable) {
+//    e.printStackTrace()
+//    null
+//}
+
 @WorkerThread
-internal expect fun getDataSourceCacheFile(
+expect fun getDataSourceCacheFile(
     sketch: Sketch,
-    request: ImageRequest,
     dataSource: DataSource,
 ): Path?

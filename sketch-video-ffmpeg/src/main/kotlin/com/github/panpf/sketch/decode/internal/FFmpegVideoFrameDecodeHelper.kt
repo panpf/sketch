@@ -20,6 +20,7 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
@@ -40,7 +41,8 @@ import kotlin.math.roundToInt
  *
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
  */
-class FFmpegVideoFrameDecodeHelper(
+class FFmpegVideoFrameDecodeHelper constructor(
+    val sketch: Sketch,
     val request: ImageRequest,
     val dataSource: DataSource,
     private val mimeType: String,
@@ -54,7 +56,7 @@ class FFmpegVideoFrameDecodeHelper(
             if (dataSource is ContentDataSource) {
                 setDataSource(request.context, dataSource.contentUri)
             } else {
-                dataSource.getFileOrNull()?.let { setDataSource(it.toFile().path) }
+                dataSource.getFileOrNull(sketch)?.let { setDataSource(it.toFile().path) }
                     ?: throw Exception("Unsupported DataSource: ${dataSource::class}")
             }
         }

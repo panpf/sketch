@@ -18,7 +18,6 @@ package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.runBlocking
 import okio.IOException
 import okio.Path
@@ -27,13 +26,12 @@ import okio.use
 
 @WorkerThread
 @Throws(IOException::class)
-internal actual fun getDataSourceCacheFile(
+actual fun getDataSourceCacheFile(
     sketch: Sketch,
-    request: ImageRequest,
     dataSource: DataSource,
 ): Path? = runBlocking {
     val resultCache = sketch.resultCache
-    val resultCacheKey = request.uri.toString() + "_data_source"
+    val resultCacheKey = "${dataSource.key}_data_source"
     val snapshot = resultCache.withLock(resultCacheKey) {
         val snapshot = resultCache.openSnapshot(resultCacheKey)
         if (snapshot != null) {

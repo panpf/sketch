@@ -105,7 +105,10 @@ class GifMovieDecoderTest {
         // normal
         ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), "image/gif")
+                FetchResult(
+                    AssetDataSource(context, ResourceImages.animGif.resourceName),
+                    "image/gif"
+                )
             Assert.assertNotNull(factory.create(it.toRequestContext(sketch), fetchResult))
         }.apply {
             Assert.assertNotNull(this)
@@ -114,7 +117,7 @@ class GifMovieDecoderTest {
         // no mimeType
         ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), null)
+                FetchResult(AssetDataSource(context, ResourceImages.animGif.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
@@ -123,7 +126,7 @@ class GifMovieDecoderTest {
         // Disguised mimeType
         ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, ResourceImages.animGif.resourceName),
+                AssetDataSource(context, ResourceImages.animGif.resourceName),
                 "image/jpeg",
             )
             factory.create(it.toRequestContext(sketch), fetchResult)
@@ -136,7 +139,7 @@ class GifMovieDecoderTest {
             disallowAnimatedImage()
         }.let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), null)
+                FetchResult(AssetDataSource(context, ResourceImages.animGif.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -145,7 +148,7 @@ class GifMovieDecoderTest {
         // data error
         ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.png.resourceName), null)
+                FetchResult(AssetDataSource(context, ResourceImages.png.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -155,7 +158,7 @@ class GifMovieDecoderTest {
         ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult =
                 FetchResult(
-                    AssetDataSource(sketch, it, ResourceImages.png.resourceName),
+                    AssetDataSource(context, ResourceImages.png.resourceName),
                     "image/gif"
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)

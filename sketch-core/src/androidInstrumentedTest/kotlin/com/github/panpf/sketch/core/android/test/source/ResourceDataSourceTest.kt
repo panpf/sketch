@@ -2,12 +2,11 @@ package com.github.panpf.sketch.core.android.test.source
 
 import android.content.res.Resources.NotFoundException
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.fetch.newResourceUri
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.md5
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
@@ -20,20 +19,12 @@ class ResourceDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(
-            context,
-            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
-        )
+        val context = getTestContext()
         ResourceDataSource(
-            sketch = sketch,
-            request = request,
-            packageName = context.packageName,
             resources = context.resources,
+            packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
-            Assert.assertTrue(request === this.request)
             Assert.assertEquals(
                 com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher,
                 this.resId
@@ -42,17 +33,14 @@ class ResourceDataSourceTest {
         }
     }
 
+    // TODO test: key
+
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
         ResourceDataSource(
-            sketch = sketch,
-            request = ImageRequest(
-                context,
-                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
-            ),
-            packageName = context.packageName,
             resources = context.resources,
+            packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             openSource().asOrThrow<Closeable>().close()
@@ -60,10 +48,8 @@ class ResourceDataSourceTest {
 
         assertThrow(NotFoundException::class) {
             ResourceDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, newResourceUri(42)),
-                packageName = context.packageName,
                 resources = context.resources,
+                packageName = context.packageName,
                 resId = 42
             ).apply {
                 openSource()
@@ -75,18 +61,13 @@ class ResourceDataSourceTest {
     fun testFile() {
         val (context, sketch) = getTestContextAndSketch()
         ResourceDataSource(
-            sketch = sketch,
-            request = ImageRequest(
-                context,
-                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
-            ),
-            packageName = context.packageName,
             resources = context.resources,
+            packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
-            val file = getFile()
+            val file = getFile(sketch)
             Assert.assertEquals(
-                (request.uri.toString() + "_data_source").md5() + ".0",
+                (key + "_data_source").md5() + ".0",
                 file.name
             )
         }
@@ -96,15 +77,10 @@ class ResourceDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
         ResourceDataSource(
-            sketch = sketch,
-            request = ImageRequest(
-                context,
-                newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher)
-            ),
-            packageName = context.packageName,
             resources = context.resources,
+            packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             Assert.assertEquals(
@@ -114,10 +90,8 @@ class ResourceDataSourceTest {
         }
 
         ResourceDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, newResourceUri(42)),
-            packageName = context.packageName,
             resources = context.resources,
+            packageName = context.packageName,
             resId = 42
         ).apply {
             Assert.assertEquals(

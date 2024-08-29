@@ -47,7 +47,12 @@ class FFmpegVideoFrameDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
     decodeHelperFactory = {
-        FFmpegVideoFrameDecodeHelper(requestContext.request, dataSource, mimeType)
+        FFmpegVideoFrameDecodeHelper(
+            sketch = requestContext.sketch,
+            request = requestContext.request,
+            dataSource = dataSource,
+            mimeType = mimeType
+        )
     }
 ) {
 

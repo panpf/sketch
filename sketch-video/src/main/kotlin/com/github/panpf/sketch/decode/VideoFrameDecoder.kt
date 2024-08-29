@@ -52,7 +52,14 @@ class VideoFrameDecoder(
 ) : HelperDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
-    decodeHelperFactory = { VideoFrameDecodeHelper(requestContext.request, dataSource, mimeType) }
+    decodeHelperFactory = {
+        VideoFrameDecodeHelper(
+            sketch = requestContext.sketch,
+            request = requestContext.request,
+            dataSource = dataSource,
+            mimeType = mimeType
+        )
+    }
 ) {
 
     @TargetApi(Build.VERSION_CODES.O_MR1)

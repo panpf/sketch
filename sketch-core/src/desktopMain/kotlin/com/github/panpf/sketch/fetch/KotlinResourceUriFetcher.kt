@@ -26,8 +26,8 @@ import com.github.panpf.sketch.util.Uri
 /**
  * Sample: 'file:///kotlin_resource/test.png'
  */
-fun newKotlinResourceUri(resourceName: String): String =
-    "${KotlinResourceUriFetcher.SCHEME}:///${KotlinResourceUriFetcher.PATH_ROOT}/$resourceName"
+fun newKotlinResourceUri(resourcePath: String): String =
+    "${KotlinResourceUriFetcher.SCHEME}:///${KotlinResourceUriFetcher.PATH_ROOT}/$resourcePath"
 
 /**
  * Check if the uri is a Kotlin resource uri
@@ -54,7 +54,7 @@ class KotlinResourceUriFetcher(
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourcePath)
-        val dataSource = KotlinResourceDataSource(sketch, request, resourcePath)
+        val dataSource = KotlinResourceDataSource(resourcePath)
         return Result.success(FetchResult(dataSource, mimeType))
     }
 

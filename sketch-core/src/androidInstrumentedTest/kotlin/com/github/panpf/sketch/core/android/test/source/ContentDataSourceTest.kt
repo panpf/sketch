@@ -3,7 +3,6 @@ package com.github.panpf.sketch.core.android.test.source
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
@@ -23,36 +22,31 @@ class ContentDataSourceTest {
 
     @Test
     fun testConstructor() {
-        val (context, sketch) = getTestContextAndSketch()
+        val (_, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri),
+            context = sketch.context,
             fileName = ResourceImages.jpeg.resourceName
-        ).getFile().let { Uri.fromFile(it.toFile()) }
-        val request = ImageRequest(context, contentUri.toString())
+        ).getFile(sketch).let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
-            sketch = sketch,
-            request = request,
+            context = sketch.context,
             contentUri = contentUri,
         ).apply {
-            Assert.assertTrue(sketch === this.sketch)
-            Assert.assertTrue(request === this.request)
             Assert.assertEquals(contentUri, this.contentUri)
             Assert.assertEquals(LOCAL, this.dataFrom)
         }
     }
 
+    // TODO test: key
+
     @Test
     fun testNewInputStream() {
-        val (context, sketch) = getTestContextAndSketch()
+        val (_, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri),
+            context = sketch.context,
             fileName = ResourceImages.jpeg.resourceName
-        ).getFile().let { Uri.fromFile(it.toFile()) }
+        ).getFile(sketch).let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, contentUri.toString()),
+            context = sketch.context,
             contentUri = contentUri,
         ).apply {
             openSource().asOrThrow<Closeable>().close()
@@ -63,8 +57,7 @@ class ContentDataSourceTest {
                 Uri.fromFile(File("/sdcard/error.jpeg"))
             }
             ContentDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, errorContentUri.toString()),
+                context = sketch.context,
                 contentUri = errorContentUri,
             ).apply {
                 openSource()
@@ -74,38 +67,34 @@ class ContentDataSourceTest {
 
     @Test
     fun testFile() {
-        val (context, sketch) = getTestContextAndSketch()
+        val (_, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri),
+            context = sketch.context,
             fileName = ResourceImages.jpeg.resourceName
-        ).getFile().let { Uri.fromFile(it.toFile()) }
+        ).getFile(sketch).let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, contentUri.toString()),
+            context = sketch.context,
             contentUri = contentUri,
         ).apply {
-            val file = getFile()
+            val file = getFile(sketch)
             Assert.assertEquals("4d0b3d81c4eacfc1252f7112ca8833b3.0", file.name)
         }
 
         val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
         ContentDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, errorContentUri.toString()),
+            context = sketch.context,
             contentUri = errorContentUri,
         ).apply {
-            val file = getFile()
+            val file = getFile(sketch)
             Assert.assertEquals("/sdcard/error.jpeg", file.toFile().path)
         }
 
         assertThrow(FileNotFoundException::class) {
             val errorContentUri1 = Uri.parse("content://fake/fake.jpeg")
             ContentDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, errorContentUri1.toString()),
+                context = sketch.context,
                 contentUri = errorContentUri1,
-            ).getFile()
+            ).getFile(sketch)
         }
     }
 
@@ -113,15 +102,13 @@ class ContentDataSourceTest {
 
     @Test
     fun testToString() {
-        val (context, sketch) = getTestContextAndSketch()
+        val (_, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri),
+            context = sketch.context,
             fileName = ResourceImages.jpeg.resourceName
-        ).getFile().let { Uri.fromFile(it.toFile()) }
+        ).getFile(sketch).let { Uri.fromFile(it.toFile()) }
         ContentDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, contentUri.toString()),
+            context = sketch.context,
             contentUri = contentUri,
         ).apply {
             Assert.assertEquals(
@@ -134,8 +121,7 @@ class ContentDataSourceTest {
             Uri.fromFile(File("/sdcard/error.jpeg"))
         }
         ContentDataSource(
-            sketch = sketch,
-            request = ImageRequest(context, errorContentUri.toString()),
+            context = sketch.context,
             contentUri = errorContentUri,
         ).apply {
             Assert.assertEquals(

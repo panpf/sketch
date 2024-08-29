@@ -16,9 +16,10 @@
 
 package com.github.panpf.sketch.source
 
+import android.content.Context
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import okio.Path
 import okio.Source
@@ -29,37 +30,31 @@ import java.io.IOException
  * Provides access to image data in asset resources
  */
 class AssetDataSource constructor(
-    override val sketch: Sketch,
-    override val request: ImageRequest,
+    val context: Context,
     val fileName: String
 ) : DataSource {
 
-    override val dataFrom: DataFrom
-        get() = LOCAL
+    override val key: String by lazy { newAssetUri(fileName) }
+
+    override val dataFrom: DataFrom = LOCAL
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun openSourceOrNull(): Source = request.context.assets.open(fileName).source()
+    override fun openSourceOrNull(): Source = context.assets.open(fileName).source()
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
+    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as AssetDataSource
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
-        if (fileName != other.fileName) return false
-        return true
+        return fileName == other.fileName
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + fileName.hashCode()
-        return result
+        return fileName.hashCode()
     }
 
     override fun toString(): String = "AssetDataSource('$fileName')"

@@ -46,8 +46,7 @@ class ApkIconDecoder(
 ) : DrawableDecoder(
     requestContext = requestContext,
     drawableDataSource = DrawableDataSource(
-        sketch = requestContext.sketch,
-        request = requestContext.request,
+        context = requestContext.sketch.context,
         dataFrom = dataFrom,
         drawableFetcher = ApkIconDrawableFetcher(file),
     ),
@@ -72,7 +71,7 @@ class ApkIconDecoder(
                 ApkIconDecoder(
                     requestContext = requestContext,
                     dataFrom = fetchResult.dataFrom,
-                    file = dataSource.getFile().toFile()
+                    file = dataSource.getFile(requestContext.sketch).toFile()
                 )
             } else {
                 null

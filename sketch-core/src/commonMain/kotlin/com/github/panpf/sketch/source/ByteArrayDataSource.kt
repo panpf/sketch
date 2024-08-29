@@ -18,8 +18,8 @@ package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
 import okio.Buffer
+import okio.ByteString.Companion.toByteString
 import okio.IOException
 import okio.Path
 import okio.Source
@@ -28,11 +28,11 @@ import okio.Source
  * Provides access to byte array image data.
  */
 class ByteArrayDataSource constructor(
-    override val sketch: Sketch,
-    override val request: ImageRequest,
-    override val dataFrom: DataFrom,
     val data: ByteArray,
+    override val dataFrom: DataFrom,
 ) : DataSource {
+
+    override val key: String by lazy { data.toByteString().md5().hex() }
 
     @WorkerThread
     @Throws(IOException::class)
@@ -40,24 +40,20 @@ class ByteArrayDataSource constructor(
 
     @WorkerThread
     @Throws(IOException::class)
-    override fun getFileOrNull(): Path? = getDataSourceCacheFile(sketch, request, this)
+    override fun getFileOrNull(sketch: Sketch): Path? = getDataSourceCacheFile(sketch, this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ByteArrayDataSource
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (dataFrom != other.dataFrom) return false
         if (!data.contentEquals(other.data)) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
+        var result = data.hashCode()
         result = 31 * result + dataFrom.hashCode()
-        result = 31 * result + data.contentHashCode()
         return result
     }
 

@@ -12,6 +12,9 @@
   bug。 [#207](https://github.com/panpf/sketch/issues/207)
 * new: SkiaBitmapImage 现在支持内存缓存
 * remove: 移除 SkiaExifOrientationHelper
+* remove: DataSource 移除 sketch 和 request 属性
+* new: DataSource 新增 key 属性
+* change: DataSource 的 getFile() 和 getFileOrNull() 方法增加 Sketch 参数
 
 # 4.0.0-alpha07
 

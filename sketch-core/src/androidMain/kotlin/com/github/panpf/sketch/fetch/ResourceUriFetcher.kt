@@ -82,8 +82,8 @@ fun isResourceUri(uri: Uri): Boolean =
  * * 'android.resource://com.github.panpf.sketch.sample/1031232'
  */
 class ResourceUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+    val sketch: Sketch, // TODO remove
+    val request: ImageRequest,  // TODO change to context
     val resourceUri: Uri,
 ) : Fetcher {
 
@@ -125,16 +125,13 @@ class ResourceUriFetcher(
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(entryName)
         val dataSource = if (resources.getResourceTypeName(resId) == "raw") {
             ResourceDataSource(
-                sketch = sketch,
-                request = request,
-                packageName = packageName,
                 resources = resources,
+                packageName = packageName,
                 resId = resId,
             )
         } else {
             DrawableDataSource(
-                sketch = sketch,
-                request = request,
+                context = request.context,
                 dataFrom = DataFrom.LOCAL,
                 drawableFetcher = ResDrawable(packageName, resources, resId)
             )

@@ -108,7 +108,7 @@ class WebpAnimatedDecoderTest {
         ImageRequest(context, ResourceImages.animWebp.uri).let {
             val fetchResult =
                 FetchResult(
-                    AssetDataSource(sketch, it, ResourceImages.animWebp.resourceName),
+                    AssetDataSource(context, ResourceImages.animWebp.resourceName),
                     "image/webp"
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)
@@ -118,7 +118,7 @@ class WebpAnimatedDecoderTest {
 
         ImageRequest(context, ResourceImages.animWebp.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.animWebp.resourceName), null)
+                FetchResult(AssetDataSource(context, ResourceImages.animWebp.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNotNull(this)
@@ -129,7 +129,7 @@ class WebpAnimatedDecoderTest {
             disallowAnimatedImage()
         }.let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.animWebp.resourceName), null)
+                FetchResult(AssetDataSource(context, ResourceImages.animWebp.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -138,7 +138,7 @@ class WebpAnimatedDecoderTest {
         // data error
         ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.png.resourceName), null)
+                FetchResult(AssetDataSource(context, ResourceImages.png.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -146,7 +146,10 @@ class WebpAnimatedDecoderTest {
 
         ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult =
-                FetchResult(AssetDataSource(sketch, it, ResourceImages.animGif.resourceName), "image/webp")
+                FetchResult(
+                    AssetDataSource(context, ResourceImages.animGif.resourceName),
+                    "image/webp"
+                )
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             Assert.assertNull(this)
@@ -155,7 +158,7 @@ class WebpAnimatedDecoderTest {
         // mimeType error
         ImageRequest(context, ResourceImages.animWebp.uri).let {
             val fetchResult = FetchResult(
-                AssetDataSource(sketch, it, ResourceImages.animWebp.resourceName),
+                AssetDataSource(context, ResourceImages.animWebp.resourceName),
                 "image/jpeg",
             )
             factory.create(it.toRequestContext(sketch), fetchResult)
@@ -167,7 +170,7 @@ class WebpAnimatedDecoderTest {
         ImageRequest(context, ResourceImages.png.uri).let {
             val fetchResult =
                 FetchResult(
-                    AssetDataSource(sketch, it, ResourceImages.png.resourceName),
+                    AssetDataSource(context, ResourceImages.png.resourceName),
                     "image/webp"
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)

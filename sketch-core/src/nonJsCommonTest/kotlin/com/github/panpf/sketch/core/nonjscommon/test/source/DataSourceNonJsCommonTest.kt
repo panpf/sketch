@@ -20,19 +20,15 @@ class DataSourceNonJsCommonTest {
     fun testGetCacheFileFromStreamDataSource() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch).dataSource.apply {
-            val file = getDataSourceCacheFile(sketch, request, this)
+            val file = getDataSourceCacheFile(sketch, this)
             assertTrue(file.toString().contains("/sketch4/result/"))
-            val file1 = getDataSourceCacheFile(sketch, request, this)
+            val file1 = getDataSourceCacheFile(sketch, this)
             assertEquals(file, file1)
         }
 
         assertFails {
-            FileDataSource(
-                sketch = sketch,
-                request = ImageRequest(context, "https://fake.com/fake.jpeg"),
-                path = "/sdcard/fake.jpeg".toPath()
-            ).apply {
-                getDataSourceCacheFile(sketch, request, this)
+            FileDataSource(path = "/sdcard/fake.jpeg".toPath()).apply {
+                getDataSourceCacheFile(sketch, this)
             }
         }
     }

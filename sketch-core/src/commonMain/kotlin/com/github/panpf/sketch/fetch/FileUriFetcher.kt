@@ -71,7 +71,14 @@ class FileUriFetcher(
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val extension = MimeTypeMap.getExtensionFromUrl(path.name)
         val mimeType = extension?.let { MimeTypeMap.getMimeTypeFromExtension(it) }
-        FetchResult(FileDataSource(sketch, request, path, LOCAL), mimeType)
+        FetchResult(
+            dataSource = FileDataSource(
+                path = path,
+                fileSystem = sketch.fileSystem,
+                dataFrom = LOCAL
+            ),
+            mimeType = mimeType
+        )
     }
 
     override fun equals(other: Any?): Boolean {
