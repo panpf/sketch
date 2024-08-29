@@ -61,6 +61,7 @@ class RequestContextTest {
     }
 
     // TODO test logKey
+    // TODO test registerCompletedListener
 
     @Test
     fun testCacheKey() = runTest {

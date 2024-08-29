@@ -22,9 +22,9 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
 
 /**
- * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
- * that is, the equals() and hashCode() methods of instances created with the same
- * construction parameters return consistent results. This is important in Compose
+ * Listeners and LifecycleResolvers that store and manage requests
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestOptionsTest
  */
 data class RequestOptions(
     val listener: Listener?,

@@ -16,59 +16,44 @@
 
 @file:Suppress("LocalVariableName")
 
-package com.github.panpf.sketch.core.android.test.request.internal
+package com.github.panpf.sketch.core.common.test.request.internal
 
-import android.R.color
-import android.R.drawable
-import android.graphics.Bitmap.Config.RGB_565
-import android.graphics.ColorSpace.Named.ADOBE_RGB
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
-import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.SketchSize
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@RunWith(AndroidJUnit4::class)
 class RequestKeysTest {
 
     @Test
     fun testNewRequestKey() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = getTestContext()
         val uri = "http://sample.com/sample.jpeg?from=sketch"
 
         var request = ImageRequest(context, uri)
 
         val verifyKey: (String) -> Unit = { expectKey ->
             val key = request.newKey()
-            Assert.assertEquals(expectKey, key)
+            assertEquals(expectKey, key)
         }
 
         var _size = "&_size=${request.sizeResolver.key}"
@@ -115,35 +100,6 @@ class RequestKeysTest {
         }
         val _downloadCachePolicy = "&_downloadCachePolicy=READ_ONLY"
         verifyKey(uri + _depth + _extras + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale)
-
-        request = request.newRequest {
-            bitmapConfig(RGB_565)
-        }
-        _extras = "&_extras=${request.extras!!.requestKey}"
-        verifyKey(
-            uri + _depth + _extras + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
-        )
-
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            request = request.newRequest {
-                colorSpace(ADOBE_RGB)
-            }
-            _extras = "&_extras=${request.extras!!.requestKey}"
-            verifyKey(
-                uri + _depth + _extras + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
-            )
-        }
-
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            request = request.newRequest {
-                @Suppress("DEPRECATION")
-                preferQualityOverSpeed(true)
-            }
-            _extras = "&_extras=${request.extras!!.requestKey}"
-            verifyKey(
-                uri + _depth + _extras + _httpHeaders + _downloadCachePolicy + _size + _precision + _scale
-            )
-        }
 
         request = request.newRequest {
             resize(300, 200, EXACTLY, END_CROP)
@@ -228,10 +184,11 @@ class RequestKeysTest {
                     _allowNullImage + _memoryCachePolicy
         )
 
+        val transitionFactory = CrossfadeTransition.Factory()
         request = request.newRequest {
-            transitionFactory(CrossfadeTransition.Factory())
+            transitionFactory(transitionFactory)
         }
-        val _transitionFactory = "&_transitionFactory=${CrossfadeTransition.Factory().key}"
+        val _transitionFactory = "&_transitionFactory=${transitionFactory.key}"
         verifyKey(
             uri + _depth + _extras + _httpHeaders + _downloadCachePolicy +
                     _size + _sizeMultiplier + _precision + _scale +
@@ -239,10 +196,7 @@ class RequestKeysTest {
                     _allowNullImage + _memoryCachePolicy + _transitionFactory
         )
 
-        val placeholder = IconDrawableStateImage(
-            icon = drawable.ic_delete,
-            background = color.background_dark
-        )
+        val placeholder = FakeStateImage()
         request = request.newRequest {
             placeholder(placeholder)
         }
@@ -266,7 +220,7 @@ class RequestKeysTest {
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder + _fallback
         )
 
-        val error = DrawableStateImage(drawable.ic_delete)
+        val error = FakeStateImage()
         request = request.newRequest {
             error(error)
         }
@@ -300,19 +254,19 @@ class RequestKeysTest {
     }
 
     @Test
-    fun testNewCacheKey() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+    fun testNewCacheKey() = runTest {
+        val context = getTestContext()
         val uri = "http://sample.com/sample.jpeg?from=sketch"
 
         var request = ImageRequest(context, uri)
 
-        val verifyCacheKey: (String) -> Unit = { expectCacheKey ->
-            val size = runBlocking { request.sizeResolver.size() }
+        val verifyCacheKey: suspend (String) -> Unit = { expectCacheKey ->
+            val size = request.sizeResolver.size()
             val cacheKey = request.newCacheKey(size)
-            Assert.assertEquals(expectCacheKey, cacheKey)
+            assertEquals(expectCacheKey, cacheKey)
         }
 
-        var size = runBlocking { request.sizeResolver.size() }
+        var size = request.sizeResolver.size()
         var _size = "&_size=${size}"
         var _precision = "&_precision=${request.precisionDecider.key}"
         var _scale = "&_scale=${request.scaleDecider.key}"
@@ -336,7 +290,7 @@ class RequestKeysTest {
         request = request.newRequest {
             setExtra(key = "type", value = "list")
         }
-        var _extras = "&_extras=${request.extras!!.cacheKey}"
+        val _extras = "&_extras=${request.extras!!.cacheKey}"
         verifyCacheKey(
             uri + _extras + _size + _precision + _scale
         )
@@ -363,38 +317,9 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
-            bitmapConfig(RGB_565)
-        }
-        _extras = "&_extras=${request.extras!!.cacheKey}"
-        verifyCacheKey(
-            uri + _extras + _size + _precision + _scale
-        )
-
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            request = request.newRequest {
-                colorSpace(ADOBE_RGB)
-            }
-            _extras = "&_extras=${request.extras!!.cacheKey}"
-            verifyCacheKey(
-                uri + _extras + _size + _precision + _scale
-            )
-        }
-
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            request = request.newRequest {
-                @Suppress("DEPRECATION")
-                preferQualityOverSpeed(true)
-            }
-            _extras = "&_extras=${request.extras!!.cacheKey}"
-            verifyCacheKey(
-                uri + _extras + _size + _precision + _scale
-            )
-        }
-
-        request = request.newRequest {
             resize(300, 200, EXACTLY, END_CROP)
         }
-        size = runBlocking { request.sizeResolver.size() }
+        size = request.sizeResolver.size()
         _size = "&_size=${size}"
         _precision = "&_precision=${request.precisionDecider.key}"
         _scale = "&_scale=${request.scaleDecider.key}"
@@ -453,18 +378,16 @@ class RequestKeysTest {
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
+        val transitionFactory = CrossfadeTransition.Factory()
         request = request.newRequest {
-            transitionFactory(ViewCrossfadeTransition.Factory())
+            transitionFactory(transitionFactory)
         }
         verifyCacheKey(
             uri + _extras +
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
-        val placeholder = IconDrawableStateImage(
-            icon = drawable.ic_delete,
-            background = color.background_dark
-        )
+        val placeholder = FakeStateImage()
         request = request.newRequest {
             placeholder(placeholder)
         }
@@ -482,7 +405,7 @@ class RequestKeysTest {
                     _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
         )
 
-        val error = DrawableStateImage(drawable.ic_delete)
+        val error = FakeStateImage()
         request = request.newRequest {
             error(error)
         }

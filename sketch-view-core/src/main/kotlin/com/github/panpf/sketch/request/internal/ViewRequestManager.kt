@@ -19,7 +19,6 @@ package com.github.panpf.sketch.request.internal
 
 import android.view.View
 import androidx.annotation.MainThread
-import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.view.core.R
 
 internal val View.requestManager: ViewRequestManager
@@ -38,7 +37,12 @@ internal val View.requestManager: ViewRequestManager
         }
     }
 
-class ViewRequestManager constructor(private val view: View) : BaseRequestManager(),
+/**
+ * View version of the request manager
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.internal.ViewRequestManagerTest
+ */
+class ViewRequestManager(private val view: View) : BaseRequestManager(),
     View.OnAttachStateChangeListener {
 
     @MainThread
@@ -59,6 +63,6 @@ class ViewRequestManager constructor(private val view: View) : BaseRequestManage
     }
 
     override fun isAttached(): Boolean {
-        return ViewCompat.isAttachedToWindow(view)
+        return view.isAttachedToWindow
     }
 }

@@ -18,6 +18,11 @@ package com.github.panpf.sketch.request.internal
 
 import com.github.panpf.sketch.AsyncImageState
 
+/**
+ * Compose version of the request manager
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestManagerTest
+ */
 class ComposeRequestManager(
     private val asyncImageState: AsyncImageState
 ) : BaseRequestManager() {

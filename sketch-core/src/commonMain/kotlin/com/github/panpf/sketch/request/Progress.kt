@@ -18,6 +18,8 @@ package com.github.panpf.sketch.request
 
 /**
  * The current download progress of the [ImageRequest].
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ProgressTest
  */
 data class Progress(val totalLength: Long, val completedLength: Long) {
     val decimalProgress: Float by lazy {

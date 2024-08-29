@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.util
 
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -14,7 +13,7 @@ val View.lifecycleOwner: LifecycleOwner
              * After Lifecycle enters the DESTROYED state, its coroutineScope will be canceled and can no longer be used.
              * So you must create a new Lifecycle every time onAttachedToWindow
              */
-            check(ViewCompat.isAttachedToWindow(this)) {
+            check(this.isAttachedToWindow) {
                 "View.lifecycleOwner can only be called after onAttachedToWindow and before onDetachedFromWindow"
             }
             val tag = getTag(R.id.tagId_viewLifecycle)

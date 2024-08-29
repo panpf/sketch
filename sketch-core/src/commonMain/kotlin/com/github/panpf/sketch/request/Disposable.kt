@@ -22,6 +22,9 @@ import kotlinx.coroutines.Deferred
 
 /**
  * Represents the work of an *Request that has been executed by an [Sketch].
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ReusableDisposableTest
+ * @see com.github.panpf.sketch.core.common.test.request.OneShotDisposableTest
  */
 interface Disposable {
 
@@ -42,6 +45,11 @@ interface Disposable {
     fun dispose()
 }
 
+/**
+ * A disposable for reusable image requests.
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ReusableDisposableTest
+ */
 class ReusableDisposable(
     val requestManager: RequestManager,
     override var job: Deferred<ImageResult>
@@ -59,6 +67,8 @@ class ReusableDisposable(
 
 /**
  * A disposable for one-shot image requests.
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.OneShotDisposableTest
  */
 class OneShotDisposable(
     override val job: Deferred<ImageResult>

@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.util.SketchException
 
+/**
+ * Invalid URI exception, uri empty, format error, etc.
+ */
 class UriInvalidException constructor(message: String) : SketchException(message, null)

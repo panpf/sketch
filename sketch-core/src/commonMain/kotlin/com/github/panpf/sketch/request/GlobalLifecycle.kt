@@ -25,6 +25,8 @@ import androidx.lifecycle.LifecycleOwner
  * A [Lifecycle] implementation that is always resumed and never destroyed.
  *
  * This is used as a fallback if [Lifecycle] is not specified and cannot be obtained from the Target or Context.
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.GlobalLifecycleTest
  */
 data object GlobalLifecycle : Lifecycle() {
 

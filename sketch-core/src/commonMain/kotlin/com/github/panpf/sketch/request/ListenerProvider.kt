@@ -16,9 +16,18 @@
 
 package com.github.panpf.sketch.request
 
+/**
+ * Listener provider, used to provide [Listener] and [ProgressListener]
+ */
 interface ListenerProvider {
 
+    /**
+     * Get the listener
+     */
     fun getListener(): Listener?
 
+    /**
+     * Get the progress listener
+     */
     fun getProgressListener(): ProgressListener?
 }

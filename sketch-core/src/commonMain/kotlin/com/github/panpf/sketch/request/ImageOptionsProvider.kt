@@ -16,10 +16,20 @@
 
 package com.github.panpf.sketch.request
 
+/**
+ * Interface for providing [ImageOptions]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsProviderTest
+ */
 interface ImageOptionsProvider {
     var imageOptions: ImageOptions?
 }
 
+/**
+ * Update [ImageOptions] with the specified configuration block
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsProviderTest.testUpdateImageOptions
+ */
 fun ImageOptionsProvider.updateImageOptions(configBlock: (ImageOptions.Builder.() -> Unit)) {
     imageOptions = imageOptions?.newOptions(configBlock) ?: ImageOptions(configBlock)
 }

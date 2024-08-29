@@ -21,6 +21,11 @@ import com.github.panpf.sketch.request.LoadState.Started
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * Provide the requested loading status, progress status and result status to the outside world
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.RequestStateTest
+ */
 class RequestState : Listener, ProgressListener {
 
     private val _loadState = MutableStateFlow<LoadState?>(null)

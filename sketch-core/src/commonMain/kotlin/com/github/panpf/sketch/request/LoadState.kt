@@ -18,26 +18,48 @@ package com.github.panpf.sketch.request
 
 /**
  * The current state of the [ImageRequest].
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest
  */
 sealed interface LoadState {
 
+    /**
+     * The [ImageRequest] that this state is for.
+     */
     val request: ImageRequest
 
+    /**
+     * The request has been started.
+     */
     data class Started(override val request: ImageRequest) : LoadState
 
+    /**
+     * The request has completed successfully.
+     */
     data class Success(
         override val request: ImageRequest,
         val result: ImageResult.Success
     ) : LoadState
 
+    /**
+     * The request has failed.
+     */
     data class Error(
         override val request: ImageRequest,
         val result: ImageResult.Error
     ) : LoadState
 
+    /**
+     * The request has been canceled.
+     */
     data class Canceled(override val request: ImageRequest) : LoadState
 }
 
+/**
+ * Return the name of the [LoadState]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest.testName
+ */
 val LoadState.name: String
     get() = when (this) {
         is LoadState.Started -> "Started"

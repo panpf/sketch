@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.request
 
 import androidx.lifecycle.Lifecycle
 import kotlin.js.JsName
 
+/**
+ * Lifecycle resolver
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.LifecycleResolverTest
+ */
 fun LifecycleResolver(lifecycle: Lifecycle): LifecycleResolver =
     FixedLifecycleResolver(lifecycle)
 
 /**
+ * Lifecycle resolver, used to get the life cycle of the request.
+ * The request starts when the life cycle starts and ends when the life cycle ends.
+ *
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
@@ -33,6 +43,11 @@ fun interface LifecycleResolver {
     suspend fun lifecycle(): Lifecycle
 }
 
+/**
+ * Fixed lifecycle
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.FixedLifecycleResolverTest
+ */
 class FixedLifecycleResolver constructor(
     val lifecycle: Lifecycle
 ) : LifecycleResolver {

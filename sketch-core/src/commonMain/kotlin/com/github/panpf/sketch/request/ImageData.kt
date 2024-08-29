@@ -23,16 +23,35 @@ import com.github.panpf.sketch.source.DataFrom
 
 /**
  * Data of [RequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageDataTest
  */
-data class ImageData constructor(
+data class ImageData(
+    /**
+     * The decoded image
+     */
     val image: Image,
+
+    /**
+     * The decoded image info
+     */
     val imageInfo: ImageInfo,
+
+    /**
+     * The data source of the image
+     */
     val dataFrom: DataFrom,
+
+    /**
+     * The resize
+     */
     val resize: Resize,
+
     /**
      * Store the transformation history of the Bitmap
      */
     val transformeds: List<String>?,
+
     /**
      * Store some additional information for consumer use
      */

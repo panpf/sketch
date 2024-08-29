@@ -43,17 +43,35 @@ interface RequestInterceptor : NullableKey {
      */
     val sortWeight: Int
 
+    /**
+     * Intercept the execution of [ImageRequest], you can change the input and output
+     */
     @MainThread
     suspend fun intercept(chain: Chain): Result<ImageData>
 
+    /**
+     * A chain is a series of interceptors that are called in order.
+     */
     interface Chain {
 
+        /**
+         * The [Sketch] instance
+         */
         val sketch: Sketch
 
+        /**
+         * The original request
+         */
         val initialRequest: ImageRequest
 
+        /**
+         * The request to proceed with.
+         */
         val request: ImageRequest
 
+        /**
+         * The request context
+         */
         val requestContext: RequestContext
 
         /**

@@ -21,6 +21,11 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
 
+/**
+ * Generate a unique key for the request
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestKeysTest.testNewRequestKey
+ */
 internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendDepth()
     .appendRequestExtras()
@@ -45,6 +50,11 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendRequestInterceptors()
     .build()
 
+/**
+ * Generate a unique cache key for the request
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestKeysTest.testNewCacheKey
+ */
 internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
     .appendCacheExtras()
     .appendSize(size)

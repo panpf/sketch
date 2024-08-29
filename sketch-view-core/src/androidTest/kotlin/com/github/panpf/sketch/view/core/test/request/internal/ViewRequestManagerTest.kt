@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -88,7 +87,7 @@ class ViewRequestManagerTest {
         Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
 
         val imageView = fragment.imageView
-        Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))
+        Assert.assertFalse(imageView.isAttachedToWindow)
         Assert.assertNull(imageView.drawable)
         Assert.assertNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
@@ -97,7 +96,7 @@ class ViewRequestManagerTest {
             imageView.loadImage(ResourceImages.jpeg.uri)
             delay(1500)
         }
-        Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))
+        Assert.assertFalse(imageView.isAttachedToWindow)
         Assert.assertNull(imageView.drawable)
         Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
@@ -108,7 +107,7 @@ class ViewRequestManagerTest {
             }
             delay(1500)
         }
-        Assert.assertTrue(ViewCompat.isAttachedToWindow(imageView))
+        Assert.assertTrue(imageView.isAttachedToWindow)
         Assert.assertNotNull(imageView.drawable)
         Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
@@ -121,7 +120,7 @@ class ViewRequestManagerTest {
             }
             delay(1500)
         }
-        Assert.assertFalse(ViewCompat.isAttachedToWindow(imageView))
+        Assert.assertFalse(imageView.isAttachedToWindow)
         Assert.assertNotNull(imageView.drawable)
         Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
@@ -132,7 +131,7 @@ class ViewRequestManagerTest {
             }
             delay(1500)
         }
-        Assert.assertTrue(ViewCompat.isAttachedToWindow(imageView))
+        Assert.assertTrue(imageView.isAttachedToWindow)
         Assert.assertNotNull(imageView.drawable)
         Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
     }

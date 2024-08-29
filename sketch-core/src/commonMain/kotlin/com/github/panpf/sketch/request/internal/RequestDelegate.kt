@@ -43,25 +43,41 @@ internal fun requestDelegate(
     return targetRequestDelegate ?: NoTargetRequestDelegate(sketch, initialRequest, job)
 }
 
+/**
+ * A delegate that manages the lifecycle of an [ImageRequest] and its [Target].
+ */
 interface RequestDelegate {
 
+    /**
+     * The [Sketch] instance
+     */
     val sketch: Sketch
 
+    /**
+     * The initial [ImageRequest] that this delegate is managing.
+     */
     val initialRequest: ImageRequest
 
-    /** Throw a [CancellationException] if this request should be cancelled before starting. */
+    /**
+     * Throw a [CancellationException] if this request should be cancelled before starting. */
     @MainThread
     fun assertActive()
 
-    /** Register all lifecycle observers. */
+    /**
+     * Register all lifecycle observers.
+     */
     @MainThread
     fun start(lifecycle: Lifecycle)
 
-    /** Called when this request's job is cancelled or completes successfully/unsuccessfully. */
+    /**
+     * Called when this request's job is cancelled or completes successfully/unsuccessfully.
+     */
     @MainThread
     fun finish()
 
-    /** Cancel this request's job and clear all lifecycle observers. */
+    /**
+     * Cancel this request's job and clear all lifecycle observers.
+     */
     @MainThread
     fun dispose()
 }

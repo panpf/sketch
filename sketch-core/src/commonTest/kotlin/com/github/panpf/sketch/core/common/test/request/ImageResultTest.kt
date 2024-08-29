@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.request
+package com.github.panpf.sketch.core.common.test.request
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.AndroidDrawableImage
-import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -30,48 +25,47 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
-import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
 class ImageResultTest {
 
     @Test
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request1 = ImageRequest(context, "http://sample.com/sample.jpeg")
+        val image1 = createImage(111, 222)
+        val image2 = createImage(222, 111)
 
         ImageResult.Success(
             request = request1,
             cacheKey = request1.toRequestContext(sketch).cacheKey,
-            image = ColorDrawable(Color.BLACK).asSketchImage(),
+            image = image1,
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
             dataFrom = LOCAL,
             resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             transformeds = listOf(createCircleCropTransformed(END_CROP)),
             extras = mapOf("age" to "16"),
         ).apply {
-            Assert.assertSame(request1, request)
-            Assert.assertTrue(image.asOrThrow<AndroidDrawableImage>().drawable is ColorDrawable)
-            Assert.assertEquals(
-                ImageInfo(width = 100, height = 100, mimeType = "image/jpeg"),
-                imageInfo
-            )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformeds)
-            Assert.assertEquals(mapOf("age" to "16"), extras)
+            assertSame(request1, request)
+            assertSame(image1, image)
+            assertEquals(ImageInfo(100, 100, "image/jpeg"), imageInfo)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformeds)
+            assertEquals(mapOf("age" to "16"), extras)
         }
 
-        ImageResult.Error(request1, ColorDrawable(Color.BLACK).asSketchImage(), Exception(""))
+        ImageResult.Error(request1, image2, Exception(""))
             .apply {
-                Assert.assertSame(request1, request)
-                Assert.assertTrue(image?.asOrThrow<AndroidDrawableImage>()?.drawable is ColorDrawable)
-                Assert.assertTrue(throwable is Exception)
+                assertSame(request1, request)
+                assertSame(image2, image)
+                assertTrue(throwable is Exception)
             }
     }
 }

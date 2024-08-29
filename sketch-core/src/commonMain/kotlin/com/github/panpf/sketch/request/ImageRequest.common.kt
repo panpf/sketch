@@ -50,6 +50,8 @@ import com.github.panpf.sketch.util.toUri
 
 /**
  * Build and set the [ImageRequest]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageRequestTest.testFun
  */
 fun ImageRequest(
     context: PlatformContext,
@@ -60,7 +62,9 @@ fun ImageRequest(
 }.build()
 
 /**
- * An immutable image request that contains all the required parameters,
+ * An immutable image request that contains all the required parameters
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageRequestTest
  */
 data class ImageRequest(
 

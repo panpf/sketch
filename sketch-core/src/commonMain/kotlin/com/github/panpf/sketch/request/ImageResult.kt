@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.Image
@@ -23,33 +25,69 @@ import com.github.panpf.sketch.source.DataFrom
 
 /**
  * Result of [ImageRequest]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageResultTest
  */
 interface ImageResult {
 
+    /**
+     * Final request
+     */
     val request: ImageRequest
 
+    /**
+     * Image data, may be null
+     */
     val image: Image?
 
+    /**
+     * Image loading success result
+     */
     data class Success constructor(
         override val request: ImageRequest,
         override val image: Image,
+
+        /**
+         * Cache key, it is used for memory cache reading and writing.
+         */
         val cacheKey: String,
+
+        /**
+         * Image width, height, type and other information
+         */
         val imageInfo: ImageInfo,
+
+        /**
+         * Which data source the image data comes from
+         */
         val dataFrom: DataFrom,
+
+        /**
+         * Use this Resize to resize the image
+         */
         val resize: Resize,
+
         /**
          * Store the transformation history of the Bitmap
          */
         val transformeds: List<String>?,
+
         /**
          * Store some additional information for consumer use
          */
         val extras: Map<String, String>?,
-    ): ImageResult
+    ) : ImageResult
 
+    /**
+     * Image loading error result
+     */
     data class Error constructor(
         override val request: ImageRequest,
         override val image: Image?,
+
+        /**
+         * Exception information
+         */
         val throwable: Throwable,
     ) : ImageResult
 }

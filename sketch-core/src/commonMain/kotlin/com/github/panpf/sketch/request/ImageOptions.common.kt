@@ -40,6 +40,8 @@ import com.github.panpf.sketch.util.keyOrNull
 
 /**
  * Build and set the [ImageOptions]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testFun
  */
 fun ImageOptions(
     configBlock: (ImageOptions.Builder.() -> Unit)? = null
@@ -53,8 +55,10 @@ fun ImageOptions(
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest
  */
-data class ImageOptions (
+data class ImageOptions(
 
     /**
      * The processing depth of the request.
@@ -739,5 +743,7 @@ data class ImageOptions (
 
 /**
  * Returns true as long as any property is not empty
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testIsEmpty
  */
 fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()

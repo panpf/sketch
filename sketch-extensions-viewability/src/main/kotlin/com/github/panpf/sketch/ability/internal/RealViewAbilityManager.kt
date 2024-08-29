@@ -25,7 +25,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView.ScaleType
-import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.ability.AttachObserver
 import com.github.panpf.sketch.ability.ClickObserver
 import com.github.panpf.sketch.ability.DrawForegroundObserver
@@ -89,41 +88,41 @@ class RealViewAbilityManager(
 
     private fun onAbilityListChanged() {
         attachObserverList =
-            _viewAbilityList.filterIsInstance(AttachObserver::class.java).takeIf { it.isNotEmpty() }
+            _viewAbilityList.filterIsInstance<AttachObserver>().takeIf { it.isNotEmpty() }
         layoutAbilityList =
-            _viewAbilityList.filterIsInstance(LayoutObserver::class.java).takeIf { it.isNotEmpty() }
+            _viewAbilityList.filterIsInstance<LayoutObserver>().takeIf { it.isNotEmpty() }
         sizeChangeAbilityList =
-            _viewAbilityList.filterIsInstance(SizeChangeObserver::class.java)
+            _viewAbilityList.filterIsInstance<SizeChangeObserver>()
                 .takeIf { it.isNotEmpty() }
         drawObserverList =
-            _viewAbilityList.filterIsInstance(DrawObserver::class.java).takeIf { it.isNotEmpty() }
+            _viewAbilityList.filterIsInstance<DrawObserver>().takeIf { it.isNotEmpty() }
         drawForegroundObserverList =
-            _viewAbilityList.filterIsInstance(DrawForegroundObserver::class.java)
+            _viewAbilityList.filterIsInstance<DrawForegroundObserver>()
                 .takeIf { it.isNotEmpty() }
         touchEventObserverList =
-            _viewAbilityList.filterIsInstance(TouchEventObserver::class.java)
+            _viewAbilityList.filterIsInstance<TouchEventObserver>()
                 .takeIf { it.isNotEmpty() }
         clickObserverList =
-            _viewAbilityList.filterIsInstance(ClickObserver::class.java).takeIf { it.isNotEmpty() }
+            _viewAbilityList.filterIsInstance<ClickObserver>().takeIf { it.isNotEmpty() }
         longClickAbilityList =
-            _viewAbilityList.filterIsInstance(LongClickObserver::class.java)
+            _viewAbilityList.filterIsInstance<LongClickObserver>()
                 .takeIf { it.isNotEmpty() }
         visibilityChangedObserverList = _viewAbilityList
-            .filterIsInstance(VisibilityChangedObserver::class.java).takeIf { it.isNotEmpty() }
-        drawableObserverList = _viewAbilityList.filterIsInstance(DrawableObserver::class.java)
+            .filterIsInstance<VisibilityChangedObserver>().takeIf { it.isNotEmpty() }
+        drawableObserverList = _viewAbilityList.filterIsInstance<DrawableObserver>()
             .takeIf { it.isNotEmpty() }
-        scaleTypeAbilityList = _viewAbilityList.filterIsInstance(ScaleTypeObserver::class.java)
+        scaleTypeAbilityList = _viewAbilityList.filterIsInstance<ScaleTypeObserver>()
             .takeIf { it.isNotEmpty() }
-        imageMatrixAbilityList = _viewAbilityList.filterIsInstance(ImageMatrixObserver::class.java)
+        imageMatrixAbilityList = _viewAbilityList.filterIsInstance<ImageMatrixObserver>()
             .takeIf { it.isNotEmpty() }
         requestListenerAbilityList =
-            _viewAbilityList.filterIsInstance(RequestListenerObserver::class.java)
+            _viewAbilityList.filterIsInstance<RequestListenerObserver>()
                 .takeIf { it.isNotEmpty() }
         requestProgressListenerAbilityList =
-            _viewAbilityList.filterIsInstance(RequestProgressListenerObserver::class.java)
+            _viewAbilityList.filterIsInstance<RequestProgressListenerObserver>()
                 .takeIf { it.isNotEmpty() }
         instanceStateObserverAbilityList =
-            _viewAbilityList.filterIsInstance(InstanceStateObserver::class.java)
+            _viewAbilityList.filterIsInstance<InstanceStateObserver>()
                 .takeIf { it.isNotEmpty() }
         _viewAbilityImmutableList = _viewAbilityList.toList()
         refreshOnClickListener()
@@ -146,7 +145,7 @@ class RealViewAbilityManager(
         viewAbility.host = host
 
         val view = host.view
-        if (ViewCompat.isAttachedToWindow(view)) {
+        if (view.isAttachedToWindow) {
             if (viewAbility is AttachObserver) {
                 viewAbility.onAttachedToWindow()
             }

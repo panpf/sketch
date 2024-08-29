@@ -38,11 +38,15 @@ import kotlinx.coroutines.launch
  */
 interface RequestManager {
 
-    /** Attach [requestDelegate] to this view and cancel the old request. */
+    /**
+     * Attach [requestDelegate] to this view and cancel the old request.
+     */
     @MainThread
     fun setRequest(requestDelegate: RequestDelegate?)
 
-    /** Return 'true' if [disposable] is not attached to this view. */
+    /**
+     * Return 'true' if [disposable] is not attached to this view.
+     */
     fun isDisposed(disposable: Disposable): Boolean
 
     /**
@@ -50,19 +54,37 @@ interface RequestManager {
      */
     fun getDisposable(job: Deferred<ImageResult>): Disposable
 
-    /** Cancel any in progress work and detach currentRequestDelegate from this view. */
+    /**
+     * Cancel any in progress work and detach currentRequestDelegate from this view.
+     */
     fun dispose()
 
-    /** Return the completed value of the latest job if it has completed. Else, return 'null'. */
+    /**
+     * Return the completed value of the latest job if it has completed. Else, return 'null'.
+     */
     fun getResult(): ImageResult?
 
+    /**
+     * Restart the current request
+     */
     fun restart()
 
+    /**
+     * Return the current request
+     */
     fun getRequest(): ImageRequest?
 
+    /**
+     * Return the current sketch
+     */
     fun getSketch(): Sketch?
 }
 
+/**
+ * Base implementation of [RequestManager] that handles the current request and request lifecycle.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestManagerTest
+ */
 open class BaseRequestManager : RequestManager {
 
     private val lock = SynchronizedObject()
