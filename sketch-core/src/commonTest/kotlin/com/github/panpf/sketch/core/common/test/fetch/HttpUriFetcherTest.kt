@@ -18,52 +18,24 @@ package com.github.panpf.sketch.core.common.test.fetch
 
 class HttpUriFetcherTest {
 
-    // TODO isHttpUri
-    // TODO test
-
 //    @Test
-//    fun testFactory() {
+//    fun testIsHttpUri() {
+//        // TODO test
+//    }
+//
+//    @Test
+//    fun testFactoryCreate() {
 //        val (context, sketch) = getTestContextAndSketch()
 //        val httpUri = "http://sample.com/sample.jpg"
 //        val httpsUri = "https://sample.com/sample.jpg"
 //        val ftpUri = "ftp://sample.com/sample.jpg"
 //        val contentUri = "content://sample_app/sample"
-//        val imageView = ImageView(context)
 //
-//        val httpUriFetcherFactory = HttpUriFetcher.Factory()
-//        assertNotNull(
-//            httpUriFetcherFactory.create(
-//                sketch,
-//                ImageRequest(context, httpUri)
-//            )
-//        )
-//        assertNotNull(
-//            httpUriFetcherFactory.create(
-//                sketch,
-//                ImageRequest(context, httpsUri)
-//            )
-//        )
-//        assertNotNull(httpUriFetcherFactory.create(sketch, ImageRequest(context, httpUri)))
-//        assertNotNull(httpUriFetcherFactory.create(sketch, ImageRequest(context, httpsUri)))
-//        assertNotNull(
-//            httpUriFetcherFactory.create(
-//                sketch,
-//                ImageRequest(imageView, httpUri)
-//            )
-//        )
-//        assertNotNull(
-//            httpUriFetcherFactory.create(
-//                sketch,
-//                ImageRequest(imageView, httpsUri)
-//            )
-//        )
-//        assertNull(httpUriFetcherFactory.create(sketch, ImageRequest(context, ftpUri)))
-//        assertNull(
-//            httpUriFetcherFactory.create(
-//                sketch,
-//                ImageRequest(context, contentUri)
-//            )
-//        )
+//        val factory = HttpUriFetcher.Factory()
+//        assertNotNull(factory.create(sketch, ImageRequest(context, httpsUri)))
+//        assertNotNull(factory.create(sketch, ImageRequest(context, httpUri)))
+//        assertNull(factory.create(sketch, ImageRequest(context, ftpUri)))
+//        assertNull(factory.create(sketch, ImageRequest(context, contentUri)))
 //    }
 //
 //    @Test
@@ -79,6 +51,11 @@ class HttpUriFetcherTest {
 //
 //        assertEquals(element1.hashCode(), element1.hashCode())
 //        assertEquals(element1.hashCode(), element11.hashCode())
+//    }
+//
+//    @Test
+//    fun testFactoryToString() {
+//        // TODO test
 //    }
 //
 //    @Test

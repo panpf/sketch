@@ -28,24 +28,36 @@ import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
- * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
+ * Create a base64 image uri
+ *
+ * @return 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testNewBase64Uri
  */
-fun newBase64Uri(mimeType: String, imageDataBase64String: String): String =
-    "${Base64UriFetcher.SCHEME}:$mimeType;${Base64UriFetcher.BASE64_IDENTIFIER},$imageDataBase64String"
+fun newBase64Uri(mimeType: String, base64String: String): String =
+    "${Base64UriFetcher.SCHEME}:$mimeType;${Base64UriFetcher.BASE64_IDENTIFIER},$base64String"
 
 /**
- * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
+ * Create a base64 image uri
+ *
+ * @return 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testNewBase64Uri2
  */
 @OptIn(ExperimentalEncodingApi::class)
 fun newBase64Uri(mimeType: String, imageData: ByteArray): String {
-    val imageDataBase64String = Base64.Default.encode(imageData)
-    return newBase64Uri(mimeType, imageDataBase64String)
+    val base64String = Base64.Default.encode(imageData)
+    return newBase64Uri(mimeType, base64String)
 }
 
 /**
- * Check if the uri is a base64 uri
+ * Check if the uri is a base64 image uri
  *
- * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
+ * The following uris are supported
+ * * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+ * * 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testIsBase64Uri
  */
 fun isBase64Uri(uri: Uri): Boolean {
     val data = uri.toString()
@@ -53,56 +65,88 @@ fun isBase64Uri(uri: Uri): Boolean {
             && data.indexOf(";${Base64UriFetcher.BASE64_IDENTIFIER},") != -1
 }
 
-enum class Base64Specification {
+/**
+ * Base64 specification
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testBase64UriSpec
+ */
+enum class Base64Spec {
     Default, Mime, UrlSafe
 }
 
-const val BASE64_SPECIFICATION_KEY = "sketch#base64_specification"
+/**
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testBase64UriSpec
+ */
+const val BASE64_URI_SPEC_KEY = "sketch#base64_uri_spec"
 
-fun ImageOptions.Builder.base64Specification(
-    specification: Base64Specification?
+/**
+ * Set the specification when decoding base64 uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testBase64UriSpec
+ */
+fun ImageOptions.Builder.base64UriSpec(
+    base64Spec: Base64Spec?
 ): ImageOptions.Builder = apply {
-    if (specification != null) {
+    if (base64Spec != null) {
         setExtra(
-            key = BASE64_SPECIFICATION_KEY,
-            value = specification.name,
+            key = BASE64_URI_SPEC_KEY,
+            value = base64Spec.name,
             cacheKey = null
         )
     } else {
-        removeExtra(BASE64_SPECIFICATION_KEY)
+        removeExtra(BASE64_URI_SPEC_KEY)
     }
 }
 
-fun ImageRequest.Builder.base64Specification(
-    specification: Base64Specification?
+/**
+ * Set the specification when decoding base64 uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testBase64UriSpec
+ */
+fun ImageRequest.Builder.base64UriSpec(
+    specification: Base64Spec?
 ): ImageRequest.Builder = apply {
     if (specification != null) {
         setExtra(
-            key = BASE64_SPECIFICATION_KEY,
+            key = BASE64_URI_SPEC_KEY,
             value = specification.name,
             cacheKey = null
         )
     } else {
-        removeExtra(BASE64_SPECIFICATION_KEY)
+        removeExtra(BASE64_URI_SPEC_KEY)
     }
 }
 
-val ImageOptions.base64Specification: Base64Specification?
-    get() = extras?.value<String>(BASE64_SPECIFICATION_KEY)
-        ?.let { Base64Specification.valueOf(it) }
-
-val ImageRequest.base64Specification: Base64Specification?
-    get() = extras?.value<String>(BASE64_SPECIFICATION_KEY)
-        ?.let { Base64Specification.valueOf(it) }
+/**
+ * Get the specification when decoding base64 uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testBase64UriSpec
+ */
+val ImageOptions.base64UriSpec: Base64Spec?
+    get() = extras?.value<String>(BASE64_URI_SPEC_KEY)
+        ?.let { Base64Spec.valueOf(it) }
 
 /**
- * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri uri
+ * Get the specification when decoding base64 uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testBase64UriSpec
+ */
+val ImageRequest.base64UriSpec: Base64Spec?
+    get() = extras?.value<String>(BASE64_URI_SPEC_KEY)
+        ?.let { Base64Spec.valueOf(it) }
+
+/**
+ * The following uris are supported
+ * * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+ * * 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest
  */
 class Base64UriFetcher constructor(
     val sketch: Sketch,
     val request: ImageRequest,
     val mimeType: String,
-    val imageDataBase64String: String,
+    val base64String: String,
 ) : Fetcher {
 
     companion object {
@@ -113,13 +157,13 @@ class Base64UriFetcher constructor(
     @OptIn(ExperimentalEncodingApi::class)
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> {
-        val base64Specification = request.base64Specification
-        val base64 = when (base64Specification) {
-            Base64Specification.Mime -> Base64.Mime
-            Base64Specification.UrlSafe -> Base64.UrlSafe
+        val base64UriSpec = request.base64UriSpec
+        val base64 = when (base64UriSpec) {
+            Base64Spec.Mime -> Base64.Mime
+            Base64Spec.UrlSafe -> Base64.UrlSafe
             else -> Base64.Default
         }
-        val bytes = base64.decode(imageDataBase64String)
+        val bytes = base64.decode(base64String)
         return Result.success(
             FetchResult(ByteArrayDataSource(sketch, request, MEMORY, bytes), mimeType)
         )
@@ -132,7 +176,7 @@ class Base64UriFetcher constructor(
         if (sketch != other.sketch) return false
         if (request != other.request) return false
         if (mimeType != other.mimeType) return false
-        if (imageDataBase64String != other.imageDataBase64String) return false
+        if (base64String != other.base64String) return false
         return true
     }
 
@@ -140,16 +184,18 @@ class Base64UriFetcher constructor(
         var result = sketch.hashCode()
         result = 31 * result + request.hashCode()
         result = 31 * result + mimeType.hashCode()
-        result = 31 * result + imageDataBase64String.hashCode()
+        result = 31 * result + base64String.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Base64UriFetcher('$imageDataBase64String')"
+        return "Base64UriFetcher('$base64String')"
     }
 
     /**
-     * Support 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z', 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z' uri
+     * The following uris are supported
+     * * 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
+     * * 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
      */
     class Factory : Fetcher.Factory {
 
@@ -170,7 +216,7 @@ class Base64UriFetcher constructor(
                 sketch = sketch,
                 request = request,
                 mimeType = mimeType,
-                imageDataBase64String = imageDataBase64String
+                base64String = imageDataBase64String
             )
         }
 

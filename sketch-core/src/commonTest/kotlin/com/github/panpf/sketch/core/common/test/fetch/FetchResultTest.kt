@@ -44,7 +44,10 @@ class FetchResultTest {
         }
     }
 
-    // TODO copy
+    @Test
+    fun testCopy() {
+        // TODO copy
+    }
 
     @Test
     fun testDataFrom() {

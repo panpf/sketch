@@ -28,18 +28,24 @@ import okio.Path.Companion.toPath
 
 /**
  * Sample: 'file:///sdcard/sample.jpg'
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri
  */
 fun newFileUri(path: String): String = "${FileUriFetcher.SCHEME}://$path"
 
 /**
  * Sample: 'file:///sdcard/sample.jpg'
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri
  */
-fun newFileUri(path: Path): String = "${FileUriFetcher.SCHEME}://${path}"
+fun newFileUri(path: Path): String = "${FileUriFetcher.SCHEME}://$path"
 
 /**
  * Check if the uri is a file uri
  *
  * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testIsFileUri
  */
 fun isFileUri(uri: Uri): Boolean =
     (uri.scheme == null || FileUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true))
@@ -48,6 +54,8 @@ fun isFileUri(uri: Uri): Boolean =
 
 /**
  * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest
  */
 class FileUriFetcher(
     val sketch: Sketch,

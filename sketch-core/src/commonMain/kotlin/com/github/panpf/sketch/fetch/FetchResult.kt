@@ -21,9 +21,19 @@ import com.github.panpf.sketch.source.DataSource
 import okio.buffer
 import okio.use
 
+/**
+ * Create a FetchResult
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest.testCreateFunction
+ */
 fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
     FetchResultImpl(dataSource, mimeType)
 
+/**
+ * Copy FetchResult
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest.testCopy
+ */
 fun FetchResult.copy(
     dataSource: DataSource = this.dataSource,
     mimeType: String? = this.mimeType
@@ -31,9 +41,14 @@ fun FetchResult.copy(
 
 /**
  * The result of [Fetcher.fetch]
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest
  */
 interface FetchResult {
 
+    /**
+     * The data source of the fetched data
+     */
     val dataSource: DataSource
 
     /**
@@ -41,6 +56,9 @@ interface FetchResult {
      */
     val mimeType: String?
 
+    /**
+     * Data source from where
+     */
     val dataFrom: DataFrom
         get() = dataSource.dataFrom
 
@@ -50,8 +68,14 @@ interface FetchResult {
     val headerBytes: ByteArray
 }
 
+/**
+ * Default implementation of [FetchResult]
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest
+ */
 open class FetchResultImpl constructor(
-    override val dataSource: DataSource, override val mimeType: String?
+    override val dataSource: DataSource,
+    override val mimeType: String?
 ) : FetchResult {
 
     companion object {

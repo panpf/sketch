@@ -21,5 +21,7 @@ import java.io.File
 
 /**
  * Sample: 'file:///sdcard/sample.jpg'
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.fetch.FileUriFetcherJvmTest.testNewFileUri
  */
 fun newFileUri(file: File): String = "$SCHEME://${file.path}"
