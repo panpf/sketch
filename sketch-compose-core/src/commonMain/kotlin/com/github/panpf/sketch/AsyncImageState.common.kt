@@ -46,8 +46,8 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.ComposeRequestManager
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver

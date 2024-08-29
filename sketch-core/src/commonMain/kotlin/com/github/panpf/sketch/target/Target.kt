@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper

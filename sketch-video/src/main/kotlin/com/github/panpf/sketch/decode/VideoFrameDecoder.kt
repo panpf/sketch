@@ -22,7 +22,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.HelperDecoder
 import com.github.panpf.sketch.decode.internal.VideoFrameDecodeHelper
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 
 /**

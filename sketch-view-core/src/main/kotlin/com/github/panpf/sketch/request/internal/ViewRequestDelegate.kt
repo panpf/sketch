@@ -16,14 +16,17 @@
 
 package com.github.panpf.sketch.request.internal
 
-import androidx.core.view.ViewCompat
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ViewTarget
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 
-/** A request delegate for restartable requests with a [ViewTarget]. */
+/**
+ * A request delegate for restartable requests with a [ViewTarget].
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.internal.ViewRequestDelegateTest
+ */
 class ViewRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
@@ -34,7 +37,7 @@ class ViewRequestDelegate(
     override fun assertActive() {
         val view = viewTarget.view
             ?: throw CancellationException("'ViewTarget.view' is cleared.")
-        if (!ViewCompat.isAttachedToWindow(view)) {
+        if (!view.isAttachedToWindow) {
             viewTarget.getRequestManager()?.setRequest(this)
             throw CancellationException("'ViewTarget.view' must be attached to a window.")
         }

@@ -20,7 +20,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
 import kotlin.math.roundToLong

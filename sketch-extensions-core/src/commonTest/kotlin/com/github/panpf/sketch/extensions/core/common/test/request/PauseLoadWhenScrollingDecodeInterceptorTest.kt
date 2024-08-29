@@ -24,8 +24,8 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling

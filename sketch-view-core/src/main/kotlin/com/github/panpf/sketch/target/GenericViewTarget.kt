@@ -25,8 +25,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asDrawableOrThrow
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.AttachObserver
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.util.asOrNull

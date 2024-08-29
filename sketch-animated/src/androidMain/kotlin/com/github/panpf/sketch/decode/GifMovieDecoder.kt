@@ -30,12 +30,12 @@ import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import kotlinx.coroutines.Dispatchers

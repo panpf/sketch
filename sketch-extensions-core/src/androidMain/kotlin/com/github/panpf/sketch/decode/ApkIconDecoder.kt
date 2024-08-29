@@ -23,7 +23,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import java.io.File

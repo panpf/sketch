@@ -20,6 +20,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.util.requiredMainThread
 

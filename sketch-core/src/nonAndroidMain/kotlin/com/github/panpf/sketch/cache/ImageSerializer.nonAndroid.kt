@@ -22,7 +22,7 @@ import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import okio.BufferedSink
 import okio.buffer

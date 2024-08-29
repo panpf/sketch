@@ -23,9 +23,9 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
 /**

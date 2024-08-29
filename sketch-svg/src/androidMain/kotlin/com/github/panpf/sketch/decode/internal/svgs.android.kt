@@ -27,8 +27,8 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide

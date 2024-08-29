@@ -22,7 +22,7 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
 /**

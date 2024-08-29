@@ -19,7 +19,7 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import okio.use
 

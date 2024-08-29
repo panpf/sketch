@@ -19,7 +19,7 @@ package com.github.panpf.sketch.transform
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import kotlin.math.min

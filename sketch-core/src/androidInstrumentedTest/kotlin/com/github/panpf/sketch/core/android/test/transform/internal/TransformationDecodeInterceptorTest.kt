@@ -25,7 +25,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch

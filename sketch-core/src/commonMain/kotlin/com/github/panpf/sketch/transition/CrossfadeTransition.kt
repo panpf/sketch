@@ -18,7 +18,7 @@
 package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads

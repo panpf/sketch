@@ -26,7 +26,7 @@ import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale

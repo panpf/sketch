@@ -23,10 +23,10 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.SaveCellularTrafficRequestInterceptor
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic

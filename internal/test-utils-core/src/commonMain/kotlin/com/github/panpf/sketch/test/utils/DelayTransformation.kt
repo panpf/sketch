@@ -18,7 +18,7 @@ package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
 import kotlinx.coroutines.delay

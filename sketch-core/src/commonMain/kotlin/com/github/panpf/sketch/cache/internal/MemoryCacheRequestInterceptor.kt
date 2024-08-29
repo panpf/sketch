@@ -27,9 +27,9 @@ import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.source.DataFrom
 

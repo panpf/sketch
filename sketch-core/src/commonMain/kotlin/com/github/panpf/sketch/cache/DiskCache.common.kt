@@ -20,7 +20,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.appCacheDirectory
 import okio.Closeable
 import okio.FileSystem

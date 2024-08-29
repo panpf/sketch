@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.request.internal
+package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
@@ -26,6 +26,11 @@ import com.github.panpf.sketch.util.times
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
+/**
+ * Request context, used to cache some data during the request process
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.RequestContextTest
+ */
 class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {
 
     private val lock = SynchronizedObject()

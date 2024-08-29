@@ -23,7 +23,7 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget

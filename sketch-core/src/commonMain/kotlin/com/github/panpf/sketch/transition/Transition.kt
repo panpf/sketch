@@ -19,7 +19,7 @@ package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.Key
 

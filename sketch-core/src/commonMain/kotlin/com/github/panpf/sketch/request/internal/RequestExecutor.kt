@@ -23,6 +23,7 @@ import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
@@ -71,7 +72,9 @@ class RequestExecutor {
             // resolve resize size
             val size = request.sizeResolver.size()
                 .coerceAtLeast(Size.Empty)
-                .times(request.sizeMultiplier ?: 1f)    // TODO sizeMultiplier cannot be used here, it must be used during computeResize
+                .times(
+                    request.sizeMultiplier ?: 1f
+                )    // TODO sizeMultiplier cannot be used here, it must be used during computeResize
             requestContext.size = size
 
             onStart(requestContext)

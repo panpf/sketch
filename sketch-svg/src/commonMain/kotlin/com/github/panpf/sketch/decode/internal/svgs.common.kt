@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.request.internal.RequestContext
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.indexOf
 import com.github.panpf.sketch.util.rangeEquals

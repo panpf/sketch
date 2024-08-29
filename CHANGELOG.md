@@ -19,6 +19,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: DataSource's getFile() and getFileOrNull() methods add Sketch parameters
 * change: DataSource's openSourceOrNull() and getFileOrNull() methods are now available as extension
   functions
+* change: RequestContext moved to 'com.github.panpf.sketch.request' package
 
 # 4.0.0-alpha07
 

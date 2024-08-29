@@ -20,7 +20,6 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestContext
 import com.github.panpf.sketch.util.NullableKey
 
 /**
