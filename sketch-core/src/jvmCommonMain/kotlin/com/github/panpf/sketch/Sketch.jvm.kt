@@ -19,4 +19,9 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
 
+/**
+ * Provides the default HttpStack for the JVM platform
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.SketchJvmTest.testDefaultHttpStack
+ */
 internal actual fun defaultHttpStack(): HttpStack = HurlStack.Builder().build()

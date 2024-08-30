@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.core.nonandroid.test
+package com.github.panpf.sketch.core.android.test
 
 import kotlin.test.Test
 
-class PlatformContextNonAndroidTest {
+class PlatformContextAndroidTest {
 
     @Test
     fun testPlatformContext() {

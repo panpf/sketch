@@ -23,10 +23,20 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.painter.toLogString
 import kotlin.math.roundToInt
 
+/**
+ * Convert [Painter] to [PainterImage]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest.testAsSketchImage
+ */
 fun Painter.asSketchImage(shareable: Boolean = false): PainterImage {
     return PainterImage(this, shareable)
 }
 
+/**
+ * Painter image
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest
+ */
 @Stable
 data class PainterImage(
     val painter: Painter,

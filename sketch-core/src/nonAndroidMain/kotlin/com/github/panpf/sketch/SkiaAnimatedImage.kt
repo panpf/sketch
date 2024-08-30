@@ -20,6 +20,11 @@ import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
 
+/**
+ * Skia animated [Codec] [Image]
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaAnimatedImageTest
+ */
 data class SkiaAnimatedImage constructor(
     val codec: Codec,
     val repeatCount: Int? = null,

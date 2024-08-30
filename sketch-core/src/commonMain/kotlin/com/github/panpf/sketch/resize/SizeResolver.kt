@@ -20,8 +20,18 @@ import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
+/**
+ * Create a [SizeResolver] that always returns the specified [Size]
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.SizeResolverTest.testCreateFunction
+ */
 fun SizeResolver(size: Size): SizeResolver = FixedSizeResolver(size)
 
+/**
+ * Create a [SizeResolver] that always returns the specified [Size]
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.SizeResolverTest.testCreateFunction
+ */
 fun SizeResolver(width: Int, height: Int): SizeResolver = FixedSizeResolver(width, height)
 
 /**
@@ -42,6 +52,8 @@ interface SizeResolver : Key {
 
 /**
  * Returns the fixed size
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.SizeResolverTest
  */
 data class FixedSizeResolver constructor(private val size: Size) : SizeResolver {
 

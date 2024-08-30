@@ -31,29 +31,59 @@ import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
 
+/**
+ * Convert [AndroidBitmap] to [Image]
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testAsSketchImage
+ */
 fun AndroidBitmap.asSketchImage(
     resources: Resources? = null,
     shareable: Boolean = isImmutable
 ): AndroidBitmapImage = AndroidBitmapImage(this, shareable, resources)
 
+/**
+ * Convert [Image] to [Bitmap], if the conversion fails, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testGetBitmapOrNull
+ */
 fun Image.getBitmapOrNull(): AndroidBitmap? = when (this) {
     is AndroidBitmapImage -> bitmap
     is AndroidDrawableImage -> drawable.asOrNull<BitmapDrawable>()?.bitmap
     else -> null
 }
 
+/**
+ * Convert [Image] to [Bitmap], if the conversion fails, throw an exception
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testGetBitmapOrThrow
+ */
 fun Image.getBitmapOrThrow(): AndroidBitmap = getBitmapOrNull()
     ?: throw IllegalArgumentException("Unable to get Bitmap from Image '$this'")
 
-fun Image.toBitmapOrNull(): Bitmap? = when (this) {
+/**
+ * Create a new [Bitmap] from [Image], if the conversion fails, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testToBitmapOrNull
+ */
+fun Image.toBitmapOrNull(): AndroidBitmap? = when (this) {
     is AndroidBitmapImage -> bitmap.copy(bitmap.config, false)
     is AndroidDrawableImage -> drawable.toBitmap()
     else -> null
 }
 
-fun Image.toBitmapOrThrow(): Bitmap = toBitmapOrNull()
+/**
+ * Create a new [Bitmap] from [Image], if the conversion fails, throw an exception
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testToBitmapOrThrow
+ */
+fun Image.toBitmapOrThrow(): AndroidBitmap = toBitmapOrNull()
     ?: throw IllegalArgumentException("'$this' can't be converted to Bitmap")
 
+/**
+ * Android Bitmap Image
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest
+ */
 data class AndroidBitmapImage internal constructor(
     val bitmap: AndroidBitmap,
     override val shareable: Boolean = !bitmap.isMutable,
@@ -85,6 +115,11 @@ data class AndroidBitmapImage internal constructor(
         "AndroidBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
 }
 
+/**
+ * Android Bitmap Image Transformer
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testBitmapImageTransformer
+ */
 class BitmapImageTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {

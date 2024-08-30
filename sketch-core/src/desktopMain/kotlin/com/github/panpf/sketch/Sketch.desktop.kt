@@ -19,6 +19,11 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
 
+/**
+ * Desktop platform related components
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testPlatformComponents
+ */
 internal actual fun platformComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(KotlinResourceUriFetcher.Factory())

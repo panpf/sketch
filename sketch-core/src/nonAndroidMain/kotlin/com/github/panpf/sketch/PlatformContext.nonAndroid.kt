@@ -16,11 +16,21 @@
 
 package com.github.panpf.sketch
 
+/**
+ * Represents a platform-specific context that acts as an interface to
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.PlatformContextNonAndroidTest.testPlatformContext
+ */
 actual abstract class PlatformContext private constructor() {
     companion object {
         val INSTANCE = object : PlatformContext() {}
     }
 }
 
+/**
+ * Check that the platform context is as expected
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.PlatformContextNonAndroidTest.testCheckPlatformContext
+ */
 actual fun checkPlatformContext(context: PlatformContext) {
 }

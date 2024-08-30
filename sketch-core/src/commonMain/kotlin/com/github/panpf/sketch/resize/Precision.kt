@@ -18,6 +18,11 @@ package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.Image
 
+/**
+ * The precision of the resize operation
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.PrecisionTest
+ */
 enum class Precision {
 
     /**

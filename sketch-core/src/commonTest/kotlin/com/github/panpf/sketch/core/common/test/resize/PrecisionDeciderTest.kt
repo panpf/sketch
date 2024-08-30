@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.resize
+package com.github.panpf.sketch.core.common.test.resize
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
@@ -26,23 +25,24 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.test.utils.get
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
 class PrecisionDeciderTest {
 
     @Test
     fun testCreateFunction() {
-        Assert.assertTrue(PrecisionDecider(EXACTLY) is FixedPrecisionDecider)
+        assertTrue(PrecisionDecider(EXACTLY) is FixedPrecisionDecider)
     }
 
     @Test
     fun testFixedPrecisionDeciderCreateFunction() {
-        Assert.assertEquals(FixedPrecisionDecider(EXACTLY), FixedPrecisionDecider(EXACTLY))
-        Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), FixedPrecisionDecider(LESS_PIXELS))
-        Assert.assertEquals(
+        assertEquals(FixedPrecisionDecider(EXACTLY), FixedPrecisionDecider(EXACTLY))
+        assertEquals(FixedPrecisionDecider(LESS_PIXELS), FixedPrecisionDecider(LESS_PIXELS))
+        assertEquals(
             FixedPrecisionDecider(SAME_ASPECT_RATIO),
             FixedPrecisionDecider(SAME_ASPECT_RATIO)
         )
@@ -51,39 +51,39 @@ class PrecisionDeciderTest {
     @Test
     fun testFixedPrecisionDeciderGet() {
         FixedPrecisionDecider(SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 48, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 49, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 50, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 51, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(100, 52, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(100, 48, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(100, 49, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(100, 50, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(100, 51, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(100, 52, 50, 50))
         }
 
         FixedPrecisionDecider(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, get(100, 48, 50, 50))
-            Assert.assertEquals(EXACTLY, get(100, 49, 50, 50))
-            Assert.assertEquals(EXACTLY, get(100, 50, 50, 50))
-            Assert.assertEquals(EXACTLY, get(100, 51, 50, 50))
-            Assert.assertEquals(EXACTLY, get(100, 52, 50, 50))
+            assertEquals(EXACTLY, get(100, 48, 50, 50))
+            assertEquals(EXACTLY, get(100, 49, 50, 50))
+            assertEquals(EXACTLY, get(100, 50, 50, 50))
+            assertEquals(EXACTLY, get(100, 51, 50, 50))
+            assertEquals(EXACTLY, get(100, 52, 50, 50))
         }
 
         FixedPrecisionDecider(LESS_PIXELS).apply {
-            Assert.assertEquals(LESS_PIXELS, get(100, 32, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(100, 33, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(100, 34, 50, 50))
+            assertEquals(LESS_PIXELS, get(100, 32, 50, 50))
+            assertEquals(LESS_PIXELS, get(100, 33, 50, 50))
+            assertEquals(LESS_PIXELS, get(100, 34, 50, 50))
         }
     }
 
     @Test
     fun testFixedPrecisionDeciderKey() {
-        Assert.assertEquals(
+        assertEquals(
             "Fixed(SAME_ASPECT_RATIO)",
             FixedPrecisionDecider(SAME_ASPECT_RATIO).key
         )
-        Assert.assertEquals(
+        assertEquals(
             "Fixed(EXACTLY)",
             FixedPrecisionDecider(EXACTLY).key
         )
-        Assert.assertEquals(
+        assertEquals(
             "Fixed(LESS_PIXELS)",
             FixedPrecisionDecider(LESS_PIXELS).key
         )
@@ -91,15 +91,15 @@ class PrecisionDeciderTest {
 
     @Test
     fun testFixedPrecisionDeciderToString() {
-        Assert.assertEquals(
+        assertEquals(
             "FixedPrecisionDecider(SAME_ASPECT_RATIO)",
             FixedPrecisionDecider(SAME_ASPECT_RATIO).toString()
         )
-        Assert.assertEquals(
+        assertEquals(
             "FixedPrecisionDecider(EXACTLY)",
             FixedPrecisionDecider(EXACTLY).toString()
         )
-        Assert.assertEquals(
+        assertEquals(
             "FixedPrecisionDecider(LESS_PIXELS)",
             FixedPrecisionDecider(LESS_PIXELS).toString()
         )
@@ -107,11 +107,11 @@ class PrecisionDeciderTest {
 
     @Test
     fun testLongImagePrecisionDeciderCreateFunction() {
-        Assert.assertEquals(
+        assertEquals(
             LongImagePrecisionDecider(EXACTLY),
             LongImagePrecisionDecider(EXACTLY)
         )
-        Assert.assertEquals(
+        assertEquals(
             LongImagePrecisionDecider(SAME_ASPECT_RATIO),
             LongImagePrecisionDecider(SAME_ASPECT_RATIO)
         )
@@ -120,53 +120,53 @@ class PrecisionDeciderTest {
     @Test
     fun testLongImagePrecisionDeciderConstructor() {
         LongImagePrecisionDecider().apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
         }
         LongImagePrecisionDecider(SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
         }
         LongImagePrecisionDecider(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, get(150, 48, 50, 50))
+            assertEquals(EXACTLY, get(150, 48, 50, 50))
         }
         LongImagePrecisionDecider(SMALLER_SIZE).apply {
-            Assert.assertEquals(SMALLER_SIZE, get(150, 48, 50, 50))
+            assertEquals(SMALLER_SIZE, get(150, 48, 50, 50))
         }
     }
 
     @Test
     fun testLongImagePrecisionDeciderGet() {
         LongImagePrecisionDecider(SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 49, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 76, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 77, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 49, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
+            assertEquals(LESS_PIXELS, get(150, 76, 50, 50))
+            assertEquals(LESS_PIXELS, get(150, 77, 50, 50))
         }
 
         LongImagePrecisionDecider(SAME_ASPECT_RATIO, SMALLER_SIZE).apply {
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 49, 50, 50))
-            Assert.assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
-            Assert.assertEquals(SMALLER_SIZE, get(150, 76, 50, 50))
-            Assert.assertEquals(SMALLER_SIZE, get(150, 77, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 48, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 49, 50, 50))
+            assertEquals(SAME_ASPECT_RATIO, get(150, 50, 50, 50))
+            assertEquals(SMALLER_SIZE, get(150, 76, 50, 50))
+            assertEquals(SMALLER_SIZE, get(150, 77, 50, 50))
         }
 
         LongImagePrecisionDecider(EXACTLY).apply {
-            Assert.assertEquals(EXACTLY, get(150, 48, 50, 50))
-            Assert.assertEquals(EXACTLY, get(150, 49, 50, 50))
-            Assert.assertEquals(EXACTLY, get(150, 50, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 76, 50, 50))
-            Assert.assertEquals(LESS_PIXELS, get(150, 77, 50, 50))
+            assertEquals(EXACTLY, get(150, 48, 50, 50))
+            assertEquals(EXACTLY, get(150, 49, 50, 50))
+            assertEquals(EXACTLY, get(150, 50, 50, 50))
+            assertEquals(LESS_PIXELS, get(150, 76, 50, 50))
+            assertEquals(LESS_PIXELS, get(150, 77, 50, 50))
         }
     }
 
     @Test
     fun testLongImagePrecisionDeciderKey() {
-        Assert.assertEquals(
+        assertEquals(
             "LongImage(EXACTLY,LESS_PIXELS,Default(2.5,5.0))",
             LongImagePrecisionDecider(EXACTLY).key
         )
-        Assert.assertEquals(
+        assertEquals(
             "LongImage(SAME_ASPECT_RATIO,LESS_PIXELS,Default(2.5,5.0))",
             LongImagePrecisionDecider(SAME_ASPECT_RATIO).key
         )
@@ -180,36 +180,36 @@ class PrecisionDeciderTest {
         val element3 =
             LongImagePrecisionDecider(longImageDecider = DefaultLongImageDecider(3f, 6f))
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
     fun testLongImagePrecisionDeciderToString() {
-        Assert.assertEquals(
+        assertEquals(
             "LongImagePrecisionDecider(longImage=EXACTLY, otherImage=LESS_PIXELS, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
             LongImagePrecisionDecider(EXACTLY).toString()
         )
-        Assert.assertEquals(
+        assertEquals(
             "LongImagePrecisionDecider(longImage=SAME_ASPECT_RATIO, otherImage=LESS_PIXELS, longImageDecider=DefaultLongImageDecider(sameDirectionMultiple=2.5, notSameDirectionMultiple=5.0))",
             LongImagePrecisionDecider(SAME_ASPECT_RATIO).toString()
         )

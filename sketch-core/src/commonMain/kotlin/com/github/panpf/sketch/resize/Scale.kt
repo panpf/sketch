@@ -18,6 +18,8 @@ package com.github.panpf.sketch.resize
 
 /**
  * Which part of the original image to keep when [Precision] is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ScaleTest
  */
 enum class Scale {
 
@@ -42,6 +44,11 @@ enum class Scale {
     FILL,
 }
 
+/**
+ * Reverse the scale
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ScaleTest.testReverse
+ */
 fun Scale.reverse(): Scale {
     return when (this) {
         Scale.START_CROP -> Scale.END_CROP

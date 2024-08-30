@@ -22,6 +22,11 @@ import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
 
+/**
+ * Android platform related components
+ *
+ * @see com.github.panpf.sketch.core.android.test.SketchAndroidTest.testPlatformComponents
+ */
 internal actual fun platformComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(ContentUriFetcher.Factory())

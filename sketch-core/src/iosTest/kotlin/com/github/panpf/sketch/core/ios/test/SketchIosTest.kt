@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.ios.test
 
+import kotlin.test.Test
+
 class SketchIosTest {
-    // TODO test
+
+    @Test
+    fun testPlatformComponents() {
+        // TODO
+    }
 }

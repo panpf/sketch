@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.desktop.test
 
+import org.junit.Test
+
 class SketchDesktopTest {
-    // TODO test
+
+    @Test
+    fun testPlatformComponents() {
+        // TODO
+    }
 }

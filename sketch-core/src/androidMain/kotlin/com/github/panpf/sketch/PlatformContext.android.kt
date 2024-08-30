@@ -18,8 +18,18 @@ package com.github.panpf.sketch
 
 import android.app.Activity
 
+/**
+ * Represents a platform-specific context that acts as an interface to
+ *
+ * @see com.github.panpf.sketch.core.android.test.PlatformContextAndroidTest.testPlatformContext
+ */
 actual typealias PlatformContext = android.content.Context
 
+/**
+ * Check that the platform context is as expected
+ *
+ * @see com.github.panpf.sketch.core.android.test.PlatformContextAndroidTest.testCheckPlatformContext
+ */
 actual fun checkPlatformContext(context: PlatformContext) {
     require(context !is Activity) {
         "The context cannot be an Activity"

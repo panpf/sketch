@@ -22,10 +22,20 @@ import com.github.panpf.sketch.util.format
 
 /**
  * Define how to resize the image
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ResizeTest
  */
 data class Resize constructor(
+    /**
+     * The size of the image after resizing
+     */
     val size: Size,
+
+    /**
+     * The precision of the resize operation
+     */
     val precision: Precision,
+
     /**
      * Which part of the original picture should be kept when the original topic needs to be cropped.
      * Works only when precision is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]

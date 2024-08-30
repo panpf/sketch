@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.resize
+package com.github.panpf.sketch.core.common.test.resize
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -24,64 +23,64 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.util.Size
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
 class ResizeTest {
 
     @Test
     fun testConstructor() {
         Resize(100, 30, SAME_ASPECT_RATIO, END_CROP).apply {
-            Assert.assertEquals(100, size.width)
-            Assert.assertEquals(30, size.height)
-            Assert.assertEquals(SAME_ASPECT_RATIO, precision)
-            Assert.assertEquals(END_CROP, scale)
+            assertEquals(100, size.width)
+            assertEquals(30, size.height)
+            assertEquals(SAME_ASPECT_RATIO, precision)
+            assertEquals(END_CROP, scale)
         }
 
         Resize(100, 30).apply {
-            Assert.assertEquals(100, size.width)
-            Assert.assertEquals(30, size.height)
-            Assert.assertEquals(LESS_PIXELS, precision)
-            Assert.assertEquals(CENTER_CROP, scale)
+            assertEquals(100, size.width)
+            assertEquals(30, size.height)
+            assertEquals(LESS_PIXELS, precision)
+            assertEquals(CENTER_CROP, scale)
         }
 
         Resize(100, 30, SAME_ASPECT_RATIO).apply {
-            Assert.assertEquals(100, size.width)
-            Assert.assertEquals(30, size.height)
-            Assert.assertEquals(SAME_ASPECT_RATIO, precision)
-            Assert.assertEquals(CENTER_CROP, scale)
+            assertEquals(100, size.width)
+            assertEquals(30, size.height)
+            assertEquals(SAME_ASPECT_RATIO, precision)
+            assertEquals(CENTER_CROP, scale)
         }
 
         Resize(100, 30, END_CROP).apply {
-            Assert.assertEquals(100, size.width)
-            Assert.assertEquals(30, size.height)
-            Assert.assertEquals(LESS_PIXELS, precision)
-            Assert.assertEquals(END_CROP, scale)
+            assertEquals(100, size.width)
+            assertEquals(30, size.height)
+            assertEquals(LESS_PIXELS, precision)
+            assertEquals(END_CROP, scale)
         }
     }
 
     @Test
     fun testKey() {
         Resize(100, 100, LESS_PIXELS, CENTER_CROP).apply {
-            Assert.assertEquals("Resize(100x100,LESS_PIXELS,CENTER_CROP)", key)
+            assertEquals("Resize(100x100,LESS_PIXELS,CENTER_CROP)", key)
         }
         Resize(414, 786, SAME_ASPECT_RATIO, END_CROP).apply {
-            Assert.assertEquals("Resize(414x786,SAME_ASPECT_RATIO,END_CROP)", key)
+            assertEquals("Resize(414x786,SAME_ASPECT_RATIO,END_CROP)", key)
         }
     }
 
     @Test
     fun testToString() {
         Resize(100, 100, LESS_PIXELS, CENTER_CROP).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "Resize(size=100x100, precision=LESS_PIXELS, scale=CENTER_CROP)",
                 toString()
             )
         }
         Resize(414, 786, SAME_ASPECT_RATIO, END_CROP).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "Resize(size=414x786, precision=SAME_ASPECT_RATIO, scale=END_CROP)",
                 toString()
             )
@@ -91,33 +90,33 @@ class ResizeTest {
     @Test
     fun testShouldClip() {
         Resize(100, 100, LESS_PIXELS).apply {
-            Assert.assertFalse(shouldClip(100, 50))
-            Assert.assertFalse(shouldClip(100, 150))
-            Assert.assertFalse(shouldClip(50, 100))
-            Assert.assertFalse(shouldClip(150, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertFalse(shouldClip(150, 150))
+            assertFalse(shouldClip(100, 50))
+            assertFalse(shouldClip(100, 150))
+            assertFalse(shouldClip(50, 100))
+            assertFalse(shouldClip(150, 100))
+            assertFalse(shouldClip(100, 100))
+            assertFalse(shouldClip(50, 50))
+            assertFalse(shouldClip(150, 150))
         }
 
         Resize(100, 100, SAME_ASPECT_RATIO).apply {
-            Assert.assertTrue(shouldClip(100, 50))
-            Assert.assertTrue(shouldClip(100, 150))
-            Assert.assertTrue(shouldClip(50, 100))
-            Assert.assertTrue(shouldClip(150, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertFalse(shouldClip(50, 50))
-            Assert.assertFalse(shouldClip(150, 150))
+            assertTrue(shouldClip(100, 50))
+            assertTrue(shouldClip(100, 150))
+            assertTrue(shouldClip(50, 100))
+            assertTrue(shouldClip(150, 100))
+            assertFalse(shouldClip(100, 100))
+            assertFalse(shouldClip(50, 50))
+            assertFalse(shouldClip(150, 150))
         }
 
         Resize(100, 100, EXACTLY).apply {
-            Assert.assertTrue(shouldClip(100, 50))
-            Assert.assertTrue(shouldClip(100, 150))
-            Assert.assertTrue(shouldClip(50, 100))
-            Assert.assertTrue(shouldClip(150, 100))
-            Assert.assertFalse(shouldClip(100, 100))
-            Assert.assertTrue(shouldClip(50, 50))
-            Assert.assertTrue(shouldClip(150, 150))
+            assertTrue(shouldClip(100, 50))
+            assertTrue(shouldClip(100, 150))
+            assertTrue(shouldClip(50, 100))
+            assertTrue(shouldClip(150, 100))
+            assertFalse(shouldClip(100, 100))
+            assertTrue(shouldClip(50, 50))
+            assertTrue(shouldClip(150, 150))
         }
     }
 

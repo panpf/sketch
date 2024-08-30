@@ -21,10 +21,20 @@ import com.github.panpf.sketch.cache.ComposeBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.painter.toLogString
 
+/**
+ * Convert [ComposeBitmap] to [Image]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapImageTest.testAsSketchImage
+ */
 fun ComposeBitmap.asSketchImage(shareable: Boolean = true): ComposeBitmapImage {
     return ComposeBitmapImage(this, shareable)
 }
 
+/**
+ * ComposeBitmap Image
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapImageTest
+ */
 @Stable
 data class ComposeBitmapImage(
     val bitmap: ComposeBitmap,

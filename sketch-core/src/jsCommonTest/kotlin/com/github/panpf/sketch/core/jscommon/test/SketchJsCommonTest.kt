@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.jscommon.test
 
+import kotlin.test.Test
+
 class SketchJsCommonTest {
-    // TODO test
+
+    @Test
+    fun testPlatformComponents() {
+        // TODO
+    }
 }

@@ -19,6 +19,11 @@ package com.github.panpf.sketch.resize
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
+/**
+ * Creates a precision decider using the specified precision
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.PrecisionDeciderTest.testCreateFunction
+ */
 fun PrecisionDecider(precision: Precision): PrecisionDecider {
     return FixedPrecisionDecider(precision)
 }
@@ -38,6 +43,8 @@ interface PrecisionDecider : Key {
 
 /**
  * Always return specified precision
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.PrecisionDeciderTest
  */
 data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDecider {
 
@@ -57,6 +64,8 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
  * The long image uses the specified precision, use the '[Precision.LESS_PIXELS]' for others.
  *
  * Note: The precision parameter can only be [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO].
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.PrecisionDeciderTest
  */
 class LongImagePrecisionDecider constructor(
     val longImage: Precision = Precision.SAME_ASPECT_RATIO,

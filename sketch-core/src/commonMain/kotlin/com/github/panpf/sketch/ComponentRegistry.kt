@@ -29,8 +29,21 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.util.requiredWorkThread
 
 /**
+ * Create a [ComponentRegistry] based on the [configBlock]
+ *
+ * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest.testFun
+ */
+fun ComponentRegistry(configBlock: (ComponentRegistry.Builder.() -> Unit)? = null): ComponentRegistry {
+    return ComponentRegistry.Builder().apply {
+        configBlock?.invoke(this)
+    }.build()
+}
+
+/**
  * Register components that are required to perform [ImageRequest] and can be extended,
  * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor]
+ *
+ * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest
  */
 open class ComponentRegistry private constructor(
     /**
@@ -248,8 +261,18 @@ open class ComponentRegistry private constructor(
     }
 }
 
+/**
+ * Check if the [ComponentRegistry] is not empty
+ *
+ * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest.testIsEmpty
+ */
 fun ComponentRegistry.isNotEmpty(): Boolean = !isEmpty()
 
+/**
+ * Merge two [ComponentRegistry]s
+ *
+ * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest.testMerged
+ */
 fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
     if (this == null || other == null) {
         return this ?: other
@@ -272,6 +295,8 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
 
 /**
  * Use with [ImageRequest] and the global [ComponentRegistry]
+ *
+ * @see com.github.panpf.sketch.core.common.test.ComponentsTest
  */
 class Components(private val sketch: Sketch, val registry: ComponentRegistry) {
 

@@ -22,6 +22,11 @@ import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isNotEmpty
 
+/**
+ * Resize the image while drawing
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ResizeOnDrawTest
+ */
 fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
     if (size?.isNotEmpty == true && request.resizeOnDraw == true) {
         val resizeOnDrawHelper = request.target?.getResizeOnDrawHelper()

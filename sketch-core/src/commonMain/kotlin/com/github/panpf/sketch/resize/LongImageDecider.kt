@@ -21,6 +21,11 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import kotlin.js.JsName
 
+/**
+ * Create a [LongImageDecider] instance
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.LongImageDeciderTest.testCreateFunction
+ */
 @JsName("newLongImageDecider")
 fun LongImageDecider(): LongImageDecider {
     return DefaultLongImageDecider()
@@ -39,6 +44,8 @@ interface LongImageDecider : Key {
 
 /**
  * Default [LongImageDecider] implementation
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.LongImageDeciderTest
  */
 open class DefaultLongImageDecider constructor(
     val sameDirectionMultiple: Float = 2.5f,

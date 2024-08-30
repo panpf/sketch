@@ -19,4 +19,9 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.KtorStack
 
+/**
+ * Provides the default HttpStack for the non-JVM platform
+ *
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.SketchNonJvmTest.testDefaultHttpStack
+ */
 internal actual fun defaultHttpStack(): HttpStack = KtorStack()

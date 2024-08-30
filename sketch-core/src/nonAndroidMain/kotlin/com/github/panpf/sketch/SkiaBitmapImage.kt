@@ -25,8 +25,18 @@ import com.github.panpf.sketch.util.readIntPixels
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
 
+/**
+ * Convert [SkiaBitmap] to [Image]
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest.testAsSketchImage
+ */
 fun SkiaBitmap.asSketchImage(): SkiaBitmapImage = SkiaBitmapImage(this)
 
+/**
+ * SkiaBitmap Image
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest
+ */
 data class SkiaBitmapImage(
     val bitmap: SkiaBitmap,
     override val shareable: Boolean = true
@@ -53,6 +63,11 @@ data class SkiaBitmapImage(
         "SkiaBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
 }
 
+/**
+ * SkiaBitmap Image Transformer
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest.testSkiaBitmapImageTransformer
+ */
 class SkiaBitmapImageTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {

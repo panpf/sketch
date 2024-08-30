@@ -18,6 +18,11 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.decode.SkiaDecoder
 
+/**
+ * Js platform related components
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest.testPlatformComponents
+ */
 internal actual fun platformComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addDecoder(SkiaDecoder.Factory())

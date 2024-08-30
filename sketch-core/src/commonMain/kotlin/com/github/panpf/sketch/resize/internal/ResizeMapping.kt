@@ -29,6 +29,11 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import kotlin.math.roundToInt
 
+/**
+ * Mapping relationship between the original image and the resized image
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.internal.ResizeMappingTest.testResizeMapping
+ */
 data class ResizeMapping constructor(
     val srcRect: Rect,
     val destRect: Rect
@@ -37,6 +42,11 @@ data class ResizeMapping constructor(
     val newHeight: Int = destRect.height()
 }
 
+/**
+ * Calculate the mapping relationship between the original image and the resized image
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.internal.ResizeMappingTest
+ */
 fun calculateResizeMapping(
     imageSize: Size,
     resizeSize: Size,
@@ -154,6 +164,11 @@ fun calculateResizeMapping(
     }
 }
 
+/**
+ * Calculate the mapping relationship between the original image and the resized image
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.internal.ResizeMappingTest
+ */
 fun calculateResizeMapping(
     imageWidth: Int,
     imageHeight: Int,

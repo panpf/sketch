@@ -16,6 +16,20 @@
 
 package com.github.panpf.sketch
 
+/**
+ * Represents a platform-specific context that acts as an interface to
+ * global information about an application environment.
+ *
+ * @see com.github.panpf.sketch.core.android.test.PlatformContextAndroidTest.testPlatformContext
+ * @see com.github.panpf.sketch.core.nonandroid.test.PlatformContextNonAndroidTest.testPlatformContext
+ */
 expect abstract class PlatformContext
 
+/**
+ * Check that the platform context is as expected
+ *
+ * @see com.github.panpf.sketch.core.android.test.PlatformContextAndroidTest.testCheckPlatformContext
+ * @see com.github.panpf.sketch.core.nonandroid.test.PlatformContextNonAndroidTest.testCheckPlatformContext
+ * @see
+ */
 expect fun checkPlatformContext(context: PlatformContext)

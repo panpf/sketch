@@ -21,6 +21,11 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 
+/**
+ * Create a ScaleDecider that always returns the specified precision
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ScaleDeciderTest.testCreateFunction
+ */
 fun ScaleDecider(scale: Scale): ScaleDecider {
     return FixedScaleDecider(scale)
 }
@@ -39,6 +44,8 @@ interface ScaleDecider : Key {
 
 /**
  * Always return specified precision
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ScaleDeciderTest
  */
 data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 
@@ -56,6 +63,8 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 
 /**
  * Use different Scales for long and non-long images
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.ScaleDeciderTest
  */
 class LongImageScaleDecider constructor(
     val longImage: Scale = START_CROP,

@@ -1,7 +1,6 @@
-package com.github.panpf.sketch.core.android.test.drawable
+package com.github.panpf.sketch.core.android.test.resize
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asDrawableOrThrow
@@ -11,7 +10,7 @@ import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
@@ -26,7 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ResizeOnDrawTest {
+class ResizeOnDrawAndroidTest {
 
     @Test
     fun testResizeOnDraw() = runTest {
@@ -36,7 +35,8 @@ class ResizeOnDrawTest {
         val imageView = activity.imageView
 
         val imageUri = ResourceImages.jpeg.uri
-        val bitmapDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
+        val bitmapDrawable =
+            BitmapDrawable(resources, Bitmap.createBitmap(100, 200, Bitmap.Config.RGB_565))
 
         val request = ImageRequest(imageView, imageUri)
         val bitmapDrawableImage = bitmapDrawable.asSketchImage()
@@ -53,7 +53,7 @@ class ResizeOnDrawTest {
         )
         val request2 = ImageRequest(imageView, imageUri) {
             size(500, 300)
-            precision(EXACTLY)
+            precision(Precision.EXACTLY)
         }
         Assert.assertSame(
             bitmapDrawable,
@@ -64,7 +64,7 @@ class ResizeOnDrawTest {
         val request3 = ImageRequest(imageView, imageUri) {
             resizeOnDraw(true)
             size(500, 300)
-            precision(EXACTLY)
+            precision(Precision.EXACTLY)
         }
         bitmapDrawableImage
             .resizeOnDraw(request3, request3.toRequestContext(sketch).size)

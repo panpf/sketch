@@ -73,6 +73,14 @@ import okio.FileSystem
  *
  * Sketch is designed to be sharable and works best when the same instance is used throughout the
  * application via the built-in extension function `Context.sketch`
+ *
+ * @see com.github.panpf.sketch.core.common.test.SketchTest
+ * @see com.github.panpf.sketch.core.android.test.SketchAndroidTest
+ * @see com.github.panpf.sketch.core.desktop.test.SketchDesktopTest
+ * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest
+ * @see com.github.panpf.sketch.core.ios.test.SketchIosTest
+ * @see com.github.panpf.sketch.core.jvmcommon.test.SketchJvmTest
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.SketchNonJvmTest
  */
 class Sketch private constructor(options: Options) {
 
@@ -454,10 +462,21 @@ class Sketch private constructor(options: Options) {
     }
 }
 
+/**
+ * Provide platform-related components
+ *
+ * @see com.github.panpf.sketch.core.android.test.SketchAndroidTest.testPlatformComponents
+ * @see com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testPlatformComponents
+ * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest.testPlatformComponents
+ * @see com.github.panpf.sketch.core.ios.test.SketchIosTest.testPlatformComponents
+ */
 internal expect fun platformComponents(): ComponentRegistry
 
-internal expect fun defaultHttpStack(): HttpStack
-
+/**
+ * Provide components applicable to all platforms
+ *
+ * @see com.github.panpf.sketch.core.common.test.SketchTest.testDefaultComponents
+ */
 internal fun defaultComponents(): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
         addFetcher(HttpUriFetcher.Factory())
@@ -472,3 +491,11 @@ internal fun defaultComponents(): ComponentRegistry {
         addDecodeInterceptor(EngineDecodeInterceptor())
     }.build()
 }
+
+/**
+ * Provide a default [HttpStack] for network requests
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.SketchJvmTest.testDefaultHttpStack
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.SketchNonJvmTest.testDefaultHttpStack
+ */
+internal expect fun defaultHttpStack(): HttpStack

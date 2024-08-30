@@ -25,28 +25,58 @@ import com.github.panpf.sketch.drawable.toLogString
 import com.github.panpf.sketch.drawable.widthWithBitmapFirst
 import com.github.panpf.sketch.util.allocationByteCountCompat
 
+/**
+ * Convert [Drawable] to [Image]
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest.testAsSketchImage
+ */
 fun Drawable.asSketchImage(shareable: Boolean = this !is Animatable): AndroidDrawableImage {
     return AndroidDrawableImage(this, shareable)
 }
 
+/**
+ * Convert [Image] to [Drawable], if the conversion fails, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest.testGetDrawableOrNull
+ */
 fun Image.getDrawableOrNull(): Drawable? = when (this) {
     is AndroidBitmapImage -> null
     is AndroidDrawableImage -> drawable
     else -> null
 }
 
+/**
+ * Convert [Image] to [Drawable], if the conversion fails, throw an exception
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest.testGetDrawableOrThrow
+ */
 fun Image.getDrawableOrThrow(): Drawable = getDrawableOrNull()
     ?: throw IllegalArgumentException("Unable to get Drawable from Image '$this'")
 
+/**
+ * Convert [Image] to [Drawable], if the conversion fails, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest.testAsDrawableOrNull
+ */
 fun Image.asDrawableOrNull(): Drawable? = when (this) {
     is AndroidBitmapImage -> BitmapDrawable(resources, bitmap)
     is AndroidDrawableImage -> drawable
     else -> null
 }
 
+/**
+ * Convert [Image] to [Drawable], if the conversion fails, throw an exception
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest.testAsDrawableOrThrow
+ */
 fun Image.asDrawableOrThrow(): Drawable = asDrawableOrNull()
     ?: throw IllegalArgumentException("'$this' can't be converted to Drawable")
 
+/**
+ * Android Drawable Image
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest
+ */
 data class AndroidDrawableImage internal constructor(
     val drawable: Drawable,
     override val shareable: Boolean = drawable !is Animatable

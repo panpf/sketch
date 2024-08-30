@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.nonjvmcommon.test
 
+import kotlin.test.Test
+
 class SketchNonJvmTest {
-    // TODO test
+
+    @Test
+    fun testDefaultHttpStack() {
+        // TODO test
+    }
 }
