@@ -315,6 +315,7 @@ class AsyncImageState internal constructor(
         }
     }
 
+    // TODO Go out independently for easy testing
     private inner class AsyncImageTarget : GenericComposeTarget() {
 
         override var painter: Painter?

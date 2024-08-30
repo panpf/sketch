@@ -50,11 +50,9 @@ class CrossfadeTransition(transition: Transition) : Transition by transition {
         ): Transition? {
             val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE
             if (!alwaysUse && fromMemoryCache) return null
-            val targetCrossfadeTransitionFactory =
-                target.getCrossfadeTransition(this)
+            val targetCrossfadeTransitionFactory = target.convertTransition(this) ?: return null
             val targetCrossfadeTransition = targetCrossfadeTransitionFactory
-                ?.create(requestContext, target, result)
-                ?: return null
+                .create(requestContext, target, result) ?: return null
             return CrossfadeTransition(targetCrossfadeTransition)
         }
 

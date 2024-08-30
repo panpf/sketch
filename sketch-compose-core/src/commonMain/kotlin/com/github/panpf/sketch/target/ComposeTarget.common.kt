@@ -55,13 +55,16 @@ interface ComposeTarget : Target {
         return ComposeResizeOnDrawHelper
     }
 
-    override fun getCrossfadeTransition(factory: CrossfadeTransition.Factory): Transition.Factory? {
-        return ComposeCrossfadeTransition.Factory(
-            durationMillis = factory.durationMillis,
-            fadeStart = factory.fadeStart,
-            preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
-            alwaysUse = factory.alwaysUse,
-        )
+    override fun convertTransition(factory: Transition.Factory): Transition.Factory? {
+        if (factory is CrossfadeTransition.Factory) {
+            return ComposeCrossfadeTransition.Factory(
+                durationMillis = factory.durationMillis,
+                fadeStart = factory.fadeStart,
+                preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
+                alwaysUse = factory.alwaysUse,
+            )
+        }
+        return null
     }
 
     override fun getComponents(): ComponentRegistry? = ComponentRegistry.Builder().apply {

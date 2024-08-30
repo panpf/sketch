@@ -86,13 +86,16 @@ interface ViewTarget<T : View> : Target {
 
     override fun getResizeOnDrawHelper(): ResizeOnDrawHelper? = ViewResizeOnDrawHelper
 
-    override fun getCrossfadeTransition(factory: CrossfadeTransition.Factory): Transition.Factory? {
-        return ViewCrossfadeTransition.Factory(
-            durationMillis = factory.durationMillis,
-            fadeStart = factory.fadeStart,
-            preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
-            alwaysUse = factory.alwaysUse,
-        )
+    override fun convertTransition(factory: Transition.Factory): Transition.Factory? {
+        if (factory is CrossfadeTransition.Factory) {
+            return ViewCrossfadeTransition.Factory(
+                durationMillis = factory.durationMillis,
+                fadeStart = factory.fadeStart,
+                preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
+                alwaysUse = factory.alwaysUse,
+            )
+        }
+        return null
     }
 
     override fun getImageOptions(): ImageOptions? =

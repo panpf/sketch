@@ -36,16 +36,35 @@ import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 
 /**
- * A listener that accepts the result of an image request.
+ * [Target] is mainly used to display [Image].
+ *
+ * [Target] can also provide [RequestManager], [RequestDelegate], [Listener], [ProgressListener],
+ * [LifecycleResolver], [SizeResolver], [ScaleDecider], [ResizeOnDrawHelper], [CrossfadeTransition]
+ * related to [Target] when building the request, [ImageOptions], [ComponentRegistry] and other configurations
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.target.GenericComposeTargetTest
+ * @see com.github.panpf.sketch.view.core.test.target.GenericViewTargetTest
+ * @see com.github.panpf.sketch.view.core.test.target.RemoteViewsTargetTest
  */
 interface Target {
 
+    /**
+     * The current image displayed by the target.
+     *
+     * @see com.github.panpf.sketch.state.CurrentStateImage
+     */
     val currentImage: Image?
         get() = null
 
 
+    /**
+     * Get the [RequestManager] associated with the target.
+     */
     fun getRequestManager(): RequestManager? = null
 
+    /**
+     * Create a new [RequestDelegate] for the request.
+     */
     fun newRequestDelegate(
         sketch: Sketch,
         initialRequest: ImageRequest,
@@ -53,24 +72,52 @@ interface Target {
     ): RequestDelegate? = null
 
 
+    /**
+     * Get the [Listener] associated with the target.
+     */
     fun getListener(): Listener? = null
 
+    /**
+     * Get the [ProgressListener] associated with the target.
+     */
     fun getProgressListener(): ProgressListener? = null
 
+    /**
+     * Get the [LifecycleResolver] associated with the target.
+     */
     fun getLifecycleResolver(): LifecycleResolver? = null
 
 
+    /**
+     * Get the [SizeResolver] associated with the target.
+     */
     fun getSizeResolver(): SizeResolver? = null
 
+    /**
+     * Get the [ScaleDecider] associated with the target.
+     */
     fun getScaleDecider(): ScaleDecider? = null
 
+    /**
+     * Get the [ResizeOnDrawHelper] associated with the target.
+     */
     fun getResizeOnDrawHelper(): ResizeOnDrawHelper? = null
 
-    fun getCrossfadeTransition(factory: CrossfadeTransition.Factory): Transition.Factory? = null
-
+    /**
+     * Get the [ImageOptions] associated with the target.
+     */
     fun getImageOptions(): ImageOptions? = null
 
+    /**
+     * Get the [ComponentRegistry] associated with the target.
+     */
     fun getComponents(): ComponentRegistry? = null
+
+
+    /**
+     * Convert a generic [Transition.Factory] to a [Transition.Factory] appropriate for the current Target
+     */
+    fun convertTransition(factory: Transition.Factory): Transition.Factory? = null
 
 
     /**
