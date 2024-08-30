@@ -1,5 +1,5 @@
 [versions]
-android-plugin = "8.5.2"
+android-plugin = "8.6.0"
 androidx-activity = "1.9.0"
 androidx-annotation = "1.8.0"
 androidx-appcompat = "1.7.0"
@@ -44,7 +44,6 @@ mavenpublish = "0.29.0"
 moko-permissions = "0.18.0"
 okhttp3 = "4.12.0"
 okio = "3.9.0"
-
 
 panpf-assemblyadapter4 = "4.1.0"
 panpf-tools4a = "1.0.0"
