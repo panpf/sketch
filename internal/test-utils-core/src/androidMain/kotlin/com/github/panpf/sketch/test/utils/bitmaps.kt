@@ -19,6 +19,15 @@ package com.github.panpf.sketch.test.utils
 import android.graphics.Bitmap
 
 
+fun Bitmap.toSizeString(): String = "${width}x${height}"
+
+@Suppress("USELESS_ELVIS")
+val Bitmap.configOrNull: Bitmap.Config?
+    get() = config ?: null
+
+fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$configOrNull)"
+
+
 val Bitmap.cornerA: Int
     get() = getPixel(0, 0)
 val Bitmap.cornerB: Int
@@ -32,12 +41,4 @@ fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
     return block(this)
 }
 
-fun Bitmap.toSizeString(): String = "${width}x${height}"
-
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
-
-@Suppress("USELESS_ELVIS")
-val Bitmap.configOrNull: Bitmap.Config?
-    get() = config ?: null
-
-fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$configOrNull)"

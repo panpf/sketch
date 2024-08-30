@@ -31,6 +31,8 @@ internal expect fun blurTransformation(
 
 /**
  * Bitmap blur transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.BlurTransformationTest
  */
 class BlurTransformation constructor(
     /** Blur radius */
@@ -86,12 +88,27 @@ class BlurTransformation constructor(
     }
 }
 
+/**
+ * Create a blur transform record
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.BlurTransformationTest.testBlurTransformed
+ */
 fun createBlurTransformed(
     radius: Int, hasAlphaBitmapBgColor: Int?, maskColor: Int?
 ) = "BlurTransformed($radius,$hasAlphaBitmapBgColor,$maskColor)"
 
+/**
+ * Check if the transformed string is a blur transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.BlurTransformationTest.testBlurTransformed
+ */
 fun isBlurTransformed(transformed: String): Boolean =
     transformed.startsWith("BlurTransformed(")
 
+/**
+ * Get the blur transformation record from the transformed record list
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.BlurTransformationTest.testBlurTransformed
+ */
 fun List<String>.getBlurTransformed(): String? =
     find { isBlurTransformed(it) }

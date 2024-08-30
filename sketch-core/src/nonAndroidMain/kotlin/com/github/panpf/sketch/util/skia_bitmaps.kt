@@ -27,6 +27,7 @@ import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Image
+import org.jetbrains.skia.ImageInfo
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.RRect
 import kotlin.math.ceil
@@ -41,7 +42,7 @@ internal fun SkiaBitmap.copied(): SkiaBitmap {
     return outBitmap
 }
 
-internal fun SkiaBitmap.hasAlpha(): Boolean {
+fun SkiaBitmap.hasAlpha(): Boolean {
     val height = this.height
     val width = this.width
     var hasAlpha = false
@@ -258,6 +259,19 @@ internal fun SkiaBitmap.scaled(scaleFactor: Float): SkiaBitmap {
     return outBitmap
 }
 
+/**
+ * Returns the Color at the specified location.
+ */
+fun SkiaBitmap.getPixel(x: Int, y: Int): Int {
+    val bitmap = this
+    val stride = 1
+    val bytesPerPixel = 4
+    val colorInfo = bitmap.colorInfo
+    val imageInfo = ImageInfo(colorInfo, 1, 1)
+    val bytes = bitmap.readPixels(imageInfo, stride * bytesPerPixel, x, y)!!
+    val intColorPixels = convertToIntColorPixels(bytes, colorInfo.colorType)
+    return intColorPixels.first()
+}
 
 private fun convertToIntColorPixels(byteArray: ByteArray, colorType: ColorType): IntArray {
     return when (colorType) {
