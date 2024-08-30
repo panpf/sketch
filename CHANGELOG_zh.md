@@ -6,17 +6,17 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
-# new
+# 4.0.0-alpha08
 
 * fix: 修复 ComposableImageRequest() 和 ComposableImageOptions() 函数内部无法监听并更新 Compose State 的
   bug。 [#207](https://github.com/panpf/sketch/issues/207)
-* new: SkiaBitmapImage 现在支持内存缓存
 * remove: 移除 SkiaExifOrientationHelper
 * remove: DataSource 移除 sketch 和 request 属性
-* new: DataSource 新增 key 属性
 * change: DataSource 的 getFile() 和 getFileOrNull() 方法增加 Sketch 参数
 * change: DataSource 的 openSourceOrNull() 和 getFileOrNull() 方法现在以扩展函数的形式提供
 * change: RequestContext 移到 'com.github.panpf.sketch.request' 包下
+* new: SkiaBitmapImage 现在支持内存缓存
+* new: DataSource 新增 key 属性
 
 # 4.0.0-alpha07
 

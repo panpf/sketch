@@ -16,6 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class ContentDataSourceTest {
@@ -89,7 +90,7 @@ class ContentDataSourceTest {
             Assert.assertEquals("/sdcard/error.jpeg", file.toFile().path)
         }
 
-        assertThrow(FileNotFoundException::class) {
+        assertThrow(IOException::class) {
             val errorContentUri1 = Uri.parse("content://fake/fake.jpeg")
             ContentDataSource(
                 context = sketch.context,

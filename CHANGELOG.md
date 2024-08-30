@@ -8,18 +8,18 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
-# new
+# 4.0.0-alpha08
 
 * fix: Fixed the bug that the ComposableImageRequest() and ComposableImageOptions() functions cannot
   listen and update the Compose State. [#207](https://github.com/panpf/sketch/issues/207)
-* new: SkiaBitmapImage now supports memory caching
 * remove: Remove SkiaExifOrientationHelper
 * remove: DataSource removes sketch and request attributes
-* new: DataSource adds key attribute
 * change: DataSource's getFile() and getFileOrNull() methods add Sketch parameters
 * change: DataSource's openSourceOrNull() and getFileOrNull() methods are now available as extension
   functions
 * change: RequestContext moved to 'com.github.panpf.sketch.request' package
+* new: SkiaBitmapImage now supports memory caching
+* new: DataSource adds key attribute
 
 # 4.0.0-alpha07
 
