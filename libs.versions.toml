@@ -36,7 +36,8 @@ kotlinx-cover = "0.8.3"
 kotlinx-datetime = "0.6.1"
 kotlinx-serialization-json = "1.7.0"
 ktor = "2.3.11"
-ktor-wasm = "3.0.0-wasm2"   # TODO Currently only versions with the '-wasm2' suffix support wasm
+ktor-wasm = "3.0.0-wasm2"   # TODO ktor 3.0.0-beta02 released, support wasm
+# TODO kotlinx-io
 
 leakcanary = "2.14"
 mavenpublish = "0.29.0"
