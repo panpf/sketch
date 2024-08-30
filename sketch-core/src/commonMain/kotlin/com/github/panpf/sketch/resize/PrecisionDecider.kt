@@ -32,8 +32,6 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
  */
 interface PrecisionDecider : Key {
 
-    override val key: String
-
     fun get(imageSize: Size, targetSize: Size): Precision
 }
 

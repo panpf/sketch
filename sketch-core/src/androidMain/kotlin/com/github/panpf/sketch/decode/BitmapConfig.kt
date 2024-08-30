@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import com.github.panpf.sketch.decode.BitmapConfig.FixedBitmapConfig
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.util.Key
 
 /**
  * Build a [BitmapConfig] with the specified [config]
@@ -30,9 +31,7 @@ fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedBitmapConfig(config
 /**
  * Adapt the appropriate [Bitmap.Config] according to the mimeType and set it to the [BitmapFactory.Options.inPreferredConfig] parameter
  */
-sealed interface BitmapConfig {
-
-    val key: String
+sealed interface BitmapConfig : Key {
 
     val value: String
 

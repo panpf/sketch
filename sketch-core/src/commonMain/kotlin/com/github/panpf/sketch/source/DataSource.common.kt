@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.Key
 import okio.IOException
 import okio.Path
 import okio.Source
@@ -24,9 +25,7 @@ import okio.Source
 /**
  * Provides access to the image data.
  */
-interface DataSource {
-
-    val key: String
+interface DataSource : Key {
 
     val dataFrom: DataFrom
 

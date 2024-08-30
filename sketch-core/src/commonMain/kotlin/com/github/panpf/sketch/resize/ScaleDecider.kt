@@ -34,8 +34,6 @@ fun ScaleDecider(scale: Scale): ScaleDecider {
  */
 interface ScaleDecider : Key {
 
-    override val key: String
-
     fun get(imageSize: Size, targetSize: Size): Scale
 }
 

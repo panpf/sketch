@@ -35,8 +35,6 @@ fun SizeResolver(width: Int, height: Int): SizeResolver = FixedSizeResolver(widt
  */
 interface SizeResolver : Key {
 
-    override val key: String
-
     /** Return the [Size] that the image should be loaded at. */
     @MainThread
     suspend fun size(): Size

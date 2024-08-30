@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.resize
 
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 
@@ -30,7 +31,7 @@ data class Resize constructor(
      * Works only when precision is [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO]
      */
     val scale: Scale,
-) {
+) : Key {
 
     constructor(width: Int, height: Int, precision: Precision, scale: Scale)
             : this(Size(width, height), precision, scale)
@@ -44,7 +45,7 @@ data class Resize constructor(
     constructor(width: Int, height: Int, scale: Scale)
             : this(width, height, Precision.LESS_PIXELS, scale)
 
-    val key: String by lazy {
+    override val key: String by lazy {
         "Resize(${size},${precision},${scale})"
     }
 

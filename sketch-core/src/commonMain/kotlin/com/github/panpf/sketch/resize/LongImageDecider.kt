@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.resize
 
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import kotlin.js.JsName
@@ -28,9 +29,7 @@ fun LongImageDecider(): LongImageDecider {
 /**
  * Determine whether it is a long image given the image size and target size
  */
-interface LongImageDecider {
-
-    val key: String
+interface LongImageDecider : Key {
 
     /**
      * Determine whether it is a long image given the image size and target size
