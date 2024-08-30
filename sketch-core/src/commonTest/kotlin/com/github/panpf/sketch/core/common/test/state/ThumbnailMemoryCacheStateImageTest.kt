@@ -14,41 +14,71 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.state
+package com.github.panpf.sketch.core.common.test.state
 
-import android.graphics.Color
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.FakeImage
+import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
+import com.github.panpf.sketch.util.SketchSize
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
-@RunWith(AndroidJUnit4::class)
 class ThumbnailMemoryCacheStateImageTest {
 
     @Test
-    fun testGetDrawable() = runTest {
+    fun testKey() {
+        val context = getTestContext()
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val uri = request.uri.toString()
+
+        val defaultImage = FakeStateImage()
+        ThumbnailMemoryCacheStateImage(uri, defaultImage).apply {
+            assertEquals(
+                "ThumbnailMemoryCacheStateImage(uri='$uri',defaultImage=$defaultImage)",
+                key
+            )
+        }
+        val defaultImage1 = FakeStateImage(FakeImage(SketchSize(200, 200)))
+        ThumbnailMemoryCacheStateImage(uri, defaultImage1).apply {
+            assertEquals(
+                "ThumbnailMemoryCacheStateImage(uri='$uri',defaultImage=$defaultImage1)",
+                key
+            )
+        }
+        ThumbnailMemoryCacheStateImage(null, null).apply {
+            assertEquals(
+                "ThumbnailMemoryCacheStateImage(uri='null',defaultImage=null)",
+                key
+            )
+        }
+    }
+
+    @Test
+    fun testGetImage() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val memoryCache = sketch.memoryCache
         memoryCache.clear()
-        Assert.assertEquals(0, memoryCache.keys().size)
+        assertEquals(0, memoryCache.keys().size)
 
         val requests1 = arrayOf(
             ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -87,108 +117,108 @@ class ThumbnailMemoryCacheStateImageTest {
             },
         )
 
-        Assert.assertEquals(
+        assertEquals(
             6,
             requests1.map { it.toRequestContext(sketch).memoryCacheKey }
                 .plus(requests2.map { it.toRequestContext(sketch).memoryCacheKey }).distinct().size
         )
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             val inexactlyStateImage = ThumbnailMemoryCacheStateImage()
             val inexactlyStateImage1 = ThumbnailMemoryCacheStateImage(requests1[0].uri.toString())
             val inexactlyStateImage2 = ThumbnailMemoryCacheStateImage(requests2[0].uri.toString())
 
-            Assert.assertEquals(0, memoryCache.keys().size)
+            assertEquals(0, memoryCache.keys().size)
             requests1.plus(requests2).forEach { request ->
-                Assert.assertNull(
+                assertNull(
+                    memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                     request.toRequestContext(sketch).memoryCacheKey,
-                    memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                 )
             }
             requests1.plus(requests2).forEach { request ->
-                Assert.assertNull(
+                assertNull(
+                    inexactlyStateImage.getImage(sketch, request, null),
                     request.toRequestContext(sketch).memoryCacheKey,
-                    inexactlyStateImage.getImage(sketch, request, null)
                 )
-                Assert.assertNull(
+                assertNull(
+                    inexactlyStateImage1.getImage(sketch, request, null),
                     request.toRequestContext(sketch).memoryCacheKey,
-                    inexactlyStateImage1.getImage(sketch, request, null)
                 )
-                Assert.assertNull(
+                assertNull(
+                    inexactlyStateImage2.getImage(sketch, request, null),
                     request.toRequestContext(sketch).memoryCacheKey,
-                    inexactlyStateImage2.getImage(sketch, request, null)
                 )
             }
 
             val testRequests1: suspend (Int) -> Unit = { loadIndex ->
                 memoryCache.clear()
-                Assert.assertEquals(0, memoryCache.keys().size)
+                assertEquals(0, memoryCache.keys().size)
                 sketch.enqueue(requests1[loadIndex]).job.await()
-                Assert.assertEquals(1, memoryCache.keys().size)
+                assertEquals(1, memoryCache.keys().size)
                 requests1.forEachIndexed { index, request ->
                     if (index == loadIndex) {
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                             request.toRequestContext(sketch).memoryCacheKey,
-                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     } else {
-                        Assert.assertNull(
+                        assertNull(
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                             request.toRequestContext(sketch).memoryCacheKey,
-                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     }
                 }
                 requests2.forEach { request ->
-                    Assert.assertNull(
+                    assertNull(
+                        memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                         request.toRequestContext(sketch).memoryCacheKey,
-                        memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                     )
                 }
                 requests1.forEach { request ->
                     if (loadIndex == 0) {
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            inexactlyStateImage.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage.getImage(sketch, request, null)
                         )
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            inexactlyStateImage1.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage1.getImage(sketch, request, null)
                         )
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage2.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     } else {
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage.getImage(sketch, request, null)
                         )
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage1.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage1.getImage(sketch, request, null)
                         )
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage2.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     }
                 }
                 requests2.forEach { request ->
-                    Assert.assertNull(inexactlyStateImage.getImage(sketch, request, null))
+                    assertNull(inexactlyStateImage.getImage(sketch, request, null))
                     if (loadIndex == 0) {
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            inexactlyStateImage1.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage1.getImage(sketch, request, null)
                         )
                     } else {
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage1.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage1.getImage(sketch, request, null)
                         )
                     }
-                    Assert.assertNull(
+                    assertNull(
+                        inexactlyStateImage2.getImage(sketch, request, null),
                         request.toRequestContext(sketch).memoryCacheKey,
-                        inexactlyStateImage2.getImage(sketch, request, null)
                     )
                 }
             }
@@ -198,72 +228,72 @@ class ThumbnailMemoryCacheStateImageTest {
 
             val testRequests2: suspend (Int) -> Unit = { loadIndex ->
                 memoryCache.clear()
-                Assert.assertEquals(0, memoryCache.keys().size)
+                assertEquals(0, memoryCache.keys().size)
                 sketch.enqueue(requests2[loadIndex]).job.await()
-                Assert.assertEquals(1, memoryCache.keys().size)
+                assertEquals(1, memoryCache.keys().size)
                 requests1.forEach { request ->
-                    Assert.assertNull(
+                    assertNull(
+                        memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                         request.toRequestContext(sketch).memoryCacheKey,
-                        memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                     )
                 }
                 requests2.forEachIndexed { index, request ->
                     if (index == loadIndex) {
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                             request.toRequestContext(sketch).memoryCacheKey,
-                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     } else {
-                        Assert.assertNull(
+                        assertNull(
+                            memoryCache[request.toRequestContext(sketch).memoryCacheKey],
                             request.toRequestContext(sketch).memoryCacheKey,
-                            memoryCache[request.toRequestContext(sketch).memoryCacheKey]
                         )
                     }
                 }
                 requests1.forEach { request ->
-                    Assert.assertNull(inexactlyStateImage.getImage(sketch, request, null))
-                    Assert.assertNull(
+                    assertNull(inexactlyStateImage.getImage(sketch, request, null))
+                    assertNull(
+                        inexactlyStateImage1.getImage(sketch, request, null),
                         request.toRequestContext(sketch).memoryCacheKey,
-                        inexactlyStateImage1.getImage(sketch, request, null)
                     )
                     if (loadIndex == 0) {
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            inexactlyStateImage2.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     } else {
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage2.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     }
                 }
                 requests2.forEach { request ->
                     if (loadIndex == 0) {
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            inexactlyStateImage.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage.getImage(sketch, request, null)
                         )
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage1.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage1.getImage(sketch, request, null)
                         )
-                        Assert.assertNotNull(
+                        assertNotNull(
+                            inexactlyStateImage2.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     } else {
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage.getImage(sketch, request, null)
                         )
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage1.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage1.getImage(sketch, request, null)
                         )
-                        Assert.assertNull(
+                        assertNull(
+                            inexactlyStateImage2.getImage(sketch, request, null),
                             request.toRequestContext(sketch).memoryCacheKey,
-                            inexactlyStateImage2.getImage(sketch, request, null)
                         )
                     }
                 }
@@ -273,37 +303,37 @@ class ThumbnailMemoryCacheStateImageTest {
             testRequests2(2)
 
             memoryCache.clear()
-            Assert.assertEquals(0, memoryCache.keys().size)
+            assertEquals(0, memoryCache.keys().size)
             sketch.enqueue(requests1[0]).job.await()
             sketch.enqueue(requests2[0]).job.await()
-            Assert.assertEquals(2, memoryCache.keys().size)
+            assertEquals(2, memoryCache.keys().size)
             requests1.forEachIndexed { index, request ->
                 if (index == 0) {
-                    Assert.assertNotNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
+                    assertNotNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 } else {
-                    Assert.assertNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
+                    assertNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 }
             }
             requests2.forEachIndexed { index, request ->
                 if (index == 0) {
-                    Assert.assertNotNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
+                    assertNotNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 } else {
-                    Assert.assertNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
+                    assertNull(memoryCache[request.toRequestContext(sketch).memoryCacheKey])
                 }
             }
             requests1.forEach { request ->
-                Assert.assertNotNull(inexactlyStateImage.getImage(sketch, request, null))
-                Assert.assertNotNull(inexactlyStateImage1.getImage(sketch, request, null))
-                Assert.assertNotNull(inexactlyStateImage2.getImage(sketch, request, null))
+                assertNotNull(inexactlyStateImage.getImage(sketch, request, null))
+                assertNotNull(inexactlyStateImage1.getImage(sketch, request, null))
+                assertNotNull(inexactlyStateImage2.getImage(sketch, request, null))
             }
             requests2.forEach { request ->
-                Assert.assertNotNull(inexactlyStateImage.getImage(sketch, request, null))
-                Assert.assertNotNull(inexactlyStateImage1.getImage(sketch, request, null))
-                Assert.assertNotNull(inexactlyStateImage2.getImage(sketch, request, null))
+                assertNotNull(inexactlyStateImage.getImage(sketch, request, null))
+                assertNotNull(inexactlyStateImage1.getImage(sketch, request, null))
+                assertNotNull(inexactlyStateImage2.getImage(sketch, request, null))
             }
 
             memoryCache.clear()
-            Assert.assertEquals(0, memoryCache.keys().size)
+            assertEquals(0, memoryCache.keys().size)
             sketch.enqueue(requests1[1]).job.await()
             sketch.enqueue(requests1[2]).job.await()
             sketch.enqueue(requests1[2].newRequest {
@@ -312,87 +342,90 @@ class ThumbnailMemoryCacheStateImageTest {
             sketch.enqueue(requests1[2].newRequest {
                 transformations(listOf(RotateTransformation(90)))
             }).job.await()
-            Assert.assertNull(inexactlyStateImage.getImage(sketch, requests1[0], null))
+            assertNull(inexactlyStateImage.getImage(sketch, requests1[0], null))
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
         val element1 =
-            ThumbnailMemoryCacheStateImage("uri1", IntColorDrawableStateImage(Color.BLUE))
+            ThumbnailMemoryCacheStateImage("uri1", FakeStateImage())
         val element11 =
-            ThumbnailMemoryCacheStateImage("uri1", IntColorDrawableStateImage(Color.BLUE))
+            ThumbnailMemoryCacheStateImage("uri1", FakeStateImage())
         val element2 =
-            ThumbnailMemoryCacheStateImage("uri1", IntColorDrawableStateImage(Color.GREEN))
+            ThumbnailMemoryCacheStateImage("uri1", FakeStateImage(FakeImage(SketchSize(200, 200))))
         val element3 =
-            ThumbnailMemoryCacheStateImage("uri2", IntColorDrawableStateImage(Color.BLUE))
-        val element4 = ThumbnailMemoryCacheStateImage(null, IntColorDrawableStateImage(Color.BLUE))
+            ThumbnailMemoryCacheStateImage("uri2", FakeStateImage(FakeImage(SketchSize(300, 300))))
+        val element4 =
+            ThumbnailMemoryCacheStateImage(null, FakeStateImage(FakeImage(SketchSize(400, 400))))
         val element5 = ThumbnailMemoryCacheStateImage("uri1", null)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element1, element4)
-        Assert.assertNotSame(element1, element5)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
-        Assert.assertNotSame(element2, element4)
-        Assert.assertNotSame(element2, element5)
-        Assert.assertNotSame(element3, element4)
-        Assert.assertNotSame(element3, element5)
-        Assert.assertNotSame(element4, element5)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element1, element4)
+        assertNotSame(element1, element5)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
+        assertNotSame(element2, element4)
+        assertNotSame(element2, element5)
+        assertNotSame(element3, element4)
+        assertNotSame(element3, element5)
+        assertNotSame(element4, element5)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element1, element4)
-        Assert.assertNotEquals(element1, element5)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element2, element4)
-        Assert.assertNotEquals(element2, element5)
-        Assert.assertNotEquals(element3, element4)
-        Assert.assertNotEquals(element3, element5)
-        Assert.assertNotEquals(element4, element5)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element4, element5)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element5.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element5.hashCode())
-        Assert.assertNotEquals(element3.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element3.hashCode(), element5.hashCode())
-        Assert.assertNotEquals(element4.hashCode(), element5.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
     }
 
     @Test
     fun testToString() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+        val context = getTestContext()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
         val uri = request.uri.toString()
 
-        ThumbnailMemoryCacheStateImage(uri, IntColorDrawableStateImage(Color.BLUE)).apply {
-            Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=ColorDrawableStateImage(IntColor(${Color.BLUE})))",
+        val defaultImage = FakeStateImage()
+        ThumbnailMemoryCacheStateImage(uri, defaultImage).apply {
+            assertEquals(
+                "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=$defaultImage)",
                 toString()
             )
         }
-        ThumbnailMemoryCacheStateImage(uri, IntColorDrawableStateImage(Color.GREEN)).apply {
-            Assert.assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=ColorDrawableStateImage(IntColor(${Color.GREEN})))",
+        val defaultImage1 = FakeStateImage(FakeImage(SketchSize(200, 200)))
+        ThumbnailMemoryCacheStateImage(uri, defaultImage1).apply {
+            assertEquals(
+                "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=$defaultImage1)",
                 toString()
             )
         }
         ThumbnailMemoryCacheStateImage(null, null).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ThumbnailMemoryCacheStateImage(uri='null', defaultImage=null)",
                 toString()
             )

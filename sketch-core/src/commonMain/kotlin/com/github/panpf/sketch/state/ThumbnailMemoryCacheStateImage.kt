@@ -29,6 +29,8 @@ import kotlin.math.abs
 /**
  * Find a Bitmap with the same aspect ratio and not modified by Transformation as a status image from memory
  * @param uri The uri of the image, if null use ImageRequest.uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.state.ThumbnailMemoryCacheStateImageTest
  */
 class ThumbnailMemoryCacheStateImage(
     val uri: String? = null,

@@ -27,7 +27,7 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
 import kotlinx.coroutines.Job
 
-class TestTarget : Target {
+class TestTarget(override val currentImage: Image? = null) : Target {
 
     var startImage: Image? = null
     var successImage: Image? = null

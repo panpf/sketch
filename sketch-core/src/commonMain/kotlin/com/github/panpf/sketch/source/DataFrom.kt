@@ -18,6 +18,8 @@ package com.github.panpf.sketch.source
 
 /**
  * Indicates the source of the data
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.DataFromTest
  */
 enum class DataFrom {
     NETWORK,

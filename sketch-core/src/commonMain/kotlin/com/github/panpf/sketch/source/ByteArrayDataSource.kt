@@ -25,6 +25,8 @@ import okio.Source
 
 /**
  * Provides access to byte array image data.
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.ByteArrayDataSourceTest
  */
 class ByteArrayDataSource constructor(
     val data: ByteArray,

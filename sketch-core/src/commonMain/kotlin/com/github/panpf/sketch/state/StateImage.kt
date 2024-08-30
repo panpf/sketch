@@ -30,5 +30,8 @@ import com.github.panpf.sketch.util.Key
  */
 interface StateImage : Key {
 
+    /**
+     * Get the [Image] to be displayed
+     */
     fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image?
 }

@@ -27,6 +27,8 @@ import okio.Source
 
 /**
  * Provides access to local file image data
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.FileDataSourceTest
  */
 class FileDataSource constructor(
     val path: Path,

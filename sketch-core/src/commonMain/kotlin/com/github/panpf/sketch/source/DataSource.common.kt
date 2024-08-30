@@ -24,23 +24,49 @@ import okio.Source
 
 /**
  * Provides access to the image data.
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.DataSourceTest
  */
 interface DataSource : Key {
 
+    /**
+     * Where the data comes from
+     */
     val dataFrom: DataFrom
 
+    /**
+     * Open the Source of the DataSource, throws an exception if an error occurs
+     */
     @Throws(IOException::class)
     fun openSource(): Source
 
+    /**
+     * Get the file of the DataSource, throws an exception if an error occurs
+     */
     @Throws(IOException::class)
     fun getFile(sketch: Sketch): Path
 }
 
+/**
+ * Open the Source of the DataSource, returns null if an exception occurs
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.DataSourceTest.testOpenSourceOrNull
+ */
 @Throws(IOException::class)
 fun DataSource.openSourceOrNull(): Source? = runCatching { openSource() }.getOrNull()
 
+/**
+ * Get the file of the DataSource, returns null if an exception occurs
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.DataSourceTest.testGetFileOrNull
+ */
 @Throws(IOException::class)
 fun DataSource.getFileOrNull(sketch: Sketch): Path? = runCatching { getFile(sketch) }.getOrNull()
 
+/**
+ * Get the cache file of the DataSource
+ *
+ * @see com.github.panpf.sketch.core.common.test.source.DataSourceTest.testCacheFile
+ */
 @Throws(IOException::class)
 expect fun DataSource.cacheFile(sketch: Sketch): Path

@@ -23,6 +23,8 @@ import com.github.panpf.sketch.state.ErrorStateImage.Builder
 
 /**
  * Create an ErrorStateImage
+ *
+ * @see com.github.panpf.sketch.core.common.test.state.ErrorStateImageTest.testFun
  */
 fun ErrorStateImage(
     defaultImage: StateImage? = null,
@@ -33,6 +35,8 @@ fun ErrorStateImage(
 
 /**
  * Provide Drawable specifically for error status, support custom [ErrorStateImage.Condition] Provide different Drawable according to different error types
+ *
+ * @see com.github.panpf.sketch.core.common.test.state.ErrorStateImageTest
  */
 class ErrorStateImage(
     val stateList: List<Pair<Condition, StateImage?>>
@@ -109,6 +113,5 @@ class ErrorStateImage(
     data object DefaultCondition : Condition {
 
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
-
     }
 }

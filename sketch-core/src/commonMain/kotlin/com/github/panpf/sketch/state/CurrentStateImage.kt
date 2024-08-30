@@ -22,6 +22,8 @@ import com.github.panpf.sketch.request.ImageRequest
 
 /**
  * Use current [Image] as the state [Image]
+ *
+ * @see com.github.panpf.sketch.core.common.test.state.CurrentStateImageTest
  */
 class CurrentStateImage(
     val defaultImage: StateImage? = null

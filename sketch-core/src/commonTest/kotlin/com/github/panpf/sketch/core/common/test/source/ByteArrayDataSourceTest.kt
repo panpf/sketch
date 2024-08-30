@@ -1,24 +1,21 @@
-package com.github.panpf.sketch.core.android.test.source
+package com.github.panpf.sketch.core.common.test.source
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.MEMORY
-import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.util.asOrThrow
 import okio.Closeable
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@RunWith(AndroidJUnit4::class)
 class ByteArrayDataSourceTest {
 
     @Test
     fun testConstructor() {
         ByteArrayDataSource(
             dataFrom = MEMORY,
-            data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
+            data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".encodeToByteArray()
         ).apply {
-            Assert.assertEquals(MEMORY, this.dataFrom)
+            assertEquals(MEMORY, this.dataFrom)
         }
     }
 
@@ -28,7 +25,7 @@ class ByteArrayDataSourceTest {
     fun testNewInputStream() {
         ByteArrayDataSource(
             dataFrom = MEMORY,
-            data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
+            data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".encodeToByteArray()
         ).apply {
             openSource().asOrThrow<Closeable>().close()
         }
@@ -38,12 +35,12 @@ class ByteArrayDataSourceTest {
 
     @Test
     fun testToString() {
-        val data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".toByteArray()
+        val data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".encodeToByteArray()
         ByteArrayDataSource(
             dataFrom = MEMORY,
             data = data
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ByteArrayDataSource(data=${data}, from=MEMORY)",
                 toString()
             )

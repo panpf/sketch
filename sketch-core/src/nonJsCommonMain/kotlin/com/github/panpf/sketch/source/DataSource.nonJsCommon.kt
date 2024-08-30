@@ -43,7 +43,7 @@ actual fun DataSource.cacheFile(sketch: Sketch): Path = runBlocking {
                 editor.commitAndOpenSnapshot()
             } catch (e: Throwable) {
                 editor.abort()
-                throw e
+                throw IOException("Error writing to cache", e)
             }
         }
     } ?: throw IOException("Disk cache cannot be used after edit")

@@ -22,6 +22,8 @@ import com.github.panpf.sketch.request.ImageRequest
 
 /**
  * Get a Bitmap from memory using the given memory cache key as a state Drawable, if not found, use defaultImage
+ *
+ * @see com.github.panpf.sketch.core.common.test.state.MemoryCacheStateImageTest
  */
 class MemoryCacheStateImage(
     val cacheKey: String?,

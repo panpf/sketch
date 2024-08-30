@@ -22,5 +22,5 @@ import okio.Path
 
 @Throws(IOException::class)
 actual fun DataSource.cacheFile(sketch: Sketch): Path {
-    throw UnsupportedOperationException("Disk cache is not supported in JS")
+    throw IOException("Disk cache is not supported in JS")
 }
