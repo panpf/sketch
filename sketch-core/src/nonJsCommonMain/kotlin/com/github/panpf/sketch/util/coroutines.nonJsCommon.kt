@@ -20,4 +20,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
+/**
+ * Get the IO coroutine dispatcher
+ *
+ * @see com.github.panpf.sketch.core.nonjscommon.test.util.CoroutinesNonJsCommonTest.testIoCoroutineDispatcher
+ */
 actual fun ioCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.IO

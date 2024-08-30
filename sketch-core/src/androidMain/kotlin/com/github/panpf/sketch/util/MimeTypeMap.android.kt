@@ -18,10 +18,20 @@ package com.github.panpf.sketch.util
 
 import android.webkit.MimeTypeMap
 
+/**
+ * A map of file extensions to MIME types.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformExtensionToMimeType
+ */
 internal actual fun platformExtensionToMimeType(extension: String): String? {
     return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 }
 
+/**
+ * A map of MIME types to file extensions.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformMimeTypeToExtension
+ */
 internal actual fun platformMimeTypeToExtension(mimeType: String): String? {
     return MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
 }

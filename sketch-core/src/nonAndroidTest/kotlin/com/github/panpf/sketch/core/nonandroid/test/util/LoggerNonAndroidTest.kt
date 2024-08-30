@@ -1,5 +1,16 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
+import kotlin.test.Test
+
 class LoggerNonAndroidTest {
-    // TODO test
+
+    @Test
+    fun testPlatformLogPipeline() {
+        // TODO test
+    }
+
+    @Test
+    fun testPrintLogPipeline() {
+        // TODO test
+    }
 }

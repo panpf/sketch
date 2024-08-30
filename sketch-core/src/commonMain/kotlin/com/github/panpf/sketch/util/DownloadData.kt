@@ -19,7 +19,19 @@ package com.github.panpf.sketch.util
 import okio.FileSystem
 import okio.Path
 
+/**
+ * Download data
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.DownloadDataTest
+ */
 sealed interface DownloadData {
+    /**
+     * Bytes type download results
+     */
     class Bytes(val bytes: ByteArray) : DownloadData
+
+    /**
+     * File type download results
+     */
     class Cache(val fileSystem: FileSystem, val path: Path) : DownloadData
 }

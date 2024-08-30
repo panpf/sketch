@@ -18,4 +18,10 @@ package com.github.panpf.sketch.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 
+/**
+ * Get the IO coroutine dispatcher
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoroutinesJsCommonTest.testIoCoroutineDispatcher
+ * @see com.github.panpf.sketch.core.nonjscommon.test.util.CoroutinesNonJsCommonTest.testIoCoroutineDispatcher
+ */
 expect fun ioCoroutineDispatcher(): CoroutineDispatcher

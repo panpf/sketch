@@ -14,87 +14,85 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.transform
+package com.github.panpf.sketch.core.common.test.transform
 
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.util.Size
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import org.jetbrains.skia.Color
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
-@RunWith(AndroidJUnit4::class)
 class CircleCropTransformationTest {
 
     @Test
     fun testConstructor() {
         CircleCropTransformation().apply {
-            Assert.assertEquals(null, scale)
+            assertEquals(null, scale)
         }
         CircleCropTransformation(Scale.START_CROP).apply {
-            Assert.assertEquals(Scale.START_CROP, scale)
+            assertEquals(Scale.START_CROP, scale)
         }
     }
 
     @Test
     fun testKeyAndToString() {
         CircleCropTransformation(Scale.CENTER_CROP).apply {
-            Assert.assertEquals("CircleCropTransformation(CENTER_CROP)", key)
-            Assert.assertEquals("CircleCropTransformation(CENTER_CROP)", toString())
+            assertEquals("CircleCropTransformation(CENTER_CROP)", key)
+            assertEquals("CircleCropTransformation(CENTER_CROP)", toString())
         }
         CircleCropTransformation(Scale.START_CROP).apply {
-            Assert.assertEquals("CircleCropTransformation(START_CROP)", key)
-            Assert.assertEquals("CircleCropTransformation(START_CROP)", toString())
+            assertEquals("CircleCropTransformation(START_CROP)", key)
+            assertEquals("CircleCropTransformation(START_CROP)", toString())
         }
     }
 
     @Test
-    fun testTransform() {
+    fun testTransform() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            size(Size.Origin)
+        }
+        val requestContext = request.toRequestContext(sketch)
 
-        val inBitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
-            BitmapFactory.decodeStream(it)
-        }.apply {
-            Assert.assertNotEquals(
+        val inBitmap = request.decode(sketch).image.apply {
+            assertNotEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 this.corners()
             )
-            Assert.assertEquals(
+            assertEquals(
                 Size(1291, 1936),
                 this.size
             )
         }
 
-        runBlocking {
-            CircleCropTransformation(Scale.START_CROP).transform(
-                sketch,
-                request.toRequestContext(sketch),
-                inBitmap.asSketchImage()
-            )
-        }.apply {
-            Assert.assertNotSame(inBitmap, image.getBitmapOrThrow())
-            Assert.assertEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
-                image.getBitmapOrThrow().corners()
-            )
-            Assert.assertEquals(Size(1291, 1291), image.getBitmapOrThrow().size)
-            Assert.assertEquals(createCircleCropTransformed(Scale.START_CROP), transformed)
-        }
+        CircleCropTransformation(Scale.START_CROP)
+            .transform(sketch, requestContext, inBitmap).apply {
+                assertNotSame(inBitmap, image)
+                assertEquals(
+                    listOf(
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT
+                    ),
+                    image.corners()
+                )
+                assertEquals(Size(1291, 1291), image.size)
+                assertEquals(createCircleCropTransformed(Scale.START_CROP), transformed)
+            }
     }
 
     @Test
@@ -108,19 +106,20 @@ class CircleCropTransformationTest {
         val transformation3 = CircleCropTransformation(Scale.END_CROP)
         val transformation31 = CircleCropTransformation(Scale.END_CROP)
 
-        Assert.assertNotSame(transformation1, transformation11)
-        Assert.assertNotSame(transformation2, transformation21)
-        Assert.assertNotSame(transformation3, transformation31)
+        assertNotSame(transformation1, transformation11)
+        assertNotSame(transformation2, transformation21)
+        assertNotSame(transformation3, transformation31)
 
-        Assert.assertEquals(transformation1, transformation11)
-        Assert.assertEquals(transformation2, transformation21)
-        Assert.assertEquals(transformation3, transformation31)
+        assertEquals(transformation1, transformation11)
+        assertEquals(transformation2, transformation21)
+        assertEquals(transformation3, transformation31)
 
-        Assert.assertNotEquals(transformation1, transformation2)
-        Assert.assertNotEquals(transformation1, transformation3)
-        Assert.assertNotEquals(transformation2, transformation3)
+        assertNotEquals(transformation1, transformation2)
+        assertNotEquals(transformation1, transformation3)
+        assertNotEquals(transformation2, transformation3)
 
-        Assert.assertNotEquals(transformation2, null)
+        assertNotEquals(transformation2, null as Any?)
+        assertNotEquals(transformation2, Any())
     }
 
     @Test
@@ -134,37 +133,37 @@ class CircleCropTransformationTest {
         val transformation3 = CircleCropTransformation(Scale.END_CROP)
         val transformation31 = CircleCropTransformation(Scale.END_CROP)
 
-        Assert.assertEquals(transformation1.hashCode(), transformation11.hashCode())
-        Assert.assertEquals(transformation2.hashCode(), transformation21.hashCode())
-        Assert.assertEquals(transformation3.hashCode(), transformation31.hashCode())
+        assertEquals(transformation1.hashCode(), transformation11.hashCode())
+        assertEquals(transformation2.hashCode(), transformation21.hashCode())
+        assertEquals(transformation3.hashCode(), transformation31.hashCode())
 
-        Assert.assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
-        Assert.assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
-        Assert.assertNotEquals(transformation2.hashCode(), transformation3.hashCode())
+        assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
+        assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
+        assertNotEquals(transformation2.hashCode(), transformation3.hashCode())
     }
 
     @Test
     fun testCircleCropTransformed() {
-        Assert.assertEquals(
+        assertEquals(
             "CircleCropTransformed(START_CROP)",
             createCircleCropTransformed(Scale.START_CROP)
         )
-        Assert.assertEquals(
+        assertEquals(
             "CircleCropTransformed(CENTER_CROP)",
             createCircleCropTransformed(Scale.CENTER_CROP)
         )
-        Assert.assertEquals(
+        assertEquals(
             "CircleCropTransformed(END_CROP)",
             createCircleCropTransformed(Scale.END_CROP)
         )
-        Assert.assertEquals("CircleCropTransformed(FILL)", createCircleCropTransformed(Scale.FILL))
+        assertEquals("CircleCropTransformed(FILL)", createCircleCropTransformed(Scale.FILL))
 
-        Assert.assertEquals(null, listOf<String>().getCircleCropTransformed())
-        Assert.assertEquals(
+        assertEquals(null, listOf<String>().getCircleCropTransformed())
+        assertEquals(
             "CircleCropTransformed(CENTER_CROP)",
             listOf(createCircleCropTransformed(Scale.CENTER_CROP)).getCircleCropTransformed()
         )
-        Assert.assertEquals(
+        assertEquals(
             "CircleCropTransformed(FILL)",
             listOf(
                 "disruptive1",

@@ -21,11 +21,15 @@ package com.github.panpf.sketch.util
  * Parse this [String] into a [Uri].
  *
  * This method will not throw if the URI is malformed.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.UriTest.testToUri
  */
 fun String.toUri(): Uri = Uri(this)
 
 /**
  * A uniform resource locator.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.UriTest
  */
 class Uri internal constructor(private val data: String) {
 

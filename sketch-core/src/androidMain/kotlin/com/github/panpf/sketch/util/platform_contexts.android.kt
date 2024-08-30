@@ -23,16 +23,22 @@ import com.github.panpf.sketch.PlatformContext
 import okio.Path
 import okio.Path.Companion.toOkioPath
 
-/** Return the global application context. */
-internal actual val PlatformContext.application: PlatformContext
+/**
+ * Return the global application context.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testApplication
+ */
+actual val PlatformContext.application: PlatformContext
     get() = applicationContext
 
 private const val DEFAULT_MEMORY_CLASS_MEGABYTES = 128
 
 /**
  * Return the application's total memory in bytes.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testTotalAvailableMemoryBytes
  */
-internal actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
+actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
     val memoryClassMegabytes = try {
         val activityManager =
             getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -46,11 +52,21 @@ internal actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
     return memoryClassMegabytes * 1024L * 1024L
 }
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testAppCacheDirectory
+ */
 actual fun PlatformContext.appCacheDirectory(): Path? {
     val appCacheDirectory = externalCacheDir ?: cacheDir
     return appCacheDirectory.toOkioPath()
 }
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testScreenSize
+ */
 actual fun PlatformContext.screenSize(): Size {
     return resources.displayMetrics
         .let { Size(it.widthPixels, it.heightPixels) }

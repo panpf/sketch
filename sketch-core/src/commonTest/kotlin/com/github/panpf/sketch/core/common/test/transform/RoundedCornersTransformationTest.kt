@@ -14,46 +14,44 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.android.test.transform
+package com.github.panpf.sketch.core.common.test.transform
 
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.createRoundedCornersTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.test.runTest
+import org.jetbrains.skia.Color
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
-@RunWith(AndroidJUnit4::class)
 class RoundedCornersTransformationTest {
 
     @Test
     fun testConstructor() {
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f))
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f))
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, -4f, 5f, 6f, 7f, 8f))
         }
 
         RoundedCornersTransformation(floatArrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f)).apply {
-            Assert.assertEquals(
+            assertEquals(
                 floatArrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f).toList(),
                 radiusArray.toList()
             )
@@ -65,7 +63,7 @@ class RoundedCornersTransformationTest {
             bottomLeft = 3f,
             bottomRight = 4f
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 floatArrayOf(1f, 1f, 2f, 2f, 4f, 4f, 3f, 3f).toList(),
                 radiusArray.toList()
             )
@@ -74,7 +72,7 @@ class RoundedCornersTransformationTest {
         RoundedCornersTransformation(
             allRadius = 1f,
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 floatArrayOf(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f).toList(),
                 radiusArray.toList()
             )
@@ -84,21 +82,21 @@ class RoundedCornersTransformationTest {
     @Test
     fun testKeyAndToString() {
         RoundedCornersTransformation(1f).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "RoundedCornersTransformation(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)",
                 key
             )
-            Assert.assertEquals(
+            assertEquals(
                 "RoundedCornersTransformation(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)",
                 toString()
             )
         }
         RoundedCornersTransformation(2f).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "RoundedCornersTransformation(2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0)",
                 key
             )
-            Assert.assertEquals(
+            assertEquals(
                 "RoundedCornersTransformation(2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0)",
                 toString()
             )
@@ -106,37 +104,37 @@ class RoundedCornersTransformationTest {
     }
 
     @Test
-    fun testTransform() {
+    fun testTransform() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            size(Size.Origin)
+        }
 
-        val inBitmap = context.assets.open(ResourceImages.jpeg.resourceName).use {
-            BitmapFactory.decodeStream(it)
-        }.apply {
-            Assert.assertNotEquals(
+        val inBitmap = request.decode(sketch).image.apply {
+            assertNotEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
                 this.corners()
             )
-            Assert.assertEquals(
+            assertEquals(
                 Size(1291, 1936),
                 this.size
             )
         }
 
-        runBlocking {
+        runBlock {
             RoundedCornersTransformation(20f).transform(
                 sketch,
                 request.toRequestContext(sketch),
-                inBitmap.asSketchImage()
+                inBitmap
             )
         }.apply {
-            Assert.assertNotSame(inBitmap, image.getBitmapOrThrow())
-            Assert.assertEquals(
+            assertNotSame(inBitmap, image)
+            assertEquals(
                 listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
-                image.getBitmapOrThrow().corners()
+                image.corners()
             )
-            Assert.assertEquals(Size(1291, 1936), image.getBitmapOrThrow().size)
-            Assert.assertEquals(
+            assertEquals(Size(1291, 1936), image.size)
+            assertEquals(
                 createRoundedCornersTransformed(RoundedCornersTransformation(20f).radiusArray),
                 transformed
             )
@@ -154,21 +152,21 @@ class RoundedCornersTransformationTest {
         val transformation3 = RoundedCornersTransformation(30f)
         val transformation31 = RoundedCornersTransformation(30f)
 
-        Assert.assertNotSame(transformation1, transformation11)
-        Assert.assertNotSame(transformation2, transformation21)
-        Assert.assertNotSame(transformation3, transformation31)
+        assertNotSame(transformation1, transformation11)
+        assertNotSame(transformation2, transformation21)
+        assertNotSame(transformation3, transformation31)
 
-        Assert.assertEquals(transformation1, transformation1)
-        Assert.assertEquals(transformation1, transformation11)
-        Assert.assertEquals(transformation2, transformation21)
-        Assert.assertEquals(transformation3, transformation31)
+        assertEquals(transformation1, transformation1)
+        assertEquals(transformation1, transformation11)
+        assertEquals(transformation2, transformation21)
+        assertEquals(transformation3, transformation31)
 
-        Assert.assertNotEquals(transformation1, transformation2)
-        Assert.assertNotEquals(transformation1, transformation3)
-        Assert.assertNotEquals(transformation2, transformation3)
+        assertNotEquals(transformation1, transformation2)
+        assertNotEquals(transformation1, transformation3)
+        assertNotEquals(transformation2, transformation3)
 
-        Assert.assertNotEquals(transformation2, null)
-        Assert.assertNotEquals(transformation2, Any())
+        assertNotEquals(transformation2, null as Any?)
+        assertNotEquals(transformation2, Any())
     }
 
     @Test
@@ -182,13 +180,13 @@ class RoundedCornersTransformationTest {
         val transformation3 = RoundedCornersTransformation(30f)
         val transformation31 = RoundedCornersTransformation(30f)
 
-        Assert.assertEquals(transformation1.hashCode(), transformation11.hashCode())
-        Assert.assertEquals(transformation2.hashCode(), transformation21.hashCode())
-        Assert.assertEquals(transformation3.hashCode(), transformation31.hashCode())
+        assertEquals(transformation1.hashCode(), transformation11.hashCode())
+        assertEquals(transformation2.hashCode(), transformation21.hashCode())
+        assertEquals(transformation3.hashCode(), transformation31.hashCode())
 
-        Assert.assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
-        Assert.assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
-        Assert.assertNotEquals(transformation2.hashCode(), transformation3.hashCode())
+        assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
+        assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
+        assertNotEquals(transformation2.hashCode(), transformation3.hashCode())
     }
 
     @Test
@@ -202,29 +200,29 @@ class RoundedCornersTransformationTest {
             )
         }
 
-        Assert.assertEquals(
+        assertEquals(
             "RoundedCornersTransformed(${buildRadiusArray(1).contentToString()})",
             createRoundedCornersTransformed(buildRadiusArray(1))
         )
-        Assert.assertEquals(
+        assertEquals(
             "RoundedCornersTransformed(${buildRadiusArray(2).contentToString()})",
             createRoundedCornersTransformed(buildRadiusArray(2))
         )
-        Assert.assertEquals(
+        assertEquals(
             "RoundedCornersTransformed(${buildRadiusArray(4).contentToString()})",
             createRoundedCornersTransformed(buildRadiusArray(4))
         )
-        Assert.assertEquals(
+        assertEquals(
             "RoundedCornersTransformed(${buildRadiusArray(8).contentToString()})",
             createRoundedCornersTransformed(buildRadiusArray(8))
         )
 
-        Assert.assertEquals(null, listOf<String>().getRoundedCornersTransformed())
-        Assert.assertEquals(
+        assertEquals(null, listOf<String>().getRoundedCornersTransformed())
+        assertEquals(
             "RoundedCornersTransformed(${buildRadiusArray(2).contentToString()})",
             listOf(createRoundedCornersTransformed(buildRadiusArray(2))).getRoundedCornersTransformed()
         )
-        Assert.assertEquals(
+        assertEquals(
             "RoundedCornersTransformed(${buildRadiusArray(16).contentToString()})",
             listOf(
                 "disruptive1",

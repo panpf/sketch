@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
-
-/**
- * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
- */
-internal expect fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image
 
 /**
  * A [Transformation] that crops the image to fit the target's dimensions and rounds the corners of
@@ -37,6 +34,8 @@ internal expect fun roundedCornersTransformation(image: Image, radiusArray: Floa
  * transformation as it's more efficient.
  *
  * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RoundedCornersTransformationTest
  */
 class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Transformation {
 
@@ -107,11 +106,31 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     }
 }
 
+/**
+ * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
+ */
+internal expect fun roundedCornersTransformation(image: Image, radiusArray: FloatArray): Image
+
+/**
+ * Create a rounded corners transform record
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RoundedCornersTransformationTest.testRoundedCornersTransformed
+ */
 fun createRoundedCornersTransformed(radiusArray: FloatArray) =
     "RoundedCornersTransformed(${radiusArray.contentToString()})"
 
+/**
+ * Check whether the transformed string is a rounded corners transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RoundedCornersTransformationTest.testRoundedCornersTransformed
+ */
 fun isRoundedCornersTransformed(transformed: String): Boolean =
     transformed.startsWith("RoundedCornersTransformed(")
 
+/**
+ * Get the rounded corners transformation record from the list
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RoundedCornersTransformationTest.testRoundedCornersTransformed
+ */
 fun List<String>.getRoundedCornersTransformed(): String? =
     find { isRoundedCornersTransformed(it) }

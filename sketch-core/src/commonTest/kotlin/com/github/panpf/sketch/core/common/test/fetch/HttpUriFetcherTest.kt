@@ -29,6 +29,7 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -515,9 +516,5 @@ class HttpUriFetcherTest {
     @Test
     fun testFactoryToString() {
         // TODO test
-    }
-
-    private suspend fun <T> runBlock(block: suspend () -> T): T {
-        return block()
     }
 }

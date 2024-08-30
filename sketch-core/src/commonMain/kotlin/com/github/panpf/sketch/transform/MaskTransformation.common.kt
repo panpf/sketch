@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.Image
@@ -21,12 +23,12 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
 
-internal expect fun maskTransformation(image: Image, maskColor: Int): Image
-
 /**
  * Bitmap mask transformation, which attaches a layer of color to the surface of the bitmap, usually used to darken the bitmap used as the background
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.MaskTransformationTest
  */
-class MaskTransformation(
+class MaskTransformation constructor(
     /** Overlay the blurred image with a layer of color, often useful when using images as a background */
     val maskColor: Int
 ) : Transformation {
@@ -59,10 +61,27 @@ class MaskTransformation(
     }
 }
 
+internal expect fun maskTransformation(image: Image, maskColor: Int): Image
+
+/**
+ * Create a mask transform record
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.MaskTransformationTest.testMaskTransformed
+ */
 fun createMaskTransformed(maskColor: Int) = "MaskTransformed(${maskColor})"
 
+/**
+ * Check whether the transformed string is a mask transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.MaskTransformationTest.testMaskTransformed
+ */
 fun isMaskTransformed(transformed: String): Boolean =
     transformed.startsWith("MaskTransformed(")
 
+/**
+ * Get the mask transformation record from the list
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.MaskTransformationTest.testMaskTransformed
+ */
 fun List<String>.getMaskTransformed(): String? =
     find { isMaskTransformed(it) }

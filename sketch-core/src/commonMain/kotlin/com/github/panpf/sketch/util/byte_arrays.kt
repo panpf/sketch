@@ -16,6 +16,11 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Returns `true` if the specified range in this byte array is equal to the specified byte array.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.ByteArraysTest.testRangeEquals
+ */
 fun ByteArray.rangeEquals(offset: Int, bytes: ByteArray): Boolean {
     require(bytes.isNotEmpty()) { "bytes is empty" }
 
@@ -33,8 +38,12 @@ fun ByteArray.rangeEquals(offset: Int, bytes: ByteArray): Boolean {
 }
 
 /**
+ * Returns the index within this byte array of the first occurrence of the specified byte, starting from the specified index.
+ *
  * @param fromIndex   the begin index, inclusive.
  * @param toIndex     the end index, inclusive.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.ByteArraysTest.testIndexOf
  */
 fun ByteArray.indexOf(byte: Byte, fromIndex: Int, toIndex: Int): Int {
     require(fromIndex in 0L..toIndex) { "fromIndex=$fromIndex toIndex=$toIndex" }
@@ -50,8 +59,12 @@ fun ByteArray.indexOf(byte: Byte, fromIndex: Int, toIndex: Int): Int {
 }
 
 /**
+ * Returns the index within this byte array of the first occurrence of the specified byte array, starting from the specified index.
+ *
  * @param fromIndex   the begin index, inclusive.
  * @param toIndex     the end index, exclusive.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.ByteArraysTest.testIndexOf
  */
 fun ByteArray.indexOf(bytes: ByteArray, fromIndex: Int, toIndex: Int): Int {
     require(fromIndex in 0L..toIndex) { "fromIndex=$fromIndex toIndex=$toIndex" }

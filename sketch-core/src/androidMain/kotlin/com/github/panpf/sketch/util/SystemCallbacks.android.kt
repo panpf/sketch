@@ -23,11 +23,18 @@ import com.github.panpf.sketch.Sketch
 import kotlinx.atomicfu.atomic
 import java.lang.ref.WeakReference
 
+/**
+ * Create an instance of [SystemCallbacks] for the Android platform
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.SystemCallbacksAndroidTest.testSystemCallbacks
+ */
 internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks =
     AndroidSystemCallbacks(sketch)
 
 /**
  * Proxies [ComponentCallbacks2] and [NetworkCallback]. Clear memory cache when system memory is low, and monitor network connection status
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.SystemCallbacksAndroidTest.testAndroidSystemCallbacks
  */
 class AndroidSystemCallbacks(sketch: Sketch) : SystemCallbacks {
 

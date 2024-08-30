@@ -1,5 +1,16 @@
 package com.github.panpf.sketch.core.jscommon.test.util
 
+import kotlin.test.Test
+
 class FileSystemsJsCommonTest {
-    // TODO test
+
+    @Test
+    fun testDefaultFileSystem() {
+        // TODO test
+    }
+
+    @Test
+    fun testThrowingFileSystem() {
+        // TODO test
+    }
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.Image
@@ -21,13 +23,6 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.IntRange
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
-
-internal expect fun blurTransformation(
-    image: Image,
-    radius: Int,
-    hasAlphaBitmapBgColor: Int?,
-    maskColor: Int?
-): Image
 
 /**
  * Bitmap blur transformation
@@ -87,6 +82,13 @@ class BlurTransformation constructor(
         return result
     }
 }
+
+internal expect fun blurTransformation(
+    image: Image,
+    radius: Int,
+    hasAlphaBitmapBgColor: Int?,
+    maskColor: Int?
+): Image
 
 /**
  * Create a blur transform record

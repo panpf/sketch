@@ -21,6 +21,11 @@ import kotlin.math.roundToInt
 
 typealias SketchSize = Size
 
+/**
+ * A simple class that represents width and height.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest
+ */
 open class Size(val width: Int, val height: Int) {
 
     constructor() : this(0, 0)
@@ -72,6 +77,11 @@ open class Size(val width: Int, val height: Int) {
     }
 }
 
+/**
+ * Check if the size is not empty.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testEmptyNotEmpty
+ */
 val Size.isNotEmpty: Boolean
     get() = !isEmpty
 
@@ -81,6 +91,8 @@ val Size.isNotEmpty: Boolean
  * Returns a [Size] whose dimensions are the dimensions of the left-hand-side
  * operand (a [Size]) multiplied by the scalar right-hand-side operand (a
  * [Float]).
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testTimes
  */
 operator fun Size.times(operand: Float) = Size(
     width = (width * operand).roundToInt(),
@@ -93,12 +105,19 @@ operator fun Size.times(operand: Float) = Size(
  * Returns a [Size] whose dimensions are the dimensions of the left-hand-side
  * operand (a [Size]) divided by the scalar right-hand-side operand (a
  * [Float]).
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testDiv
  */
 operator fun Size.div(operand: Float) = Size(
     width = (width / operand).roundToInt(),
     height = (height / operand).roundToInt()
 )
 
+/**
+ * Check if two Size have the same aspect ratio
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testIsSameAspectRatio
+ */
 fun Size.isSameAspectRatio(other: Size, delta: Float = 0f): Boolean {
     val selfScale = this.width / this.height.toFloat()
     val otherScale = other.width / other.height.toFloat()
@@ -113,16 +132,28 @@ fun Size.isSameAspectRatio(other: Size, delta: Float = 0f): Boolean {
 
 /**
  * The size after rotating [rotation] degrees
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testRotate
  */
 fun Size.rotate(rotation: Int): Size {
     return if (rotation % 180 == 0) this else Size(width = height, height = width)
 }
 
+/**
+ * Ensures that this value is not less than the specified minimumValue.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testCoerceAtLeast
+ */
 fun Size.coerceAtLeast(minimumValue: Size): Size = Size(
     width = width.coerceAtLeast(minimumValue.width),
     height = height.coerceAtLeast(minimumValue.height),
 )
 
+/**
+ * Ensures that this value is not greater than the specified maximumValue.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testCoerceAtMost
+ */
 fun Size.coerceAtMost(maximumValue: Size): Size = Size(
     width = width.coerceAtMost(maximumValue.width),
     height = height.coerceAtMost(maximumValue.height),

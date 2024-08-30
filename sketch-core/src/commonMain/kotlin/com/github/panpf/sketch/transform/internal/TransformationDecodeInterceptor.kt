@@ -20,6 +20,11 @@ import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 
+/**
+ * Transformation decoding interceptor, used to transformation the image after decoding is completed
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.internal.TransformationDecodeInterceptorTest
+ */
 class TransformationDecodeInterceptor : DecodeInterceptor {
 
     override val key: String? = null

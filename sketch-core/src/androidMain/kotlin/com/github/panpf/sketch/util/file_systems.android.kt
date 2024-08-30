@@ -18,4 +18,9 @@ package com.github.panpf.sketch.util
 
 import okio.FileSystem
 
+/**
+ * Get the default file system
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.FileSystemsAndroidTest.testDefaultFileSystem
+ */
 internal actual fun defaultFileSystem(): FileSystem = FileSystem.SYSTEM

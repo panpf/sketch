@@ -18,11 +18,18 @@ package com.github.panpf.sketch.util
 
 import okio.Closeable
 
+/**
+ * Close quietly
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.IosTest.testCloseQuietly
+ */
 @PublishedApi
 internal fun Closeable.closeQuietly() {
     try {
         close()
     } catch (e: RuntimeException) {
         throw e
-    } catch (_: Exception) {}
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }

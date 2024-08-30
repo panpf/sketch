@@ -19,8 +19,18 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.Sketch
 import kotlinx.atomicfu.atomic
 
+/**
+ * Create an instance of [SystemCallbacks] for non-Android platforms
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SystemCallbacksNonAndroidTest.testSystemCallbacks
+ */
 internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = NoopSystemCallbacks()
 
+/**
+ * Noop implementation of [SystemCallbacks]
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SystemCallbacksNonAndroidTest.testNoopSystemCallbacks
+ */
 private class NoopSystemCallbacks : SystemCallbacks {
 
     // TODO Implement network type detection for non-Android platforms. https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt

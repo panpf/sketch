@@ -8,6 +8,11 @@ import kotlin.test.assertNull
 class UriTest {
 
     @Test
+    fun testToUri() {
+        // TODO test
+    }
+
+    @Test
     fun network() {
         val uri = "https://www.example.com/image.jpg?q=jpg#fragment".toUri()
         assertEquals("https", uri.scheme)

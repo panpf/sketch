@@ -29,6 +29,8 @@ import com.github.panpf.sketch.util.Key
  * IMPORTANT: It is necessary to ensure compliance with the consistency principle,
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.TransformationTest
  */
 interface Transformation : Key {
 
@@ -57,6 +59,8 @@ interface Transformation : Key {
 
 /**
  * Merge two transformation lists, the transformation of the same key only retains the one in the left list
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.TransformationTest.testMerge
  */
 fun List<Transformation>?.merge(other: List<Transformation>?): List<Transformation>? =
     if (this != null) {

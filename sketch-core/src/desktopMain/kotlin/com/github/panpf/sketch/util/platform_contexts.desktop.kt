@@ -23,6 +23,11 @@ import okio.Path
 import okio.Path.Companion.toPath
 import java.io.File
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testAppCacheDirectory
+ */
 actual fun PlatformContext.appCacheDirectory(): Path? {
     val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java))
         ?.md5()
@@ -39,6 +44,11 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
     ) { "Failed to get the cache directory of the App" }.toPath()
 }
 
+/**
+ * Return the screen size.
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testScreenSize
+ */
 actual fun PlatformContext.screenSize(): Size {
     return java.awt.Toolkit.getDefaultToolkit().screenSize
         .let { Size(it.width, it.height) }

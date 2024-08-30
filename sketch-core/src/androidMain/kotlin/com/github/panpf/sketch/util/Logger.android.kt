@@ -18,8 +18,18 @@ package com.github.panpf.sketch.util
 
 import android.util.Log
 
+/**
+ * Get the platform default log pipeline
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.LoggerAndroidTest.testPlatformLogPipeline
+ */
 actual fun platformLogPipeline(): Logger.Pipeline = AndroidLogPipeline
 
+/**
+ * Android log pipeline
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.LoggerAndroidTest.testAndroidLogPipeline
+ */
 data object AndroidLogPipeline : Logger.Pipeline {
 
     override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {

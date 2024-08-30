@@ -25,10 +25,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SystemCallbacksTest {
+class SystemCallbacksAndroidTest {
 
     @Test
-    fun test() {
+    fun testSystemCallbacks() {
+        // TODO test
+    }
+
+    @Test
+    fun testAndroidSystemCallbacks() {
         val (context, sketch) = getTestContextAndSketch()
         val systemCallbacks = SystemCallbacks(sketch)
         try {

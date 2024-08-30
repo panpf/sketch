@@ -24,8 +24,6 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import kotlin.math.min
 
-internal expect fun circleCropTransformation(image: Image, scale: Scale): Image
-
 /**
  * A [Transformation] that crops an image using a centered circle as the mask.
  *
@@ -33,6 +31,7 @@ internal expect fun circleCropTransformation(image: Image, scale: Scale): Image
  * as it's more efficient.
  *
  * @param scale Specify which part of the original image to keep. If null, use ImageRequest.scaleDecider
+ * @see com.github.panpf.sketch.core.common.test.transform.CircleCropTransformationTest
  */
 class CircleCropTransformation(val scale: Scale? = null) : Transformation {
 
@@ -69,11 +68,28 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
     }
 }
 
+internal expect fun circleCropTransformation(image: Image, scale: Scale): Image
+
+/**
+ * Create a circle crop transform record
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.CircleCropTransformationTest.testCircleCropTransformed
+ */
 fun createCircleCropTransformed(scale: Scale) =
     "CircleCropTransformed(${scale})"
 
+/**
+ * Check if the transformed string is a circle crop transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.CircleCropTransformationTest.testCircleCropTransformed
+ */
 fun isCircleCropTransformed(transformed: String): Boolean =
     transformed.startsWith("CircleCropTransformed(")
 
+/**
+ * Get the circle crop transformation record from the list
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.CircleCropTransformationTest.testCircleCropTransformed
+ */
 fun List<String>.getCircleCropTransformed(): String? =
     find { isCircleCropTransformed(it) }

@@ -27,6 +27,11 @@ import platform.Foundation.NSUserDomainMask
 import platform.UIKit.UIScreen
 import kotlin.math.roundToInt
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testAppCacheDirectory
+ */
 actual fun PlatformContext.appCacheDirectory(): Path? {
     return getCacheDirectory().toPath()
 }
@@ -36,6 +41,11 @@ private fun getCacheDirectory(): String {
     return paths.first() as String
 }
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testScreenSize
+ */
 @OptIn(ExperimentalForeignApi::class)
 actual fun PlatformContext.screenSize(): Size {
     val screen = UIScreen.mainScreen

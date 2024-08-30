@@ -17,10 +17,27 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * A map of file extensions to MIME types.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformExtensionToMimeType
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testPlatformExtensionToMimeType
+ */
 internal expect fun platformExtensionToMimeType(extension: String): String?
 
+/**
+ * A map of MIME types to file extensions.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformMimeTypeToExtension
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testPlatformMimeTypeToExtension
+ */
 internal expect fun platformMimeTypeToExtension(mimeType: String): String?
 
+/**
+ * A map of file extensions to MIME types.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.MimeTypeMapTest
+ */
 object MimeTypeMap {
 
     fun getExtensionFromUrl(url: String): String? {

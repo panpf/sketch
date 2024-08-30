@@ -21,10 +21,10 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
 
-internal expect fun rotateTransformation(image: Image, degrees: Int): Image
-
 /**
  * Bitmap Rotation Transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RotateTransformationTest
  */
 class RotateTransformation(val degrees: Int) : Transformation {
 
@@ -56,11 +56,28 @@ class RotateTransformation(val degrees: Int) : Transformation {
     }
 }
 
+internal expect fun rotateTransformation(image: Image, degrees: Int): Image
+
+/**
+ * Create a rotate crop transform record
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RotateTransformationTest.testRotateTransformed
+ */
 fun createRotateTransformed(degrees: Int) =
     "RotateTransformed($degrees)"
 
+/**
+ * Check whether the transformed string is a mask transformation
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RotateTransformationTest.testRotateTransformed
+ */
 fun isRotateTransformed(transformed: String): Boolean =
     transformed.startsWith("RotateTransformed(")
 
+/**
+ * Get the rotate transformation string from the list
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.RotateTransformationTest.testRotateTransformed
+ */
 fun List<String>.getRotateTransformed(): String? =
     find { isRotateTransformed(it) }

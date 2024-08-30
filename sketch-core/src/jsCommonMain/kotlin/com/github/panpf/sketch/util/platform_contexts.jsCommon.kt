@@ -19,8 +19,18 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.PlatformContext
 import okio.Path
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testAppCacheDirectory
+ */
 actual fun PlatformContext.appCacheDirectory(): Path? = null
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testScreenSize
+ */
 actual fun PlatformContext.screenSize(): Size {
     return Size(1920, 1080) // TODO I hope there is another way to get the screen size
 }

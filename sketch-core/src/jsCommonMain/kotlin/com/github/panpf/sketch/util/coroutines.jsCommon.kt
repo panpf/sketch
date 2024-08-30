@@ -19,4 +19,9 @@ package com.github.panpf.sketch.util
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * Get the IO coroutine dispatcher
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoroutinesJsCommonTest.testIoCoroutineDispatcher
+ */
 actual fun ioCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Default

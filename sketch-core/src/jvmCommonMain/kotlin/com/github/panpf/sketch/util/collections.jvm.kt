@@ -16,6 +16,11 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Create a [MutableMap] that orders its entries by most recently used to least recently used.
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.util.CollectionsJvmTest.testLruMutableMap
+ */
 internal actual fun <K : Any, V : Any> LruMutableMap(
     initialCapacity: Int,
     loadFactor: Float,

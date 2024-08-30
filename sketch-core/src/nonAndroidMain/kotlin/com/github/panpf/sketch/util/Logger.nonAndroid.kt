@@ -16,8 +16,18 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Get the platform default log pipeline
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.LoggerNonAndroidTest.testPlatformLogPipeline
+ */
 actual fun platformLogPipeline(): Logger.Pipeline = PrintLogPipeline
 
+/**
+ * Used to print log
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.LoggerNonAndroidTest.testPrintLogPipeline
+ */
 data object PrintLogPipeline : Logger.Pipeline {
 
     override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {

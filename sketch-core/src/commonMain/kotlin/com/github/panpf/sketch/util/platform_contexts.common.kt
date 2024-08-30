@@ -19,12 +19,38 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.PlatformContext
 import okio.Path
 
-/** Return the global application context. */
-internal expect val PlatformContext.application: PlatformContext
+/**
+ * Return the global application context.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testApplication
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.PlatformContextsNonAndroidTest.testApplication
+ */
+expect val PlatformContext.application: PlatformContext
 
-/** Return the application's total memory in bytes. */
-internal expect fun PlatformContext.totalAvailableMemoryBytes(): Long
+/**
+ * Return the application's total memory in bytes.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testTotalAvailableMemoryBytes
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.PlatformContextsNonAndroidTest.testTotalAvailableMemoryBytes
+ */
+expect fun PlatformContext.totalAvailableMemoryBytes(): Long
 
+/**
+ * Return the application's cache directory.
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testAppCacheDirectory
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testAppCacheDirectory
+ * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testAppCacheDirectory
+ * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testAppCacheDirectory
+ */
 expect fun PlatformContext.appCacheDirectory(): Path?
 
+/**
+ * Return the screen size.
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testScreenSize
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testScreenSize
+ * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testScreenSize
+ * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testScreenSize
+ */
 expect fun PlatformContext.screenSize(): Size

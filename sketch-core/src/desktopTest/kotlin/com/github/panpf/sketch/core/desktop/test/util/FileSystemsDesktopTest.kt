@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.desktop.test.util
 
+import kotlin.test.Test
+
 class FileSystemsDesktopTest {
-    // TODO test
+
+    @Test
+    fun testDefaultFileSystem() {
+        // TODO test
+    }
 }

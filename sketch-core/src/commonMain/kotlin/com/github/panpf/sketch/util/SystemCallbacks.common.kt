@@ -18,18 +18,39 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Sketch
 
+/**
+ * Create a platform-specific [SystemCallbacks] instance
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.SystemCallbacksAndroidTest.testSystemCallbacks
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SystemCallbacksNonAndroidTest.testSystemCallbacks
+ */
 internal expect fun SystemCallbacks(sketch: Sketch): SystemCallbacks
 
 /**
  * Monitor network connection and system status
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.SystemCallbacksAndroidTest.testAndroidSystemCallbacks
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SystemCallbacksNonAndroidTest.testNoopSystemCallbacks
  */
 interface SystemCallbacks {
 
+    /**
+     * Whether the system is shut down
+     */
     val isShutdown: Boolean
 
+    /**
+     * Whether the cellular network is connected
+     */
     val isCellularNetworkConnected: Boolean
 
+    /**
+     * Register system status monitoring
+     */
     fun register()
 
+    /**
+     * Unregister system status monitoring
+     */
     fun shutdown()
 }

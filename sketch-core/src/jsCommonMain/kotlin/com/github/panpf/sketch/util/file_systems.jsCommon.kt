@@ -23,10 +23,19 @@ import okio.Path
 import okio.Sink
 import okio.Source
 
+/**
+ * Get the default file system
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.FileSystemsJsCommonTest.testDefaultFileSystem
+ */
 internal actual fun defaultFileSystem(): FileSystem = ThrowingFileSystem
 
-/** A file system that throws if any of its methods are called. */
-private object ThrowingFileSystem : FileSystem() {
+/**
+ * A file system that throws if any of its methods are called.
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.FileSystemsJsCommonTest.testThrowingFileSystem
+ */
+internal object ThrowingFileSystem : FileSystem() {
 
     override fun atomicMove(source: Path, target: Path) {
         throwReadWriteIsUnsupported()

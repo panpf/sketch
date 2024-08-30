@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.util
 
+/**
+ * Sketch exception
+ */
 abstract class SketchException constructor(
     message: String,
     cause: Throwable? = null,

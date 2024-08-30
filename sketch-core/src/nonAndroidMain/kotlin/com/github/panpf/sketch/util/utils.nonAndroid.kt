@@ -16,6 +16,11 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Returns true if currently on the main thread
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.UtilsNonAndroidTest.testIsMainThread
+ */
 internal actual fun isMainThread(): Boolean {
     // JVM EventQueue.isDispatchThread()
     // iOS
@@ -27,9 +32,19 @@ internal actual fun isMainThread(): Boolean {
     return true
 }
 
+/**
+ * Throws an exception if not currently on the main thread
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.UtilsNonAndroidTest.testRequiredMainThread
+ */
 internal actual fun requiredMainThread() {
 }
 
+/**
+ * Throws an exception if not currently on the work thread
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.UtilsNonAndroidTest.testRequiredWorkThread
+ */
 internal actual fun requiredWorkThread() {
 
 }

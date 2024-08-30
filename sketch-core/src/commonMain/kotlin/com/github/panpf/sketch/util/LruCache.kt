@@ -21,6 +21,8 @@ package com.github.panpf.sketch.util
  * exceeds its max size.
  *
  * LruCache is not thread-safe. If you need to use it in multiple threads, please handle the thread-safety issues yourself.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.LruCacheTest
  */
 internal open class LruCache<K : Any, V : Any>(
     val maxSize: Long,

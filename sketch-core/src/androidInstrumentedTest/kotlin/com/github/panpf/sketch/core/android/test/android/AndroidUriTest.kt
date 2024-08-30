@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UriTest {
+class AndroidUriTest {
 
     @Test
     fun test() {

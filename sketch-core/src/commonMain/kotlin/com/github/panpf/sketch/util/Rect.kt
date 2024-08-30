@@ -586,6 +586,8 @@ class Rect {
 
 /**
  * Flip this rect horizontally or vertically within a given container
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.RectTest.testFlipped
  */
 fun Rect.flipped(spaceSize: Size, vertical: Boolean = false): Rect {
     return if (!vertical) {
@@ -607,6 +609,8 @@ fun Rect.flipped(spaceSize: Size, vertical: Boolean = false): Rect {
 
 /**
  * Rotate the space by [rotation] degrees, and then return the rotated Rect
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.RectTest.testRotateInSpace
  */
 fun Rect.rotateInSpace(spaceSize: Size, rotation: Int): Rect {
     require(rotation % 90 == 0) { "rotation must be a multiple of 90, rotation: $rotation" }

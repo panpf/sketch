@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.nonjscommon.test.util
 
+import kotlin.test.Test
+
 class CoroutinesNonJsCommonTest {
-    // TODO test
+
+    @Test
+    fun testIoCoroutineDispatcher() {
+        // TODO test
+    }
 }

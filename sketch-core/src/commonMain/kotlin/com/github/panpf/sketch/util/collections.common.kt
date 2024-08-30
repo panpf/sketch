@@ -20,21 +20,31 @@ package com.github.panpf.sketch.util
  * Create a [MutableMap] that orders its entries by most recently used to least recently used.
  *
  * https://youtrack.jetbrains.com/issue/KT-52183
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.util.CollectionsJvmTest.testLruMutableMap
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testLruMutableMap
  */
 internal expect fun <K : Any, V : Any> LruMutableMap(
     initialCapacity: Int = 0,
     loadFactor: Float = 0.75F,
 ): MutableMap<K, V>
 
-/** @see forEach */
+/**
+ * Traverse the collection by index
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CollectionsTest.testForEachIndices
+ */
 internal inline fun <T> List<T>.forEachIndices(action: (T) -> Unit) {
     for (i in indices) {
         action(get(i))
     }
 }
 
-/** @see forEach */
-@PublishedApi // Used by extension modules.
+/**
+ * Traverse the collection by index
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CollectionsTest.testForEachIndexedIndices
+ */
 internal inline fun <T> List<T>.forEachIndexedIndices(action: (index: Int, T) -> Unit) {
     for (i in indices) {
         action(i, get(i))

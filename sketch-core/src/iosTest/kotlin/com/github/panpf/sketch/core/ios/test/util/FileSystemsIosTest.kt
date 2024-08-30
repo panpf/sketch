@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.ios.test.util
 
+import kotlin.test.Test
+
 class FileSystemsIosTest {
-    // TODO test
+
+    @Test
+    fun testDefaultFileSystem() {
+        // TODO test
+    }
 }

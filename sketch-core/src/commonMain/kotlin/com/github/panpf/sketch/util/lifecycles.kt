@@ -22,7 +22,11 @@ import androidx.lifecycle.LifecycleObserver
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-/** Suspend until [Lifecycle.currentState] is at least [Lifecycle.State.STARTED] */
+/**
+ * Suspend until [Lifecycle.currentState] is at least [Lifecycle.State.STARTED]
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.LifecyclesTest.testAwaitStarted
+ */
 internal suspend fun Lifecycle.awaitStarted() {
     // Fast path: we're already started.
     Lifecycle.State.STARTED
@@ -45,7 +49,11 @@ internal suspend fun Lifecycle.awaitStarted() {
     }
 }
 
-/** Remove and re-add the observer to ensure all its lifecycle callbacks are invoked. */
+/**
+ * Remove and re-add the observer to ensure all its lifecycle callbacks are invoked.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.LifecyclesTest.testRemoveAndAddObserver
+ */
 fun Lifecycle.removeAndAddObserver(observer: LifecycleObserver) {
     removeObserver(observer)
     addObserver(observer)

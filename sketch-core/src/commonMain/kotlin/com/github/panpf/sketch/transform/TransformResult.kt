@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.Image
 
 /**
  * Bitmap transformation result
+ *
+ * @see com.github.panpf.sketch.core.common.test.transform.TransformResultTest
  */
 class TransformResult constructor(
     /**

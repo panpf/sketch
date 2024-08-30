@@ -11,6 +11,11 @@ import org.junit.Test
 class PlatformContextsAndroidTest {
 
     @Test
+    fun testApplication() {
+        // TODO test
+    }
+
+    @Test
     fun testTotalAvailableMemoryBytes() {
         val context = getTestContext()
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
@@ -22,5 +27,15 @@ class PlatformContextsAndroidTest {
             else -> 16 * 1024L * 1024L
         }
         Assert.assertEquals(appMemoryClassBytes, context.totalAvailableMemoryBytes())
+    }
+
+    @Test
+    fun testAppCacheDirectory() {
+        // TODO test
+    }
+
+    @Test
+    fun testScreenSize() {
+        // TODO test
     }
 }

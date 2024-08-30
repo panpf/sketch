@@ -20,6 +20,11 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Fast Gaussian blur
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.GraphicsTest.testFastGaussianBlur
+ */
 fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
     val wm = width - 1
     val hm = height - 1
@@ -219,6 +224,11 @@ fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
     }
 }
 
+/**
+ * Calculate the size of the rotated image
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.GraphicsTest.testCalculateRotatedSize
+ */
 fun calculateRotatedSize(size: Size, angle: Double): Size {
     val radians = angle * 0.017453292519943295
     val affineTransform: (Pair<Double, Double>) -> Pair<Double, Double> = { corner ->

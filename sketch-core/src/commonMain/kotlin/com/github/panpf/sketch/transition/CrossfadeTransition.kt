@@ -23,6 +23,11 @@ import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 
+/**
+ * A [Transition] that crossfades between the previous and new image.
+ *
+ * @see com.github.panpf.sketch.core.common.test.transition.CrossfadeTransitionTest
+ */
 class CrossfadeTransition(transition: Transition) : Transition by transition {
 
     companion object {

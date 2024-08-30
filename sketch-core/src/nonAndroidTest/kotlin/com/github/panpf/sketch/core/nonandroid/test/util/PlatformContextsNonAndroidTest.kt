@@ -1,5 +1,16 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
+import kotlin.test.Test
+
 class PlatformContextsNonAndroidTest {
-    // TODO test
+
+    @Test
+    fun testApplication() {
+        // TODO test
+    }
+
+    @Test
+    fun testTotalAvailableMemoryBytes() {
+        // TODO test
+    }
 }

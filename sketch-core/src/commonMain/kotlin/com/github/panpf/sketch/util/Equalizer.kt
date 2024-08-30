@@ -16,12 +16,25 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Wrapping an object that cannot be compared for equality through the equals
+ *  method so that it can be compared for equality through the equals method
+ */
 interface Equalizer<T> {
 
+    /**
+     * Wrapped object
+     */
     val wrapped: T
+
+    /**
+     * Key used to determine equality
+     */
     val equalityKey: Any
 
     override fun equals(other: Any?): Boolean
+
     override fun hashCode(): Int
+
     override fun toString(): String
 }
