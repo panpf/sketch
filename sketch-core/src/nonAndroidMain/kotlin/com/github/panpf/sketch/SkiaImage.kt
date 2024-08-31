@@ -16,4 +16,9 @@
 
 package com.github.panpf.sketch
 
+/**
+ * Skia Image
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaImageTest.testSkiaImage
+ */
 typealias SkiaImage = org.jetbrains.skia.Image

@@ -25,6 +25,8 @@ import com.github.panpf.sketch.util.Uri
 
 /**
  * Sample: 'file:///kotlin_resource/test.png'
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.fetch.KotlinResourceUriFetcherTest.testNewKotlinResourceUri
  */
 fun newKotlinResourceUri(resourcePath: String): String =
     "${KotlinResourceUriFetcher.SCHEME}:///${KotlinResourceUriFetcher.PATH_ROOT}/$resourcePath"
@@ -33,6 +35,8 @@ fun newKotlinResourceUri(resourcePath: String): String =
  * Check if the uri is a Kotlin resource uri
  *
  * Sample: 'file:///kotlin_resource/test.png'
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.fetch.KotlinResourceUriFetcherTest.testIsKotlinResourceUri
  */
 fun isKotlinResourceUri(uri: Uri): Boolean =
     KotlinResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
@@ -40,6 +44,11 @@ fun isKotlinResourceUri(uri: Uri): Boolean =
             && KotlinResourceUriFetcher.PATH_ROOT
         .equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
 
+/**
+ * Fetcher for Kotlin resource uri
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.fetch.KotlinResourceUriFetcherTest
+ */
 class KotlinResourceUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,

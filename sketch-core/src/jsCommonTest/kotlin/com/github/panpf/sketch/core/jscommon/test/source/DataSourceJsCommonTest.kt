@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.jscommon.test.source
 
+import kotlin.test.Test
+
 class DataSourceJsCommonTest {
-    // TODO test
+
+    @Test
+    fun testCacheFile() {
+        // TODO test
+    }
 }

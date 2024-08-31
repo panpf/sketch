@@ -19,6 +19,11 @@ package com.github.panpf.sketch.util
 typealias SkiaRect = org.jetbrains.skia.Rect
 typealias SketchRect = Rect
 
+/**
+ * Convert [SketchRect] to [SkiaRect]
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.RectNonAndroidTest.testToSkiaRect
+ */
 fun SketchRect.toSkiaRect(): SkiaRect = SkiaRect(
     left = left.toFloat(),
     top = top.toFloat(),

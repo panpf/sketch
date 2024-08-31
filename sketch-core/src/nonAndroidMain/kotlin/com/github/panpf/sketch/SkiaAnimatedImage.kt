@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch
 
 import com.github.panpf.sketch.cache.MemoryCache.Value

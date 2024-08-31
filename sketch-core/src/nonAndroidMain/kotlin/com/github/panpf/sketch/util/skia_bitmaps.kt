@@ -33,6 +33,11 @@ import org.jetbrains.skia.RRect
 import kotlin.math.ceil
 import kotlin.math.min
 
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testCopied
+ */
 internal fun SkiaBitmap.copied(): SkiaBitmap {
     val inputBitmap = this
     val outBitmap = SkiaBitmap().apply {
@@ -42,6 +47,11 @@ internal fun SkiaBitmap.copied(): SkiaBitmap {
     return outBitmap
 }
 
+/**
+ * Returns true if this SkiaBitmap has alpha.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testHasAlpha
+ */
 fun SkiaBitmap.hasAlpha(): Boolean {
     val height = this.height
     val width = this.width
@@ -58,21 +68,41 @@ fun SkiaBitmap.hasAlpha(): Boolean {
     return hasAlpha
 }
 
+/**
+ * Installs the specified intArray as the pixels of this SkiaBitmap.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testInstallIntPixels
+ */
 internal fun SkiaBitmap.installIntPixels(intArray: IntArray): Boolean {
     val bytePixels = convertToByteColorPixels(intArray, imageInfo.colorType)
     return installPixels(bytePixels)
 }
 
+/**
+ * Reads the pixels of this SkiaBitmap as an intArray.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testReadIntPixels
+ */
 internal fun SkiaBitmap.readIntPixels(): IntArray? {
     val bytePixels = readPixels() ?: return null
     return convertToIntColorPixels(bytePixels, imageInfo.colorType)
 }
 
+/**
+ * Returns a log string of this SkiaBitmap.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
+ */
 internal fun SkiaBitmap.toLogString(): String {
     return "SkiaBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},${colorType})"
 }
 
 
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with a background color.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testBackgrounded
+ */
 internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
     val inputBitmap = this
     val outBitmap = SkiaBitmap().apply {
@@ -91,6 +121,11 @@ internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
     return outBitmap
 }
 
+/**
+ * Blurs this SkiaBitmap with the specified radius.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testBlur
+ */
 internal fun SkiaBitmap.blur(radius: Int) {
     val imageWidth = this.width
     val imageHeight = this.height
@@ -99,6 +134,11 @@ internal fun SkiaBitmap.blur(radius: Int) {
     this.installIntPixels(pixels)
 }
 
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with a circle cropped.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testCircleCropped
+ */
 internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
@@ -136,45 +176,11 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     return outBitmap
 }
 
-internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
-    val inputBitmap = this
-    val outBitmap = SkiaBitmap().apply {
-        allocPixels(inputBitmap.imageInfo)
-    }
-    val canvas = Canvas(outBitmap)
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
-    val x = if (horizontal) outBitmap.width.toFloat() else 0f
-    val y = if (!horizontal) outBitmap.height.toFloat() else 0f
-    canvas.save()
-    canvas.translate(x, y)
-    canvas.scale(if (horizontal) -1f else 1f, if (!horizontal) -1f else 1f)
-    canvas.drawImage(image = sourceImage, left = 0f, top = 0f)
-    canvas.restore()
-    return outBitmap
-}
-
-internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
-    val inputBitmap = this
-    val newWidth = mapping.newWidth
-    val newHeight = mapping.newHeight
-    val outBitmap = SkiaBitmap().apply {
-        val inputImageInfo = inputBitmap.imageInfo
-        allocPixels(inputImageInfo.withWidthHeight(width = newWidth, height = newHeight))
-    }
-    val canvas = Canvas(outBitmap)
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
-    val paint = Paint().apply {
-        isAntiAlias = true
-    }
-    canvas.drawImageRect(
-        image = sourceImage,
-        src = mapping.srcRect.toSkiaRect(),
-        dst = mapping.destRect.toSkiaRect(),
-        paint = paint,
-    )
-    return outBitmap
-}
-
+/**
+ * Masks this SkiaBitmap with the specified color.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testMask
+ */
 internal fun SkiaBitmap.mask(maskColor: Int) {
     val canvas = Canvas(this)
     val paint = Paint().apply {
@@ -188,6 +194,11 @@ internal fun SkiaBitmap.mask(maskColor: Int) {
     )
 }
 
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with rounded corners.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testRoundedCornered
+ */
 internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
     val inputBitmap = this
     val outBitmap = SkiaBitmap().apply {
@@ -214,6 +225,11 @@ internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
     return outBitmap
 }
 
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap rotated by the specified angle.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testRotated
+ */
 internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
     val inputBitmap = this
     val inputSize = Size(inputBitmap.width, inputBitmap.height)
@@ -237,6 +253,60 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
     return outBitmap
 }
 
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap flipped horizontally or vertically.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testFlipped
+ */
+internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
+    val inputBitmap = this
+    val outBitmap = SkiaBitmap().apply {
+        allocPixels(inputBitmap.imageInfo)
+    }
+    val canvas = Canvas(outBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val x = if (horizontal) outBitmap.width.toFloat() else 0f
+    val y = if (!horizontal) outBitmap.height.toFloat() else 0f
+    canvas.save()
+    canvas.translate(x, y)
+    canvas.scale(if (horizontal) -1f else 1f, if (!horizontal) -1f else 1f)
+    canvas.drawImage(image = sourceImage, left = 0f, top = 0f)
+    canvas.restore()
+    return outBitmap
+}
+
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap resized to the specified size.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testMapping
+ */
+internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
+    val inputBitmap = this
+    val newWidth = mapping.newWidth
+    val newHeight = mapping.newHeight
+    val outBitmap = SkiaBitmap().apply {
+        val inputImageInfo = inputBitmap.imageInfo
+        allocPixels(inputImageInfo.withWidthHeight(width = newWidth, height = newHeight))
+    }
+    val canvas = Canvas(outBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val paint = Paint().apply {
+        isAntiAlias = true
+    }
+    canvas.drawImageRect(
+        image = sourceImage,
+        src = mapping.srcRect.toSkiaRect(),
+        dst = mapping.destRect.toSkiaRect(),
+        paint = paint,
+    )
+    return outBitmap
+}
+
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap scaled by the specified factor.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testScaled
+ */
 internal fun SkiaBitmap.scaled(scaleFactor: Float): SkiaBitmap {
     val inputBitmap = this
     val scaledWidth = ceil(width * scaleFactor).toInt()
@@ -261,6 +331,8 @@ internal fun SkiaBitmap.scaled(scaleFactor: Float): SkiaBitmap {
 
 /**
  * Returns the Color at the specified location.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testGetPixel
  */
 fun SkiaBitmap.getPixel(x: Int, y: Int): Int {
     val bitmap = this

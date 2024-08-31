@@ -23,6 +23,11 @@ import okio.Path
 import okio.buffer
 import okio.use
 
+/**
+ * Get the cache file of the data source
+ *
+ * @see com.github.panpf.sketch.core.nonjscommon.test.source.DataSourceNonJsCommonTest.testCacheFile
+ */
 @Throws(IOException::class)
 actual fun DataSource.cacheFile(sketch: Sketch): Path = runBlocking {
     val resultCache = sketch.resultCache

@@ -14,7 +14,6 @@ import kotlin.test.assertFails
 import kotlin.test.assertTrue
 
 class DataSourceNonJsCommonTest {
-    // TODO test
 
     @Test
     fun testCacheFile() = runTest {

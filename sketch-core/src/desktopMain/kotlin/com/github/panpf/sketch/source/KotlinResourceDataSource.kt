@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
@@ -25,6 +27,11 @@ import okio.Source
 import okio.source
 import java.io.IOException
 
+/**
+ * Kotlin resource data source, used to load pictures from the resources of the Kotlin project
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.source.KotlinResourceDataSourceTest
+ */
 class KotlinResourceDataSource constructor(
     val resourcePath: String,
 ) : DataSource {

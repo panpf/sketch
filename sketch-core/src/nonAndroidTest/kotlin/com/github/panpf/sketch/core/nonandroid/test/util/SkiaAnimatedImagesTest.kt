@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
+import kotlin.test.Test
+
 class SkiaAnimatedImagesTest {
-    // TODO test
+
+    @Test
+    fun testCodecToLogString() {
+        // TODO test
+    }
 }

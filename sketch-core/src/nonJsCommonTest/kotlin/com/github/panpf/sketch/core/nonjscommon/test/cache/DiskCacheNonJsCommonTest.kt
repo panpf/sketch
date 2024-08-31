@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.core.jscommon.test.cache
+package com.github.panpf.sketch.core.nonjscommon.test.cache
 
 import kotlin.test.Test
 
-class DiskCacheJsCommonTest {
+class DiskCacheNonJsCommonTest {
 
     @Test
     fun testPlatformDefaultDiskCacheMaxSize() {

@@ -28,8 +28,10 @@ import java.nio.file.Paths
  * Windows: 'C:\Program Files\hellokmp\app\resources'
  * Linux: '/opt/hellokmp/lib/app/resources'
  * dev: null
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.JvmUtilsTest.testGetComposeResourcesPath
  */
-fun getComposeResourcesPath(): String? {
+internal fun getComposeResourcesPath(): String? {
     return System.getProperty("compose.application.resources.dir")
         ?.trim()
         ?.takeIf { it.isNotEmpty() }
@@ -43,8 +45,10 @@ fun getComposeResourcesPath(): String? {
  * Windows: 'C:\Program Files\hellokmp\app\composeApp-desktop-55c1f2d3ee1433be9f95b1912fbd.jar'
  * Linux: '/opt/hellokmp/lib/app/composeApp-desktop-e1e452276759301f909baa97e6a11ff4.jar'
  * dev: '/Users/panpf/Workspace/KotlinProjectDesktop/composeApp/build/classes/kotlin/desktop/main'
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.JvmUtilsTest.testGetJarPath
  */
-fun getJarPath(aclass: Class<*>): String? {
+internal fun getJarPath(aclass: Class<*>): String? {
     try {
         val codeSource = aclass.protectionDomain.codeSource
         if (codeSource != null) {

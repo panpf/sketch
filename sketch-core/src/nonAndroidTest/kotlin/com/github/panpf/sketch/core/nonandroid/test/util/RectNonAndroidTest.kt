@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
+import kotlin.test.Test
+
 class RectNonAndroidTest {
-    // TODO test
+
+    @Test
+    fun testToSkiaRect() {
+        // TODO test
+    }
 }

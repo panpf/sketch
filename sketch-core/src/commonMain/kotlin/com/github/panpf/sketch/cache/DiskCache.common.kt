@@ -276,17 +276,24 @@ interface DiskCache : Closeable {
 }
 
 /**
- * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testPlatformDefaultDiskCacheMaxSize
+ * Get the default maximum size of the disk cache
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.cache.DiskCacheJsCommonTest.testPlatformDefaultDiskCacheMaxSize
+ * @see com.github.panpf.sketch.core.nonjscommon.test.cache.DiskCacheNonJsCommonTest.testPlatformDefaultDiskCacheMaxSize
  */
 expect fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long?
 
 /**
+ * Result cache key
+ *
  * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testResultCacheKey
  */
 val RequestContext.resultCacheKey: String
     get() = cacheKey
 
 /**
+ * Download cache key
+ *
  * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testDownloadCacheKey
  */
 val ImageRequest.downloadCacheKey: String

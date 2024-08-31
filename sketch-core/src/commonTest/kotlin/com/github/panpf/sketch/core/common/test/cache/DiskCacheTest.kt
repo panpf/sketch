@@ -199,11 +199,6 @@ class DiskCacheTest {
 
 
     @Test
-    fun testPlatformDefaultDiskCacheMaxSize() {
-        // TODO test: platformDefaultDiskCacheMaxSize
-    }
-
-    @Test
     fun testDownloadCacheKey() {
         // TODO test: downloadCacheKey
     }

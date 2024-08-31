@@ -18,6 +18,11 @@ package com.github.panpf.sketch.util
 
 import org.jetbrains.skia.Codec
 
+/**
+ * Get the string applicable to the log
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaAnimatedImagesTest.testCodecToLogString
+ */
 internal fun Codec.toLogString(): String {
     return "Codec@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},${colorType})"
 }

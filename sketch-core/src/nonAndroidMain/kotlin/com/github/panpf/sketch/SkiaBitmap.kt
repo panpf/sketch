@@ -20,5 +20,10 @@ import org.jetbrains.skia.ImageInfo
 
 typealias SkiaBitmap = org.jetbrains.skia.Bitmap
 
+/**
+ * Create a new [SkiaBitmap] with the specified [ImageInfo] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapTest.testSkiaBitmap
+ */
 fun SkiaBitmap(imageInfo: ImageInfo): SkiaBitmap = SkiaBitmap()
     .apply { allocPixels(imageInfo) }

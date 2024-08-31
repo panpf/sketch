@@ -20,6 +20,11 @@ import com.github.panpf.sketch.Sketch
 import okio.IOException
 import okio.Path
 
+/**
+ * Cache the image file to the disk
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.source.DataSourceJsCommonTest.testCacheFile
+ */
 @Throws(IOException::class)
 actual fun DataSource.cacheFile(sketch: Sketch): Path {
     throw IOException("Disk cache is not supported in JS")
