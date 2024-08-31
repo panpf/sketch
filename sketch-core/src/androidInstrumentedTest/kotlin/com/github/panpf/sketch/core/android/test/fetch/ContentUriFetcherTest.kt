@@ -29,6 +29,13 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ContentUriFetcherTest {
 
+    // TODO test
+
+    @Test
+    fun testIsContentUri() {
+        // TODO test
+    }
+
     @Test
     fun testFactory() {
         val (context, sketch) = getTestContextAndSketch()
@@ -75,7 +82,4 @@ class ContentUriFetcherTest {
         }.getOrThrow().dataSource
         Assert.assertTrue(source is ContentDataSource)
     }
-
-    // TODO isContentUri
-    // TODO test
 }

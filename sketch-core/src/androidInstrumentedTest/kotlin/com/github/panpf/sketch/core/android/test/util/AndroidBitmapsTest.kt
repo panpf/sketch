@@ -58,8 +58,15 @@ class AndroidBitmapsTest {
         )
     }
 
-    // TODO test configOrNull
-    // TODO test isImmutable
+    @Test
+    fun testConfigOrNull() {
+        // TODO test
+    }
+
+    @Test
+    fun testIsImmutable() {
+        // TODO test
+    }
 
     @Test
     fun testSafeConfig() {
@@ -76,7 +83,10 @@ class AndroidBitmapsTest {
         // Unable to create Bitmap with null config
     }
 
-    // TODO test getMutableCopy
+    @Test
+    fun testGetMutableCopy() {
+        // TODO test
+    }
 
     @Test
     fun testToInfoString() {
@@ -93,8 +103,6 @@ class AndroidBitmapsTest {
         // Unable to create Bitmap with null config
     }
 
-    // TODO test toLogString
-
     @Test
     fun testToShortInfoString() {
         Assert.assertEquals(
@@ -110,7 +118,15 @@ class AndroidBitmapsTest {
         // Unable to create Bitmap with null config
     }
 
-    // TODO test backgrounded
+    @Test
+    fun testToLogString() {
+        // TODO test
+    }
+
+    @Test
+    fun testBackgrounded() {
+        // TODO test
+    }
 
     @Test
     fun testBlur() {
@@ -132,11 +148,30 @@ class AndroidBitmapsTest {
         }
     }
 
-    // TODO test circleCropped
-    // TODO test mapping
-    // TODO test mask
-    // TODO test roundedCornered
-    // TODO test rotated
+    @Test
+    fun testCircleCropped() {
+        // TODO test
+    }
+
+    @Test
+    fun testMask() {
+        // TODO test
+    }
+
+    @Test
+    fun testRoundedCornered() {
+        // TODO test
+    }
+
+    @Test
+    fun testRotated() {
+        // TODO test
+    }
+
+    @Test
+    fun testMapping() {
+        // TODO test
+    }
 
     @Test
     fun testScaled() {
@@ -151,7 +186,10 @@ class AndroidBitmapsTest {
         }
     }
 
-    // TODO test isAndSupportHardware
+    @Test
+    fun testIsHardware() {
+        // TODO test
+    }
 
     @Test
     fun testGetBytesPerPixel() {
@@ -167,5 +205,8 @@ class AndroidBitmapsTest {
         }
     }
 
-    // TODO test calculateBitmapByteCount
+    @Test
+    fun testCalculateBitmapByteCount() {
+        // TODO test
+    }
 }

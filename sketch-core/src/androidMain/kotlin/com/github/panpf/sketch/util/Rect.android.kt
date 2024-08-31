@@ -16,6 +16,16 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Convert Sketch Rect to Android Rect
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.RectAndroidTest.testToAndroidRect
+ */
 fun Rect.toAndroidRect(): android.graphics.Rect = android.graphics.Rect(left, top, right, bottom)
 
+/**
+ * Convert Android Rect to Sketch Rect
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.RectAndroidTest.testToSketchRect
+ */
 fun android.graphics.Rect.toSketchRect(): Rect = Rect(left, top, right, bottom)

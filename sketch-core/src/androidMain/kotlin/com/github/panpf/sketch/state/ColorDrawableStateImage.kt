@@ -28,20 +28,42 @@ import com.github.panpf.sketch.util.ColorFetcher
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
 
+/**
+ * Use color as the [StateImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testIntColorDrawableStateImage
+ */
 fun IntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
     ColorDrawableStateImage(IntColor(color))
 
+/**
+ * Use color as the [StateImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testResColorDrawableStateImage
+ */
 fun ResColorDrawableStateImage(@ColorRes resId: Int): ColorDrawableStateImage =
     ColorDrawableStateImage(ResColor(resId))
 
+/**
+ * Use color as the [StateImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testColorDrawableStateImageIntColor
+ */
 fun ColorDrawableStateImage(color: IntColor): ColorDrawableStateImage =
     ColorDrawableStateImage(color as ColorFetcher)
 
+/**
+ * Use color as the [StateImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testColorDrawableStateImageResColor
+ */
 fun ColorDrawableStateImage(color: ResColor): ColorDrawableStateImage =
     ColorDrawableStateImage(color as ColorFetcher)
 
 /**
  * Use color as the state [Drawable]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest
  */
 class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
 

@@ -28,6 +28,11 @@ import android.util.Log
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLContext
 
+/**
+ * OpenGL texture helper, used to obtain the maximum texture size supported by OpenGL
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.OpenGLTextureHelperTest
+ */
 object OpenGLTextureHelper {
 
     private val impl: Impl = when {

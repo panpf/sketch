@@ -18,6 +18,11 @@ package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.AndroidBitmapImage
 
+/**
+ * Android Bitmap Image Cache Value
+ *
+ * @see com.github.panpf.sketch.core.android.test.cache.AndroidBitmapImageValueTest
+ */
 class AndroidBitmapImageValue(
     override val image: AndroidBitmapImage,
     override val extras: Map<String, Any?>? = null,

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.source
 
 import android.content.Context
@@ -26,6 +28,8 @@ import java.io.IOException
 
 /**
  * Provides access to local file image data
+ *
+ * @see com.github.panpf.sketch.core.android.test.source.DrawableDataSourceTest
  */
 class DrawableDataSource constructor(
     val context: Context,

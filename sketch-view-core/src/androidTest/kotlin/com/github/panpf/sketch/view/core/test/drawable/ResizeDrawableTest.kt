@@ -24,7 +24,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.ResizeDrawable
-import com.github.panpf.sketch.drawable.toLogString
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
@@ -34,6 +33,7 @@ import com.github.panpf.sketch.test.utils.getDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toLogString
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

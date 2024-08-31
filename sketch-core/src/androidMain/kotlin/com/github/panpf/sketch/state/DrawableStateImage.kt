@@ -27,16 +27,33 @@ import com.github.panpf.sketch.drawable.RealEqualityDrawable
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
 
+/**
+ * [DrawableEqualizer] as [StateImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testAsStateImage
+ */
 fun DrawableEqualizer.asStateImage(): DrawableStateImage = DrawableStateImage(this)
 
+/**
+ * Create a [DrawableStateImage] with [DrawableEqualizer]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
+ */
 fun DrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
     DrawableStateImage(RealEqualityDrawable(drawable))
 
+/**
+ * Create a [DrawableStateImage] with resource drawable
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
+ */
 fun DrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
     DrawableStateImage(ResDrawable(resId))
 
 /**
  * Use [Drawable] as the state [Drawable]
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
 class DrawableStateImage(
     val drawableFetcher: DrawableFetcher

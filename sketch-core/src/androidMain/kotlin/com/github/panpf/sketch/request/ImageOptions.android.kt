@@ -32,7 +32,9 @@ import com.github.panpf.sketch.util.ResColor
 
 
 /**
- * Set the resize size
+ * Use the screen size as the resize size
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testSizeWithDisplay
  */
 fun ImageOptions.Builder.sizeWithDisplay(context: Context): ImageOptions.Builder =
     apply {
@@ -43,56 +45,76 @@ fun ImageOptions.Builder.sizeWithDisplay(context: Context): ImageOptions.Builder
 
 /**
  * Set Drawable placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
 fun ImageOptions.Builder.placeholder(drawable: DrawableEqualizer): ImageOptions.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
 fun ImageOptions.Builder.placeholder(@DrawableRes resId: Int): ImageOptions.Builder =
     placeholder(DrawableStateImage(resId))
 
 /**
  * Set Color placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
 fun ImageOptions.Builder.placeholder(color: IntColor): ImageOptions.Builder =
     placeholder(ColorDrawableStateImage(color))
 
 /**
  * Set Color placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
 fun ImageOptions.Builder.placeholder(color: ResColor): ImageOptions.Builder =
     placeholder(ColorDrawableStateImage(color))
 
+
 /**
  * Set Drawable placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
 fun ImageOptions.Builder.fallback(drawable: DrawableEqualizer): ImageOptions.Builder =
     fallback(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
 fun ImageOptions.Builder.fallback(@DrawableRes resId: Int): ImageOptions.Builder =
     fallback(DrawableStateImage(resId))
 
 /**
  * Set Color placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
 fun ImageOptions.Builder.fallback(color: IntColor): ImageOptions.Builder =
     fallback(ColorDrawableStateImage(color))
 
 /**
  * Set Color placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
 fun ImageOptions.Builder.fallback(color: ResColor): ImageOptions.Builder =
     fallback(ColorDrawableStateImage(color))
+
 
 /**
  * Set Drawable image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
     defaultDrawable: DrawableEqualizer,
@@ -103,6 +125,8 @@ fun ImageOptions.Builder.error(
  * Set Drawable res image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
     @DrawableRes defaultResId: Int,
@@ -113,6 +137,8 @@ fun ImageOptions.Builder.error(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
     color: IntColor,
@@ -123,15 +149,20 @@ fun ImageOptions.Builder.error(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
     color: ResColor,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageOptions.Builder = error(ColorDrawableStateImage(color), configBlock)
 
+
 /**
  * Set [Bitmap.Config] to use when creating the bitmap.
  * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
  */
 fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions.Builder = apply {
     if (bitmapConfig != null) {
@@ -144,6 +175,8 @@ fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions
 /**
  * Set [Bitmap.Config] to use when creating the bitmap.
  * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
  */
 fun ImageOptions.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageOptions.Builder =
     bitmapConfig(BitmapConfig(bitmapConfig))
@@ -153,6 +186,8 @@ fun ImageOptions.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageOptions
  * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
  */
 val ImageOptions.bitmapConfig: BitmapConfig?
     get() = BitmapConfig.valueOf(extras?.value<String>(BITMAP_CONFIG_KEY))
@@ -160,6 +195,8 @@ val ImageOptions.bitmapConfig: BitmapConfig?
 
 /**
  * Set preferred [Bitmap]'s [ColorSpace]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testColorSpace
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Builder = apply {
@@ -174,11 +211,14 @@ fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Buil
  * [Bitmap]'s [ColorSpace]
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testColorSpace
  */
 @get:RequiresApi(Build.VERSION_CODES.O)
 val ImageOptions.colorSpace: ColorSpace?
     get() = extras?.value<String>(COLOR_SPACE_NAMED_KEY)
         ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
+
 
 /**
  * From Android N (API 24), this is ignored.  The output will always be high quality.
@@ -191,6 +231,8 @@ val ImageOptions.colorSpace: ColorSpace?
  * IDCT method will be used instead.
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPreferQualityOverSpeed
  */
 @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
 fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageOptions.Builder =
@@ -213,6 +255,8 @@ fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
  * IDCT method will be used instead.
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPreferQualityOverSpeed
  */
 @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
 val ImageOptions.preferQualityOverSpeed: Boolean?

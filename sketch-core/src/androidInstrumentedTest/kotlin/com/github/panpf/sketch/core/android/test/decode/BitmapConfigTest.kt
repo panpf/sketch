@@ -33,6 +33,11 @@ import org.junit.runner.RunWith
 class BitmapConfigTest {
 
     @Test
+    fun testBitmapConfig() {
+        // TODO test
+    }
+
+    @Test
     fun testIsLowQuality() {
         Assert.assertTrue(BitmapConfig.LowQuality.isLowQuality)
         Assert.assertFalse(BitmapConfig.HighQuality.isLowQuality)

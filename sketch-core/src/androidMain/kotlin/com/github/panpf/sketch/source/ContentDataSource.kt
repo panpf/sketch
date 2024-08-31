@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.source
 
 import android.content.Context
@@ -31,6 +33,8 @@ import java.io.IOException
 
 /**
  * Provides access to image data in content resources
+ *
+ * @see com.github.panpf.sketch.core.android.test.source.ContentDataSourceTest
  */
 class ContentDataSource constructor(
     val context: Context,

@@ -44,7 +44,10 @@ class AssetUriFetcherTest {
         )
     }
 
-    // TODO isAssetUri
+    @Test
+    fun testIsAssetUri() {
+        // TODO test
+    }
 
     @Test
     fun testFactory() {

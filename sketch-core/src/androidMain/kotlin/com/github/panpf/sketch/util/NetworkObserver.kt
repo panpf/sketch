@@ -25,6 +25,11 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 
+/**
+ * Network observer, used to monitor network changes
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.NetworkObserverTest
+ */
 fun NetworkObserver(context: Context): NetworkObserver =
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
         NetworkObserver21(context)

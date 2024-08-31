@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.drawable
 
 import android.annotation.SuppressLint
@@ -39,6 +41,8 @@ interface DrawableFetcher : Key {
 
 /**
  * Get Drawable from resource
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.ResDrawableTest
  */
 class ResDrawable constructor(
     val packageName: String? = null,
@@ -91,7 +95,12 @@ class ResDrawable constructor(
     }
 }
 
-class RealDrawable(val drawable: Drawable) : DrawableFetcher {
+/**
+ * Get Drawable from real Drawable
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.RealDrawableTest
+ */
+class RealDrawable constructor(val drawable: Drawable) : DrawableFetcher {
 
     override val key: String = "RealDrawable($drawable)"
 
@@ -116,7 +125,12 @@ class RealDrawable(val drawable: Drawable) : DrawableFetcher {
     }
 }
 
-class RealEqualityDrawable(val wrapper: DrawableEqualizer) : DrawableFetcher {
+/**
+ * Get Drawable from real DrawableEqualizer
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.RealEqualityDrawableTest
+ */
+class RealEqualityDrawable constructor(val wrapper: DrawableEqualizer) : DrawableFetcher {
 
     override val key: String = "RealEqualityDrawable(${wrapper.key})"
 
@@ -141,7 +155,12 @@ class RealEqualityDrawable(val wrapper: DrawableEqualizer) : DrawableFetcher {
     }
 }
 
-class RealColorDrawable(@ColorInt val color: Int) : DrawableFetcher {
+/**
+ * Get Drawable from real Color
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.RealColorDrawableTest
+ */
+class RealColorDrawable constructor(@ColorInt val color: Int) : DrawableFetcher {
 
     override val key: String = "RealColorDrawable($color)"
 
@@ -166,7 +185,12 @@ class RealColorDrawable(@ColorInt val color: Int) : DrawableFetcher {
     }
 }
 
-class ColorFetcherDrawable(val color: ColorFetcher) : DrawableFetcher {
+/**
+ * Get Drawable from ColorFetcher
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.ColorFetcherDrawableTest
+ */
+class ColorFetcherDrawable constructor(val color: ColorFetcher) : DrawableFetcher {
 
     override val key: String = "ColorFetcherDrawable(${color.key})"
 
@@ -191,7 +215,12 @@ class ColorFetcherDrawable(val color: ColorFetcher) : DrawableFetcher {
     }
 }
 
-class ResColorDrawable(@ColorRes val resId: Int) : DrawableFetcher {
+/**
+ * Get Drawable from resource color
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.ResColorDrawableTest
+ */
+class ResColorDrawable constructor(@ColorRes val resId: Int) : DrawableFetcher {
 
     override val key: String = "ResColorDrawable($resId)"
 

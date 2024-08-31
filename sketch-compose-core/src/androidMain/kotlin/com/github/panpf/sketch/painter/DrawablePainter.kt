@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.Ltr
 import androidx.compose.ui.unit.LayoutDirection.Rtl
 import com.github.panpf.sketch.drawable.DrawableEqualizer
-import com.github.panpf.sketch.drawable.toLogString
+import com.github.panpf.sketch.util.toLogString
 import kotlin.math.roundToInt
 
 /**

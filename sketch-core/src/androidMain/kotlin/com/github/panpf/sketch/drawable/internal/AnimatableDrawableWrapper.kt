@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.drawable.internal
 
 import android.graphics.drawable.Animatable
@@ -29,6 +31,8 @@ import com.github.panpf.sketch.util.requiredMainThread
 
 /**
  * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.internal.AnimatableDrawableWrapperTest
  */
 abstract class AnimatableDrawableWrapper constructor(
     drawable: Drawable,

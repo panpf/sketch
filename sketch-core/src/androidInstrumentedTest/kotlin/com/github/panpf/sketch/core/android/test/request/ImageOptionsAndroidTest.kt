@@ -5,18 +5,18 @@ import android.graphics.Color
 import android.graphics.ColorSpace
 import android.os.Build
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import kotlin.test.Test
@@ -30,44 +30,128 @@ import kotlin.test.assertTrue
 class ImageOptionsAndroidTest {
 
     @Test
-    fun testIsEmpty() {
-        ImageOptions().apply {
-            assertTrue(this.isEmpty())
-            assertFalse(this.isNotEmpty())
-            assertNull(this.bitmapConfig)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                assertNull(this.colorSpace)
+    fun testSizeWithDisplay() {
+        // TODO test
+    }
+
+    @Test
+    fun testPlaceholder() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(placeholder)
             }
-            @Suppress("DEPRECATION")
-            assertNull(this.preferQualityOverSpeed)
-        }
 
-        ImageOptions {
-            bitmapConfig(Bitmap.Config.ALPHA_8)
-        }.apply {
-            assertFalse(this.isEmpty())
-            assertTrue(this.isNotEmpty())
-            assertNotNull(this.bitmapConfig)
-        }
+            placeholder(IntColorDrawableStateImage(Color.BLUE))
+            build().apply {
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
+            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ImageOptions {
-                colorSpace(ColorSpace.Named.BT709)
-            }.apply {
-                assertFalse(this.isEmpty())
-                assertTrue(this.isNotEmpty())
-                assertNotNull(this.colorSpace)
+            placeholder(ColorDrawableEqualizer(Color.GREEN))
+            build().apply {
+                assertEquals(true, placeholder is DrawableStateImage)
+            }
+
+            placeholder(android.R.drawable.bottom_bar)
+            build().apply {
+                assertEquals(
+                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    placeholder
+                )
+            }
+
+            placeholder(null)
+            build().apply {
+                assertNull(placeholder)
             }
         }
+    }
 
-        ImageOptions {
-            @Suppress("DEPRECATION")
-            preferQualityOverSpeed(true)
-        }.apply {
-            assertFalse(this.isEmpty())
-            assertTrue(this.isNotEmpty())
-            @Suppress("DEPRECATION")
-            (assertNotNull(this.preferQualityOverSpeed))
+    @Test
+    fun testFallback() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(fallback)
+            }
+
+            fallback(IntColorDrawableStateImage(Color.BLUE))
+            build().apply {
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
+            }
+
+            fallback(ColorDrawableEqualizer(Color.GREEN))
+            build().apply {
+                assertEquals(true, fallback is DrawableStateImage)
+            }
+
+            fallback(android.R.drawable.bottom_bar)
+            build().apply {
+                assertEquals(
+                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    fallback
+                )
+            }
+
+            fallback(null)
+            build().apply {
+                assertNull(fallback)
+            }
+
+            // TODO test: IntColor
+            // TODO test: ResColor
+        }
+    }
+
+    @Test
+    fun testError() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(error)
+            }
+
+            error(IntColorDrawableStateImage(Color.BLUE))
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(IntColorDrawableStateImage(Color.BLUE)),
+                    error
+                )
+            }
+
+            error(ColorDrawableEqualizer(Color.GREEN))
+            build().apply {
+                assertEquals(true, error is ErrorStateImage)
+            }
+
+            error(android.R.drawable.bottom_bar)
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    error
+                )
+            }
+
+            error(android.R.drawable.bottom_bar) {
+                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+            }
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
+                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+                    },
+                    error
+                )
+            }
+
+            error()
+            build().apply {
+                assertNull(error)
+            }
+
+            error {
+                addState(UriInvalidCondition, android.R.drawable.btn_dialog)
+            }
+            build().apply {
+                assertNotNull(error)
+            }
         }
     }
 
@@ -157,6 +241,48 @@ class ImageOptionsAndroidTest {
     }
 
     @Test
+    fun testIsEmpty() {
+        ImageOptions().apply {
+            assertTrue(this.isEmpty())
+            assertFalse(this.isNotEmpty())
+            assertNull(this.bitmapConfig)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                assertNull(this.colorSpace)
+            }
+            @Suppress("DEPRECATION")
+            assertNull(this.preferQualityOverSpeed)
+        }
+
+        ImageOptions {
+            bitmapConfig(Bitmap.Config.ALPHA_8)
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.bitmapConfig)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ImageOptions {
+                colorSpace(ColorSpace.Named.BT709)
+            }.apply {
+                assertFalse(this.isEmpty())
+                assertTrue(this.isNotEmpty())
+                assertNotNull(this.colorSpace)
+            }
+        }
+
+        ImageOptions {
+            @Suppress("DEPRECATION")
+            preferQualityOverSpeed(true)
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            @Suppress("DEPRECATION")
+            (assertNotNull(this.preferQualityOverSpeed))
+        }
+    }
+
+    @Test
     fun testMerged() {
         ImageOptions().apply {
             assertEquals(null, this.bitmapConfig)
@@ -238,123 +364,5 @@ class ImageOptionsAndroidTest {
         assertEquals(optionsList[0], optionsList[0])
         assertNotEquals(optionsList[0], Any())
         assertNotEquals(optionsList[0], null as ImageOptions?)
-    }
-
-    @Test
-    fun testPlaceholder() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(placeholder)
-            }
-
-            placeholder(IntColorDrawableStateImage(Color.BLUE))
-            build().apply {
-                assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
-            }
-
-            placeholder(ColorDrawableEqualizer(Color.GREEN))
-            build().apply {
-                assertEquals(true, placeholder is DrawableStateImage)
-            }
-
-            placeholder(android.R.drawable.bottom_bar)
-            build().apply {
-                assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
-                    placeholder
-                )
-            }
-
-            placeholder(null)
-            build().apply {
-                assertNull(placeholder)
-            }
-        }
-    }
-
-    @Test
-    fun testFallback() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(fallback)
-            }
-
-            fallback(IntColorDrawableStateImage(Color.BLUE))
-            build().apply {
-                assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
-            }
-
-            fallback(ColorDrawableEqualizer(Color.GREEN))
-            build().apply {
-                assertEquals(true, fallback is DrawableStateImage)
-            }
-
-            fallback(android.R.drawable.bottom_bar)
-            build().apply {
-                assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
-                    fallback
-                )
-            }
-
-            fallback(null)
-            build().apply {
-                assertNull(fallback)
-            }
-        }
-    }
-
-    @Test
-    fun testError() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(error)
-            }
-
-            error(IntColorDrawableStateImage(Color.BLUE))
-            build().apply {
-                assertEquals(
-                    ErrorStateImage(IntColorDrawableStateImage(Color.BLUE)),
-                    error
-                )
-            }
-
-            error(ColorDrawableEqualizer(Color.GREEN))
-            build().apply {
-                assertEquals(true, error is ErrorStateImage)
-            }
-
-            error(android.R.drawable.bottom_bar)
-            build().apply {
-                assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
-                    error
-                )
-            }
-
-            error(android.R.drawable.bottom_bar) {
-                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-            }
-            build().apply {
-                assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-                    },
-                    error
-                )
-            }
-
-            error()
-            build().apply {
-                assertNull(error)
-            }
-
-            error {
-                addState(UriInvalidCondition, android.R.drawable.btn_dialog)
-            }
-            build().apply {
-                assertNotNull(error)
-            }
-        }
     }
 }

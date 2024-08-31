@@ -33,11 +33,11 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.drawable.calculateFitBounds
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.calculateFitBounds
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import org.junit.Assert

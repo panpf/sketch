@@ -50,6 +50,6 @@ class SketchAndroidTest {
 
     @Test
     fun testPlatformComponents() {
-        // TODO
+        // TODO test
     }
 }

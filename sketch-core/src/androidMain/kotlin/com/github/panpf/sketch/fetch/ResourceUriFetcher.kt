@@ -35,6 +35,8 @@ import com.github.panpf.sketch.util.Uri
  * Get image resources from [ImageRequest].context.resources using resource type and resource name
  * <br>
  * Sample: 'android.resource:///drawable/ic_launcher'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest.testNewResourceUri
  */
 fun newResourceUri(resType: String, resName: String): String =
     "${ResourceUriFetcher.SCHEME}:///$resType/$resName"
@@ -43,6 +45,8 @@ fun newResourceUri(resType: String, resName: String): String =
  * Get image resources from [ImageRequest].context.resources using resource id
  * <br>
  * Sample: 'android.resource:///1031232'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest.testNewResourceUri
  */
 fun newResourceUri(resId: Int): String = "${ResourceUriFetcher.SCHEME}:///$resId"
 
@@ -50,6 +54,8 @@ fun newResourceUri(resId: Int): String = "${ResourceUriFetcher.SCHEME}:///$resId
  * Get the image resource from the specified package using the resource type and resource name
  * <br>
  * Sample: 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest.testNewResourceUri
  */
 fun newResourceUri(packageName: String, resType: String, resName: String): String =
     "${ResourceUriFetcher.SCHEME}://$packageName/$resType/$resName"
@@ -58,6 +64,8 @@ fun newResourceUri(packageName: String, resType: String, resName: String): Strin
  * Get the image resource from the specified package using the resource id
  * <br>
  * Sample: 'android.resource://com.github.panpf.sketch.sample/1031232'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest.testNewResourceUri
  */
 fun newResourceUri(packageName: String, resId: Int): String =
     "${ResourceUriFetcher.SCHEME}://$packageName/$resId"
@@ -70,6 +78,8 @@ fun newResourceUri(packageName: String, resId: Int): String =
  * * 'android.resource:///1031232'
  * * 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
  * * 'android.resource://com.github.panpf.sketch.sample/1031232'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest.testIsResourceUri
  */
 fun isResourceUri(uri: Uri): Boolean =
     ResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
@@ -80,6 +90,8 @@ fun isResourceUri(uri: Uri): Boolean =
  * * 'android.resource:///1031232'
  * * 'android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher'
  * * 'android.resource://com.github.panpf.sketch.sample/1031232'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest
  */
 class ResourceUriFetcher(
     val sketch: Sketch, // TODO remove

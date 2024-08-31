@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.drawable
 
 import android.content.res.ColorStateList
@@ -30,10 +32,14 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.calculateFitBounds
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.IconDrawableTest
  */
 class IconDrawable constructor(
     val icon: Drawable,

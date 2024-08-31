@@ -24,6 +24,8 @@ import com.github.panpf.sketch.util.ResColor
 
 /**
  * Add a custom error state
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ErrorStateImageAndroidTest.testAddState
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
@@ -34,6 +36,8 @@ fun ErrorStateImage.Builder.addState(
 
 /**
  * Add a custom error state
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ErrorStateImageAndroidTest.testAddState
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
@@ -44,6 +48,8 @@ fun ErrorStateImage.Builder.addState(
 
 /**
  * Add a custom error state
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ErrorStateImageAndroidTest.testAddState
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
@@ -54,6 +60,8 @@ fun ErrorStateImage.Builder.addState(
 
 /**
  * Add a custom error state
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.ErrorStateImageAndroidTest.testAddState
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,

@@ -243,8 +243,9 @@ data class ImageRequest(
      * You can extend it with a trailing lambda function [configBlock]
      */
     fun newBuilder(
+        uri: String? = this.uri.toString(),
         configBlock: (Builder.() -> Unit)? = null
-    ): Builder = Builder(this).apply {
+    ): Builder = Builder(this, uri).apply {
         configBlock?.invoke(this)
     }
 
@@ -254,8 +255,9 @@ data class ImageRequest(
      * You can extend it with a trailing lambda function [configBlock]
      */
     fun newRequest(
+        uri: String? = this.uri.toString(),
         configBlock: (Builder.() -> Unit)? = null
-    ): ImageRequest = Builder(this).apply {
+    ): ImageRequest = Builder(this, uri).apply {
         configBlock?.invoke(this)
     }.build()
 
@@ -278,9 +280,9 @@ data class ImageRequest(
             this.definedRequestOptionsBuilder = RequestOptions.Builder()
         }
 
-        constructor(request: ImageRequest) {
+        constructor(request: ImageRequest, uri: String? = request.uri.toString()) {
             this.context = request.context
-            this.uri = request.uri
+            this.uri = uri.orEmpty().toUri()
             this.target = request.target
             this.defaultOptions = request.defaultOptions
             this.definedOptionsBuilder = request.definedOptions.newBuilder()

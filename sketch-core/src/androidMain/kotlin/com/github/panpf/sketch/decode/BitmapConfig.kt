@@ -25,11 +25,15 @@ import com.github.panpf.sketch.util.Key
 
 /**
  * Build a [BitmapConfig] with the specified [config]
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.BitmapConfigTest.testBitmapConfig
  */
 fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedBitmapConfig(config)
 
 /**
  * Adapt the appropriate [Bitmap.Config] according to the mimeType and set it to the [BitmapFactory.Options.inPreferredConfig] parameter
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.BitmapConfigTest
  */
 sealed interface BitmapConfig : Key {
 

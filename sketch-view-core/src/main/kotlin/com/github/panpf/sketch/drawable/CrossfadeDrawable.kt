@@ -40,6 +40,7 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.util.toLogString
 import kotlin.math.max
 import kotlin.math.roundToInt
 

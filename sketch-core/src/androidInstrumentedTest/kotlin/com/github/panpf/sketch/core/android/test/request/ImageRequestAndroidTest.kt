@@ -18,6 +18,7 @@ package com.github.panpf.sketch.core.android.test.request
 
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
 import android.graphics.ColorSpace.Named.BT709
@@ -25,20 +26,162 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.fallback
+import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
+import com.github.panpf.sketch.state.addState
+import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class ImageRequestAndroidTest {
+
+    @Test
+    fun testSizeWithDisplay() {
+        // TODO test
+    }
+
+    @Test
+    fun testPlaceholder() {
+        val context = getTestContext()
+        val imageUri = ResourceImages.jpeg.uri
+        ImageRequest(context, imageUri) {
+            build().apply {
+                assertNull(placeholder)
+            }
+
+            placeholder(IntColorDrawableStateImage(Color.BLUE))
+            build().apply {
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
+            }
+
+            placeholder(ColorDrawableEqualizer(Color.GREEN))
+            build().apply {
+                assertEquals(true, placeholder is DrawableStateImage)
+            }
+
+            placeholder(android.R.drawable.bottom_bar)
+            build().apply {
+                assertEquals(
+                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    placeholder
+                )
+            }
+
+            placeholder(null)
+            build().apply {
+                assertNull(placeholder)
+            }
+        }
+    }
+
+    @Test
+    fun testFallback() {
+        val context = getTestContext()
+        val imageUri = ResourceImages.jpeg.uri
+        ImageRequest(context, imageUri) {
+            build().apply {
+                assertNull(fallback)
+            }
+
+            fallback(IntColorDrawableStateImage(Color.BLUE))
+            build().apply {
+                assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
+            }
+
+            fallback(ColorDrawableEqualizer(Color.GREEN))
+            build().apply {
+                assertEquals(true, fallback is DrawableStateImage)
+            }
+
+            fallback(android.R.drawable.bottom_bar)
+            build().apply {
+                assertEquals(
+                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    fallback
+                )
+            }
+
+            fallback(null)
+            build().apply {
+                assertNull(fallback)
+            }
+
+            // TODO test: IntColor
+            // TODO test: ResColor
+        }
+    }
+
+    @Test
+    fun testError() {
+        val context = getTestContext()
+        val imageUri = ResourceImages.jpeg.uri
+        ImageRequest(context, imageUri) {
+            build().apply {
+                assertNull(error)
+            }
+
+            error(IntColorDrawableStateImage(Color.BLUE))
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(IntColorDrawableStateImage(Color.BLUE)),
+                    error
+                )
+            }
+
+            error(ColorDrawableEqualizer(Color.GREEN))
+            build().apply {
+                assertEquals(true, error is ErrorStateImage)
+            }
+
+            error(android.R.drawable.bottom_bar)
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    error
+                )
+            }
+
+            error(android.R.drawable.bottom_bar) {
+                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+            }
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
+                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+                    },
+                    error
+                )
+            }
+
+            error()
+            build().apply {
+                assertNull(error)
+            }
+
+            error {
+                addState(UriInvalidCondition, android.R.drawable.btn_dialog)
+            }
+            build().apply {
+                assertNotNull(error)
+            }
+        }
+    }
 
     @Test
     fun testBitmapConfig() {

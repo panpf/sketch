@@ -21,6 +21,7 @@ import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].

@@ -23,6 +23,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
+import com.github.panpf.sketch.util.toLogString
 
 fun Drawable.resize(size: Size, scale: Scale = CENTER_CROP): Drawable {
     return if (this is Animatable) {
@@ -36,7 +37,7 @@ fun Drawable.resize(size: Size, scale: Scale = CENTER_CROP): Drawable {
  * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].
  * ResizeDrawable is suitable for changing the start and end pictures to the same size when using CrossfadeDrawable to display pictures in transition, so as to avoid the start or end pictures being scaled when the transition animation starts
  */
-open class ResizeDrawable constructor(
+open class ResizeDrawable(
     drawable: Drawable,
     val size: Size,
     val scale: Scale

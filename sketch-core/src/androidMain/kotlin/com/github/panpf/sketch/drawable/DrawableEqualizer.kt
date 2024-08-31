@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.drawable
 
 import android.content.Context
@@ -28,7 +30,13 @@ import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.util.Equalizer
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.key
+import com.github.panpf.sketch.util.toLogString
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testContextGetEqualityDrawable
+ */
 fun Context.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = getDrawable(resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
@@ -36,12 +44,22 @@ fun Context.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
 }
 
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testContextGetEqualityDrawableCompat
+ */
 fun Context.getEqualityDrawableCompat(@DrawableRes resId: Int): DrawableEqualizer {
     val drawable = AppCompatResources.getDrawable(this, resId)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
     return drawable.asEquality(resId)
 }
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testResourcesGetEqualityDrawableCompat
+ */
 fun Resources.getEqualityDrawableCompat(
     @DrawableRes resId: Int,
     theme: Theme?
@@ -51,6 +69,11 @@ fun Resources.getEqualityDrawableCompat(
     return drawable.asEquality(resId)
 }
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testResourcesGetEqualityDrawableCompatForDensity
+ */
 fun Resources.getEqualityDrawableCompatForDensity(
     @DrawableRes resId: Int,
     density: Int,
@@ -61,6 +84,11 @@ fun Resources.getEqualityDrawableCompatForDensity(
     return drawable.asEquality(resId)
 }
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testResourcesGetEqualityDrawable
+ */
 @Deprecated(
     message = "Use getEqualityDrawable(Int, Int, Resources.Theme) instead.",
     replaceWith = ReplaceWith("getEqualityDrawable(resId, density, theme)")
@@ -71,6 +99,11 @@ fun Resources.getEqualityDrawable(@DrawableRes resId: Int): DrawableEqualizer {
     return drawable.asEquality(resId)
 }
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testResourcesGetEqualityDrawableTheme
+ */
 fun Resources.getEqualityDrawable(
     @DrawableRes resId: Int,
     theme: Resources.Theme?
@@ -80,6 +113,11 @@ fun Resources.getEqualityDrawable(
     return drawable.asEquality(resId)
 }
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testResourcesGetEqualityDrawableForDensity
+ */
 @Deprecated(
     message = "Use getEqualityDrawableForDensity(Int, Int, Resources.Theme) instead.",
     replaceWith = ReplaceWith("getEqualityDrawableForDensity(resId, density, theme)")
@@ -93,6 +131,11 @@ fun Resources.getEqualityDrawableForDensity(
     return drawable.asEquality(resId)
 }
 
+/**
+ * Get a comparable Drawable, resId will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testResourcesGetEqualityDrawableForDensityTheme
+ */
 fun Resources.getEqualityDrawableForDensity(
     @DrawableRes resId: Int,
     density: Int,
@@ -104,9 +147,19 @@ fun Resources.getEqualityDrawableForDensity(
 }
 
 
+/**
+ * Wrap the Drawable with a DrawableEqualizer, equalKey will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testDrawableAsEquality
+ */
 fun Drawable.asEquality(equalKey: Any): DrawableEqualizer =
     DrawableEqualizer(wrapped = this, equalityKey = equalKey)
 
+/**
+ * Wrap the ColorDrawable with a DrawableEqualizer, color will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testColorDrawableEqualizer
+ */
 fun ColorDrawableEqualizer(@ColorInt color: Int): DrawableEqualizer {
     return ColorDrawable(color).asEquality(color)
 }
@@ -117,8 +170,10 @@ fun ColorDrawableEqualizer(@ColorInt color: Int): DrawableEqualizer {
  * This will affect the equals of ImageRequest, eventually causing the AsyncImage component to be reorganized to load the image repeatedly.
  *
  * Solve this problem with wrapper
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest
  */
-class DrawableEqualizer(
+class DrawableEqualizer constructor(
     override val wrapped: Drawable,
     override val equalityKey: Any,
     private val equalityKeyString: String = key(equalityKey)

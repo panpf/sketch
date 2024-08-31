@@ -25,6 +25,8 @@ import com.github.panpf.sketch.util.Uri
 
 /**
  * Sample: 'file:///android_asset/test.png'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.AssetUriFetcherTest.testNewAssetUri
  */
 fun newAssetUri(fileName: String): String =
     "${AssetUriFetcher.SCHEME}:///${AssetUriFetcher.PATH_ROOT}/$fileName"
@@ -33,6 +35,8 @@ fun newAssetUri(fileName: String): String =
  * Check if the uri is a android asset uri
  *
  * Support 'file:///android_asset/test.png' uri
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.AssetUriFetcherTest.testIsAssetUri
  */
 fun isAssetUri(uri: Uri): Boolean =
     AssetUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
@@ -41,6 +45,8 @@ fun isAssetUri(uri: Uri): Boolean =
 
 /**
  * Support 'file:///android_asset/test.png' uri
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.AssetUriFetcherTest
  */
 class AssetUriFetcher(
     val sketch: Sketch,

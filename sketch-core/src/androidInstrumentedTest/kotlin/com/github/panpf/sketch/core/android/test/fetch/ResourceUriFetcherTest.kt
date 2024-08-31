@@ -38,6 +38,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ResourceUriFetcherTest {
 
+    // TODO test
+
     @Test
     fun testNewResourceUri() {
         assertEquals(
@@ -60,7 +62,10 @@ class ResourceUriFetcherTest {
         )
     }
 
-    // TODO isResourceUri
+    @Test
+    fun testIsResourceUri() {
+        // TODO test
+    }
 
     @Test
     fun testFactoryCreate() {
@@ -199,6 +204,4 @@ class ResourceUriFetcherTest {
                 .getOrThrow()
         }
     }
-
-    // TODO test
 }

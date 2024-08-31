@@ -28,6 +28,11 @@ interface ColorFetcher : Key {
     fun getColor(context: Context): Int
 }
 
+/**
+ * Get color from int
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.ColorFetcherTest.testResColor
+ */
 class IntColor(@ColorInt val color: Int) : ColorFetcher {
 
     override val key: String = "IntColor($color)"
@@ -49,6 +54,8 @@ class IntColor(@ColorInt val color: Int) : ColorFetcher {
 
 /**
  * Get color from resource
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.ColorFetcherTest.testResColor
  */
 class ResColor(@ColorRes val resId: Int) : ColorFetcher {
 

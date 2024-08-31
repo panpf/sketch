@@ -23,7 +23,6 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
-import com.github.panpf.sketch.drawable.toNewBitmap
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.bitmapConfig
@@ -31,12 +30,15 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.toNewBitmap
 import kotlin.math.roundToInt
 
 /**
  * Extract the icon of the installed app and convert it to Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DrawableDecoderTest
  */
-open class DrawableDecoder constructor(
+open class DrawableDecoder(
     private val requestContext: RequestContext,
     private val drawableDataSource: DrawableDataSource,
     private val mimeType: String?

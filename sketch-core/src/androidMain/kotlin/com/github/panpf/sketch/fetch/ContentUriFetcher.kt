@@ -26,11 +26,15 @@ import com.github.panpf.sketch.util.Uri
  * Check if the uri is a android content uri
  *
  * Support 'content://sample.jpg' uri
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ContentUriFetcherTest.testIsContentUri
  */
 fun isContentUri(uri: Uri): Boolean = ContentUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
 /**
  * Support 'content://sample.jpg' uri
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.ContentUriFetcherTest
  */
 class ContentUriFetcher(
     val sketch: Sketch,

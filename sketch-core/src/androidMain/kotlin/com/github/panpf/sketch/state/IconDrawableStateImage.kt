@@ -37,6 +37,11 @@ import com.github.panpf.sketch.util.Size
 
 /* ********************************************* drawable icon ********************************************* */
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: DrawableEqualizer? = null,
@@ -49,6 +54,11 @@ fun IconDrawableStateImage(
     iconTint = ResColor(iconTint),
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
@@ -61,6 +71,11 @@ fun IconDrawableStateImage(
     iconTint = ResColor(iconTint),
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: IntColor? = null,
@@ -74,6 +89,11 @@ fun IconDrawableStateImage(
 )
 
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: DrawableEqualizer? = null,
@@ -86,6 +106,11 @@ fun IconDrawableStateImage(
     iconTint = iconTint,
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     @DrawableRes background: Int? = null,
@@ -98,6 +123,11 @@ fun IconDrawableStateImage(
     iconTint = iconTint,
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     background: IntColor? = null,
@@ -111,6 +141,11 @@ fun IconDrawableStateImage(
 )
 
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     iconSize: Size? = null,
@@ -122,6 +157,11 @@ fun IconDrawableStateImage(
     iconTint = ResColor(iconTint),
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     icon: DrawableEqualizer,
     iconSize: Size? = null,
@@ -136,6 +176,11 @@ fun IconDrawableStateImage(
 
 /* ********************************************* res icon ********************************************* */
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: DrawableEqualizer? = null,
@@ -148,6 +193,11 @@ fun IconDrawableStateImage(
     iconTint = ResColor(iconTint),
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
@@ -160,6 +210,11 @@ fun IconDrawableStateImage(
     iconTint = ResColor(iconTint),
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
@@ -173,6 +228,11 @@ fun IconDrawableStateImage(
 )
 
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: DrawableEqualizer? = null,
@@ -185,6 +245,11 @@ fun IconDrawableStateImage(
     iconTint = iconTint,
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
@@ -197,6 +262,11 @@ fun IconDrawableStateImage(
     iconTint = iconTint,
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     background: IntColor? = null,
@@ -210,6 +280,11 @@ fun IconDrawableStateImage(
 )
 
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
@@ -221,6 +296,11 @@ fun IconDrawableStateImage(
     iconTint = ResColor(iconTint),
 )
 
+/**
+ * Creates an [IconDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
+ */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
@@ -237,6 +317,8 @@ fun IconDrawableStateImage(
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
  *
  * Icons are centered and always the same size
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest
  */
 class IconDrawableStateImage(
     val icon: DrawableFetcher,

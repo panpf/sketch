@@ -212,7 +212,11 @@ class ImageRequestTest {
             assertNotNull(listener)
             assertNotNull(progressListener)
         }
+
+        // TODO : uri
     }
+
+    // TODO : testNewRequest
 
     @Test
     fun testContext() {

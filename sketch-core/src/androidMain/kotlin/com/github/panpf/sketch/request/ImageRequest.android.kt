@@ -32,7 +32,9 @@ import com.github.panpf.sketch.util.ResColor
 
 
 /**
- * Set the resize size
+ * Use the screen size as the resize size
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testSizeWithDisplay
  */
 fun ImageRequest.Builder.sizeWithDisplay(context: Context): ImageRequest.Builder =
     apply {
@@ -43,56 +45,76 @@ fun ImageRequest.Builder.sizeWithDisplay(context: Context): ImageRequest.Builder
 
 /**
  * Set Drawable placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testPlaceholder
  */
 fun ImageRequest.Builder.placeholder(drawable: DrawableEqualizer): ImageRequest.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testPlaceholder
  */
 fun ImageRequest.Builder.placeholder(@DrawableRes resId: Int): ImageRequest.Builder =
     placeholder(DrawableStateImage(resId))
 
 /**
  * Set Color placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testPlaceholder
  */
 fun ImageRequest.Builder.placeholder(color: IntColor): ImageRequest.Builder =
     placeholder(ColorDrawableStateImage(color))
 
 /**
  * Set Color placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testPlaceholder
  */
 fun ImageRequest.Builder.placeholder(color: ResColor): ImageRequest.Builder =
     placeholder(ColorDrawableStateImage(color))
 
+
 /**
  * Set Drawable placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testFallback
  */
 fun ImageRequest.Builder.fallback(drawable: DrawableEqualizer): ImageRequest.Builder =
     fallback(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testFallback
  */
 fun ImageRequest.Builder.fallback(@DrawableRes resId: Int): ImageRequest.Builder =
     fallback(DrawableStateImage(resId))
 
 /**
  * Set Color placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testFallback
  */
 fun ImageRequest.Builder.fallback(color: IntColor): ImageRequest.Builder =
     fallback(ColorDrawableStateImage(color))
 
 /**
  * Set Color placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testFallback
  */
 fun ImageRequest.Builder.fallback(color: ResColor): ImageRequest.Builder =
     fallback(ColorDrawableStateImage(color))
+
 
 /**
  * Set Drawable image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
 fun ImageRequest.Builder.error(
     defaultDrawable: DrawableEqualizer,
@@ -103,6 +125,8 @@ fun ImageRequest.Builder.error(
  * Set Drawable res image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
 fun ImageRequest.Builder.error(
     @DrawableRes defaultResId: Int,
@@ -113,6 +137,8 @@ fun ImageRequest.Builder.error(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
 fun ImageRequest.Builder.error(
     color: IntColor,
@@ -123,6 +149,8 @@ fun ImageRequest.Builder.error(
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
 fun ImageRequest.Builder.error(
     color: ResColor,
@@ -135,6 +163,8 @@ const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"
 /**
  * Set [Bitmap.Config] to use when creating the bitmap.
  * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
  */
 fun ImageRequest.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageRequest.Builder = apply {
     if (bitmapConfig != null) {
@@ -147,6 +177,8 @@ fun ImageRequest.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageRequest
 /**
  * Set [Bitmap.Config] to use when creating the bitmap.
  * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
  */
 fun ImageRequest.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageRequest.Builder =
     bitmapConfig(BitmapConfig(bitmapConfig))
@@ -156,6 +188,8 @@ fun ImageRequest.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageRequest
  * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
  */
 val ImageRequest.bitmapConfig: BitmapConfig?
     get() = BitmapConfig.valueOf(extras?.value<String>(BITMAP_CONFIG_KEY))
@@ -165,6 +199,8 @@ const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"
 
 /**
  * Set preferred [Bitmap]'s [ColorSpace]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testColorSpace
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Builder = apply {
@@ -179,11 +215,14 @@ fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Buil
  * [Bitmap]'s [ColorSpace]
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testColorSpace
  */
 @get:RequiresApi(Build.VERSION_CODES.O)
 val ImageRequest.colorSpace: ColorSpace?
     get() = extras?.value<String>(COLOR_SPACE_NAMED_KEY)
         ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
+
 
 const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"
 
@@ -198,6 +237,8 @@ const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"
  * IDCT method will be used instead.
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testPreferQualityOverSpeed
  */
 @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
 fun ImageRequest.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageRequest.Builder =
@@ -220,6 +261,8 @@ fun ImageRequest.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
  * IDCT method will be used instead.
  *
  * Applied to [android.graphics.BitmapFactory.Options.inPreferQualityOverSpeed]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testPreferQualityOverSpeed
  */
 @Deprecated("From Android N (API 24), this is ignored. The output will always be high quality.")
 val ImageRequest.preferQualityOverSpeed: Boolean

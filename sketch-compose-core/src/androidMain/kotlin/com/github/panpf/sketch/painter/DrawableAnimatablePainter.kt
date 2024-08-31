@@ -19,7 +19,7 @@ package com.github.panpf.sketch.painter
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
-import com.github.panpf.sketch.drawable.toLogString
+import com.github.panpf.sketch.util.toLogString
 
 @Stable
 class DrawableAnimatablePainter(

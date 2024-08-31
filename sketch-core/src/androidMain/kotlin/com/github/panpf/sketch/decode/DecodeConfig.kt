@@ -24,6 +24,11 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 
+/**
+ * Android Bitmap Decode configuration
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.DecodeConfigTest
+ */
 class DecodeConfig {
 
     /**

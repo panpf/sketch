@@ -34,6 +34,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.util.toLogString
 import kotlin.math.roundToInt
 
 /**

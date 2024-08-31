@@ -6,6 +6,6 @@ class SketchIosTest {
 
     @Test
     fun testPlatformComponents() {
-        // TODO
+        // TODO test
     }
 }
