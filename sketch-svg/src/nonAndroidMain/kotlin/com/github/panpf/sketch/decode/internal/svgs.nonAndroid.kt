@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
@@ -28,7 +29,6 @@ import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
 import okio.buffer
 import okio.use
-import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.Paint
@@ -82,7 +82,7 @@ internal actual suspend fun decodeSvg(
     val bitmapSize = svgSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 
-    val bitmap = Bitmap().apply {
+    val bitmap = SkiaBitmap().apply {
         allocN32Pixels(bitmapSize.width, bitmapSize.height)
     }
     val canvas = Canvas(bitmap)

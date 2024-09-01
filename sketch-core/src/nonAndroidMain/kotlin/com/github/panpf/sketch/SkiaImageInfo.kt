@@ -16,12 +16,9 @@
 
 package com.github.panpf.sketch
 
-typealias SkiaBitmap = org.jetbrains.skia.Bitmap
-
 /**
- * Create a new [SkiaBitmap] with the specified [SkiaImageInfo] and allocate memory
+ * Skia Image
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapTest.testSkiaBitmap
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaImageInfoTest.testSkiaImageInfo
  */
-fun SkiaBitmap(imageInfo: SkiaImageInfo): SkiaBitmap = SkiaBitmap()
-    .apply { allocPixels(imageInfo) }
+typealias SkiaImageInfo = org.jetbrains.skia.ImageInfo

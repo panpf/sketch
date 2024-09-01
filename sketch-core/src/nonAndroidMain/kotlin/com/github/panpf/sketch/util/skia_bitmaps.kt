@@ -17,6 +17,8 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.SkiaImage
+import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.internal.ResizeMapping
@@ -26,8 +28,6 @@ import org.jetbrains.skia.BlendMode.SRC_IN
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
 import org.jetbrains.skia.ColorType
-import org.jetbrains.skia.Image
-import org.jetbrains.skia.ImageInfo
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.RRect
 import kotlin.math.ceil
@@ -116,7 +116,7 @@ internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
             color = backgroundColor
         }
     )
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
     canvas.drawImage(image = sourceImage, left = 0f, top = 0f)
     return outBitmap
 }
@@ -165,7 +165,7 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
         }
     )
     canvas.drawImageRect(
-        image = Image.makeFromBitmap(inputBitmap),
+        image = SkiaImage.makeFromBitmap(inputBitmap),
         src = resizeMapping.srcRect.toSkiaRect(),
         dst = resizeMapping.destRect.toSkiaRect(),
         paint = Paint().apply {
@@ -212,7 +212,7 @@ internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
             color = Color.BLACK
         }
     )
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
     canvas.drawImageRect(
         image = sourceImage,
         src = SkiaRect.makeWH(inputBitmap.width.toFloat(), inputBitmap.height.toFloat()),
@@ -249,7 +249,7 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
         x = inputSize.width / 2f,
         y = inputSize.height / 2f,
     )
-    canvas.drawImage(Image.makeFromBitmap(inputBitmap), 0f, 0f)
+    canvas.drawImage(SkiaImage.makeFromBitmap(inputBitmap), 0f, 0f)
     return outBitmap
 }
 
@@ -264,7 +264,7 @@ internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
         allocPixels(inputBitmap.imageInfo)
     }
     val canvas = Canvas(outBitmap)
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
     val x = if (horizontal) outBitmap.width.toFloat() else 0f
     val y = if (!horizontal) outBitmap.height.toFloat() else 0f
     canvas.save()
@@ -289,7 +289,7 @@ internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
         allocPixels(inputImageInfo.withWidthHeight(width = newWidth, height = newHeight))
     }
     val canvas = Canvas(outBitmap)
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
     val paint = Paint().apply {
         isAntiAlias = true
     }
@@ -316,7 +316,7 @@ internal fun SkiaBitmap.scaled(scaleFactor: Float): SkiaBitmap {
         allocPixels(inputImageInfo.withWidthHeight(width = scaledWidth, height = scaledHeight))
     }
     val canvas = Canvas(outBitmap)
-    val sourceImage = Image.makeFromBitmap(inputBitmap)
+    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
     val paint = Paint().apply {
         isAntiAlias = true
     }
@@ -339,7 +339,7 @@ fun SkiaBitmap.getPixel(x: Int, y: Int): Int {
     val stride = 1
     val bytesPerPixel = 4
     val colorInfo = bitmap.colorInfo
-    val imageInfo = ImageInfo(colorInfo, 1, 1)
+    val imageInfo = SkiaImageInfo(colorInfo, 1, 1)
     val bytes = bitmap.readPixels(imageInfo, stride * bytesPerPixel, x, y)!!
     val intColorPixels = convertToIntColorPixels(bytes, colorInfo.colorType)
     return intColorPixels.first()
