@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.painter.internal
+package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.MutableIntState
 
-interface DrawInvalidate {
+/**
+ * Painter drawing invalidation interface
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterDrawInvalidateTest
+ */
+interface PainterDrawInvalidate {
 
     var drawInvalidateTick: MutableIntState
 

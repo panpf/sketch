@@ -18,4 +18,10 @@ package com.github.panpf.sketch
 
 import androidx.compose.runtime.ProvidableCompositionLocal
 
+/**
+ * Platform context, used to provide platform-specific context information
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.LocalPlatformContextAndroidTest.testLocalPlatformContext
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.LocalPlatformContextNonAndroidTest.testLocalPlatformContext
+ */
 expect val LocalPlatformContext: ProvidableCompositionLocal<PlatformContext>

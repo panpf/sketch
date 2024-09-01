@@ -48,6 +48,8 @@ inline fun ComposableImageOptions(
  * @param precision precision of size, default is [Precision.LESS_PIXELS]
  * @param scale Which part of the original image to keep when [precision] is
  * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testResize
  */
 fun ImageOptions.Builder.resize(
     size: IntSize,
@@ -60,6 +62,8 @@ fun ImageOptions.Builder.resize(
 
 /**
  * Set the resize size
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testSize
  */
 fun ImageOptions.Builder.size(size: IntSize): ImageOptions.Builder =
     apply {
@@ -67,7 +71,10 @@ fun ImageOptions.Builder.size(size: IntSize): ImageOptions.Builder =
     }
 
 /**
- * Set the resize size
+ * Use window size as resize size
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.request.ImageOptionsComposeAndroidTest.testSizeWithWindow
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.request.ImageOptionsComposeNonAndroidTest.testSizeWithWindow
  */
 @Composable
 expect fun ImageOptions.Builder.sizeWithWindow(): ImageOptions.Builder
@@ -75,12 +82,16 @@ expect fun ImageOptions.Builder.sizeWithWindow(): ImageOptions.Builder
 
 /**
  * Set Color placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testPlaceholder
  */
 fun ImageOptions.Builder.placeholder(color: Color): ImageOptions.Builder =
     placeholder(ColorPainterStateImage(color))
 
 /**
  * Set Color placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testFallback
  */
 fun ImageOptions.Builder.fallback(color: Color): ImageOptions.Builder =
     fallback(ColorPainterStateImage(color))
@@ -89,6 +100,8 @@ fun ImageOptions.Builder.fallback(color: Color): ImageOptions.Builder =
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testError
  */
 fun ImageOptions.Builder.error(
     color: Color,
@@ -101,6 +114,8 @@ fun ImageOptions.Builder.error(
  * You can also set image of different error types via the trailing lambda function
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
  */
 @Composable
 inline fun ImageOptions.Builder.composableError(
@@ -115,6 +130,8 @@ inline fun ImageOptions.Builder.composableError(
  * You can also set image of different error types via the trailing lambda function
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
  */
 @Composable
 inline fun ImageOptions.Builder.composableError(

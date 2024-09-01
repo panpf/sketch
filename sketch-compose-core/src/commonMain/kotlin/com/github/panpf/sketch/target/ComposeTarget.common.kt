@@ -33,6 +33,11 @@ import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import kotlinx.coroutines.Job
 
+/**
+ * A [Target] that displays an image using Compose.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.target.ComposeTargetTest
+ */
 interface ComposeTarget : Target {
 
     /**
@@ -75,4 +80,5 @@ interface ComposeTarget : Target {
     }.build()
 }
 
+// TODO The time to convert ComposeBitmap is placed in ComposeTarget, so that the memory cache can store SkiaBitmapImage
 expect fun getToComposeBitmapRequestInterceptor(): RequestInterceptor?

@@ -23,11 +23,26 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.ComposeBitmap
 
+/**
+ * [ComposeBitmap] converted to [ComposeBitmapPainter]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest.testComposeBitmapAsPainter
+ */
 fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
 
+/**
+ * Convert [ComposeBitmap] to log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest.testComposeBitmapToLogString
+ */
 fun ComposeBitmap.toLogString(): String =
     "ComposeBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
 
+/**
+ * [ComposeBitmap] painter
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest
+ */
 @Stable
 class ComposeBitmapPainter(val bitmap: ComposeBitmap) : Painter(), SketchPainter {
 

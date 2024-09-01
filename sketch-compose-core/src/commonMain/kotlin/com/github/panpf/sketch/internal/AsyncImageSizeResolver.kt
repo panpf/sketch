@@ -25,6 +25,11 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 
+/**
+ * Async image size resolver
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.internal.AsyncImageSizeResolverTest
+ */
 class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
 
     override val key: String = "ComposeComponentSize"

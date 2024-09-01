@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
@@ -15,6 +19,7 @@ kotlin {
             api(projects.internal.testUtilsCore)
             api(compose.foundation)
             api(compose.ui)
+            api(compose.uiTest)
         }
     }
 }

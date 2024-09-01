@@ -24,6 +24,11 @@ import com.github.panpf.sketch.PainterImage
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmapImage
 
+/**
+ * Convert the Image to a Painter
+ *
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testImageAsPainter
+ */
 actual fun Image.asPainter(): Painter = when (this) {
     is PainterImage -> painter
     is ComposeBitmapImage -> bitmap.asPainter()
@@ -32,4 +37,9 @@ actual fun Image.asPainter(): Painter = when (this) {
     else -> throw IllegalArgumentException("Not supported conversion to Painter from Image '$this'")
 }
 
+/**
+ * Convert the painter to a platform log string
+ *
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testPainterPlatformToLogString
+ */
 actual fun Painter.platformToLogString(): String? = null

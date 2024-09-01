@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.compose.core.common.test.state
 
+import kotlin.test.Test
+
 class CurrentStateImageComposeTest {
-    // TODO test
+
+    @Test
+    fun testCurrentStateImage() {
+        // TODO test
+    }
 }

@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.compose.core.nonandroid.test
 
+import kotlin.test.Test
+
 class LocalPlatformContextNonAndroidTest {
-    // TODO test
+
+    @Test
+    fun testLocalPlatformContext() {
+        // TODO test
+    }
 }

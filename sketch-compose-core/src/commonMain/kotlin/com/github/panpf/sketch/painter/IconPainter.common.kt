@@ -29,10 +29,13 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.painter.internal.DrawInvalidate
 import com.github.panpf.sketch.util.Key
 
-
+/**
+ * Create a [IconPainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconPainterTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: PainterEqualizer,
@@ -48,6 +51,11 @@ fun rememberIconPainter(
     )
 }
 
+/**
+ * Create a [IconPainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconPainterTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: PainterEqualizer,
@@ -64,6 +72,11 @@ fun rememberIconPainter(
     )
 }
 
+/**
+ * Create a [IconPainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconPainterTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: PainterEqualizer,
@@ -82,6 +95,8 @@ fun rememberIconPainter(
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
  * It is suitable for use as a placeholder image for waterfall flow.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconPainterTest
  */
 @Stable
 open class IconPainter(
@@ -124,8 +139,8 @@ open class IconPainter(
     override fun DrawScope.onDraw() {
         val icon = icon.wrapped
         val background = background?.wrapped
-        (icon as? DrawInvalidate)?.drawInvalidateTick?.value
-        (background as? DrawInvalidate)?.drawInvalidateTick?.value
+        (icon as? PainterDrawInvalidate)?.drawInvalidateTick?.value
+        (background as? PainterDrawInvalidate)?.drawInvalidateTick?.value
 
         if (background != null) {
             with(background) {

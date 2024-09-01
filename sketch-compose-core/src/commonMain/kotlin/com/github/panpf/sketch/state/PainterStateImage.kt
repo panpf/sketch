@@ -25,10 +25,20 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.request.ImageRequest
 
+/**
+ * Create a [PainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.PainterStateImageTest.testRememberPainterStateImage
+ */
 @Composable
 fun rememberPainterStateImage(painter: PainterEqualizer): PainterStateImage =
     remember(painter) { PainterStateImage(painter) }
 
+/**
+ * A [StateImage] implemented by Painter
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.PainterStateImageTest
+ */
 @Stable
 class PainterStateImage(val painter: PainterEqualizer) : StateImage {
 

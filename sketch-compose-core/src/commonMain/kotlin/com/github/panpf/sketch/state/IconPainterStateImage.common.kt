@@ -30,6 +30,11 @@ import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.painter.asEquality
 import com.github.panpf.sketch.request.ImageRequest
 
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest.testRememberIconPainterStateImage
+ */
 @Composable
 fun rememberIconPainterStateImage(
     icon: PainterEqualizer,
@@ -47,6 +52,11 @@ fun rememberIconPainterStateImage(
     }
 }
 
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest.testRememberIconPainterStateImage
+ */
 @Composable
 fun rememberIconPainterStateImage(
     icon: PainterEqualizer,
@@ -65,6 +75,11 @@ fun rememberIconPainterStateImage(
     }
 }
 
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest.testRememberIconPainterStateImage
+ */
 @Composable
 fun rememberIconPainterStateImage(
     icon: PainterEqualizer,
@@ -81,7 +96,11 @@ fun rememberIconPainterStateImage(
     }
 }
 
-
+/**
+ * StateImage implemented by IconPainter
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest
+ */
 @Stable
 class IconPainterStateImage(
     val icon: PainterEqualizer,

@@ -29,6 +29,11 @@ import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.util.toSketchSize
 
+/**
+ * Build and set the [ImageRequest]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableImageRequest
+ */
 @Composable
 fun ComposableImageRequest(
     context: PlatformContext,
@@ -36,7 +41,11 @@ fun ComposableImageRequest(
 ): ImageRequest = ImageRequest.Builder(context, uri).build()
 
 /**
+ * Build and set the [ImageRequest]
+ *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableImageRequest
  */
 @Composable
 inline fun ComposableImageRequest(
@@ -48,7 +57,11 @@ inline fun ComposableImageRequest(
 }.build()
 
 /**
+ * Build and set the [ImageRequest]
+ *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableImageRequest
  */
 @Composable
 inline fun ComposableImageRequest(
@@ -58,6 +71,12 @@ inline fun ComposableImageRequest(
     configBlock.invoke(this)
 }.build()
 
+
+/**
+ * Build and set the [ImageRequest]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableImageRequest
+ */
 @Composable
 fun ComposableImageRequest(uri: String?): ImageRequest =
     ImageRequest.Builder(LocalPlatformContext.current, uri).build()
@@ -70,6 +89,8 @@ fun ComposableImageRequest(uri: String?): ImageRequest =
  * @param precision precision of size, default is [Precision.LESS_PIXELS]
  * @param scale Which part of the original image to keep when [precision] is
  * [Precision.EXACTLY] or [Precision.SAME_ASPECT_RATIO], default is [Scale.CENTER_CROP]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testResize
  */
 fun ImageRequest.Builder.resize(
     size: IntSize,
@@ -82,6 +103,8 @@ fun ImageRequest.Builder.resize(
 
 /**
  * Set the resize size
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testSize
  */
 fun ImageRequest.Builder.size(size: IntSize): ImageRequest.Builder =
     apply {
@@ -89,19 +112,26 @@ fun ImageRequest.Builder.size(size: IntSize): ImageRequest.Builder =
     }
 
 /**
- * Set the resize size
+ * Use window size as resize size
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.request.ImageRequestComposeAndroidTest.testSizeWithWindow
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.request.ImageRequestComposeNonAndroidTest.testSizeWithWindow
  */
 @Composable
 expect fun ImageRequest.Builder.sizeWithWindow(): ImageRequest.Builder
 
 /**
  * Set Color placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testPlaceholder
  */
 fun ImageRequest.Builder.placeholder(color: Color): ImageRequest.Builder =
     placeholder(ColorPainterStateImage(color))
 
 /**
  * Set Color placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testFallback
  */
 fun ImageRequest.Builder.fallback(color: Color): ImageRequest.Builder =
     fallback(ColorPainterStateImage(color))
@@ -110,6 +140,8 @@ fun ImageRequest.Builder.fallback(color: Color): ImageRequest.Builder =
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testError
  */
 fun ImageRequest.Builder.error(
     color: Color,
@@ -122,6 +154,8 @@ fun ImageRequest.Builder.error(
  * You can also set image of different error types via the trailing lambda function
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
  */
 @Composable
 inline fun ImageRequest.Builder.composableError(
@@ -136,6 +170,8 @@ inline fun ImageRequest.Builder.composableError(
  * You can also set image of different error types via the trailing lambda function
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
  */
 @Composable
 inline fun ImageRequest.Builder.composableError(

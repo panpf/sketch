@@ -21,8 +21,18 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.painter.asEquality
 
+/**
+ * Create a CurrentStateImage
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.CurrentStateImageComposeTest.testCurrentStateImage
+ */
 fun CurrentStateImage(defaultPainter: PainterEqualizer): CurrentStateImage =
     CurrentStateImage(PainterStateImage(defaultPainter))
 
+/**
+ * Create a CurrentStateImage
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.CurrentStateImageComposeTest.testCurrentStateImage
+ */
 fun CurrentStateImage(defaultColor: Color): CurrentStateImage =
     CurrentStateImage(PainterStateImage(ColorPainter(defaultColor).asEquality()))

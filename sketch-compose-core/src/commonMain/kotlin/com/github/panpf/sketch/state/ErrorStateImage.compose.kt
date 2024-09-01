@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
  * Create an ErrorStateImage
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ErrorStateImageComposeTest.testComposableErrorStateImage
  */
 @Composable
 inline fun ComposableErrorStateImage(
@@ -34,6 +36,8 @@ inline fun ComposableErrorStateImage(
 
 /**
  * Add a custom error state
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ErrorStateImageComposeTest.testAddState
  */
 fun ErrorStateImage.Builder.addState(
     condition: ErrorStateImage.Condition,

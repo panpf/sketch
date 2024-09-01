@@ -19,6 +19,11 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.ComposeBitmapImage
 import com.github.panpf.sketch.Image
 
+/**
+ * [ComposeBitmapImage] Memory cache value
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.cache.ComposeBitmapValueTest
+ */
 class ComposeBitmapImageValue(
     private val composeBitmapImage: ComposeBitmapImage,
     override val extras: Map<String, Any?>?

@@ -24,8 +24,19 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.VectorPainter
 import com.github.panpf.sketch.Image
 
+/**
+ * Convert the Image to a Painter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.PaintersAndroidTest.testImageAsPainter
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testImageAsPainter
+ */
 expect fun Image.asPainter(): Painter
 
+/**
+ * Convert the painter to a log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PaintersTest.testPainterToLogString
+ */
 fun Painter.toLogString(): String = when (this) {
     is SketchPainter -> toString()
     is BitmapPainter -> "BitmapPainter@${hashCode().toString(16)}(${toSizeString()})"
@@ -35,7 +46,18 @@ fun Painter.toLogString(): String = when (this) {
     else -> platformToLogString() ?: toString()
 }
 
+/**
+ * Convert the painter to a platform log string
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.PaintersAndroidTest.testPainterPlatformToLogString
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testPainterPlatformToLogString
+ */
 expect fun Painter.platformToLogString(): String?
 
+/**
+ * Convert the painter to a size string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PaintersTest.testPainterToSizeString
+ */
 internal fun Painter.toSizeString(): String =
     if (intrinsicSize.isSpecified) "$intrinsicSize" else "unspecified"

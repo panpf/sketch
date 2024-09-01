@@ -21,6 +21,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntSize
 
+/**
+ * Get window container size
+ *
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.AsyncImageStateNonAndroidTest.testGetWindowContainerSize
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun getWindowContainerSize(): IntSize {

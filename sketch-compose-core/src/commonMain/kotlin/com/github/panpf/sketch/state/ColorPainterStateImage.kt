@@ -26,24 +26,54 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
 
+/**
+ * Create a [ColorPainterStateImage] instance and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
+ */
 @Composable
 fun rememberColorPainterStateImage(color: Long): ColorPainterStateImage =
     remember(color) { ColorPainterStateImage(color) }
 
+/**
+ * Create a [ColorPainterStateImage] instance and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
+ */
 @Composable
 fun rememberColorPainterStateImage(color: Int): ColorPainterStateImage =
     remember(color) { ColorPainterStateImage(color) }
 
+/**
+ * Create a [ColorPainterStateImage] instance and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
+ */
 @Composable
 fun rememberColorPainterStateImage(color: Color): ColorPainterStateImage =
     remember(color) { ColorPainterStateImage(color) }
 
+/**
+ * Create a [ColorPainterStateImage] instance
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testColorPainterStateImage
+ */
 fun ColorPainterStateImage(color: Int): ColorPainterStateImage =
     ColorPainterStateImage(Color(color))
 
+/**
+ * Create a [ColorPainterStateImage] instance
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testColorPainterStateImage
+ */
 fun ColorPainterStateImage(color: Long): ColorPainterStateImage =
     ColorPainterStateImage(Color(color))
 
+/**
+ * StateImage implemented by ColorPainter
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest
+ */
 @Stable
 class ColorPainterStateImage(val color: Color) : StateImage {
 

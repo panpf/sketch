@@ -21,7 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.util.screenSize
 
 /**
- * Set the resize size
+ * Use window size as resize size
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.request.ImageRequestComposeAndroidTest.testSizeWithWindow
  */
 @Composable
 actual fun ImageRequest.Builder.sizeWithWindow(): ImageRequest.Builder =

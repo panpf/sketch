@@ -65,9 +65,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+/**
+ * Get window container size
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.AsyncImageStateAndroidTest.testGetWindowContainerSize
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.AsyncImageStateNonAndroidTest.testGetWindowContainerSize
+ */
 @Composable
 expect fun getWindowContainerSize(): IntSize
 
+/**
+ * Create and remember [AsyncImageState]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageStateTest.testRememberAsyncImageState
+ */
 @Composable
 fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
@@ -78,6 +89,11 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     }
 }
 
+/**
+ * Create and remember [AsyncImageState]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageStateTest.testRememberAsyncImageState
+ */
 @Composable
 fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
@@ -89,6 +105,11 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     }
 }
 
+/**
+ * Asynchronous image state
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageStateTest
+ */
 @Stable
 class AsyncImageState internal constructor(
     val lifecycle: Lifecycle,
@@ -369,34 +390,4 @@ class AsyncImageState internal constructor(
 
         override fun toString(): String = "AsyncImageTarget@${hashCode().toString(16)}"
     }
-}
-
-/**
- * The current painter state of the [AsyncImageState].
- */
-@Stable
-sealed interface PainterState {
-
-    /** The current painter being drawn by [AsyncImagePainter]. */
-    val painter: Painter?
-
-    /** The request has not been started. */
-    data object Empty : PainterState {
-        override val painter: Painter? get() = null
-    }
-
-    /** The request is in-progress. */
-    data class Loading(
-        override val painter: Painter?,
-    ) : PainterState
-
-    /** The request was successful. */
-    data class Success(
-        override val painter: Painter,
-    ) : PainterState
-
-    /** The request failed due to [ImageResult.Error.throwable]. */
-    data class Error(
-        override val painter: Painter?,
-    ) : PainterState
 }

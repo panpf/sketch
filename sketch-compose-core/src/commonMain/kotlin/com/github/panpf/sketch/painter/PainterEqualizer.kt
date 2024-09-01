@@ -25,18 +25,43 @@ import com.github.panpf.sketch.util.Equalizer
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.key
 
+/**
+ * Wrap a Painter into a Painter with equality
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterEqualizerTest.testPainterAsEquality
+ */
 fun Painter.asEquality(equalKey: Any): PainterEqualizer =
     PainterEqualizer(wrapped = this, equalityKey = equalKey)
 
+/**
+ * Wrap a ColorPainter into a Painter with equality
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterEqualizerTest.testColorPainterAsEquality
+ */
 fun ColorPainter.asEquality(): PainterEqualizer =
     PainterEqualizer(wrapped = this, equalityKey = this.color.value)
 
+/**
+ * Wrap a BrushPainter into a Painter with equality
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterEqualizerTest.testBrushPainterAsEquality
+ */
 fun BrushPainter.asEquality(): PainterEqualizer =
     PainterEqualizer(wrapped = this, equalityKey = this)
 
+/**
+ * Wrap a BitmapPainter into a Painter with equality
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterEqualizerTest.testBitmapPainterAsEquality
+ */
 fun BitmapPainter.asEquality(): PainterEqualizer =
     PainterEqualizer(wrapped = this, equalityKey = this)
 
+/**
+ * Wrap a SketchPainter into a Painter with equality
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterEqualizerTest.testSketchPainterAsEquality
+ */
 fun SketchPainter.asEquality(): PainterEqualizer =
     PainterEqualizer(wrapped = this as Painter, equalityKey = this)
 
@@ -46,6 +71,8 @@ fun SketchPainter.asEquality(): PainterEqualizer =
  * This will affect the equals of ImageRequest, eventually causing the AsyncImage component to be reorganized to load the image repeatedly.
  *
  * Solve this problem with wrapper
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterEqualizerTest
  */
 @Stable
 class PainterEqualizer(

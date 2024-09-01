@@ -33,6 +33,11 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import kotlin.math.roundToInt
 
+/**
+ * Create a [ResizePainter] and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizePainterTest.testRememberResizePainter
+ */
 @Composable
 fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CROP): ResizePainter {
     return remember(painter, size, scale) {
@@ -40,6 +45,11 @@ fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CR
     }
 }
 
+/**
+ * Resize the [Painter] to the specified size
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizePainterTest.testPainterResize
+ */
 fun Painter.resize(size: Size, scale: Scale): ResizePainter {
     return if (this is AnimatablePainter) {
         ResizeAnimatablePainter(this, size, scale)
@@ -48,6 +58,11 @@ fun Painter.resize(size: Size, scale: Scale): ResizePainter {
     }
 }
 
+/**
+ * Resize the [Painter] to the specified size
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizePainterTest
+ */
 @Stable
 open class ResizePainter(
     val painter: Painter,

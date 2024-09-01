@@ -32,7 +32,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 
-/** Draws the current image content. */
+/**
+ * Draws the current image content.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.internal.AsyncImageContentTest
+ */
 @Composable
 fun AsyncImageContent(
     modifier: Modifier,

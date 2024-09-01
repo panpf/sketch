@@ -21,6 +21,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.resize.Scale
 
+/**
+ * Resize the [AnimatablePainter] to the specified size
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizeAnimatablePainterTest
+ */
 @Stable
 class ResizeAnimatablePainter(
     painter: Painter,

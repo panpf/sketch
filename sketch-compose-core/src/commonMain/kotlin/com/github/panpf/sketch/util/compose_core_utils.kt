@@ -17,7 +17,6 @@
 
 package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.util.Size as SketchSize
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -26,15 +25,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
-import com.github.panpf.sketch.PainterState
-import com.github.panpf.sketch.PainterState.Empty
-import com.github.panpf.sketch.PainterState.Error
-import com.github.panpf.sketch.PainterState.Loading
-import com.github.panpf.sketch.PainterState.Success
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
+import com.github.panpf.sketch.util.Size as SketchSize
 
+/**
+ * Convert [ContentScale] to [Scale]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleToScale
+ */
 @Stable
 internal fun ContentScale.toScale(): Scale {
     return when (this) {
@@ -50,6 +50,11 @@ internal fun ContentScale.toScale(): Scale {
     }
 }
 
+/**
+ * Get the name of the [ContentScale]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleName
+ */
 @Stable
 internal val ContentScale.name: String
     get() = when (this) {
@@ -63,6 +68,19 @@ internal val ContentScale.name: String
         else -> "Unknown ContentScale: $this"
     }
 
+/**
+ * Whether the [ContentScale] is a fit scale
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleFitScale
+ */
+internal val ContentScale.fitScale: Boolean
+    get() = this == ContentScale.Fit || this == Companion.Inside
+
+/**
+ * Convert [Size] to [IntSize] or return null if it is [Size.isUnspecified]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSizeToIntSizeOrNull
+ */
 internal fun Size.toIntSizeOrNull() = when {
     isUnspecified -> null
 
@@ -74,18 +92,43 @@ internal fun Size.toIntSizeOrNull() = when {
     else -> null
 }
 
+/**
+ * Whether the [IntSize] is empty
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeIsEmpty
+ */
 @Stable
 internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
 
+/**
+ * Convert [IntSize] to [SketchSize]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeToSketchSize
+ */
 @Stable
 fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
 
+/**
+ * Convert [SketchSize] to [IntSize]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSketchSizeToIntSize
+ */
 @Stable
 fun SketchSize.toIntSize(): IntSize = IntSize(width, height)
 
+/**
+ * Convert [SketchSize] to [Size]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSketchSizeToSize
+ */
 @Stable
 fun SketchSize.toSize(): Size = Size(width.toFloat(), height.toFloat())
 
+/**
+ * Convert [Constraints] to [IntSize] or return null if it is zero or not bounded
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testConstraintsToIntSizeOrNull
+ */
 @Stable
 internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
     isZero -> null
@@ -93,16 +136,11 @@ internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
     else -> null
 }
 
-@Suppress("REDUNDANT_ELSE_IN_WHEN")
-internal val PainterState.name: String
-    get() = when (this) {
-        is Loading -> "Loading"
-        is Success -> "Success"
-        is Error -> "Error"
-        is Empty -> "Empty"
-        else -> "Unknown PainterState: $this"
-    }
-
+/**
+ * Find the leaf child [Painter] of the [Painter]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testPainterFindLeafChildPainter
+ */
 fun Painter.findLeafChildPainter(): Painter? {
     return when (val painter = this) {
         is CrossfadePainter -> {
@@ -115,10 +153,9 @@ fun Painter.findLeafChildPainter(): Painter? {
 
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testAnyAsOrNull
  */
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
-
-internal val ContentScale.fitScale: Boolean
-    get() = this == ContentScale.Fit || this == Companion.Inside

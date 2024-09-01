@@ -30,6 +30,11 @@ import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.painter.asEquality
 import com.github.panpf.sketch.request.ImageRequest
 
+/**
+ * Create and remember IconAnimatablePainterStateImage
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconAnimatablePainterStateImageCommonTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: PainterEqualizer,
@@ -47,6 +52,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create and remember IconAnimatablePainterStateImage
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconAnimatablePainterStateImageCommonTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: PainterEqualizer,
@@ -65,6 +75,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create and remember IconAnimatablePainterStateImage
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconAnimatablePainterStateImageCommonTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: PainterEqualizer,
@@ -81,6 +96,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * StateImage implemented by IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconAnimatablePainterStateImageCommonTest
+ */
 @Stable
 class IconAnimatablePainterStateImage(
     val icon: PainterEqualizer,
@@ -92,7 +112,7 @@ class IconAnimatablePainterStateImage(
     override val key: String =
         "IconAnimatablePainterStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=$iconTint)"
 
-    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
+    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return IconPainter(icon, background, iconSize, iconTint).asSketchImage()
     }
 

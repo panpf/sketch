@@ -34,6 +34,8 @@ import com.github.panpf.sketch.util.asOrNull
  *
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ComposeTarget] directly.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.target.GenericComposeTargetTest
  */
 abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     LifecycleEventObserver, AttachObserver {

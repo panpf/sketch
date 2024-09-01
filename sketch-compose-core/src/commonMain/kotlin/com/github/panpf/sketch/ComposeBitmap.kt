@@ -16,4 +16,9 @@
 
 package com.github.panpf.sketch
 
+/**
+ * Compose Bitmap
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapTest
+ */
 typealias ComposeBitmap = androidx.compose.ui.graphics.ImageBitmap

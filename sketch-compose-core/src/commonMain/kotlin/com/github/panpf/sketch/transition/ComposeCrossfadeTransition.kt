@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.transition
 
 import androidx.compose.ui.graphics.painter.Painter
@@ -26,6 +28,11 @@ import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 
+/**
+ * A [Transition] that crossfades between the previous [Painter] and the new [Painter].
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.transition.ComposeCrossfadeTransitionTest
+ */
 class ComposeCrossfadeTransition constructor(
     private val requestContext: RequestContext,
     private val target: TransitionComposeTarget,

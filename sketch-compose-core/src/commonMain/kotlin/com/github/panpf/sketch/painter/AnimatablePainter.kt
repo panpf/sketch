@@ -47,6 +47,8 @@ interface AnimatablePainter {
 
 /**
  * Starts the animation when the lifecycle is in [Lifecycle.Event.ON_START] state and stops it when the lifecycle is in [Lifecycle.Event.ON_STOP] state.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.AnimatablePainterTest.testStartWithLifecycle
  */
 @Composable
 fun AnimatablePainter.startWithLifecycle() {

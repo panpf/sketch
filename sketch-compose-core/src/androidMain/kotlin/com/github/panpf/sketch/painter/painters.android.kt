@@ -23,6 +23,11 @@ import com.github.panpf.sketch.AndroidDrawableImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PainterImage
 
+/**
+ * Convert the Image to a Painter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.PaintersAndroidTest.testImageAsPainter
+ */
 actual fun Image.asPainter(): Painter = when (this) {
     is PainterImage -> painter
     is AndroidBitmapImage -> bitmap.asImageBitmap().asPainter()
@@ -30,4 +35,9 @@ actual fun Image.asPainter(): Painter = when (this) {
     else -> throw IllegalArgumentException("Not supported conversion to Painter from Image '$this'")
 }
 
+/**
+ * Convert the painter to a platform log string
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.PaintersAndroidTest.testImageAsPainter
+ */
 actual fun Painter.platformToLogString(): String? = null

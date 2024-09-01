@@ -23,6 +23,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 
+/**
+ * Create an [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: PainterEqualizer,
@@ -38,6 +43,11 @@ fun rememberIconAnimatablePainter(
     )
 }
 
+/**
+ * Create an [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: PainterEqualizer,
@@ -54,6 +64,11 @@ fun rememberIconAnimatablePainter(
     )
 }
 
+/**
+ * Create an [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: PainterEqualizer,
@@ -69,6 +84,11 @@ fun rememberIconAnimatablePainter(
 }
 
 
+/**
+ * An [IconPainter] that can be animated.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest
+ */
 @Stable
 class IconAnimatablePainter(
     icon: PainterEqualizer,
