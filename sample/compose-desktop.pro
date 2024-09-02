@@ -1,5 +1,32 @@
+# ----------------------------------------- Basic ------------------------------------------------ #
+-keepattributes *Annotation*
 
-# ---------------Begain: OkHttp
+# For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+
+# ----------------------------------------- slf4j ------------------------------------------------ #
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn org.slf4j.impl.StaticLoggerBinder
+-dontwarn org.slf4j.impl.StaticMDCBinder
+-dontwarn org.slf4j.impl.StaticMarkerBinder
+
+
+# ----------------------------------------- Okio ------------------------------------------------- #
+# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
+-dontwarn org.codehaus.mojo.animal_sniffer.*
+
+
+# ----------------------------------------- OkHttp ----------------------------------------------- #
 # JSR 305 annotations are for embedding nullability information.
 -dontwarn javax.annotation.**
 
@@ -14,17 +41,9 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
-# ---------------End: OkHttp
 
 
-# Please add these rules to your existing keep rules in order to suppress warnings.
-# This is generated automatically by the Android Gradle plugin.
--dontwarn org.slf4j.impl.StaticLoggerBinder
--dontwarn org.slf4j.impl.StaticMDCBinder
--dontwarn org.slf4j.impl.StaticMarkerBinder
-
-
-# ---------------Begain: kotlin serialization
+# ----------------------------------------- kotlinx serialization -------------------------------- #
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.AnnotationsKt # core serialization annotations
 
@@ -36,8 +55,16 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# Application rules
 
+# ----------------------------------------- kotlinx.coroutines ----------------------------------- #
+-keep public class kotlinx.coroutines.**{*;}
+
+
+# ----------------------------------------- ktor ------------------------------------------------- #
+-keep public class io.ktor.**{*;}
+
+
+# ----------------------------------------- App Ruls --------------------------------------------- #
 # Change here com.github.panpf.sketch.sample
 -keepclassmembers @kotlinx.serialization.Serializable class com.github.panpf.sketch.sample.** {
     # lookup for plugin generated serializable classes
@@ -51,13 +78,3 @@
 -keepclassmembers class com.github.panpf.sketch.sample.<1>$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
-# ---------------End: kotlin serialization
-
-
-# ---------------Begain: kotlinx.coroutines
--keep public class kotlinx.coroutines.**{*;}
-# ---------------End: kotlinx.coroutines
-
-# ---------------Begain: ktor
--keep public class io.ktor.**{*;}
-# ---------------End: ktor
