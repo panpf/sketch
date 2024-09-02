@@ -21,10 +21,10 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.Assert
 import org.junit.Test
 
-class ImageRequestViewExtensionsTest {
+class ImageRequestViewTest {
 
     @Test
-    fun testFun() {
+    fun testImageRequest() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         val imageView1 = ImageView(context1)
@@ -61,5 +61,13 @@ class ImageRequestViewExtensionsTest {
         }
     }
 
-    // TODO target
+    @Test
+    fun testTarget() {
+        // TODO test
+    }
+
+    @Test
+    fun testSizeWithView() {
+        // TODO test
+    }
 }

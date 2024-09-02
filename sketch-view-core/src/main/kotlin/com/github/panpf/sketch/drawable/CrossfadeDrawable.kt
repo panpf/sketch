@@ -58,6 +58,8 @@ import kotlin.math.roundToInt
  *  if [start] **and** [end] return -1 for that dimension. If false, the intrinsic width/height will
  *  be -1 if [start] **or** [end] return -1 for that dimension. This is useful for views that
  *  require an exact intrinsic size to scale the drawable.
+ *
+ *  @see com.github.panpf.sketch.view.core.test.drawable.CrossfadeDrawableTest
  */
 class CrossfadeDrawable @JvmOverloads constructor(
     val start: Drawable?,

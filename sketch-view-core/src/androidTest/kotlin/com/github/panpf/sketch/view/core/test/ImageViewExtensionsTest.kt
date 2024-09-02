@@ -64,7 +64,7 @@ class ImageViewExtensionsTest {
     }
 
     @Test
-    fun testResult() {
+    fun testImageResult() {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 

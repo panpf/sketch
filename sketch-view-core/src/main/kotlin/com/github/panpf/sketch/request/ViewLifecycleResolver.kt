@@ -24,6 +24,22 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import java.lang.ref.WeakReference
 
+/**
+ * Find the Lifecycle of the Context
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.ViewLifecycleResolverTest.testFindLifecycle
+ */
+internal fun Context.findLifecycle(): Lifecycle? = when (this) {
+    is LifecycleOwner -> this.lifecycle
+    is ContextWrapper -> this.baseContext.findLifecycle()
+    else -> null
+}
+
+/**
+ * Resolve the Lifecycle of the View
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.ViewLifecycleResolverTest
+ */
 class ViewLifecycleResolver constructor(
     val viewReference: WeakReference<View>
 ) : LifecycleResolver {
@@ -58,10 +74,4 @@ class ViewLifecycleResolver constructor(
     override fun toString(): String {
         return "ViewLifecycleResolver(${viewReference.get()})"
     }
-}
-
-internal fun Context.findLifecycle(): Lifecycle? = when (this) {
-    is LifecycleOwner -> this.lifecycle
-    is ContextWrapper -> this.baseContext.findLifecycle()
-    else -> null
 }

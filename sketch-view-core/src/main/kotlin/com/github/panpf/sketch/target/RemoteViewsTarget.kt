@@ -36,6 +36,8 @@ import kotlinx.coroutines.Job
 
 /**
  * Set Drawable to RemoteViews
+ *
+ * @see com.github.panpf.sketch.view.core.test.target.RemoteViewsTargetTest
  */
 class RemoteViewsTarget constructor(
     private val remoteViews: RemoteViews,

@@ -22,6 +22,8 @@ import com.github.panpf.sketch.util.SketchUtils
 
 /**
  * Dispose the request that's attached to this view (if there is one).
+ *
+ * @see com.github.panpf.sketch.view.core.test.ImageViewExtensionsTest.testDisposeLoad
  */
 fun ImageView.disposeLoad() {
     SketchUtils.dispose(this)
@@ -29,6 +31,8 @@ fun ImageView.disposeLoad() {
 
 /**
  * Get the [ImageResult] of the most recently executed image request that's attached to this view.
+ *
+ * @see com.github.panpf.sketch.view.core.test.ImageViewExtensionsTest.testImageResult
  */
 val ImageView.imageResult: ImageResult?
     get() = SketchUtils.getResult(this)

@@ -37,6 +37,8 @@ import com.github.panpf.sketch.util.asOrNull
  *
  * If you need custom behaviour that this class doesn't support it's recommended
  * to implement [ViewTarget] directly.
+ *
+ * @see com.github.panpf.sketch.view.core.test.target.GenericViewTargetTest
  */
 abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionViewTarget,
     LifecycleEventObserver, AttachObserver {

@@ -41,7 +41,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ResizeDrawableTest {
 
-    // TODO test resize()
+    @Test
+    fun testResize() {
+        // TODO test
+    }
 
     @Test
     fun testIntrinsicSize() {

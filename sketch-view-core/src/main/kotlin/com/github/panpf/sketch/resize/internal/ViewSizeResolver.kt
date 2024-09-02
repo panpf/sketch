@@ -35,12 +35,19 @@ import java.lang.ref.WeakReference
  *
  * @param view The view to measure.
  * @param subtractPadding If true, the view's padding will be subtracted from its size.
+ *
+ * @see com.github.panpf.sketch.view.core.test.resize.internal.ViewSizeResolverTest.testViewSizeResolver
  */
 @JvmOverloads
 @JvmName("create")
 fun <T : View> ViewSizeResolver(view: T, subtractPadding: Boolean = true): ViewSizeResolver<T> =
     RealViewSizeResolver(view, subtractPadding)
 
+/**
+ * A [SizeResolver] that measures the size of a [View].
+ *
+ * @see com.github.panpf.sketch.view.core.test.resize.internal.ViewSizeResolverTest
+ */
 internal class RealViewSizeResolver<T : View>(
     view1: T,
     override val subtractPadding: Boolean
@@ -78,6 +85,8 @@ internal class RealViewSizeResolver<T : View>(
 
 /**
  * A [SizeResolver] that measures the size of a [View].
+ *
+ * @see com.github.panpf.sketch.view.core.test.resize.internal.ViewSizeResolverTest#testViewSizeResolver
  */
 interface ViewSizeResolver<T : View> : SizeResolver {
 

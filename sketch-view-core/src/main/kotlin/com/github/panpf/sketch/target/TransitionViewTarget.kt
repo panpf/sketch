@@ -18,6 +18,7 @@
 package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
 
 /**

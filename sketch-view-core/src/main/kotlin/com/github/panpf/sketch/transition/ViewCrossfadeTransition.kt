@@ -31,6 +31,8 @@ import com.github.panpf.sketch.util.asOrNull
  *
  * @param durationMillis The duration of the animation in milliseconds.
  * @param preferExactIntrinsicSize See [CrossfadeDrawable.preferExactIntrinsicSize].
+ *
+ * @see com.github.panpf.sketch.view.core.test.transition.ViewCrossfadeTransitionTest
  */
 class ViewCrossfadeTransition @JvmOverloads constructor(
     private val requestContext: RequestContext,

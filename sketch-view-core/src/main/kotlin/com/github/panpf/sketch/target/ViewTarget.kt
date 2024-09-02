@@ -48,6 +48,8 @@ import kotlinx.coroutines.Job
  *
  * Optionally, [ViewTarget]s can implement [LifecycleObserver]. They are automatically registered
  * when the request starts and unregistered when the request completes.
+ *
+ * @see com.github.panpf.sketch.view.core.test.target.ViewTargetTest
  */
 interface ViewTarget<T : View> : Target {
 

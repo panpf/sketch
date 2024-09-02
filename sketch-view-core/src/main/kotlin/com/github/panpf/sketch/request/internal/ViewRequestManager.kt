@@ -21,6 +21,11 @@ import android.view.View
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.view.core.R
 
+/**
+ * Get the request manager of the View
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.internal.ViewRequestManagerTest.testRequestManagerProperty
+ */
 internal val View.requestManager: ViewRequestManager
     get() {
         val manager = getTag(R.id.sketch_request_manager) as ViewRequestManager?

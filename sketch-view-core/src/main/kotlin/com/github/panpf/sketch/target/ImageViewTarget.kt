@@ -27,6 +27,8 @@ import java.lang.ref.WeakReference
 
 /**
  * A [Target] that handles setting images on an [ImageView].
+ *
+ * @see com.github.panpf.sketch.view.core.test.target.ImageViewTargetTest
  */
 open class ImageViewTarget constructor(
     view: ImageView

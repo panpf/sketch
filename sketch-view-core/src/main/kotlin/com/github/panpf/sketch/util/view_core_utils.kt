@@ -27,19 +27,36 @@ import kotlin.math.roundToInt
 
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testAnyAsOrNull
  */
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
 
+/**
+ * Returns a string representation of this Int value in the specified radix.
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testAnyToHexString
+ */
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
+/**
+ * Check if the current thread is the UI thread
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testRequiredMainThread
+ */
 internal fun requiredMainThread() {
     check(Looper.myLooper() == Looper.getMainLooper()) {
         "This method must be executed in the UI thread"
     }
 }
 
+/**
+ * Whether the ScaleType is a fit scale type
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFitScale
+ */
 internal val ScaleType.fitScale: Boolean
     get() = this == ScaleType.FIT_START
             || this == ScaleType.FIT_CENTER
@@ -49,6 +66,8 @@ internal val ScaleType.fitScale: Boolean
 
 /**
  * Find the last child [Drawable] from the specified Drawable
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFindLeafChildDrawable
  */
 fun Drawable.findLeafChildDrawable(): Drawable? {
     return when (val drawable = this) {
@@ -69,6 +88,11 @@ fun Drawable.findLeafChildDrawable(): Drawable? {
     }
 }
 
+/**
+ * Calculate the bounds of the image after scaling
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testCalculateBounds
+ */
 internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
     if (srcSize.isEmpty || dstSize.isEmpty) {
         return Rect(
@@ -118,10 +142,10 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
 
         Scale.FILL -> {
             Rect(
-                /* left = */0,
-                /* top = */0,
-                /* right = */dstSize.width,
-                /* bottom = */dstSize.height,
+                /* left = */ 0,
+                /* top = */ 0,
+                /* right = */ dstSize.width,
+                /* bottom = */ dstSize.height,
             )
         }
     }

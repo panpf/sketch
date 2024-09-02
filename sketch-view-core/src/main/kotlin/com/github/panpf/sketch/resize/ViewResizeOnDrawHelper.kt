@@ -24,6 +24,11 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size
 
+/**
+ * View resize on draw helper
+ *
+ * @see com.github.panpf.sketch.view.core.test.resize.ViewResizeOnDrawHelperTest
+ */
 object ViewResizeOnDrawHelper : ResizeOnDrawHelper {
 
     override val key: String = "ViewResizeOnDrawHelper"

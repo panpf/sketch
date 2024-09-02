@@ -27,32 +27,47 @@ class SketchUtils private constructor() {
 
     companion object {
 
+        /**
+         * Get the [ViewRequestManager] that's attached to this view.
+         *
+         * @see com.github.panpf.sketch.view.core.test.util.SketchUtilsTest.testRequestManagerOrNull
+         */
         internal fun requestManagerOrNull(view: View): ViewRequestManager? =
             view.getTag(R.id.sketch_request_manager) as ViewRequestManager?
 
         /**
          * Dispose the request that's attached to this view (if there is one).
+         *
+         * @see com.github.panpf.sketch.view.core.test.util.SketchUtilsTest.testDispose
          */
         fun dispose(view: View) = requestManagerOrNull(view)?.dispose()
 
         /**
          * Get the [ImageResult] of the most recently executed image request that's attached to this view.
+         *
+         * @see com.github.panpf.sketch.view.core.test.util.SketchUtilsTest.testGetResult
          */
         fun getResult(view: View): ImageResult? = requestManagerOrNull(view)?.getResult()
 
         /**
          * Restart ImageRequest
+         *
+         * @see com.github.panpf.sketch.view.core.test.util.SketchUtilsTest.testRestart
          */
         fun restart(view: View) = requestManagerOrNull(view)?.restart()
 
         /**
          * Get the [ImageRequest] of the most recently executed image request that's attached to this view.
+         *
+         * @see com.github.panpf.sketch.view.core.test.util.SketchUtilsTest.testGetRequest
          */
         fun getRequest(view: View): ImageRequest? =
             requestManagerOrNull(view)?.getRequest()
 
         /**
          * Get the [Sketch] of the most recently executed image request that's attached to this view.
+         *
+         * @see com.github.panpf.sketch.view.core.test.util.SketchUtilsTest.testGetSketch
          */
         fun getSketch(view: View): Sketch? = requestManagerOrNull(view)?.getSketch()
     }

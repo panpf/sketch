@@ -21,7 +21,9 @@ import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 
 
 /**
- * Remove explicit type specification
+ * Use the size of the View as the size of the resize
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.ImageOptionsViewTest.testSizeWithView
  */
 fun ImageOptions.Builder.sizeWithView(view: View, subtractPadding: Boolean = true): ImageOptions.Builder =
     apply {

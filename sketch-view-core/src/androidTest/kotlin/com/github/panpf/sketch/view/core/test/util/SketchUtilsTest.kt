@@ -28,9 +28,20 @@ class SketchUtilsTest {
         Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
     }
 
-    // TODO test dispose
-    // TODO test getResult
-    // TODO test restart
+    @Test
+    fun testDispose() {
+        // TODO test
+    }
+
+    @Test
+    fun testGetResult() {
+        // TODO test
+    }
+
+    @Test
+    fun testRestart() {
+        // TODO test
+    }
 
     @Test
     fun testGetRequest() {

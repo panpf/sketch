@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 class ViewSizeResolverTest {
 
     @Test
-    fun testCreateFunction() {
+    fun testViewSizeResolver() {
         val context = getTestContext()
         val imageView = ImageView(context)
         ViewSizeResolver(imageView).apply {

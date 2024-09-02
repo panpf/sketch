@@ -24,6 +24,8 @@ import com.github.panpf.sketch.target.ImageViewTarget
 
 /**
  * Build and set the [ImageRequest], target is an ImageView
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.ImageRequestViewTest.testImageRequest
  */
 fun ImageRequest(
     imageView: ImageView,
@@ -37,6 +39,8 @@ fun ImageRequest(
 
 /**
  * Set the target to the ImageView
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.ImageRequestViewTest.testTarget
  */
 fun ImageRequest.Builder.target(imageView: ImageView): ImageRequest.Builder = apply {
     target(ImageViewTarget(imageView))
@@ -45,6 +49,8 @@ fun ImageRequest.Builder.target(imageView: ImageView): ImageRequest.Builder = ap
 
 /**
  * Set the resize size
+ *
+ * @see com.github.panpf.sketch.view.core.test.request.ImageRequestViewTest.testSizeWithView
  */
 fun ImageRequest.Builder.sizeWithView(view: View, subtractPadding: Boolean = true): ImageRequest.Builder =
     apply {
