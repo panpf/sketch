@@ -31,6 +31,8 @@ private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
  * Set the time **in microseconds** of the frame to extract from a video.
  *
  * Default: 0
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoFrameMicros
  */
 fun ImageRequest.Builder.videoFrameMicros(frameMicros: Long?): ImageRequest.Builder = apply {
     require(frameMicros == null || frameMicros >= 0) { "frameMicros must be >= 0." }
@@ -46,6 +48,8 @@ fun ImageRequest.Builder.videoFrameMicros(frameMicros: Long?): ImageRequest.Buil
  * Set the time **in milliseconds** of the frame to extract from a video.
  *
  * Default: 0
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoFrameMicros
  */
 fun ImageRequest.Builder.videoFrameMillis(frameMillis: Long): ImageRequest.Builder = apply {
     videoFrameMicros(1000 * frameMillis)
@@ -53,6 +57,8 @@ fun ImageRequest.Builder.videoFrameMillis(frameMillis: Long): ImageRequest.Build
 
 /**
  * Get the time **in microseconds** of the frame to extract from a video.
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoFrameMicros
  */
 val ImageRequest.videoFrameMicros: Long?
     get() = extras?.value(VIDEO_FRAME_MICROS_KEY) as Long?
@@ -61,6 +67,8 @@ val ImageRequest.videoFrameMicros: Long?
  * Set the time **in microseconds** of the frame to extract from a video.
  *
  * Default: 0
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoFrameMicros
  */
 fun ImageOptions.Builder.videoFrameMicros(frameMicros: Long?): ImageOptions.Builder = apply {
     require(frameMicros == null || frameMicros >= 0) { "frameMicros must be >= 0." }
@@ -76,6 +84,8 @@ fun ImageOptions.Builder.videoFrameMicros(frameMicros: Long?): ImageOptions.Buil
  * Set the time **in milliseconds** of the frame to extract from a video.
  *
  * Default: 0
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoFrameMicros
  */
 fun ImageOptions.Builder.videoFrameMillis(frameMillis: Long): ImageOptions.Builder = apply {
     videoFrameMicros(1000 * frameMillis)
@@ -83,6 +93,8 @@ fun ImageOptions.Builder.videoFrameMillis(frameMillis: Long): ImageOptions.Build
 
 /**
  * Get the time **in microseconds** of the frame to extract from a video.
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoFrameMicros
  */
 val ImageOptions.videoFrameMicros: Long?
     get() = extras?.value(VIDEO_FRAME_MICROS_KEY) as Long?
@@ -92,6 +104,8 @@ val ImageOptions.videoFrameMicros: Long?
  * Set the time of the frame to extract from a video (by percent duration).
  *
  * Default: 0.0
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoPercent
  */
 fun ImageRequest.Builder.videoFramePercent(
     @FloatRange(from = 0.0, to = 1.0) framePercent: Float?
@@ -107,6 +121,8 @@ fun ImageRequest.Builder.videoFramePercent(
 
 /**
  * Get the time of the frame to extract from a video (by framePercent duration).
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoPercent
  */
 val ImageRequest.videoFramePercent: Float?
     get() = extras?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
@@ -115,6 +131,8 @@ val ImageRequest.videoFramePercent: Float?
  * Set the time of the frame to extract from a video (by framePercent duration).
  *
  * Default: 0.0
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoPercent
  */
 fun ImageOptions.Builder.videoFramePercent(
     @FloatRange(from = 0.0, to = 1.0) framePercent: Float?
@@ -130,6 +148,8 @@ fun ImageOptions.Builder.videoFramePercent(
 
 /**
  * Get the time of the frame to extract from a video (by percent duration).
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoPercent
  */
 val ImageOptions.videoFramePercent: Float?
     get() = extras?.value(VIDEO_FRAME_PERCENT_KEY) as Float?
@@ -143,6 +163,7 @@ val ImageOptions.videoFramePercent: Float?
  * Default: [OPTION_CLOSEST_SYNC]
  *
  * @see MediaMetadataRetriever
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoOption
  */
 fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = apply {
     require(
@@ -161,6 +182,8 @@ fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = 
 
 /**
  * Get the option for how to decode the video frame.
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoOption
  */
 val ImageRequest.videoFrameOption: Int?
     get() = extras?.value(VIDEO_FRAME_OPTION_KEY) as Int?
@@ -173,6 +196,7 @@ val ImageRequest.videoFrameOption: Int?
  * Default: [OPTION_CLOSEST_SYNC]
  *
  * @see MediaMetadataRetriever
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoOption
  */
 fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = apply {
     require(
@@ -191,6 +215,8 @@ fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = 
 
 /**
  * Get the option for how to decode the video frame.
+ *
+ * @see com.github.panpf.sketch.video.test.request.VideoFrameExtensionsTest.testVideoOption
  */
 val ImageOptions.videoFrameOption: Int?
     get() = extras?.value(VIDEO_FRAME_OPTION_KEY) as Int?

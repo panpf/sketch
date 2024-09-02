@@ -130,7 +130,7 @@ class VideoFrameExtensionsTest {
     }
 
     @Test
-    fun testVideoPercentDuration() {
+    fun testVideoPercent() {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.mp4.uri).apply {

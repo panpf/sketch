@@ -27,6 +27,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds video frame support
+ *
+ * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest.testSupportApkIcon
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
 fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = apply {
