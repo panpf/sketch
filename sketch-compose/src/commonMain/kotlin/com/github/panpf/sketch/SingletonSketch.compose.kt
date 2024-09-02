@@ -21,6 +21,8 @@ import androidx.compose.runtime.ReadOnlyComposable
 
 /**
  * Alias for [SingletonSketch.setSafe] that's optimized for calling from Compose.
+ *
+ * @see com.github.panpf.sketch.compose.common.test.SingletonSketchComposeTest.testSetSingletonImageLoaderFactory
  */
 @Composable
 @ReadOnlyComposable

@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.compose.common.test
 
+import kotlin.test.Test
+
 class SingletonSketchComposeTest {
-    // TODO test
+
+    @Test
+    fun testSetSingletonImageLoaderFactory() {
+        // TODO test
+    }
 }
