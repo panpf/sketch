@@ -166,7 +166,7 @@ compose.desktop {
                     it
                 }
             }
-            vendor = "panpf@outlook.com"
+            vendor = "panpfpanpf@outlook.com"
             description = "Sketch4 Image Loader Library Sample App"
             macOS {
                 bundleID = "com.github.panpf.sketch4.sample"
