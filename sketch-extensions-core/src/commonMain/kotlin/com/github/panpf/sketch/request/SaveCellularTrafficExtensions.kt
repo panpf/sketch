@@ -24,6 +24,8 @@ private const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traf
 
 /**
  * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testSaveCellularTraffic
  */
 fun ImageRequest.Builder.saveCellularTraffic(enabled: Boolean? = true): ImageRequest.Builder =
     apply {
@@ -36,12 +38,16 @@ fun ImageRequest.Builder.saveCellularTraffic(enabled: Boolean? = true): ImageReq
 
 /**
  * Returns true if cellular data saving has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testSaveCellularTraffic
  */
 val ImageRequest.isSaveCellularTraffic: Boolean
     get() = extras?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY) == true
 
 /**
  * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testSaveCellularTraffic
  */
 fun ImageOptions.Builder.saveCellularTraffic(enabled: Boolean? = true): ImageOptions.Builder =
     apply {
@@ -54,6 +60,8 @@ fun ImageOptions.Builder.saveCellularTraffic(enabled: Boolean? = true): ImageOpt
 
 /**
  * Returns true if cellular data saving has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testSaveCellularTraffic
  */
 val ImageOptions.isSaveCellularTraffic: Boolean
     get() = extras?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY) == true
@@ -61,6 +69,8 @@ val ImageOptions.isSaveCellularTraffic: Boolean
 
 /**
  * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testIgnoreSaveCellularTraffic
  */
 fun ImageRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean? = true): ImageRequest.Builder =
     apply {
@@ -73,12 +83,16 @@ fun ImageRequest.Builder.ignoreSaveCellularTraffic(ignore: Boolean? = true): Ima
 
 /**
  * Returns true if ignore cellular data saving has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testIgnoreSaveCellularTraffic
  */
 val ImageRequest.isIgnoredSaveCellularTraffic: Boolean
     get() = extras?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY) == true
 
 /**
  * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testIgnoreSaveCellularTraffic
  */
 fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean? = true): ImageOptions.Builder =
     apply {
@@ -95,18 +109,25 @@ fun ImageOptions.Builder.ignoreSaveCellularTraffic(ignore: Boolean? = true): Ima
 
 /**
  * Returns true if ignore cellular data saving has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testIgnoreSaveCellularTraffic
  */
 val ImageOptions.isIgnoredSaveCellularTraffic: Boolean
     get() = extras?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY) == true
 
+
 /**
  * Returns true if Depth is from the cellular saving feature
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testSetDepthFromSaveCellularTraffic
  */
 val ImageRequest.isDepthFromSaveCellularTraffic: Boolean
     get() = depthHolder.from == SAVE_CELLULAR_TRAFFIC_KEY
 
 /**
  * Returns true if Depth is from the cellular saving feature
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testSetDepthFromSaveCellularTraffic
  */
 val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
     get() = depthHolder?.from == SAVE_CELLULAR_TRAFFIC_KEY
@@ -114,6 +135,8 @@ val ImageOptions.isDepthFromSaveCellularTraffic: Boolean
 
 /**
  * Returns true if the request is abnormal due to the cellular data saving feature
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsCommonTest.testIsCausedBySaveCellularTraffic
  */
 fun isCausedBySaveCellularTraffic(request: ImageRequest, throwable: Throwable?): Boolean =
     throwable is DepthException && request.depthHolder.depth == LOCAL && request.isDepthFromSaveCellularTraffic

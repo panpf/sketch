@@ -20,10 +20,11 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.state.ErrorStateImage
 
 /**
  * Adds save cellular traffic support
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficRequestInterceptorTest.testSupportSaveCellularTraffic
  */
 fun ComponentRegistry.Builder.supportSaveCellularTraffic(): ComponentRegistry.Builder = apply {
     addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
@@ -34,7 +35,7 @@ fun ComponentRegistry.Builder.supportSaveCellularTraffic(): ComponentRegistry.Bu
  * Then can also cooperate with saveCellularTrafficError custom error image display
  *
  * @see ImageRequest.Builder.saveCellularTraffic
- * @see ErrorStateImage.Builder.saveCellularTrafficError
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficRequestInterceptorTest
  */
 class SaveCellularTrafficRequestInterceptor constructor(
     override val sortWeight: Int = 0,

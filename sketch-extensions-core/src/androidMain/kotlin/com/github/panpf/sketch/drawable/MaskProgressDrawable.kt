@@ -30,6 +30,8 @@ import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
 
 /**
  * Mask Progress Drawable
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.drawable.MaskProgressDrawableTest
  */
 class MaskProgressDrawable(
     @ColorInt private val maskColor: Int = PROGRESS_INDICATOR_MASK_COLOR,

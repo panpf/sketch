@@ -30,6 +30,11 @@ private const val DATA_FROM_COLOR_DOWNLOAD_CACHE = 0x77FF8800 // dark yellow
 
 private const val DATA_FROM_COLOR_NETWORK = 0x77FF0000  // red
 
+/**
+ * Get the color of the data source
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.ability.DataFromLogoTest.testDataFromColor
+ */
 fun dataFromColor(dataFrom: DataFrom): Int = when (dataFrom) {
     DataFrom.MEMORY_CACHE -> DATA_FROM_COLOR_MEMORY_CACHE
     DataFrom.MEMORY -> DATA_FROM_COLOR_MEMORY
@@ -39,4 +44,9 @@ fun dataFromColor(dataFrom: DataFrom): Int = when (dataFrom) {
     DataFrom.NETWORK -> DATA_FROM_COLOR_NETWORK
 }
 
+/**
+ * Get the default size of the data source logo
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.ability.DataFromLogoTest.testDataFromDefaultSize
+ */
 val dataFromDefaultSize = 20f

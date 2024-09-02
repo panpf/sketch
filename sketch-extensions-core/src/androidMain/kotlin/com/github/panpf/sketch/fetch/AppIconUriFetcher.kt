@@ -33,6 +33,8 @@ import com.github.panpf.sketch.util.Uri
 
 /**
  * Adds App icon support
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest.testSupportAppIcon
  */
 fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = apply {
     addFetcher(AppIconUriFetcher.Factory())
@@ -40,6 +42,8 @@ fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = appl
 
 /**
  * Sample: 'app.icon://com.github.panpf.sketch.sample/1120'
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest.testNewAppIconUri
  */
 fun newAppIconUri(packageName: String, versionCode: Int): String =
     "${AppIconUriFetcher.SCHEME}://$packageName/$versionCode"
@@ -48,6 +52,8 @@ fun newAppIconUri(packageName: String, versionCode: Int): String =
  * Check if the uri is an app icon uri
  *
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest.testIsAppIconUri
  */
 fun isAppIconUri(uri: Uri): Boolean = AppIconUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
@@ -55,6 +61,8 @@ fun isAppIconUri(uri: Uri): Boolean = AppIconUriFetcher.SCHEME.equals(uri.scheme
  * Extract the icon of the installed app
  *
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest
  */
 class AppIconUriFetcher(
     val sketch: Sketch,

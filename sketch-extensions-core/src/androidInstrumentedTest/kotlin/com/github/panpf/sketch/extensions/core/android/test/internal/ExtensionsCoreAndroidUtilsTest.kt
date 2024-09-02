@@ -32,4 +32,14 @@ class ExtensionsCoreAndroidUtilsTest {
         Assert.assertEquals(1.4f, 1.412412f.format(1))
         Assert.assertEquals(1f, 1.412412f.format(0))
     }
+
+    @Test
+    fun testDp2Px() {
+        // TODO test
+    }
+
+    @Test
+    fun testVersionCodeCompat() {
+        // TODO test
+    }
 }

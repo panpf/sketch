@@ -22,6 +22,8 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.state.SaveCellularTrafficExtensionsTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, null)
@@ -29,6 +31,8 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder 
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.state.SaveCellularTrafficExtensionsTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     stateImage: StateImage
@@ -36,6 +40,11 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
     addState(SaveCellularTrafficCondition, stateImage)
 }
 
+/**
+ * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.state.SaveCellularTrafficExtensionsTest.testSaveCellularTrafficCondition
+ */
 data object SaveCellularTrafficCondition : ErrorStateImage.Condition {
 
     override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =

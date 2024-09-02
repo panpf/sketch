@@ -50,6 +50,11 @@ import kotlin.test.assertTrue
 class PauseLoadWhenScrollingDecodeInterceptorTest {
 
     @Test
+    fun testSupportPauseLoadWhenScrolling() {
+        // TODO test
+    }
+
+    @Test
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val interceptor = PauseLoadWhenScrollingDecodeInterceptor()

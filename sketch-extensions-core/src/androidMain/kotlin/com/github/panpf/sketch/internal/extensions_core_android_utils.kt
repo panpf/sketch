@@ -21,6 +21,11 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+/**
+ * Format the number to the specified number of decimal places
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.internal.ExtensionsCoreAndroidUtilsTest.testFormat
+ */
 internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
         this
@@ -30,6 +35,20 @@ internal fun Float.format(newScale: Int): Float {
     }
 }
 
+/**
+ * Convert dp to px
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.internal.ExtensionsCoreAndroidUtilsTest.testDp2Px
+ */
+internal fun Float.dp2Px(): Int {
+    return (this * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt()
+}
+
+/**
+ * Get the version code that is compatible with all Android versions
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.internal.ExtensionsCoreAndroidUtilsTest.testVersionCodeCompat
+ */
 @Suppress("DEPRECATION")
 internal val PackageInfo.versionCodeCompat: Int
     get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
@@ -37,7 +56,3 @@ internal val PackageInfo.versionCodeCompat: Int
     } else {
         versionCode
     }
-
-internal fun Float.dp2Px(): Int {
-    return (this * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt()
-}

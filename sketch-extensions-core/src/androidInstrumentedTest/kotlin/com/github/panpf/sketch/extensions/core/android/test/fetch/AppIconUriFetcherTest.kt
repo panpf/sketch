@@ -90,7 +90,10 @@ class AppIconUriFetcherTest {
         )
     }
 
-    // TODO isAppIconUri
+    @Test
+    fun testIsAppIconUri() {
+        // TODO test
+    }
 
     @Test
     fun testFactory() {

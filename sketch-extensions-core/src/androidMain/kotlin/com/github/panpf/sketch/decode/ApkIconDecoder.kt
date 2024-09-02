@@ -31,6 +31,8 @@ import java.io.IOException
 
 /**
  * Adds Apk icon support
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.decode.ApkIconDecoderTest.testSupportApkIcon
  */
 fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = apply {
     addDecoder(ApkIconDecoder.Factory())
@@ -38,6 +40,8 @@ fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = appl
 
 /**
  * Extract the icon of the Apk file and convert it to Bitmap
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.decode.ApkIconDecoderTest
  */
 class ApkIconDecoder(
     requestContext: RequestContext,

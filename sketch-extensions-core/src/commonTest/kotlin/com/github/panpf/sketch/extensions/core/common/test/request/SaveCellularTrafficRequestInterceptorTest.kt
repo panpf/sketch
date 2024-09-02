@@ -50,6 +50,11 @@ import kotlin.test.assertTrue
 class SaveCellularTrafficRequestInterceptorTest {
 
     @Test
+    fun testSupportSaveCellularTraffic() {
+        // TODO test
+    }
+
+    @Test
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val interceptor = SaveCellularTrafficRequestInterceptor {

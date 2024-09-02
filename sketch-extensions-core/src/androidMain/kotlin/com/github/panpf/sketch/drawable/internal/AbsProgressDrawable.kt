@@ -26,6 +26,11 @@ import com.github.panpf.sketch.internal.format
 import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
+/**
+ * Abstract definition of progress Drawable
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.drawable.internal.AbsProgressDrawableTest
+ */
 abstract class AbsProgressDrawable(
     val hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
     val hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,

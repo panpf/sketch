@@ -16,6 +16,12 @@
 
 package com.github.panpf.sketch.ability
 
+/**
+ * Progress indicator configuration constants
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.ability.ProgressIndicatorTest.testConsts
+ */
+
 const val PROGRESS_INDICATOR_STEP_ANIMATION_DURATION: Int = 150
 const val PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE: Boolean = false
 const val PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED: Boolean = true

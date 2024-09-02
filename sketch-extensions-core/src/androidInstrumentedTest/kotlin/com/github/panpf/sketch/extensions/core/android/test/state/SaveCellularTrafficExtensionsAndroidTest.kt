@@ -18,14 +18,7 @@ package com.github.panpf.sketch.extensions.core.android.test.state
 
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
-import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.Depth.MEMORY
-import com.github.panpf.sketch.request.Depth.NETWORK
-import com.github.panpf.sketch.request.DepthException
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
@@ -68,38 +61,5 @@ class SaveCellularTrafficExtensionsAndroidTest {
         }
 
         // TODO Drawable, res
-    }
-
-    @Test
-    fun testSaveCellularTrafficCondition() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-            depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }
-
-        SaveCellularTrafficCondition.apply {
-            Assert.assertTrue(
-                accept(
-                    request.newRequest {
-                        depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
-                    },
-                    DepthException("")
-                )
-            )
-            Assert.assertFalse(
-                accept(
-                    request.newRequest {
-                        depth(MEMORY, SAVE_CELLULAR_TRAFFIC_KEY)
-                    },
-                    DepthException("")
-                )
-            )
-            Assert.assertFalse(accept(request, null))
-
-            Assert.assertEquals(
-                "SaveCellularTrafficCondition",
-                toString()
-            )
-        }
     }
 }

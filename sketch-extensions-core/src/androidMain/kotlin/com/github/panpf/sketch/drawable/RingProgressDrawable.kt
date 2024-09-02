@@ -41,6 +41,8 @@ import kotlin.math.roundToInt
 
 /**
  * Ring Progress Drawable
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.drawable.RingProgressDrawableTest
  */
 class RingProgressDrawable constructor(
     private val size: Int = PROGRESS_INDICATOR_RING_SIZE.dp2Px(),

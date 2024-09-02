@@ -24,6 +24,8 @@ import com.github.panpf.sketch.util.ResColor
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     drawable: DrawableEqualizer
@@ -33,6 +35,8 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     @DrawableRes resId: Int
@@ -42,6 +46,8 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     color: IntColor
@@ -51,6 +57,8 @@ fun ErrorStateImage.Builder.saveCellularTrafficError(
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     color: ResColor

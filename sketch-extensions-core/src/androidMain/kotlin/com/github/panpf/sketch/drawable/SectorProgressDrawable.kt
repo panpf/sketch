@@ -38,6 +38,8 @@ import com.github.panpf.sketch.internal.dp2Px
 
 /**
  * Sector Progress Drawable
+ *
+ * @see com.github.panpf.sketch.extensions.core.android.test.drawable.SectorProgressDrawableTest
  */
 class SectorProgressDrawable constructor(
     private val size: Int = PROGRESS_INDICATOR_SECTOR_SIZE.dp2Px(),

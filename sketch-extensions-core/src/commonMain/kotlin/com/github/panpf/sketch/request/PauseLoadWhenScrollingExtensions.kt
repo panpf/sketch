@@ -21,6 +21,8 @@ private const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_whe
 
 /**
  * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testPauseLoadWhenScrolling
  */
 fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): ImageRequest.Builder =
     apply {
@@ -33,12 +35,16 @@ fun ImageRequest.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): Image
 
 /**
  * Returns true if pause load when scrolling has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testPauseLoadWhenScrolling
  */
 val ImageRequest.isPauseLoadWhenScrolling: Boolean
     get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
 
 /**
  * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testPauseLoadWhenScrolling
  */
 fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): ImageOptions.Builder =
     apply {
@@ -55,6 +61,8 @@ fun ImageOptions.Builder.pauseLoadWhenScrolling(enabled: Boolean? = true): Image
 
 /**
  * Returns true if pause load when scrolling has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testPauseLoadWhenScrolling
  */
 val ImageOptions.isPauseLoadWhenScrolling: Boolean
     get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
@@ -62,6 +70,8 @@ val ImageOptions.isPauseLoadWhenScrolling: Boolean
 
 /**
  * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testIgnorePauseLoadWhenScrolling
  */
 fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): ImageRequest.Builder =
     apply {
@@ -74,12 +84,16 @@ fun ImageRequest.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): 
 
 /**
  * Returns true if ignore pause load when scrolling has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testIgnorePauseLoadWhenScrolling
  */
 val ImageRequest.isIgnoredPauseLoadWhenScrolling: Boolean
     get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
 
 /**
  * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testIgnorePauseLoadWhenScrolling
  */
 fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): ImageOptions.Builder =
     apply {
@@ -92,6 +106,8 @@ fun ImageOptions.Builder.ignorePauseLoadWhenScrolling(ignore: Boolean? = true): 
 
 /**
  * Returns true if ignore pause load when scrolling has been enabled
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testIgnorePauseLoadWhenScrolling
  */
 val ImageOptions.isIgnoredPauseLoadWhenScrolling: Boolean
     get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true

@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.first
 
 /**
  * Adds Pause loading new images while the list is scrolling support
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingDecodeInterceptorTest.testSupportPauseLoadWhenScrolling
  */
 fun ComponentRegistry.Builder.supportPauseLoadWhenScrolling(): ComponentRegistry.Builder = apply {
     addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
@@ -34,6 +36,7 @@ fun ComponentRegistry.Builder.supportPauseLoadWhenScrolling(): ComponentRegistry
  * Pause loading new images while the list is scrolling
  *
  * @see ImageRequest.Builder.pauseLoadWhenScrolling
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingDecodeInterceptorTest
  */
 class PauseLoadWhenScrollingDecodeInterceptor(
     override val sortWeight: Int = 0

@@ -19,6 +19,11 @@ package com.github.panpf.sketch.ability
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.util.MimeTypeMap
 
+/**
+ * Get the MIME type from the [ImageResult]
+ *
+ * @see com.github.panpf.sketch.extensions.core.common.test.ability.MimeTypeLogoTest.testGetMimeTypeFromImageResult
+ */
 fun getMimeTypeFromImageResult(result: ImageResult?, uri: String? = null): String? {
     var mimeType: String? = null
     if (result is ImageResult.Success) {
