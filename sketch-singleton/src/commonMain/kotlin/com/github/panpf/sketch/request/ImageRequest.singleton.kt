@@ -28,6 +28,8 @@ import com.github.panpf.sketch.Sketch
  * reaches [Lifecycle.State.STARTED] state and View is attached to window
  *
  * @return A [Disposable] which can be used to cancel or check the status of the request.
+ *
+ * @see com.github.panpf.sketch.singleton.common.test.request.ImageRequestSingletonTest.testEnqueue
  */
 fun ImageRequest.enqueue(sketch: Sketch = SingletonSketch.get(context)): Disposable {
     return sketch.enqueue(this)
@@ -40,6 +42,8 @@ fun ImageRequest.enqueue(sketch: Sketch = SingletonSketch.get(context)): Disposa
  * reaches [Lifecycle.State.STARTED] state and View is attached to window
  *
  * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
+ *
+ * @see com.github.panpf.sketch.singleton.common.test.request.ImageRequestSingletonTest.testExecute
  */
 suspend fun ImageRequest.execute(sketch: Sketch = SingletonSketch.get(context)): ImageResult {
     return sketch.execute(this)

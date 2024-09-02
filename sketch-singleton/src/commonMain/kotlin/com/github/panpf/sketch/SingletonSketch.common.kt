@@ -20,8 +20,27 @@ import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
 import kotlin.jvm.JvmStatic
 
+/**
+ * Get the factory of [Sketch] from Application, only supports Android platform
+ *
+ * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testApplicationSketchFactory
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testApplicationSketchFactory
+ */
+internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory?
+
+/**
+ * Get the singleton [Sketch] from PlatformContext.
+ *
+ * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testContextSketch
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testContextSketch
+ */
 expect val PlatformContext.sketch: Sketch
 
+/**
+ * Singleton [Sketch]
+ *
+ * @see com.github.panpf.sketch.singleton.common.test.SingletonSketchTest
+ */
 object SingletonSketch {
 
     private val reference = atomic<Any?>(null)
@@ -140,8 +159,11 @@ object SingletonSketch {
     }
 }
 
-internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory?
-
+/**
+ * Default [Sketch] Factory
+ *
+ * @see com.github.panpf.sketch.singleton.common.test.SingletonSketchTest.testDefaultSketchFactory
+ */
 private val DefaultSketchFactory = SingletonSketch.Factory { context ->
     Sketch.Builder(context).build()
 }

@@ -1,9 +1,21 @@
 package com.github.panpf.sketch.singleton.nonandroid.test
 
-import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.get
+import kotlin.test.Test
 
 class SingletonSketchAndroidTest {
-    // TODO test
-    val s = SingletonSketch.get()
+
+    @Test
+    fun testApplicationSketchFactory() {
+        // TODO test
+    }
+
+    @Test
+    fun testContextSketch() {
+        // TODO test
+    }
+
+    @Test
+    fun testGet() {
+        // TODO test
+    }
 }

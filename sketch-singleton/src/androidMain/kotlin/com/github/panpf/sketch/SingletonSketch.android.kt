@@ -19,12 +19,27 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.view.View
 
+/**
+ * Get the factory of [Sketch] from Application, only supports Android platform
+ *
+ * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testApplicationSketchFactory
+ */
 internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory? {
     return applicationContext as? SingletonSketch.Factory
 }
 
+/**
+ * Get the singleton [Sketch] from Context.
+ *
+ * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testContextSketch
+ */
 actual val Context.sketch: Sketch
     get() = SingletonSketch.get(this)
 
+/**
+ * Get the singleton [Sketch] from View.
+ *
+ * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testViewSketch
+ */
 val View.sketch: Sketch
     get() = SingletonSketch.get(context)
