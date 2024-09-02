@@ -30,6 +30,8 @@ import java.io.File
  * Load the image from [uri] and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     uri: String?,
@@ -40,6 +42,8 @@ fun ImageView.loadImage(
  * Load the image from [uri] and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     uri: Uri?,
@@ -50,6 +54,8 @@ fun ImageView.loadImage(
  * Load the image from drawable res and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     @DrawableRes resId: Int?,
@@ -60,6 +66,8 @@ fun ImageView.loadImage(
  * Load the image from local file and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     file: File?,
@@ -70,6 +78,8 @@ fun ImageView.loadImage(
  * Load the image from app assets and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadAssetImage(
     fileName: String?,
@@ -80,6 +90,8 @@ fun ImageView.loadAssetImage(
  * Load the image from drawable res and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadResourceImage(
     @DrawableRes resId: Int?,
@@ -90,6 +102,8 @@ fun ImageView.loadResourceImage(
  * Load the image from drawable res and display it on this [ImageView]
  *
  * You can set request params with a trailing lambda function [configBlock]
+ *
+ * @see com.github.panpf.sketch.view.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadResourceImage(
     packageName: String,
