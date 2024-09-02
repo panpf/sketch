@@ -17,8 +17,6 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.sample.util.stateCombine
-import com.github.panpf.sketch.sample.util.stateMap
 import com.github.panpf.sketch.sample.ui.util.valueOf
 import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
@@ -26,6 +24,8 @@ import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
 import com.github.panpf.sketch.sample.util.intSettingsStateFlow
 import com.github.panpf.sketch.sample.util.isDebugMode
+import com.github.panpf.sketch.sample.util.stateCombine
+import com.github.panpf.sketch.sample.util.stateMap
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.StateFlow
@@ -191,7 +191,7 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     }
 
     actual val showOriginImage: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "showOriginImage", false)
+        booleanSettingsStateFlow(context, "showOriginImage", true)
     }
 
 
