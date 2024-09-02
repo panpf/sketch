@@ -18,6 +18,8 @@ package com.github.panpf.sketch.http
 
 /**
  * Set headers for http requests
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.http.HttpHeadersTest
  */
 class HttpHeaders(
     val addList: List<Pair<String, String>>,
@@ -127,9 +129,18 @@ class HttpHeaders(
     }
 }
 
-/** Return true when the set contains elements. */
+/**
+ * Return true when the set contains elements.
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.http.HttpHeadersTest.testIsEmptyAndIsNotEmpty
+ */
 fun HttpHeaders.isNotEmpty(): Boolean = !isEmpty()
 
+/**
+ * Merge two [HttpHeaders] into one [HttpHeaders]
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.http.HttpHeadersTest.testMerged
+ */
 fun HttpHeaders?.merged(other: HttpHeaders?): HttpHeaders? {
     if (this == null || other == null) {
         return this ?: other

@@ -27,6 +27,8 @@ import javax.net.ssl.HttpsURLConnection
 
 /**
  * Use [HttpURLConnection] to request HTTP
+ *
+ * @see com.github.panpf.sketch.http.core.jvmcommon.test.HurlStackTest
  */
 class HurlStack private constructor(
     /**

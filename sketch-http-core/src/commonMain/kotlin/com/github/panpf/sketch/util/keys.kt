@@ -24,6 +24,11 @@ interface NullableKey {
     val key: String?
 }
 
+/**
+ * If the incoming object is a [Key], the [Key.key] value is returned, otherwise the [Any.toString] value is returned
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.util.KeysTest.testKey
+ */
 fun key(it: Any): String {
     return when (it) {
         is Key -> it.key
@@ -32,6 +37,11 @@ fun key(it: Any): String {
     }
 }
 
+/**
+ * If the incoming object is a [Key] or [NullableKey], the [Key.key] or [NullableKey.key] value is returned, otherwise the [Any.toString] value is returned
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.util.KeysTest.testKeyOrNull
+ */
 fun keyOrNull(it: Any?): String? {
     return when (it) {
         is Key -> it.key

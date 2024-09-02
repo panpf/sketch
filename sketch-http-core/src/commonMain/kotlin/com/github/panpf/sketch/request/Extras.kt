@@ -24,6 +24,8 @@ import kotlin.jvm.JvmField
 
 /**
  * A map of generic values that can be used to pass custom data to Fetcher and Decoder.
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest
  */
 class Extras private constructor(
     val entries: Map<String, Entry>
@@ -31,7 +33,9 @@ class Extras private constructor(
 
     constructor() : this(emptyMap())
 
-    /** Returns the number of parameters in this object. */
+    /**
+     * Returns the number of parameters in this object.
+     */
     val size: Int get() = entries.size
 
     override val key: String by lazy {
@@ -42,6 +46,9 @@ class Extras private constructor(
         "Extras($keys)"
     }
 
+    /**
+     * Returns a key that can be used to uniquely identify a request.
+     */
     val requestKey: String? by lazy {
         val keys = entries.asSequence()
             .filter { it.value.requestKey != null }
@@ -51,6 +58,9 @@ class Extras private constructor(
         if (keys.isNotEmpty()) "Extras($keys)" else null
     }
 
+    /**
+     * Returns a key that can be used to uniquely identify a request's cache.
+     */
     val cacheKey: String? by lazy {
         val keys = entries.asSequence()
             .filter { it.value.cacheKey != null }
@@ -60,19 +70,30 @@ class Extras private constructor(
         if (keys.isNotEmpty()) "Extras($keys)" else null
     }
 
-    /** Returns the entry associated with [key] or null if [key] has no mapping. */
+    /**
+     * Returns the entry associated with [key] or null if [key] has no mapping.
+     */
     fun entry(key: String): Entry? = entries[key]
 
-    /** Returns the value associated with [key] or null if [key] has no mapping. */
+    /**
+     * Returns the value associated with [key] or null if [key] has no mapping.
+     */
     @Suppress("UNCHECKED_CAST")
     fun <T> value(key: String): T? = entry(key)?.value as T?
 
-    /** Returns 'true' if this object has no parameters. */
+    /**
+     * Returns 'true' if this object has no parameters.
+     */
     fun isEmpty(): Boolean = entries.isEmpty()
 
+    /**
+     * Get all keys
+     */
     fun keys(): Set<String> = entries.keys
 
-    /** Returns a map of keys to values. */
+    /**
+     * Returns a map of keys to values.
+     */
     fun values(): Map<String, Any?> {
         return if (isEmpty()) {
             emptyMap()
@@ -81,7 +102,9 @@ class Extras private constructor(
         }
     }
 
-    /** Returns an [Iterator] over the entries in the [Extras]. */
+    /**
+     * Returns an [Iterator] over the entries in the [Extras].
+     */
     override operator fun iterator(): Iterator<Pair<String, Entry>> {
         return entries.map { (key, value) -> key to value }.iterator()
     }
@@ -174,15 +197,32 @@ class Extras private constructor(
     }
 }
 
-/** Returns the number of parameters in this object. */
+/**
+ * Returns the number of parameters in this object.
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest.testSizeAndCount
+ */
 fun Extras.count(): Int = size
 
-/** Return true when the set contains elements. */
+/**
+ * Return true when the set contains elements.
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest.testIsEmptyAndIsNotEmpty
+ */
 fun Extras.isNotEmpty(): Boolean = !isEmpty()
 
-/** Returns the value associated with [key] or null if [key] has no mapping. */
+/**
+ * Returns the value associated with [key] or null if [key] has no mapping.
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest.testGet
+ */
 operator fun Extras.get(key: String): Any? = value(key)
 
+/**
+ * Merge two Extras, based on the Extra on the left
+ *
+ * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest.testMerged
+ */
 fun Extras?.merged(other: Extras?): Extras? {
     if (this == null || other == null) {
         return this ?: other

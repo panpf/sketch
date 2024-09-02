@@ -32,6 +32,7 @@ import javax.net.ssl.SSLSocketFactory
  *
  * @link https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
  * @see SSLSocketFactory
+ * @see com.github.panpf.sketch.http.core.jvmcommon.test.internal.TlsCompatSocketFactoryTest
  */
 class TlsCompatSocketFactory(val enabledTlsProtocols: Array<String>) : SSLSocketFactory() {
 
