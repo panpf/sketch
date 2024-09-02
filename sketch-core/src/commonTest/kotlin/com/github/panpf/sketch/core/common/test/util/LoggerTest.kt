@@ -57,7 +57,7 @@ class LoggerTest {
     }
 
     @Test
-    fun testLevel() {
+    fun testLevelProperty() {
         Logger().apply {
             assertEquals(Level.Info, level)
             level = Level.Error
@@ -382,6 +382,11 @@ class LoggerTest {
         assertNotEquals(logger1, logger3)
         assertNotEquals(logger1.hashCode(), logger2.hashCode())
         assertNotEquals(logger1.hashCode(), logger3.hashCode())
+    }
+
+    @Test
+    fun testLevelEnum() {
+        // TODO test
     }
 
     private class TestPipeline : Pipeline {

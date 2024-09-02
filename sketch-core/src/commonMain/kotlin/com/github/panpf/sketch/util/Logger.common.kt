@@ -312,6 +312,11 @@ class Logger(
         return "Logger(level=$level, pipeline=$pipeline)"
     }
 
+    /**
+     * Priority constant for the println method.
+     *
+     * @see com.github.panpf.sketch.core.common.test.util.LoggerTest.testLevelEnum
+     */
     enum class Level {
         /**
          * Priority constant for the println method; use Log.v.
