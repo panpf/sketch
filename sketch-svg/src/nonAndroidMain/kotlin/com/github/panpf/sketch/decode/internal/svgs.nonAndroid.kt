@@ -38,6 +38,11 @@ import org.jetbrains.skia.svg.SVGLength
 import org.jetbrains.skia.svg.SVGLengthUnit
 import kotlin.math.roundToInt
 
+/**
+ * Decode the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testDecodeSvg
+ */
 internal actual suspend fun decodeSvg(
     requestContext: RequestContext,
     dataSource: DataSource,

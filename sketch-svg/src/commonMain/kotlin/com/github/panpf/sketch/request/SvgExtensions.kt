@@ -21,6 +21,8 @@ private const val SVG_CSS_KEY = "sketch#svg_css"
 
 /**
  * Set the background color of the SVG image, the default is transparent
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgBackgroundColor
  */
 fun ImageRequest.Builder.svgBackgroundColor(color: Int?): ImageRequest.Builder = apply {
     if (color != null) {
@@ -32,12 +34,16 @@ fun ImageRequest.Builder.svgBackgroundColor(color: Int?): ImageRequest.Builder =
 
 /**
  * Get the background color of the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgBackgroundColor
  */
 val ImageRequest.svgBackgroundColor: Int?
     get() = extras?.value<Int>(SVG_BACKGROUND_COLOR_KEY)
 
 /**
  * Set the background color of the SVG image, the default is transparent
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgBackgroundColor
  */
 fun ImageOptions.Builder.svgBackgroundColor(color: Int?) = apply {
     if (color != null) {
@@ -49,6 +55,8 @@ fun ImageOptions.Builder.svgBackgroundColor(color: Int?) = apply {
 
 /**
  * Get the background color of the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgBackgroundColor
  */
 val ImageOptions.svgBackgroundColor: Int?
     get() = extras?.value<Int>(SVG_BACKGROUND_COLOR_KEY)
@@ -56,6 +64,8 @@ val ImageOptions.svgBackgroundColor: Int?
 
 /**
  * Set the background color of the SVG image, the default is transparent
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgCss
  */
 fun ImageRequest.Builder.svgCss(css: String?): ImageRequest.Builder = apply {
     if (css != null) {
@@ -67,12 +77,16 @@ fun ImageRequest.Builder.svgCss(css: String?): ImageRequest.Builder = apply {
 
 /**
  * Get the background color of the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgCss
  */
 val ImageRequest.svgCss: String?
     get() = extras?.value<String>(SVG_CSS_KEY)
 
 /**
  * Set the background color of the SVG image, the default is transparent
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgCss
  */
 fun ImageOptions.Builder.svgCss(css: String?) = apply {
     if (css != null) {
@@ -84,6 +98,8 @@ fun ImageOptions.Builder.svgCss(css: String?) = apply {
 
 /**
  * Get the background color of the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.common.test.request.SvgExtensionsTest.testSvgCss
  */
 val ImageOptions.svgCss: String?
     get() = extras?.value<String>(SVG_CSS_KEY)

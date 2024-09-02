@@ -36,6 +36,11 @@ import com.github.panpf.sketch.util.times
 import okio.buffer
 import kotlin.math.roundToInt
 
+/**
+ * Decode the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testDecodeSvg
+ */
 internal actual suspend fun decodeSvg(
     requestContext: RequestContext,
     dataSource: DataSource,

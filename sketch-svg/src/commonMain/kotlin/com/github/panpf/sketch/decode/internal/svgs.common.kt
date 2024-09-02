@@ -26,9 +26,20 @@ import okio.ByteString.Companion.encodeUtf8
 private val SVG_TAG = "<svg ".encodeUtf8().toByteArray()
 private val LEFT_ANGLE_BRACKET = "<".encodeUtf8().toByteArray()
 
+/**
+ * Check if the data is an SVG image
+ *
+ * @see com.github.panpf.sketch.svg.common.test.decode.internal.SvgsTest.testIsSvg
+ */
 fun ByteArray.isSvg(): Boolean =
     rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1
 
+/**
+ * Decode the SVG image
+ *
+ * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testDecodeSvg
+ * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testDecodeSvg
+ */
 internal expect suspend fun decodeSvg(
     requestContext: RequestContext,
     dataSource: DataSource,

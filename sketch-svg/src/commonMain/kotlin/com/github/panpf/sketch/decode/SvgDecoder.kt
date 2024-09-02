@@ -28,6 +28,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds SVG support
+ *
+ * @see com.github.panpf.sketch.svg.common.test.decode.SvgDecoderTest.testSupportSvg
  */
 fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
     addDecoder(Factory())
@@ -35,6 +37,8 @@ fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
 
 /**
  * Decode svg file and convert to Bitmap
+ *
+ * @see com.github.panpf.sketch.svg.common.test.decode.SvgDecoderTest
  */
 class SvgDecoder(
     private val requestContext: RequestContext,
