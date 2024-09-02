@@ -26,6 +26,8 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
  * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  *
  * Default: `null`
+ *
+ * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
  */
 fun ImageRequest.Builder.animatedTransformation(
     animatedTransformation: AnimatedTransformation?
@@ -44,6 +46,8 @@ fun ImageRequest.Builder.animatedTransformation(
 
 /**
  * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
+ *
+ * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
  */
 val ImageRequest.animatedTransformation: AnimatedTransformation?
     get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
@@ -52,6 +56,8 @@ val ImageRequest.animatedTransformation: AnimatedTransformation?
  * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
  *
  * Default: `null`
+ *
+ * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
  */
 fun ImageOptions.Builder.animatedTransformation(
     animatedTransformation: AnimatedTransformation?
@@ -70,11 +76,18 @@ fun ImageOptions.Builder.animatedTransformation(
 
 /**
  * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
+ *
+ * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
  */
 // TODO Support compose
 val ImageOptions.animatedTransformation: AnimatedTransformation?
     get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
 
+/**
+ * Wrap onStart and onEnd into [Animatable2Compat.AnimationCallback]
+ *
+ * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatable2CompatCallbackOf
+ */
 fun animatable2CompatCallbackOf(
     onStart: (() -> Unit)?,
     onEnd: (() -> Unit)?

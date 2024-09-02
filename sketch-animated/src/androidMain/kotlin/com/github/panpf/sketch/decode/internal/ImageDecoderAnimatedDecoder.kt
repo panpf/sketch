@@ -58,6 +58,10 @@ import java.nio.ByteBuffer
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.GifAnimatedDecoderTest
+ * @see com.github.panpf.sketch.animated.android.test.decode.WebpAnimatedDecoderTest
+ * @see com.github.panpf.sketch.animated.android.test.decode.HeifAnimatedDecoderTest
  */
 @RequiresApi(Build.VERSION_CODES.P)
 open class ImageDecoderAnimatedDecoder(

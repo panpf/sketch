@@ -25,11 +25,18 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds animation webp support by Skia
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.decode.WebpSkiaAnimatedDecoderTest.testSupportSkiaWebp
  */
 fun ComponentRegistry.Builder.supportSkiaAnimatedWebp(): ComponentRegistry.Builder = apply {
     addDecoder(WebpSkiaAnimatedDecoder.Factory())
 }
 
+/**
+ * Webp animated decoder based on Skia
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.decode.WebpSkiaAnimatedDecoderTest
+ */
 class WebpSkiaAnimatedDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,

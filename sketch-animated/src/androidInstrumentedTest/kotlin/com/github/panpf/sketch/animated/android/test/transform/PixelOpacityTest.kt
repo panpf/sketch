@@ -28,6 +28,11 @@ import org.junit.runner.RunWith
 class PixelOpacityTest {
 
     @Test
+    fun testPixelOpacity() {
+        // TODO test
+    }
+
+    @Test
     fun testFlag() {
         Assert.assertEquals(PixelFormat.OPAQUE, PixelOpacity.OPAQUE.flag)
         Assert.assertEquals(PixelFormat.UNKNOWN, PixelOpacity.UNCHANGED.flag)

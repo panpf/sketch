@@ -35,6 +35,11 @@ interface AnimatedTransformation : Key {
     fun transform(canvas: Canvas): PixelOpacity
 }
 
+/**
+ * Convert this [AnimatedTransformation] to a [PostProcessor].
+ *
+ * @see com.github.panpf.sketch.animated.android.test.transform.AnimatedTransformationTest.testAsPostProcessor
+ */
 @RequiresApi(28)
 internal fun AnimatedTransformation.asPostProcessor() =
     PostProcessor { canvas -> transform(canvas).flag }

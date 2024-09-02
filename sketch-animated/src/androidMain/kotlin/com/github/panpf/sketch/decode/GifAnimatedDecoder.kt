@@ -27,6 +27,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds gif support by AnimatedImageDrawable
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.GifAnimatedDecoderTest.testSupportAnimatedGif
  */
 @RequiresApi(Build.VERSION_CODES.P)
 fun ComponentRegistry.Builder.supportAnimatedGif(): ComponentRegistry.Builder = apply {
@@ -43,6 +45,8 @@ fun ComponentRegistry.Builder.supportAnimatedGif(): ComponentRegistry.Builder = 
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.GifAnimatedDecoderTest
  */
 @RequiresApi(Build.VERSION_CODES.P)
 class GifAnimatedDecoder(

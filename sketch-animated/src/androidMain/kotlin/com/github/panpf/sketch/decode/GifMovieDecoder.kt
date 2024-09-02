@@ -44,6 +44,8 @@ import okio.buffer
 
 /**
  * Adds gif support by Movie
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.GifMovieDecoderTest.testSupportMovieGif
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = apply {
@@ -59,6 +61,8 @@ fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = app
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.GifMovieDecoderTest
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class GifMovieDecoder(

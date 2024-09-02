@@ -50,7 +50,7 @@ import org.junit.runner.RunWith
 class HeifAnimatedDecoderTest {
 
     @Test
-    fun testSupportApkIcon() {
+    fun testSupportAnimatedHeif() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
 
         ComponentRegistry.Builder().apply {

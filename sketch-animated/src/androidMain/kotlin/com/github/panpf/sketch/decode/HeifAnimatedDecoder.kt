@@ -27,6 +27,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds animation heif support by AnimatedImageDrawable
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.HeifAnimatedDecoderTest.testSupportAnimatedHeif
  */
 @RequiresApi(Build.VERSION_CODES.R)
 fun ComponentRegistry.Builder.supportAnimatedHeif(): ComponentRegistry.Builder = apply {
@@ -43,6 +45,8 @@ fun ComponentRegistry.Builder.supportAnimatedHeif(): ComponentRegistry.Builder =
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.HeifAnimatedDecoderTest
  */
 @RequiresApi(Build.VERSION_CODES.R)
 class HeifAnimatedDecoder(

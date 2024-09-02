@@ -48,7 +48,7 @@ import org.junit.runner.RunWith
 class GifMovieDecoderTest {
 
     @Test
-    fun testSupportApkIcon() {
+    fun testSupportMovieGif() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
 
         ComponentRegistry.Builder().apply {

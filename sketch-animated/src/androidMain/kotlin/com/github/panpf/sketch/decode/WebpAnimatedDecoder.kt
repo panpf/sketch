@@ -27,6 +27,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds animation webp support by AnimatedImageDrawable
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.WebpAnimatedDecoderTest.testSupportAnimatedWebp
  */
 @RequiresApi(Build.VERSION_CODES.P)
 fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder = apply {
@@ -43,6 +45,8 @@ fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder =
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * @see com.github.panpf.sketch.animated.android.test.decode.WebpAnimatedDecoderTest
  */
 @RequiresApi(Build.VERSION_CODES.P)
 class WebpAnimatedDecoder(

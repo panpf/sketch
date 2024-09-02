@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.animated.android.test.request.internal
+package com.github.panpf.sketch.animated.android.test.request
 
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES

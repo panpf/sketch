@@ -44,6 +44,8 @@ import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
+ *
+ * @see com.github.panpf.sketch.animated.android.test.drawable.MovieDrawableTest
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class MovieDrawable constructor(

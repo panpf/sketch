@@ -39,12 +39,16 @@ private val GIF_HEADER_89A = "GIF89a".encodeUtf8().toByteArray()
 
 /**
  * Return 'true' if the [ByteArray] contains a WebP image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.decode.internal.AnimatedDecodeUtilsTest.testIsWebP
  */
 fun ByteArray.isWebP(): Boolean =
     rangeEquals(0, WEBP_HEADER_RIFF) && rangeEquals(8, WEBP_HEADER_WEBP)
 
 /**
  * Return 'true' if the [ByteArray] contains an animated WebP image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.decode.internal.AnimatedDecodeUtilsTest.testIsAnimatedWebP
  */
 fun ByteArray.isAnimatedWebP(): Boolean = isWebP()
         && rangeEquals(12, WEBP_HEADER_VP8X)
@@ -55,11 +59,15 @@ fun ByteArray.isAnimatedWebP(): Boolean = isWebP()
 
 /**
  * Return 'true' if the [ByteArray] contains an HEIF image. The [ByteArray] is not consumed.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.decode.internal.AnimatedDecodeUtilsTest.testIsHeif
  */
 fun ByteArray.isHeif(): Boolean = rangeEquals(4, HEIF_HEADER_FTYP)
 
 /**
  * Return 'true' if the [ByteArray] contains an animated HEIF image sequence.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.decode.internal.AnimatedDecodeUtilsTest.testIsAnimatedHeif
  */
 fun ByteArray.isAnimatedHeif(): Boolean = isHeif()
         && (rangeEquals(8, HEIF_HEADER_MSF1)
@@ -68,11 +76,16 @@ fun ByteArray.isAnimatedHeif(): Boolean = isHeif()
 
 /**
  * Return 'true' if the [ByteArray] contains a GIF image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.decode.internal.AnimatedDecodeUtilsTest.testIsGif
  */
 fun ByteArray.isGif(): Boolean =
     rangeEquals(0, GIF_HEADER_89A) || rangeEquals(0, GIF_HEADER_87A)
 
-fun ByteArray.containsRiffAnimChunk(offset: Int = 0): Boolean {
+/**
+ * @see com.github.panpf.sketch.animated.common.test.decode.internal.AnimatedDecodeUtilsTest.testIsAnimatedWebP
+ */
+private fun ByteArray.containsRiffAnimChunk(offset: Int = 0): Boolean {
     (offset until size - WEBP_HEADER_ANIM.size).forEach {
         if (rangeEquals(it, WEBP_HEADER_ANIM)) {
             return true

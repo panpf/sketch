@@ -18,6 +18,11 @@ package com.github.panpf.sketch.util
 
 import android.os.Looper
 
+/**
+ * Check if the current thread is the UI thread
+ *
+ * @see com.github.panpf.sketch.animated.android.test.util.AnimatedUtilsTest.testRequiredMainThread
+ */
 internal fun requiredMainThread() {
     check(Looper.myLooper() == Looper.getMainLooper()) {
         "This method must be executed in the UI thread"

@@ -26,6 +26,8 @@ const val ANIMATED_TRANSFORMATION_KEY = "sketch#animated_transformation"
 
 /**
  * Set Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testRepeatCount
  */
 fun ImageRequest.Builder.repeatCount(repeatCount: Int?): ImageRequest.Builder = apply {
     require(repeatCount == null || repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
@@ -38,12 +40,16 @@ fun ImageRequest.Builder.repeatCount(repeatCount: Int?): ImageRequest.Builder = 
 
 /**
  * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testRepeatCount
  */
 val ImageRequest.repeatCount: Int?
     get() = extras?.value(ANIMATION_REPEAT_COUNT_KEY)
 
 /**
  * Set Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testRepeatCount
  */
 fun ImageOptions.Builder.repeatCount(repeatCount: Int?): ImageOptions.Builder = apply {
     require(repeatCount == null || repeatCount >= ANIMATION_REPEAT_INFINITE) { "Invalid repeatCount: $repeatCount" }
@@ -56,6 +62,8 @@ fun ImageOptions.Builder.repeatCount(repeatCount: Int?): ImageOptions.Builder = 
 
 /**
  * Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testRepeatCount
  */
 val ImageOptions.repeatCount: Int?
     get() = extras?.value(ANIMATION_REPEAT_COUNT_KEY)
@@ -63,6 +71,8 @@ val ImageOptions.repeatCount: Int?
 
 /**
  * Set the callback to be invoked at the start of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationStart
  */
 fun ImageRequest.Builder.onAnimationStart(callback: (() -> Unit)?): ImageRequest.Builder = apply {
     if (callback != null) {
@@ -79,12 +89,16 @@ fun ImageRequest.Builder.onAnimationStart(callback: (() -> Unit)?): ImageRequest
 
 /**
  * Get the callback to be invoked at the start of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationStart
  */
 val ImageRequest.animationStartCallback: (() -> Unit)?
     get() = extras?.value(ANIMATION_START_CALLBACK_KEY)
 
 /**
  * Set the callback to be invoked at the start of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationStart
  */
 fun ImageOptions.Builder.onAnimationStart(callback: (() -> Unit)?): ImageOptions.Builder = apply {
     if (callback != null) {
@@ -101,6 +115,8 @@ fun ImageOptions.Builder.onAnimationStart(callback: (() -> Unit)?): ImageOptions
 
 /**
  * Get the callback to be invoked at the start of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationStart
  */
 val ImageOptions.animationStartCallback: (() -> Unit)?
     get() = extras?.value(ANIMATION_START_CALLBACK_KEY)
@@ -108,6 +124,8 @@ val ImageOptions.animationStartCallback: (() -> Unit)?
 
 /**
  * Set the callback to be invoked at the end of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationEnd
  */
 fun ImageRequest.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageRequest.Builder = apply {
     if (callback != null) {
@@ -124,12 +142,16 @@ fun ImageRequest.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageRequest.B
 
 /**
  * Get the callback to be invoked at the end of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationEnd
  */
 val ImageRequest.animationEndCallback: (() -> Unit)?
     get() = extras?.value(ANIMATION_END_CALLBACK_KEY)
 
 /**
  * Set the callback to be invoked at the end of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationEnd
  */
 fun ImageOptions.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageOptions.Builder = apply {
     if (callback != null) {
@@ -146,6 +168,8 @@ fun ImageOptions.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageOptions.B
 
 /**
  * Get the callback to be invoked at the end of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testOnAnimationEnd
  */
 val ImageOptions.animationEndCallback: (() -> Unit)?
     get() = extras?.value(ANIMATION_END_CALLBACK_KEY)

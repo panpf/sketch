@@ -21,6 +21,8 @@ const val ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY = "sketch#animated_cache_decod
 
 /**
  * Cache decoding timed-out frames to improve playback smoothness, but will use more memory
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.request.AnimatedExtensionsNonAndroidTest.testCacheDecodeTimeoutFrame
  */
 fun ImageRequest.Builder.cacheDecodeTimeoutFrame(cache: Boolean? = true): ImageRequest.Builder =
     apply {
@@ -33,12 +35,16 @@ fun ImageRequest.Builder.cacheDecodeTimeoutFrame(cache: Boolean? = true): ImageR
 
 /**
  * Cache decoding timed-out frames to improve playback smoothness, but will use more memory
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.request.AnimatedExtensionsNonAndroidTest.testCacheDecodeTimeoutFrame
  */
 val ImageRequest.cacheDecodeTimeoutFrame: Boolean?
     get() = extras?.value(ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY)
 
 /**
  * Cache decoding timed-out frames to improve playback smoothness, but will use more memory
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.request.AnimatedExtensionsNonAndroidTest.testCacheDecodeTimeoutFrame
  */
 fun ImageOptions.Builder.cacheDecodeTimeoutFrame(cache: Boolean? = true): ImageOptions.Builder =
     apply {
@@ -51,6 +57,8 @@ fun ImageOptions.Builder.cacheDecodeTimeoutFrame(cache: Boolean? = true): ImageO
 
 /**
  * Cache decoding timed-out frames to improve playback smoothness, but will use more memory
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.request.AnimatedExtensionsNonAndroidTest.testCacheDecodeTimeoutFrame
  */
 val ImageOptions.cacheDecodeTimeoutFrame: Boolean?
     get() = extras?.value(ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY)

@@ -30,6 +30,12 @@ import okio.buffer
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 
+/**
+ * Animated image decoder based on Skia
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.decode.GifSkiaAnimatedDecoderTest
+ * @see com.github.panpf.sketch.animated.nonandroid.test.decode.WebpSkiaAnimatedDecoderTest
+ */
 open class SkiaAnimatedDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,

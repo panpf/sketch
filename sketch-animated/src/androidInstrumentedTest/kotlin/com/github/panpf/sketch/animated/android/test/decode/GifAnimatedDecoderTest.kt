@@ -50,7 +50,7 @@ import org.junit.runner.RunWith
 class GifAnimatedDecoderTest {
 
     @Test
-    fun testSupportApkIcon() {
+    fun testSupportAnimatedGif() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
 
         ComponentRegistry.Builder().apply {

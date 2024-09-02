@@ -50,7 +50,7 @@ import org.junit.runner.RunWith
 class WebpAnimatedDecoderTest {
 
     @Test
-    fun testSupportApkIcon() {
+    fun testSupportAnimatedWebp() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
 
         ComponentRegistry.Builder().apply {

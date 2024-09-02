@@ -42,6 +42,8 @@ import kotlin.math.roundToInt
  *
  * This allows drawables that only draw within their intrinsic dimensions
  * (e.g. [AnimatedImageDrawable]) to fill their entire bounds.
+ *
+ * @see com.github.panpf.sketch.animated.android.test.drawable.ScaledAnimatedImageDrawableTest
  */
 @RequiresApi(VERSION_CODES.P)
 class ScaledAnimatedImageDrawable @JvmOverloads constructor(

@@ -25,11 +25,18 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds gif support by Skia
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.decode.GifSkiaAnimatedDecoderTest.testSupportSkiaGif
  */
 fun ComponentRegistry.Builder.supportSkiaGif(): ComponentRegistry.Builder = apply {
     addDecoder(GifSkiaAnimatedDecoder.Factory())
 }
 
+/**
+ * Gif decoder based on Skia
+ *
+ * @see com.github.panpf.sketch.animated.nonandroid.test.decode.GifSkiaAnimatedDecoderTest
+ */
 class GifSkiaAnimatedDecoder(
     requestContext: RequestContext,
     dataSource: DataSource,
