@@ -25,6 +25,8 @@ import com.github.panpf.sketch.source.DataSource
 
 /**
  * Adds video frame support by ffmpeg
+ *
+ * @see com.github.panpf.sketch.video.ffmpeg.test.decode.FFmpegVideoFrameDecoderTest.testSupportApkIcon
  */
 fun ComponentRegistry.Builder.supportFFmpegVideoFrame(): ComponentRegistry.Builder = apply {
     addDecoder(FFmpegVideoFrameDecoder.Factory())
