@@ -154,10 +154,11 @@ compose.resources {
 
 compose.desktop {
     application {
+        val appName = "Sketch4 Sample"
         mainClass = "com.github.panpf.sketch.sample.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.github.panpf.sketch.sample"
+            packageName = appName
             packageVersion = property("versionName").toString().let {
                 if (it.contains("-")) {
                     it.substring(0, it.indexOf("-"))
@@ -165,6 +166,23 @@ compose.desktop {
                     it
                 }
             }
+            vendor = "panpf@outlook.com"
+            description = "Sketch4 Image Loader Library Sample App"
+            macOS {
+                bundleID = "com.github.panpf.sketch4.sample"
+                iconFile.set(project.file("icons/icon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("icons/icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("icons/icon.png"))
+            }
+            modules("jdk.unsupported")  // 'sun/misc/Unsafe' and other errors
+        }
+        buildTypes.release.proguard {
+//            obfuscate.set(true) // Obfuscate the code
+            configurationFiles.from(project.file("compose-desktop.pro"))
         }
     }
 }
