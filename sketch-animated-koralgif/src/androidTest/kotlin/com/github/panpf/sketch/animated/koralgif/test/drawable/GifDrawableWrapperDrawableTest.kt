@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
-import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.ResourceImageFile
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.asOrThrow
 import org.junit.Assert
 import org.junit.Test
@@ -23,6 +23,8 @@ import pl.droidsonroids.gif.GifDrawable
 
 @RunWith(AndroidJUnit4::class)
 class GifDrawableWrapperDrawableTest {
+
+    // TODO test
 
     @Test
     fun testEqualsAndHashCode() {

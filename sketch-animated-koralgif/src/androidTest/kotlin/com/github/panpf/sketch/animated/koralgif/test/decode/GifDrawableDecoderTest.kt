@@ -52,7 +52,7 @@ import org.junit.runner.RunWith
 class GifDrawableDecoderTest {
 
     @Test
-    fun testSupportApkIcon() {
+    fun testSupportKoralGif() {
         ComponentRegistry.Builder().apply {
             build().apply {
                 Assert.assertEquals(

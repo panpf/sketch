@@ -48,6 +48,8 @@ import pl.droidsonroids.gif.transforms.Transform
 
 /**
  * Adds gif support by koral GifDrawable
+ *
+ * @see com.github.panpf.sketch.animated.koralgif.test.decode.GifDrawableDecoderTest.testSupportKoralGif
  */
 fun ComponentRegistry.Builder.supportKoralGif(): ComponentRegistry.Builder = apply {
     addDecoder(GifDrawableDecoder.Factory())
@@ -56,17 +58,14 @@ fun ComponentRegistry.Builder.supportKoralGif(): ComponentRegistry.Builder = app
 /**
  * Only the following attributes are supported:
  *
- * resize.size
+ * * resize.size
+ * * resize.precision: It is always LESS_PIXELS
+ * * repeatCount
+ * * animatedTransformation
+ * * onAnimationStart
+ * * onAnimationEnd
  *
- * resize.precision: It is always LESS_PIXELS
- *
- * repeatCount
- *
- * animatedTransformation
- *
- * onAnimationStart
- *
- * onAnimationEnd
+ * @see com.github.panpf.sketch.animated.koralgif.test.decode.GifDrawableDecoderTest
  */
 class GifDrawableDecoder(
     private val requestContext: RequestContext,

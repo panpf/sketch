@@ -21,6 +21,11 @@ import android.widget.MediaController.MediaPlayerControl
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import pl.droidsonroids.gif.GifDrawable
 
+/**
+ * GifDrawable wrapper, which implements the [Animatable] and [MediaPlayerControl] interfaces
+ *
+ * @see com.github.panpf.sketch.animated.koralgif.test.drawable.GifDrawableWrapperDrawableTest
+ */
 class GifDrawableWrapperDrawable(
     val gifDrawable: GifDrawable
 ) : DrawableWrapperCompat(gifDrawable), Animatable, MediaPlayerControl, SketchDrawable {

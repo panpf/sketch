@@ -25,6 +25,11 @@ import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.source.getFileOrNull
 
+/**
+ * GifInfoHandle Helper
+ *
+ * @see com.github.panpf.sketch.animated.koralgif.test.GifInfoHandlerHelperTest
+ */
 class GifInfoHandleHelper constructor(val sketch: Sketch, val dataSource: DataSource) {
 
     private val gifInfoHandle: GifInfoHandle by lazy {
