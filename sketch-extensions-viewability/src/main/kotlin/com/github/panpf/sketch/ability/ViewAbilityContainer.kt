@@ -30,8 +30,14 @@ import com.github.panpf.sketch.request.RequestState
  */
 interface ViewAbilityContainer : ListenerProvider {
 
+    /**
+     * Context
+     */
     fun getContext(): Context
 
+    /**
+     * Request state
+     */
     val requestState: RequestState
 
     /**

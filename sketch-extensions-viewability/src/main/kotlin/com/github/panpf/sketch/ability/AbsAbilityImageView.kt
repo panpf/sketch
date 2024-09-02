@@ -36,6 +36,8 @@ import com.github.panpf.sketch.request.ProgressListener
 
 /**
  * ImageView base class that supports [ViewAbility]
+ *
+ * @see com.github.panpf.sketch.extensions.view.ability.test.AbsAbilityImageViewTest
  */
 abstract class AbsAbilityImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0

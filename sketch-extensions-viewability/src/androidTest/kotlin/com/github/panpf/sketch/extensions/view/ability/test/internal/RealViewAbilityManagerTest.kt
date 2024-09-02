@@ -1,9 +1,9 @@
-package com.github.panpf.sketch.extensions.view.ability.test
+package com.github.panpf.sketch.extensions.view.ability.test.internal
 
 import android.content.Context
 import android.graphics.Matrix
 import android.util.AttributeSet
-import android.widget.ImageView.ScaleType
+import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ability.AbsAbilityImageView
@@ -80,11 +80,11 @@ class RealViewAbilityManagerTest {
     class TestScaleTypeViewAbility : ViewAbility, ScaleTypeObserver {
         override var host: Host? = null
 
-        override fun setScaleType(scaleType: ScaleType): Boolean {
+        override fun setScaleType(scaleType: ImageView.ScaleType): Boolean {
             return false
         }
 
-        override fun getScaleType(): ScaleType? {
+        override fun getScaleType(): ImageView.ScaleType? {
             return null
         }
     }

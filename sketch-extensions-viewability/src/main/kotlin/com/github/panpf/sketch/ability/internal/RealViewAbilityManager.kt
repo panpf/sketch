@@ -51,6 +51,11 @@ import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import java.lang.ref.WeakReference
 
+/**
+ * Real ViewAbilityManager
+ *
+ * @see com.github.panpf.sketch.extensions.view.ability.test.internal.RealViewAbilityManagerTest
+ */
 class RealViewAbilityManager(
     private val container: ViewAbilityContainer,
     view: View
