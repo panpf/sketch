@@ -13,14 +13,6 @@
 }
 
 
-# ----------------------------------------- slf4j ------------------------------------------------ #
-# Please add these rules to your existing keep rules in order to suppress warnings.
-# This is generated automatically by the Android Gradle plugin.
--dontwarn org.slf4j.impl.StaticLoggerBinder
--dontwarn org.slf4j.impl.StaticMDCBinder
--dontwarn org.slf4j.impl.StaticMarkerBinder
-
-
 # ----------------------------------------- Okio ------------------------------------------------- #
 # Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
 -dontwarn org.codehaus.mojo.animal_sniffer.*
@@ -56,12 +48,18 @@
 }
 
 
-# ----------------------------------------- kotlinx.coroutines ----------------------------------- #
--keep public class kotlinx.coroutines.**{*;}
-
-
 # ----------------------------------------- ktor ------------------------------------------------- #
--keep public class io.ktor.**{*;}
+-keep class io.ktor.**{*;}
+-keep class io.ktor.** { *; }
+-keep class io.ktor.client.engine.cio.** { *; }
+-keepclassmembers class io.ktor.** { volatile <fields>; }
+-keep class kotlinx.coroutines.**{*;}
+-dontwarn kotlinx.atomicfu.**
+-dontwarn io.netty.**
+-dontwarn com.typesafe.**
+-dontwarn org.slf4j.**
+# Obfuscation breaks coroutines/ktor for some reason
+-dontobfuscate
 
 
 # ----------------------------------------- App Ruls --------------------------------------------- #

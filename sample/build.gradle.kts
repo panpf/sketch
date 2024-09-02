@@ -171,13 +171,13 @@ compose.desktop {
             description = "Sketch4 Image Loader Library Sample App"
             macOS {
                 bundleID = appId
-                iconFile.set(project.file("icons/icon.icns"))
+                iconFile.set(project.file("icons/icon-macos.icns"))
             }
             windows {
-                iconFile.set(project.file("icons/icon.ico"))
+                iconFile.set(project.file("icons/icon-windows.ico"))
             }
             linux {
-                iconFile.set(project.file("icons/icon.png"))
+                iconFile.set(project.file("icons/icon-linux.png"))
             }
             modules(
                 "jdk.unsupported",  // 'sun/misc/Unsafe' error

@@ -8,14 +8,6 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 
-# ----------------------------------------- slf4j ------------------------------------------------ #
-# Please add these rules to your existing keep rules in order to suppress warnings.
-# This is generated automatically by the Android Gradle plugin.
--dontwarn org.slf4j.impl.StaticLoggerBinder
--dontwarn org.slf4j.impl.StaticMDCBinder
--dontwarn org.slf4j.impl.StaticMarkerBinder
-
-
 # ----------------------------------------- OkHttp ----------------------------------------------- #
 # JSR 305 annotations are for embedding nullability information.
 -dontwarn javax.annotation.**
@@ -49,6 +41,20 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+
+# ----------------------------------------- ktor ------------------------------------------------- #
+-keep class io.ktor.**{*;}
+-keep class io.ktor.** { *; }
+-keep class io.ktor.client.engine.cio.** { *; }
+-keepclassmembers class io.ktor.** { volatile <fields>; }
+-keep class kotlinx.coroutines.**{*;}
+-dontwarn kotlinx.atomicfu.**
+-dontwarn io.netty.**
+-dontwarn com.typesafe.**
+-dontwarn org.slf4j.**
+# Obfuscation breaks coroutines/ktor for some reason
+-dontobfuscate
 
 
 # ----------------------------------------- FFmpegMediaMetadataRetriever ------------------------- #
