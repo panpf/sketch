@@ -34,6 +34,8 @@ import com.github.panpf.sketch.util.dp2Px
 
 /**
  * Display a progress indicator, [progressDrawable] is responsible for the specific style
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest.testShowProgressIndicator
  */
 fun ViewAbilityContainer.showProgressIndicator(progressDrawable: ProgressDrawable) {
     removeProgressIndicator()
@@ -42,6 +44,8 @@ fun ViewAbilityContainer.showProgressIndicator(progressDrawable: ProgressDrawabl
 
 /**
  * Remove progress indicator
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest.testShowProgressIndicator
  */
 fun ViewAbilityContainer.removeProgressIndicator() {
     viewAbilityList
@@ -51,6 +55,8 @@ fun ViewAbilityContainer.removeProgressIndicator() {
 
 /**
  * Display a sector progress indicator
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest.testShowProgressIndicator
  */
 fun ViewAbilityContainer.showSectorProgressIndicator(
     size: Int = PROGRESS_INDICATOR_SECTOR_SIZE.dp2Px(),
@@ -74,6 +80,8 @@ fun ViewAbilityContainer.showSectorProgressIndicator(
 
 /**
  * Displays a mask progress indicator
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest.testShowProgressIndicator
  */
 fun ViewAbilityContainer.showMaskProgressIndicator(
     @ColorInt maskColor: Int = PROGRESS_INDICATOR_MASK_COLOR,
@@ -91,6 +99,8 @@ fun ViewAbilityContainer.showMaskProgressIndicator(
 
 /**
  * Display a ring progress indicator
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest.testShowProgressIndicator
  */
 fun ViewAbilityContainer.showRingProgressIndicator(
     size: Int = PROGRESS_INDICATOR_RING_SIZE.dp2Px(),
@@ -112,12 +122,16 @@ fun ViewAbilityContainer.showRingProgressIndicator(
 
 /**
  * Returns true if progress indicator feature is enabled
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest.testShowProgressIndicator
  */
 val ViewAbilityContainer.isShowProgressIndicator: Boolean
     get() = viewAbilityList.find { it is ProgressIndicatorAbility } != null
 
 /**
  * A ViewAbility that displays [ImageRequest] progress indicator functionality on the View surface
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ProgressIndicatorAbilityTest
  */
 class ProgressIndicatorAbility(val progressDrawable: ProgressDrawable) : ViewAbility,
     LayoutObserver, RequestListenerObserver, RequestProgressListenerObserver,

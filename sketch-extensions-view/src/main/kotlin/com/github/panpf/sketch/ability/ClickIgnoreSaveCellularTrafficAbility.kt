@@ -26,6 +26,8 @@ import com.github.panpf.sketch.util.SketchUtils
 
 /**
  * Set to enable click View to force ignore the data saving function
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ClickIgnoreSaveCellularTrafficAbilityTest.testClickIgnoreSaveCellularTrafficEnabled
  */
 fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(enable: Boolean = true) {
     val enabled = isClickIgnoreSaveCellularTrafficEnabled
@@ -40,12 +42,16 @@ fun ViewAbilityContainer.setClickIgnoreSaveCellularTrafficEnabled(enable: Boolea
 
 /**
  * Returns true if click View force ignore data saving feature is enabled
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ClickIgnoreSaveCellularTrafficAbilityTest.testClickIgnoreSaveCellularTrafficEnabled
  */
 val ViewAbilityContainer.isClickIgnoreSaveCellularTrafficEnabled: Boolean
     get() = viewAbilityList.find { it is ClickIgnoreSaveCellularTrafficAbility } != null
 
 /**
  * Click View to force ignoring the data saving function, generally used with [SaveCellularTrafficRequestInterceptor]
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.ClickIgnoreSaveCellularTrafficAbilityTest
  */
 class ClickIgnoreSaveCellularTrafficAbility : ViewAbility, ClickObserver, RequestListenerObserver {
 

@@ -51,6 +51,11 @@ import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.Transition
 
+/**
+ * Parse image-related xml attributes
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.SketchImageViewTest.testAttrs
+ */
 fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): ImageOptions? {
     val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)
     return try {

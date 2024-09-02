@@ -14,34 +14,40 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.extensions.view.test.viewability
+package com.github.panpf.sketch.extensions.view.test.ability
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.ability.isClickIgnoreSaveCellularTrafficEnabled
-import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.isShowMimeTypeLogo
+import com.github.panpf.sketch.ability.removeMimeTypeLogo
+import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
+import com.github.panpf.sketch.ability.showMimeTypeLogoWithRes
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ClickIgnoreSaveCellularTrafficAbilityTest {
+class MimeTypeLogoAbilityTest {
 
     @Test
-    fun testExtensions() {
+    fun testShowMimeTypeLogoWithDrawable() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        Assert.assertFalse(imageView.isShowMimeTypeLogo)
 
-        imageView.setClickIgnoreSaveCellularTrafficEnabled()
-        Assert.assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        imageView.showMimeTypeLogoWithDrawable(mapOf("image/jpeg" to ColorDrawable(Color.BLUE)))
+        Assert.assertTrue(imageView.isShowMimeTypeLogo)
 
-        imageView.setClickIgnoreSaveCellularTrafficEnabled(false)
-        Assert.assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        imageView.removeMimeTypeLogo()
+        Assert.assertFalse(imageView.isShowMimeTypeLogo)
 
-        imageView.setClickIgnoreSaveCellularTrafficEnabled(true)
-        Assert.assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        imageView.showMimeTypeLogoWithRes(mapOf("image/jpeg" to android.R.drawable.btn_dialog))
+        Assert.assertTrue(imageView.isShowMimeTypeLogo)
     }
+
+    // TODO test
 }

@@ -20,6 +20,11 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.roundToInt
 
+/**
+ * Format the number to the specified number of decimal places
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.util.ExtensionsViewCoreUtilsTest.testFormat
+ */
 internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
         this
@@ -29,6 +34,11 @@ internal fun Float.format(newScale: Int): Float {
     }
 }
 
+/**
+ * Convert dp to px
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.util.ExtensionsViewCoreUtilsTest.testDp2Px
+ */
 internal fun Float.dp2Px(): Int {
     return (this * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt()
 }

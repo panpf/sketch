@@ -20,6 +20,11 @@ import android.widget.AbsListView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 
+/**
+ * Listen to the scrolling events of RecyclerView and AbsListView, pause loading of images when scrolling starts, and resume loading of images when scrolling ends.
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.util.PauseLoadWhenScrollingMixedScrollListenerTest
+ */
 class PauseLoadWhenScrollingMixedScrollListener(
     var absListScrollListenerWrapper: AbsListView.OnScrollListener? = null
 ) : RecyclerView.OnScrollListener(), AbsListView.OnScrollListener {

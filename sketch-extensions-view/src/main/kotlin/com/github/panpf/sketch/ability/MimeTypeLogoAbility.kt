@@ -29,6 +29,8 @@ import kotlinx.coroutines.launch
 
 /**
  * Display the MimeType logo in the lower right corner of the View
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.MimeTypeLogoAbilityTest.testShowMimeTypeLogoWithDrawable
  */
 fun ViewAbilityContainer.showMimeTypeLogoWithDrawable(
     mimeTypeIconMap: Map<String, Drawable>,
@@ -45,6 +47,8 @@ fun ViewAbilityContainer.showMimeTypeLogoWithDrawable(
 
 /**
  * Display the MimeType logo in the lower right corner of the View
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.MimeTypeLogoAbilityTest.testShowMimeTypeLogoWithDrawable
  */
 fun ViewAbilityContainer.showMimeTypeLogoWithRes(
     mimeTypeIconMap: Map<String, Int>,
@@ -61,6 +65,8 @@ fun ViewAbilityContainer.showMimeTypeLogoWithRes(
 
 /**
  * Remove MimeType logo
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.MimeTypeLogoAbilityTest.testShowMimeTypeLogoWithDrawable
  */
 fun ViewAbilityContainer.removeMimeTypeLogo() {
     viewAbilityList
@@ -70,11 +76,17 @@ fun ViewAbilityContainer.removeMimeTypeLogo() {
 
 /**
  * Returns true if MimeType logo feature is enabled
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.MimeTypeLogoAbilityTest.testShowMimeTypeLogoWithDrawable
  */
 val ViewAbilityContainer.isShowMimeTypeLogo: Boolean
     get() = viewAbilityList.find { it is MimeTypeLogoAbility } != null
 
-
+/**
+ * MimeType logo feature
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.MimeTypeLogoAbilityTest
+ */
 class MimeTypeLogoAbility(
     private val mimeTypeIconMap: Map<String, DrawableFetcher>,
     private val margin: Int = 0

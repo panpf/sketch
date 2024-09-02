@@ -29,6 +29,11 @@ import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
 
+/**
+ * ImageView dedicated to Sketch image loader supports some features of Sketch based on ImageView, such as ImageOptions, RequestState, Listener, ProgressListener, xml attributes etc.
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.SketchImageViewTest
+ */
 open class SketchImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : AbsAbilityImageView(context, attrs, defStyle), ImageOptionsProvider {
@@ -67,6 +72,9 @@ open class SketchImageView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Register a Listener to listen for the loading process of the image
+     */
     fun registerListener(listener: Listener) {
         listeners = (listeners?.list?.toMutableList() ?: mutableListOf())
             .apply { add(listener) }
@@ -74,6 +82,9 @@ open class SketchImageView @JvmOverloads constructor(
             ?.let { Listeners(it.toList()) }
     }
 
+    /**
+     * Unregister a Listener
+     */
     fun unregisterListener(listener: Listener) {
         listeners = listeners?.list?.toMutableList()
             ?.apply { remove(listener) }
@@ -81,6 +92,9 @@ open class SketchImageView @JvmOverloads constructor(
             ?.let { Listeners(it.toList()) }
     }
 
+    /**
+     * Register a ProgressListener to listen progress of the image loading
+     */
     fun registerProgressListener(listener: ProgressListener) {
         progressListeners = (progressListeners?.list?.toMutableList() ?: mutableListOf())
             .apply { add(listener) }
@@ -88,6 +102,9 @@ open class SketchImageView @JvmOverloads constructor(
             ?.let { ProgressListeners(it.toList()) }
     }
 
+    /**
+     * Unregister a ProgressListener
+     */
     fun unregisterProgressListener(listener: ProgressListener) {
         progressListeners = progressListeners?.list?.toMutableList()
             ?.apply { remove(listener) }

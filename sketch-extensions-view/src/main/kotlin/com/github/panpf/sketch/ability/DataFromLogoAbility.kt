@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 
 /**
  * Set to enable the data source identification function
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.DataFromLogoAbilityTest.testShowDataFromLogo
  */
 fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = dataFromDefaultSize) {
     removeDataFromLogo()
@@ -38,6 +40,8 @@ fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = dataFromDefaultSize) {
 
 /**
  * Remove the data source identification function
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.DataFromLogoAbilityTest.testShowDataFromLogo
  */
 fun ViewAbilityContainer.removeDataFromLogo() {
     viewAbilityList
@@ -47,12 +51,16 @@ fun ViewAbilityContainer.removeDataFromLogo() {
 
 /**
  * Returns true if data source identification feature is enabled
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.DataFromLogoAbilityTest.testShowDataFromLogo
  */
 val ViewAbilityContainer.isShowDataFromLogo: Boolean
     get() = viewAbilityList.find { it is DataFromLogoAbility } != null
 
 /**
  * In the upper right corner of the View, a semi-transparent color block called Samsung is displayed to indicate where the image is loaded this time.
+ *
+ * @see com.github.panpf.sketch.extensions.view.test.ability.DataFromLogoAbilityTest
  */
 class DataFromLogoAbility(
     sizeDp: Float = dataFromDefaultSize

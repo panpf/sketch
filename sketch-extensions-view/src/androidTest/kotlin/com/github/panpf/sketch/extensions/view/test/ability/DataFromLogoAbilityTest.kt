@@ -14,38 +14,34 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.extensions.view.test.viewability
+package com.github.panpf.sketch.extensions.view.test.ability
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.ability.isShowMimeTypeLogo
-import com.github.panpf.sketch.ability.removeMimeTypeLogo
-import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
-import com.github.panpf.sketch.ability.showMimeTypeLogoWithRes
+import com.github.panpf.sketch.ability.isShowDataFromLogo
+import com.github.panpf.sketch.ability.removeDataFromLogo
+import com.github.panpf.sketch.ability.showDataFromLogo
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MimeTypeLogoAbilityTest {
+class DataFromLogoAbilityTest {
 
     @Test
-    fun testExtensions() {
+    fun testShowDataFromLogo() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isShowMimeTypeLogo)
+        Assert.assertFalse(imageView.isShowDataFromLogo)
 
-        imageView.showMimeTypeLogoWithDrawable(mapOf("image/jpeg" to ColorDrawable(Color.BLUE)))
-        Assert.assertTrue(imageView.isShowMimeTypeLogo)
+        imageView.showDataFromLogo()
+        Assert.assertTrue(imageView.isShowDataFromLogo)
 
-        imageView.removeMimeTypeLogo()
-        Assert.assertFalse(imageView.isShowMimeTypeLogo)
-
-        imageView.showMimeTypeLogoWithRes(mapOf("image/jpeg" to android.R.drawable.btn_dialog))
-        Assert.assertTrue(imageView.isShowMimeTypeLogo)
+        imageView.removeDataFromLogo()
+        Assert.assertFalse(imageView.isShowDataFromLogo)
     }
+
+    // TODO test
 }

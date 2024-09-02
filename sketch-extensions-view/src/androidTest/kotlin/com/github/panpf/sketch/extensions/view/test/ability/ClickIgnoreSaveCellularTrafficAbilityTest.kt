@@ -14,32 +14,36 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.extensions.view.test.viewability
+package com.github.panpf.sketch.extensions.view.test.ability
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
-import com.github.panpf.sketch.ability.isShowDataFromLogo
-import com.github.panpf.sketch.ability.removeDataFromLogo
-import com.github.panpf.sketch.ability.showDataFromLogo
+import com.github.panpf.sketch.ability.isClickIgnoreSaveCellularTrafficEnabled
+import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DataFromLogoAbilityTest {
+class ClickIgnoreSaveCellularTrafficAbilityTest {
 
     @Test
-    fun testExtensions() {
+    fun testClickIgnoreSaveCellularTrafficEnabled() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isShowDataFromLogo)
+        Assert.assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
 
-        imageView.showDataFromLogo()
-        Assert.assertTrue(imageView.isShowDataFromLogo)
+        imageView.setClickIgnoreSaveCellularTrafficEnabled()
+        Assert.assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
 
-        imageView.removeDataFromLogo()
-        Assert.assertFalse(imageView.isShowDataFromLogo)
+        imageView.setClickIgnoreSaveCellularTrafficEnabled(false)
+        Assert.assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+
+        imageView.setClickIgnoreSaveCellularTrafficEnabled(true)
+        Assert.assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
     }
+
+    // TODO test
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.extensions.view.test.viewability
+package com.github.panpf.sketch.extensions.view.test.ability
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 class ProgressIndicatorAbilityTest {
 
     @Test
-    fun testExtensions() {
+    fun testShowProgressIndicator() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
@@ -81,4 +81,6 @@ class ProgressIndicatorAbilityTest {
                 Assert.assertTrue(this.progressDrawable is RingProgressDrawable)
             }
     }
+
+    // TODO test
 }
