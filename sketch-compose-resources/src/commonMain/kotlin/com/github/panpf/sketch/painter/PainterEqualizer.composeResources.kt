@@ -21,6 +21,11 @@ import androidx.compose.runtime.remember
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
+/**
+ * Create a [PainterEqualizer] that wraps the specified [DrawableResource] and remembers it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.PainterEqualizerComposeResourcesTest.testRememberEqualityPainterResource
+ */
 @Composable
 fun rememberEqualityPainterResource(resource: DrawableResource): PainterEqualizer {
     val painter = painterResource(resource)

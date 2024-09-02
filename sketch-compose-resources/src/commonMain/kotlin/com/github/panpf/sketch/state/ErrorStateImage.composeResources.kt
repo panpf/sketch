@@ -21,6 +21,8 @@ import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Create an ErrorStateImage
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.ErrorStateImageComposeResourcesTest.testComposableErrorStateImage
  */
 @Composable
 fun ComposableErrorStateImage(
@@ -32,6 +34,8 @@ fun ComposableErrorStateImage(
  * Create an ErrorStateImage
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.ErrorStateImageComposeResourcesTest.testComposableErrorStateImage
  */
 @Composable
 inline fun ComposableErrorStateImage(
@@ -44,6 +48,8 @@ inline fun ComposableErrorStateImage(
 
 /**
  * Add a custom error state
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.ErrorStateImageComposeResourcesTest.testAddState
  */
 @Composable
 fun ErrorStateImage.Builder.addState(

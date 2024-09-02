@@ -23,6 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import org.jetbrains.compose.resources.DrawableResource
 
+/**
+ * Create an [IconAnimatablePainter] that can be remembered in the composition
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: PainterEqualizer,
@@ -41,7 +46,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
-
+/**
+ * Create an [IconAnimatablePainter] that can be remembered in the composition
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: DrawableResource,
@@ -60,6 +69,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create an [IconAnimatablePainter] that can be remembered in the composition
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: DrawableResource,
@@ -79,6 +93,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create an [IconAnimatablePainter] that can be remembered in the composition
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: DrawableResource,
@@ -98,6 +117,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create an [IconAnimatablePainter] that can be remembered in the composition
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: DrawableResource,

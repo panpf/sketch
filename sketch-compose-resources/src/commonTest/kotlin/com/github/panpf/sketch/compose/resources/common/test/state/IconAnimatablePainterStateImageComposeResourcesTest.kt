@@ -14,7 +14,6 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import kotlin.test.Test
 
 class IconAnimatablePainterStateImageComposeResourcesTest {
-    // TODO test
 
     @Test
     @OptIn(InternalResourceApi::class)
@@ -50,6 +49,7 @@ class IconAnimatablePainterStateImageComposeResourcesTest {
             val iconSize = Size(200f, 200f)
             val iconTint = Color.Magenta
             setContent {
+                // TODO test
                 rememberIconAnimatablePainterStateImage(
                     icon = resourceIcon,
                     background = painterBackground,

@@ -26,6 +26,11 @@ import com.github.panpf.sketch.painter.asEquality
 import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: PainterEqualizer,
@@ -44,6 +49,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: DrawableResource,
@@ -62,6 +72,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: DrawableResource,
@@ -81,6 +96,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: DrawableResource,
@@ -100,6 +120,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: DrawableResource,

@@ -14,7 +14,6 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import kotlin.test.Test
 
 class IconPainterStateImageComposeResourcesTest {
-    // TODO test
 
     @Test
     @OptIn(InternalResourceApi::class)
@@ -153,6 +152,8 @@ class IconPainterStateImageComposeResourcesTest {
                     icon = painterIcon,
                     background = resourceBackground,
                 )
+
+                // TODO test
             }
         }
     }

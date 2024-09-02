@@ -24,6 +24,8 @@ import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Set Drawable placeholder image when loading
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testPlaceholder
  */
 @Composable
 fun ImageOptions.Builder.placeholder(resource: DrawableResource): ImageOptions.Builder =
@@ -31,6 +33,8 @@ fun ImageOptions.Builder.placeholder(resource: DrawableResource): ImageOptions.B
 
 /**
  * Set Drawable placeholder image when uri is invalid
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testFallback
  */
 @Composable
 fun ImageOptions.Builder.fallback(resource: DrawableResource): ImageOptions.Builder =
@@ -40,6 +44,8 @@ fun ImageOptions.Builder.fallback(resource: DrawableResource): ImageOptions.Buil
  * Set Color image to display when loading fails.
  *
  * You can also set image of different error types via the trailing lambda function
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testError
  */
 @Composable
 fun ImageOptions.Builder.error(
@@ -52,6 +58,8 @@ fun ImageOptions.Builder.error(
  * You can also set image of different error types via the trailing lambda function
  *
  * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testComposableError
  */
 @Composable
 inline fun ImageOptions.Builder.composableError(

@@ -28,6 +28,8 @@ import org.jetbrains.compose.resources.readResourceBytes
 
 /**
  * Adds compose resources support
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest.testSupportComposeResources
  */
 fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Builder = apply {
     addFetcher(ComposeResourceUriFetcher.Factory())
@@ -43,6 +45,8 @@ fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Build
  * * Res.getUri("files/huge_china.jpg") on js: 'http://localhost:8080/./composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * * Res.getUri("files/huge_china.jpg") on ios: 'file:///Users/panpf/Library/Developer/ CoreSimulator/Devices/F828C881-A750-432B-8210-93A84C45E/data/Containers/Bundle/Application/CBD75605-D35E-47A7-B56B-6C5690B062CC/SketchSample.app/compose-resources/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * @return 'file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest.testNewComposeResourceUri
  */
 fun newComposeResourceUri(resourcePath: String): String {
     if (resourcePath.startsWith("composeResources/")) {
@@ -62,6 +66,8 @@ fun newComposeResourceUri(resourcePath: String): String {
  * Check if the uri is a compose resource uri
  *
  * Support 'file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest.testIsComposeResourceUri
  */
 fun isComposeResourceUri(uri: Uri): Boolean =
     ComposeResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
@@ -71,6 +77,11 @@ fun isComposeResourceUri(uri: Uri): Boolean =
         ignoreCase = true
     )
 
+/**
+ * Fetcher that reads images from the compose resources folder
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest
+ */
 class ComposeResourceUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,

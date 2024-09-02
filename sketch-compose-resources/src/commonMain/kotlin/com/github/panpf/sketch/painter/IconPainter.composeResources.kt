@@ -23,6 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import org.jetbrains.compose.resources.DrawableResource
 
+/**
+ * Create and remember an [IconPainter] instance
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: PainterEqualizer,
@@ -41,7 +46,11 @@ fun rememberIconPainter(
     }
 }
 
-
+/**
+ * Create and remember an [IconPainter] instance
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: DrawableResource,
@@ -60,6 +69,11 @@ fun rememberIconPainter(
     }
 }
 
+/**
+ * Create and remember an [IconPainter] instance
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: DrawableResource,
@@ -79,6 +93,11 @@ fun rememberIconPainter(
     }
 }
 
+/**
+ * Create and remember an [IconPainter] instance
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: DrawableResource,
@@ -98,6 +117,11 @@ fun rememberIconPainter(
     }
 }
 
+/**
+ * Create and remember an [IconPainter] instance
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ */
 @Composable
 fun rememberIconPainter(
     icon: DrawableResource,

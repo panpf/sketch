@@ -13,6 +13,11 @@ import kotlin.test.assertFailsWith
 class ComposeResourceUriFetcherTest {
 
     @Test
+    fun testSupportComposeResources() {
+        // TODO test
+    }
+
+    @Test
     fun testNewComposeResourceUri() {
         assertEquals(
             expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",

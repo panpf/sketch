@@ -21,6 +21,11 @@ import androidx.compose.runtime.remember
 import com.github.panpf.sketch.painter.rememberEqualityPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 
+/**
+ * Create a [PainterStateImage] that uses the specified [resource] as the image source and remembers it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.PainterStateImageComposeResourcesTest.testRememberPainterStateImage
+ */
 @Composable
 fun rememberPainterStateImage(resource: DrawableResource): PainterStateImage {
     val painter = rememberEqualityPainterResource(resource)
