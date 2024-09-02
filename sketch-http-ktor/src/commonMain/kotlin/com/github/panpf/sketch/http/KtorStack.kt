@@ -27,6 +27,11 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.cancel
 
+/**
+ * Ktor implementation of HttpStack
+ *
+ * @see com.github.panpf.sketch.http.ktor.common.test.KtorStackTest
+ */
 class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
 
     override suspend fun getResponse(
