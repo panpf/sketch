@@ -152,9 +152,10 @@ compose.resources {
     packageOfResClass = "com.github.panpf.sketch.sample.resources"
 }
 
+val appId = "com.github.panpf.sketch4.sample"
+val appName = "Sketch4 Sample"
 compose.desktop {
     application {
-        val appName = "Sketch4 Sample"
         mainClass = "com.github.panpf.sketch.sample.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
@@ -169,7 +170,7 @@ compose.desktop {
             vendor = "panpfpanpf@outlook.com"
             description = "Sketch4 Image Loader Library Sample App"
             macOS {
-                bundleID = "com.github.panpf.sketch4.sample"
+                bundleID = appId
                 iconFile.set(project.file("icons/icon.icns"))
             }
             windows {
@@ -178,7 +179,10 @@ compose.desktop {
             linux {
                 iconFile.set(project.file("icons/icon.png"))
             }
-            modules("jdk.unsupported")  // 'sun/misc/Unsafe' and other errors
+            modules(
+                "jdk.unsupported",  // 'sun/misc/Unsafe' error
+                "java.net.http",    // 'java/net/http/HttpClient$Version ' error
+            )
         }
         buildTypes.release.proguard {
 //            obfuscate.set(true) // Obfuscate the code
@@ -188,8 +192,8 @@ compose.desktop {
 }
 
 androidApplication(
-    nameSpace = "com.github.panpf.sketch.sample",
-    applicationId = "com.github.panpf.sketch4.sample"
+    nameSpace = appId.replace("sketch4", "sketch"),
+    applicationId = appId
 ) {
     signingConfigs {
         create("sample") {

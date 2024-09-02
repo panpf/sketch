@@ -22,3 +22,42 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -dontwarn org.slf4j.impl.StaticMDCBinder
 -dontwarn org.slf4j.impl.StaticMarkerBinder
+
+
+# ---------------Begain: kotlin serialization
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt # core serialization annotations
+
+# kotlinx-serialization-json specific. Add this if you have java.lang.NoClassDefFoundError kotlinx.serialization.json.JsonObjectSerializer
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Application rules
+
+# Change here com.github.panpf.sketch.sample
+-keepclassmembers @kotlinx.serialization.Serializable class com.github.panpf.sketch.sample.** {
+    # lookup for plugin generated serializable classes
+    *** Companion;
+    # lookup for serializable objects
+    *** INSTANCE;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# lookup for plugin generated serializable classes
+-if @kotlinx.serialization.Serializable class com.github.panpf.sketch.sample.**
+-keepclassmembers class com.github.panpf.sketch.sample.<1>$Companion {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# ---------------End: kotlin serialization
+
+
+# ---------------Begain: kotlinx.coroutines
+-keep public class kotlinx.coroutines.**{*;}
+# ---------------End: kotlinx.coroutines
+
+# ---------------Begain: ktor
+-keep public class io.ktor.**{*;}
+# ---------------End: ktor
