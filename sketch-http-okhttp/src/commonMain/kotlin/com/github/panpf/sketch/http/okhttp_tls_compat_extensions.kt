@@ -22,6 +22,11 @@ import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import okhttp3.internal.platform.Platform
 
+/**
+ * Set the enabled TLS protocols for the OkHttpClient
+ *
+ * @see com.github.panpf.sketch.http.okhttp.common.test.OkhttpTlsCompatExtensionsTest.testSetEnabledTlsProtocols
+ */
 fun OkHttpClient.Builder.setEnabledTlsProtocols(enabledTlsProtocols: Array<String>): OkHttpClient.Builder {
     if (enabledTlsProtocols.isNotEmpty()) {
         try {

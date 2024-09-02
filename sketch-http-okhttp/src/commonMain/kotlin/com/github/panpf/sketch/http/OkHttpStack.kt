@@ -25,6 +25,11 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
+/**
+ * OkHttp implementation of [HttpStack]
+ *
+ * @see com.github.panpf.sketch.http.okhttp.common.test.OkHttpStackTest
+ */
 class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     @Throws(IOException::class)
