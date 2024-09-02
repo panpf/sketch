@@ -38,6 +38,11 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_RING_WIDTH_PERCENT
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.painter.internal.AbsProgressPainter
 
+/**
+ * Create a [RingProgressPainter] and remember it
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.RingProgressPainterTest.testRememberRingProgressPainter
+ */
 @Composable
 fun rememberRingProgressPainter(
     size: Dp = PROGRESS_INDICATOR_RING_SIZE.dp,
@@ -72,6 +77,11 @@ fun rememberRingProgressPainter(
     }
 }
 
+/**
+ * A [ProgressPainter] that uses a circle to draw progress
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.RingProgressPainterTest
+ */
 @Stable
 class RingProgressPainter(
     density: Density,

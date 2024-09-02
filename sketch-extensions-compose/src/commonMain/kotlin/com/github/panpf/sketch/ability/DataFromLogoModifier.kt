@@ -34,10 +34,20 @@ import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.name
 
+/**
+ * Display a dataFrom logo in the upper right corner of the component.
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest.testModifier
+ */
 fun Modifier.dataFromLogo(state: AsyncImageState, size: Dp = dataFromDefaultSize.dp): Modifier {
     return this.then(DataFromLogoElement(state, size))
 }
 
+/**
+ * DataFromLogo Modifier Element
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest.testElement
+ */
 internal data class DataFromLogoElement(
     val state: AsyncImageState,
     val size: Dp,
@@ -62,6 +72,11 @@ internal data class DataFromLogoElement(
     }
 }
 
+/**
+ * DataFromLogo Modifier Node
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest.testNode
+ */
 internal class DataFromLogoNode(
     private var state: AsyncImageState,
     private var size: Dp,

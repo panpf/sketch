@@ -16,23 +16,14 @@
 
 package com.github.panpf.sketch.util
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlin.math.pow
 import kotlin.math.round
 
-internal fun <T> Flow<T>.ignoreFirst(): Flow<T> {
-    var first = true
-    return filter {
-        if (first) {
-            first = false
-            false
-        } else {
-            true
-        }
-    }
-}
-
+/**
+ * Format the number to the specified number of decimal places
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.util.ExtensionsComposeUtilsTest.testFormat
+ */
 internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
         this

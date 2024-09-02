@@ -38,6 +38,12 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.painter.internal.AbsProgressPainter
 
+
+/**
+ * Create a [SectorProgressPainter] and remember it
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.SectorProgressPainterTest.testRememberSectorProgressPainter
+ */
 @Composable
 fun rememberSectorProgressPainter(
     size: Dp = PROGRESS_INDICATOR_SECTOR_SIZE.dp,
@@ -75,6 +81,11 @@ fun rememberSectorProgressPainter(
     }
 }
 
+/**
+ * A [ProgressPainter] that uses a sector to draw progress
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.SectorProgressPainterTest
+ */
 @Stable
 class SectorProgressPainter(
     density: Density,

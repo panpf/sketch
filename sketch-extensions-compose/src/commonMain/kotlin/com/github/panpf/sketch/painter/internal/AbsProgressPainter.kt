@@ -27,6 +27,11 @@ import com.github.panpf.sketch.util.format
 import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
+/**
+ * Abstract progress indicator painter
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.internal.AbsProgressPainterTest
+ */
 abstract class AbsProgressPainter(
     val hiddenWhenIndeterminate: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE,
     val hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,

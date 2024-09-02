@@ -29,6 +29,11 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_MASK_COLOR
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.painter.internal.AbsProgressPainter
 
+/**
+ * Create a [MaskProgressPainter] and remember it
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.MaskProgressPainterTest.testRememberMaskProgressPainter
+ */
 @Composable
 fun rememberMaskProgressPainter(
     maskColor: Color = Color(PROGRESS_INDICATOR_MASK_COLOR),
@@ -51,6 +56,11 @@ fun rememberMaskProgressPainter(
     }
 }
 
+/**
+ * A [ProgressPainter] that uses a mask to hide the progress
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.painter.MaskProgressPainterTest
+ */
 @Stable
 class MaskProgressPainter(
     private val maskColor: Color = Color(PROGRESS_INDICATOR_MASK_COLOR),

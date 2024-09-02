@@ -39,6 +39,8 @@ import kotlinx.coroutines.launch
  * Display a progress indicator on the surface of the component,
  * which shows the user the progress of the download.
  * The style of the indicator is provided by [progressPainter]
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.ProgressIndicatorModifierTest.testModifier
  */
 fun Modifier.progressIndicator(
     state: AsyncImageState,
@@ -47,6 +49,11 @@ fun Modifier.progressIndicator(
     return this.then(ProgressIndicatorElement(state, progressPainter))
 }
 
+/**
+ * ProgressIndicator Modifier Element
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.ProgressIndicatorModifierTest.testElement
+ */
 internal data class ProgressIndicatorElement(
     val state: AsyncImageState,
     val progressPainter: ProgressPainter,
@@ -67,6 +74,11 @@ internal data class ProgressIndicatorElement(
     }
 }
 
+/**
+ * ProgressIndicator Modifier Node
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.ProgressIndicatorModifierTest.testNode
+ */
 internal class ProgressIndicatorNode(
     private var state: AsyncImageState,
     private var progressPainter: ProgressPainter,

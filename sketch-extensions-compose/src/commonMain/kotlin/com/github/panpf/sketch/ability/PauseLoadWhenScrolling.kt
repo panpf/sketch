@@ -22,6 +22,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 
+/**
+ * Bind [PauseLoadWhenScrollingDecodeInterceptor] to [ScrollableState], so that when the user scrolls, the image loading will be paused
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.PauseLoadWhenScrollingTest.testBindPauseLoadWhenScrolling
+ */
 @Composable
 fun bindPauseLoadWhenScrolling(scrollableState: ScrollableState) {
     LaunchedEffect(scrollableState) {

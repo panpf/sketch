@@ -34,6 +34,8 @@ import com.github.panpf.sketch.request.name
 
 /**
  * Display a MimeType logo in the lower right corner of the component. The icon is provided by [mimeTypeIconMap]
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.MimeTypeLogoModifierTest.testModifier
  */
 fun Modifier.mimeTypeLogo(
     state: AsyncImageState,
@@ -43,6 +45,11 @@ fun Modifier.mimeTypeLogo(
     return this.then(MimeTypeLogoElement(state, mimeTypeIconMap, margin))
 }
 
+/**
+ * MimeTypeLogo Modifier Element
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.MimeTypeLogoModifierTest.testElement
+ */
 internal data class MimeTypeLogoElement(
     val state: AsyncImageState,
     val mimeTypeIconMap: Map<String, Painter>,
@@ -73,6 +80,11 @@ internal data class MimeTypeLogoElement(
     }
 }
 
+/**
+ * MimeTypeLogo Modifier Node
+ *
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.MimeTypeLogoModifierTest.testNode
+ */
 internal class MimeTypeLogoNode(
     private var state: AsyncImageState,
     private var mimeTypeIconMap: Map<String, Painter>,
