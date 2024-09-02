@@ -21,6 +21,8 @@ import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Set the error image when the save cellular traffic
+ *
+ * @see com.github.panpf.sketch.extensions.compose.resources.common.test.SaveCellularTrafficExtensionsComposeResourcesTest.testSaveCellularTrafficError
  */
 @Composable
 fun ErrorStateImage.Builder.saveCellularTrafficError(
