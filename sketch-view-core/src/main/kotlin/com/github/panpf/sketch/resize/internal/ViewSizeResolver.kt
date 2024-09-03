@@ -99,8 +99,12 @@ interface ViewSizeResolver<T : View> : SizeResolver {
     val displayMetrics: DisplayMetrics
 
     override suspend fun size(): Size {
-        // Fast path: the view is already measured.
-        getSizeOrNull()?.let { return it }
+        if (view?.isAttachedToWindow == true) {
+            // Fast path: the view is already measured.
+            getSize().let { return it }
+        } else {
+            getSizeOrNull()?.let { return it }
+        }
 
         // Slow path: wait for the view to be measured.
         return suspendCancellableCoroutine { continuation ->

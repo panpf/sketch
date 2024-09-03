@@ -6,9 +6,15 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
+# new
+
+* fix: 修复当 ImageView 已附到窗口但是因 padding 导致 size 为 null 时无法加载图片的
+  bug。 [#208](https://github.com/panpf/sketch/issues/208)
+
 # 4.0.0-alpha08
 
-* fix: 修复 ComposableImageRequest() 和 ComposableImageOptions() 函数内部无法监听并更新 Compose State 的
+* fix: 修复 ComposableImageRequest() 和 ComposableImageOptions() 函数内部无法监听并更新 Compose
+  State 的
   bug。 [#207](https://github.com/panpf/sketch/issues/207)
 * remove: 移除 SkiaExifOrientationHelper
 * remove: DataSource 移除 sketch 和 request 属性

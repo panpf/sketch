@@ -8,6 +8,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+* fix: Fix the bug that the image cannot be loaded when the ImageView is attached to the window but
+  the size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
+
 # 4.0.0-alpha08
 
 * fix: Fixed the bug that the ComposableImageRequest() and ComposableImageOptions() functions cannot
