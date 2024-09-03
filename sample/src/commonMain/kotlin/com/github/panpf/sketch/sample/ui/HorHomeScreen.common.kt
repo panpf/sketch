@@ -58,16 +58,16 @@ object HorHomeScreen : BaseScreen() {
             }
 
             NavigationRail(
-                Modifier.fillMaxHeight(),
+                modifier = Modifier.fillMaxHeight(),
                 header = {
                     Image(
                         painter = painterResource(Res.drawable.logo),
                         contentDescription = "Logo",
                         modifier = Modifier
                             .padding(top = 20.dp, bottom = 50.dp)
-                            .size(50.dp)
+                            .size(40.dp)
                             .background(
-                                MaterialTheme.colorScheme.primaryContainer,
+                                color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(10.dp)
                             )
                             .align(Alignment.CenterHorizontally)
