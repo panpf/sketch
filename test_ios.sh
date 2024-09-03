@@ -4,3 +4,5 @@
 set -e
 
 ./gradlew iosSimulatorArm64Test
+
+echo "✅  iOS tests are passed successfully."

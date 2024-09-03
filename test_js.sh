@@ -4,3 +4,5 @@
 set -e
 
 ./gradlew jsBrowserTest
+
+echo "✅  JS tests are passed successfully."

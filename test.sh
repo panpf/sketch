@@ -8,3 +8,5 @@ set -e
 ./test_wasmJs.sh
 ./test_android.sh
 ./test_ios.sh
+
+echo "✅  All tests are passed successfully."

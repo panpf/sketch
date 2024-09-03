@@ -4,3 +4,5 @@
 set -e
 
 ./gradlew connectedAndroidTest
+
+echo "✅  Android tests are passed successfully."

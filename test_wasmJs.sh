@@ -4,3 +4,5 @@
 set -e
 
 ./gradlew wasmJsBrowserTest
+
+echo "✅  WasmJs tests are passed successfully."

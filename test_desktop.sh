@@ -4,3 +4,5 @@
 set -e
 
 ./gradlew desktopTest
+
+echo "✅  Desktop tests are passed successfully."
