@@ -3,8 +3,12 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-./package_android.sh
-./package_ios.sh
-./package_desktop.sh
-./package_js.sh
-./package_wasmJs.sh
+./gradlew clean
+
+./package_android.sh --skipClean
+./package_ios.sh --skipClean
+./package_desktop.sh --skipClean
+./package_js.sh --skipClean
+./package_wasmJs.sh --skipClean
+
+echo "✅  All packages are created successfully."
