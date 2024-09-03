@@ -61,3 +61,12 @@ enum class Precision {
      */
     EXACTLY,
 }
+
+/**
+ * Whether the precision is [Precision.LESS_PIXELS]
+ *
+ * @see com.github.panpf.sketch.core.common.test.resize.PrecisionTest.testIsSmallerSizeMode
+ */
+fun Precision.isSmallerSizeMode(): Boolean {
+    return this == Precision.SMALLER_SIZE
+}

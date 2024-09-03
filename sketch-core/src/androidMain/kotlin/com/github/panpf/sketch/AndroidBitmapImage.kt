@@ -22,7 +22,7 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.core.graphics.drawable.toBitmap
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.resize.internal.ResizeMapping
+import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow

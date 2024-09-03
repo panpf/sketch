@@ -14,4 +14,9 @@ class RectTest {
     fun testRotateInSpace() {
         // TODO test
     }
+
+    @Test
+    fun testSize() {
+        // TODO test
+    }
 }

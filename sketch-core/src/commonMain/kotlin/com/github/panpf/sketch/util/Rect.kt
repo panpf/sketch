@@ -645,3 +645,11 @@ fun Rect.rotateInSpace(spaceSize: Size, rotation: Int): Rect {
         else -> this
     }
 }
+
+/**
+ * Get the size of the rectangle
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.RectTest.testSize
+ */
+val Rect.size: Size
+    get() = Size(width(), height())

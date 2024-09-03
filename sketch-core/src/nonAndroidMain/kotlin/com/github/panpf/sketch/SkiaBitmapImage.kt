@@ -18,7 +18,7 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.cache.SkiaBitmapImageValue
-import com.github.panpf.sketch.resize.internal.ResizeMapping
+import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.readIntPixels

@@ -16,19 +16,13 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.internal.calculateResizeMapping
+import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.size
-import com.github.panpf.sketch.source.DataFrom
-import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.requiredWorkThread
 
@@ -226,74 +220,6 @@ private fun Size.checkAreaLimit(limitSize: Size): Boolean {
 /* **************************************** decode ********************************************* */
 
 /**
- * Decode the full image
- *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testRealDecode
- * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testRealDecode
- */
-// TODO Merge to HelperDecoder
-@WorkerThread
-fun realDecode(
-    requestContext: RequestContext,
-    dataFrom: DataFrom,
-    imageInfo: ImageInfo,
-    decodeFull: (sampleSize: Int) -> Image,
-    decodeRegion: ((srcRect: Rect, sampleSize: Int) -> Image)?
-): DecodeResult {
-    requiredWorkThread()
-    val imageSize = Size(imageInfo.width, imageInfo.height)
-    val resize = requestContext.computeResize(imageInfo.size)
-    val transformeds = mutableListOf<String>()
-    val resizeMapping = calculateResizeMapping(
-        imageSize = imageInfo.size,
-        resizeSize = resize.size,
-        precision = resize.precision,
-        scale = resize.scale,
-    )
-    val image = if (
-        resize.shouldClip(imageInfo.size)
-        && resize.precision != LESS_PIXELS
-        && decodeRegion != null
-        && resizeMapping != null
-    ) {
-        val sampleSize = calculateSampleSizeForRegion(
-            regionSize = Size(resizeMapping.srcRect.width(), resizeMapping.srcRect.height()),
-            targetSize = Size(resizeMapping.destRect.width(), resizeMapping.destRect.height()),
-            smallerSizeMode = resize.precision.isSmallerSizeMode(),
-            mimeType = imageInfo.mimeType,
-            imageSize = imageSize
-        )
-        if (sampleSize > 1) {
-            transformeds.add(createInSampledTransformed(sampleSize))
-        }
-        transformeds.add(createSubsamplingTransformed(resizeMapping.srcRect))
-        decodeRegion(resizeMapping.srcRect, sampleSize)
-    } else {
-        val sampleSize = calculateSampleSize(
-            imageSize = imageSize,
-            targetSize = resize.size,
-            smallerSizeMode = resize.precision.isSmallerSizeMode(),
-            mimeType = imageInfo.mimeType
-        )
-        if (sampleSize > 1) {
-            transformeds.add(0, createInSampledTransformed(sampleSize))
-        }
-        decodeFull(sampleSize)
-    }
-    if (image.width <= 0 || image.height <= 0) {
-        throw ImageInvalidException("Invalid image size. size=${image.width}x${image.height}")
-    }
-    return DecodeResult(
-        image = image,
-        imageInfo = imageInfo,
-        dataFrom = dataFrom,
-        resize = resize,
-        transformeds = transformeds.takeIf { it.isNotEmpty() }?.toList(),
-        extras = null,
-    )
-}
-
-/**
  * Resize image according to [Resize]
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testAppliedResize
@@ -320,17 +246,8 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
             null
         }
     } else if (resize.shouldClip(image.size)) {
-        val mapping = calculateResizeMapping(
-            imageSize = image.size,
-            resizeSize = resize.size,
-            precision = resize.precision,
-            scale = resize.scale,
-        )
-        if (mapping != null) {
-            imageTransformer.mapping(image, mapping)
-        } else {
-            null
-        }
+        val mapping = resize.calculateMapping(imageSize = image.size)
+        imageTransformer.mapping(image, mapping)
     } else {
         null
     }
@@ -341,11 +258,4 @@ fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     } else {
         this
     }
-}
-
-/**
- * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodesTest.testIsSmallerSizeMode
- */
-fun Precision.isSmallerSizeMode(): Boolean {
-    return this == Precision.SMALLER_SIZE
 }

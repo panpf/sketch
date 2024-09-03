@@ -27,7 +27,6 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.isGif
-import com.github.panpf.sketch.decode.internal.isSmallerSizeMode
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -38,6 +37,7 @@ import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers

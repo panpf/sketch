@@ -41,11 +41,6 @@ class DecodesNonAndroidTest {
     }
 
     @Test
-    fun testRealDecode() {
-
-    }
-
-    @Test
     fun testAppliedResize() {
 
     }

@@ -31,9 +31,9 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.AndroidBitmapConfig
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.internal.ResizeMapping
-import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -166,18 +166,12 @@ internal fun AndroidBitmap.blur(radius: Int) {
 internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
-    val resizeMapping = calculateResizeMapping(
-        imageWidth = inputBitmap.width,
-        imageHeight = inputBitmap.height,
-        resizeWidth = newSize,
-        resizeHeight = newSize,
-        precision = SAME_ASPECT_RATIO,
-        scale = scale
-    )!!
+    val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
+        .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
     val config = inputBitmap.safeConfig
     val outBitmap = AndroidBitmap.createBitmap(
-        /* width = */ resizeMapping.newWidth,
-        /* height = */ resizeMapping.newHeight,
+        /* width = */ resizeMapping.newSize.width,
+        /* height = */ resizeMapping.newSize.height,
         /* config = */ config,
     )
     val paint = Paint().apply {
@@ -197,7 +191,7 @@ internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
     canvas.drawBitmap(
         /* bitmap = */ inputBitmap,
         /* src = */ resizeMapping.srcRect.toAndroidRect(),
-        /* dst = */ resizeMapping.destRect.toAndroidRect(),
+        /* dst = */ resizeMapping.dstRect.toAndroidRect(),
         /* paint = */ paint
     )
     return outBitmap
@@ -309,14 +303,14 @@ internal fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
     val inputBitmap = this
     val config = inputBitmap.safeConfig
     val outBitmap = AndroidBitmap.createBitmap(
-        /* width = */ mapping.newWidth,
-        /* height = */ mapping.newHeight,
+        /* width = */ mapping.newSize.width,
+        /* height = */ mapping.newSize.height,
         /* config = */ config,
     )
     Canvas(outBitmap).drawBitmap(
         /* bitmap = */ inputBitmap,
         /* src = */ mapping.srcRect.toAndroidRect(),
-        /* dst = */ mapping.destRect.toAndroidRect(),
+        /* dst = */ mapping.dstRect.toAndroidRect(),
         /* paint = */ null
     )
     return outBitmap

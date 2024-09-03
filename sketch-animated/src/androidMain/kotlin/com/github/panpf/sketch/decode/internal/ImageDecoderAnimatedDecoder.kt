@@ -36,6 +36,7 @@ import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource

@@ -10,9 +10,4 @@ class DecodesTest {
     fun testCheckSampledBitmapSize() {
 
     }
-
-    @Test
-    fun testIsSmallerSizeMode() {
-
-    }
 }

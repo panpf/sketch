@@ -20,9 +20,9 @@ import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.internal.ResizeMapping
-import com.github.panpf.sketch.resize.internal.calculateResizeMapping
 import org.jetbrains.skia.BlendMode
 import org.jetbrains.skia.BlendMode.SRC_IN
 import org.jetbrains.skia.Canvas
@@ -142,14 +142,8 @@ internal fun SkiaBitmap.blur(radius: Int) {
 internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
-    val resizeMapping = calculateResizeMapping(
-        imageWidth = inputBitmap.width,
-        imageHeight = inputBitmap.height,
-        resizeWidth = newSize,
-        resizeHeight = newSize,
-        precision = SAME_ASPECT_RATIO,
-        scale = scale
-    )!!
+    val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
+        .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
     val outBitmap = SkiaBitmap().apply {
         val inputImageInfo = inputBitmap.imageInfo
         allocPixels(inputImageInfo.withWidthHeight(width = newSize, height = newSize))
@@ -167,7 +161,7 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     canvas.drawImageRect(
         image = SkiaImage.makeFromBitmap(inputBitmap),
         src = resizeMapping.srcRect.toSkiaRect(),
-        dst = resizeMapping.destRect.toSkiaRect(),
+        dst = resizeMapping.dstRect.toSkiaRect(),
         paint = Paint().apply {
             isAntiAlias = true
             blendMode = SRC_IN
@@ -282,8 +276,8 @@ internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
  */
 internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
     val inputBitmap = this
-    val newWidth = mapping.newWidth
-    val newHeight = mapping.newHeight
+    val newWidth = mapping.newSize.width
+    val newHeight = mapping.newSize.height
     val outBitmap = SkiaBitmap().apply {
         val inputImageInfo = inputBitmap.imageInfo
         allocPixels(inputImageInfo.withWidthHeight(width = newWidth, height = newHeight))
@@ -296,7 +290,7 @@ internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
     canvas.drawImageRect(
         image = sourceImage,
         src = mapping.srcRect.toSkiaRect(),
-        dst = mapping.destRect.toSkiaRect(),
+        dst = mapping.dstRect.toSkiaRect(),
         paint = paint,
     )
     return outBitmap
