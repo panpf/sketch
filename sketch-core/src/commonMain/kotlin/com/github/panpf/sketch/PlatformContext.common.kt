@@ -30,6 +30,5 @@ expect abstract class PlatformContext
  *
  * @see com.github.panpf.sketch.core.android.test.PlatformContextAndroidTest.testCheckPlatformContext
  * @see com.github.panpf.sketch.core.nonandroid.test.PlatformContextNonAndroidTest.testCheckPlatformContext
- * @see
  */
 expect fun checkPlatformContext(context: PlatformContext)

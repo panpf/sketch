@@ -47,6 +47,11 @@ import org.jetbrains.skia.Color
 import kotlin.math.roundToInt
 import kotlin.time.measureTime
 
+/**
+ * Painter for drawing [SkiaAnimatedImage]
+ *
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.SkiaAnimatedImagePainterTest
+ */
 class SkiaAnimatedImagePainter constructor(
     private val animatedImage: SkiaAnimatedImage,
     private val srcOffset: IntOffset = IntOffset.Zero,
