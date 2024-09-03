@@ -11,9 +11,10 @@ import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class SketchUtilsTest {
@@ -23,9 +24,9 @@ class SketchUtilsTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = ImageView(context)
 
-        Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
+        assertNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
         imageView.loadImage(ResourceImages.jpeg.uri)
-        Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
+        assertNotNull(com.github.panpf.sketch.util.SketchUtils.requestManagerOrNull(imageView))
     }
 
     @Test
@@ -52,10 +53,10 @@ class SketchUtilsTest {
         }
         Thread.sleep(100)
 
-        Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
+        assertNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
         imageView.loadImage(ResourceImages.jpeg.uri)
         Thread.sleep(100)
-        Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
+        assertNotNull(com.github.panpf.sketch.util.SketchUtils.getRequest(imageView))
     }
 
     @Test
@@ -67,9 +68,9 @@ class SketchUtilsTest {
         }
         Thread.sleep(100)
 
-        Assert.assertNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
+        assertNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
         imageView.loadImage(ResourceImages.jpeg.uri)
         Thread.sleep(100)
-        Assert.assertNotNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
+        assertNotNull(com.github.panpf.sketch.util.SketchUtils.getSketch(imageView))
     }
 }

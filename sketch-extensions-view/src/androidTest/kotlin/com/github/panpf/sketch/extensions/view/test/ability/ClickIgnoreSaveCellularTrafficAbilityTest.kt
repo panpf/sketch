@@ -21,9 +21,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.ability.isClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ClickIgnoreSaveCellularTrafficAbilityTest {
@@ -33,16 +34,16 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
 
         imageView.setClickIgnoreSaveCellularTrafficEnabled()
-        Assert.assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
 
         imageView.setClickIgnoreSaveCellularTrafficEnabled(false)
-        Assert.assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        assertFalse(imageView.isClickIgnoreSaveCellularTrafficEnabled)
 
         imageView.setClickIgnoreSaveCellularTrafficEnabled(true)
-        Assert.assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
+        assertTrue(imageView.isClickIgnoreSaveCellularTrafficEnabled)
     }
 
     // TODO test

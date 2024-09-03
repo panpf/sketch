@@ -18,8 +18,11 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.utils.getTestContext
-import org.junit.Assert
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 
 class ImageRequestViewTest {
 
@@ -29,35 +32,35 @@ class ImageRequestViewTest {
         val uri = ResourceImages.jpeg.uri
         val imageView1 = ImageView(context1)
         ImageRequest(imageView1, uri).apply {
-            Assert.assertNotEquals(context1, this.context)
-            Assert.assertEquals("file:///android_asset/sample.jpeg", uri)
-            Assert.assertNull(this.listener)
-            Assert.assertNull(this.progressListener)
-            Assert.assertEquals(ImageViewTarget(imageView1), this.target)
-            Assert.assertEquals(ViewLifecycleResolver(imageView1), this.lifecycleResolver)
+            assertNotEquals(context1, this.context)
+            assertEquals("file:///android_asset/sample.jpeg", uri)
+            assertNull(this.listener)
+            assertNull(this.progressListener)
+            assertEquals(ImageViewTarget(imageView1), this.target)
+            assertEquals(ViewLifecycleResolver(imageView1), this.lifecycleResolver)
 
-            Assert.assertEquals(NETWORK, this.depthHolder.depth)
-            Assert.assertNull(this.extras)
-            Assert.assertNull(this.httpHeaders)
-            Assert.assertEquals(ENABLED, this.downloadCachePolicy)
-            Assert.assertNull(this.bitmapConfig)
+            assertEquals(NETWORK, this.depthHolder.depth)
+            assertNull(this.extras)
+            assertNull(this.httpHeaders)
+            assertEquals(ENABLED, this.downloadCachePolicy)
+            assertNull(this.bitmapConfig)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                Assert.assertNull(this.colorSpace)
+                assertNull(this.colorSpace)
             }
             @Suppress("DEPRECATION")
-            Assert.assertFalse(this.preferQualityOverSpeed)
-            Assert.assertEquals(ViewSizeResolver(imageView1), this.sizeResolver)
-            Assert.assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.precisionDecider)
-            Assert.assertEquals(FixedScaleDecider(CENTER_CROP), this.scaleDecider)
-            Assert.assertNull(this.transformations)
-            Assert.assertEquals(ENABLED, this.resultCachePolicy)
-            Assert.assertNull(this.placeholder)
-            Assert.assertNull(this.fallback)
-            Assert.assertNull(this.error)
-            Assert.assertNull(this.transitionFactory)
-            Assert.assertFalse(this.disallowAnimatedImage)
-            Assert.assertNull(this.resizeOnDraw)
-            Assert.assertEquals(ENABLED, this.memoryCachePolicy)
+            assertFalse(this.preferQualityOverSpeed)
+            assertEquals(ViewSizeResolver(imageView1), this.sizeResolver)
+            assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.precisionDecider)
+            assertEquals(FixedScaleDecider(CENTER_CROP), this.scaleDecider)
+            assertNull(this.transformations)
+            assertEquals(ENABLED, this.resultCachePolicy)
+            assertNull(this.placeholder)
+            assertNull(this.fallback)
+            assertNull(this.error)
+            assertNull(this.transitionFactory)
+            assertFalse(this.disallowAnimatedImage)
+            assertNull(this.resizeOnDraw)
+            assertEquals(ENABLED, this.memoryCachePolicy)
         }
     }
 

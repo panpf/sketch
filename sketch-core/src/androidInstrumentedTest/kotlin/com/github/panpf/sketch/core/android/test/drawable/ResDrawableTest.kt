@@ -23,9 +23,12 @@ import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getDrawableCompat
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 
 @RunWith(AndroidJUnit4::class)
 class ResDrawableTest {
@@ -35,7 +38,7 @@ class ResDrawableTest {
         val context = getTestContext()
 
         ResDrawable(R.drawable.ic_delete).apply {
-            Assert.assertSame(
+            assertSame(
                 context.getDrawableCompat(android.R.drawable.ic_delete)
                     .asOrThrow<BitmapDrawable>().bitmap,
                 getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
@@ -43,7 +46,7 @@ class ResDrawableTest {
         }
 
         ResDrawable(R.drawable.bottom_bar).apply {
-            Assert.assertSame(
+            assertSame(
                 context.getDrawableCompat(android.R.drawable.bottom_bar)
                     .asOrThrow<BitmapDrawable>().bitmap,
                 getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
@@ -54,16 +57,16 @@ class ResDrawableTest {
     @Test
     fun testToString() {
         ResDrawable(R.drawable.ic_delete).apply {
-            Assert.assertEquals("ResDrawable(${android.R.drawable.ic_delete})", toString())
+            assertEquals("ResDrawable(${android.R.drawable.ic_delete})", toString())
         }
 
         ResDrawable(R.drawable.bottom_bar).apply {
-            Assert.assertEquals("ResDrawable(${android.R.drawable.bottom_bar})", toString())
+            assertEquals("ResDrawable(${android.R.drawable.bottom_bar})", toString())
         }
 
         val context = getTestContext()
         ResDrawable(context.packageName, context.resources, R.drawable.bottom_bar).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})",
                 toString()
             )
@@ -77,26 +80,26 @@ class ResDrawableTest {
         val element2 = ResDrawable(R.drawable.bottom_bar)
         val element3 = ResDrawable(R.drawable.btn_dialog)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 }

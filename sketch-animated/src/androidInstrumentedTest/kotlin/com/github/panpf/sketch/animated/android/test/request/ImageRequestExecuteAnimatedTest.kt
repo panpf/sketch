@@ -31,9 +31,9 @@ import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ImageRequestExecuteAnimatedTest {
@@ -54,28 +54,28 @@ class ImageRequestExecuteAnimatedTest {
 
         request.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
+                assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(false)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
+                assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(null)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
+                assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(true)
         }.let { runBlocking { sketch.execute(it) } }
             .asOrNull<ImageResult.Success>()!!.apply {
-                Assert.assertTrue(image.asOrNull<AndroidBitmapImage>() != null)
+                assertTrue(image.asOrNull<AndroidBitmapImage>() != null)
             }
     }
 }

@@ -16,10 +16,12 @@ import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.asOrThrow
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import pl.droidsonroids.gif.GifDrawable
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
 @RunWith(AndroidJUnit4::class)
 class GifDrawableWrapperDrawableTest {
@@ -31,35 +33,44 @@ class GifDrawableWrapperDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-        val movie2 = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-        val movie3 = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+        val movie = GifDrawable(
+            context.assets,
+            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+        )
+        val movie2 = GifDrawable(
+            context.assets,
+            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+        )
+        val movie3 = GifDrawable(
+            context.assets,
+            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+        )
         val element1 = GifDrawableWrapperDrawable(movie)
         val element11 = GifDrawableWrapperDrawable(movie)
         val element2 = GifDrawableWrapperDrawable(movie2)
         val element3 = GifDrawableWrapperDrawable(movie3)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
@@ -67,8 +78,11 @@ class GifDrawableWrapperDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val gifDrawable = GifDrawable(context.assets, ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-        Assert.assertEquals(
+        val gifDrawable = GifDrawable(
+            context.assets,
+            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+        )
+        assertEquals(
             "GifDrawableWrapperDrawable(480x480)",
             GifDrawableWrapperDrawable(gifDrawable).toString()
         )

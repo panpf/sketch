@@ -23,9 +23,12 @@ import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class GenericViewTargetTest {
@@ -41,10 +44,10 @@ class GenericViewTargetTest {
         val requestContext = request.toRequestContextSync(sketch)
 
         val imageView = ImageView(context)
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         val imageViewTarget = TestViewTarget(imageView)
-        Assert.assertNull(imageViewTarget.drawable)
+        assertNull(imageViewTarget.drawable)
 
         val drawable1 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
         val drawable2 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
@@ -53,21 +56,21 @@ class GenericViewTargetTest {
             imageViewTarget.onSuccess(requestContext, drawable1.asSketchImage())
         }
 
-        Assert.assertSame(drawable1, imageView.drawable)
-        Assert.assertSame(drawable1, imageViewTarget.drawable)
+        assertSame(drawable1, imageView.drawable)
+        assertSame(drawable1, imageViewTarget.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageViewTarget.onSuccess(requestContext, drawable2.asSketchImage())
         }
 
-        Assert.assertSame(drawable2, imageView.drawable)
-        Assert.assertSame(drawable2, imageViewTarget.drawable)
+        assertSame(drawable2, imageView.drawable)
+        assertSame(drawable2, imageViewTarget.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageViewTarget.onError(requestContext, null)
         }
-        Assert.assertNull(imageView.drawable)
-        Assert.assertNull(imageViewTarget.drawable)
+        assertNull(imageView.drawable)
+        assertNull(imageViewTarget.drawable)
     }
 
     @Test
@@ -76,13 +79,13 @@ class GenericViewTargetTest {
         val imageView = ImageView(context)
 
         TestViewTarget(imageView).apply {
-            Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
+            assertFalse(getFieldValue<Boolean>("isStarted")!!)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
-            Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
+            assertTrue(getFieldValue<Boolean>("isStarted")!!)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_STOP)
-            Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
+            assertFalse(getFieldValue<Boolean>("isStarted")!!)
         }
     }
 
@@ -92,13 +95,13 @@ class GenericViewTargetTest {
         val imageView = ImageView(context)
 
         TestViewTarget(imageView).apply {
-            Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(getFieldValue<Boolean>("isAttached")!!)
 
             onAttachedChanged(true)
-            Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(getFieldValue<Boolean>("isAttached")!!)
 
             onAttachedChanged(false)
-            Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(getFieldValue<Boolean>("isAttached")!!)
         }
     }
 
@@ -122,52 +125,52 @@ class GenericViewTargetTest {
         }
 
         TestViewTarget(imageView).apply {
-            Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(getFieldValue<Boolean>("isStarted")!!)
+            assertFalse(getFieldValue<Boolean>("isAttached")!!)
 
             val animatableDrawable = TestAnimatableColorDrawable(Color.RED)
-            Assert.assertFalse(animatableDrawable.running)
+            assertFalse(animatableDrawable.running)
 
             onSuccess(requestContext, animatableDrawable.asSketchImage())
-            Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertFalse(animatableDrawable.running)
+            assertFalse(getFieldValue<Boolean>("isStarted")!!)
+            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(animatableDrawable.running)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
-            Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertFalse(animatableDrawable.running)
+            assertTrue(getFieldValue<Boolean>("isStarted")!!)
+            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(animatableDrawable.running)
 
             onAttachedChanged(true)
-            Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertTrue(animatableDrawable.running)
+            assertTrue(getFieldValue<Boolean>("isStarted")!!)
+            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(animatableDrawable.running)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_STOP)
-            Assert.assertFalse(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertFalse(animatableDrawable.running)
+            assertFalse(getFieldValue<Boolean>("isStarted")!!)
+            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(animatableDrawable.running)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
-            Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertTrue(animatableDrawable.running)
+            assertTrue(getFieldValue<Boolean>("isStarted")!!)
+            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(animatableDrawable.running)
 
             onAttachedChanged(false)
-            Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertFalse(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertFalse(animatableDrawable.running)
+            assertTrue(getFieldValue<Boolean>("isStarted")!!)
+            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(animatableDrawable.running)
 
             onAttachedChanged(true)
-            Assert.assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            Assert.assertTrue(getFieldValue<Boolean>("isAttached")!!)
-            Assert.assertTrue(animatableDrawable.running)
+            assertTrue(getFieldValue<Boolean>("isStarted")!!)
+            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(animatableDrawable.running)
 
             onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
-            Assert.assertFalse(animatableDrawable.running)
+            assertFalse(animatableDrawable.running)
 
             onSuccess(requestContext, animatableDrawable.asSketchImage())
-            Assert.assertTrue(animatableDrawable.running)
+            assertTrue(animatableDrawable.running)
         }
     }
 

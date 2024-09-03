@@ -20,9 +20,9 @@ import android.graphics.PixelFormat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.sketch.transform.flag
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class PixelOpacityTest {
@@ -34,8 +34,8 @@ class PixelOpacityTest {
 
     @Test
     fun testFlag() {
-        Assert.assertEquals(PixelFormat.OPAQUE, PixelOpacity.OPAQUE.flag)
-        Assert.assertEquals(PixelFormat.UNKNOWN, PixelOpacity.UNCHANGED.flag)
-        Assert.assertEquals(PixelFormat.TRANSLUCENT, PixelOpacity.TRANSLUCENT.flag)
+        assertEquals(PixelFormat.OPAQUE, PixelOpacity.OPAQUE.flag)
+        assertEquals(PixelFormat.UNKNOWN, PixelOpacity.UNCHANGED.flag)
+        assertEquals(PixelFormat.TRANSLUCENT, PixelOpacity.TRANSLUCENT.flag)
     }
 }

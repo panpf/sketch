@@ -20,9 +20,10 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 @RunWith(AndroidJUnit4::class)
 class ResizeOnDrawAndroidTest {
@@ -40,14 +41,14 @@ class ResizeOnDrawAndroidTest {
 
         val request = ImageRequest(imageView, imageUri)
         val bitmapDrawableImage = bitmapDrawable.asSketchImage()
-        Assert.assertSame(
+        assertSame(
             bitmapDrawableImage,
             bitmapDrawableImage.resizeOnDraw(request, null)
         )
         val request1 = ImageRequest(imageView, imageUri) {
             resizeOnDraw(true)
         }
-        Assert.assertSame(
+        assertSame(
             bitmapDrawableImage,
             bitmapDrawableImage.resizeOnDraw(request1, null)
         )
@@ -55,7 +56,7 @@ class ResizeOnDrawAndroidTest {
             size(500, 300)
             precision(Precision.EXACTLY)
         }
-        Assert.assertSame(
+        assertSame(
             bitmapDrawable,
             bitmapDrawableImage
                 .resizeOnDraw(request2, request2.toRequestContext(sketch).size)
@@ -71,8 +72,8 @@ class ResizeOnDrawAndroidTest {
             .asDrawableOrThrow()
             .let { it as ResizeDrawable }
             .apply {
-                Assert.assertSame(bitmapDrawable, drawable)
-                Assert.assertEquals(Size(500, 300), size)
+                assertSame(bitmapDrawable, drawable)
+                assertEquals(Size(500, 300), size)
             }
 
         val animDrawable = AnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
@@ -81,8 +82,8 @@ class ResizeOnDrawAndroidTest {
             .asDrawableOrThrow()
             .let { it as ResizeAnimatableDrawable }
             .apply {
-                Assert.assertSame(animDrawable, drawable)
-                Assert.assertEquals(Size(500, 300), size)
+                assertSame(animDrawable, drawable)
+                assertEquals(Size(500, 300), size)
             }
     }
 }

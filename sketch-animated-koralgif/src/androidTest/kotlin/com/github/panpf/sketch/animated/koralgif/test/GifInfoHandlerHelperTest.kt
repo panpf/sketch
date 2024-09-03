@@ -37,11 +37,12 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Path
 import okio.Source
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @RunWith(AndroidJUnit4::class)
 class GifInfoHandlerHelperTest {
@@ -65,16 +66,16 @@ class GifInfoHandlerHelperTest {
                 dataFrom = NETWORK,
             )
         ).apply {
-            Assert.assertEquals(480, width)
-            Assert.assertEquals(480, height)
-            Assert.assertEquals(500, duration)
-            Assert.assertEquals(5, numberOfFrames)
+            assertEquals(480, width)
+            assertEquals(480, height)
+            assertEquals(500, duration)
+            assertEquals(5, numberOfFrames)
             setOptions(GifOptions().apply {
                 setInSampleSize(2)
             })
-            Assert.assertEquals(240, width)
-            Assert.assertEquals(240, height)
-            Assert.assertNotNull(createGifDrawable().apply { recycle() })
+            assertEquals(240, width)
+            assertEquals(240, height)
+            assertNotNull(createGifDrawable().apply { recycle() })
         }
 
         GifInfoHandleHelper(
@@ -84,16 +85,16 @@ class GifInfoHandlerHelperTest {
                 dataFrom = LOCAL,
             )
         ).apply {
-            Assert.assertEquals(480, width)
-            Assert.assertEquals(480, height)
-            Assert.assertEquals(500, duration)
-            Assert.assertEquals(5, numberOfFrames)
+            assertEquals(480, width)
+            assertEquals(480, height)
+            assertEquals(500, duration)
+            assertEquals(5, numberOfFrames)
             setOptions(GifOptions().apply {
                 setInSampleSize(2)
             })
-            Assert.assertEquals(240, width)
-            Assert.assertEquals(240, height)
-            Assert.assertNotNull(createGifDrawable().apply { recycle() })
+            assertEquals(240, width)
+            assertEquals(240, height)
+            assertNotNull(createGifDrawable().apply { recycle() })
         }
 
         GifInfoHandleHelper(
@@ -104,16 +105,16 @@ class GifInfoHandlerHelperTest {
                 resId = com.github.panpf.sketch.images.R.raw.sample_anim
             )
         ).apply {
-            Assert.assertEquals(480, width)
-            Assert.assertEquals(480, height)
-            Assert.assertEquals(500, duration)
-            Assert.assertEquals(5, numberOfFrames)
+            assertEquals(480, width)
+            assertEquals(480, height)
+            assertEquals(500, duration)
+            assertEquals(5, numberOfFrames)
             setOptions(GifOptions().apply {
                 setInSampleSize(2)
             })
-            Assert.assertEquals(240, width)
-            Assert.assertEquals(240, height)
-            Assert.assertNotNull(createGifDrawable().apply { recycle() })
+            assertEquals(240, width)
+            assertEquals(240, height)
+            assertNotNull(createGifDrawable().apply { recycle() })
         }
 
         GifInfoHandleHelper(
@@ -123,32 +124,32 @@ class GifInfoHandlerHelperTest {
                 contentUri = Uri.fromFile(snapshot.data.toFile()),
             )
         ).apply {
-            Assert.assertEquals(480, width)
-            Assert.assertEquals(480, height)
-            Assert.assertEquals(500, duration)
-            Assert.assertEquals(5, numberOfFrames)
+            assertEquals(480, width)
+            assertEquals(480, height)
+            assertEquals(500, duration)
+            assertEquals(5, numberOfFrames)
             setOptions(GifOptions().apply {
                 setInSampleSize(2)
             })
-            Assert.assertEquals(240, width)
-            Assert.assertEquals(240, height)
-            Assert.assertNotNull(createGifDrawable().apply { recycle() })
+            assertEquals(240, width)
+            assertEquals(240, height)
+            assertNotNull(createGifDrawable().apply { recycle() })
         }
 
         GifInfoHandleHelper(
             sketch,
             FileDataSource(path = snapshot.data)
         ).apply {
-            Assert.assertEquals(480, width)
-            Assert.assertEquals(480, height)
-            Assert.assertEquals(500, duration)
-            Assert.assertEquals(5, numberOfFrames)
+            assertEquals(480, width)
+            assertEquals(480, height)
+            assertEquals(500, duration)
+            assertEquals(5, numberOfFrames)
             setOptions(GifOptions().apply {
                 setInSampleSize(2)
             })
-            Assert.assertEquals(240, width)
-            Assert.assertEquals(240, height)
-            Assert.assertNotNull(createGifDrawable().apply { recycle() })
+            assertEquals(240, width)
+            assertEquals(240, height)
+            assertNotNull(createGifDrawable().apply { recycle() })
         }
 
         GifInfoHandleHelper(
@@ -158,16 +159,16 @@ class GifInfoHandlerHelperTest {
                 fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
             )
         ).apply {
-            Assert.assertEquals(480, width)
-            Assert.assertEquals(480, height)
-            Assert.assertEquals(500, duration)
-            Assert.assertEquals(5, numberOfFrames)
+            assertEquals(480, width)
+            assertEquals(480, height)
+            assertEquals(500, duration)
+            assertEquals(5, numberOfFrames)
             setOptions(GifOptions().apply {
                 setInSampleSize(2)
             })
-            Assert.assertEquals(240, width)
-            Assert.assertEquals(240, height)
-            Assert.assertNotNull(createGifDrawable().apply { recycle() })
+            assertEquals(240, width)
+            assertEquals(240, height)
+            assertNotNull(createGifDrawable().apply { recycle() })
         }
 
         assertThrow(Exception::class) {

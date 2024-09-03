@@ -41,9 +41,12 @@ import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class CrossfadeDrawableTest {
@@ -56,10 +59,10 @@ class CrossfadeDrawableTest {
         val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565))
 
         CrossfadeDrawable(startDrawable, endDrawable).apply {
-            Assert.assertTrue(fitScale)
-            Assert.assertEquals(200, durationMillis)
-            Assert.assertTrue(fadeStart)
-            Assert.assertFalse(preferExactIntrinsicSize)
+            assertTrue(fitScale)
+            assertEquals(200, durationMillis)
+            assertTrue(fadeStart)
+            assertFalse(preferExactIntrinsicSize)
         }
         CrossfadeDrawable(
             startDrawable,
@@ -69,10 +72,10 @@ class CrossfadeDrawableTest {
             fadeStart = false,
             preferExactIntrinsicSize = true
         ).apply {
-            Assert.assertFalse(fitScale)
-            Assert.assertEquals(2000, durationMillis)
-            Assert.assertFalse(fadeStart)
-            Assert.assertTrue(preferExactIntrinsicSize)
+            assertFalse(fitScale)
+            assertEquals(2000, durationMillis)
+            assertFalse(fadeStart)
+            assertTrue(preferExactIntrinsicSize)
         }
     }
 
@@ -82,13 +85,13 @@ class CrossfadeDrawableTest {
         val resources = context.resources
         val startDrawable =
             BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565)).apply {
-                Assert.assertEquals(Size(100, 200), intrinsicSize)
+                assertEquals(Size(100, 200), intrinsicSize)
             }
         val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565)).apply {
-            Assert.assertEquals(Size(200, 100), intrinsicSize)
+            assertEquals(Size(200, 100), intrinsicSize)
         }
         CrossfadeDrawable(startDrawable, endDrawable).apply {
-            Assert.assertEquals(Size(200, 200), intrinsicSize)
+            assertEquals(Size(200, 200), intrinsicSize)
         }
     }
 
@@ -99,19 +102,19 @@ class CrossfadeDrawableTest {
 
         val startDrawable =
             BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565)).apply {
-                Assert.assertEquals(Rect(), bounds)
+                assertEquals(Rect(), bounds)
             }
         val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565)).apply {
-            Assert.assertEquals(Rect(), bounds)
+            assertEquals(Rect(), bounds)
         }
         val crossfadeDrawable = CrossfadeDrawable(startDrawable, endDrawable).apply {
-            Assert.assertEquals(Rect(), bounds)
+            assertEquals(Rect(), bounds)
         }
 
         crossfadeDrawable.setBounds(0, 0, 200, 200)
-        Assert.assertEquals(Rect(50, 0, 150, 200), startDrawable.bounds)
-        Assert.assertEquals(Rect(0, 50, 200, 150), endDrawable.bounds)
-        Assert.assertEquals(Rect(0, 0, 200, 200), crossfadeDrawable.bounds)
+        assertEquals(Rect(50, 0, 150, 200), startDrawable.bounds)
+        assertEquals(Rect(0, 50, 200, 150), endDrawable.bounds)
+        assertEquals(Rect(0, 0, 200, 200), crossfadeDrawable.bounds)
     }
 
     @Test
@@ -147,12 +150,12 @@ class CrossfadeDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.ic_input_add).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
             context.getDrawableCompat(android.R.drawable.ic_delete).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -166,12 +169,12 @@ class CrossfadeDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.ic_input_add).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
             context.getDrawableCompat(android.R.drawable.ic_delete).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -218,18 +221,18 @@ class CrossfadeDrawableTest {
                 registerAnimationCallback(callback3)
             }
 
-            Assert.assertFalse(isRunning)
-            Assert.assertEquals(listOf<String>(), callbackAction)
+            assertFalse(isRunning)
+            assertEquals(listOf<String>(), callbackAction)
 
             start()
             Thread.sleep(100)
-            Assert.assertTrue(isRunning)
-            Assert.assertEquals(listOf("onAnimationStart"), callbackAction)
+            assertTrue(isRunning)
+            assertEquals(listOf("onAnimationStart"), callbackAction)
 
             stop()
             Thread.sleep(100)
-            Assert.assertFalse(isRunning)
-            Assert.assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
+            assertFalse(isRunning)
+            assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
         }
     }
 
@@ -242,17 +245,17 @@ class CrossfadeDrawableTest {
             context.getDrawableCompat(android.R.drawable.ic_delete),
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertNull(colorFilter)
+                assertNull(colorFilter)
             }
             colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
 
                 start()
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
 
                 stop()
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
             }
         }
     }
@@ -278,13 +281,13 @@ class CrossfadeDrawableTest {
             context.getDrawableCompat(android.R.drawable.ic_input_add),
             context.getDrawableCompat(android.R.drawable.ic_delete),
         ).apply {
-            Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
+            assertEquals(PixelFormat.TRANSLUCENT, opacity)
 
             start()
-            Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
+            assertEquals(PixelFormat.TRANSLUCENT, opacity)
 
             stop()
-            Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
+            assertEquals(PixelFormat.TRANSLUCENT, opacity)
         }
     }
 

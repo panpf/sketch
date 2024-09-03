@@ -30,9 +30,10 @@ import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ProgressIndicatorAbilityTest {
@@ -42,43 +43,43 @@ class ProgressIndicatorAbilityTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isShowProgressIndicator)
+        assertFalse(imageView.isShowProgressIndicator)
 
         runBlocking(Dispatchers.Main) {
             imageView.showSectorProgressIndicator()
         }
-        Assert.assertTrue(imageView.isShowProgressIndicator)
+        assertTrue(imageView.isShowProgressIndicator)
         imageView.viewAbilityList.find { it is ProgressIndicatorAbility }!!
             .let { it as ProgressIndicatorAbility }.apply {
-                Assert.assertTrue(this.progressDrawable is SectorProgressDrawable)
+                assertTrue(this.progressDrawable is SectorProgressDrawable)
             }
 
         runBlocking(Dispatchers.Main) {
             imageView.removeProgressIndicator()
         }
-        Assert.assertFalse(imageView.isShowProgressIndicator)
+        assertFalse(imageView.isShowProgressIndicator)
 
         runBlocking(Dispatchers.Main) {
             imageView.showMaskProgressIndicator()
         }
-        Assert.assertTrue(imageView.isShowProgressIndicator)
+        assertTrue(imageView.isShowProgressIndicator)
         imageView.viewAbilityList.find { it is ProgressIndicatorAbility }!!
             .let { it as ProgressIndicatorAbility }.apply {
-                Assert.assertTrue(this.progressDrawable is MaskProgressDrawable)
+                assertTrue(this.progressDrawable is MaskProgressDrawable)
             }
 
         runBlocking(Dispatchers.Main) {
             imageView.removeProgressIndicator()
         }
-        Assert.assertFalse(imageView.isShowProgressIndicator)
+        assertFalse(imageView.isShowProgressIndicator)
 
         runBlocking(Dispatchers.Main) {
             imageView.showRingProgressIndicator()
         }
-        Assert.assertTrue(imageView.isShowProgressIndicator)
+        assertTrue(imageView.isShowProgressIndicator)
         imageView.viewAbilityList.find { it is ProgressIndicatorAbility }!!
             .let { it as ProgressIndicatorAbility }.apply {
-                Assert.assertTrue(this.progressDrawable is RingProgressDrawable)
+                assertTrue(this.progressDrawable is RingProgressDrawable)
             }
     }
 

@@ -4,7 +4,7 @@ import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import kotlin.test.Test
 
 class AnimatedUtilsTest {
 

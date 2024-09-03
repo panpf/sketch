@@ -28,8 +28,8 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
 
 @RunWith(AndroidJUnit4::class)
 class ViewTargetTest {

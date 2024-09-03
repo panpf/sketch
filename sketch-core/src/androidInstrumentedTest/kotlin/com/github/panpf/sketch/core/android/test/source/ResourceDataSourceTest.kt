@@ -10,9 +10,9 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.md5
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class ResourceDataSourceTest {
@@ -25,11 +25,11 @@ class ResourceDataSourceTest {
             packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher,
                 this.resId
             )
-            Assert.assertEquals(LOCAL, this.dataFrom)
+            assertEquals(LOCAL, this.dataFrom)
         }
     }
 
@@ -66,7 +66,7 @@ class ResourceDataSourceTest {
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
             val file = getFile(sketch)
-            Assert.assertEquals(
+            assertEquals(
                 (key + "_data_source").md5() + ".0",
                 file.name
             )
@@ -83,7 +83,7 @@ class ResourceDataSourceTest {
             packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ResourceDataSource(packageName='${context.packageName}', resId=${com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher})",
                 toString()
             )
@@ -94,7 +94,7 @@ class ResourceDataSourceTest {
             packageName = context.packageName,
             resId = 42
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ResourceDataSource(packageName='${context.packageName}', resId=42)",
                 toString()
             )

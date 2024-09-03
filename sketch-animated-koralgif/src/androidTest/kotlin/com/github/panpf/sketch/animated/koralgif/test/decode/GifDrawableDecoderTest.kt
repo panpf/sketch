@@ -44,9 +44,13 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class GifDrawableDecoderTest {
@@ -55,7 +59,7 @@ class GifDrawableDecoderTest {
     fun testSupportKoralGif() {
         ComponentRegistry.Builder().apply {
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
@@ -68,7 +72,7 @@ class GifDrawableDecoderTest {
 
             supportKoralGif()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[GifDrawableDecoder]," +
@@ -81,7 +85,7 @@ class GifDrawableDecoderTest {
 
             supportKoralGif()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[GifDrawableDecoder,GifDrawableDecoder]," +
@@ -100,14 +104,14 @@ class GifDrawableDecoderTest {
         val sketch = context.sketch
         val factory = GifDrawableDecoder.Factory()
 
-        Assert.assertEquals("GifDrawableDecoder", factory.toString())
+        assertEquals("GifDrawableDecoder", factory.toString())
 
         // normal
         ImageRequest(context, ResourceImages.animGif.uri).let {
             val fetchResult = it.fetch(sketch)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         // no mimeType
@@ -115,7 +119,7 @@ class GifDrawableDecoderTest {
             val fetchResult = it.fetch(sketch).copy(mimeType = null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         // Disguised mimeType
@@ -123,7 +127,7 @@ class GifDrawableDecoderTest {
             val fetchResult = it.fetch(sketch).copy(mimeType = "image/jpeg")
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         // disallowAnimatedImage true
@@ -133,7 +137,7 @@ class GifDrawableDecoderTest {
             val fetchResult = it.fetch(sketch)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
 
         // data error
@@ -141,7 +145,7 @@ class GifDrawableDecoderTest {
             val fetchResult = it.fetch(sketch)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
 
         // Disguised, mimeType; data error
@@ -153,7 +157,7 @@ class GifDrawableDecoderTest {
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
     }
 
@@ -163,21 +167,21 @@ class GifDrawableDecoderTest {
         val element11 = GifDrawableDecoder.Factory()
         val element2 = GifDrawableDecoder.Factory()
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element2, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertEquals(element1, element2)
-        Assert.assertEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertEquals(element1, element2)
+        assertEquals(element2, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertEquals(element2.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element2.hashCode())
+        assertEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -189,15 +193,15 @@ class GifDrawableDecoderTest {
         ImageRequest(context, ResourceImages.animGif.uri) {
             onAnimationStart { }
         }.decode(sketch, factory).apply {
-            Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
-            Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
-            Assert.assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
-            Assert.assertEquals(LOCAL, this.dataFrom)
-            Assert.assertNull(this.transformeds)
+            assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
+            assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
+            assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
+            assertEquals(LOCAL, this.dataFrom)
+            assertNull(this.transformeds)
             val gifDrawable =
                 ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
-            Assert.assertEquals(0, gifDrawable.loopCount)
-            Assert.assertNull(gifDrawable.transform)
+            assertEquals(0, gifDrawable.loopCount)
+            assertNull(gifDrawable.transform)
         }
 
         ImageRequest(context, ResourceImages.animGif.uri) {
@@ -206,15 +210,15 @@ class GifDrawableDecoderTest {
             onAnimationEnd {}
             resize(300, 300)
         }.decode(sketch, factory).apply {
-            Assert.assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
-            Assert.assertEquals(240, image.getDrawableOrThrow().intrinsicWidth)
-            Assert.assertEquals(240, image.getDrawableOrThrow().intrinsicHeight)
-            Assert.assertEquals(LOCAL, this.dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
+            assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
+            assertEquals(240, image.getDrawableOrThrow().intrinsicWidth)
+            assertEquals(240, image.getDrawableOrThrow().intrinsicHeight)
+            assertEquals(LOCAL, this.dataFrom)
+            assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
             val gifDrawable =
                 ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
-            Assert.assertEquals(3, gifDrawable.loopCount)
-            Assert.assertNotNull(gifDrawable.transform)
+            assertEquals(3, gifDrawable.loopCount)
+            assertNotNull(gifDrawable.transform)
             gifDrawable.transform!!.onDraw(Canvas(), null, null)
         }
     }

@@ -24,9 +24,10 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
 import com.github.panpf.sketch.transform.asPostProcessor
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class AnimatedTransformationTest {
@@ -40,11 +41,11 @@ class AnimatedTransformationTest {
         val drawFilter1 = PaintFlagsDrawFilter(10, 8)
         val transformation = DrawFilterAnimatedTransformation(drawFilter1)
         val canvas = Canvas()
-        Assert.assertNull(canvas.drawFilter)
+        assertNull(canvas.drawFilter)
 
         val processor = transformation.asPostProcessor()
         processor.onPostProcess(canvas)
-        Assert.assertEquals(drawFilter1, canvas.drawFilter)
+        assertEquals(drawFilter1, canvas.drawFilter)
     }
 
     data class DrawFilterAnimatedTransformation(val drawFilter: PaintFlagsDrawFilter) :

@@ -22,7 +22,6 @@ import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
@@ -31,9 +30,13 @@ import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
 import com.github.panpf.tools4j.reflect.ktx.callMethod
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class SketchImageViewTest {
@@ -44,12 +47,12 @@ class SketchImageViewTest {
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_default, null, false) as SketchImageView).apply {
-            Assert.assertNull(imageOptions)
+            assertNull(imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test, null, false) as SketchImageView).apply {
-            Assert.assertEquals(ImageOptions {
+            assertEquals(ImageOptions {
                 bitmapConfig(Bitmap.Config.RGB_565)
                 crossfade(3000, preferExactIntrinsicSize = true)
                 depth(Depth.LOCAL)
@@ -66,14 +69,14 @@ class SketchImageViewTest {
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_state, null, false) as SketchImageView).apply {
-            Assert.assertNotNull(imageOptions!!.placeholder)
-            Assert.assertNotNull(imageOptions!!.fallback)
-            Assert.assertNotNull(imageOptions!!.error)
+            assertNotNull(imageOptions!!.placeholder)
+            assertNotNull(imageOptions!!.fallback)
+            assertNotNull(imageOptions!!.error)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_blur, null, false) as SketchImageView).apply {
-            Assert.assertEquals(ImageOptions {
+            assertEquals(ImageOptions {
                 transformations(
                     BlurTransformation(
                         23,
@@ -86,21 +89,21 @@ class SketchImageViewTest {
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_rotate, null, false) as SketchImageView).apply {
-            Assert.assertEquals(ImageOptions {
+            assertEquals(ImageOptions {
                 transformations(RotateTransformation(444))
             }, imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_circle, null, false) as SketchImageView).apply {
-            Assert.assertEquals(ImageOptions {
+            assertEquals(ImageOptions {
                 transformations(CircleCropTransformation(Scale.END_CROP))
             }, imageOptions)
         }
 
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test_mask, null, false) as SketchImageView).apply {
-            Assert.assertEquals(ImageOptions {
+            assertEquals(ImageOptions {
                 transformations(MaskTransformation(Color.parseColor("#00FF00")))
             }, imageOptions)
         }
@@ -112,10 +115,10 @@ class SketchImageViewTest {
         val sketchImageView = SketchImageView(context)
 
         sketchImageView.getListener().apply {
-            Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(
+            assertTrue(this is Listeners)
+            assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as Listeners).list
+                list
             )
         }
 
@@ -124,28 +127,28 @@ class SketchImageViewTest {
 
         sketchImageView.registerListener(listener1)
         sketchImageView.getListener()!!.apply {
-            Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(
+            assertTrue(this is Listeners)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1),
-                (this as Listeners).list
+                list
             )
         }
 
         sketchImageView.unregisterListener(listener2)
         sketchImageView.getListener()!!.apply {
-            Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(
+            assertTrue(this is Listeners)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1),
-                (this as Listeners).list
+                list
             )
         }
 
         sketchImageView.registerListener(listener2)
         sketchImageView.getListener()!!.apply {
-            Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(
+            assertTrue(this is Listeners)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
-                (this as Listeners).list
+                list
             )
         }
 
@@ -154,12 +157,12 @@ class SketchImageViewTest {
             .getFieldValue<Any>("viewAbilityManager")!!
             .callMethod<Any>("getRequestListener")
         sketchImageView.getListener()!!.apply {
-            Assert.assertTrue(this is PairListener)
-            Assert.assertEquals(
+            assertTrue(this is PairListener)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
-                (this as PairListener).first.asOrThrow<Listeners>().list
+                first.asOrThrow<Listeners>().list
             )
-            Assert.assertSame(
+            assertSame(
                 viewAbilityListener,
                 this.second
             )
@@ -167,12 +170,12 @@ class SketchImageViewTest {
 
         sketchImageView.unregisterListener(listener1)
         sketchImageView.getListener()!!.apply {
-            Assert.assertTrue(this is PairListener)
-            Assert.assertEquals(
+            assertTrue(this is PairListener)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener2),
-                (this as PairListener).first.asOrThrow<Listeners>().list
+                first.asOrThrow<Listeners>().list
             )
-            Assert.assertSame(
+            assertSame(
                 viewAbilityListener,
                 this.second
             )
@@ -180,12 +183,12 @@ class SketchImageViewTest {
 
         sketchImageView.unregisterListener(listener2)
         sketchImageView.getListener()!!.apply {
-            Assert.assertTrue(this is PairListener)
-            Assert.assertEquals(
+            assertTrue(this is PairListener)
+            assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as PairListener).first.asOrThrow<Listeners>().list
+                first.asOrThrow<Listeners>().list
             )
-            Assert.assertSame(
+            assertSame(
                 viewAbilityListener,
                 this.second
             )
@@ -193,10 +196,10 @@ class SketchImageViewTest {
 
         sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(false)
         sketchImageView.getListener().apply {
-            Assert.assertTrue(this is Listeners)
-            Assert.assertEquals(
+            assertTrue(this is Listeners)
+            assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as Listeners).list
+                list
             )
         }
     }
@@ -207,10 +210,10 @@ class SketchImageViewTest {
         val sketchImageView = SketchImageView(context)
 
         sketchImageView.getProgressListener().apply {
-            Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(
+            assertTrue(this is ProgressListeners)
+            assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as ProgressListeners).list
+                list
             )
         }
 
@@ -219,28 +222,28 @@ class SketchImageViewTest {
 
         sketchImageView.registerProgressListener(listener1)
         sketchImageView.getProgressListener()!!.apply {
-            Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(
+            assertTrue(this is ProgressListeners)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1),
-                (this as ProgressListeners).list
+                list
             )
         }
 
         sketchImageView.unregisterProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
-            Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(
+            assertTrue(this is ProgressListeners)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1),
-                (this as ProgressListeners).list
+                list
             )
         }
 
         sketchImageView.registerProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
-            Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(
+            assertTrue(this is ProgressListeners)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
-                (this as ProgressListeners).list
+                list
             )
         }
 
@@ -249,12 +252,12 @@ class SketchImageViewTest {
             .getFieldValue<Any>("viewAbilityManager")!!
             .callMethod<Any>("getRequestListener")
         sketchImageView.getProgressListener()!!.apply {
-            Assert.assertTrue(this is PairProgressListener)
-            Assert.assertEquals(
+            assertTrue(this is PairProgressListener)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener1, listener2),
-                (this as PairProgressListener).first.asOrThrow<ProgressListeners>().list
+                first.asOrThrow<ProgressListeners>().list
             )
-            Assert.assertSame(
+            assertSame(
                 viewAbilityProgressListener,
                 this.second
             )
@@ -262,12 +265,12 @@ class SketchImageViewTest {
 
         sketchImageView.unregisterProgressListener(listener1)
         sketchImageView.getProgressListener()!!.apply {
-            Assert.assertTrue(this is PairProgressListener)
-            Assert.assertEquals(
+            assertTrue(this is PairProgressListener)
+            assertEquals(
                 listOf(sketchImageView.requestState, listener2),
-                (this as PairProgressListener).first.asOrThrow<ProgressListeners>().list
+                first.asOrThrow<ProgressListeners>().list
             )
-            Assert.assertSame(
+            assertSame(
                 viewAbilityProgressListener,
                 this.second
             )
@@ -275,12 +278,12 @@ class SketchImageViewTest {
 
         sketchImageView.unregisterProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
-            Assert.assertTrue(this is PairProgressListener)
-            Assert.assertEquals(
+            assertTrue(this is PairProgressListener)
+            assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as PairProgressListener).first.asOrThrow<ProgressListeners>().list
+                first.asOrThrow<ProgressListeners>().list
             )
-            Assert.assertSame(
+            assertSame(
                 viewAbilityProgressListener,
                 this.second
             )
@@ -288,10 +291,10 @@ class SketchImageViewTest {
 
         sketchImageView.removeProgressIndicator()
         sketchImageView.getProgressListener().apply {
-            Assert.assertTrue(this is ProgressListeners)
-            Assert.assertEquals(
+            assertTrue(this is ProgressListeners)
+            assertEquals(
                 listOf(sketchImageView.requestState),
-                (this as ProgressListeners).list
+                list
             )
         }
     }

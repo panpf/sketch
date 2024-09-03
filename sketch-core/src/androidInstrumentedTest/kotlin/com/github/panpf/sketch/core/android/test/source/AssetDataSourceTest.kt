@@ -8,10 +8,10 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.FileNotFoundException
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class AssetDataSourceTest {
@@ -24,8 +24,8 @@ class AssetDataSourceTest {
             context = context,
             fileName = ResourceImages.jpeg.resourceName
         ).apply {
-            Assert.assertEquals(ResourceImages.jpeg.resourceName, this.fileName)
-            Assert.assertEquals(LOCAL, this.dataFrom)
+            assertEquals(ResourceImages.jpeg.resourceName, this.fileName)
+            assertEquals(LOCAL, this.dataFrom)
         }
     }
 
@@ -62,7 +62,7 @@ class AssetDataSourceTest {
             context = context,
             fileName = ResourceImages.jpeg.resourceName
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "AssetDataSource('sample.jpeg')",
                 toString()
             )
@@ -72,7 +72,7 @@ class AssetDataSourceTest {
             context = context,
             fileName = "not_found.jpeg"
         ).apply {
-            Assert.assertEquals("AssetDataSource('not_found.jpeg')", toString())
+            assertEquals("AssetDataSource('not_found.jpeg')", toString())
         }
     }
 }

@@ -44,9 +44,14 @@ import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ViewCrossfadeTransitionTest {
@@ -71,9 +76,9 @@ class ViewCrossfadeTransitionTest {
             extras = null,
         )
         ViewCrossfadeTransition(requestContext, imageViewTarget, result).apply {
-            Assert.assertEquals(200, durationMillis)
-            Assert.assertEquals(false, preferExactIntrinsicSize)
-            Assert.assertEquals(true, fitScale)
+            assertEquals(200, durationMillis)
+            assertEquals(false, preferExactIntrinsicSize)
+            assertEquals(true, fitScale)
         }
         ViewCrossfadeTransition(
             requestContext = requestContext,
@@ -83,9 +88,9 @@ class ViewCrossfadeTransitionTest {
             preferExactIntrinsicSize = true,
             fitScale = false
         ).apply {
-            Assert.assertEquals(300, durationMillis)
-            Assert.assertEquals(true, preferExactIntrinsicSize)
-            Assert.assertEquals(false, fitScale)
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(false, fitScale)
         }
         assertThrow(IllegalArgumentException::class) {
             ViewCrossfadeTransition(requestContext, imageViewTarget, result, durationMillis = 0)
@@ -101,18 +106,18 @@ class ViewCrossfadeTransitionTest {
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
 
-        Assert.assertNull(imageView.drawable)
-        Assert.assertNull(imageViewTarget.drawable)
-        Assert.assertEquals(false, imageViewTarget.getFieldValue<Boolean>("isStarted"))
+        assertNull(imageView.drawable)
+        assertNull(imageViewTarget.drawable)
+        assertEquals(false, imageViewTarget.getFieldValue<Boolean>("isStarted"))
         imageViewTarget.setFieldValue("isStarted", true)
-        Assert.assertEquals(true, imageViewTarget.getFieldValue<Boolean>("isStarted"))
+        assertEquals(true, imageViewTarget.getFieldValue<Boolean>("isStarted"))
 
         // success
         runBlocking(Dispatchers.Main) {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
-        Assert.assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
-        Assert.assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
+        assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
+        assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
         val resultDrawable =
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 200, RGB_565))
         val success = ImageResult.Success(
@@ -127,17 +132,17 @@ class ViewCrossfadeTransitionTest {
         )
         ViewCrossfadeTransition(requestContext, imageViewTarget, success).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
-            Assert.assertEquals(Color.GREEN, (start as ColorDrawable).color)
-            Assert.assertTrue(end is BitmapDrawable)
-            Assert.assertTrue(fitScale)
+            assertEquals(Color.GREEN, (start as ColorDrawable).color)
+            assertTrue(end is BitmapDrawable)
+            assertTrue(fitScale)
         }
 
         // error
         runBlocking(Dispatchers.Main) {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
-        Assert.assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
-        Assert.assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
+        assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
+        assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
         val error = ImageResult.Error(
             request = request,
             image = resultDrawable.asSketchImage(),
@@ -145,15 +150,15 @@ class ViewCrossfadeTransitionTest {
         )
         ViewCrossfadeTransition(requestContext, imageViewTarget, error).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
-            Assert.assertEquals(Color.GREEN, (start as ColorDrawable).color)
-            Assert.assertTrue(end is BitmapDrawable)
+            assertEquals(Color.GREEN, (start as ColorDrawable).color)
+            assertTrue(end is BitmapDrawable)
         }
 
         // start end same
         runBlocking(Dispatchers.Main) {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
-        Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
+        assertTrue(imageViewTarget.drawable!! is ColorDrawable)
         ViewCrossfadeTransition(
             requestContext = requestContext,
             target = imageViewTarget,
@@ -168,15 +173,15 @@ class ViewCrossfadeTransitionTest {
                 extras = null,
             )
         ).transition()
-        Assert.assertTrue(imageViewTarget.drawable!! is ColorDrawable)
+        assertTrue(imageViewTarget.drawable!! is ColorDrawable)
     }
 
     @Test
     fun testFactoryConstructor() {
         ViewCrossfadeTransition.Factory().apply {
-            Assert.assertEquals(200, durationMillis)
-            Assert.assertEquals(false, preferExactIntrinsicSize)
-            Assert.assertEquals(false, alwaysUse)
+            assertEquals(200, durationMillis)
+            assertEquals(false, preferExactIntrinsicSize)
+            assertEquals(false, alwaysUse)
         }
 
         assertThrow(IllegalArgumentException::class) {
@@ -188,9 +193,9 @@ class ViewCrossfadeTransitionTest {
             preferExactIntrinsicSize = true,
             alwaysUse = true
         ).apply {
-            Assert.assertEquals(300, durationMillis)
-            Assert.assertEquals(true, preferExactIntrinsicSize)
-            Assert.assertEquals(true, alwaysUse)
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(true, alwaysUse)
         }
     }
 
@@ -217,14 +222,14 @@ class ViewCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        Assert.assertNotNull(factory.create(requestContext, imageViewTarget, successResult))
+        assertNotNull(factory.create(requestContext, imageViewTarget, successResult))
 
         val errorResult = ImageResult.Error(
             request = request,
             image = resultDrawable.asSketchImage(),
             throwable = Exception("")
         )
-        Assert.assertNotNull(factory.create(requestContext, imageViewTarget, errorResult))
+        assertNotNull(factory.create(requestContext, imageViewTarget, errorResult))
 
         val fromMemoryCacheSuccessResult = ImageResult.Success(
             request = request,
@@ -236,7 +241,7 @@ class ViewCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        Assert.assertNull(
+        assertNull(
             factory.create(
                 requestContext,
                 imageViewTarget,
@@ -245,7 +250,7 @@ class ViewCrossfadeTransitionTest {
         )
 
         val alwaysUseFactory = ViewCrossfadeTransition.Factory(alwaysUse = true)
-        Assert.assertNotNull(
+        assertNotNull(
             alwaysUseFactory.create(requestContext, imageViewTarget, fromMemoryCacheSuccessResult)
         )
     }
@@ -259,41 +264,41 @@ class ViewCrossfadeTransitionTest {
         val element4 = ViewCrossfadeTransition.Factory(alwaysUse = true)
         val element5 = ViewCrossfadeTransition.Factory(fadeStart = false)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element1, element4)
-        Assert.assertNotSame(element1, element5)
-        Assert.assertNotSame(element11, element2)
-        Assert.assertNotSame(element11, element3)
-        Assert.assertNotSame(element11, element4)
-        Assert.assertNotSame(element2, element3)
-        Assert.assertNotSame(element2, element4)
-        Assert.assertNotSame(element3, element4)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element1, element4)
+        assertNotSame(element1, element5)
+        assertNotSame(element11, element2)
+        assertNotSame(element11, element3)
+        assertNotSame(element11, element4)
+        assertNotSame(element2, element3)
+        assertNotSame(element2, element4)
+        assertNotSame(element3, element4)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element1, element4)
-        Assert.assertNotEquals(element1, element5)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element2, element4)
-        Assert.assertNotEquals(element3, element4)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element5.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test
@@ -303,19 +308,19 @@ class ViewCrossfadeTransitionTest {
         val element3 = ViewCrossfadeTransition.Factory(alwaysUse = true)
         val element4 = ViewCrossfadeTransition.Factory(fadeStart = false)
 
-        Assert.assertEquals(
+        assertEquals(
             "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=false)",
             element1.toString()
         )
-        Assert.assertEquals(
+        assertEquals(
             "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=true, alwaysUse=false)",
             element2.toString()
         )
-        Assert.assertEquals(
+        assertEquals(
             "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false, alwaysUse=true)",
             element3.toString()
         )
-        Assert.assertEquals(
+        assertEquals(
             "ViewCrossfadeTransition.Factory(durationMillis=200, fadeStart=false, preferExactIntrinsicSize=false, alwaysUse=false)",
             element4.toString()
         )

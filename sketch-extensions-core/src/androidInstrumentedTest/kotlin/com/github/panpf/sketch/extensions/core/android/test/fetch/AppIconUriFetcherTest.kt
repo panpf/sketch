@@ -28,9 +28,12 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class AppIconUriFetcherTest {
@@ -39,7 +42,7 @@ class AppIconUriFetcherTest {
     fun testSupportAppIcon() {
         ComponentRegistry.Builder().apply {
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
@@ -52,7 +55,7 @@ class AppIconUriFetcherTest {
 
             supportAppIcon()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[AppIconUriFetcher]," +
                             "decoderFactoryList=[]," +
@@ -65,7 +68,7 @@ class AppIconUriFetcherTest {
 
             supportAppIcon()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[AppIconUriFetcher,AppIconUriFetcher]," +
                             "decoderFactoryList=[]," +
@@ -80,11 +83,11 @@ class AppIconUriFetcherTest {
 
     @Test
     fun testNewAppIconUri() {
-        Assert.assertEquals(
+        assertEquals(
             "app.icon://packageName/12412",
             newAppIconUri("packageName", 12412)
         )
-        Assert.assertEquals(
+        assertEquals(
             "app.icon://packageName1/12413",
             newAppIconUri("packageName1", 12413)
         )
@@ -100,23 +103,23 @@ class AppIconUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AppIconUriFetcher.Factory()
 
-        Assert.assertEquals("AppIconUriFetcher", fetcherFactory.toString())
+        assertEquals("AppIconUriFetcher", fetcherFactory.toString())
 
         fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
             .apply {
-                Assert.assertEquals("packageName1", packageName)
-                Assert.assertEquals(12412, versionCode)
+                assertEquals("packageName1", packageName)
+                assertEquals(12412, versionCode)
             }
         fetcherFactory.create(
             sketch,
             ImageRequest(context, "app.icon://packageName1/12412/87467")
         )!!
             .apply {
-                Assert.assertEquals("packageName1", packageName)
-                Assert.assertEquals(12412, versionCode)
+                assertEquals("packageName1", packageName)
+                assertEquals(12412, versionCode)
             }
 
-        Assert.assertNull(
+        assertNull(
             fetcherFactory.create(
                 sketch,
                 ImageRequest(context, "content://sample_app/sample")
@@ -148,16 +151,16 @@ class AppIconUriFetcherTest {
         val element1 = AppIconUriFetcher.Factory()
         val element11 = AppIconUriFetcher.Factory()
 
-        Assert.assertNotSame(element1, element11)
+        assertNotSame(element1, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
 
-        Assert.assertNotEquals(element1, Any())
-        Assert.assertNotEquals(element1, null)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -173,9 +176,9 @@ class AppIconUriFetcherTest {
 
         val fetcher = fetcherFactory.create(sketch, ImageRequest(context, appIconUri))!!
         (runBlocking { fetcher.fetch() }.getOrThrow().dataSource as DrawableDataSource).apply {
-            Assert.assertEquals(DataFrom.LOCAL, dataFrom)
+            assertEquals(DataFrom.LOCAL, dataFrom)
 
-            Assert.assertEquals(
+            assertEquals(
                 "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)",
                 drawableFetcher.toString()
             )

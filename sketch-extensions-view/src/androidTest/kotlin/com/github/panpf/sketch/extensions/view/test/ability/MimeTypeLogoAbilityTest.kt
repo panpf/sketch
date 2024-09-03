@@ -25,9 +25,10 @@ import com.github.panpf.sketch.ability.isShowMimeTypeLogo
 import com.github.panpf.sketch.ability.removeMimeTypeLogo
 import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.ability.showMimeTypeLogoWithRes
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class MimeTypeLogoAbilityTest {
@@ -37,16 +38,16 @@ class MimeTypeLogoAbilityTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isShowMimeTypeLogo)
+        assertFalse(imageView.isShowMimeTypeLogo)
 
         imageView.showMimeTypeLogoWithDrawable(mapOf("image/jpeg" to ColorDrawable(Color.BLUE)))
-        Assert.assertTrue(imageView.isShowMimeTypeLogo)
+        assertTrue(imageView.isShowMimeTypeLogo)
 
         imageView.removeMimeTypeLogo()
-        Assert.assertFalse(imageView.isShowMimeTypeLogo)
+        assertFalse(imageView.isShowMimeTypeLogo)
 
         imageView.showMimeTypeLogoWithRes(mapOf("image/jpeg" to android.R.drawable.btn_dialog))
-        Assert.assertTrue(imageView.isShowMimeTypeLogo)
+        assertTrue(imageView.isShowMimeTypeLogo)
     }
 
     // TODO test

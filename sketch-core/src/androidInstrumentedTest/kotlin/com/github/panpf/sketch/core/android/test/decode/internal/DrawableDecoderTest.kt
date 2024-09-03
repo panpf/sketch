@@ -36,11 +36,15 @@ import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class DrawableDecoderTest {
@@ -50,7 +54,7 @@ class DrawableDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = DrawableDecoder.Factory()
 
-        Assert.assertEquals("DrawableDecoder", factory.toString())
+        assertEquals("DrawableDecoder", factory.toString())
 
         // normal
         ImageRequest(
@@ -61,7 +65,7 @@ class DrawableDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         // data error
@@ -70,7 +74,7 @@ class DrawableDecoderTest {
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
     }
 
@@ -81,15 +85,15 @@ class DrawableDecoderTest {
         val element1 = DrawableDecoder.Factory()
         val element11 = DrawableDecoder.Factory()
 
-        Assert.assertNotSame(element1, element11)
+        assertNotSame(element1, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -107,16 +111,16 @@ class DrawableDecoderTest {
 //                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
 //            }.getOrThrow()
 //        }.apply {
-//            Assert.assertEquals(
+//            assertEquals(
 //                "Bitmap(${imageWidth}x${imageHeight},ARGB_8888)",
 //                bitmap.toShortInfoString()
 //            )
-//            Assert.assertEquals(
+//            assertEquals(
 //                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
 //                imageInfo.toShortString()
 //            )
-//            Assert.assertEquals(LOCAL, dataFrom)
-//            Assert.assertNull(transformeds)
+//            assertEquals(LOCAL, dataFrom)
+//            assertNull(transformeds)
 //        }
 //
 //        ImageRequest(context, newResourceUri(R.drawable.test)) {
@@ -128,16 +132,16 @@ class DrawableDecoderTest {
 //                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
 //            }.getOrThrow()
 //        }.apply {
-//            Assert.assertEquals(
+//            assertEquals(
 //                "Bitmap(${imageWidth}x${imageHeight},RGB_565)",
 //                bitmap.toShortInfoString()
 //            )
-//            Assert.assertEquals(
+//            assertEquals(
 //                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
 //                imageInfo.toShortString()
 //            )
-//            Assert.assertEquals(LOCAL, dataFrom)
-//            Assert.assertNull(transformeds)
+//            assertEquals(LOCAL, dataFrom)
+//            assertNull(transformeds)
 //        }
 
         ImageRequest(
@@ -156,16 +160,16 @@ class DrawableDecoderTest {
                 (imageWidth / 2) / imageWidth.toFloat(),
                 (imageWidth / 2) / imageHeight.toFloat()
             )
-            Assert.assertEquals(
+            assertEquals(
                 "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
-            Assert.assertEquals(listOf(createScaledTransformed(scale)), transformeds)
-            Assert.assertEquals(
+            assertEquals(listOf(createScaledTransformed(scale)), transformeds)
+            assertEquals(
                 "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(LOCAL, dataFrom)
+            assertEquals(LOCAL, dataFrom)
         }
 
         ImageRequest(
@@ -184,16 +188,16 @@ class DrawableDecoderTest {
                 (imageWidth * 2) / imageWidth.toFloat(),
                 (imageWidth * 2) / imageHeight.toFloat()
             )
-            Assert.assertEquals(
+            assertEquals(
                 "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
-            Assert.assertEquals(listOf(createScaledTransformed(2.0f)), transformeds)
-            Assert.assertEquals(
+            assertEquals(listOf(createScaledTransformed(2.0f)), transformeds)
+            assertEquals(
                 "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(LOCAL, dataFrom)
+            assertEquals(LOCAL, dataFrom)
         }
 
         ImageRequest(context, newResourceUri(8801)).run {

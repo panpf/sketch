@@ -28,9 +28,12 @@ import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class DrawableStateImageTest {
@@ -51,7 +54,7 @@ class DrawableStateImageTest {
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
         DrawableStateImage(ColorDrawableEqualizer(Color.BLUE)).apply {
-            Assert.assertEquals(
+            assertEquals(
                 Color.BLUE,
                 getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
@@ -59,7 +62,7 @@ class DrawableStateImageTest {
         }
 
         DrawableStateImage(ColorDrawableEqualizer(Color.GREEN)).apply {
-            Assert.assertEquals(
+            assertEquals(
                 Color.GREEN,
                 getImage(sketch, request, null)
                     ?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
@@ -67,8 +70,10 @@ class DrawableStateImageTest {
         }
 
         DrawableStateImage(android.R.drawable.btn_radio).apply {
-            Assert.assertTrue(getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable is StateListDrawable)
+            assertTrue(
+                getImage(sketch, request, null)
+                    ?.asOrThrow<AndroidDrawableImage>()?.drawable is StateListDrawable
+            )
         }
     }
 
@@ -83,17 +88,17 @@ class DrawableStateImageTest {
         val stateImage3 = DrawableStateImage(android.R.drawable.btn_plus)
         val stateImage31 = DrawableStateImage(android.R.drawable.btn_plus)
 
-        Assert.assertNotSame(stateImage1, stateImage11)
-        Assert.assertNotSame(stateImage2, stateImage21)
-        Assert.assertNotSame(stateImage3, stateImage31)
+        assertNotSame(stateImage1, stateImage11)
+        assertNotSame(stateImage2, stateImage21)
+        assertNotSame(stateImage3, stateImage31)
 
-        Assert.assertEquals(stateImage1, stateImage11)
-        Assert.assertEquals(stateImage2, stateImage21)
-        Assert.assertEquals(stateImage3, stateImage31)
+        assertEquals(stateImage1, stateImage11)
+        assertEquals(stateImage2, stateImage21)
+        assertEquals(stateImage3, stateImage31)
 
-        Assert.assertNotEquals(stateImage1, stateImage2)
-        Assert.assertNotEquals(stateImage1, stateImage3)
-        Assert.assertNotEquals(stateImage2, stateImage3)
+        assertNotEquals(stateImage1, stateImage2)
+        assertNotEquals(stateImage1, stateImage3)
+        assertNotEquals(stateImage2, stateImage3)
     }
 
     @Test
@@ -107,25 +112,25 @@ class DrawableStateImageTest {
         val stateImage3 = DrawableStateImage(android.R.drawable.btn_plus)
         val stateImage31 = DrawableStateImage(android.R.drawable.btn_plus)
 
-        Assert.assertEquals(stateImage1.hashCode(), stateImage11.hashCode())
-        Assert.assertEquals(stateImage2.hashCode(), stateImage21.hashCode())
-        Assert.assertEquals(stateImage3.hashCode(), stateImage31.hashCode())
+        assertEquals(stateImage1.hashCode(), stateImage11.hashCode())
+        assertEquals(stateImage2.hashCode(), stateImage21.hashCode())
+        assertEquals(stateImage3.hashCode(), stateImage31.hashCode())
 
-        Assert.assertNotEquals(stateImage1.hashCode(), stateImage2.hashCode())
-        Assert.assertNotEquals(stateImage1.hashCode(), stateImage3.hashCode())
-        Assert.assertNotEquals(stateImage2.hashCode(), stateImage3.hashCode())
+        assertNotEquals(stateImage1.hashCode(), stateImage2.hashCode())
+        assertNotEquals(stateImage1.hashCode(), stateImage3.hashCode())
+        assertNotEquals(stateImage2.hashCode(), stateImage3.hashCode())
     }
 
     @Test
     fun testToString() {
         DrawableStateImage(android.R.drawable.btn_radio).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "DrawableStateImage(ResDrawable(${android.R.drawable.btn_radio}))",
                 toString()
             )
         }
         DrawableStateImage(android.R.drawable.btn_dialog).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "DrawableStateImage(ResDrawable(${android.R.drawable.btn_dialog}))",
                 toString()
             )

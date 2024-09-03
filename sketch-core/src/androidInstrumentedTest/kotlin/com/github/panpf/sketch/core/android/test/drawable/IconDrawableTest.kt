@@ -40,10 +40,14 @@ import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.calculateFitBounds
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.tools4a.dimen.ktx.dp2px
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.math.roundToInt
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class IconDrawableTest {
@@ -55,9 +59,9 @@ class IconDrawableTest {
         IconDrawable(
             icon = context.getDrawableCompat(android.R.drawable.ic_delete)
         ).apply {
-            Assert.assertTrue(icon is BitmapDrawable)
-            Assert.assertNull(iconSize)
-            Assert.assertNull(background)
+            assertTrue(icon is BitmapDrawable)
+            assertNull(iconSize)
+            assertNull(background)
         }
 
         IconDrawable(
@@ -65,9 +69,9 @@ class IconDrawableTest {
             background = ColorDrawable(Color.GREEN),
             iconSize = Size(69, 44),
         ).apply {
-            Assert.assertTrue(icon is BitmapDrawable)
-            Assert.assertEquals(Size(69, 44), iconSize)
-            Assert.assertEquals(Color.GREEN, background!!.asOrThrow<ColorDrawable>().color)
+            assertTrue(icon is BitmapDrawable)
+            assertEquals(Size(69, 44), iconSize)
+            assertEquals(Color.GREEN, background!!.asOrThrow<ColorDrawable>().color)
         }
     }
 
@@ -84,7 +88,7 @@ class IconDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -98,7 +102,7 @@ class IconDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -112,7 +116,7 @@ class IconDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -154,24 +158,24 @@ class IconDrawableTest {
             icon = context.getDrawableCompat(android.R.drawable.ic_delete)
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertNull(colorFilter)
+                assertNull(colorFilter)
             }
             mutate()
 
             colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
             }
 
             colorFilter = null
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertNull(colorFilter)
+                assertNull(colorFilter)
             }
 
             @Suppress("DEPRECATION")
             setColorFilter(Color.RED, DST_IN)
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
             }
         }
 
@@ -180,24 +184,24 @@ class IconDrawableTest {
             background = context.getDrawableCompat(android.R.drawable.ic_input_add)
         ).apply {
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertNull(colorFilter)
+                assertNull(colorFilter)
             }
             mutate()
 
             colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
             }
 
             colorFilter = null
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertNull(colorFilter)
+                assertNull(colorFilter)
             }
 
             @Suppress("DEPRECATION")
             setColorFilter(Color.RED, DST_IN)
             if (Build.VERSION.SDK_INT >= 21) {
-                Assert.assertTrue(colorFilter is PorterDuffColorFilter)
+                assertTrue(colorFilter is PorterDuffColorFilter)
             }
         }
     }
@@ -230,7 +234,7 @@ class IconDrawableTest {
             icon = context.getDrawableCompat(android.R.drawable.ic_delete)
         ).apply {
             @Suppress("DEPRECATION")
-            Assert.assertEquals(PixelFormat.TRANSLUCENT, opacity)
+            assertEquals(PixelFormat.TRANSLUCENT, opacity)
         }
     }
 
@@ -261,17 +265,18 @@ class IconDrawableTest {
         val icon =
             context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_circle)
         val iconIntrinsicSize = Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        Assert.assertEquals(/* expected = */ Size(50.dp2px, 50.dp2px),/* actual = */
+        assertEquals(
+            Size(50.dp2px, 50.dp2px),
             iconIntrinsicSize
         )
-        Assert.assertEquals(Rect(0, 0, 0, 0), icon.bounds)
+        assertEquals(Rect(0, 0, 0, 0), icon.bounds)
 
         val bgDrawable = ColorDrawable(Color.RED)
-        Assert.assertEquals(Rect(0, 0, 0, 0), bgDrawable.bounds)
+        assertEquals(Rect(0, 0, 0, 0), bgDrawable.bounds)
 
         val iconDrawable = IconDrawable(icon = icon, background = bgDrawable)
-        Assert.assertNull(iconDrawable.iconSize)
-        Assert.assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
+        assertNull(iconDrawable.iconSize)
+        assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
 
         val iconBoundsList = mutableListOf<Rect>()
         val boundsList = listOf(
@@ -304,15 +309,15 @@ class IconDrawableTest {
             iconDrawable.bounds = bounds
 
             val iconBounds = calculateFitBounds(iconIntrinsicSize, bounds)
-            Assert.assertNotEquals("bounds=$bounds", Rect(0, 0, 0, 0), icon.bounds)
-            Assert.assertEquals("bounds=$bounds", iconBounds, icon.bounds)
-            Assert.assertEquals("bounds=$bounds", bounds, bgDrawable.bounds)
+            assertNotEquals(Rect(0, 0, 0, 0), icon.bounds, "bounds=$bounds")
+            assertEquals(iconBounds, icon.bounds, "bounds=$bounds")
+            assertEquals(bounds, bgDrawable.bounds, "bounds=$bounds")
 
             iconBoundsList.add(Rect(icon.bounds))
         }
 
-        Assert.assertEquals(4, iconBoundsList.size)
-        Assert.assertEquals(4, iconBoundsList.distinct().size)
+        assertEquals(4, iconBoundsList.size)
+        assertEquals(4, iconBoundsList.distinct().size)
     }
 
     @Test
@@ -322,23 +327,24 @@ class IconDrawableTest {
         val icon =
             context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_circle)
         val iconIntrinsicSize = Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        Assert.assertEquals(/* expected = */ Size(50.dp2px, 50.dp2px),/* actual = */
+        assertEquals(
+            Size(50.dp2px, 50.dp2px),
             iconIntrinsicSize
         )
-        Assert.assertEquals(Rect(0, 0, 0, 0), icon.bounds)
+        assertEquals(Rect(0, 0, 0, 0), icon.bounds)
 
         val bgDrawable = ColorDrawable(Color.RED)
-        Assert.assertEquals(Rect(0, 0, 0, 0), bgDrawable.bounds)
+        assertEquals(Rect(0, 0, 0, 0), bgDrawable.bounds)
 
         val iconSize = Size(
             (icon.intrinsicWidth * 1.3f).roundToInt(),
             (icon.intrinsicHeight * 1.3f).roundToInt()
         )
-        Assert.assertNotEquals(iconSize, iconIntrinsicSize)
+        assertNotEquals(iconSize, iconIntrinsicSize)
 
         val iconDrawable = IconDrawable(icon = icon, background = bgDrawable, iconSize = iconSize)
-        Assert.assertEquals(iconSize, iconDrawable.iconSize)
-        Assert.assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
+        assertEquals(iconSize, iconDrawable.iconSize)
+        assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
 
         val iconBoundsList = mutableListOf<Rect>()
         val boundsList = listOf(
@@ -371,15 +377,15 @@ class IconDrawableTest {
             iconDrawable.bounds = bounds
 
             val iconBounds = calculateFitBounds(iconSize, bounds)
-            Assert.assertNotEquals("bounds=$bounds", Rect(0, 0, 0, 0), icon.bounds)
-            Assert.assertEquals("bounds=$bounds", iconBounds, icon.bounds)
-            Assert.assertEquals("bounds=$bounds", bounds, bgDrawable.bounds)
+            assertNotEquals(Rect(0, 0, 0, 0), icon.bounds, "bounds=$bounds")
+            assertEquals(iconBounds, icon.bounds, "bounds=$bounds")
+            assertEquals(bounds, bgDrawable.bounds, "bounds=$bounds")
 
             iconBoundsList.add(Rect(icon.bounds))
         }
 
-        Assert.assertEquals(4, iconBoundsList.size)
-        Assert.assertEquals(4, iconBoundsList.distinct().size)
+        assertEquals(4, iconBoundsList.size)
+        assertEquals(4, iconBoundsList.distinct().size)
     }
 
     @Test
@@ -388,13 +394,13 @@ class IconDrawableTest {
 
         IconDrawable(icon = context.getDrawableCompat(android.R.drawable.ic_delete)).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Assert.assertEquals(255, alpha)
+                assertEquals(255, alpha)
             }
 
             mutate()
             alpha = 144
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Assert.assertEquals(144, alpha)
+                assertEquals(144, alpha)
             }
         }
     }
@@ -407,65 +413,65 @@ class IconDrawableTest {
         val iconDrawable = context.getDrawableCompat(android.R.drawable.ic_delete)
         val bgDrawable = ColorDrawable(Color.RED)
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
-            Assert.assertEquals(
+            assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { iconDrawable.getHotspotBounds(this) })
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { bgDrawable.getHotspotBounds(this) })
 
             setHotspot(10f, 15f)
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { getHotspotBounds(this) }
             )
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { iconDrawable.getHotspotBounds(this) }
             )
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { bgDrawable.getHotspotBounds(this) }
             )
 
             setHotspotBounds(0, 0, 10, 15)
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { getHotspotBounds(this) }
             )
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { iconDrawable.getHotspotBounds(this) }
             )
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { bgDrawable.getHotspotBounds(this) }
             )
         }
 
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
-            Assert.assertEquals(
+            assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { iconDrawable.getHotspotBounds(this) })
 
             setHotspot(10f, 15f)
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { getHotspotBounds(this) }
             )
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { iconDrawable.getHotspotBounds(this) }
             )
 
             setHotspotBounds(0, 0, 10, 15)
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { getHotspotBounds(this) }
             )
-            Assert.assertEquals(
+            assertEquals(
                 Rect(0, 0, 0, 0),
                 Rect().apply { iconDrawable.getHotspotBounds(this) }
             )
@@ -481,40 +487,40 @@ class IconDrawableTest {
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background)
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
             isAutoMirrored = false
-            Assert.assertFalse(isAutoMirrored)
-            Assert.assertFalse(iconDrawable.isAutoMirrored)
-            Assert.assertFalse(bgDrawable.isAutoMirrored)
+            assertFalse(isAutoMirrored)
+            assertFalse(iconDrawable.isAutoMirrored)
+            assertFalse(bgDrawable.isAutoMirrored)
 
             isAutoMirrored = true
-            Assert.assertTrue(isAutoMirrored)
-            Assert.assertTrue(iconDrawable.isAutoMirrored)
-            Assert.assertTrue(bgDrawable.isAutoMirrored)
+            assertTrue(isAutoMirrored)
+            assertTrue(iconDrawable.isAutoMirrored)
+            assertTrue(bgDrawable.isAutoMirrored)
 
             iconDrawable.isAutoMirrored = false
             bgDrawable.isAutoMirrored = true
-            Assert.assertTrue(isAutoMirrored)
-            Assert.assertFalse(iconDrawable.isAutoMirrored)
-            Assert.assertTrue(bgDrawable.isAutoMirrored)
+            assertTrue(isAutoMirrored)
+            assertFalse(iconDrawable.isAutoMirrored)
+            assertTrue(bgDrawable.isAutoMirrored)
 
             iconDrawable.isAutoMirrored = true
             bgDrawable.isAutoMirrored = false
-            Assert.assertTrue(isAutoMirrored)
-            Assert.assertTrue(iconDrawable.isAutoMirrored)
-            Assert.assertFalse(bgDrawable.isAutoMirrored)
+            assertTrue(isAutoMirrored)
+            assertTrue(iconDrawable.isAutoMirrored)
+            assertFalse(bgDrawable.isAutoMirrored)
         }
 
         iconDrawable.isAutoMirrored = false
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertFalse(isAutoMirrored)
-            Assert.assertFalse(iconDrawable.isAutoMirrored)
+            assertFalse(isAutoMirrored)
+            assertFalse(iconDrawable.isAutoMirrored)
 
             isAutoMirrored = true
-            Assert.assertTrue(isAutoMirrored)
-            Assert.assertTrue(iconDrawable.isAutoMirrored)
+            assertTrue(isAutoMirrored)
+            assertTrue(iconDrawable.isAutoMirrored)
 
             iconDrawable.isAutoMirrored = false
-            Assert.assertFalse(isAutoMirrored)
-            Assert.assertFalse(iconDrawable.isAutoMirrored)
+            assertFalse(isAutoMirrored)
+            assertFalse(iconDrawable.isAutoMirrored)
         }
     }
 
@@ -523,24 +529,24 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background).apply {
-            Assert.assertFalse(Rect().apply { getPadding(this) }
+            assertFalse(Rect().apply { getPadding(this) }
                 .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
         }
         val bgDrawable =
             context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                Assert.assertFalse(Rect().apply { getPadding(this) }
+                assertFalse(Rect().apply { getPadding(this) }
                     .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
             }
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertEquals(
+            assertEquals(
                 Rect().apply { bgDrawable.getPadding(this) },
                 Rect().apply { getPadding(this) }
             )
         }
 
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertTrue(Rect().apply { getPadding(this) }
+            assertTrue(Rect().apply { getPadding(this) }
                 .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
         }
     }
@@ -550,19 +556,19 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background).apply {
-            Assert.assertNull(transparentRegion)
+            assertNull(transparentRegion)
         }
         val bgDrawable =
             context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                Assert.assertNull(transparentRegion)
+                assertNull(transparentRegion)
             }
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertNull(transparentRegion)
+            assertNull(transparentRegion)
         }
 
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertNull(transparentRegion)
+            assertNull(transparentRegion)
         }
     }
 
@@ -573,37 +579,37 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background).apply {
-            Assert.assertFalse(isFilterBitmap)
+            assertFalse(isFilterBitmap)
             isFilterBitmap = true
-            Assert.assertFalse(isFilterBitmap)
+            assertFalse(isFilterBitmap)
             isFilterBitmap = false
         }
         val bgDrawable =
             context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                Assert.assertFalse(isFilterBitmap)
+                assertFalse(isFilterBitmap)
                 isFilterBitmap = true
-                Assert.assertTrue(isFilterBitmap)
+                assertTrue(isFilterBitmap)
                 isFilterBitmap = false
             }
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertFalse(isFilterBitmap)
+            assertFalse(isFilterBitmap)
 
             isFilterBitmap = true
-            Assert.assertTrue(isFilterBitmap)
-            Assert.assertFalse(iconDrawable.isFilterBitmap)
-            Assert.assertTrue(bgDrawable.isFilterBitmap)
+            assertTrue(isFilterBitmap)
+            assertFalse(iconDrawable.isFilterBitmap)
+            assertTrue(bgDrawable.isFilterBitmap)
         }
 
         iconDrawable.isFilterBitmap = false
         bgDrawable.isFilterBitmap = false
         IconDrawable(icon = bgDrawable).apply {
-            Assert.assertFalse(isFilterBitmap)
+            assertFalse(isFilterBitmap)
 
             isFilterBitmap = true
-            Assert.assertTrue(isFilterBitmap)
-            Assert.assertFalse(iconDrawable.isFilterBitmap)
-            Assert.assertTrue(bgDrawable.isFilterBitmap)
+            assertTrue(isFilterBitmap)
+            assertFalse(iconDrawable.isFilterBitmap)
+            assertTrue(bgDrawable.isFilterBitmap)
         }
     }
 
@@ -618,28 +624,28 @@ class IconDrawableTest {
 
         iconDrawable.apply {
             changingConfigurations = 1
-            Assert.assertEquals(iconChangingConfigurations + 1, changingConfigurations)
+            assertEquals(iconChangingConfigurations + 1, changingConfigurations)
         }
         bgDrawable.apply {
             changingConfigurations = 2
-            Assert.assertEquals(bgChangingConfigurations + 2, changingConfigurations)
+            assertEquals(bgChangingConfigurations + 2, changingConfigurations)
         }
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
             changingConfigurations = 0
-            Assert.assertEquals(iconChangingConfigurations, changingConfigurations)
-            Assert.assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
-            Assert.assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
+            assertEquals(iconChangingConfigurations, changingConfigurations)
+            assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
+            assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
         }
 
         iconDrawable.changingConfigurations = 1
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertEquals(iconChangingConfigurations + 1, changingConfigurations)
+            assertEquals(iconChangingConfigurations + 1, changingConfigurations)
 
             changingConfigurations = 0
-            Assert.assertEquals(iconChangingConfigurations, changingConfigurations)
-            Assert.assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
-            Assert.assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
+            assertEquals(iconChangingConfigurations, changingConfigurations)
+            assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
+            assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
         }
     }
 
@@ -651,25 +657,25 @@ class IconDrawableTest {
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertEquals(intArrayOf().toList(), state.toList())
+            assertEquals(intArrayOf().toList(), state.toList())
 
             state = intArrayOf(1)
-            Assert.assertEquals(intArrayOf(1).toList(), state.toList())
-            Assert.assertEquals(intArrayOf(1).toList(), iconDrawable.state.toList())
-            Assert.assertEquals(intArrayOf(1).toList(), bgDrawable.state.toList())
+            assertEquals(intArrayOf(1).toList(), state.toList())
+            assertEquals(intArrayOf(1).toList(), iconDrawable.state.toList())
+            assertEquals(intArrayOf(1).toList(), bgDrawable.state.toList())
 
             bgDrawable.state = intArrayOf(2)
-            Assert.assertEquals(intArrayOf(2).toList(), bgDrawable.state.toList())
+            assertEquals(intArrayOf(2).toList(), bgDrawable.state.toList())
             state = intArrayOf(1)
         }
 
         iconDrawable.state = intArrayOf()
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertEquals(intArrayOf().toList(), state.toList())
+            assertEquals(intArrayOf().toList(), state.toList())
 
             state = intArrayOf(1)
-            Assert.assertEquals(intArrayOf(1).toList(), state.toList())
-            Assert.assertEquals(intArrayOf(1).toList(), iconDrawable.state.toList())
+            assertEquals(intArrayOf(1).toList(), state.toList())
+            assertEquals(intArrayOf(1).toList(), iconDrawable.state.toList())
         }
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
@@ -687,43 +693,43 @@ class IconDrawableTest {
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
 
-        Assert.assertTrue(iconDrawable.isVisible)
-        Assert.assertTrue(bgDrawable.isVisible)
+        assertTrue(iconDrawable.isVisible)
+        assertTrue(bgDrawable.isVisible)
 
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertTrue(iconDrawable.isVisible)
-            Assert.assertTrue(bgDrawable.isVisible)
-            Assert.assertTrue(isVisible)
+            assertTrue(iconDrawable.isVisible)
+            assertTrue(bgDrawable.isVisible)
+            assertTrue(isVisible)
 
             iconDrawable.setVisible(false, false)
-            Assert.assertFalse(iconDrawable.isVisible)
-            Assert.assertTrue(bgDrawable.isVisible)
-            Assert.assertTrue(isVisible)
+            assertFalse(iconDrawable.isVisible)
+            assertTrue(bgDrawable.isVisible)
+            assertTrue(isVisible)
 
             bgDrawable.setVisible(false, false)
-            Assert.assertFalse(iconDrawable.isVisible)
-            Assert.assertFalse(bgDrawable.isVisible)
-            Assert.assertTrue(isVisible)
+            assertFalse(iconDrawable.isVisible)
+            assertFalse(bgDrawable.isVisible)
+            assertTrue(isVisible)
 
             iconDrawable.setVisible(true, false)
-            Assert.assertTrue(iconDrawable.isVisible)
-            Assert.assertFalse(bgDrawable.isVisible)
-            Assert.assertTrue(isVisible)
+            assertTrue(iconDrawable.isVisible)
+            assertFalse(bgDrawable.isVisible)
+            assertTrue(isVisible)
 
             iconDrawable.setVisible(false, false)
-            Assert.assertFalse(iconDrawable.isVisible)
-            Assert.assertFalse(bgDrawable.isVisible)
-            Assert.assertTrue(isVisible)
+            assertFalse(iconDrawable.isVisible)
+            assertFalse(bgDrawable.isVisible)
+            assertTrue(isVisible)
 
             setVisible(visible = true, restart = true)
-            Assert.assertTrue(iconDrawable.isVisible)
-            Assert.assertTrue(bgDrawable.isVisible)
-            Assert.assertTrue(isVisible)
+            assertTrue(iconDrawable.isVisible)
+            assertTrue(bgDrawable.isVisible)
+            assertTrue(isVisible)
 
             setVisible(visible = false, restart = false)
-            Assert.assertFalse(iconDrawable.isVisible)
-            Assert.assertFalse(bgDrawable.isVisible)
-            Assert.assertFalse(isVisible)
+            assertFalse(iconDrawable.isVisible)
+            assertFalse(bgDrawable.isVisible)
+            assertFalse(isVisible)
         }
     }
 
@@ -734,14 +740,14 @@ class IconDrawableTest {
         val iconDrawable = context.getDrawableCompat(android.R.drawable.spinner_background)
         val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
         IconDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            Assert.assertTrue(isStateful)
-            Assert.assertTrue(iconDrawable.isStateful)
-            Assert.assertFalse(bgDrawable.isStateful)
+            assertTrue(isStateful)
+            assertTrue(iconDrawable.isStateful)
+            assertFalse(bgDrawable.isStateful)
         }
 
         IconDrawable(icon = iconDrawable).apply {
-            Assert.assertTrue(isStateful)
-            Assert.assertTrue(iconDrawable.isStateful)
+            assertTrue(isStateful)
+            assertTrue(iconDrawable.isStateful)
         }
     }
 }

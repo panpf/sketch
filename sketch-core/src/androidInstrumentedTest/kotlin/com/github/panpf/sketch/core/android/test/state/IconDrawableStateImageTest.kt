@@ -36,9 +36,13 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class IconDrawableStateImageTest {
@@ -328,9 +332,9 @@ class IconDrawableStateImageTest {
             .getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable.wrapped, icon)
-                Assert.assertEquals(greenBgDrawable.wrapped, background)
-                Assert.assertNull(iconSize)
+                assertEquals(iconDrawable.wrapped, icon)
+                assertEquals(greenBgDrawable.wrapped, background)
+                assertNull(iconSize)
             }
 
         IconDrawableStateImage(
@@ -340,9 +344,9 @@ class IconDrawableStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable.wrapped, icon)
-                Assert.assertTrue(background is BitmapDrawable)
-                Assert.assertEquals(Size(40, 40), iconSize)
+                assertEquals(iconDrawable.wrapped, icon)
+                assertTrue(background is BitmapDrawable)
+                assertEquals(Size(40, 40), iconSize)
             }
 
         IconDrawableStateImage(
@@ -351,18 +355,18 @@ class IconDrawableStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable.wrapped, icon)
-                Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
-                Assert.assertNull(iconSize)
+                assertEquals(iconDrawable.wrapped, icon)
+                assertEquals(Color.BLUE, (background as ColorDrawable).color)
+                assertNull(iconSize)
             }
 
         IconDrawableStateImage(icon = iconDrawable)
             .getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertEquals(iconDrawable.wrapped, icon)
-                Assert.assertNull(background)
-                Assert.assertNull(iconSize)
+                assertEquals(iconDrawable.wrapped, icon)
+                assertNull(background)
+                assertNull(iconSize)
             }
 
 
@@ -372,9 +376,9 @@ class IconDrawableStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertTrue(icon is BitmapDrawable)
-                Assert.assertEquals(greenBgDrawable.wrapped, background)
-                Assert.assertNull(iconSize)
+                assertTrue(icon is BitmapDrawable)
+                assertEquals(greenBgDrawable.wrapped, background)
+                assertNull(iconSize)
             }
 
         IconDrawableStateImage(
@@ -384,9 +388,9 @@ class IconDrawableStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<AndroidDrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertTrue(icon is BitmapDrawable)
-                Assert.assertTrue(background is BitmapDrawable)
-                Assert.assertEquals(Size(30, 30), iconSize)
+                assertTrue(icon is BitmapDrawable)
+                assertTrue(background is BitmapDrawable)
+                assertEquals(Size(30, 30), iconSize)
             }
 
         IconDrawableStateImage(
@@ -397,9 +401,9 @@ class IconDrawableStateImageTest {
             request,
             null
         )?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
-            Assert.assertTrue(icon is BitmapDrawable)
-            Assert.assertEquals(Color.BLUE, (background as ColorDrawable).color)
-            Assert.assertNull(iconSize)
+            assertTrue(icon is BitmapDrawable)
+            assertEquals(Color.BLUE, (background as ColorDrawable).color)
+            assertNull(iconSize)
         }
 
         IconDrawableStateImage(icon = android.R.drawable.ic_delete)
@@ -408,9 +412,9 @@ class IconDrawableStateImageTest {
                 request,
                 null
             )?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
-                Assert.assertTrue(icon is BitmapDrawable)
-                Assert.assertNull(background)
-                Assert.assertNull(iconSize)
+                assertTrue(icon is BitmapDrawable)
+                assertNull(background)
+                assertNull(iconSize)
             }
     }
 
@@ -434,42 +438,42 @@ class IconDrawableStateImageTest {
         )
         val element4 = IconDrawableStateImage(icon = android.R.drawable.btn_star)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element1, element4)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
-        Assert.assertNotSame(element2, element4)
-        Assert.assertNotSame(element3, element4)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element1, element4)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
+        assertNotSame(element2, element4)
+        assertNotSame(element3, element4)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element1, element4)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element2, element4)
-        Assert.assertNotEquals(element3, element4)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element4.hashCode())
-        Assert.assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test
     fun testToString() {
         IconDrawableStateImage(icon = android.R.drawable.ic_delete).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=null)",
                 toString()
             )
@@ -478,7 +482,7 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             background = android.R.drawable.bottom_bar
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
                 toString()
             )
@@ -487,7 +491,7 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             iconSize = SketchSize(50, 50)
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x50)",
                 toString()
             )
@@ -496,7 +500,7 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             iconSize = SketchSize(50, 30)
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=null, iconSize=50x30)",
                 toString()
             )
@@ -506,7 +510,7 @@ class IconDrawableStateImageTest {
             iconSize = Size(44, 67),
             background = android.R.drawable.btn_default,
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.btn_default}), iconSize=44x67)",
                 toString()
             )

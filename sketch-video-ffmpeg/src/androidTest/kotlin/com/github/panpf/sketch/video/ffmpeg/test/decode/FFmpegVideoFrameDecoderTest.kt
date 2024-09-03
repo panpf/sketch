@@ -41,9 +41,13 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.tools4a.device.Devicex
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class FFmpegVideoFrameDecoderTest {
@@ -52,7 +56,7 @@ class FFmpegVideoFrameDecoderTest {
     fun testSupportApkIcon() {
         ComponentRegistry.Builder().apply {
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
@@ -65,7 +69,7 @@ class FFmpegVideoFrameDecoderTest {
 
             supportFFmpegVideoFrame()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[FFmpegVideoFrameDecoder]," +
@@ -78,7 +82,7 @@ class FFmpegVideoFrameDecoderTest {
 
             supportFFmpegVideoFrame()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[FFmpegVideoFrameDecoder,FFmpegVideoFrameDecoder]," +
@@ -97,7 +101,7 @@ class FFmpegVideoFrameDecoderTest {
         val sketch = context.sketch
         val factory = FFmpegVideoFrameDecoder.Factory()
 
-        Assert.assertEquals("FFmpegVideoFrameDecoder", factory.toString())
+        assertEquals("FFmpegVideoFrameDecoder", factory.toString())
 
         val mp4Request = ImageRequest(context, ResourceImages.mp4.uri)
         val mp4RequestContext = runBlocking {
@@ -106,9 +110,9 @@ class FFmpegVideoFrameDecoderTest {
         val mp4FetchResult = runBlocking {
             sketch.components.newFetcherOrThrow(mp4Request).fetch().getOrThrow()
         }.apply {
-            Assert.assertEquals(
-                /* expected = */ "FetchResult(source=AssetDataSource('sample.mp4'),mimeType='video/mp4')",
-                /* actual = */ this@apply.toString()
+            assertEquals(
+                "FetchResult(source=AssetDataSource('sample.mp4'),mimeType='video/mp4')",
+                this@apply.toString()
             )
         }
 
@@ -119,25 +123,25 @@ class FFmpegVideoFrameDecoderTest {
         val pngFetchResult = runBlocking {
             sketch.components.newFetcherOrThrow(pngRequest).fetch().getOrThrow()
         }.apply {
-            Assert.assertEquals(
-                /* expected = */ "FetchResult(source=AssetDataSource('sample.png'),mimeType='image/png')",
-                /* actual = */ this@apply.toString()
+            assertEquals(
+                "FetchResult(source=AssetDataSource('sample.png'),mimeType='image/png')",
+                this@apply.toString()
             )
         }
 
         // normal
-        Assert.assertNotNull(factory.create(mp4RequestContext, mp4FetchResult))
+        assertNotNull(factory.create(mp4RequestContext, mp4FetchResult))
 
         // mimeType error
-        Assert.assertNull(
+        assertNull(
             factory.create(mp4RequestContext, mp4FetchResult.copy(mimeType = null))
         )
-        Assert.assertNull(
+        assertNull(
             factory.create(pngRequestContext, pngFetchResult)
         )
 
         // data error
-        Assert.assertNotNull(
+        assertNotNull(
             factory.create(
                 pngRequestContext,
                 pngFetchResult.copy(mimeType = "video/mp4")
@@ -150,16 +154,16 @@ class FFmpegVideoFrameDecoderTest {
         val element1 = FFmpegVideoFrameDecoder.Factory()
         val element11 = FFmpegVideoFrameDecoder.Factory()
 
-        Assert.assertNotSame(element1, element11)
+        assertNotSame(element1, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
 
-        Assert.assertNotEquals(element1, Any())
-        Assert.assertNotEquals(element1, null)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -181,16 +185,16 @@ class FFmpegVideoFrameDecoderTest {
                     .getOrThrow()
             }
         }.apply {
-            Assert.assertEquals(
+            assertEquals(
                 "Bitmap(500x250,ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
-            Assert.assertEquals(
+            assertEquals(
                 "ImageInfo(500x250,'video/mp4')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertNull(transformeds)
+            assertEquals(LOCAL, dataFrom)
+            assertNull(transformeds)
         }
 
         ImageRequest(context, ResourceImages.mp4.uri) {
@@ -202,16 +206,16 @@ class FFmpegVideoFrameDecoderTest {
                     .getOrThrow()
             }
         }.apply {
-            Assert.assertEquals(
+            assertEquals(
                 "Bitmap(250x125,ARGB_8888)",
                 image.getBitmapOrThrow().toShortInfoString()
             )
-            Assert.assertEquals(
+            assertEquals(
                 "ImageInfo(500x250,'video/mp4')",
                 imageInfo.toShortString()
             )
-            Assert.assertEquals(LOCAL, dataFrom)
-            Assert.assertEquals(listOf(createInSampledTransformed(2)), transformeds)
+            assertEquals(LOCAL, dataFrom)
+            assertEquals(listOf(createInSampledTransformed(2)), transformeds)
         }
 
         ImageRequest(context, ResourceImages.png.uri).run {
@@ -271,8 +275,8 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        Assert.assertEquals(bitmap1.corners(), bitmap11.corners())
-        Assert.assertNotEquals(bitmap1.corners(), bitmap2.corners())
+        assertEquals(bitmap1.corners(), bitmap11.corners())
+        assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     @Test
@@ -320,8 +324,8 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        Assert.assertEquals(bitmap1.corners(), bitmap11.corners())
-        Assert.assertNotEquals(bitmap1.corners(), bitmap2.corners())
+        assertEquals(bitmap1.corners(), bitmap11.corners())
+        assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     @Test
@@ -358,7 +362,7 @@ class FFmpegVideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.getOrThrow()
         }.image.getBitmapOrThrow()
-        Assert.assertNotEquals(bitmap1?.corners(), bitmap2.corners())
+        assertNotEquals(bitmap1?.corners(), bitmap2.corners())
     }
 
     private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"

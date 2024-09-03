@@ -10,9 +10,9 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.target.RemoteViewsTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getDrawableCompat
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class RemoteViewsTargetTest {
@@ -28,31 +28,31 @@ class RemoteViewsTargetTest {
         RemoteViewsTarget(remoteViews, id.icon) {
             callbackCount++
         }.apply {
-            Assert.assertEquals(0, callbackCount)
+            assertEquals(0, callbackCount)
 
             onStart(
                 requestContext,
                 context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
             )
-            Assert.assertEquals(1, callbackCount)
+            assertEquals(1, callbackCount)
 
             onStart(requestContext, null)
-            Assert.assertEquals(1, callbackCount)
+            assertEquals(1, callbackCount)
 
             onError(
                 requestContext,
                 context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
             )
-            Assert.assertEquals(2, callbackCount)
+            assertEquals(2, callbackCount)
 
             onError(requestContext, null)
-            Assert.assertEquals(2, callbackCount)
+            assertEquals(2, callbackCount)
 
             onSuccess(
                 requestContext,
                 context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
             )
-            Assert.assertEquals(3, callbackCount)
+            assertEquals(3, callbackCount)
         }
 
         callbackCount = 0
@@ -61,31 +61,31 @@ class RemoteViewsTargetTest {
         RemoteViewsTarget(remoteViews, id.icon) {
             callbackCount++
         }.apply {
-            Assert.assertEquals(0, callbackCount)
+            assertEquals(0, callbackCount)
 
             onStart(
                 requestContext2,
                 context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
             )
-            Assert.assertEquals(1, callbackCount)
+            assertEquals(1, callbackCount)
 
             onStart(requestContext2, null)
-            Assert.assertEquals(2, callbackCount)
+            assertEquals(2, callbackCount)
 
             onError(
                 requestContext2,
                 context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
             )
-            Assert.assertEquals(3, callbackCount)
+            assertEquals(3, callbackCount)
 
             onError(requestContext2, null)
-            Assert.assertEquals(4, callbackCount)
+            assertEquals(4, callbackCount)
 
             onSuccess(
                 requestContext2,
                 context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
             )
-            Assert.assertEquals(5, callbackCount)
+            assertEquals(5, callbackCount)
         }
     }
 }

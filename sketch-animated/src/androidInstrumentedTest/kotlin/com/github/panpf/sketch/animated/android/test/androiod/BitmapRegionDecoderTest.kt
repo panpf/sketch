@@ -16,10 +16,14 @@ import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.fail
 
 @RunWith(AndroidJUnit4::class)
 class BitmapRegionDecoderTest {
@@ -152,14 +156,14 @@ class BitmapRegionDecoderTest {
                             } catch (e: IllegalArgumentException) {
                                 throw Exception(message, e)
                             }.also { bitmap ->
-                                Assert.assertSame(message, options.inBitmap, bitmap)
-                                Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                                assertSame(options.inBitmap, bitmap, message)
+                                assertEquals(sampledBitmapSize, bitmap.size, message)
                             }
                         } else {
                             /* sampleSize not support */
                             try {
                                 val bitmap = decodeWithInBitmap(options)!!
-                                Assert.fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                                fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                             } catch (e: IllegalArgumentException) {
                                 if (e.message != "Problem decoding into existing bitmap") {
                                     throw Exception("exception type error. $message", e)
@@ -178,8 +182,8 @@ class BitmapRegionDecoderTest {
                         } catch (e: IllegalArgumentException) {
                             throw Exception(message, e)
                         }.also { bitmap ->
-                            Assert.assertSame(message, options.inBitmap, bitmap)
-                            Assert.assertEquals(message, regionRect.size(), bitmap.size)
+                            assertSame(options.inBitmap, bitmap, message)
+                            assertEquals(regionRect.size(), bitmap.size, message)
                         }
                     }
                 } else {
@@ -191,7 +195,7 @@ class BitmapRegionDecoderTest {
                     )
                     try {
                         val bitmap = decodeWithInBitmap(options)!!
-                        Assert.fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                        fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                     } catch (e: IllegalArgumentException) {
                         if (e.message != "Problem decoding into existing bitmap") {
                             throw Exception("exception type error. $message", e)
@@ -206,9 +210,9 @@ class BitmapRegionDecoderTest {
                     throw Exception(message, e)
                 }
                 if (sampleSize > 1 && VERSION.SDK_INT >= image.inSampleSizeMinAPI) {
-                    Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                    assertEquals(sampledBitmapSize, bitmap.size, message)
                 } else {
-                    Assert.assertEquals(message, regionRect.size(), bitmap.size)
+                    assertEquals(regionRect.size(), bitmap.size, message)
                 }
             }
         } else {
@@ -222,8 +226,8 @@ class BitmapRegionDecoderTest {
                         decodeWithInBitmap(options)
                     }
 
-                    17 -> Assert.assertNotNull(decodeWithInBitmap(options))
-                    else -> Assert.assertNull(decodeWithInBitmap(options))
+                    17 -> assertNotNull(decodeWithInBitmap(options))
+                    else -> assertNull(decodeWithInBitmap(options))
                 }
             } else {
                 assertThrow(IOException::class) {

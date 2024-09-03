@@ -31,26 +31,29 @@ import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toShortInfoString
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 
 @RunWith(AndroidJUnit4::class)
 class AndroidBitmapsTest {
 
     @Test
     fun testAllocationByteCountCompat() {
-        Assert.assertEquals(
+        assertEquals(
             110 * 210 * 4,
             Bitmap.createBitmap(110, 210, Bitmap.Config.ARGB_8888).allocationByteCountCompat
         )
 
-        Assert.assertEquals(
+        assertEquals(
             110 * 210 * 2,
             Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565).allocationByteCountCompat
         )
 
-        Assert.assertEquals(
+        assertEquals(
             if (VERSION.SDK_INT >= VERSION_CODES.O) 0 else 110 * 210 * 2,
             Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565)
                 .apply { recycle() }
@@ -70,12 +73,12 @@ class AndroidBitmapsTest {
 
     @Test
     fun testSafeConfig() {
-        Assert.assertEquals(
+        assertEquals(
             Bitmap.Config.ARGB_8888,
             Bitmap.createBitmap(110, 210, Bitmap.Config.ARGB_8888).safeConfig
         )
 
-        Assert.assertEquals(
+        assertEquals(
             Bitmap.Config.RGB_565,
             Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565).safeConfig
         )
@@ -90,12 +93,12 @@ class AndroidBitmapsTest {
 
     @Test
     fun testToInfoString() {
-        Assert.assertEquals(
+        assertEquals(
             "AndroidBitmap(width=110, height=210, config=ARGB_8888)",
             Bitmap.createBitmap(110, 210, Bitmap.Config.ARGB_8888).toInfoString()
         )
 
-        Assert.assertEquals(
+        assertEquals(
             "AndroidBitmap(width=210, height=110, config=RGB_565)",
             Bitmap.createBitmap(210, 110, Bitmap.Config.RGB_565).toInfoString()
         )
@@ -105,12 +108,12 @@ class AndroidBitmapsTest {
 
     @Test
     fun testToShortInfoString() {
-        Assert.assertEquals(
+        assertEquals(
             "AndroidBitmap(110x210,ARGB_8888)",
             Bitmap.createBitmap(110, 210, Bitmap.Config.ARGB_8888).toShortInfoString()
         )
 
-        Assert.assertEquals(
+        assertEquals(
             "AndroidBitmap(210x110,RGB_565)",
             Bitmap.createBitmap(210, 110, Bitmap.Config.RGB_565).toShortInfoString()
         )
@@ -135,16 +138,16 @@ class AndroidBitmapsTest {
             BitmapFactory.decodeStream(it)
         }
         bitmap.copy(Bitmap.Config.ARGB_8888, true).apply { blur(15) }.apply {
-            Assert.assertEquals(bitmap.toShortInfoString(), this.toShortInfoString())
-            Assert.assertNotEquals(bitmap.corners(), this.corners())
-            Assert.assertNotSame(bitmap, this)
+            assertEquals(bitmap.toShortInfoString(), this.toShortInfoString())
+            assertNotEquals(bitmap.corners(), this.corners())
+            assertNotSame(bitmap, this)
         }
 
         val scaledBitmap = bitmap.scaled(0.5f)
         val scaledBitmapCorners = scaledBitmap.corners()
         scaledBitmap.apply { blur(15) }.apply {
-            Assert.assertSame(scaledBitmap, this)
-            Assert.assertNotEquals(scaledBitmapCorners, this.corners())
+            assertSame(scaledBitmap, this)
+            assertNotEquals(scaledBitmapCorners, this.corners())
         }
     }
 
@@ -176,13 +179,13 @@ class AndroidBitmapsTest {
     @Test
     fun testScaled() {
         val bitmap = Bitmap.createBitmap(300, 200, Bitmap.Config.ARGB_8888).apply {
-            Assert.assertEquals("AndroidBitmap(300x200,ARGB_8888)", toShortInfoString())
+            assertEquals("AndroidBitmap(300x200,ARGB_8888)", toShortInfoString())
         }
         bitmap.scaled(1.5f).apply {
-            Assert.assertEquals("AndroidBitmap(450x300,ARGB_8888)", toShortInfoString())
+            assertEquals("AndroidBitmap(450x300,ARGB_8888)", toShortInfoString())
         }
         bitmap.scaled(0.5f).apply {
-            Assert.assertEquals("AndroidBitmap(150x100,ARGB_8888)", toShortInfoString())
+            assertEquals("AndroidBitmap(150x100,ARGB_8888)", toShortInfoString())
         }
     }
 
@@ -193,15 +196,15 @@ class AndroidBitmapsTest {
 
     @Test
     fun testGetBytesPerPixel() {
-        Assert.assertEquals(4, Bitmap.Config.ARGB_8888.getBytesPerPixel())
+        assertEquals(4, Bitmap.Config.ARGB_8888.getBytesPerPixel())
         @Suppress("DEPRECATION")
-        Assert.assertEquals(2, Bitmap.Config.ARGB_4444.getBytesPerPixel())
-        Assert.assertEquals(1, Bitmap.Config.ALPHA_8.getBytesPerPixel())
-        Assert.assertEquals(2, Bitmap.Config.RGB_565.getBytesPerPixel())
-        Assert.assertEquals(4, null.getBytesPerPixel())
+        assertEquals(2, Bitmap.Config.ARGB_4444.getBytesPerPixel())
+        assertEquals(1, Bitmap.Config.ALPHA_8.getBytesPerPixel())
+        assertEquals(2, Bitmap.Config.RGB_565.getBytesPerPixel())
+        assertEquals(4, null.getBytesPerPixel())
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            Assert.assertEquals(8, Bitmap.Config.RGBA_F16.getBytesPerPixel())
-            Assert.assertEquals(4, Bitmap.Config.HARDWARE.getBytesPerPixel())
+            assertEquals(8, Bitmap.Config.RGBA_F16.getBytesPerPixel())
+            assertEquals(4, Bitmap.Config.HARDWARE.getBytesPerPixel())
         }
     }
 

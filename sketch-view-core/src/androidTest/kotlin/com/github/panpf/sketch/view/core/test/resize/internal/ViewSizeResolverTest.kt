@@ -21,9 +21,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ViewSizeResolverTest {
@@ -33,13 +35,13 @@ class ViewSizeResolverTest {
         val context = getTestContext()
         val imageView = ImageView(context)
         ViewSizeResolver(imageView).apply {
-            Assert.assertTrue(this is RealViewSizeResolver)
-            Assert.assertTrue(subtractPadding)
-            Assert.assertTrue(view === imageView)
+            assertTrue(this is RealViewSizeResolver)
+            assertTrue(subtractPadding)
+            assertTrue(view === imageView)
         }
 
         ViewSizeResolver(imageView, subtractPadding = false).apply {
-            Assert.assertFalse(subtractPadding)
+            assertFalse(subtractPadding)
         }
     }
 
@@ -52,52 +54,52 @@ class ViewSizeResolverTest {
 
         MatchParentTestFragment::class.launchFragmentInContainer().getFragmentSync()
             .let { fragment ->
-                Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
+                assertEquals(RESUMED, fragment.lifecycle.currentState)
 
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
-                    Assert.assertTrue(
-                        "displaySize=$displaySize, viewSize=$this",
-                        this.height > displaySize.height / 2 && this.height <= displaySize.height
+                    assertTrue(
+                        this.height > displaySize.height / 2 && this.height <= displaySize.height,
+                        "displaySize=$displaySize, viewSize=$this"
                     )
                 }
             }
 
         WrapContentTestFragment::class.launchFragmentInContainer().getFragmentSync()
             .let { fragment ->
-                Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
+                assertEquals(RESUMED, fragment.lifecycle.currentState)
 
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
-                    Assert.assertEquals(displaySize.width, this.width)
-                    Assert.assertTrue(
-                        "displaySize=$displaySize, viewSize=$this",
-                        this.height > displaySize.height / 2 && this.height <= displaySize.height
+                    assertEquals(displaySize.width, this.width)
+                    assertTrue(
+                        this.height > displaySize.height / 2 && this.height <= displaySize.height,
+                        "displaySize=$displaySize, viewSize=$this"
                     )
                 }
             }
 
         FixedSizeTestFragment::class.launchFragmentInContainer().getFragmentSync()
             .let { fragment ->
-                Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
+                assertEquals(RESUMED, fragment.lifecycle.currentState)
 
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
-                    Assert.assertEquals(Size(500 - 40, 600 - 60), this)
+                    assertEquals(Size(500 - 40, 600 - 60), this)
                 }
                 runBlocking(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView, subtractPadding = false).size()
                 }.apply {
-                    Assert.assertEquals(Size(500, 600), this)
+                    assertEquals(Size(500, 600), this)
                 }
             }
 
         ErrorPaddingTestFragment::class.launchFragmentInContainer().getFragmentSync()
             .let { fragment ->
-                Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
+                assertEquals(RESUMED, fragment.lifecycle.currentState)
 
                 runBlocking(Dispatchers.Main) {
                     val de = async {
@@ -108,22 +110,22 @@ class ViewSizeResolverTest {
                     de.cancel()
                     completed
                 }.apply {
-                    Assert.assertTrue(this)
+                    assertTrue(this)
                 }
             }
 
         runBlocking(Dispatchers.Main) {
             ViewSizeResolver(ImageView(context)).size()
         }.apply {
-            Assert.assertTrue(
-                "displaySize=$displaySize, viewSize=$this",
-                this.height > displaySize.height / 2 && this.height <= displaySize.height
+            assertTrue(
+                this.height > displaySize.height / 2 && this.height <= displaySize.height,
+                "displaySize=$displaySize, viewSize=$this"
             )
         }
 
         ContainerTestFragment::class.launchFragmentInContainer().getFragmentSync()
             .let { fragment ->
-                Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
+                assertEquals(RESUMED, fragment.lifecycle.currentState)
 
                 runBlocking(Dispatchers.Main) {
                     val imageView = ImageView(context)
@@ -136,9 +138,9 @@ class ViewSizeResolverTest {
                     )
                     deferred.await()
                 }.apply {
-                    Assert.assertTrue(
-                        "displaySize=$displaySize, viewSize=$this",
-                        this.height > displaySize.height / 2 && this.height <= displaySize.height
+                    assertTrue(
+                        this.height > displaySize.height / 2 && this.height <= displaySize.height,
+                        "displaySize=$displaySize, viewSize=$this"
                     )
                 }
             }

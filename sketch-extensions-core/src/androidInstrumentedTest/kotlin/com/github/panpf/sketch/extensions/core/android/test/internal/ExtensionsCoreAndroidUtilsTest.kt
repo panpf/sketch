@@ -18,19 +18,19 @@ package com.github.panpf.sketch.extensions.core.android.test.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.internal.format
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class ExtensionsCoreAndroidUtilsTest {
 
     @Test
     fun testFormat() {
-        Assert.assertEquals(1.412f, 1.412412f.format(3))
-        Assert.assertEquals(1.41f, 1.412412f.format(2))
-        Assert.assertEquals(1.4f, 1.412412f.format(1))
-        Assert.assertEquals(1f, 1.412412f.format(0))
+        assertEquals(1.412f, 1.412412f.format(3))
+        assertEquals(1.41f, 1.412412f.format(2))
+        assertEquals(1.4f, 1.412412f.format(1))
+        assertEquals(1f, 1.412412f.format(0))
     }
 
     @Test

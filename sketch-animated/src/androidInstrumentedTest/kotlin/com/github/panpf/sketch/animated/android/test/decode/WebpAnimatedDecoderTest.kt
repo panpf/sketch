@@ -42,9 +42,13 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class WebpAnimatedDecoderTest {
@@ -55,7 +59,7 @@ class WebpAnimatedDecoderTest {
 
         ComponentRegistry.Builder().apply {
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
@@ -68,7 +72,7 @@ class WebpAnimatedDecoderTest {
 
             supportAnimatedWebp()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[WebpAnimatedDecoder]," +
@@ -81,7 +85,7 @@ class WebpAnimatedDecoderTest {
 
             supportAnimatedWebp()
             build().apply {
-                Assert.assertEquals(
+                assertEquals(
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[WebpAnimatedDecoder,WebpAnimatedDecoder]," +
@@ -102,7 +106,7 @@ class WebpAnimatedDecoderTest {
         val sketch = context.sketch
         val factory = WebpAnimatedDecoder.Factory()
 
-        Assert.assertEquals("WebpAnimatedDecoder", factory.toString())
+        assertEquals("WebpAnimatedDecoder", factory.toString())
 
         // normal
         ImageRequest(context, ResourceImages.animWebp.uri).let {
@@ -113,7 +117,7 @@ class WebpAnimatedDecoderTest {
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         ImageRequest(context, ResourceImages.animWebp.uri).let {
@@ -121,7 +125,7 @@ class WebpAnimatedDecoderTest {
                 FetchResult(AssetDataSource(context, ResourceImages.animWebp.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         // disallowAnimatedImage true
@@ -132,7 +136,7 @@ class WebpAnimatedDecoderTest {
                 FetchResult(AssetDataSource(context, ResourceImages.animWebp.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
 
         // data error
@@ -141,7 +145,7 @@ class WebpAnimatedDecoderTest {
                 FetchResult(AssetDataSource(context, ResourceImages.png.resourceName), null)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
 
         ImageRequest(context, ResourceImages.animGif.uri).let {
@@ -152,7 +156,7 @@ class WebpAnimatedDecoderTest {
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
 
         // mimeType error
@@ -163,7 +167,7 @@ class WebpAnimatedDecoderTest {
             )
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNotNull(this)
+            assertNotNull(this)
         }
 
         // Disguised, mimeType; data error
@@ -175,7 +179,7 @@ class WebpAnimatedDecoderTest {
                 )
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
-            Assert.assertNull(this)
+            assertNull(this)
         }
     }
 
@@ -196,13 +200,13 @@ class WebpAnimatedDecoderTest {
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request.toRequestContext(sketch), fetchResult)!!
             .let { runBlocking { it.decode() }.getOrThrow() }.apply {
-                Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
-                Assert.assertEquals(Size(480, 270), image.getDrawableOrThrow().intrinsicSize)
-                Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertNull(this.transformeds)
+                assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
+                assertEquals(Size(480, 270), image.getDrawableOrThrow().intrinsicSize)
+                assertEquals(LOCAL, this.dataFrom)
+                assertNull(this.transformeds)
                 val animatedImageDrawable =
                     ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable).drawable
-                Assert.assertEquals(-1, animatedImageDrawable.repeatCount)
+                assertEquals(-1, animatedImageDrawable.repeatCount)
             }
 
         val request1 = ImageRequest(context, ResourceImages.animWebp.uri) {
@@ -213,13 +217,13 @@ class WebpAnimatedDecoderTest {
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
             .let { runBlocking { it.decode().getOrThrow() } }.apply {
-                Assert.assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
-                Assert.assertEquals(Size(240, 135), image.getDrawableOrThrow().intrinsicSize)
-                Assert.assertEquals(LOCAL, this.dataFrom)
-                Assert.assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
+                assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
+                assertEquals(Size(240, 135), image.getDrawableOrThrow().intrinsicSize)
+                assertEquals(LOCAL, this.dataFrom)
+                assertEquals(listOf(createInSampledTransformed(2)), this.transformeds)
                 val animatedImageDrawable =
                     ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable).drawable
-                Assert.assertEquals(3, animatedImageDrawable.repeatCount)
+                assertEquals(3, animatedImageDrawable.repeatCount)
             }
     }
 
@@ -229,20 +233,20 @@ class WebpAnimatedDecoderTest {
         val element11 = WebpAnimatedDecoder.Factory()
         val element2 = WebpAnimatedDecoder.Factory()
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element2, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertEquals(element1, element2)
-        Assert.assertEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertEquals(element1, element2)
+        assertEquals(element2, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertEquals(element2.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element2.hashCode())
+        assertEquals(element2.hashCode(), element11.hashCode())
     }
 }

@@ -31,9 +31,11 @@ import com.github.panpf.sketch.util.getXmlDrawableCompat
 import com.github.panpf.sketch.util.toNewBitmap
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class DrawablesTest {
@@ -42,12 +44,12 @@ class DrawablesTest {
     fun testGetDrawableCompat() {
         val context = getTestContext()
 
-        Assert.assertNotNull(context.getDrawableCompat(android.R.drawable.ic_delete))
+        assertNotNull(context.getDrawableCompat(android.R.drawable.ic_delete))
         assertThrow(Resources.NotFoundException::class) {
             context.getDrawableCompat(1101)
         }
 
-        Assert.assertNotNull(
+        assertNotNull(
             context.resources.getDrawableCompat(android.R.drawable.ic_delete, null)
         )
         assertThrow(Resources.NotFoundException::class) {
@@ -65,9 +67,9 @@ class DrawablesTest {
                 com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ).apply {
                 if (Build.VERSION.SDK_INT >= 24) {
-                    Assert.assertTrue(this is VectorDrawable)
+                    assertTrue(this is VectorDrawable)
                 } else {
-                    Assert.assertTrue(this is VectorDrawableCompat)
+                    assertTrue(this is VectorDrawableCompat)
                 }
             }
         } else {
@@ -83,7 +85,7 @@ class DrawablesTest {
             context.resources,
             com.github.panpf.sketch.test.utils.core.R.drawable.test_error
         ).apply {
-            Assert.assertTrue(this is GradientDrawable)
+            assertTrue(this is GradientDrawable)
         }
 
         if (Build.VERSION.SDK_INT >= 24) {
@@ -91,7 +93,7 @@ class DrawablesTest {
                 context.resources,
                 com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
             ).apply {
-                Assert.assertTrue(this is BitmapDrawable)
+                assertTrue(this is BitmapDrawable)
             }
         } else {
             assertThrow(Resources.NotFoundException::class) {
@@ -112,20 +114,20 @@ class DrawablesTest {
             Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
         )
 
-        Assert.assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
+        assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
         drawable.toNewBitmap().apply {
-            Assert.assertEquals(Bitmap.Config.ARGB_8888, config)
-            Assert.assertEquals("AndroidBitmap(100x100,ARGB_8888)", toShortInfoString())
+            assertEquals(Bitmap.Config.ARGB_8888, config)
+            assertEquals("AndroidBitmap(100x100,ARGB_8888)", toShortInfoString())
         }
-        Assert.assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
+        assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
 
         drawable.setBounds(100, 100, 200, 200)
-        Assert.assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
+        assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
         drawable.toNewBitmap(Bitmap.Config.RGB_565).apply {
-            Assert.assertEquals(Bitmap.Config.RGB_565, config)
-            Assert.assertEquals("AndroidBitmap(100x100,RGB_565)", toShortInfoString())
+            assertEquals(Bitmap.Config.RGB_565, config)
+            assertEquals("AndroidBitmap(100x100,RGB_565)", toShortInfoString())
         }
-        Assert.assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
+        assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
     }
 
     @Test

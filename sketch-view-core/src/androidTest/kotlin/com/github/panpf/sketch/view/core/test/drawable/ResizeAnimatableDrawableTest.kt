@@ -33,9 +33,11 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toLogString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ResizeAnimatableDrawableTest {
@@ -52,11 +54,11 @@ class ResizeAnimatableDrawableTest {
             isRunning
 
             val callback = object : AnimationCallback() {}
-            Assert.assertFalse(unregisterAnimationCallback(callback))
+            assertFalse(unregisterAnimationCallback(callback))
             runBlocking(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
-            Assert.assertTrue(unregisterAnimationCallback(callback))
+            assertTrue(unregisterAnimationCallback(callback))
             clearAnimationCallbacks()
         }
     }
@@ -77,7 +79,7 @@ class ResizeAnimatableDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -96,7 +98,7 @@ class ResizeAnimatableDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -111,7 +113,7 @@ class ResizeAnimatableDrawableTest {
             Size(100, 500),
             CENTER_CROP
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ResizeAnimatableDrawable(drawable=${sketchAnimatableDrawable.toLogString()}, size=100x500, scale=CENTER_CROP)",
                 toString()
             )

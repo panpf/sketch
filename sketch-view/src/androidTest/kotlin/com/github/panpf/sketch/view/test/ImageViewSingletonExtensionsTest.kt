@@ -29,10 +29,11 @@ import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewSingletonExtensionsTest {
@@ -44,96 +45,96 @@ class ImageViewSingletonExtensionsTest {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(Uri.parse(ResourceImages.png.uri)).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(null as Uri?).job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(null as Int?).job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadResourceImage(com.github.panpf.sketch.test.utils.core.R.drawable.test).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadResourceImage(null).job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadResourceImage(
                 context.packageName,
                 com.github.panpf.sketch.test.utils.core.R.drawable.test
             ).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(ResourceImages.animGif.uri).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadAssetImage(null).job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         val file = runBlocking {
             sketch.components.newFetcherOrThrow(ImageRequest(context, ResourceImages.png.uri))
@@ -142,23 +143,23 @@ class ImageViewSingletonExtensionsTest {
         runBlocking {
             imageView.loadImage(file).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(null as File?).job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(null as String?).job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
     }
 }

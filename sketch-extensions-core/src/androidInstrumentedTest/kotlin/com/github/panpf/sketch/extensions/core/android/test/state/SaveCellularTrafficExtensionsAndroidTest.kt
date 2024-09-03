@@ -23,9 +23,10 @@ import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class SaveCellularTrafficExtensionsAndroidTest {
@@ -33,31 +34,31 @@ class SaveCellularTrafficExtensionsAndroidTest {
     @Test
     fun testSaveCellularTrafficError() {
         ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)).apply {
-            Assert.assertNull(stateList.find { it.first is SaveCellularTrafficCondition })
+            assertNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError()
         }.apply {
-            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
+            assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(IntColorDrawableStateImage(Color.BLUE))
         }.apply {
-            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
+            assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(ColorDrawableEqualizer(Color.GREEN))
         }.apply {
-            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
+            assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(android.R.drawable.btn_dialog)
         }.apply {
-            Assert.assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
+            assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
         // TODO Drawable, res

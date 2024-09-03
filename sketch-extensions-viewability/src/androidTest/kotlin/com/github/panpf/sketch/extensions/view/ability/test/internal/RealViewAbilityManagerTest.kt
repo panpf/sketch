@@ -17,9 +17,9 @@ import com.github.panpf.sketch.request.RequestState
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.ProgressListeners
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class RealViewAbilityManagerTest {
@@ -44,22 +44,22 @@ class RealViewAbilityManagerTest {
     fun testAddAndRemove() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val view = TestAbilityImageView(context)
-        Assert.assertEquals(0, view.viewAbilityList.size)
+        assertEquals(0, view.viewAbilityList.size)
 
         val scaleTypeViewAbility = TestScaleTypeViewAbility()
         val imageMatrixViewAbility = TestImageMatrixViewAbility()
 
         view.addViewAbility(scaleTypeViewAbility)
-        Assert.assertEquals(1, view.viewAbilityList.size)
+        assertEquals(1, view.viewAbilityList.size)
 
         view.addViewAbility(imageMatrixViewAbility)
-        Assert.assertEquals(2, view.viewAbilityList.size)
+        assertEquals(2, view.viewAbilityList.size)
 
         view.removeViewAbility(scaleTypeViewAbility)
-        Assert.assertEquals(1, view.viewAbilityList.size)
+        assertEquals(1, view.viewAbilityList.size)
 
         view.removeViewAbility(imageMatrixViewAbility)
-        Assert.assertEquals(0, view.viewAbilityList.size)
+        assertEquals(0, view.viewAbilityList.size)
     }
 
     class TestAbilityImageView @JvmOverloads constructor(

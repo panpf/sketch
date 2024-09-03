@@ -20,9 +20,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class SystemCallbacksAndroidTest {
@@ -38,17 +40,17 @@ class SystemCallbacksAndroidTest {
         val systemCallbacks = SystemCallbacks(sketch)
         try {
             systemCallbacks.apply {
-                Assert.assertEquals(false, isCellularNetworkConnected)
+                assertEquals(false, isCellularNetworkConnected)
 
                 systemCallbacks.register()
-                Assert.assertEquals(
+                assertEquals(
                     context.isCellularNetworkConnected(),
                     isCellularNetworkConnected
                 )
 
-                Assert.assertFalse(isShutdown)
+                assertFalse(isShutdown)
                 shutdown()
-                Assert.assertTrue(isShutdown)
+                assertTrue(isShutdown)
             }
         } finally {
             systemCallbacks.shutdown()

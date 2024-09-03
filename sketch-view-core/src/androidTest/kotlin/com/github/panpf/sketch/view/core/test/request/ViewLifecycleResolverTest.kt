@@ -5,8 +5,9 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
-import org.junit.Assert
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertNull
+import kotlin.test.assertSame
 
 class ViewLifecycleResolverTest {
 
@@ -15,11 +16,11 @@ class ViewLifecycleResolverTest {
     @Test
     fun testFindLifecycle() {
         val context = getTestContext()
-        Assert.assertNull(context.findLifecycle())
+        assertNull(context.findLifecycle())
 
-        Assert.assertNull(context.applicationContext.findLifecycle())
+        assertNull(context.applicationContext.findLifecycle())
 
         val activity = TestActivity::class.launchActivity().getActivitySync()
-        Assert.assertSame(activity.lifecycle, activity.findLifecycle())
+        assertSame(activity.lifecycle, activity.findLifecycle())
     }
 }

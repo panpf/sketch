@@ -7,17 +7,22 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapFactory.Options
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.ImageFormat.GIF
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.toShortInfoString
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toShortInfoString
+import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 @RunWith(AndroidJUnit4::class)
 class BitmapFactoryTest {
@@ -28,18 +33,18 @@ class BitmapFactoryTest {
         val imageName = ResourceImages.jpeg.resourceName
 
         val options = Options()
-        Assert.assertFalse(options.inMutable)
+        assertFalse(options.inMutable)
         val bitmap = context.assets.open(imageName).use {
             BitmapFactory.decodeStream(it, null, options)
         }!!
-        Assert.assertFalse(bitmap.isMutable)
+        assertFalse(bitmap.isMutable)
 
         options.inMutable = true
-        Assert.assertTrue(options.inMutable)
+        assertTrue(options.inMutable)
         val bitmap1 = context.assets.open(imageName).use {
             BitmapFactory.decodeStream(it, null, options)
         }!!
-        Assert.assertTrue(bitmap1.isMutable)
+        assertTrue(bitmap1.isMutable)
     }
 
     @Test
@@ -48,21 +53,21 @@ class BitmapFactoryTest {
         val imageName = ResourceImages.jpeg.resourceName
 
         val options = Options()
-        Assert.assertEquals(ARGB_8888, options.inPreferredConfig)
+        assertEquals(ARGB_8888, options.inPreferredConfig)
         val bitmap = context.assets.open(imageName).use {
             BitmapFactory.decodeStream(it, null, options)
         }!!
-        Assert.assertEquals(ARGB_8888, bitmap.config)
+        assertEquals(ARGB_8888, bitmap.config)
 
         options.inPreferredConfig = ARGB_4444
-        Assert.assertEquals(ARGB_4444, options.inPreferredConfig)
+        assertEquals(ARGB_4444, options.inPreferredConfig)
         val bitmap1 = context.assets.open(imageName).use {
             BitmapFactory.decodeStream(it, null, options)
         }!!
         if (VERSION.SDK_INT > VERSION_CODES.M) {
-            Assert.assertEquals(ARGB_8888, bitmap1.config)
+            assertEquals(ARGB_8888, bitmap1.config)
         } else {
-            Assert.assertEquals(ARGB_4444, bitmap1.config)
+            assertEquals(ARGB_4444, bitmap1.config)
         }
     }
 
@@ -73,15 +78,15 @@ class BitmapFactoryTest {
         context.assets.open(ResourceImages.jpeg.resourceName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
-            Assert.assertEquals(ARGB_8888, config)
-            Assert.assertFalse(hasAlpha())
+            assertEquals(ARGB_8888, config)
+            assertFalse(hasAlpha())
         }
 
         context.assets.open(ResourceImages.png.resourceName).use {
             BitmapFactory.decodeStream(it, null, null)
         }!!.apply {
-            Assert.assertEquals(ARGB_8888, config)
-            Assert.assertTrue(hasAlpha())
+            assertEquals(ARGB_8888, config)
+            assertTrue(hasAlpha())
         }
     }
 
@@ -175,8 +180,8 @@ class BitmapFactoryTest {
                             } catch (e: IllegalArgumentException) {
                                 throw Exception(message, e)
                             }.also { bitmap ->
-                                Assert.assertSame(message, options.inBitmap, bitmap)
-                                Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                                assertSame(options.inBitmap, bitmap, message)
+                                assertEquals(sampledBitmapSize, bitmap.size, message)
                             }
                         } else {
                             /* sampleSize not support */
@@ -186,13 +191,13 @@ class BitmapFactoryTest {
                                 } catch (e: IllegalArgumentException) {
                                     throw Exception(message, e)
                                 }.also { bitmap ->
-                                    Assert.assertSame(message, options.inBitmap, bitmap)
-                                    Assert.assertEquals(message, image.size, bitmap.size)
+                                    assertSame(options.inBitmap, bitmap, message)
+                                    assertEquals(image.size, bitmap.size, message)
                                 }
                             } else {
                                 try {
                                     val bitmap = decodeWithInBitmap(options)!!
-                                    Assert.fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                                    fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                                 } catch (e: IllegalArgumentException) {
                                     if (e.message != "Problem decoding into existing bitmap") {
                                         throw Exception("exception type error. $message", e)
@@ -212,8 +217,8 @@ class BitmapFactoryTest {
                         } catch (e: IllegalArgumentException) {
                             throw Exception(message, e)
                         }.also { bitmap ->
-                            Assert.assertSame(message, options.inBitmap, bitmap)
-                            Assert.assertEquals(message, image.size, bitmap.size)
+                            assertSame(options.inBitmap, bitmap, message)
+                            assertEquals(image.size, bitmap.size, message)
                         }
                     }
                 } else {
@@ -225,7 +230,7 @@ class BitmapFactoryTest {
                     )
                     try {
                         val bitmap = decodeWithInBitmap(options)!!
-                        Assert.fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                        fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                     } catch (e: IllegalArgumentException) {
                         if (e.message != "Problem decoding into existing bitmap") {
                             throw Exception("exception type error. $message", e)
@@ -240,9 +245,9 @@ class BitmapFactoryTest {
                     throw Exception(message, e)
                 }
                 if (sampleSize > 1 && VERSION.SDK_INT >= image.inSampleSizeMinAPI) {
-                    Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                    assertEquals(sampledBitmapSize, bitmap.size, message)
                 } else {
-                    Assert.assertEquals(message, image.size, bitmap.size)
+                    assertEquals(image.size, bitmap.size, message)
                 }
             }
         } else {
@@ -252,7 +257,7 @@ class BitmapFactoryTest {
             } catch (e: IllegalArgumentException) {
                 throw Exception(message, e)
             }
-            Assert.assertNull(message, bitmap)
+            assertNull(bitmap, message)
         }
     }
 }

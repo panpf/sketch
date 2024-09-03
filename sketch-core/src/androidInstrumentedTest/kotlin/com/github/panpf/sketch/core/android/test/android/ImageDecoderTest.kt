@@ -3,17 +3,19 @@ package com.github.panpf.sketch.core.android.test.android
 import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.ImageDecoder
 import android.os.Build.VERSION
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.util.Size
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
+import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ImageDecoderTest {
@@ -25,7 +27,7 @@ class ImageDecoderTest {
 
         decodeImageUseImageDecoder(context, ResourceImages.jpeg.resourceName)
             .also { bitmap ->
-                Assert.assertFalse(bitmap.isMutable)
+                assertFalse(bitmap.isMutable)
             }
 
         decodeImageUseImageDecoder(
@@ -33,7 +35,7 @@ class ImageDecoderTest {
             ResourceImages.jpeg.resourceName,
             mutable = true
         ).also { bitmap ->
-            Assert.assertTrue(bitmap.isMutable)
+            assertTrue(bitmap.isMutable)
         }
     }
 
@@ -43,35 +45,35 @@ class ImageDecoderTest {
         val context = getTestContext()
 
         decodeImageUseImageDecoder(context, ResourceImages.jpeg.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.png.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.bmp.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.webp.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.heic.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.animGif.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.animWebp.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.animHeif.resourceName).also { bitmap ->
-            Assert.assertEquals(HARDWARE, bitmap.config)
+            assertEquals(HARDWARE, bitmap.config)
         }
     }
 
@@ -81,11 +83,11 @@ class ImageDecoderTest {
         val context = getTestContext()
 
         decodeImageUseImageDecoder(context, ResourceImages.jpeg.resourceName).also { bitmap ->
-            Assert.assertFalse(bitmap.hasAlpha())
+            assertFalse(bitmap.hasAlpha())
         }
 
         decodeImageUseImageDecoder(context, ResourceImages.png.resourceName).also { bitmap ->
-            Assert.assertTrue(bitmap.hasAlpha())
+            assertTrue(bitmap.hasAlpha())
         }
     }
 
@@ -192,9 +194,9 @@ class ImageDecoderTest {
                         sampleSize = sampleSize,
                         mimeType = mimeType
                     )
-                    Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                    assertEquals(sampledBitmapSize, bitmap.size, message)
                 } else {
-                    Assert.assertEquals(message, imageSize, bitmap.size)
+                    assertEquals(imageSize, bitmap.size, message)
                 }
             }
         } else {

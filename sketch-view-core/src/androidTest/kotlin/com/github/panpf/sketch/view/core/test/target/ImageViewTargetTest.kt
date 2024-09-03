@@ -2,16 +2,13 @@ package com.github.panpf.sketch.view.core.test.target
 
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.ImageViewTarget
-import com.github.panpf.sketch.test.utils.TestOptionsImageView
 import com.github.panpf.sketch.test.utils.getTestContext
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewTargetTest {
@@ -25,11 +22,11 @@ class ImageViewTargetTest {
 //        val imageView = TestOptionsImageView(context1)
 //
 //        ImageRequest(context1, uri).apply {
-//            Assert.assertNull(target)
+//            assertNull(target)
 //        }
 //
 //        ImageRequest(imageView, uri).apply {
-//            Assert.assertEquals(ImageViewTarget(imageView), target)
+//            assertEquals(ImageViewTarget(imageView), target)
 //        }
 //
 //        imageView.updateImageOptions {
@@ -37,40 +34,40 @@ class ImageViewTargetTest {
 //        }
 //
 //        ImageRequest(imageView, uri).apply {
-//            Assert.assertEquals(ImageViewTarget(imageView), target)
-//            Assert.assertEquals(WRITE_ONLY, memoryCachePolicy)
+//            assertEquals(ImageViewTarget(imageView), target)
+//            assertEquals(WRITE_ONLY, memoryCachePolicy)
 //        }
 //
 //        ImageRequest(imageView, uri) {
 //            target(null)
 //        }.apply {
-//            Assert.assertNull(target)
-//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//            assertNull(target)
+//            assertEquals(ENABLED, memoryCachePolicy)
 //        }
 //
 //        ImageRequest(imageView, uri) {
 //            target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
 //        }.apply {
-//            Assert.assertNotNull(target)
-//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//            assertNotNull(target)
+//            assertEquals(ENABLED, memoryCachePolicy)
 //        }
 //        ImageRequest(imageView, uri) {
 //            target(onStart = { _, _ -> })
 //        }.apply {
-//            Assert.assertNotNull(target)
-//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//            assertNotNull(target)
+//            assertEquals(ENABLED, memoryCachePolicy)
 //        }
 //        ImageRequest(imageView, uri) {
 //            target(onSuccess = { _, _ -> })
 //        }.apply {
-//            Assert.assertNotNull(target)
-//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//            assertNotNull(target)
+//            assertEquals(ENABLED, memoryCachePolicy)
 //        }
 //        ImageRequest(imageView, uri) {
 //            target(onError = { _, _ -> })
 //        }.apply {
-//            Assert.assertNotNull(target)
-//            Assert.assertEquals(ENABLED, memoryCachePolicy)
+//            assertNotNull(target)
+//            assertEquals(ENABLED, memoryCachePolicy)
 //        }
 //    }
 
@@ -83,20 +80,20 @@ class ImageViewTargetTest {
         val element11 = ImageViewTarget(imageView1)
         val element2 = ImageViewTarget(imageView2)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element2, element11)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element2, element11)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 }

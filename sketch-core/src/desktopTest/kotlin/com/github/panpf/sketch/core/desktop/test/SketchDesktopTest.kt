@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.core.desktop.test
 
-import org.junit.Test
+import kotlin.test.Test
 
 class SketchDesktopTest {
 

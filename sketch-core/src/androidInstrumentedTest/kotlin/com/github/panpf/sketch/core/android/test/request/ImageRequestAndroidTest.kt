@@ -41,8 +41,8 @@ import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.test.utils.getTestContext
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull

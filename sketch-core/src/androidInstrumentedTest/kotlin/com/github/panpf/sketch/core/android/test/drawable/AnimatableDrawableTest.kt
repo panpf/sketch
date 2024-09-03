@@ -35,9 +35,13 @@ import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class AnimatableDrawableTest {
@@ -97,18 +101,18 @@ class AnimatableDrawableTest {
                 registerAnimationCallback(callback3)
             }
 
-            Assert.assertFalse(isRunning)
-            Assert.assertEquals(listOf<String>(), callbackAction)
+            assertFalse(isRunning)
+            assertEquals(listOf<String>(), callbackAction)
 
             start()
             Thread.sleep(100)
-            Assert.assertTrue(isRunning)
-            Assert.assertEquals(listOf("onAnimationStart"), callbackAction)
+            assertTrue(isRunning)
+            assertEquals(listOf("onAnimationStart"), callbackAction)
 
             stop()
             Thread.sleep(100)
-            Assert.assertFalse(isRunning)
-            Assert.assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
+            assertFalse(isRunning)
+            assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
         }
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -133,18 +137,18 @@ class AnimatableDrawableTest {
                     registerAnimationCallback(callback3)
                 }
 
-                Assert.assertFalse(isRunning)
-                Assert.assertEquals(listOf<String>(), callbackAction)
+                assertFalse(isRunning)
+                assertEquals(listOf<String>(), callbackAction)
 
                 start()
                 Thread.sleep(100)
-                Assert.assertTrue(isRunning)
-                Assert.assertEquals(listOf("onAnimationStart"), callbackAction)
+                assertTrue(isRunning)
+                assertEquals(listOf("onAnimationStart"), callbackAction)
 
                 stop()
                 Thread.sleep(100)
-                Assert.assertFalse(isRunning)
-                Assert.assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
+                assertFalse(isRunning)
+                assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
             }
         }
 
@@ -169,18 +173,18 @@ class AnimatableDrawableTest {
                 registerAnimationCallback(callback3)
             }
 
-            Assert.assertFalse(isRunning)
-            Assert.assertEquals(listOf<String>(), callbackAction)
+            assertFalse(isRunning)
+            assertEquals(listOf<String>(), callbackAction)
 
             start()
             Thread.sleep(100)
-            Assert.assertTrue(isRunning)
-            Assert.assertEquals(listOf("onAnimationStart"), callbackAction)
+            assertTrue(isRunning)
+            assertEquals(listOf("onAnimationStart"), callbackAction)
 
             stop()
             Thread.sleep(100)
-            Assert.assertFalse(isRunning)
-            Assert.assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
+            assertFalse(isRunning)
+            assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackAction)
         }
     }
 
@@ -254,7 +258,7 @@ class AnimatableDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -269,7 +273,7 @@ class AnimatableDrawableTest {
 
             context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Assert.assertEquals(255, it.alpha)
+                    assertEquals(255, it.alpha)
                 }
             }
         }
@@ -292,18 +296,18 @@ class AnimatableDrawableTest {
             drawable1,
         )
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
     }
 
     @Test
@@ -315,7 +319,7 @@ class AnimatableDrawableTest {
         )
 
         val animatableDrawable = AnimatableDrawable(drawable)
-        Assert.assertEquals(
+        assertEquals(
             "AnimatableDrawable(drawable=${drawable.toLogString()})",
             animatableDrawable.toString()
         )

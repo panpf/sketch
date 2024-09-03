@@ -18,9 +18,9 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.OpenGLTextureHelper
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class OpenGLTextureHelperTest {
@@ -28,9 +28,9 @@ class OpenGLTextureHelperTest {
     @Test
     fun test() {
         val maxSize = OpenGLTextureHelper.maxSize
-        Assert.assertTrue(
-            /* message = */ "maxSize=$maxSize",
-            /* condition = */ arrayOf(2048, 4096, 8192, 16384).any { it == maxSize }
+        assertTrue(
+            arrayOf(2048, 4096, 8192, 16384).any { it == maxSize },
+            "maxSize=$maxSize"
         )
     }
 }

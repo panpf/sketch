@@ -22,9 +22,10 @@ import com.github.panpf.sketch.SketchImageView
 import com.github.panpf.sketch.ability.isShowDataFromLogo
 import com.github.panpf.sketch.ability.removeDataFromLogo
 import com.github.panpf.sketch.ability.showDataFromLogo
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class DataFromLogoAbilityTest {
@@ -34,13 +35,13 @@ class DataFromLogoAbilityTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
-        Assert.assertFalse(imageView.isShowDataFromLogo)
+        assertFalse(imageView.isShowDataFromLogo)
 
         imageView.showDataFromLogo()
-        Assert.assertTrue(imageView.isShowDataFromLogo)
+        assertTrue(imageView.isShowDataFromLogo)
 
         imageView.removeDataFromLogo()
-        Assert.assertFalse(imageView.isShowDataFromLogo)
+        assertFalse(imageView.isShowDataFromLogo)
     }
 
     // TODO test

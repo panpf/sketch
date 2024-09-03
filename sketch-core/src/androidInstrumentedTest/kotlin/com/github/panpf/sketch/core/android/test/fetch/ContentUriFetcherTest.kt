@@ -22,9 +22,12 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ContentUriFetcherTest {
@@ -44,15 +47,15 @@ class ContentUriFetcherTest {
         val httpUri = "http://sample.com/sample.jpg"
 
         fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!.apply {
-            Assert.assertEquals(contentUri, this.contentUri.toString())
+            assertEquals(contentUri, this.contentUri.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!.apply {
-            Assert.assertEquals(contentUri, this.contentUri.toString())
+            assertEquals(contentUri, this.contentUri.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!.apply {
-            Assert.assertEquals(contentUri, this.contentUri.toString())
+            assertEquals(contentUri, this.contentUri.toString())
         }
-        Assert.assertNull(fetcherFactory.create(sketch, ImageRequest(context, httpUri)))
+        assertNull(fetcherFactory.create(sketch, ImageRequest(context, httpUri)))
     }
 
     @Test
@@ -60,14 +63,14 @@ class ContentUriFetcherTest {
         val element1 = ContentUriFetcher.Factory()
         val element11 = ContentUriFetcher.Factory()
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
 
-        Assert.assertNotEquals(element1, Any())
-        Assert.assertNotEquals(element1, null)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -80,6 +83,6 @@ class ContentUriFetcherTest {
         val source = runBlocking {
             fetcher.fetch()
         }.getOrThrow().dataSource
-        Assert.assertTrue(source is ContentDataSource)
+        assertTrue(source is ContentDataSource)
     }
 }

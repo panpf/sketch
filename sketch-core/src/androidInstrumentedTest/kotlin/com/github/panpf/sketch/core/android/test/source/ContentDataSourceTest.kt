@@ -11,12 +11,12 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import okio.Closeable
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class ContentDataSourceTest {
@@ -32,8 +32,8 @@ class ContentDataSourceTest {
             context = sketch.context,
             contentUri = contentUri,
         ).apply {
-            Assert.assertEquals(contentUri, this.contentUri)
-            Assert.assertEquals(LOCAL, this.dataFrom)
+            assertEquals(contentUri, this.contentUri)
+            assertEquals(LOCAL, this.dataFrom)
         }
     }
 
@@ -78,7 +78,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).apply {
             val file = getFile(sketch)
-            Assert.assertEquals("4d0b3d81c4eacfc1252f7112ca8833b3.0", file.name)
+            assertEquals("4d0b3d81c4eacfc1252f7112ca8833b3.0", file.name)
         }
 
         val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
@@ -87,7 +87,7 @@ class ContentDataSourceTest {
             contentUri = errorContentUri,
         ).apply {
             val file = getFile(sketch)
-            Assert.assertEquals("/sdcard/error.jpeg", file.toFile().path)
+            assertEquals("/sdcard/error.jpeg", file.toFile().path)
         }
 
         assertThrow(IOException::class) {
@@ -112,7 +112,7 @@ class ContentDataSourceTest {
             context = sketch.context,
             contentUri = contentUri,
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ContentDataSource('$contentUri')",
                 toString()
             )
@@ -125,7 +125,7 @@ class ContentDataSourceTest {
             context = sketch.context,
             contentUri = errorContentUri,
         ).apply {
-            Assert.assertEquals(
+            assertEquals(
                 "ContentDataSource('file:///sdcard/error.jpeg')",
                 toString()
             )

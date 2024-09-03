@@ -7,30 +7,34 @@ import com.github.panpf.sketch.http.OkHttpStack.MyInterceptor
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
-import org.junit.Assert
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 class OkHttpStackTest {
 
     @Test
     fun testBuilder() {
         OkHttpStack.Builder().build().apply {
-            Assert.assertEquals(HttpStack.DEFAULT_TIMEOUT, okHttpClient.connectTimeoutMillis)
-            Assert.assertEquals(HttpStack.DEFAULT_TIMEOUT, okHttpClient.readTimeoutMillis)
-            Assert.assertNull(okHttpClient.interceptors.find { it is MyInterceptor })
-            Assert.assertEquals(0, okHttpClient.interceptors.size)
-            Assert.assertEquals(0, okHttpClient.networkInterceptors.size)
+            assertEquals(HttpStack.DEFAULT_TIMEOUT, okHttpClient.connectTimeoutMillis)
+            assertEquals(HttpStack.DEFAULT_TIMEOUT, okHttpClient.readTimeoutMillis)
+            assertNull(okHttpClient.interceptors.find { it is MyInterceptor })
+            assertEquals(0, okHttpClient.interceptors.size)
+            assertEquals(0, okHttpClient.networkInterceptors.size)
         }
 
         OkHttpStack.Builder().apply {
             connectTimeoutMillis(2000)
             readTimeoutMillis(3000)
         }.build().apply {
-            Assert.assertEquals(2000, okHttpClient.connectTimeoutMillis)
-            Assert.assertEquals(3000, okHttpClient.readTimeoutMillis)
-            Assert.assertNull(okHttpClient.interceptors.find { it is MyInterceptor })
-            Assert.assertEquals(0, okHttpClient.interceptors.size)
-            Assert.assertEquals(0, okHttpClient.networkInterceptors.size)
+            assertEquals(2000, okHttpClient.connectTimeoutMillis)
+            assertEquals(3000, okHttpClient.readTimeoutMillis)
+            assertNull(okHttpClient.interceptors.find { it is MyInterceptor })
+            assertEquals(0, okHttpClient.interceptors.size)
+            assertEquals(0, okHttpClient.networkInterceptors.size)
         }
 
         OkHttpStack.Builder().apply {
@@ -40,12 +44,12 @@ class OkHttpStackTest {
                 .find { it is MyInterceptor }
                 .let { it as MyInterceptor }
                 .apply {
-                    Assert.assertEquals("TestUserAgent", userAgent)
-                    Assert.assertNull(headers)
-                    Assert.assertNull(addHeaders)
+                    assertEquals("TestUserAgent", userAgent)
+                    assertNull(headers)
+                    assertNull(addHeaders)
                 }
-            Assert.assertEquals(1, okHttpClient.interceptors.size)
-            Assert.assertEquals(0, okHttpClient.networkInterceptors.size)
+            assertEquals(1, okHttpClient.interceptors.size)
+            assertEquals(0, okHttpClient.networkInterceptors.size)
         }
 
         OkHttpStack.Builder().apply {
@@ -56,18 +60,18 @@ class OkHttpStackTest {
                 .find { it is MyInterceptor }
                 .let { it as MyInterceptor }
                 .apply {
-                    Assert.assertNull(userAgent)
-                    Assert.assertEquals(
+                    assertNull(userAgent)
+                    assertEquals(
                         listOf(
                             "AddHeader1" to "AddHeaderValue1",
                             "AddHeader1" to "AddHeaderValue2"
                         ),
                         addHeaders
                     )
-                    Assert.assertNull(headers)
+                    assertNull(headers)
                 }
-            Assert.assertEquals(1, okHttpClient.interceptors.size)
-            Assert.assertEquals(0, okHttpClient.networkInterceptors.size)
+            assertEquals(1, okHttpClient.interceptors.size)
+            assertEquals(0, okHttpClient.networkInterceptors.size)
         }
 
         OkHttpStack.Builder().apply {
@@ -78,12 +82,12 @@ class OkHttpStackTest {
                 .find { it is MyInterceptor }
                 .let { it as MyInterceptor }
                 .apply {
-                    Assert.assertNull(userAgent)
-                    Assert.assertNull(addHeaders)
-                    Assert.assertEquals(mapOf("Header1" to "HeaderValue2"), headers)
+                    assertNull(userAgent)
+                    assertNull(addHeaders)
+                    assertEquals(mapOf("Header1" to "HeaderValue2"), headers)
                 }
-            Assert.assertEquals(1, okHttpClient.interceptors.size)
-            Assert.assertEquals(0, okHttpClient.networkInterceptors.size)
+            assertEquals(1, okHttpClient.interceptors.size)
+            assertEquals(0, okHttpClient.networkInterceptors.size)
         }
 
         OkHttpStack.Builder().apply {
@@ -97,18 +101,18 @@ class OkHttpStackTest {
                 .find { it is MyInterceptor }
                 .let { it as MyInterceptor }
                 .apply {
-                    Assert.assertEquals("TestUserAgent", userAgent)
-                    Assert.assertEquals(
+                    assertEquals("TestUserAgent", userAgent)
+                    assertEquals(
                         listOf(
                             "AddHeader1" to "AddHeaderValue1",
                             "AddHeader1" to "AddHeaderValue2"
                         ),
                         addHeaders
                     )
-                    Assert.assertEquals(mapOf("Header1" to "HeaderValue2"), headers)
+                    assertEquals(mapOf("Header1" to "HeaderValue2"), headers)
                 }
-            Assert.assertEquals(1, okHttpClient.interceptors.size)
-            Assert.assertEquals(0, okHttpClient.networkInterceptors.size)
+            assertEquals(1, okHttpClient.interceptors.size)
+            assertEquals(0, okHttpClient.networkInterceptors.size)
         }
 
         OkHttpStack.Builder().apply {
@@ -118,8 +122,8 @@ class OkHttpStackTest {
             )
             networkInterceptors(MyInterceptor(null, null, null))
         }.build().apply {
-            Assert.assertEquals(2, okHttpClient.interceptors.size)
-            Assert.assertEquals(1, okHttpClient.networkInterceptors.size)
+            assertEquals(2, okHttpClient.interceptors.size)
+            assertEquals(1, okHttpClient.networkInterceptors.size)
         }
     }
 
@@ -133,13 +137,13 @@ class OkHttpStackTest {
                 }
             }
             .apply {
-                Assert.assertEquals(200, code)
-                Assert.assertEquals("", message)
-                Assert.assertEquals(9904, contentLength)
-                Assert.assertEquals("image/png", contentType)
-                Assert.assertEquals("image/png", getHeaderField("Content-Type"))
+                assertEquals(200, code)
+                assertEquals("", message)
+                assertEquals(9904, contentLength)
+                assertEquals("image/png", contentType)
+                assertEquals("image/png", getHeaderField("Content-Type"))
                 runBlocking { content() }.use {
-                    Assert.assertNotNull(it)
+                    assertNotNull(it)
                 }
             }
 
@@ -156,13 +160,13 @@ class OkHttpStackTest {
                 it.getResponse(url, httpHeaders, null)
             }
         }.apply {
-            Assert.assertEquals(200, code)
-            Assert.assertEquals("", message)
-            Assert.assertEquals(9904, contentLength)
-            Assert.assertEquals("image/png", contentType)
-            Assert.assertEquals("image/png", getHeaderField("Content-Type"))
+            assertEquals(200, code)
+            assertEquals("", message)
+            assertEquals(9904, contentLength)
+            assertEquals("image/png", contentType)
+            assertEquals("image/png", getHeaderField("Content-Type"))
             runBlocking { content() }.use {
-                Assert.assertNotNull(it)
+                assertNotNull(it)
             }
         }
 
@@ -183,32 +187,32 @@ class OkHttpStackTest {
         val element2 = OkHttpStack(OkHttpClient.Builder().build())
         val element3 = OkHttpStack(OkHttpClient.Builder().build())
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
     fun testToString() {
-        Assert.assertEquals(
+        assertEquals(
             "OkHttpStack(connectTimeout=10000,readTimeout=10000)",
             OkHttpStack(OkHttpClient.Builder().build()).toString()
         )

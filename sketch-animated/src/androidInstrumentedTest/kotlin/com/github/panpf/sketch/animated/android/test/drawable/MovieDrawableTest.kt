@@ -21,8 +21,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
 import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.ResourceImageFile
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
@@ -30,9 +30,13 @@ import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class MovieDrawableTest {
@@ -44,8 +48,9 @@ class MovieDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val callbackList = mutableListOf<String>()
-        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-            .use { Movie.decodeStream(it) }
+        val movie =
+            context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+                .use { Movie.decodeStream(it) }
         val movieDrawable = MovieDrawable(movie).apply {
             clearAnimationCallbacks()
             val callback = object : AnimationCallback() {
@@ -59,9 +64,9 @@ class MovieDrawableTest {
                     callbackList.add("onAnimationEnd")
                 }
             }
-            Assert.assertFalse(unregisterAnimationCallback(callback))
+            assertFalse(unregisterAnimationCallback(callback))
             registerAnimationCallback(callback)
-            Assert.assertTrue(unregisterAnimationCallback(callback))
+            assertTrue(unregisterAnimationCallback(callback))
             registerAnimationCallback(callback)
 
             setAnimatedTransformation(TranslucentAnimatedTransformation)
@@ -81,21 +86,21 @@ class MovieDrawableTest {
             runBlocking(Dispatchers.Main) {
                 imageView.setImageDrawable(movieDrawable)
             }
-            Assert.assertFalse(movieDrawable.isRunning)
-            Assert.assertEquals(listOf<String>(), callbackList)
+            assertFalse(movieDrawable.isRunning)
+            assertEquals(listOf<String>(), callbackList)
 
             runBlocking(Dispatchers.Main) {
                 movieDrawable.start()
             }
-            Assert.assertEquals(listOf("onAnimationStart"), callbackList)
-            Assert.assertTrue(movieDrawable.isRunning)
+            assertEquals(listOf("onAnimationStart"), callbackList)
+            assertTrue(movieDrawable.isRunning)
 
             runBlocking(Dispatchers.Main) {
                 delay(1000)
                 movieDrawable.stop()
             }
-            Assert.assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackList)
-            Assert.assertFalse(movieDrawable.isRunning)
+            assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackList)
+            assertFalse(movieDrawable.isRunning)
         }
     }
 
@@ -105,8 +110,9 @@ class MovieDrawableTest {
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-            .use { Movie.decodeStream(it) }
+        val movie =
+            context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+                .use { Movie.decodeStream(it) }
         val movieDrawable = MovieDrawable(movie)
 
         MyTestFragment::class.launchFragmentInContainer().getFragmentSync().apply {
@@ -128,8 +134,9 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-            .use { Movie.decodeStream(it) }
+        val movie =
+            context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+                .use { Movie.decodeStream(it) }
         val movie2 =
             context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
                 .use { Movie.decodeStream(it) }
@@ -138,27 +145,27 @@ class MovieDrawableTest {
         val element2 = MovieDrawable(movie2, ARGB_8888)
         val element3 = MovieDrawable(movie, RGB_565)
 
-        Assert.assertNotSame(element1, element11)
-        Assert.assertNotSame(element1, element2)
-        Assert.assertNotSame(element1, element3)
-        Assert.assertNotSame(element2, element11)
-        Assert.assertNotSame(element2, element3)
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
 
-        Assert.assertEquals(element1, element1)
-        Assert.assertEquals(element1, element11)
-        Assert.assertNotEquals(element1, element2)
-        Assert.assertNotEquals(element1, element3)
-        Assert.assertNotEquals(element2, element11)
-        Assert.assertNotEquals(element2, element3)
-        Assert.assertNotEquals(element1, null)
-        Assert.assertNotEquals(element1, Any())
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        Assert.assertEquals(element1.hashCode(), element1.hashCode())
-        Assert.assertEquals(element1.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element2.hashCode())
-        Assert.assertNotEquals(element1.hashCode(), element3.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element11.hashCode())
-        Assert.assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
@@ -166,9 +173,10 @@ class MovieDrawableTest {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
-            .use { Movie.decodeStream(it) }
-        Assert.assertEquals(
+        val movie =
+            context.assets.open(ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName)
+                .use { Movie.decodeStream(it) }
+        assertEquals(
             "MovieDrawable(size=480x480, config=ARGB_8888)",
             MovieDrawable(movie, ARGB_8888).toString()
         )

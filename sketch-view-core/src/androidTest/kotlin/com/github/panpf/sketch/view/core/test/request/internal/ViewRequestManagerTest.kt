@@ -27,9 +27,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ViewRequestManagerTest {
@@ -39,14 +45,14 @@ class ViewRequestManagerTest {
         val context = getTestContext()
 
         val imageView = ImageView(context)
-        Assert.assertNull(imageView.getTag(id.sketch_request_manager))
+        assertNull(imageView.getTag(id.sketch_request_manager))
 
         val requestManager = imageView.requestManager
-        Assert.assertNotNull(imageView.getTag(id.sketch_request_manager))
-        Assert.assertSame(imageView.getTag(id.sketch_request_manager), requestManager)
+        assertNotNull(imageView.getTag(id.sketch_request_manager))
+        assertSame(imageView.getTag(id.sketch_request_manager), requestManager)
 
         val requestManager2 = imageView.requestManager
-        Assert.assertSame(requestManager, requestManager2)
+        assertSame(requestManager, requestManager2)
     }
 
     @Test
@@ -64,41 +70,41 @@ class ViewRequestManagerTest {
             val disposable = requestManager.getDisposable(deferred)
             val disposable1 = ReusableDisposable(imageView.requestManager, deferred)
 
-            Assert.assertFalse(requestManager.isDisposed(disposable))
-            Assert.assertTrue(requestManager.isDisposed(disposable1))
+            assertFalse(requestManager.isDisposed(disposable))
+            assertTrue(requestManager.isDisposed(disposable1))
 
             val disposable2 = requestManager.getDisposable(deferred)
-            Assert.assertNotSame(disposable, disposable2)
+            assertNotSame(disposable, disposable2)
 
             requestManager.setFieldValue("isRestart", true)
 
             val disposable3 = requestManager.getDisposable(deferred)
-            Assert.assertSame(disposable2, disposable3)
+            assertSame(disposable2, disposable3)
 
             requestManager.dispose()
-            Assert.assertTrue(requestManager.isDisposed(disposable))
-            Assert.assertTrue(requestManager.isDisposed(disposable1))
+            assertTrue(requestManager.isDisposed(disposable))
+            assertTrue(requestManager.isDisposed(disposable1))
         }
     }
 
     @Test
     fun testAttachedAndDetached() {
         val fragment = MyTestFragment::class.launchFragmentInContainer().getFragmentSync()
-        Assert.assertEquals(RESUMED, fragment.lifecycle.currentState)
+        assertEquals(RESUMED, fragment.lifecycle.currentState)
 
         val imageView = fragment.imageView
-        Assert.assertFalse(imageView.isAttachedToWindow)
-        Assert.assertNull(imageView.drawable)
-        Assert.assertNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
+        assertFalse(imageView.isAttachedToWindow)
+        assertNull(imageView.drawable)
+        assertNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // If there is no attached to the window, the display will inevitably fail
         runBlocking {
             imageView.loadImage(ResourceImages.jpeg.uri)
             delay(1500)
         }
-        Assert.assertFalse(imageView.isAttachedToWindow)
-        Assert.assertNull(imageView.drawable)
-        Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
+        assertFalse(imageView.isAttachedToWindow)
+        assertNull(imageView.drawable)
+        assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // Automatically restart tasks when attached to a window
         runBlocking {
@@ -107,9 +113,9 @@ class ViewRequestManagerTest {
             }
             delay(1500)
         }
-        Assert.assertTrue(imageView.isAttachedToWindow)
-        Assert.assertNotNull(imageView.drawable)
-        Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
+        assertTrue(imageView.isAttachedToWindow)
+        assertNotNull(imageView.drawable)
+        assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // detached from window, request and drawable is null
 
@@ -120,9 +126,9 @@ class ViewRequestManagerTest {
             }
             delay(1500)
         }
-        Assert.assertFalse(imageView.isAttachedToWindow)
-        Assert.assertNotNull(imageView.drawable)
-        Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
+        assertFalse(imageView.isAttachedToWindow)
+        assertNotNull(imageView.drawable)
+        assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // Automatically restart tasks when attached to a window
         runBlocking {
@@ -131,9 +137,9 @@ class ViewRequestManagerTest {
             }
             delay(1500)
         }
-        Assert.assertTrue(imageView.isAttachedToWindow)
-        Assert.assertNotNull(imageView.drawable)
-        Assert.assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
+        assertTrue(imageView.isAttachedToWindow)
+        assertNotNull(imageView.drawable)
+        assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
     }
 
     class MyTestFragment : Fragment() {

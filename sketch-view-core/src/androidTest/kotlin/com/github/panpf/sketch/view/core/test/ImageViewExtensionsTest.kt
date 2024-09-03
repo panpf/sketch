@@ -29,9 +29,11 @@ import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewExtensionsTest {
@@ -41,16 +43,16 @@ class ImageViewExtensionsTest {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         }
-        Assert.assertNotNull(imageView.drawable)
+        assertNotNull(imageView.drawable)
 
         runBlocking(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
         runBlocking {
             imageView.loadImage(ResourceImages.png.uri) {
                 resultCachePolicy(DISABLED)
@@ -60,7 +62,7 @@ class ImageViewExtensionsTest {
                 })
             }.job.join()
         }
-        Assert.assertNull(imageView.drawable)
+        assertNull(imageView.drawable)
     }
 
     @Test
@@ -68,17 +70,17 @@ class ImageViewExtensionsTest {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
-        Assert.assertNull(imageView.imageResult)
+        assertNull(imageView.imageResult)
 
         runBlocking {
             imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         }
-        Assert.assertTrue(imageView.imageResult is ImageResult.Success)
+        assertTrue(imageView.imageResult is ImageResult.Success)
 
         runBlocking {
             imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
         }
-        Assert.assertTrue(imageView.imageResult is ImageResult.Error)
+        assertTrue(imageView.imageResult is ImageResult.Error)
 
         runBlocking {
             imageView.loadImage(ResourceImages.png.uri) {
@@ -89,6 +91,6 @@ class ImageViewExtensionsTest {
                 })
             }.job.join()
         }
-        Assert.assertNull(imageView.imageResult)
+        assertNull(imageView.imageResult)
     }
 }

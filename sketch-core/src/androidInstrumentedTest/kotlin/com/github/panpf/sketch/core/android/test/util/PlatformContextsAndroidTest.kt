@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.totalAvailableMemoryBytes
-import org.junit.Assert
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class PlatformContextsAndroidTest {
 
@@ -26,7 +26,7 @@ class PlatformContextsAndroidTest {
             activityManager != null && !isLargeHeap -> activityManager.memoryClass * 1024L * 1024L
             else -> 16 * 1024L * 1024L
         }
-        Assert.assertEquals(appMemoryClassBytes, context.totalAvailableMemoryBytes())
+        assertEquals(appMemoryClassBytes, context.totalAvailableMemoryBytes())
     }
 
     @Test

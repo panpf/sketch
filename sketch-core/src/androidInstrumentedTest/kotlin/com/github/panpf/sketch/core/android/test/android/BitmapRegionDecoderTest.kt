@@ -8,19 +8,23 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.toShortInfoString
-import java.io.IOException
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4j.test.ktx.assertThrow
+import org.junit.runner.RunWith
+import java.io.IOException
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 @RunWith(AndroidJUnit4::class)
 class BitmapRegionDecoderTest {
@@ -32,18 +36,18 @@ class BitmapRegionDecoderTest {
         val imageSize = Size(1291, 1936)
 
         val options = Options()
-        Assert.assertFalse(options.inMutable)
+        assertFalse(options.inMutable)
         val bitmap = context.assets.open(imageName)
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
-        Assert.assertFalse(bitmap.isMutable)
+        assertFalse(bitmap.isMutable)
 
         options.inMutable = true
-        Assert.assertTrue(options.inMutable)
+        assertTrue(options.inMutable)
         val bitmap1 = context.assets.open(imageName)
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
-        Assert.assertFalse(bitmap1.isMutable)
+        assertFalse(bitmap1.isMutable)
     }
 
     @Test
@@ -53,24 +57,24 @@ class BitmapRegionDecoderTest {
         val imageSize = Size(1291, 1936)
 
         val options = Options()
-        Assert.assertEquals(ARGB_8888, options.inPreferredConfig)
+        assertEquals(ARGB_8888, options.inPreferredConfig)
         val bitmap = context.assets.open(imageName)
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
-        Assert.assertEquals(ARGB_8888, bitmap.config)
+        assertEquals(ARGB_8888, bitmap.config)
 
         @Suppress("DEPRECATION")
         options.inPreferredConfig = ARGB_4444
         @Suppress("DEPRECATION")
-        Assert.assertEquals(ARGB_4444, options.inPreferredConfig)
+        assertEquals(ARGB_4444, options.inPreferredConfig)
         val bitmap1 = context.assets.open(imageName)
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
         if (VERSION.SDK_INT > VERSION_CODES.M) {
-            Assert.assertEquals(ARGB_8888, bitmap1.config)
+            assertEquals(ARGB_8888, bitmap1.config)
         } else {
             @Suppress("DEPRECATION")
-            Assert.assertEquals(ARGB_4444, bitmap1.config)
+            assertEquals(ARGB_4444, bitmap1.config)
         }
     }
 
@@ -218,14 +222,14 @@ class BitmapRegionDecoderTest {
                             } catch (e: IllegalArgumentException) {
                                 throw Exception(message, e)
                             }.also { bitmap ->
-                                Assert.assertSame(message, options.inBitmap, bitmap)
-                                Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                                assertSame(options.inBitmap, bitmap, message)
+                                assertEquals(sampledBitmapSize, bitmap.size, message)
                             }
                         } else {
                             /* sampleSize not support */
                             try {
                                 val bitmap = decodeWithInBitmap(options)!!
-                                Assert.fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                                fail("inBitmapAndInSampleSizeMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                             } catch (e: IllegalArgumentException) {
                                 if (e.message != "Problem decoding into existing bitmap") {
                                     throw Exception("exception type error. $message", e)
@@ -244,8 +248,8 @@ class BitmapRegionDecoderTest {
                         } catch (e: IllegalArgumentException) {
                             throw Exception(message, e)
                         }.also { bitmap ->
-                            Assert.assertSame(message, options.inBitmap, bitmap)
-                            Assert.assertEquals(message, regionRect.size(), bitmap.size)
+                            assertSame(options.inBitmap, bitmap, message)
+                            assertEquals(regionRect.size(), bitmap.size, message)
                         }
                     }
                 } else {
@@ -257,7 +261,7 @@ class BitmapRegionDecoderTest {
                     )
                     try {
                         val bitmap = decodeWithInBitmap(options)!!
-                        Assert.fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
+                        fail("inBitmapMinAPI error. bitmap=${bitmap.toShortInfoString()}. $message")
                     } catch (e: IllegalArgumentException) {
                         if (e.message != "Problem decoding into existing bitmap") {
                             throw Exception("exception type error. $message", e)
@@ -272,9 +276,9 @@ class BitmapRegionDecoderTest {
                     throw Exception(message, e)
                 }
                 if (sampleSize > 1 && VERSION.SDK_INT >= image.inSampleSizeMinAPI) {
-                    Assert.assertEquals(message, sampledBitmapSize, bitmap.size)
+                    assertEquals(sampledBitmapSize, bitmap.size, message)
                 } else {
-                    Assert.assertEquals(message, regionRect.size(), bitmap.size)
+                    assertEquals(regionRect.size(), bitmap.size, message)
                 }
             }
         } else {

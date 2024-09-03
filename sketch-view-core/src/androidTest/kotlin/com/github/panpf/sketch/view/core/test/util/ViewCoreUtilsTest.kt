@@ -15,9 +15,11 @@ import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ViewCoreUtilsTest {
@@ -46,35 +48,35 @@ class ViewCoreUtilsTest {
     fun testFitScale() {
         val context = getTestContext()
 
-        Assert.assertTrue(ImageView(context).apply {
+        assertTrue(ImageView(context).apply {
             scaleType = ScaleType.FIT_START
         }.scaleType.fitScale)
 
-        Assert.assertTrue(ImageView(context).apply {
+        assertTrue(ImageView(context).apply {
             scaleType = ScaleType.FIT_CENTER
         }.scaleType.fitScale)
 
-        Assert.assertTrue(ImageView(context).apply {
+        assertTrue(ImageView(context).apply {
             scaleType = ScaleType.FIT_END
         }.scaleType.fitScale)
 
-        Assert.assertFalse(ImageView(context).apply {
+        assertFalse(ImageView(context).apply {
             scaleType = ScaleType.FIT_XY
         }.scaleType.fitScale)
 
-        Assert.assertFalse(ImageView(context).apply {
+        assertFalse(ImageView(context).apply {
             scaleType = ScaleType.CENTER_CROP
         }.scaleType.fitScale)
 
-        Assert.assertFalse(ImageView(context).apply {
+        assertFalse(ImageView(context).apply {
             scaleType = ScaleType.CENTER
         }.scaleType.fitScale)
 
-        Assert.assertTrue(ImageView(context).apply {
+        assertTrue(ImageView(context).apply {
             scaleType = ScaleType.CENTER_INSIDE
         }.scaleType.fitScale)
 
-        Assert.assertFalse(ImageView(context).apply {
+        assertFalse(ImageView(context).apply {
             scaleType = ScaleType.MATRIX
         }.scaleType.fitScale)
     }
@@ -88,7 +90,7 @@ class ViewCoreUtilsTest {
                 ColorDrawable(Color.GREEN)
             )
         ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
         }
 
         LayerDrawable(
@@ -98,11 +100,11 @@ class ViewCoreUtilsTest {
                 ColorDrawable(Color.BLUE),
             )
         ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.BLUE, this!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Color.BLUE, this!!.asOrThrow<ColorDrawable>().color)
         }
 
         LayerDrawable(arrayOf()).findLeafChildDrawable().apply {
-            Assert.assertEquals(null, this)
+            assertEquals(null, this)
         }
 
 
@@ -110,26 +112,26 @@ class ViewCoreUtilsTest {
             ColorDrawable(Color.BLUE),
             ColorDrawable(Color.RED),
         ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
         }
 
         CrossfadeDrawable(
             ColorDrawable(Color.RED),
             ColorDrawable(Color.GREEN),
         ).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
         }
 
         CrossfadeDrawable(null, null).findLeafChildDrawable().apply {
-            Assert.assertEquals(null, this)
+            assertEquals(null, this)
         }
 
         ColorDrawable(Color.GREEN).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
         }
 
         ColorDrawable(Color.RED).findLeafChildDrawable().apply {
-            Assert.assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
         }
     }
 

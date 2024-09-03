@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 /*
  * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
  *
@@ -15,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@file:Suppress("DEPRECATION")
 
 package com.github.panpf.sketch.core.android.test.request
 
@@ -41,14 +41,13 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ImageRequestExecuteAndroidTest {
-
 
     @Test
     fun testBitmapConfig() = runTest {
