@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.internal.testUtilsCore)
+            api(projects.sketchComposeCore)
             api(compose.foundation)
             api(compose.ui)
             api(compose.uiTest)

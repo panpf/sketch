@@ -212,7 +212,7 @@ class LruDiskCacheTest {
                 assertNotNull(it.openSnapshot("file4").use { it })
 
                 it.putFile(fileName = "file5", sizeMB = 5)
-                assertEquals("9MB", it.size.formatFileSize())
+                assertEquals("9MB", it.size.formatFileSize())   // TODO Often fail
                 assertNull(it.openSnapshot("file1").use { it })
                 assertNull(it.openSnapshot("file2").use { it })
                 assertNull(it.openSnapshot("file3").use { it })

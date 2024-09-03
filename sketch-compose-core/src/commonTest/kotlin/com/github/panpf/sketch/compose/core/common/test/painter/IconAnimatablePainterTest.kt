@@ -4,11 +4,13 @@ package com.github.panpf.sketch.compose.core.common.test.painter
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.painter.asEquality
 import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
 import com.github.panpf.sketch.test.utils.SizeColorPainter
+import com.github.panpf.sketch.test.utils.asAnimatable
 import kotlin.test.Test
 
 class IconAnimatablePainterTest {
@@ -18,9 +20,10 @@ class IconAnimatablePainterTest {
     fun testRememberIconAnimatablePainter() {
         runComposeUiTest {
             val painterIcon =
-                Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEquality(it) }
-            val painterBackground =
-                Color.Gray.let { SizeColorPainter(it, Size(100f, 100f)).asEquality(it) }
+                Color.Cyan.let {
+                    SizeColorPainter(it, Size(100f, 100f)).asAnimatable().asEquality(it)
+                }
+            val painterBackground = Color.Gray.let { ColorPainter(it).asEquality(it) }
             val colorBackground = Color.DarkGray
             val iconSize = Size(200f, 200f)
             val iconTint = Color.Magenta
