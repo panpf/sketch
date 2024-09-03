@@ -9,4 +9,4 @@ fi
 
 ./gradlew sample:packageDistributionForCurrentOS
 
-echo "✅  Desktop package is created successfully."
+echo "✅  Desktop package is created successfully. Output: sample/build/compose/binaries/main/"
