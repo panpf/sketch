@@ -1,24 +1,25 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="desktopSample" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false">
-    <ExternalSystemSettings>
-      <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/sample" />
-      <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-DmainClass=com.github.panpf.sketch.sample.MainKt --quiet" />
-      <option name="taskDescriptions">
-        <list />
-      </option>
-      <option name="taskNames">
-        <list>
-          <option value="desktopRun" />
-        </list>
-      </option>
-      <option name="vmOptions" />
-    </ExternalSystemSettings>
-    <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-    <DebugAllEnabled>false</DebugAllEnabled>
-    <RunAsTest>false</RunAsTest>
-    <method v="2" />
-  </configuration>
+    <configuration name="desktopSample" activateToolWindowBeforeRun="false" default="false"
+        factoryName="Gradle" type="GradleRunConfiguration">
+        <ExternalSystemSettings>
+            <option name="executionName" />
+            <option name="externalProjectPath" value="$PROJECT_DIR$/sample" />
+            <option name="externalSystemIdString" value="GRADLE" />
+            <option name="scriptParameters" value="" />
+            <option name="taskDescriptions">
+                <list />
+            </option>
+            <option name="taskNames">
+                <list>
+                    <option value="run" />
+                </list>
+            </option>
+            <option name="vmOptions" />
+        </ExternalSystemSettings>
+        <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+        <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+        <DebugAllEnabled>false</DebugAllEnabled>
+        <RunAsTest>false</RunAsTest>
+        <method v="2" />
+    </configuration>
 </component>
