@@ -82,9 +82,7 @@ fun isComposeResourceUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest
  */
-class ComposeResourceUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+class ComposeResourceUriFetcher constructor(
     val resourcePath: String,
 ) : Fetcher {
 
@@ -105,17 +103,12 @@ class ComposeResourceUriFetcher(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ComposeResourceUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (resourcePath != other.resourcePath) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + resourcePath.hashCode()
-        return result
+        return resourcePath.hashCode()
     }
 
     override fun toString(): String {
@@ -128,7 +121,7 @@ class ComposeResourceUriFetcher(
             val uri = request.uri
             if (!isComposeResourceUri(uri)) return null
             val resourcePath = uri.pathSegments.drop(1).joinToString("/")
-            return ComposeResourceUriFetcher(sketch, request, resourcePath)
+            return ComposeResourceUriFetcher(resourcePath)
         }
 
         override fun equals(other: Any?): Boolean {

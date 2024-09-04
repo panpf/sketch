@@ -63,41 +63,32 @@ class AssetUriFetcherTest {
         val contentUri = "content://sample_app/sample"
 
         fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!.apply {
-            assertEquals(assetUri, request.uri.toString())
             assertEquals(ResourceImages.jpeg.resourceName, fileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri2))!!.apply {
-            assertEquals(assetUri2, request.uri.toString())
             assertEquals(ResourceImages.png.resourceName, fileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri3))!!.apply {
-            assertEquals(assetUri3, request.uri.toString())
             assertEquals(ResourceImages.animGif.resourceName, fileName)
         }
 
         fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!.apply {
-            assertEquals(assetUri, request.uri.toString())
             assertEquals(ResourceImages.jpeg.resourceName, fileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri2))!!.apply {
-            assertEquals(assetUri2, request.uri.toString())
             assertEquals(ResourceImages.png.resourceName, fileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri3))!!.apply {
-            assertEquals(assetUri3, request.uri.toString())
             assertEquals(ResourceImages.animGif.resourceName, fileName)
         }
 
         fetcherFactory.create(sketch, ImageRequest(context, assetUri))!!.apply {
-            assertEquals(assetUri, request.uri.toString())
             assertEquals(ResourceImages.jpeg.resourceName, fileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri2))!!.apply {
-            assertEquals(assetUri2, request.uri.toString())
             assertEquals(ResourceImages.png.resourceName, fileName)
         }
         fetcherFactory.create(sketch, ImageRequest(context, assetUri3))!!.apply {
-            assertEquals(assetUri3, request.uri.toString())
             assertEquals(ResourceImages.animGif.resourceName, fileName)
         }
 

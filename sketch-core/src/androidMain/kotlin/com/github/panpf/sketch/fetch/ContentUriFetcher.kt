@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.fetch
 
+import android.content.Context
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
@@ -36,9 +37,8 @@ fun isContentUri(uri: Uri): Boolean = ContentUriFetcher.SCHEME.equals(uri.scheme
  *
  * @see com.github.panpf.sketch.core.android.test.fetch.ContentUriFetcherTest
  */
-class ContentUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+class ContentUriFetcher constructor(
+    val context: Context,
     val contentUri: android.net.Uri,
 ) : Fetcher {
 
@@ -48,25 +48,20 @@ class ContentUriFetcher(
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val mimeType = request.context.contentResolver.getType(contentUri)
-        FetchResult(ContentDataSource(sketch.context, contentUri), mimeType)
+        val mimeType = context.contentResolver.getType(contentUri)
+        FetchResult(ContentDataSource(context, contentUri), mimeType)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ContentUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (contentUri != other.contentUri) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + contentUri.hashCode()
-        return result
+        return contentUri.hashCode()
     }
 
     override fun toString(): String {
@@ -78,7 +73,7 @@ class ContentUriFetcher(
         override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {
             val uri = request.uri
             if (!isContentUri(uri)) return null
-            return ContentUriFetcher(sketch, request, android.net.Uri.parse(uri.toString()))
+            return ContentUriFetcher(request.context, android.net.Uri.parse(uri.toString()))
         }
 
         override fun equals(other: Any?): Boolean {

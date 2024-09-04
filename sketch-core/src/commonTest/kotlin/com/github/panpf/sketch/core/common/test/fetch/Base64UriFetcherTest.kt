@@ -130,11 +130,11 @@ class Base64UriFetcherTest {
         assertNotEquals(base64Uri1, base64Uri2)
         fetcherFactory.create(sketch, ImageRequest(context, base64Uri1))!!.apply {
             assertEquals("image/png", mimeType)
-            assertEquals("4y2u1412421089084901240129", base64String)
+            assertEquals("4y2u1412421089084901240129", dataEncodedString)
         }
         fetcherFactory.create(sketch, ImageRequest(context, base64Uri2))!!.apply {
             assertEquals("image/png", mimeType)
-            assertEquals("4y2u1412421089084901240129", base64String)
+            assertEquals("4y2u1412421089084901240129", dataEncodedString)
         }
         val base64ErrorUri1 = "content://sample_app/sample"
         val base64ErrorUri2 = "data:image/pngbase64,4y2u1412421089084901240129"

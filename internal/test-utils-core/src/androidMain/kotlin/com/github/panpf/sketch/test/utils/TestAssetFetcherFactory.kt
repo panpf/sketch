@@ -27,9 +27,10 @@ class TestAssetFetcherFactory : Fetcher.Factory {
         val uri = request.uri
         if (AssetUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && uri.authority?.takeIf { it.isNotEmpty() } == null
-            && "test_asset".equals(uri.pathSegments.firstOrNull(), ignoreCase = true)) {
+            && "test_asset".equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
+        ) {
             val fileName = uri.pathSegments.drop(1).joinToString("/")
-            return AssetUriFetcher(sketch, request, fileName)
+            return AssetUriFetcher(request.context, fileName)
         }
         return null
     }

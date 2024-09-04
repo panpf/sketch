@@ -109,77 +109,59 @@ class FileUriFetcherTest {
         val fetcherFactory = FileUriFetcher.Factory()
 
         fetcherFactory.create(sketch, ImageRequest(context, filePath))!!.apply {
-            assertEquals(filePath, this.request.uri.toString())
             assertEquals(filePath, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePathUri))!!.apply {
-            assertEquals(filePathUri, this.request.uri.toString())
             assertEquals(filePath, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath2))!!.apply {
-            assertEquals(filePath2, this.request.uri.toString())
             assertEquals(filePath2, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath2Uri))!!.apply {
-            assertEquals(filePath2Uri, this.request.uri.toString())
             assertEquals(filePath2, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath3Uri))!!.apply {
-            assertEquals(filePath3Uri, this.request.uri.toString())
             assertEquals(filePath3, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath4Uri))!!.apply {
-            assertEquals(filePath4Uri, this.request.uri.toString())
             assertEquals(filePath4, this.path.toString())
         }
 
         fetcherFactory.create(sketch, ImageRequest(context, filePath))!!.apply {
-            assertEquals(filePath, this.request.uri.toString())
             assertEquals(filePath, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePathUri))!!.apply {
-            assertEquals(filePathUri, this.request.uri.toString())
             assertEquals(filePath, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath2))!!.apply {
-            assertEquals(filePath2, this.request.uri.toString())
             assertEquals(filePath2, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath2Uri))!!.apply {
-            assertEquals(filePath2Uri, this.request.uri.toString())
             assertEquals(filePath2, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath3Uri))!!.apply {
-            assertEquals(filePath3Uri, this.request.uri.toString())
             assertEquals(filePath3, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath4Uri))!!.apply {
-            assertEquals(filePath4Uri, this.request.uri.toString())
             assertEquals(filePath4, this.path.toString())
         }
 
         fetcherFactory.create(sketch, ImageRequest(context, filePath))!!.apply {
-            assertEquals(filePath, this.request.uri.toString())
             assertEquals(filePath, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePathUri))!!.apply {
-            assertEquals(filePathUri, this.request.uri.toString())
             assertEquals(filePath, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath2))!!.apply {
-            assertEquals(filePath2, this.request.uri.toString())
             assertEquals(filePath2, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath2Uri))!!.apply {
-            assertEquals(filePath2Uri, this.request.uri.toString())
             assertEquals(filePath2, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath3Uri))!!.apply {
-            assertEquals(filePath3Uri, this.request.uri.toString())
             assertEquals(filePath3, this.path.toString())
         }
         fetcherFactory.create(sketch, ImageRequest(context, filePath4Uri))!!.apply {
-            assertEquals(filePath4Uri, this.request.uri.toString())
             assertEquals(filePath4, this.path.toString())
         }
 

@@ -57,7 +57,7 @@ fun isHttpUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.HttpUriFetcherTest
  */
-open class HttpUriFetcher(
+class HttpUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
     val url: String
