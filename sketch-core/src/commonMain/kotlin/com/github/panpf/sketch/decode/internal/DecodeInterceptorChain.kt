@@ -16,12 +16,10 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
 
@@ -31,8 +29,6 @@ import com.github.panpf.sketch.util.requiredWorkThread
  * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodeInterceptorChainTest
  */
 internal class DecodeInterceptorChain constructor(
-    override val sketch: Sketch,
-    override val request: ImageRequest,
     override val requestContext: RequestContext,
     override val fetchResult: FetchResult?,
     private val interceptors: List<DecodeInterceptor>,
@@ -44,7 +40,10 @@ internal class DecodeInterceptorChain constructor(
         requiredWorkThread()
         val interceptor = interceptors[index]
         val next = DecodeInterceptorChain(
-            sketch, request, requestContext, fetchResult, interceptors, index + 1
+            requestContext = requestContext,
+            fetchResult = fetchResult,
+            interceptors = interceptors,
+            index = index + 1
         )
         return interceptor.intercept(next)
     }

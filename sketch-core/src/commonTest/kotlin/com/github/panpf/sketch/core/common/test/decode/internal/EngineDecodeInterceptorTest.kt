@@ -42,8 +42,6 @@ class EngineDecodeInterceptorTest {
             precision(LESS_PIXELS)
         }
         val chain = DecodeInterceptorChain(
-            sketch = sketch,
-            request = request,
             requestContext = request.toRequestContext(sketch),
             fetchResult = null,
             interceptors = interceptors,

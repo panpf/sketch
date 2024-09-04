@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Scale
@@ -40,7 +39,6 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
 
     @WorkerThread
     override suspend fun transform(
-        sketch: Sketch,
         requestContext: RequestContext,
         input: Image
     ): TransformResult {

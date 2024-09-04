@@ -55,24 +55,27 @@ interface RequestInterceptor : NullableKey {
     interface Chain {
 
         /**
+         * The request context
+         */
+        val requestContext: RequestContext
+
+        /**
          * The [Sketch] instance
          */
         val sketch: Sketch
+            get() = requestContext.sketch
 
         /**
          * The original request
          */
         val initialRequest: ImageRequest
+            get() = requestContext.initialRequest
 
         /**
          * The request to proceed with.
          */
         val request: ImageRequest
-
-        /**
-         * The request context
-         */
-        val requestContext: RequestContext
+            get() = requestContext.request
 
         /**
          * Continue executing the chain.

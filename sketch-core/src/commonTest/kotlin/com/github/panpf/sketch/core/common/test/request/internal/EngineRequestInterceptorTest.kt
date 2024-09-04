@@ -41,9 +41,6 @@ class EngineRequestInterceptorTest {
 
         val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
             RequestInterceptorChain(
-                sketch = sketch,
-                initialRequest = request,
-                request = request,
                 requestContext = request.toRequestContext(sketch),
                 interceptors = listOf(EngineRequestInterceptor()),
                 index = 0,

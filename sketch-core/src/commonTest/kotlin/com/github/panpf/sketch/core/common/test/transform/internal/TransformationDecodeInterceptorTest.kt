@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.core.common.test.transform.internal
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.images.ResourceImages
@@ -58,12 +57,10 @@ class TransformationDecodeInterceptorTest {
                 precision(LESS_PIXELS)
             }
             val chain = DecodeInterceptorChain(
-                sketch,
-                request,
-                request.toRequestContext(sketch),
-                null,
-                interceptors,
-                0
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = interceptors,
+                index = 0
             )
             TransformationDecodeInterceptor().intercept(chain)
         }.getOrThrow().apply {
@@ -82,12 +79,10 @@ class TransformationDecodeInterceptorTest {
                 transformations(CircleCropTransformation())
             }
             val chain = DecodeInterceptorChain(
-                sketch,
-                request,
-                request.toRequestContext(sketch),
-                null,
-                interceptors,
-                0
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = interceptors,
+                index = 0
             )
             TransformationDecodeInterceptor().intercept(chain)
         }.getOrThrow().apply {
@@ -108,19 +103,16 @@ class TransformationDecodeInterceptorTest {
                         get() = "TestTransformation"
 
                     override suspend fun transform(
-                        sketch: Sketch,
                         requestContext: RequestContext,
                         input: Image
                     ): TransformResult = TransformResult(input, "TestTransformation")
                 })
             }
             val chain = DecodeInterceptorChain(
-                sketch,
-                request,
-                request.toRequestContext(sketch),
-                null,
-                interceptors,
-                0
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = interceptors,
+                index = 0
             )
             TransformationDecodeInterceptor().intercept(chain)
         }.getOrThrow().apply {
@@ -141,19 +133,16 @@ class TransformationDecodeInterceptorTest {
                         get() = "TestTransformation"
 
                     override suspend fun transform(
-                        sketch: Sketch,
                         requestContext: RequestContext,
                         input: Image
                     ): TransformResult? = null
                 })
             }
             val chain = DecodeInterceptorChain(
-                sketch,
-                request,
-                request.toRequestContext(sketch),
-                null,
-                interceptors,
-                0
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = interceptors,
+                index = 0
             )
             TransformationDecodeInterceptor().intercept(chain)
         }.getOrThrow().apply {

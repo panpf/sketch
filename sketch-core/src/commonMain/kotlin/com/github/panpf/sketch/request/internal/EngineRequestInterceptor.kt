@@ -40,8 +40,6 @@ class EngineRequestInterceptor : RequestInterceptor {
         val requestContext = chain.requestContext
         val decodeResult = withContext(sketch.decodeTaskDispatcher) {
             DecodeInterceptorChain(
-                sketch = sketch,
-                request = request,
                 requestContext = requestContext,
                 fetchResult = null,
                 interceptors = sketch.components.getDecodeInterceptorList(request),

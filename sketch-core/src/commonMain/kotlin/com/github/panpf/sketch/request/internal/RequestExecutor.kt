@@ -80,9 +80,6 @@ class RequestExecutor {
             }
 
             val result = RequestInterceptorChain(
-                sketch = sketch,
-                initialRequest = requestContext.request,
-                request = requestContext.request,
                 requestContext = requestContext,
                 interceptors = sketch.components.getRequestInterceptorList(requestContext.request),
                 index = 0,

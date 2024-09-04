@@ -58,19 +58,21 @@ interface DecodeInterceptor : NullableKey {
     interface Chain {
 
         /**
+         * The context of the request
+         */
+        val requestContext: RequestContext
+
+        /**
          * The sketch instance that initiated the request
          */
         val sketch: Sketch
+            get() = requestContext.sketch
 
         /**
          * The request that initiated the decode
          */
         val request: ImageRequest
-
-        /**
-         * The context of the request
-         */
-        val requestContext: RequestContext
+            get() = requestContext.request
 
         /**
          * The result of the fetch
