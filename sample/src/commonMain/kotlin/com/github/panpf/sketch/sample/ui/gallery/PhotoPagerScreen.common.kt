@@ -71,6 +71,9 @@ import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.ui.util.isEmpty
+import com.github.panpf.sketch.sample.util.Platform
+import com.github.panpf.sketch.sample.util.current
+import com.github.panpf.sketch.sample.util.isMobile
 import com.github.panpf.sketch.transform.BlurTransformation
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -127,7 +130,9 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
 
             TurnPageIndicator(pagerState, photoPaletteState)
 
-            GestureDialog()
+            if (!Platform.current.isMobile()) {
+                GestureDialog()
+            }
         }
         LaunchedEffect(Unit) {
             focusRequest.requestFocus()
