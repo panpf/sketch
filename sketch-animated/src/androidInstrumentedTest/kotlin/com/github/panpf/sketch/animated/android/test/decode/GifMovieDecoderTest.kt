@@ -197,6 +197,8 @@ class GifMovieDecoderTest {
         assertEquals(element2.hashCode(), element11.hashCode())
     }
 
+    // TODO test: decodeImageInfo
+
     @Test
     fun testDecodeDrawable() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return@runTest

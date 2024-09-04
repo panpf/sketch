@@ -173,6 +173,8 @@ class GifAnimatedDecoderTest {
         }
     }
 
+    // TODO test: decodeImageInfo
+
     @Test
     fun testDecodeDrawable() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest

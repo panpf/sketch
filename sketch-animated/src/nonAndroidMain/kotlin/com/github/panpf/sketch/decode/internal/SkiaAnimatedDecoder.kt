@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(InternalCoroutinesApi::class)
+
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaAnimatedImage
@@ -26,6 +28,9 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
 import okio.buffer
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
@@ -41,9 +46,31 @@ open class SkiaAnimatedDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
-    override suspend fun decode(): Result<DecodeResult> = runCatching {
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+    private val data by lazy {
         val bytes = dataSource.openSource().buffer().readByteArray()
-        val data = Data.makeFromBytes(bytes)
+        Data.makeFromBytes(bytes)
+    }
+
+    override val imageInfo: ImageInfo
+        get() {
+            synchronized(imageInfoLock) {
+                val imageInfo = _imageInfo
+                if (imageInfo != null) return imageInfo
+                val codec = Codec.makeFromData(data)
+                val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
+                return ImageInfo(
+                    width = codec.width,
+                    height = codec.height,
+                    mimeType = mimeType,
+                ).apply {
+                    _imageInfo = this
+                }
+            }
+        }
+
+    override suspend fun decode(): Result<DecodeResult> = runCatching {
         val codec = Codec.makeFromData(data)
         val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
         val imageInfo = ImageInfo(
@@ -51,7 +78,7 @@ open class SkiaAnimatedDecoder(
             height = codec.height,
             mimeType = mimeType,
         )
-        // TODO not support resize
+        // TODO Support resize
         val request = requestContext.request
         val repeatCount = request.repeatCount
         val cacheDecodeTimeoutFrame = request.cacheDecodeTimeoutFrame == true

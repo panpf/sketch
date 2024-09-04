@@ -18,7 +18,6 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
@@ -226,14 +225,12 @@ private fun Size.checkAreaLimit(limitSize: Size): Boolean {
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testAppliedResize
  */
 @WorkerThread
-fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
+fun DecodeResult.appliedResize(resize: Resize): DecodeResult {
     requiredWorkThread()
     val imageTransformer = image.transformer() ?: return this
-    val size = requestContext.size
-    if (size.isEmpty) {
+    if (resize.size.isEmpty) {
         return this
     }
-    val resize: Resize = requestContext.computeResize(imageInfo.size)
     val newImage = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             imageSize = image.size,

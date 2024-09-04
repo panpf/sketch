@@ -103,6 +103,8 @@ class DrawableDecoderTest {
         assertEquals(element1.hashCode(), element11.hashCode())
     }
 
+    // TODO test: decodeImageInfo
+
     @Test
     fun testDecode() {
         val (context, sketch) = getTestContextAndSketch()

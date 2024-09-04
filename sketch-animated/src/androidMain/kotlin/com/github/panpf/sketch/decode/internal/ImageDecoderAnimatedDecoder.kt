@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(InternalCoroutinesApi::class)
+
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.ImageDecoder
@@ -46,6 +48,8 @@ import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 
@@ -70,12 +74,23 @@ open class ImageDecoderAnimatedDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+
+    override val imageInfo: ImageInfo
+        get() {
+            synchronized(imageInfoLock) {
+                return _imageInfo ?: dataSource.readImageInfo()
+                    .apply { _imageInfo = this }
+            }
+        }
+
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
-        val request = requestContext.request
+        val context = requestContext.request.context
         val source = when (dataSource) {
             is AssetDataSource -> {
-                ImageDecoder.createSource(request.context.assets, dataSource.fileName)
+                ImageDecoder.createSource(context.assets, dataSource.fileName)
             }
 
             is ResourceDataSource -> {
@@ -83,7 +98,7 @@ open class ImageDecoderAnimatedDecoder(
             }
 
             is ContentDataSource -> {
-                ImageDecoder.createSource(request.context.contentResolver, dataSource.contentUri)
+                ImageDecoder.createSource(context.contentResolver, dataSource.contentUri)
             }
 
             is ByteArrayDataSource -> {
@@ -104,6 +119,7 @@ open class ImageDecoderAnimatedDecoder(
         var imageInfo: ImageInfo? = null
         var inSampleSize = 1
         var imageDecoder: ImageDecoder? = null
+        val request = requestContext.request
         val drawable = try {
             ImageDecoder.decodeDrawable(source) { decoder, info, _ ->
                 imageDecoder = decoder

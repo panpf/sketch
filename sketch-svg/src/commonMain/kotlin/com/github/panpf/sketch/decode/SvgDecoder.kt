@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
+@file:OptIn(InternalCoroutinesApi::class, InternalCoroutinesApi::class)
+
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.decode.internal.decodeSvg
 import com.github.panpf.sketch.decode.internal.isSvg
+import com.github.panpf.sketch.decode.internal.readSvgImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
 import com.github.panpf.sketch.source.DataSource
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
 
 /**
  * Adds SVG support
@@ -52,10 +58,25 @@ class SvgDecoder(
         const val MIME_TYPE = "image/svg+xml"
     }
 
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+
+    override val imageInfo: ImageInfo
+        get() {
+            synchronized(imageInfoLock) {
+                val imageInfo = _imageInfo
+                if (imageInfo != null) return imageInfo
+                return dataSource.readSvgImageInfo(
+                    useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
+                ).apply {
+                    _imageInfo = this
+                }
+            }
+        }
+
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
-        decodeSvg(
+        dataSource.decodeSvg(
             requestContext = requestContext,
-            dataSource = dataSource,
             useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
             backgroundColor = backgroundColor,
             css = css

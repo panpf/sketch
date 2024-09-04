@@ -19,6 +19,7 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.isSmallerSizeMode
@@ -26,6 +27,9 @@ import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.size
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
+import okio.use
 
 /**
  * Using DecodeHelper to decode image
@@ -41,6 +45,21 @@ open class HelperDecoder(
     private val dataSource: DataSource,
     private val decodeHelperFactory: () -> DecodeHelper,
 ) : Decoder {
+
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+
+    override val imageInfo: ImageInfo
+        get() {
+            synchronized(imageInfoLock) {
+                val imageInfo = _imageInfo
+                if (imageInfo != null) return imageInfo
+                val decodeHelper = decodeHelperFactory()
+                return decodeHelper.use { it.imageInfo }.apply {
+                    _imageInfo = this
+                }
+            }
+        }
 
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
@@ -90,7 +109,7 @@ open class HelperDecoder(
                 transformeds = transformeds.takeIf { it.isNotEmpty() }?.toList(),
                 extras = null,
             )
-            val resizedResult = decodeResult.appliedResize(requestContext)
+            val resizedResult = decodeResult.appliedResize(resize)
             resizedResult
         } finally {
             decodeHelper.close()

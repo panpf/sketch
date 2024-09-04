@@ -183,6 +183,8 @@ class HeifAnimatedDecoderTest {
         }
     }
 
+    // TODO test: decodeImageInfo
+
     @Test
     fun testDecodeDrawable() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return@runTest

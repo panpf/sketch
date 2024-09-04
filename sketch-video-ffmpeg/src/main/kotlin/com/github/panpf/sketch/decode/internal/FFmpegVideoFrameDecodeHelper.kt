@@ -42,14 +42,14 @@ import kotlin.math.roundToInt
  *
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
  */
-class FFmpegVideoFrameDecodeHelper constructor(
+class FFmpegVideoFrameDecodeHelper(
     val sketch: Sketch,
     val request: ImageRequest,
     val dataSource: DataSource,
     private val mimeType: String,
 ) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy { readInfo() }
+    override val imageInfo: ImageInfo by lazy { readImageInfo() }
     override val supportRegion: Boolean = false
 
     private val mediaMetadataRetriever by lazy {
@@ -110,7 +110,7 @@ class FFmpegVideoFrameDecodeHelper constructor(
         throw UnsupportedOperationException("Unsupported region decode")
     }
 
-    private fun readInfo(): ImageInfo {
+    private fun readImageInfo(): ImageInfo {
         val srcWidth = mediaMetadataRetriever
             .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull()
             ?: 0

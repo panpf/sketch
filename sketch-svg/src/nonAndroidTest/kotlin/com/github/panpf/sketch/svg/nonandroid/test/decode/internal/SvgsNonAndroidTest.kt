@@ -6,6 +6,11 @@ import kotlin.test.Test
 class SvgsNonAndroidTest {
 
     @Test
+    fun testReadSvgImageInfo() = runTest {
+        // TODO test
+    }
+
+    @Test
     fun testDecodeSvg() = runTest {
         // TODO test
     }

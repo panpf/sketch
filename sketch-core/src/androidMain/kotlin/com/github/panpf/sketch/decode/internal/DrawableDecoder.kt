@@ -31,6 +31,7 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.toNewBitmap
+import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlin.math.roundToInt
 
 /**
@@ -43,6 +44,25 @@ open class DrawableDecoder(
     private val drawableDataSource: DrawableDataSource,
     private val mimeType: String?
 ) : Decoder {
+
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+
+    override val imageInfo: ImageInfo
+        get() {
+            kotlinx.atomicfu.locks.synchronized(imageInfoLock) {
+                val imageInfo = _imageInfo
+                if (imageInfo != null) return imageInfo
+                val drawable = drawableDataSource.drawable
+                return ImageInfo(
+                    width = drawable.intrinsicWidth,
+                    height = drawable.intrinsicHeight,
+                    mimeType = mimeType ?: "image/png",
+                ).apply {
+                    _imageInfo = this
+                }
+            }
+        }
 
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
@@ -87,7 +107,7 @@ open class DrawableDecoder(
             transformeds = transformeds,
             extras = null
         )
-        val resizedResult = decodeResult.appliedResize(requestContext)
+        val resizedResult = decodeResult.appliedResize(resize)
         resizedResult
     }
 

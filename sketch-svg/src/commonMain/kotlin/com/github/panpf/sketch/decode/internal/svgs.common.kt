@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.indexOf
@@ -35,14 +36,23 @@ fun ByteArray.isSvg(): Boolean =
     rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1
 
 /**
+ * Decode the SVG image info
+ *
+ * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testDecodeSvgImageInfo
+ * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testReadSvgImageInfo
+ */
+internal expect fun DataSource.readSvgImageInfo(
+    useViewBoundsAsIntrinsicSize: Boolean,
+): ImageInfo
+
+/**
  * Decode the SVG image
  *
  * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testDecodeSvg
  * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testDecodeSvg
  */
-internal expect suspend fun decodeSvg(
+internal expect fun DataSource.decodeSvg(
     requestContext: RequestContext,
-    dataSource: DataSource,
     useViewBoundsAsIntrinsicSize: Boolean,
     backgroundColor: Int?,
     css: String?,

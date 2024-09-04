@@ -38,6 +38,8 @@ class HelperDecoderTest {
         return helperDecoder.decode()
     }
 
+    // TODO test: decodeImageInfo
+
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()

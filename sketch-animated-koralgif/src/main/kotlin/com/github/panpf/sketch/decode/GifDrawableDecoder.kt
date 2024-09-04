@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(InternalCoroutinesApi::class)
+
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
@@ -41,6 +43,8 @@ import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.withContext
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
@@ -72,28 +76,44 @@ class GifDrawableDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
+    private val gifInfoHandleHelper by lazy {
+        GifInfoHandleHelper(requestContext.sketch, dataSource)
+    }
+
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+
+    override val imageInfo: ImageInfo
+        get() {
+            synchronized(imageInfoLock) {
+                val imageInfo = _imageInfo
+                if (imageInfo != null) return imageInfo
+                return ImageInfo(
+                    size = Size(
+                        width = gifInfoHandleHelper.width,
+                        height = gifInfoHandleHelper.height
+                    ),
+                    mimeType = ImageFormat.GIF.mimeType,
+                ).apply {
+                    _imageInfo = this
+                }
+            }
+        }
+
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
-        val request = requestContext.request
-        val gifInfoHandleHelper = GifInfoHandleHelper(requestContext.sketch, dataSource)
-        val imageWidth = gifInfoHandleHelper.width
-        val imageHeight = gifInfoHandleHelper.height
+        val imageInfo = imageInfo
         val size = requestContext.size
-        val imageSize = Size(imageWidth, imageHeight)
-        val imageInfo = ImageInfo(
-            width = imageWidth,
-            height = imageHeight,
-            mimeType = ImageFormat.GIF.mimeType,
-        )
         val resize = requestContext.computeResize(imageInfo.size)
         val inSampleSize = calculateSampleSize(
-            imageSize = imageSize,
+            imageSize = imageInfo.size,
             targetSize = size,
             smallerSizeMode = resize.precision.isSmallerSizeMode(),
         )
         gifInfoHandleHelper.setOptions(GifOptions().apply {
             setInSampleSize(inSampleSize)
         })
+        val request = requestContext.request
         val gifDrawable = gifInfoHandleHelper.createGifDrawable().apply {
             loopCount =
                 (request.repeatCount ?: ANIMATION_REPEAT_INFINITE).takeIf { it != -1 } ?: 0

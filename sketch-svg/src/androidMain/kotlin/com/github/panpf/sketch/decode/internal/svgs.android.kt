@@ -37,18 +37,44 @@ import okio.buffer
 import kotlin.math.roundToInt
 
 /**
+ * Decode the SVG image info
+ *
+ * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testReadSvgImageInfo
+ */
+internal actual fun DataSource.readSvgImageInfo(
+    useViewBoundsAsIntrinsicSize: Boolean,
+): ImageInfo {
+    val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
+
+    val svgWidth: Float
+    val svgHeight: Float
+    val viewBox: RectF? = svg.documentViewBox
+    if (useViewBoundsAsIntrinsicSize && viewBox != null) {
+        svgWidth = viewBox.width()
+        svgHeight = viewBox.height()
+    } else {
+        svgWidth = svg.documentWidth
+        svgHeight = svg.documentHeight
+    }
+    return ImageInfo(
+        width = svgWidth.roundToInt(),
+        height = svgHeight.roundToInt(),
+        mimeType = SvgDecoder.MIME_TYPE,
+    )
+}
+
+/**
  * Decode the SVG image
  *
  * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testDecodeSvg
  */
-internal actual suspend fun decodeSvg(
+internal actual fun DataSource.decodeSvg(
     requestContext: RequestContext,
-    dataSource: DataSource,
     useViewBoundsAsIntrinsicSize: Boolean,
     backgroundColor: Int?,
     css: String?,
 ): DecodeResult {
-    val svg = dataSource.openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
+    val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
 
     val svgWidth: Float
     val svgHeight: Float
@@ -99,14 +125,14 @@ internal actual suspend fun decodeSvg(
     val decodeResult = DecodeResult(
         image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
         imageInfo = imageInfo,
-        dataFrom = dataSource.dataFrom,
+        dataFrom = dataFrom,
         resize = resize,
         transformeds = transformeds,
         extras = null
     )
 
     @Suppress("UnnecessaryVariable", "RedundantSuppression")
-    val resizedResult = decodeResult.appliedResize(requestContext)
+    val resizedResult = decodeResult.appliedResize(resize)
     return resizedResult
 }
 

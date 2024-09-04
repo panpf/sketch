@@ -18,7 +18,6 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import android.graphics.BitmapFactory
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.decode.ImageInfo
@@ -26,7 +25,6 @@ import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toAndroidRect
 
 /**
@@ -34,15 +32,17 @@ import com.github.panpf.sketch.util.toAndroidRect
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecodeHelperTest
  */
-class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : DecodeHelper {
-
-    override val imageInfo: ImageInfo by lazy { decodeImageInfo() }
-    override val supportRegion: Boolean by lazy {
-        ImageFormat.parseMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
-    }
+class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataSource) :
+    DecodeHelper {
 
     private val exifOrientation: Int by lazy { dataSource.readExifOrientation() }
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
+    override val supportRegion: Boolean by lazy {
+        ImageFormat.parseMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
+    }
+    override val imageInfo: ImageInfo by lazy {
+        dataSource.readImageInfoWithExifOrientation(exifOrientationHelper)
+    }
 
     override fun decode(sampleSize: Int): Image {
         val config = request.newDecodeConfigByQualityParams(imageInfo.mimeType).apply {
@@ -68,17 +68,6 @@ class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataS
         val image = bitmap.asSketchImage()
         val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
         return correctedImage
-    }
-
-    private fun decodeImageInfo(): ImageInfo {
-        val boundOptions = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-        dataSource.decodeBitmap(boundOptions)
-        val mimeType = boundOptions.outMimeType.orEmpty()
-        val imageSize = Size(width = boundOptions.outWidth, height = boundOptions.outHeight)
-        val correctedImageSize = exifOrientationHelper.applyToSize(imageSize)
-        return ImageInfo(size = correctedImageSize, mimeType = mimeType)
     }
 
     override fun close() {

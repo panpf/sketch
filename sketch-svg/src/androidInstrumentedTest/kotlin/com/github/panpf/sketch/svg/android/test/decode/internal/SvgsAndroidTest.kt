@@ -19,6 +19,11 @@ import kotlin.test.assertEquals
 class SvgsAndroidTest {
 
     @Test
+    fun testReadSvgImageInfo() = runTest {
+        // TODO test
+    }
+
+    @Test
     fun testDecodeSvg() = runTest {
         // TODO test
     }

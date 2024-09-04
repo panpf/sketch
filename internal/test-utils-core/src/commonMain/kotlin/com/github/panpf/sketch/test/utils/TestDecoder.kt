@@ -18,10 +18,14 @@ package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 
 class TestDecoder : Decoder {
+
+    override val imageInfo: ImageInfo
+        get() = throw UnsupportedOperationException()
 
     override suspend fun decode(): Result<DecodeResult> {
         throw UnsupportedOperationException()

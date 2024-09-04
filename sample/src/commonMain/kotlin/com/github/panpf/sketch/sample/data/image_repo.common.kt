@@ -5,6 +5,11 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.ImageFile
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 fun builtinImages(): List<ImageFile> {
     return ResourceImages.statics
@@ -22,8 +27,21 @@ expect suspend fun localImages(
     pageSize: Int
 ): List<String>
 
-expect suspend fun readImageInfoOrNull(
+suspend fun readImageInfoOrNull(
     context: PlatformContext,
     sketch: Sketch,
     uri: String,
-): ImageInfo?
+): ImageInfo? = withContext(ioCoroutineDispatcher()) {
+    runCatching {
+        val request = ImageRequest(context, uri)
+        val requestContext = RequestContext(sketch, request, Size.Empty)
+        val fetcher = sketch.components.newFetcherOrThrow(requestContext)
+        val fetchResult = fetcher.fetch().getOrThrow()
+        val decoder = sketch.components.newDecoderOrThrow(requestContext, fetchResult)
+        decoder.imageInfo
+    }.apply {
+        if (isFailure) {
+            exceptionOrNull()?.printStackTrace()
+        }
+    }.getOrNull()
+}

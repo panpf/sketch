@@ -173,6 +173,8 @@ class SvgDecoderTest {
         assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
+    // TODO test: decodeImageInfo
+
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()

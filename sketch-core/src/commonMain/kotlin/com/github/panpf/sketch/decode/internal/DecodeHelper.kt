@@ -33,11 +33,23 @@ import okio.Closeable
  */
 interface DecodeHelper : Closeable {
 
+    /**
+     * Image width, height, and format information
+     */
     val imageInfo: ImageInfo
 
+    /**
+     * Whether the region decoding is supported
+     */
     val supportRegion: Boolean
 
+    /**
+     * Decode the entire image
+     */
     fun decode(sampleSize: Int): Image
 
+    /**
+     * Decode the specified region
+     */
     fun decodeRegion(region: Rect, sampleSize: Int): Image
 }

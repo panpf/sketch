@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(InternalCoroutinesApi::class)
+
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap.Config.ARGB_8888
@@ -38,7 +40,10 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.withContext
 import okio.buffer
 
@@ -70,11 +75,32 @@ class GifMovieDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
+    private var _imageInfo: ImageInfo? = null
+    private val imageInfoLock = SynchronizedObject()
+
+    override val imageInfo: ImageInfo
+        get() {
+            synchronized(imageInfoLock) {
+                val imageInfo = _imageInfo
+                if (imageInfo != null) return imageInfo
+                val movie: Movie? = dataSource.openSource()
+                    .buffer().inputStream().use { Movie.decodeStream(it) }
+                val width = movie?.width() ?: 0
+                val height = movie?.height() ?: 0
+                return ImageInfo(
+                    size = Size(width = width, height = height),
+                    mimeType = ImageFormat.GIF.mimeType,
+                ).apply {
+                    _imageInfo = this
+                }
+            }
+        }
+
     @WorkerThread
     override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
-        val movie: Movie? =
-            dataSource.openSource().buffer().inputStream().use { Movie.decodeStream(it) }
+        val movie: Movie? = dataSource.openSource()
+            .buffer().inputStream().use { Movie.decodeStream(it) }
 
         val width = movie?.width() ?: 0
         val height = movie?.height() ?: 0
@@ -88,7 +114,7 @@ class GifMovieDecoder(
             // Set the animated transformation to be applied on each frame.
             setAnimatedTransformation(request.animatedTransformation)
 
-            // TODO not support resize
+            // TODO Support resize
         }
 
         val imageInfo = ImageInfo(

@@ -26,14 +26,18 @@ import com.github.panpf.sketch.util.Key
 /**
  * Decode Image from [DataSource].
  */
-fun interface Decoder {
+interface Decoder {
 
-    // TODO Add a method to get the ImageInfo of the Image for LocalPhotoListPagingSource.readImageInfo
+    /**
+     * Decode ImageInfo from [DataSource] and return it.
+     */
+    val imageInfo: ImageInfo
 
     /**
      * Decode Image from [DataSource] and wrap it as a [DecodeResult] return.
      */
     @WorkerThread
+    // TODO remove suspend
     suspend fun decode(): Result<DecodeResult>
 
     /**

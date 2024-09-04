@@ -23,10 +23,8 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
 import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.decode.internal.ImageFormat.JPEG
@@ -113,53 +111,35 @@ actual fun calculateSampledBitmapSizeForRegion(
 /**
  * Read image information using BitmapFactory
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithBitmapFactory
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
  */
 @Throws(IOException::class)
-fun DataSource.readImageInfoWithBitmapFactory(): ImageInfo {
+fun DataSource.readImageInfo(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
     }
     decodeBitmap(boundOptions)
     val mimeType = boundOptions.outMimeType.orEmpty()
-    return ImageInfo(
-        width = boundOptions.outWidth,
-        height = boundOptions.outHeight,
-        mimeType = mimeType,
-    )
+    val imageSize = Size(width = boundOptions.outWidth, height = boundOptions.outHeight)
+    return ImageInfo(size = imageSize, mimeType = mimeType)
 }
 
 /**
- * Read image information using BitmapFactory, if the image is invalid, an exception will be thrown
+ * Read image information using BitmapFactory, and correct the image size according to the Exif orientation
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithBitmapFactoryOrThrow
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithExifOrientation
  */
-@Throws(IOException::class, ImageInvalidException::class)
-fun DataSource.readImageInfoWithBitmapFactoryOrThrow(): ImageInfo {
-    val imageInfo = readImageInfoWithBitmapFactory()
-    val width = imageInfo.width
-    val height = imageInfo.height
-    if (width <= 0 || height <= 0) {
-        throw ImageInvalidException("Invalid image. size=${width}x${height}. dataSource=${this}")
+fun DataSource.readImageInfoWithExifOrientation(helper: ExifOrientationHelper? = null): ImageInfo {
+    val imageInfo = readImageInfo()
+    val exifOrientationHelper = if (helper != null) {
+        helper
+    } else {
+        val exifOrientation = readExifOrientationWithMimeType(imageInfo.mimeType)
+        ExifOrientationHelper(exifOrientation)
     }
-    return imageInfo
+    val correctedImageSize = exifOrientationHelper.applyToSize(imageInfo.size)
+    return imageInfo.copy(size = correctedImageSize)
 }
-
-/**
- * Read image information using BitmapFactory, if the image is invalid, return null
- *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithBitmapFactoryOrNull
- */
-@WorkerThread
-fun DataSource.readImageInfoWithBitmapFactoryOrNull(): ImageInfo? =
-    try {
-        readImageInfoWithBitmapFactory().takeIf {
-            it.width > 0 && it.height > 0
-        }
-    } catch (e: IOException) {
-        e.printStackTrace()
-        null
-    }
 
 
 /**
