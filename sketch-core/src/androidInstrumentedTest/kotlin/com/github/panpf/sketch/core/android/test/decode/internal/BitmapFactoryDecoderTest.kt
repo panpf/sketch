@@ -896,7 +896,7 @@ class BitmapFactoryDecoderTest {
         BitmapFactoryDecoder(
             request1.toRequestContext(sketch),
             RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)
-        ).let { runBlocking { it.decode() } }.getOrThrow()
+        ).decode().getOrThrow()
     }
 
     class FullTestDataSource(

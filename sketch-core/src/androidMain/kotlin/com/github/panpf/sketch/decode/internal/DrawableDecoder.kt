@@ -65,7 +65,7 @@ open class DrawableDecoder(
         }
 
     @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val drawable = drawableDataSource.drawable
 

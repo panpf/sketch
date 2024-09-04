@@ -62,7 +62,7 @@ open class HelperDecoder(
         }
 
     @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
         requiredWorkThread()
         val decodeHelper = decodeHelperFactory()
         try {

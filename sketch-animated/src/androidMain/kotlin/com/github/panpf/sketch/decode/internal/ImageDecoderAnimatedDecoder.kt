@@ -48,9 +48,10 @@ import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.transform.asPostProcessor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.SynchronizedObject
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
 /**
@@ -86,7 +87,7 @@ open class ImageDecoderAnimatedDecoder(
         }
 
     @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val context = requestContext.request.context
         val source = when (dataSource) {
             is AssetDataSource -> {
@@ -167,7 +168,9 @@ open class ImageDecoderAnimatedDecoder(
                 val onStart = request.animationStartCallback
                 val onEnd = request.animationEndCallback
                 if (onStart != null || onEnd != null) {
-                    withContext(Dispatchers.Main) {
+                    // Will be executed before EngineRequestInterceptor.intercept() return
+                    @Suppress("OPT_IN_USAGE")
+                    GlobalScope.launch(Dispatchers.Main) {
                         registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
                     }
                 }

@@ -42,9 +42,10 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.SynchronizedObject
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import okio.buffer
 
 /**
@@ -97,7 +98,7 @@ class GifMovieDecoder(
         }
 
     @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val request = requestContext.request
         val movie: Movie? = dataSource.openSource()
             .buffer().inputStream().use { Movie.decodeStream(it) }
@@ -128,7 +129,9 @@ class GifMovieDecoder(
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
-                withContext(Dispatchers.Main) {
+                // Will be executed before EngineRequestInterceptor.intercept() return
+                @Suppress("OPT_IN_USAGE")
+                GlobalScope.launch(Dispatchers.Main) {
                     registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
                 }
             }

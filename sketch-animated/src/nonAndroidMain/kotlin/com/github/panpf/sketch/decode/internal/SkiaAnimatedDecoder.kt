@@ -70,7 +70,7 @@ open class SkiaAnimatedDecoder(
             }
         }
 
-    override suspend fun decode(): Result<DecodeResult> = runCatching {
+    override fun decode(): Result<DecodeResult> = runCatching {
         val codec = Codec.makeFromData(data)
         val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
         val imageInfo = ImageInfo(

@@ -31,14 +31,15 @@ interface Decoder {
     /**
      * Decode ImageInfo from [DataSource] and return it.
      */
+    @WorkerThread
     val imageInfo: ImageInfo
 
     /**
      * Decode Image from [DataSource] and wrap it as a [DecodeResult] return.
      */
     @WorkerThread
-    // TODO remove suspend
-    suspend fun decode(): Result<DecodeResult>
+    // TODO remove Result
+    fun decode(): Result<DecodeResult>
 
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]

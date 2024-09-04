@@ -74,7 +74,7 @@ class SvgDecoder(
             }
         }
 
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
         dataSource.decodeSvg(
             requestContext = requestContext,
             useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,

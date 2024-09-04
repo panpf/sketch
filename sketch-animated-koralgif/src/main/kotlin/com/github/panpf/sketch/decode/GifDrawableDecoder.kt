@@ -43,9 +43,10 @@ import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.SynchronizedObject
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
 import pl.droidsonroids.gif.transforms.Transform
@@ -101,7 +102,7 @@ class GifDrawableDecoder(
         }
 
     @WorkerThread
-    override suspend fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
         val imageInfo = imageInfo
         val size = requestContext.size
         val resize = requestContext.computeResize(imageInfo.size)
@@ -140,7 +141,9 @@ class GifDrawableDecoder(
                 val onStart = request.animationStartCallback
                 val onEnd = request.animationEndCallback
                 if (onStart != null || onEnd != null) {
-                    withContext(Dispatchers.Main) {
+                    // Will be executed before EngineRequestInterceptor.intercept() return
+                    @Suppress("OPT_IN_USAGE")
+                    GlobalScope.launch(Dispatchers.Main) {
                         registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
                     }
                 }
