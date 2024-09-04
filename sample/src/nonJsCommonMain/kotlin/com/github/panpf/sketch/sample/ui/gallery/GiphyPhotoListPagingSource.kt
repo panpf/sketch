@@ -37,7 +37,8 @@ class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
-            Apis.giphyApi.trending(pageStart, pageSize)
+//            Apis.giphyApi.trending(pageStart, pageSize)   // trending returns very little data so search instead
+            Apis.giphyApi.search("pet", pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return PagingSourceLoadResultError(e)

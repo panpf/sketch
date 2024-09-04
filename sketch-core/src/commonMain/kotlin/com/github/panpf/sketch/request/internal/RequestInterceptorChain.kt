@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
@@ -29,10 +28,7 @@ import com.github.panpf.sketch.util.requiredMainThread
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.RequestInterceptorChainTest
  */
-internal class RequestInterceptorChain(
-    override val sketch: Sketch,
-    override val initialRequest: ImageRequest,
-    override val request: ImageRequest,
+internal class RequestInterceptorChain constructor(
     override val requestContext: RequestContext,
     private val interceptors: List<RequestInterceptor>,
     private val index: Int,
@@ -47,7 +43,9 @@ internal class RequestInterceptorChain(
 
         val interceptor = interceptors[index]
         val next = RequestInterceptorChain(
-            sketch, initialRequest, request, requestContext, interceptors, index + 1
+            requestContext = requestContext,
+            interceptors = interceptors,
+            index = index + 1
         )
         return interceptor.intercept(next)
     }

@@ -35,7 +35,6 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
         val request = chain.request
         val requestContext = chain.requestContext
-        val sketch = chain.sketch
         val result = chain.proceed()
         val transformations = request.transformations ?: return result
         val decodeResult = result.let { it.getOrNull() ?: return it }
@@ -44,7 +43,7 @@ class TransformationDecodeInterceptor : DecodeInterceptor {
         val transformeds = mutableListOf<String>()
         val newImage = try {
             transformations.fold(oldImage) { inputImage, next ->
-                val transformResult = next.transform(sketch, requestContext, inputImage)
+                val transformResult = next.transform(requestContext, inputImage)
                 if (transformResult != null) {
                     check(transformResult.image.checkValid()) {
                         val transformedsString =

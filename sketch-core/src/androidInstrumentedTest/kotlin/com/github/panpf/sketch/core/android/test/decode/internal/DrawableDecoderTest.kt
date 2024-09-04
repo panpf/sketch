@@ -32,6 +32,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -61,7 +62,10 @@ class DrawableDecoderTest {
             context,
             newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
         ).let {
-            val fetcher = sketch.components.newFetcherOrThrow(it)
+            val fetcher = sketch.components.newFetcherOrThrow(
+                it
+                    .toRequestContext(sketch, Size.Empty)
+            )
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
@@ -70,7 +74,10 @@ class DrawableDecoderTest {
 
         // data error
         ImageRequest(context, ResourceImages.png.uri).let {
-            val fetcher = sketch.components.newFetcherOrThrow(it)
+            val fetcher = sketch.components.newFetcherOrThrow(
+                it
+                    .toRequestContext(sketch, Size.Empty)
+            )
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
@@ -150,7 +157,10 @@ class DrawableDecoderTest {
         ) {
             resize(imageWidth / 2, imageWidth / 2)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher = sketch.components.newFetcherOrThrow(
+                this
+                    .toRequestContext(sketch, Size.Empty)
+            )
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -178,7 +188,10 @@ class DrawableDecoderTest {
         ) {
             resize(imageWidth * 2, imageWidth * 2)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher = sketch.components.newFetcherOrThrow(
+                this
+                    .toRequestContext(sketch, Size.Empty)
+            )
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()

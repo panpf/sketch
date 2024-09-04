@@ -25,7 +25,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
@@ -124,7 +123,7 @@ interface Target {
      * Called when the request starts.
      */
     @MainThread
-    fun onStart(requestContext: RequestContext, placeholder: Image?) {
+    fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
 
     }
 
@@ -132,7 +131,7 @@ interface Target {
      * Called if the request completes successfully.
      */
     @MainThread
-    fun onSuccess(requestContext: RequestContext, result: Image) {
+    fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
 
     }
 
@@ -140,7 +139,7 @@ interface Target {
      * Called if an error occurs while executing the request.
      */
     @MainThread
-    fun onError(requestContext: RequestContext, error: Image?) {
+    fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
 
     }
 }

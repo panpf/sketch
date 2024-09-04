@@ -55,8 +55,6 @@ class ResultCacheDecodeInterceptorTest {
         )
         val executeRequest: suspend (ImageRequest) -> DecodeResult = { request ->
             DecodeInterceptorChain(
-                sketch = sketch,
-                request = request,
                 requestContext = request.toRequestContext(sketch),
                 fetchResult = null,
                 interceptors = interceptors,

@@ -123,7 +123,6 @@ class RoundedCornersTransformationTest {
 
         runBlock {
             RoundedCornersTransformation(20f).transform(
-                sketch,
                 request.toRequestContext(sketch),
                 inBitmap
             )

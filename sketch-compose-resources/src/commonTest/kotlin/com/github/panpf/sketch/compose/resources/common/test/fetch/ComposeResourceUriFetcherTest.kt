@@ -5,6 +5,8 @@ import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -90,11 +92,10 @@ class ComposeResourceUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
 
         factory.create(
-            sketch,
             ImageRequest(
                 context,
                 "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
-            )
+            ).toRequestContext(sketch, Size.Empty)
         )!!
             .apply {
                 assertEquals(
@@ -103,11 +104,10 @@ class ComposeResourceUriFetcherTest {
                 )
             }
         factory.create(
-            sketch,
             ImageRequest(
                 context,
                 "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg?from=home"
-            )
+            ).toRequestContext(sketch, Size.Empty)
         )!!
             .apply {
                 assertEquals(
@@ -119,31 +119,28 @@ class ComposeResourceUriFetcherTest {
         assertEquals(
             expected = null,
             actual = factory.create(
-                sketch,
                 ImageRequest(
                     context,
                     "file1:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
-                )
+                ).toRequestContext(sketch, Size.Empty)
             )
         )
         assertEquals(
             expected = null,
             actual = factory.create(
-                sketch,
                 ImageRequest(
                     context,
                     "file:///compose_resource1/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
-                )
+                ).toRequestContext(sketch, Size.Empty)
             )
         )
         assertEquals(
             expected = null,
             actual = factory.create(
-                sketch,
                 ImageRequest(
                     context,
                     "file:///composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg"
-                )
+                ).toRequestContext(sketch, Size.Empty)
             )
         )
     }

@@ -63,9 +63,6 @@ class MemoryCacheRequestInterceptorTest {
         val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
             withContext(Dispatchers.Main) {
                 RequestInterceptorChain(
-                    sketch = sketch,
-                    initialRequest = request,
-                    request = request,
                     requestContext = request.toRequestContext(sketch),
                     interceptors = requestInterceptorList,
                     index = 0,

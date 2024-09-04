@@ -101,7 +101,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             val placeholderDrawable = request.placeholder
                 ?.getImage(sketch, request, null)
                 ?.resizeOnDraw(request, requestContext.size)
-            target.onStart(requestContext, placeholderDrawable)
+            target.onStart(sketch, request, placeholderDrawable)
         }
     }
 

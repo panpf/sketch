@@ -16,10 +16,10 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.MEMORY
@@ -143,10 +143,9 @@ val ImageRequest.base64UriSpec: Base64Spec?
  * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest
  */
 class Base64UriFetcher constructor(
-    val sketch: Sketch,
-    val request: ImageRequest,
+    val dataEncodedString: String,
     val mimeType: String,
-    val base64String: String,
+    val spec: Base64Spec? = null,
 ) : Fetcher {
 
     companion object {
@@ -154,16 +153,15 @@ class Base64UriFetcher constructor(
         const val BASE64_IDENTIFIER = "base64"
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
     @WorkerThread
+    @OptIn(ExperimentalEncodingApi::class)
     override suspend fun fetch(): Result<FetchResult> {
-        val base64UriSpec = request.base64UriSpec
-        val base64 = when (base64UriSpec) {
+        val base64 = when (spec) {
             Base64Spec.Mime -> Base64.Mime
             Base64Spec.UrlSafe -> Base64.UrlSafe
             else -> Base64.Default
         }
-        val bytes = base64.decode(base64String)
+        val bytes = base64.decode(dataEncodedString)
         return Result.success(
             FetchResult(ByteArrayDataSource(data = bytes, dataFrom = MEMORY), mimeType)
         )
@@ -173,23 +171,21 @@ class Base64UriFetcher constructor(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as Base64UriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
+        if (dataEncodedString != other.dataEncodedString) return false
         if (mimeType != other.mimeType) return false
-        if (base64String != other.base64String) return false
+        if (spec != other.spec) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
+        var result = dataEncodedString.hashCode()
         result = 31 * result + mimeType.hashCode()
-        result = 31 * result + base64String.hashCode()
+        result = 31 * result + spec.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Base64UriFetcher('$base64String')"
+        return "Base64UriFetcher(data='$dataEncodedString', mimeType=$mimeType, spec=$spec)"
     }
 
     /**
@@ -199,24 +195,24 @@ class Base64UriFetcher constructor(
      */
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? {
+        override fun create(requestContext: RequestContext): Base64UriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isBase64Uri(uri)) return null
-            val data = uri.toString()
-            val colonSymbolIndex = data.indexOf(":").takeIf { it != -1 }
+            val uriString = uri.toString()
+            val colonSymbolIndex = uriString.indexOf(":").takeIf { it != -1 }
                 ?: throw UriInvalidException("Invalid base64 image uri: $uri")
-            val semicolonSymbolIndex = data.indexOf(";").takeIf { it != -1 }
+            val semicolonSymbolIndex = uriString.indexOf(";").takeIf { it != -1 }
                 ?: throw UriInvalidException("Invalid base64 image uri: $uri")
-            val commaSymbolIndex = data.indexOf(",").takeIf { it != -1 }
+            val commaSymbolIndex = uriString.indexOf(",").takeIf { it != -1 }
                 ?: throw UriInvalidException("Invalid base64 image uri: $uri")
-            val mimeType =
-                data.substring(colonSymbolIndex + 1, semicolonSymbolIndex).replace("img/", "image/")
-            val imageDataBase64String = data.substring(commaSymbolIndex + 1)
+            val mimeType = uriString.substring(colonSymbolIndex + 1, semicolonSymbolIndex)
+                .replace("img/", "image/")
+            val data = uriString.substring(commaSymbolIndex + 1)
             return Base64UriFetcher(
-                sketch = sketch,
-                request = request,
+                dataEncodedString = data,
                 mimeType = mimeType,
-                base64String = imageDataBase64String
+                spec = request.base64UriSpec
             )
         }
 

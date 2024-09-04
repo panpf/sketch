@@ -24,8 +24,9 @@ import androidx.lifecycle.Lifecycle.Event
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asDrawableOrThrow
-import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
@@ -51,16 +52,16 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     override fun getRequestManager(): RequestManager = requestManager
 
 
-    override fun onStart(requestContext: RequestContext, placeholder: Image?) {
-        updateImage(requestContext, placeholder)
+    override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
+        updateImage(request, placeholder)
     }
 
-    override fun onSuccess(requestContext: RequestContext, result: Image) {
-        updateImage(requestContext, result)
+    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
+        updateImage(request, result)
     }
 
-    override fun onError(requestContext: RequestContext, error: Image?) =
-        updateImage(requestContext, error)
+    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) =
+        updateImage(request, error)
 
     override fun onStateChanged(source: LifecycleOwner, event: Event) {
         when (event) {
@@ -85,12 +86,12 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         updateAnimation()
     }
 
-    private fun updateImage(requestContext: RequestContext, image: Image?) {
+    private fun updateImage(request: ImageRequest, image: Image?) {
         view ?: return
         // 'image != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment.loadBgImage() is an example.
-        if (image != null || requestContext.request.allowNullImage == true) {
+        if (image != null || request.allowNullImage == true) {
             val newDrawable = image?.asDrawableOrThrow()
             updateDrawable(newDrawable)
         }

@@ -36,6 +36,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -177,7 +178,9 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
             sketch = sketch,
             request = this,
             requestContext = this.toRequestContext(sketch),
-            fetchResult = sketch.components.newFetcherOrThrow(this@toDecodeInterceptorChain).fetch()
+            fetchResult = sketch.components.newFetcherOrThrow(
+                this@toDecodeInterceptorChain.toRequestContext(sketch, Size.Empty)
+            ).fetch()
                 .getOrThrow()
         )
     }

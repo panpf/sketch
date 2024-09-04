@@ -108,7 +108,9 @@ class SvgDecoderTest {
         val factory = SvgDecoder.Factory(false)
         ImageRequest(context, ResourceImages.svg.uri)
             .let {
-                val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
+                val fetchResult =
+                    sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty))
+                        .fetch().getOrThrow()
                 factory.create(it.toRequestContext(sketch), fetchResult)
             }.apply {
                 assertNotNull(this)
@@ -117,7 +119,9 @@ class SvgDecoderTest {
         // data error
         ImageRequest(context, ResourceImages.png.uri)
             .let {
-                val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
+                val fetchResult =
+                    sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty))
+                        .fetch().getOrThrow()
                 factory.create(it.toRequestContext(sketch), fetchResult)
             }.apply {
                 assertNull(this)
@@ -125,8 +129,10 @@ class SvgDecoderTest {
 
         // mimeType error
         ImageRequest(context, ResourceImages.svg.uri).let {
-            val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                .copy(mimeType = "image/svg")
+            val fetchResult =
+                sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty)).fetch()
+                    .getOrThrow()
+                    .copy(mimeType = "image/svg")
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             assertNotNull(this)
@@ -134,8 +140,10 @@ class SvgDecoderTest {
 
         // Disguised, mimeType; data error
         ImageRequest(context, ResourceImages.png.uri).let {
-            val fetchResult = sketch.components.newFetcherOrThrow(it).fetch().getOrThrow()
-                .copy(mimeType = "image/svg+xml")
+            val fetchResult =
+                sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty)).fetch()
+                    .getOrThrow()
+                    .copy(mimeType = "image/svg+xml")
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             assertNull(this)

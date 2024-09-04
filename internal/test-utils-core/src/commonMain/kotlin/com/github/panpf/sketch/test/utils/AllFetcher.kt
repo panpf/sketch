@@ -16,10 +16,9 @@
 
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 
 class AllFetcher : Fetcher {
 
@@ -29,7 +28,7 @@ class AllFetcher : Fetcher {
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): Fetcher {
+        override fun create(requestContext: RequestContext): Fetcher {
             return AllFetcher()
         }
 

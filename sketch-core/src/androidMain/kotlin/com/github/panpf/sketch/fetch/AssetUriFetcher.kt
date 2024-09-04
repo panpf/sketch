@@ -16,9 +16,9 @@
 
 package com.github.panpf.sketch.fetch
 
+import android.content.Context
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
@@ -48,9 +48,8 @@ fun isAssetUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.android.test.fetch.AssetUriFetcherTest
  */
-class AssetUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+class AssetUriFetcher constructor(
+    val context: Context,
     val fileName: String
 ) : Fetcher {
 
@@ -62,24 +61,19 @@ class AssetUriFetcher(
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(fileName)
-        FetchResult(AssetDataSource(request.context, fileName), mimeType)
+        FetchResult(AssetDataSource(context, fileName), mimeType)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as AssetUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (fileName != other.fileName) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + fileName.hashCode()
-        return result
+        return fileName.hashCode()
     }
 
     override fun toString(): String {
@@ -88,11 +82,12 @@ class AssetUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {
+        override fun create(requestContext: RequestContext): AssetUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isAssetUri(uri)) return null
             val fileName = uri.pathSegments.drop(1).joinToString("/")
-            return AssetUriFetcher(sketch = sketch, request = request, fileName = fileName)
+            return AssetUriFetcher(context = request.context, fileName = fileName)
         }
 
         override fun equals(other: Any?): Boolean {

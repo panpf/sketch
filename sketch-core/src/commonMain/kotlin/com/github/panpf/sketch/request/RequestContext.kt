@@ -21,7 +21,6 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.times
@@ -29,72 +28,100 @@ import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
 /**
+ * Create a new [RequestContext] based on the specified [Sketch] and [ImageRequest]
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.RequestContextTest.testRequestContext
+ */
+suspend fun RequestContext(
+    sketch: Sketch,
+    request: ImageRequest,
+): RequestContext {
+    val size = resolveSize(request)
+    return RequestContext(sketch = sketch, initialRequest = request, size = size)
+}
+
+/**
+ * Resolve the size of the request
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.RequestContextTest.testResolveSize
+ */
+suspend fun resolveSize(request: ImageRequest): Size {
+    val size = request.sizeResolver.size().coerceAtLeast(Size.Empty)
+    val sizeMultiplier = request.sizeMultiplier ?: 1f
+    val finalSize = size.times(sizeMultiplier)
+    return finalSize
+}
+
+/**
  * Request context, used to cache some data during the request process
  *
  * @see com.github.panpf.sketch.core.common.test.request.RequestContextTest
  */
-class RequestContext constructor(val sketch: Sketch, val initialRequest: ImageRequest) {
+class RequestContext constructor(
+    val sketch: Sketch,
+    val initialRequest: ImageRequest,
+    size: Size
+) {
 
     private val lock = SynchronizedObject()
-    private val completedListenerList = mutableSetOf<CompletedListener>()
     private val _requestList = mutableListOf(initialRequest)
     private var _request: ImageRequest = initialRequest
     private var _cacheKey: String? = null
 
-    val logger: Logger
-        get() = sketch.logger
-
+    /**
+     * The request list, the first element is the initial request, and the last element is the current request
+     */
     val requestList: List<ImageRequest>
         get() = _requestList.toList()
 
+    /**
+     * The current request
+     */
     val request: ImageRequest
         get() = _request
 
+    /**
+     * The size of the request
+     */
+    var size: Size = size
+        private set
+
+    /**
+     * The log key of the request
+     */
     val logKey: String = initialRequest.key
 
-    /** Used to cache bitmaps in memory and on disk */
-    // TODO hidden
+    /**
+     * Used to cache bitmaps in memory and on disk
+     */
     val cacheKey: String
         get() = synchronized(lock) {
-            _cacheKey ?: request.newCacheKey(size!!).apply {
+            _cacheKey ?: request.newCacheKey(size).apply {
                 _cacheKey = this
             }
         }
 
-    var size: Size? = null
-
+    /**
+     * Set up a new request and recalculate the size of the request
+     */
     internal suspend fun setNewRequest(request: ImageRequest) {
         val lastRequest = this.request
         if (lastRequest != request) {
             _requestList.add(request)
             _request = request
             if (lastRequest.sizeResolver != request.sizeResolver) {
-                size = request.sizeResolver.size().coerceAtLeast(Size.Empty) * (request.sizeMultiplier ?: 1f)
+                size = resolveSize(request)
             }
             _cacheKey = null
         }
     }
 
-    fun completed() {
-        completedListenerList.forEach { it.onCompleted() }
-    }
-
-    fun registerCompletedListener(completedListener: CompletedListener) {
-        completedListenerList.add(completedListener)
-    }
-
-    fun unregisterCompletedListener(completedListener: CompletedListener) {
-        completedListenerList.remove(completedListener)
-    }
-
+    /**
+     * Calculate Resize based on size and imageSize
+     */
     fun computeResize(imageSize: Size): Resize {
-        val size = size!!
         val precision = request.precisionDecider.get(imageSize = imageSize, targetSize = size)
         val scale = request.scaleDecider.get(imageSize = imageSize, targetSize = size)
         return Resize(size = size, precision = precision, scale = scale)
-    }
-
-    fun interface CompletedListener {
-        fun onCompleted()
     }
 }

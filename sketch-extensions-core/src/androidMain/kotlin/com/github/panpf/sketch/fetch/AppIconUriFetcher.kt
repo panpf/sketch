@@ -22,10 +22,9 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.internal.versionCodeCompat
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
@@ -64,9 +63,8 @@ fun isAppIconUri(uri: Uri): Boolean = AppIconUriFetcher.SCHEME.equals(uri.scheme
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest
  */
-class AppIconUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+class AppIconUriFetcher constructor(
+    val context: Context,
     val packageName: String,
     val versionCode: Int,
 ) : Fetcher {
@@ -80,7 +78,7 @@ class AppIconUriFetcher(
     override suspend fun fetch(): Result<FetchResult> = Result.success(
         FetchResult(
             dataSource = DrawableDataSource(
-                context = request.context,
+                context = context,
                 dataFrom = DataFrom.LOCAL,
                 drawableFetcher = AppIconDrawableFetcher(packageName, versionCode),
             ),
@@ -92,17 +90,13 @@ class AppIconUriFetcher(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as AppIconUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (packageName != other.packageName) return false
         if (versionCode != other.versionCode) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + packageName.hashCode()
+        var result = packageName.hashCode()
         result = 31 * result + versionCode
         return result
     }
@@ -113,17 +107,18 @@ class AppIconUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
+        override fun create(requestContext: RequestContext): AppIconUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isAppIconUri(uri)) return null
             val packageName = uri.authority
                 ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-                ?: throw UriInvalidException("App icon uri 'packageName' part invalid: '${request.uri}'")
+                ?: throw UriInvalidException("App icon uri 'packageName' part invalid: '${uri}'")
             val versionCode = uri.pathSegments.firstOrNull()
                 ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
                 ?.toIntOrNull()
-                ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: '${request.uri}'")
-            return AppIconUriFetcher(sketch, request, packageName, versionCode)
+                ?: throw UriInvalidException("App icon uri 'versionCode' part invalid: '${uri}'")
+            return AppIconUriFetcher(request.context, packageName, versionCode)
         }
 
         override fun equals(other: Any?): Boolean {

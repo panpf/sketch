@@ -16,20 +16,21 @@
 
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.AssetUriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 
 class TestAssetFetcherFactory : Fetcher.Factory {
 
-    override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
+    override fun create(requestContext: RequestContext): Fetcher? {
+        val request = requestContext.request
         val uri = request.uri
         if (AssetUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && uri.authority?.takeIf { it.isNotEmpty() } == null
-            && "test_asset".equals(uri.pathSegments.firstOrNull(), ignoreCase = true)) {
+            && "test_asset".equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
+        ) {
             val fileName = uri.pathSegments.drop(1).joinToString("/")
-            return AssetUriFetcher(sketch, request, fileName)
+            return AssetUriFetcher(request.context, fileName)
         }
         return null
     }

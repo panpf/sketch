@@ -260,7 +260,8 @@ class ApkIconDecoderTest {
             }
 
         ImageRequest(context, ResourceImages.png.uri).run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
                 runBlocking {

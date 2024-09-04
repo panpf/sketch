@@ -46,7 +46,6 @@ import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.ComposeRequestManager
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -373,18 +372,18 @@ class AsyncImageState internal constructor(
         override fun getImageOptions(): ImageOptions? = this@AsyncImageState.options
 
 
-        override fun onStart(requestContext: RequestContext, placeholder: Image?) {
-            super.onStart(requestContext, placeholder)
+        override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
+            super.onStart(sketch, request, placeholder)
             painterState = Loading(painter)
         }
 
-        override fun onSuccess(requestContext: RequestContext, result: Image) {
-            super.onSuccess(requestContext, result)
+        override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
+            super.onSuccess(sketch, request, result)
             painterState = PainterState.Success(painter!!)
         }
 
-        override fun onError(requestContext: RequestContext, error: Image?) {
-            super.onError(requestContext, error)
+        override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
+            super.onError(sketch, request, error)
             painterState = PainterState.Error(painter)
         }
 

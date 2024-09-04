@@ -38,6 +38,7 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -207,7 +208,10 @@ class GifMovieDecoderTest {
         ImageRequest(context, ResourceImages.animGif.uri) {
             onAnimationStart { }
         }.apply {
-            val fetchResult = sketch.components.newFetcherOrThrow(this)
+            val fetchResult = sketch.components.newFetcherOrThrow(
+                this
+                    .toRequestContext(sketch, Size.Empty)
+            )
                 .let { runBlocking { it.fetch() }.getOrThrow() }
             factory.create(this@apply.toRequestContext(sketch), fetchResult)!!
                 .let { runBlocking { it.decode() }.getOrThrow() }
@@ -230,7 +234,10 @@ class GifMovieDecoderTest {
             onAnimationEnd { }
             resize(300, 300)
         }.apply {
-            val fetchResult1 = sketch.components.newFetcherOrThrow(this)
+            val fetchResult1 = sketch.components.newFetcherOrThrow(
+                this
+                    .toRequestContext(sketch, Size.Empty)
+            )
                 .let { runBlocking { it.fetch() }.getOrThrow() }
             factory.create(this@apply.toRequestContext(sketch), fetchResult1)!!
                 .let { runBlocking { it.decode() }.getOrThrow() }

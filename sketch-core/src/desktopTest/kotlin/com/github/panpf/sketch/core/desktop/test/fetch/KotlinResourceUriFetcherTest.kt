@@ -5,6 +5,8 @@ import com.github.panpf.sketch.fetch.isKotlinResourceUri
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -61,17 +63,23 @@ class KotlinResourceUriFetcherTest {
         val factory = KotlinResourceUriFetcher.Factory()
         val (context, sketch) = getTestContextAndSketch()
 
-        factory.create(sketch, ImageRequest(context, "file:///kotlin_resource/sample.jpeg"))!!
+        factory.create(
+            ImageRequest(context, "file:///kotlin_resource/sample.jpeg")
+                .toRequestContext(sketch, Size.Empty)
+        )!!
             .apply {
                 assertEquals("sample.jpeg", resourcePath)
             }
-        factory.create(sketch, ImageRequest(context, "file:///kotlin_resource/images/sample.jpeg"))!!
+        factory.create(
+            ImageRequest(context, "file:///kotlin_resource/images/sample.jpeg")
+                .toRequestContext(sketch, Size.Empty)
+        )!!
             .apply {
                 assertEquals("images/sample.jpeg", resourcePath)
             }
         factory.create(
-            sketch,
             ImageRequest(context, "file:///kotlin_resource/sample.jpeg?from=home")
+                .toRequestContext(sketch, Size.Empty)
         )!!
             .apply {
                 assertEquals("sample.jpeg", resourcePath)
@@ -80,20 +88,23 @@ class KotlinResourceUriFetcherTest {
         assertEquals(
             expected = null,
             actual = factory.create(
-                sketch,
                 ImageRequest(context, "file1:///kotlin_resource/sample.jpeg")
+                    .toRequestContext(sketch, Size.Empty)
             )
         )
         assertEquals(
             expected = null,
             actual = factory.create(
-                sketch,
                 ImageRequest(context, "file:///kotlin_resource1/sample.jpeg")
+                    .toRequestContext(sketch, Size.Empty)
             )
         )
         assertEquals(
             expected = null,
-            actual = factory.create(sketch, ImageRequest(context, "file:///sample.jpeg"))
+            actual = factory.create(
+                ImageRequest(context, "file:///sample.jpeg")
+                    .toRequestContext(sketch, Size.Empty)
+            )
         )
     }
 

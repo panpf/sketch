@@ -14,6 +14,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   the size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
   ComposeBitmapImage.
+* remove: Remove ComposeBitmapImage
+* change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
 
 # 4.0.0-alpha08
 

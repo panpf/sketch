@@ -16,9 +16,8 @@
 
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 
 class TestFetcherFactory : Fetcher.Factory {
 
@@ -30,12 +29,14 @@ class TestFetcherFactory : Fetcher.Factory {
         }
     }
 
-    override fun create(sketch: Sketch, request: ImageRequest): Fetcher? {
+    override fun create(requestContext: RequestContext): Fetcher? {
+        val request = requestContext.request
         val uri = request.uri
         if (SCHEME.equals(uri.scheme, ignoreCase = true)) {
             val realUri = uri.toString().replace("$SCHEME://", "file://")
-            val realRequest = request.newRequest(realUri)
-            val fetcher = sketch.components.newFetcherOrThrow(realRequest)
+            val realRequestContext = request.newRequest(realUri)
+                .toRequestContext(requestContext.sketch, requestContext.size)
+            val fetcher = requestContext.sketch.components.newFetcherOrThrow(realRequestContext)
             return fetcher
         }
         return null

@@ -18,7 +18,6 @@
 
 package com.github.panpf.sketch.cache.internal
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.isReadOrWrite
@@ -57,14 +56,14 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
         return if (resultCachePolicy.isReadOrWrite) {
             resultCache.withLock(requestContext.cacheKey) {
-                val decodeResultFromCache = readCache(sketch, requestContext)
+                val decodeResultFromCache = readCache(requestContext)
                 if (decodeResultFromCache != null) {
                     Result.success(decodeResultFromCache)
                 } else {
                     chain.proceed().apply {
                         val newDecodeResult = getOrNull()
                         if (newDecodeResult != null) {
-                            writeCache(sketch, requestContext, decodeResult = newDecodeResult)
+                            writeCache(requestContext, decodeResult = newDecodeResult)
                         }
                     }
                 }
@@ -75,12 +74,9 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
     }
 
     @WorkerThread
-    private fun readCache(
-        sketch: Sketch,
-        requestContext: RequestContext,
-    ): DecodeResult? {
+    private fun readCache(requestContext: RequestContext): DecodeResult? {
         if (!requestContext.request.resultCachePolicy.readEnabled) return null
-        val resultCache = sketch.resultCache
+        val resultCache = requestContext.sketch.resultCache
         val fileSystem = resultCache.fileSystem
         val resultCacheKey = requestContext.resultCacheKey
         val imageSerializer = createImageSerializer() ?: return null
@@ -89,7 +85,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val result = runCatching {
             val dataSource = FileDataSource(
                 path = snapshot.data,
-                fileSystem = sketch.fileSystem,
+                fileSystem = requestContext.sketch.fileSystem,
                 dataFrom = RESULT_CACHE,
             )
             val metadataString = fileSystem.source(snapshot.metadata).buffer().use { it.readUtf8() }
@@ -108,7 +104,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
         result.onFailure {
             it.printStackTrace()
-            sketch.logger.w {
+            requestContext.sketch.logger.w {
                 "ResultCacheDecodeInterceptor. read result cache error. $it. '${requestContext.logKey}'"
             }
             resultCache.remove(resultCacheKey)
@@ -118,7 +114,6 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
     @WorkerThread
     private fun writeCache(
-        sketch: Sketch,
         requestContext: RequestContext,
         decodeResult: DecodeResult,
     ): Boolean {
@@ -128,7 +123,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val image = decodeResult.image
         val imageSerializer =
             createImageSerializer()?.takeIf { it.supportImage(image) } ?: return false
-        val resultCache = sketch.resultCache
+        val resultCache = requestContext.sketch.resultCache
         val resultCacheKey = requestContext.resultCacheKey
         val editor = resultCache.openEditor(resultCacheKey)
         if (editor == null) return false

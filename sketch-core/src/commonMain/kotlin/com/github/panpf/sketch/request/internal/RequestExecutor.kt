@@ -28,12 +28,9 @@ import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.TransitionTarget
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.awaitStarted
-import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.job
 import kotlin.coroutines.coroutineContext
@@ -52,21 +49,20 @@ class RequestExecutor {
     @MainThread
     suspend fun execute(
         sketch: Sketch,
-        initialRequest: ImageRequest,
+        request: ImageRequest,
         enqueue: Boolean
     ): ImageResult {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, initialRequest, coroutineContext.job)
+        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
         requestDelegate.assertActive()
 
-        val request = applyGlobalOptions(sketch, initialRequest)
-        val requestContext = RequestContext(sketch, request)
-
+        val request1 = applyGlobalOptions(sketch, request)
+        var requestContext: RequestContext? = null
         try {
             // Set up the request's lifecycle observers. Cancel the request when destroy
-            val lifecycle = request.lifecycleResolver.lifecycle()
+            val lifecycle = request1.lifecycleResolver.lifecycle()
             requestDelegate.start(lifecycle)
 
             // Enqueued requests suspend until the lifecycle is started.
@@ -74,26 +70,16 @@ class RequestExecutor {
                 lifecycle.awaitStarted()
             }
 
-            // resolve resize size
-            val size = request.sizeResolver.size()
-                .coerceAtLeast(Size.Empty)
-                .times(
-                    request.sizeMultiplier ?: 1f
-                )    // TODO sizeMultiplier cannot be used here, it must be used during computeResize
-            requestContext.size = size
-
+            requestContext = RequestContext(sketch, request1)
             onStart(requestContext)
 
             // It must be executed after requestDelegate.start(), so that the old request in requestManager will be overwritten.
-            val uri = request.uri.toString()
+            val uri = request1.uri.toString()
             if (uri.isEmpty() || uri.isBlank()) {
                 throw UriInvalidException(URI_EMPTY_MESSAGE)
             }
 
             val result = RequestInterceptorChain(
-                sketch = sketch,
-                initialRequest = requestContext.request,
-                request = requestContext.request,
                 requestContext = requestContext,
                 interceptors = sketch.components.getRequestInterceptorList(requestContext.request),
                 index = 0,
@@ -106,14 +92,13 @@ class RequestExecutor {
             }
         } catch (throwable: Throwable) {
             if (throwable is CancellationException) {
-                doCancel(requestContext)
+                doCancel(sketch, request1, requestContext)
                 throw throwable
             } else {
-                return doError(requestContext, throwable)
+                return doError(sketch, request1, requestContext, throwable)
             }
         } finally {
             requestDelegate.finish()
-            requestContext.completed()
         }
     }
 
@@ -160,13 +145,14 @@ class RequestExecutor {
             extras = imageData.extras,
         )
         val target = lastRequest.target
+        val sketch = requestContext.sketch
         if (target != null) {
-            setImage(requestContext, target, result) {
-                target.onSuccess(requestContext, result.image)
+            setImage(sketch, lastRequest, target, result) {
+                target.onSuccess(sketch, lastRequest, result.image)
             }
         }
         lastRequest.listener?.onSuccess(lastRequest, result)
-        requestContext.sketch.logger.d {
+        sketch.logger.d {
             val resultString = "image=${result.image}, " +
                     "imageInfo=${result.imageInfo}, " +
                     "dataFrom=${result.dataFrom}, " +
@@ -178,16 +164,17 @@ class RequestExecutor {
     }
 
     private fun doError(
-        requestContext: RequestContext,
+        sketch: Sketch,
+        request: ImageRequest,
+        requestContext: RequestContext?,
         throwable: Throwable,
     ): ImageResult {
-        val sketch = requestContext.sketch
-        val lastRequest = requestContext.request
+        val lastRequest = requestContext?.request ?: request
         val errorImage = getErrorDrawable(
             sketch = sketch,
             request = lastRequest,
             throwable = throwable
-        )?.resizeOnDraw(lastRequest, requestContext.size)
+        )?.resizeOnDraw(lastRequest, requestContext?.size)
         val errorResult: ImageResult.Error = ImageResult.Error(
             request = lastRequest,
             image = errorImage,
@@ -196,13 +183,13 @@ class RequestExecutor {
         val target = lastRequest.target
         val throwable1 = errorResult.throwable
         if (target != null) {
-            setImage(requestContext, target, errorResult) {
-                target.onError(requestContext, errorResult.image)
+            setImage(sketch, lastRequest, target, errorResult) {
+                target.onError(sketch, lastRequest, errorResult.image)
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
         val logMessage =
-            "RequestExecutor. Request failed. '${throwable1.message}'. '${requestContext.logKey}'"
+            "RequestExecutor. Request failed. '${throwable1.message}'. '${request.key}'"
         when (throwable1) {
             is DepthException -> sketch.logger.d { logMessage }
             is SketchException -> sketch.logger.e(logMessage)
@@ -212,17 +199,18 @@ class RequestExecutor {
     }
 
     @MainThread
-    private fun doCancel(requestContext: RequestContext) {
-        val lastRequest = requestContext.request
-        requestContext.sketch.logger.d {
-            "RequestExecutor. Request canceled. '${requestContext.logKey}'"
+    private fun doCancel(sketch: Sketch, request: ImageRequest, requestContext: RequestContext?) {
+        val lastRequest = requestContext?.request ?: request
+        sketch.logger.d {
+            "RequestExecutor. Request canceled. '${request.key}'"
         }
         lastRequest.listener?.onCancel(lastRequest)
     }
 
     @MainThread
     private fun setImage(
-        requestContext: RequestContext,
+        sketch: Sketch,
+        request: ImageRequest,
         target: Target?,
         result: ImageResult,
         setImage: () -> Unit
@@ -237,7 +225,7 @@ class RequestExecutor {
         }
 
         val transition =
-            result.request.transitionFactory?.create(requestContext, target, result)
+            result.request.transitionFactory?.create(sketch, request, target, result)
         if (transition == null) {
             setImage()
             return

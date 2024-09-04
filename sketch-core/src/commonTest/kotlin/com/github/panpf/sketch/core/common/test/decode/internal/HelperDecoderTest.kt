@@ -28,7 +28,9 @@ class HelperDecoderTest {
     private suspend fun ImageRequest.helperDecode(sketch: Sketch): Result<DecodeResult> {
         val request = this
         val requestContext = request.toRequestContext(sketch)
-        val fetchResult = sketch.components.newFetcherOrThrow(request).fetch().getOrThrow()
+        val fetchResult =
+            sketch.components.newFetcherOrThrow(request.toRequestContext(sketch, Size.Empty))
+                .fetch().getOrThrow()
         val dataSource = fetchResult.dataSource
         val helperDecoder = HelperDecoder(requestContext, dataSource) {
             createDecodeHelper(request, dataSource)

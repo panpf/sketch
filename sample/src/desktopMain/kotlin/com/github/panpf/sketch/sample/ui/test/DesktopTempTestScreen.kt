@@ -17,10 +17,12 @@ import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.painter.SkiaAnimatedImagePainter
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -75,7 +77,8 @@ class DesktopTempTestScreen : BaseScreen() {
                     withContext(ioCoroutineDispatcher()) {
                         val sketch = SingletonSketch.get(context)
                         val request = ImageRequest(context, ResourceImages.animGif.uri)
-                        val bytes = sketch.components.newFetcherOrThrow(request)
+                        val requestContext = RequestContext(sketch, request, Size.Empty)
+                        val bytes = sketch.components.newFetcherOrThrow(requestContext)
                             .fetch().getOrThrow()
                             .dataSource.openSource().buffer()
                             .use { it.readByteArray() }

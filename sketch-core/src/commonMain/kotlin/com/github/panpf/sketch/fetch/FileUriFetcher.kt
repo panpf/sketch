@@ -16,13 +16,14 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
+import com.github.panpf.sketch.util.defaultFileSystem
+import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 
@@ -57,10 +58,9 @@ fun isFileUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest
  */
-class FileUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+class FileUriFetcher constructor(
     val path: Path,
+    val fileSystem: FileSystem = defaultFileSystem()
 ) : Fetcher {
 
     companion object {
@@ -74,7 +74,7 @@ class FileUriFetcher(
         FetchResult(
             dataSource = FileDataSource(
                 path = path,
-                fileSystem = sketch.fileSystem,
+                fileSystem = fileSystem,
                 dataFrom = LOCAL
             ),
             mimeType = mimeType
@@ -85,17 +85,12 @@ class FileUriFetcher(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as FileUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (path != other.path) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + path.hashCode()
-        return result
+        return path.hashCode()
     }
 
     override fun toString(): String {
@@ -104,10 +99,13 @@ class FileUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
-            val uri = request.uri
+        override fun create(requestContext: RequestContext): FileUriFetcher? {
+            val uri = requestContext.request.uri
             if (!isFileUri(uri)) return null
-            return FileUriFetcher(sketch, request, uri.path!!.toPath())
+            return FileUriFetcher(
+                path = uri.path.orEmpty().toPath(),
+                fileSystem = requestContext.sketch.fileSystem
+            )
         }
 
         override fun equals(other: Any?): Boolean {

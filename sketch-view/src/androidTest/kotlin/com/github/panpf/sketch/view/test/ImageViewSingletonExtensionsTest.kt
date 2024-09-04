@@ -25,6 +25,8 @@ import com.github.panpf.sketch.loadResourceImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
@@ -137,8 +139,9 @@ class ImageViewSingletonExtensionsTest {
         assertNull(imageView.drawable)
 
         val file = runBlocking {
-            sketch.components.newFetcherOrThrow(ImageRequest(context, ResourceImages.png.uri))
-                .fetch().getOrThrow().dataSource.getFile(sketch).toFile()
+            sketch.components.newFetcherOrThrow(
+                ImageRequest(context, ResourceImages.png.uri).toRequestContext(sketch, Size.Empty)
+            ).fetch().getOrThrow().dataSource.getFile(sketch).toFile()
         }
         runBlocking {
             imageView.loadImage(file).job.join()

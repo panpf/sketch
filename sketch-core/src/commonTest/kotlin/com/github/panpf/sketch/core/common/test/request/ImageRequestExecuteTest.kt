@@ -965,7 +965,7 @@ class ImageRequestExecuteTest {
         var onStartImage: Image?
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
-            target(onStart = { _, placeholder: Image? ->
+            target(onStart = { _, _, placeholder: Image? ->
                 onStartImage = placeholder
             }
             )
@@ -1009,7 +1009,7 @@ class ImageRequestExecuteTest {
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
             target(
-                onError = { _, image ->
+                onError = { _, _, image ->
                     onErrorImage = image
                 }
             )
@@ -1017,7 +1017,7 @@ class ImageRequestExecuteTest {
         val errorRequest = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
             size(500, 500)
             target(
-                onError = { _, image ->
+                onError = { _, _, image ->
                     onErrorImage = image
                 }
             )

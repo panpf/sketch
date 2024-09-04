@@ -35,6 +35,7 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
@@ -45,6 +46,7 @@ import com.github.panpf.sketch.util.DownloadData
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Pipeline
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -113,7 +115,7 @@ class Sketch private constructor(options: Options) {
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
      * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
-    val components: Components = Components(this, options.componentRegistry)
+    val components: Components = Components(options.componentRegistry)
 
     /** Monitor network connection and system status */
     val systemCallbacks = SystemCallbacks(this)
@@ -205,7 +207,8 @@ class Sketch private constructor(options: Options) {
      * Download images
      */
     suspend fun executeDownload(request: ImageRequest): Result<DownloadData> = kotlin.runCatching {
-        val fetcher = components.newFetcherOrThrow(request)
+        val requestContext = RequestContext(this, request, Size.Empty)
+        val fetcher = components.newFetcherOrThrow(requestContext)
         val fetchResultResult = fetcher.fetch()
         val fetchResult = fetchResultResult.getOrThrow()
         @Suppress("MoveVariableDeclarationIntoWhen") val dataSource = fetchResult.dataSource

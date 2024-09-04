@@ -55,7 +55,7 @@ open class DrawableDecoder(
             throw ImageInvalidException("Invalid drawable intrinsicSize, intrinsicSize=${imageWidth}x${imageHeight}")
         }
         val imageSize = Size(imageWidth, imageHeight)
-        val targetSize = requestContext.size!!
+        val targetSize = requestContext.size
         var transformeds: List<String>? = null
         val scale: Float = computeScaleMultiplierWithOneSide(
             sourceSize = imageSize,

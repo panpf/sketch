@@ -78,7 +78,7 @@ class GifDrawableDecoder(
         val gifInfoHandleHelper = GifInfoHandleHelper(requestContext.sketch, dataSource)
         val imageWidth = gifInfoHandleHelper.width
         val imageHeight = gifInfoHandleHelper.height
-        val size = requestContext.size!!
+        val size = requestContext.size
         val imageSize = Size(imageWidth, imageHeight)
         val imageInfo = ImageInfo(
             width = imageWidth,

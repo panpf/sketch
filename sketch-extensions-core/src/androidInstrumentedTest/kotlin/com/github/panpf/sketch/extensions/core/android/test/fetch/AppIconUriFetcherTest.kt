@@ -26,6 +26,8 @@ import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.runner.RunWith
@@ -105,14 +107,17 @@ class AppIconUriFetcherTest {
 
         assertEquals("AppIconUriFetcher", fetcherFactory.toString())
 
-        fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/12412"))!!
+        fetcherFactory.create(
+            ImageRequest(context, "app.icon://packageName1/12412")
+                .toRequestContext(sketch, Size.Empty)
+        )!!
             .apply {
                 assertEquals("packageName1", packageName)
                 assertEquals(12412, versionCode)
             }
         fetcherFactory.create(
-            sketch,
             ImageRequest(context, "app.icon://packageName1/12412/87467")
+                .toRequestContext(sketch, Size.Empty)
         )!!
             .apply {
                 assertEquals("packageName1", packageName)
@@ -121,27 +126,39 @@ class AppIconUriFetcherTest {
 
         assertNull(
             fetcherFactory.create(
-                sketch,
                 ImageRequest(context, "content://sample_app/sample")
+                    .toRequestContext(sketch, Size.Empty)
             )
         )
 
         assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, ImageRequest(context, "app.icon:///12412"))
-        }
-        assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, ImageRequest(context, "app.icon:// /12412"))
-        }
-        assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/"))
-        }
-        assertThrow(UriInvalidException::class) {
-            fetcherFactory.create(sketch, ImageRequest(context, "app.icon://packageName1/ "))
+            fetcherFactory.create(
+                ImageRequest(context, "app.icon:///12412")
+                    .toRequestContext(sketch, Size.Empty)
+            )
         }
         assertThrow(UriInvalidException::class) {
             fetcherFactory.create(
-                sketch,
+                ImageRequest(context, "app.icon:// /12412")
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        }
+        assertThrow(UriInvalidException::class) {
+            fetcherFactory.create(
+                ImageRequest(context, "app.icon://packageName1/")
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        }
+        assertThrow(UriInvalidException::class) {
+            fetcherFactory.create(
+                ImageRequest(context, "app.icon://packageName1/ ")
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        }
+        assertThrow(UriInvalidException::class) {
+            fetcherFactory.create(
                 ImageRequest(context, "app.icon://packageName1/errorCode")
+                    .toRequestContext(sketch, Size.Empty)
             )
         }
     }
@@ -174,7 +191,10 @@ class AppIconUriFetcherTest {
         val versionCode = context.packageManager.getPackageInfo(packageName, 0).versionCode
         val appIconUri = newAppIconUri(packageName, versionCode)
 
-        val fetcher = fetcherFactory.create(sketch, ImageRequest(context, appIconUri))!!
+        val fetcher = fetcherFactory.create(
+            ImageRequest(context, appIconUri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!
         (runBlocking { fetcher.fetch() }.getOrThrow().dataSource as DrawableDataSource).apply {
             assertEquals(DataFrom.LOCAL, dataFrom)
 

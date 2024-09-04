@@ -32,6 +32,16 @@ import kotlin.test.assertSame
 class RequestContextTest {
 
     @Test
+    fun testRequestContext() {
+        // TODO test
+    }
+
+    @Test
+    fun testResolveSize() {
+        // TODO test
+    }
+
+    @Test
     fun testRequest() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request0 = ImageRequest(context, ResourceImages.jpeg.uri)

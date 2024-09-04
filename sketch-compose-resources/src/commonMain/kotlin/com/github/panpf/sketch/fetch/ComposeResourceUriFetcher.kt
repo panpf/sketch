@@ -17,8 +17,7 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.MimeTypeMap
@@ -82,9 +81,7 @@ fun isComposeResourceUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest
  */
-class ComposeResourceUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
+class ComposeResourceUriFetcher constructor(
     val resourcePath: String,
 ) : Fetcher {
 
@@ -105,17 +102,12 @@ class ComposeResourceUriFetcher(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ComposeResourceUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (resourcePath != other.resourcePath) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + resourcePath.hashCode()
-        return result
+        return resourcePath.hashCode()
     }
 
     override fun toString(): String {
@@ -124,11 +116,11 @@ class ComposeResourceUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ComposeResourceUriFetcher? {
-            val uri = request.uri
+        override fun create(requestContext: RequestContext): ComposeResourceUriFetcher? {
+            val uri = requestContext.request.uri
             if (!isComposeResourceUri(uri)) return null
             val resourcePath = uri.pathSegments.drop(1).joinToString("/")
-            return ComposeResourceUriFetcher(sketch, request, resourcePath)
+            return ComposeResourceUriFetcher(resourcePath)
         }
 
         override fun equals(other: Any?): Boolean {

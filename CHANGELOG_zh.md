@@ -11,6 +11,8 @@
 * fix: 修复当 ImageView 已附到窗口但是因 padding 导致 size 为 null 时无法加载图片的
   bug。 [#208](https://github.com/panpf/sketch/issues/208)
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage
+* remove: 移除 ComposeBitmapImage
+* change: Fetcher.Factory.create() 的传参改为 RequestContext
 
 # 4.0.0-alpha08
 

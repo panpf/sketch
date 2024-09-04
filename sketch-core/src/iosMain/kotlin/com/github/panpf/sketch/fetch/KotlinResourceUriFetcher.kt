@@ -16,12 +16,13 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.KotlinResourceDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
+import com.github.panpf.sketch.util.defaultFileSystem
+import okio.FileSystem
 
 /**
  * Sample: 'file:///kotlin_resource/test.png'
@@ -50,9 +51,8 @@ fun isKotlinResourceUri(uri: Uri): Boolean =
  * @see com.github.panpf.sketch.core.ios.test.fetch.KotlinResourceUriFetcherTest
  */
 class KotlinResourceUriFetcher(
-    val sketch: Sketch,
-    val request: ImageRequest,
     val resourcePath: String,
+    val fileSystem: FileSystem = defaultFileSystem()
 ) : Fetcher {
 
     companion object {
@@ -63,7 +63,7 @@ class KotlinResourceUriFetcher(
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val mimeType = MimeTypeMap.getMimeTypeFromUrl(resourcePath)
-        val dataSource = KotlinResourceDataSource(resourcePath, sketch.fileSystem)
+        val dataSource = KotlinResourceDataSource(resourcePath, fileSystem)
         return Result.success(FetchResult(dataSource, mimeType))
     }
 
@@ -71,17 +71,12 @@ class KotlinResourceUriFetcher(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as KotlinResourceUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (resourcePath != other.resourcePath) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + resourcePath.hashCode()
-        return result
+        return resourcePath.hashCode()
     }
 
     override fun toString(): String {
@@ -90,11 +85,14 @@ class KotlinResourceUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): KotlinResourceUriFetcher? {
-            val uri = request.uri
+        override fun create(requestContext: RequestContext): KotlinResourceUriFetcher? {
+            val uri = requestContext.request.uri
             if (!isKotlinResourceUri(uri)) return null
             val resourcePath = uri.pathSegments.drop(1).joinToString("/")
-            return KotlinResourceUriFetcher(sketch, request, resourcePath)
+            return KotlinResourceUriFetcher(
+                resourcePath = resourcePath,
+                fileSystem = requestContext.sketch.fileSystem
+            )
         }
 
         override fun equals(other: Any?): Boolean {

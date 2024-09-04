@@ -18,7 +18,6 @@
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.Key
@@ -51,7 +50,6 @@ interface Transformation : Key {
      */
     @WorkerThread
     suspend fun transform(
-        sketch: Sketch,
         requestContext: RequestContext,
         input: Image
     ): TransformResult?

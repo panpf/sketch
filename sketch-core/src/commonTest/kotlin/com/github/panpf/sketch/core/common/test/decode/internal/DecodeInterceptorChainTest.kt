@@ -48,7 +48,10 @@ class DecodeInterceptorChainTest {
             )
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
-                sketch, request, request.toRequestContext(sketch), null, interceptors, 0
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = interceptors,
+                index = 0
             )
             chain.proceed().getOrThrow()
         }.apply {
@@ -70,7 +73,10 @@ class DecodeInterceptorChainTest {
             )
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
-                sketch, request, request.toRequestContext(sketch), null, interceptors, 0
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = interceptors,
+                index = 0
             )
             chain.proceed().getOrThrow()
         }.apply {

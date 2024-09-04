@@ -104,7 +104,7 @@ class BlurTransformationTest {
         val transformResult = BlurTransformation(
             radius = 30,
             maskColor = Color.withA(Color.BLUE, 80)
-        ).transform(sketch, jpegRequestContext, inBitmap)
+        ).transform(jpegRequestContext, inBitmap)
         transformResult.apply {
             assertNotSame(inBitmap, image)
             assertNotEquals(inBitmapCorners, image.corners())
@@ -128,7 +128,6 @@ class BlurTransformationTest {
             assertTrue(this.hasAlpha())
         }
         val hasAlphaBitmapBlurred1 = BlurTransformation(30).transform(
-            sketch = sketch,
             requestContext = pngRequestContext,
             input = hasAlphaBitmap1
         ).apply {
@@ -139,11 +138,7 @@ class BlurTransformationTest {
             assertTrue(this.hasAlpha())
         }
         val hasAlphaBitmapBlurred2 = BlurTransformation(30, hasAlphaBitmapBgColor = null)
-            .transform(
-                sketch,
-                pngRequestContext,
-                hasAlphaBitmap2
-            ).apply {
+            .transform(pngRequestContext, hasAlphaBitmap2).apply {
                 assertTrue(this.image.hasAlpha())
             }.image
         assertNotEquals(hasAlphaBitmapBlurred1.corners(), hasAlphaBitmapBlurred2.corners())

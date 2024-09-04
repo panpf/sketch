@@ -33,7 +33,7 @@ import com.github.panpf.sketch.request.ImageRequest
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -55,7 +55,7 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -78,7 +78,7 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -99,7 +99,7 @@ fun rememberIconPainterStateImage(
 /**
  * StateImage implemented by IconPainter
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageCommonTest
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest
  */
 @Stable
 class IconPainterStateImage(

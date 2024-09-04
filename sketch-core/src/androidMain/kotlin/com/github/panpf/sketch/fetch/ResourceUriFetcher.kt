@@ -17,13 +17,14 @@
 package com.github.panpf.sketch.fetch
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.util.TypedValue
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
@@ -93,9 +94,8 @@ fun isResourceUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.android.test.fetch.ResourceUriFetcherTest
  */
-class ResourceUriFetcher(
-    val sketch: Sketch, // TODO remove
-    val request: ImageRequest,  // TODO change to context
+class ResourceUriFetcher constructor(
+    val context: Context,
     val resourceUri: Uri,
 ) : Fetcher {
 
@@ -108,10 +108,10 @@ class ResourceUriFetcher(
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
         val packageName = resourceUri.authority
             ?.takeIf { it.isNotEmpty() }
-            ?: request.context.packageName
+            ?: context.packageName
 
         val resources: Resources = try {
-            request.context.packageManager.getResourcesForApplication(packageName)
+            context.packageManager.getResourcesForApplication(packageName)
         } catch (ex: NameNotFoundException) {
             throw Resources.NotFoundException("Not found Resources by packageName: $resourceUri")
         }
@@ -143,7 +143,7 @@ class ResourceUriFetcher(
             )
         } else {
             DrawableDataSource(
-                context = request.context,
+                context = context,
                 dataFrom = DataFrom.LOCAL,
                 drawableFetcher = ResDrawable(packageName, resources, resId)
             )
@@ -155,17 +155,12 @@ class ResourceUriFetcher(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ResourceUriFetcher
-        if (sketch != other.sketch) return false
-        if (request != other.request) return false
         if (resourceUri != other.resourceUri) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = sketch.hashCode()
-        result = 31 * result + request.hashCode()
-        result = 31 * result + resourceUri.hashCode()
-        return result
+        return resourceUri.hashCode()
     }
 
     override fun toString(): String {
@@ -174,10 +169,11 @@ class ResourceUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
+        override fun create(requestContext: RequestContext): ResourceUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isResourceUri(uri)) return null
-            return ResourceUriFetcher(sketch, request, uri)
+            return ResourceUriFetcher(request.context, uri)
         }
 
         override fun equals(other: Any?): Boolean {

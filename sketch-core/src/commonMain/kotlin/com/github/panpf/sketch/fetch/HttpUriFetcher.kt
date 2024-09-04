@@ -28,6 +28,7 @@ import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.source.DataFrom.NETWORK
@@ -57,7 +58,7 @@ fun isHttpUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.HttpUriFetcherTest
  */
-open class HttpUriFetcher(
+class HttpUriFetcher(
     val sketch: Sketch,
     val request: ImageRequest,
     val url: String
@@ -272,10 +273,11 @@ open class HttpUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): HttpUriFetcher? {
+        override fun create(requestContext: RequestContext): HttpUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isHttpUri(uri)) return null
-            return HttpUriFetcher(sketch, request, request.uri.toString())
+            return HttpUriFetcher(requestContext.sketch, request, request.uri.toString())
         }
 
         override fun equals(other: Any?): Boolean {

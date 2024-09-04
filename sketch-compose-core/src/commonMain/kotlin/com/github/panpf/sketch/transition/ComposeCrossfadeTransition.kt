@@ -19,11 +19,12 @@
 package com.github.panpf.sketch.transition
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.asPainter
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
@@ -34,7 +35,8 @@ import kotlin.jvm.JvmOverloads
  * @see com.github.panpf.sketch.compose.core.common.test.transition.ComposeCrossfadeTransitionTest
  */
 class ComposeCrossfadeTransition constructor(
-    private val requestContext: RequestContext,
+    private val sketch: Sketch,
+    private val request: ImageRequest,
     private val target: TransitionComposeTarget,
     private val result: ImageResult,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
@@ -65,11 +67,16 @@ class ComposeCrossfadeTransition constructor(
         )
         when (result) {
             is ImageResult.Success -> target.onSuccess(
-                requestContext,
-                crossfadePainter.asSketchImage()
+                sketch = sketch,
+                request = request,
+                result = crossfadePainter.asSketchImage()
             )
 
-            is ImageResult.Error -> target.onError(requestContext, crossfadePainter.asSketchImage())
+            is ImageResult.Error -> target.onError(
+                sketch = sketch,
+                request = request,
+                error = crossfadePainter.asSketchImage()
+            )
         }
     }
 
@@ -85,7 +92,8 @@ class ComposeCrossfadeTransition constructor(
         }
 
         override fun create(
-            requestContext: RequestContext,
+            sketch: Sketch,
+            request: ImageRequest,
             target: TransitionTarget,
             result: ImageResult,
         ): Transition? {
@@ -98,7 +106,8 @@ class ComposeCrossfadeTransition constructor(
             }
             val fitScale = target.fitScale
             return ComposeCrossfadeTransition(
-                requestContext = requestContext,
+                sketch = sketch,
+                request = request,
                 target = target,
                 result = result,
                 durationMillis = durationMillis,
@@ -108,8 +117,11 @@ class ComposeCrossfadeTransition constructor(
             )
         }
 
-        override val key: String =
-            "ComposeCrossfadeTransition.Factory(durationMillis=$durationMillis,fadeStart=$fadeStart,preferExactIntrinsicSize=$preferExactIntrinsicSize,alwaysUse=$alwaysUse)"
+        override val key: String = "ComposeCrossfadeTransition.Factory(" +
+                "durationMillis=$durationMillis," +
+                "fadeStart=$fadeStart," +
+                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
+                "alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -130,8 +142,10 @@ class ComposeCrossfadeTransition constructor(
             return result
         }
 
-        override fun toString(): String {
-            return "ComposeCrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
-        }
+        override fun toString(): String = "ComposeCrossfadeTransition.Factory(" +
+                "durationMillis=$durationMillis, " +
+                "fadeStart=$fadeStart, " +
+                "preferExactIntrinsicSize=$preferExactIntrinsicSize, " +
+                "alwaysUse=$alwaysUse)"
     }
 }

@@ -19,7 +19,6 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.BaseRequestDelegate
 import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -33,18 +32,18 @@ class TestTarget(override val currentImage: Image? = null) : Target {
     var successImage: Image? = null
     var errorImage: Image? = null
 
-    override fun onStart(requestContext: RequestContext, placeholder: Image?) {
-        super.onStart(requestContext, placeholder)
+    override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
+        super.onStart(sketch, request, placeholder)
         startImage = placeholder
     }
 
-    override fun onSuccess(requestContext: RequestContext, result: Image) {
-        super.onSuccess(requestContext, result)
+    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
+        super.onSuccess(sketch, request, result)
         successImage = result
     }
 
-    override fun onError(requestContext: RequestContext, error: Image?) {
-        super.onError(requestContext, error)
+    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
+        super.onError(sketch, request, error)
         errorImage = error
     }
 

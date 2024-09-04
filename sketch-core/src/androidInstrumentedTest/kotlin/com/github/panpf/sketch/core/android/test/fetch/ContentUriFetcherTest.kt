@@ -21,6 +21,8 @@ import com.github.panpf.sketch.fetch.ContentUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -46,16 +48,30 @@ class ContentUriFetcherTest {
         val contentUri = "content://sample_app/sample"
         val httpUri = "http://sample.com/sample.jpg"
 
-        fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!.apply {
+        fetcherFactory.create(
+            ImageRequest(context, contentUri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!.apply {
             assertEquals(contentUri, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!.apply {
+        fetcherFactory.create(
+            ImageRequest(context, contentUri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!.apply {
             assertEquals(contentUri, this.contentUri.toString())
         }
-        fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!.apply {
+        fetcherFactory.create(
+            ImageRequest(context, contentUri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!.apply {
             assertEquals(contentUri, this.contentUri.toString())
         }
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, httpUri)))
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, httpUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
     }
 
     @Test
@@ -79,7 +95,10 @@ class ContentUriFetcherTest {
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
 
-        val fetcher = fetcherFactory.create(sketch, ImageRequest(context, contentUri))!!
+        val fetcher = fetcherFactory.create(
+            ImageRequest(context, contentUri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!
         val source = runBlocking {
             fetcher.fetch()
         }.getOrThrow().dataSource

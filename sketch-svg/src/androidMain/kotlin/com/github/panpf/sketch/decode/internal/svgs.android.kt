@@ -72,7 +72,7 @@ internal actual suspend fun decodeSvg(
     svg.setDocumentHeight("100%")
 
     val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
-    val targetSize = requestContext.size!!
+    val targetSize = requestContext.size
     val targetScale =
         computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)

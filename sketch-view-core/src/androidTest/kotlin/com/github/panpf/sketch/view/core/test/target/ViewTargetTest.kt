@@ -23,7 +23,6 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
@@ -37,11 +36,11 @@ class ViewTargetTest {
     @Test
     fun test() {
         val (context, sketch) = getTestContextAndSketch()
-        val requestContext = RequestContext(sketch, ImageRequest(context, null))
+        val request = ImageRequest(context, null)
         TestImageViewTarget(ImageView(context)).apply {
-            onStart(requestContext, null)
-            onError(requestContext, null)
-            onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
+            onStart(sketch, request, null)
+            onError(sketch, request, null)
+            onSuccess(sketch, request, ColorDrawable(Color.RED).asSketchImage())
         }
     }
 

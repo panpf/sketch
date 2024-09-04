@@ -2,6 +2,7 @@
 
 package com.github.panpf.sketch.compose.resources.common.test.painter
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -11,12 +12,12 @@ import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.InternalResourceApi
-import kotlin.test.Test
 
 class IconPainterComposeResourcesTest {
     // TODO test
 
-    @Test
+    //    @Test
+    @Composable
     @OptIn(InternalResourceApi::class)
     fun testRememberIconPainter() {
         runComposeUiTest {

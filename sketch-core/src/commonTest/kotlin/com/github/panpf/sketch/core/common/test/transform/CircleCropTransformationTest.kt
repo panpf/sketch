@@ -79,7 +79,7 @@ class CircleCropTransformationTest {
         }
 
         CircleCropTransformation(Scale.START_CROP)
-            .transform(sketch, requestContext, inBitmap).apply {
+            .transform(requestContext, inBitmap).apply {
                 assertNotSame(inBitmap, image)
                 assertEquals(
                     listOf(

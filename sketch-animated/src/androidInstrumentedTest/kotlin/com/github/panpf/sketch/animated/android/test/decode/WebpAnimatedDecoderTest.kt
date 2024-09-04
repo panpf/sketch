@@ -196,7 +196,10 @@ class WebpAnimatedDecoderTest {
             onAnimationEnd { }
             onAnimationStart { }
         }
-        val fetchResult = sketch.components.newFetcherOrThrow(request)
+        val fetchResult = sketch.components.newFetcherOrThrow(
+            request
+                .toRequestContext(sketch, Size.Empty)
+        )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request.toRequestContext(sketch), fetchResult)!!
             .let { runBlocking { it.decode() }.getOrThrow() }.apply {
@@ -213,7 +216,10 @@ class WebpAnimatedDecoderTest {
             repeatCount(3)
             size(300, 300)
         }
-        val fetchResult1 = sketch.components.newFetcherOrThrow(request1)
+        val fetchResult1 = sketch.components.newFetcherOrThrow(
+            request1
+                .toRequestContext(sketch, Size.Empty)
+        )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
             .let { runBlocking { it.decode().getOrThrow() } }.apply {
