@@ -14,6 +14,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
   the size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
   ComposeBitmapImage.
+* remove: Remove ComposeBitmapImage
 
 # 4.0.0-alpha08
 
