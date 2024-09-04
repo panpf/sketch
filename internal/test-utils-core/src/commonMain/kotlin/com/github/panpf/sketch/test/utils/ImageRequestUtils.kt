@@ -12,12 +12,12 @@ import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Job
 
-suspend fun ImageRequest.toRequestContext(sketch: Sketch, size: Size? = null): RequestContext {
-    return if (size != null) {
-        RequestContext(sketch, this, size)
-    } else {
-        RequestContext(sketch, this)
-    }
+fun ImageRequest.toRequestContext(sketch: Sketch, size: Size): RequestContext {
+    return RequestContext(sketch, this, size)
+}
+
+suspend fun ImageRequest.toRequestContext(sketch: Sketch): RequestContext {
+    return RequestContext(sketch, this)
 }
 
 inline fun ImageRequest.Builder.target(

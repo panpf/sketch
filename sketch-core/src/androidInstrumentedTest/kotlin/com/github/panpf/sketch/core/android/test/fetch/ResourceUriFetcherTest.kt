@@ -25,6 +25,8 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -184,12 +186,42 @@ class ResourceUriFetcherTest {
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
-        assertNotNull(fetcherFactory.create(sketch, ImageRequest(context, resourceUriByName)))
-        assertNotNull(fetcherFactory.create(sketch, ImageRequest(context, resourceUriById)))
-        assertNotNull(fetcherFactory.create(sketch, ImageRequest(context, resourceUriByName2)))
-        assertNotNull(fetcherFactory.create(sketch, ImageRequest(context, resourceUriById2)))
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, httpUri)))
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, contentUri)))
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(context, resourceUriByName)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(context, resourceUriById)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(context, resourceUriByName2)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(context, resourceUriById2)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, httpUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, contentUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
     }
 
     @Test

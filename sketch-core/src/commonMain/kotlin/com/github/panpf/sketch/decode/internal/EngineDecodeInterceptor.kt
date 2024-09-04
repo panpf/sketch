@@ -33,15 +33,15 @@ class EngineDecodeInterceptor : DecodeInterceptor {
 
     @WorkerThread
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
-        val request = chain.request
         val components = chain.sketch.components
+        val requestContext = chain.requestContext
         val fetchResult = chain.fetchResult
-            ?: kotlin.runCatching { components.newFetcherOrThrow(request) }
+            ?: kotlin.runCatching { components.newFetcherOrThrow(requestContext) }
                 .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
                 .fetch()
                 .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
         val decoder = kotlin.runCatching {
-            components.newDecoderOrThrow(chain.requestContext, fetchResult)
+            components.newDecoderOrThrow(requestContext, fetchResult)
         }.let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
         return decoder.decode()
     }

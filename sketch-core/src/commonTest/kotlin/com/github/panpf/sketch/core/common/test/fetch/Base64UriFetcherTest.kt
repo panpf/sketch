@@ -22,6 +22,8 @@ import com.github.panpf.sketch.fetch.newBase64Uri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
 import kotlin.io.encoding.ExperimentalEncodingApi
@@ -105,7 +107,10 @@ class Base64UriFetcherTest {
         val base64Uri =
             "data:image/png;base64,${kotlin.io.encoding.Base64.Default.encode(imageData)}"
 
-        val fetcher = fetcherFactory.create(sketch, ImageRequest(context, base64Uri))!!
+        val fetcher = fetcherFactory.create(
+            ImageRequest(context, base64Uri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!
         val source = fetcher.fetch().getOrThrow().dataSource
         assertTrue(source is ByteArrayDataSource)
     }
@@ -128,11 +133,17 @@ class Base64UriFetcherTest {
         val base64Uri1 = "data:image/png;base64,4y2u1412421089084901240129"
         val base64Uri2 = "data:img/png;base64,4y2u1412421089084901240129"
         assertNotEquals(base64Uri1, base64Uri2)
-        fetcherFactory.create(sketch, ImageRequest(context, base64Uri1))!!.apply {
+        fetcherFactory.create(
+            ImageRequest(context, base64Uri1)
+                .toRequestContext(sketch, Size.Empty)
+        )!!.apply {
             assertEquals("image/png", mimeType)
             assertEquals("4y2u1412421089084901240129", dataEncodedString)
         }
-        fetcherFactory.create(sketch, ImageRequest(context, base64Uri2))!!.apply {
+        fetcherFactory.create(
+            ImageRequest(context, base64Uri2)
+                .toRequestContext(sketch, Size.Empty)
+        )!!.apply {
             assertEquals("image/png", mimeType)
             assertEquals("4y2u1412421089084901240129", dataEncodedString)
         }
@@ -141,10 +152,30 @@ class Base64UriFetcherTest {
         val base64ErrorUri3 = "data:image/png;base54,4y2u1412421089084901240129"
         val base64ErrorUri4 = "data:image/png;base644y2u1412421089084901240129"
 
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri1)))
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri2)))
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri3)))
-        assertNull(fetcherFactory.create(sketch, ImageRequest(context, base64ErrorUri4)))
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, base64ErrorUri1)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, base64ErrorUri2)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, base64ErrorUri3)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            fetcherFactory.create(
+                ImageRequest(context, base64ErrorUri4)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
     }
 
     @Test

@@ -10,9 +10,11 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.util.sha256String
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.zoomimage.SketchZoomState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +56,9 @@ actual fun PhotoViewerBottomBarWrapper(
 private suspend fun savePhoto(context: PlatformContext, imageUri: String) {
     val sketch: Sketch = SingletonSketch.get(context)
     val fetcher = withContext(Dispatchers.IO) {
-        sketch.components.newFetcherOrThrow(ImageRequest(sketch.context, imageUri))
+        val requestContext =
+            RequestContext(sketch, ImageRequest(sketch.context, imageUri), Size.Empty)
+        sketch.components.newFetcherOrThrow(requestContext)
     }
     if (fetcher is FileUriFetcher) {
         return EventBus.toastFlow.emit("Local files do not need to be saved")

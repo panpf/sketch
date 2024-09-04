@@ -16,9 +16,8 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.KotlinResourceDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
@@ -86,13 +85,13 @@ class KotlinResourceUriFetcher(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): KotlinResourceUriFetcher? {
-            val uri = request.uri
+        override fun create(requestContext: RequestContext): KotlinResourceUriFetcher? {
+            val uri = requestContext.request.uri
             if (!isKotlinResourceUri(uri)) return null
             val resourcePath = uri.pathSegments.drop(1).joinToString("/")
             return KotlinResourceUriFetcher(
                 resourcePath = resourcePath,
-                fileSystem = sketch.fileSystem
+                fileSystem = requestContext.sketch.fileSystem
             )
         }
 

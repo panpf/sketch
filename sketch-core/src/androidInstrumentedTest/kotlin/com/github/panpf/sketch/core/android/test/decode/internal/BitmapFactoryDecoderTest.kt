@@ -50,6 +50,7 @@ import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
@@ -868,7 +869,10 @@ class BitmapFactoryDecoderTest {
             resize(ResourceImages.jpeg.size.width * 2, ResourceImages.jpeg.size.height * 2)
         }
         val dataSource = runBlocking {
-            sketch.components.newFetcherOrThrow(request).fetch()
+            sketch.components.newFetcherOrThrow(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            ).fetch()
         }.getOrThrow().dataSource
         val bitmapDecoder = BitmapFactoryDecoder(
             requestContext = request.toRequestContext(sketch),
@@ -884,7 +888,10 @@ class BitmapFactoryDecoderTest {
             precision(EXACTLY)
         }
         val dataSource1 = runBlocking {
-            sketch.components.newFetcherOrThrow(request1).fetch()
+            sketch.components.newFetcherOrThrow(
+                request1
+                    .toRequestContext(sketch, Size.Empty)
+            ).fetch()
         }.getOrThrow().dataSource
         BitmapFactoryDecoder(
             request1.toRequestContext(sketch),

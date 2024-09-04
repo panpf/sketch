@@ -22,9 +22,9 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.util.TypedValue
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
@@ -169,7 +169,8 @@ class ResourceUriFetcher constructor(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ResourceUriFetcher? {
+        override fun create(requestContext: RequestContext): ResourceUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isResourceUri(uri)) return null
             return ResourceUriFetcher(request.context, uri)

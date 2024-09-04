@@ -24,6 +24,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.MimeTypeMap
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import okio.BufferedSource
 import okio.buffer
@@ -39,7 +40,10 @@ class MyImagesHttpStack(val sketch: Sketch) : HttpStack {
         val fileName = url.toUri().authority
         val myImage = ResourceImages.values.find { it.resourceName == fileName } ?: throw IllegalArgumentException("Unknown image: $fileName")
         val request = ImageRequest(sketch.context, myImage.uri)
-        val fetchResult = sketch.components.newFetcherOrThrow(request).fetch().getOrThrow()
+        val fetchResult = sketch.components.newFetcherOrThrow(
+            request
+                .toRequestContext(sketch, Size.Empty)
+        ).fetch().getOrThrow()
         return MyImageResponse(url, fetchResult)
     }
 

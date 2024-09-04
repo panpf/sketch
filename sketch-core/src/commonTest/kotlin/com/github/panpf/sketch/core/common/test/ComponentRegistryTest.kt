@@ -20,6 +20,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -175,33 +176,73 @@ class ComponentRegistryTest {
 
         ComponentRegistry.Builder().build().apply {
             assertFailsWith(IllegalArgumentException::class) {
-                newFetcherOrThrow(sketch, ImageRequest(context, "file:///sdcard/sample.jpeg"))
+                newFetcherOrThrow(
+                    ImageRequest(
+                        context,
+                        "file:///sdcard/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             }
             assertFailsWith(IllegalArgumentException::class) {
-                newFetcherOrThrow(sketch, ImageRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrThrow(
+                    ImageRequest(
+                        context,
+                        "http://sample.com/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             }
 
             assertNull(
-                newFetcherOrNull(sketch, ImageRequest(context, "file:///sdcard/sample.jpeg"))
+                newFetcherOrNull(
+                    ImageRequest(
+                        context,
+                        "file:///sdcard/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             )
             assertNull(
-                newFetcherOrNull(sketch, ImageRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrNull(
+                    ImageRequest(
+                        context,
+                        "http://sample.com/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             )
         }
 
         ComponentRegistry.Builder().apply {
             addFetcher(FileUriFetcher.Factory())
         }.build().apply {
-            newFetcherOrThrow(sketch, ImageRequest(context, "file:///sdcard/sample.jpeg"))
+            newFetcherOrThrow(
+                ImageRequest(context, "file:///sdcard/sample.jpeg").toRequestContext(
+                    sketch,
+                    Size.Empty
+                )
+            )
             assertFailsWith(IllegalArgumentException::class) {
-                newFetcherOrThrow(sketch, ImageRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrThrow(
+                    ImageRequest(
+                        context,
+                        "http://sample.com/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             }
 
             assertNotNull(
-                newFetcherOrNull(sketch, ImageRequest(context, "file:///sdcard/sample.jpeg"))
+                newFetcherOrNull(
+                    ImageRequest(
+                        context,
+                        "file:///sdcard/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             )
             assertNull(
-                newFetcherOrNull(sketch, ImageRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrNull(
+                    ImageRequest(
+                        context,
+                        "http://sample.com/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             )
         }
 
@@ -209,14 +250,34 @@ class ComponentRegistryTest {
             addFetcher(FileUriFetcher.Factory())
             addFetcher(HttpUriFetcher.Factory())
         }.build().apply {
-            newFetcherOrThrow(sketch, ImageRequest(context, "file:///sdcard/sample.jpeg"))
-            newFetcherOrThrow(sketch, ImageRequest(context, "http://sample.com/sample.jpeg"))
+            newFetcherOrThrow(
+                ImageRequest(context, "file:///sdcard/sample.jpeg").toRequestContext(
+                    sketch,
+                    Size.Empty
+                )
+            )
+            newFetcherOrThrow(
+                ImageRequest(
+                    context,
+                    "http://sample.com/sample.jpeg"
+                ).toRequestContext(sketch, Size.Empty)
+            )
 
             assertNotNull(
-                newFetcherOrNull(sketch, ImageRequest(context, "file:///sdcard/sample.jpeg"))
+                newFetcherOrNull(
+                    ImageRequest(
+                        context,
+                        "file:///sdcard/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             )
             assertNotNull(
-                newFetcherOrNull(sketch, ImageRequest(context, "http://sample.com/sample.jpeg"))
+                newFetcherOrNull(
+                    ImageRequest(
+                        context,
+                        "http://sample.com/sample.jpeg"
+                    ).toRequestContext(sketch, Size.Empty)
+                )
             )
         }
     }
@@ -232,7 +293,7 @@ class ComponentRegistryTest {
             addFetcher(FileUriFetcher.Factory())
         }.build().apply {
             val fetcher =
-                newFetcherOrThrow(sketch, request)
+                newFetcherOrThrow(request.toRequestContext(sketch, Size.Empty))
             val fetchResult = fetcher.fetch().getOrThrow()
             assertFailsWith(IllegalArgumentException::class) {
                 newDecoderOrThrow(requestContext, fetchResult)
@@ -243,7 +304,7 @@ class ComponentRegistryTest {
             addFetcher(FileUriFetcher.Factory())
         }.build().apply {
             val fetcher =
-                newFetcherOrThrow(sketch, request)
+                newFetcherOrThrow(request.toRequestContext(sketch, Size.Empty))
             val fetchResult = fetcher.fetch().getOrThrow()
             assertFailsWith(IllegalArgumentException::class) {
                 newDecoderOrThrow(requestContext, fetchResult)
@@ -258,7 +319,7 @@ class ComponentRegistryTest {
             addDecoder(TestDecoder.Factory())
         }.build().apply {
             val fetcher =
-                newFetcherOrThrow(sketch, request)
+                newFetcherOrThrow(request.toRequestContext(sketch, Size.Empty))
             val fetchResult = fetcher.fetch().getOrThrow()
             newDecoderOrThrow(requestContext, fetchResult)
             assertNotNull(

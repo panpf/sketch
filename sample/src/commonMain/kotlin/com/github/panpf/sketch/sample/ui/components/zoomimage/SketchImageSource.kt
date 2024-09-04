@@ -20,7 +20,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.zoomimage.subsampling.ImageSource
 import okio.Source
 
@@ -69,7 +71,8 @@ class SketchImageSource(
                 downloadCachePolicy(CachePolicy.ENABLED)
                 depth(Depth.NETWORK)
             }
-            val fetcher = sketch.components.newFetcherOrThrow(request)
+            val requestContext = RequestContext(sketch, request, Size.Empty)
+            val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             val fetchResult = fetcher.fetch().getOrThrow()
             val dataSource = fetchResult.dataSource
             return SketchImageSource(imageUri, dataSource)

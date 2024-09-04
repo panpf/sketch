@@ -12,7 +12,9 @@ import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readImageInfoWithBitmapFactoryOrThrow
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4k.coroutines.withToIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -63,7 +65,8 @@ actual suspend fun readImageInfoOrNull(
     uri: String,
 ): ImageInfo? = withContext(Dispatchers.IO) {
     runCatching {
-        val fetcher = sketch.components.newFetcherOrThrow(ImageRequest(context, uri))
+        val requestContext = RequestContext(sketch, ImageRequest(context, uri), Size.Empty)
+        val fetcher = sketch.components.newFetcherOrThrow(requestContext)
         val dataSource = fetcher.fetch().getOrThrow().dataSource
         if (uri.endsWith(".svg")) {
             dataSource.readSVGImageInfo()

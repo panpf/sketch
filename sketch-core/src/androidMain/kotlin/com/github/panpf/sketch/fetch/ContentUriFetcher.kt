@@ -18,8 +18,7 @@ package com.github.panpf.sketch.fetch
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.util.Uri
 
@@ -70,7 +69,8 @@ class ContentUriFetcher constructor(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): ContentUriFetcher? {
+        override fun create(requestContext: RequestContext): ContentUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isContentUri(uri)) return null
             return ContentUriFetcher(request.context, android.net.Uri.parse(uri.toString()))

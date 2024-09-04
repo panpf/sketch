@@ -38,6 +38,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.device.Devicex
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
@@ -108,7 +109,8 @@ class FFmpegVideoFrameDecoderTest {
             mp4Request.toRequestContext(sketch)
         }
         val mp4FetchResult = runBlocking {
-            sketch.components.newFetcherOrThrow(mp4Request).fetch().getOrThrow()
+            sketch.components.newFetcherOrThrow(mp4Request.toRequestContext(sketch, Size.Empty))
+                .fetch().getOrThrow()
         }.apply {
             assertEquals(
                 "FetchResult(source=AssetDataSource('sample.mp4'),mimeType='video/mp4')",
@@ -121,7 +123,8 @@ class FFmpegVideoFrameDecoderTest {
             pngRequest.toRequestContext(sketch)
         }
         val pngFetchResult = runBlocking {
-            sketch.components.newFetcherOrThrow(pngRequest).fetch().getOrThrow()
+            sketch.components.newFetcherOrThrow(pngRequest.toRequestContext(sketch, Size.Empty))
+                .fetch().getOrThrow()
         }.apply {
             assertEquals(
                 "FetchResult(source=AssetDataSource('sample.png'),mimeType='image/png')",
@@ -179,7 +182,9 @@ class FFmpegVideoFrameDecoderTest {
 
         ImageRequest(context, ResourceImages.mp4.uri).run {
             runBlocking {
-                val fetcher = sketch.components.newFetcherOrThrow(this@run)
+                val fetcher = sketch.components.newFetcherOrThrow(
+                    this@run.toRequestContext(sketch, Size.Empty)
+                )
                 val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
                     .getOrThrow()
@@ -201,7 +206,9 @@ class FFmpegVideoFrameDecoderTest {
             resize(300, 300, LESS_PIXELS)
         }.run {
             runBlocking {
-                val fetchResult = sketch.components.newFetcherOrThrow(this@run).fetch().getOrThrow()
+                val fetchResult = sketch.components.newFetcherOrThrow(
+                    this@run.toRequestContext(sketch, Size.Empty)
+                ).fetch().getOrThrow()
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
                     .getOrThrow()
             }
@@ -219,7 +226,8 @@ class FFmpegVideoFrameDecoderTest {
         }
 
         ImageRequest(context, ResourceImages.png.uri).run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             assertThrow(NullPointerException::class) {
                 runBlocking {
@@ -246,7 +254,8 @@ class FFmpegVideoFrameDecoderTest {
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -257,7 +266,8 @@ class FFmpegVideoFrameDecoderTest {
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -269,7 +279,8 @@ class FFmpegVideoFrameDecoderTest {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
             videoFrameMillis(500)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -295,7 +306,8 @@ class FFmpegVideoFrameDecoderTest {
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -306,7 +318,8 @@ class FFmpegVideoFrameDecoderTest {
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -318,7 +331,8 @@ class FFmpegVideoFrameDecoderTest {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
             videoFramePercent(0.45f)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -344,7 +358,8 @@ class FFmpegVideoFrameDecoderTest {
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
@@ -356,7 +371,8 @@ class FFmpegVideoFrameDecoderTest {
             videoFramePercent(0.5f)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.run {
-            val fetcher = sketch.components.newFetcherOrThrow(this)
+            val fetcher =
+                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
             runBlocking {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()

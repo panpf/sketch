@@ -30,6 +30,8 @@ import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.runBlock
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -83,7 +85,10 @@ class HttpUriFetcherTest {
             // Make 100 requests in a short period of time, expect only the first one to be downloaded from the network and the next 99 to be read from the disk cache
             repeat(100) {
                 val deferred = async(ioCoroutineDispatcher()) {
-                    HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrNull()
+                    HttpUriFetcher.Factory().create(
+                        request
+                            .toRequestContext(sketch, Size.Empty)
+                    )!!.fetch().getOrNull()
                 }
                 deferredList.add(deferred)
             }
@@ -123,7 +128,10 @@ class HttpUriFetcherTest {
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.ENABLED)
             }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
+            val httpUriFetcher = HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!
 
             val downloadCacheKey = request.downloadCacheKey
             val downloadCache = sketch.downloadCache
@@ -154,7 +162,10 @@ class HttpUriFetcherTest {
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.DISABLED)
             }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
+            val httpUriFetcher = HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!
 
             val downloadCacheKey = request.downloadCacheKey
             val downloadCache = sketch.downloadCache
@@ -185,7 +196,10 @@ class HttpUriFetcherTest {
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.READ_ONLY)
             }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
+            val httpUriFetcher = HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!
 
             val downloadCacheKey = request.downloadCacheKey
             val downloadCache = sketch.downloadCache
@@ -213,7 +227,10 @@ class HttpUriFetcherTest {
             val request2 = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.ENABLED)
             }
-            val httpUriFetcher2 = HttpUriFetcher.Factory().create(sketch, request2)!!
+            val httpUriFetcher2 = HttpUriFetcher.Factory().create(
+                request2
+                    .toRequestContext(sketch, Size.Empty)
+            )!!
             httpUriFetcher2.fetch().getOrThrow()
             assertTrue(downloadCache.exist(downloadCacheKey))
 
@@ -232,7 +249,10 @@ class HttpUriFetcherTest {
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.WRITE_ONLY)
             }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(sketch, request)!!
+            val httpUriFetcher = HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!
 
             val downloadCacheKey = request.downloadCacheKey
             val downloadCache = sketch.downloadCache
@@ -278,7 +298,10 @@ class HttpUriFetcherTest {
         downloadCache.remove(downloadCacheKey)
         assertFalse(downloadCache.exist(downloadCacheKey))
 
-        HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+        HttpUriFetcher.Factory().create(
+            request
+                .toRequestContext(sketch, Size.Empty)
+        )!!.fetch().getOrThrow()
         delay(1000)
         assertTrue(progressList.size > 0)
         assertEquals(testUri.contentLength, progressList.last())
@@ -315,7 +338,10 @@ class HttpUriFetcherTest {
 
         progressList.clear()
         val job = launch(ioCoroutineDispatcher()) {
-            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
         }
         block(2000)
         job.cancel()
@@ -345,7 +371,10 @@ class HttpUriFetcherTest {
 
         progressList.clear()
         val job = launch(ioCoroutineDispatcher()) {
-            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
         }
         block(500)
         job.cancel()
@@ -366,7 +395,10 @@ class HttpUriFetcherTest {
         }
         sketch.downloadCache.clear()
         try {
-            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
             fail("No exception thrown")
         } catch (e: Exception) {
             e.printStackTrace()
@@ -388,7 +420,10 @@ class HttpUriFetcherTest {
         }
         sketch.downloadCache.clear()
         try {
-            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
             fail("No exception thrown")
         } catch (e: Exception) {
             e.printStackTrace()
@@ -411,7 +446,10 @@ class HttpUriFetcherTest {
         }
         sketch.downloadCache.clear()
 
-        HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+        HttpUriFetcher.Factory().create(
+            request
+                .toRequestContext(sketch, Size.Empty)
+        )!!.fetch().getOrThrow()
         assertTrue(progressList.size == 0)
         assertNull(progressList.find { it == testUri.contentLength })
 
@@ -433,7 +471,10 @@ class HttpUriFetcherTest {
         }
         sketch.downloadCache.clear()
         try {
-            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
             fail("No exception thrown")
         } catch (e: IOException) {
             e.printStackTrace()
@@ -461,7 +502,10 @@ class HttpUriFetcherTest {
         }
         sketch.downloadCache.clear()
         try {
-            HttpUriFetcher.Factory().create(sketch, request)!!.fetch().getOrThrow()
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
             fail("No exception thrown")
         } catch (e: IOException) {
             e.printStackTrace()
@@ -492,10 +536,30 @@ class HttpUriFetcherTest {
         val contentUri = "content://sample_app/sample"
 
         val factory = HttpUriFetcher.Factory()
-        assertNotNull(factory.create(sketch, ImageRequest(context, httpsUri)))
-        assertNotNull(factory.create(sketch, ImageRequest(context, httpUri)))
-        assertNull(factory.create(sketch, ImageRequest(context, ftpUri)))
-        assertNull(factory.create(sketch, ImageRequest(context, contentUri)))
+        assertNotNull(
+            factory.create(
+                ImageRequest(context, httpsUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            factory.create(
+                ImageRequest(context, httpUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            factory.create(
+                ImageRequest(context, ftpUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            factory.create(
+                ImageRequest(context, contentUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
     }
 
     @Test

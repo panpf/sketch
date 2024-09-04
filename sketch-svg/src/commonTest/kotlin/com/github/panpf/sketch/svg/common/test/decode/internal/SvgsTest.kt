@@ -4,6 +4,8 @@ import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -17,12 +19,16 @@ class SvgsTest {
 
         // normal
         val request = ImageRequest(context, ResourceImages.svg.uri)
-        val fetchResult = sketch.components.newFetcherOrThrow(request).fetch().getOrThrow()
+        val fetchResult =
+            sketch.components.newFetcherOrThrow(request.toRequestContext(sketch, Size.Empty))
+                .fetch().getOrThrow()
         assertTrue(fetchResult.headerBytes.isSvg())
 
         // error
         val request1 = ImageRequest(context, ResourceImages.png.uri)
-        val fetchResult1 = sketch.components.newFetcherOrThrow(request1).fetch().getOrThrow()
+        val fetchResult1 =
+            sketch.components.newFetcherOrThrow(request1.toRequestContext(sketch, Size.Empty))
+                .fetch().getOrThrow()
         assertFalse(fetchResult1.headerBytes.isSvg())
     }
 }

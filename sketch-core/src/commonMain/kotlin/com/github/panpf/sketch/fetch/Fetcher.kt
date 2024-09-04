@@ -17,10 +17,10 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 
 /**
  * [Fetcher] get the data stream from the uri of [ImageRequest] and wrap it as a [FetchResult] return
@@ -45,9 +45,9 @@ fun interface Fetcher {
     fun interface Factory {
 
         /**
-         * If the current [Factory]'s [Fetcher] can extract data from the current [request],
+         * If the current [Factory]'s [Fetcher] can extract data from the current [ImageRequest],
          * create a [Fetcher] and return it, otherwise return null
          */
-        fun create(sketch: Sketch, request: ImageRequest): Fetcher?
+        fun create(requestContext: RequestContext): Fetcher?
     }
 }

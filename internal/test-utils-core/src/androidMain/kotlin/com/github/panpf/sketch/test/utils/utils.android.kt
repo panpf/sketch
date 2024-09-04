@@ -49,7 +49,10 @@ val Drawable.alphaCompat: Int
 fun ImageRequest.decode(sketch: Sketch): DecodeResult {
     val request = this@decode
     val fetchResult = runBlocking {
-        sketch.components.newFetcherOrThrow(request).fetch()
+        sketch.components.newFetcherOrThrow(
+            request
+                .toRequestContext(sketch, Size.Empty)
+        ).fetch()
     }.getOrThrow()
     val requestContext = runBlocking {
         request.toRequestContext(sketch)

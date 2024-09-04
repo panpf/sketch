@@ -22,10 +22,9 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.internal.versionCodeCompat
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
@@ -108,7 +107,8 @@ class AppIconUriFetcher constructor(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): AppIconUriFetcher? {
+        override fun create(requestContext: RequestContext): AppIconUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isAppIconUri(uri)) return null
             val packageName = uri.authority

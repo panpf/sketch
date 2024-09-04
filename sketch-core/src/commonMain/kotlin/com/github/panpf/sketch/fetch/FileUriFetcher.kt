@@ -16,9 +16,8 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
@@ -100,12 +99,12 @@ class FileUriFetcher constructor(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): FileUriFetcher? {
-            val uri = request.uri
+        override fun create(requestContext: RequestContext): FileUriFetcher? {
+            val uri = requestContext.request.uri
             if (!isFileUri(uri)) return null
             return FileUriFetcher(
                 path = uri.path.orEmpty().toPath(),
-                fileSystem = sketch.fileSystem
+                fileSystem = requestContext.sketch.fileSystem
             )
         }
 

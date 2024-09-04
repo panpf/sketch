@@ -16,10 +16,10 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.MEMORY
@@ -195,7 +195,8 @@ class Base64UriFetcher constructor(
      */
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): Base64UriFetcher? {
+        override fun create(requestContext: RequestContext): Base64UriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isBase64Uri(uri)) return null
             val uriString = uri.toString()

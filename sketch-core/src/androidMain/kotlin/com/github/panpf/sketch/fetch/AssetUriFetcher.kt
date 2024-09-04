@@ -18,8 +18,7 @@ package com.github.panpf.sketch.fetch
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Uri
@@ -83,7 +82,8 @@ class AssetUriFetcher constructor(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(sketch: Sketch, request: ImageRequest): AssetUriFetcher? {
+        override fun create(requestContext: RequestContext): AssetUriFetcher? {
+            val request = requestContext.request
             val uri = request.uri
             if (!isAssetUri(uri)) return null
             val fileName = uri.pathSegments.drop(1).joinToString("/")

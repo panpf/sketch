@@ -15,6 +15,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
   ComposeBitmapImage.
 * remove: Remove ComposeBitmapImage
+* change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
 
 # 4.0.0-alpha08
 

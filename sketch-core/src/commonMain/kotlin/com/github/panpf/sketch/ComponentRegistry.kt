@@ -96,19 +96,19 @@ open class ComponentRegistry private constructor(
     /**
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
-    internal fun newFetcherOrNull(sketch: Sketch, request: ImageRequest): Fetcher? {
+    internal fun newFetcherOrNull(requestContext: RequestContext): Fetcher? {
         return fetcherFactoryList.firstNotNullOfOrNull {
-            it.create(sketch, request)
+            it.create(requestContext)
         }
     }
 
     /**
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
-    internal fun newFetcherOrThrow(sketch: Sketch, request: ImageRequest): Fetcher {
-        return newFetcherOrNull(sketch, request)
+    internal fun newFetcherOrThrow(requestContext: RequestContext): Fetcher {
+        return newFetcherOrNull(requestContext)
             ?: throw IllegalArgumentException(
-                "No Fetcher can handle this uri '${request.uri}', Please add a new Fetcher to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/fetcher.md"
+                "No Fetcher can handle this uri '${requestContext.request.uri}', Please add a new Fetcher to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/fetcher.md"
             )
     }
 
@@ -298,7 +298,7 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
  *
  * @see com.github.panpf.sketch.core.common.test.ComponentsTest
  */
-class Components(private val sketch: Sketch, val registry: ComponentRegistry) {
+class Components constructor(val registry: ComponentRegistry) {
 
     /**
      * Get the [ImageRequest] plus the global [RequestInterceptor] list
@@ -323,9 +323,9 @@ class Components(private val sketch: Sketch, val registry: ComponentRegistry) {
     /**
      * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]
      */
-    fun newFetcherOrThrow(request: ImageRequest): Fetcher =
-        request.componentRegistry?.newFetcherOrNull(sketch, request)
-            ?: registry.newFetcherOrThrow(sketch, request)
+    fun newFetcherOrThrow(requestContext: RequestContext): Fetcher =
+        requestContext.request.componentRegistry?.newFetcherOrNull(requestContext)
+            ?: registry.newFetcherOrThrow(requestContext)
 
     /**
      * Create a [Decoder] with [ImageRequest]'s (preferred) and global [Decoder.Factory]
