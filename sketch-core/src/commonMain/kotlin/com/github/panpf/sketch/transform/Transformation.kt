@@ -51,7 +51,7 @@ interface Transformation : Key {
      */
     @WorkerThread
     suspend fun transform(
-        sketch: Sketch,
+        sketch: Sketch, // TODO remove
         requestContext: RequestContext,
         input: Image
     ): TransformResult?
