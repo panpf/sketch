@@ -117,19 +117,19 @@ class AsyncImageState internal constructor(
     val options: ImageOptions?,
 ) : RememberObserver {
 
-    private val target = AsyncImageTarget()
-    private val listener = AsyncImageListener()
-    private var lastRequest: ImageRequest? = null
+    private val target = AsyncImageTarget(this)
+    private val listener = AsyncImageListener(this)
     private val requestManager = ComposeRequestManager(this)
-    private var coroutineScope: CoroutineScope? = null
+    private var sourceSize: IntSize? = null
+    private var lastRequest: ImageRequest? = null
     private var loadImageJob: Job? = null
-    private var rememberedCount = 0
+    private var coroutineScope: CoroutineScope? = null
+    private var rememberedCount: Int = 0
 
     var sketch: Sketch? by mutableStateOf(null)
         internal set
     var request: ImageRequest? by mutableStateOf(null)
         internal set
-    private var sourceSize: IntSize? = null
     var size: IntSize? by mutableStateOf(null)
         private set
     var contentScale: ContentScale? by mutableStateOf(null)
@@ -304,89 +304,106 @@ class AsyncImageState internal constructor(
 
     override fun toString(): String = "AsyncImageState@${hashCode().toString(16)}"
 
-    private inner class AsyncImageListener : Listener, ProgressListener {
-
-        override fun onStart(request: ImageRequest) {
-            this@AsyncImageState.result = null
-            this@AsyncImageState.progress = null
-            this@AsyncImageState.loadState = LoadState.Started(request)
-        }
-
-        override fun onSuccess(request: ImageRequest, result: Success) {
-            this@AsyncImageState.result = result
-            this@AsyncImageState.loadState = LoadState.Success(request, result)
-        }
-
-        override fun onError(request: ImageRequest, error: Error) {
-            this@AsyncImageState.result = error
-            this@AsyncImageState.loadState = LoadState.Error(request, error)
-        }
-
-        override fun onCancel(request: ImageRequest) {
-            this@AsyncImageState.loadState = LoadState.Canceled(request)
-        }
-
-        override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
-            this@AsyncImageState.progress = progress
-        }
-
-        override fun toString(): String {
-            return "AsyncImageListener@${hashCode().toString(16)}"
-        }
-    }
-
-    // TODO Go out independently for easy testing
-    private inner class AsyncImageTarget : GenericComposeTarget() {
+    class AsyncImageTarget(val state: AsyncImageState) : GenericComposeTarget() {
 
         override var painter: Painter?
-            get() = this@AsyncImageState.painter
+            get() = state.painter
             set(newPainter) {
-                val oldPainter = this@AsyncImageState.painter
+                val oldPainter = state.painter
                 if (newPainter !== oldPainter) {
                     (oldPainter as? RememberObserver)?.onForgotten()
-                    this@AsyncImageState.painter = newPainter
+                    state.painter = newPainter
                     (newPainter as? RememberObserver)?.onRemembered()
                 }
             }
 
         override val fitScale: Boolean
-            get() = contentScale?.fitScale ?: true
+            get() = state.contentScale?.fitScale ?: true
 
 
-        override fun getRequestManager(): RequestManager = requestManager
+        override fun getRequestManager(): RequestManager = state.requestManager
 
 
-        override fun getListener(): Listener = this@AsyncImageState.listener
+        override fun getListener(): Listener = state.listener
 
-        override fun getProgressListener(): ProgressListener = this@AsyncImageState.listener
+        override fun getProgressListener(): ProgressListener = state.listener
 
         override fun getLifecycleResolver(): LifecycleResolver =
-            LifecycleResolver(this@AsyncImageState.lifecycle)
+            LifecycleResolver(state.lifecycle)
 
 
-        override fun getSizeResolver(): SizeResolver = this@AsyncImageState.sizeResolver
+        override fun getSizeResolver(): SizeResolver = state.sizeResolver
 
         override fun getScaleDecider(): ScaleDecider? =
-            this@AsyncImageState.contentScale?.toScale()?.let { ScaleDecider(it) }
+            state.contentScale?.toScale()?.let { ScaleDecider(it) }
 
-        override fun getImageOptions(): ImageOptions? = this@AsyncImageState.options
+        override fun getImageOptions(): ImageOptions? = state.options
 
 
         override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
             super.onStart(sketch, request, placeholder)
-            painterState = Loading(painter)
+            state.painterState = Loading(painter)
         }
 
         override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
             super.onSuccess(sketch, request, result)
-            painterState = PainterState.Success(painter!!)
+            state.painterState = PainterState.Success(painter!!)
         }
 
         override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
             super.onError(sketch, request, error)
-            painterState = PainterState.Error(painter)
+            state.painterState = PainterState.Error(painter)
         }
 
-        override fun toString(): String = "AsyncImageTarget@${hashCode().toString(16)}"
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+            other as AsyncImageTarget
+            if (state != other.state) return false
+            return true
+        }
+
+        override fun hashCode(): Int = state.hashCode()
+
+        override fun toString(): String = "AsyncImageTarget($state)"
+    }
+
+    class AsyncImageListener(val state: AsyncImageState) : Listener, ProgressListener {
+
+        override fun onStart(request: ImageRequest) {
+            state.result = null
+            state.progress = null
+            state.loadState = LoadState.Started(request)
+        }
+
+        override fun onSuccess(request: ImageRequest, result: Success) {
+            state.result = result
+            state.loadState = LoadState.Success(request, result)
+        }
+
+        override fun onError(request: ImageRequest, error: Error) {
+            state.result = error
+            state.loadState = LoadState.Error(request, error)
+        }
+
+        override fun onCancel(request: ImageRequest) {
+            state.loadState = LoadState.Canceled(request)
+        }
+
+        override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
+            state.progress = progress
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+            other as AsyncImageListener
+            if (state != other.state) return false
+            return true
+        }
+
+        override fun hashCode(): Int = state.hashCode()
+
+        override fun toString(): String = "AsyncImageListener($state)"
     }
 }
