@@ -244,25 +244,29 @@ class ImageRequestTest {
         }
 
         ImageRequest(context1, uri) {
-            target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
+            target(
+                onStart = { _, _, _ -> },
+                onSuccess = { _, _, _ -> },
+                onError = { _, _, _ -> }
+            )
         }.apply {
             assertNotNull(target)
             assertEquals(ENABLED, memoryCachePolicy)
         }
         ImageRequest(context1, uri) {
-            target(onStart = { _, _ -> })
+            target(onStart = { _, _, _ -> })
         }.apply {
             assertNotNull(target)
             assertEquals(ENABLED, memoryCachePolicy)
         }
         ImageRequest(context1, uri) {
-            target(onSuccess = { _, _ -> })
+            target(onSuccess = { _, _, _ -> })
         }.apply {
             assertNotNull(target)
             assertEquals(ENABLED, memoryCachePolicy)
         }
         ImageRequest(context1, uri) {
-            target(onError = { _, _ -> })
+            target(onError = { _, _, _ -> })
         }.apply {
             assertNotNull(target)
             assertEquals(ENABLED, memoryCachePolicy)

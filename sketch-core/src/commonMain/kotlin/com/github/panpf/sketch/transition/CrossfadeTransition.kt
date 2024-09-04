@@ -17,8 +17,9 @@
 
 package com.github.panpf.sketch.transition
 
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
@@ -49,7 +50,8 @@ class CrossfadeTransition(transition: Transition) : Transition by transition {
         }
 
         override fun create(
-            requestContext: RequestContext,
+            sketch: Sketch,
+            request: ImageRequest,
             target: TransitionTarget,
             result: ImageResult,
         ): Transition? {
@@ -57,12 +59,15 @@ class CrossfadeTransition(transition: Transition) : Transition by transition {
             if (!alwaysUse && fromMemoryCache) return null
             val targetCrossfadeTransitionFactory = target.convertTransition(this) ?: return null
             val targetCrossfadeTransition = targetCrossfadeTransitionFactory
-                .create(requestContext, target, result) ?: return null
+                .create(sketch, request, target, result) ?: return null
             return CrossfadeTransition(targetCrossfadeTransition)
         }
 
-        override val key: String =
-            "CrossfadeTransition.Factory(durationMillis=$durationMillis,fadeStart=$fadeStart,preferExactIntrinsicSize=$preferExactIntrinsicSize,alwaysUse=$alwaysUse)"
+        override val key: String = "CrossfadeTransition.Factory(" +
+                "durationMillis=$durationMillis," +
+                "fadeStart=$fadeStart," +
+                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
+                "alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -83,8 +88,10 @@ class CrossfadeTransition(transition: Transition) : Transition by transition {
             return result
         }
 
-        override fun toString(): String {
-            return "CrossfadeTransition.Factory(durationMillis=$durationMillis, fadeStart=$fadeStart, preferExactIntrinsicSize=$preferExactIntrinsicSize, alwaysUse=$alwaysUse)"
-        }
+        override fun toString(): String = "CrossfadeTransition.Factory(" +
+                "durationMillis=$durationMillis, " +
+                "fadeStart=$fadeStart, " +
+                "preferExactIntrinsicSize=$preferExactIntrinsicSize, " +
+                "alwaysUse=$alwaysUse)"
     }
 }

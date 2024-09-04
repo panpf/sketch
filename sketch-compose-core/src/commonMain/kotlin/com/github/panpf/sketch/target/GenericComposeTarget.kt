@@ -21,9 +21,10 @@ import androidx.lifecycle.Lifecycle.Event
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.asPainter
-import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.transition.TransitionComposeTarget
 import com.github.panpf.sketch.util.asOrNull
@@ -43,14 +44,14 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     private var isStarted = false
     private var isAttached = false
 
-    override fun onStart(requestContext: RequestContext, placeholder: Image?) =
-        updateImage(requestContext, placeholder)
+    override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
+        updateImage(request, placeholder)
 
-    override fun onError(requestContext: RequestContext, error: Image?) =
-        updateImage(requestContext, error)
+    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) =
+        updateImage(request, error)
 
-    override fun onSuccess(requestContext: RequestContext, result: Image) =
-        updateImage(requestContext, result)
+    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) =
+        updateImage(request, result)
 
     override fun onStateChanged(source: LifecycleOwner, event: Event) {
         when (event) {
@@ -75,11 +76,11 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
         updateAnimation()
     }
 
-    private fun updateImage(requestContext: RequestContext, image: Image?) {
+    private fun updateImage(request: ImageRequest, image: Image?) {
         // 'image != null' is important.
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerComposeFragment#PagerBgImage() is an example.
-        if (image != null || requestContext.request.allowNullImage == true) {
+        if (image != null || request.allowNullImage == true) {
             val newPainter = image?.asPainter()
             updatePainter(newPainter)
         }

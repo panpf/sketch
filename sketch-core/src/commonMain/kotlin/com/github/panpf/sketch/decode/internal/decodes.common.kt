@@ -229,7 +229,7 @@ private fun Size.checkAreaLimit(limitSize: Size): Boolean {
 fun DecodeResult.appliedResize(requestContext: RequestContext): DecodeResult {
     requiredWorkThread()
     val imageTransformer = image.transformer() ?: return this
-    val size = requestContext.size!!
+    val size = requestContext.size
     if (size.isEmpty) {
         return this
     }

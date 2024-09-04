@@ -25,7 +25,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.BaseRequestDelegate
 import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -47,17 +46,17 @@ class RemoteViewsTarget constructor(
 
     private val requestManager = BaseRequestManager()
 
-    override fun onStart(requestContext: RequestContext, placeholder: Image?) =
-        setDrawable(requestContext, placeholder)
+    override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
+        setDrawable(request, placeholder)
 
-    override fun onSuccess(requestContext: RequestContext, result: Image) =
-        setDrawable(requestContext, result)
+    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) =
+        setDrawable(request, result)
 
-    override fun onError(requestContext: RequestContext, error: Image?) =
-        setDrawable(requestContext, error)
+    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) =
+        setDrawable(request, error)
 
-    private fun setDrawable(requestContext: RequestContext, result: Image?) {
-        if (result != null || requestContext.request.allowNullImage == true) {
+    private fun setDrawable(request: ImageRequest, result: Image?) {
+        if (result != null || request.allowNullImage == true) {
             remoteViews.setImageViewBitmap(imageViewId, result?.toBitmapOrThrow())
             onUpdated()
         }

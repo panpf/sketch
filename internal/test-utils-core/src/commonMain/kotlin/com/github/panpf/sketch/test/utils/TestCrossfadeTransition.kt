@@ -17,13 +17,15 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
 
 class TestCrossfadeTransition(
-    val requestContext: RequestContext,
+    private val sketch: Sketch,
+    private val request: ImageRequest,
     val target: TransitionTarget,
     val result: ImageResult
 ) : Transition {
@@ -31,23 +33,27 @@ class TestCrossfadeTransition(
     override fun transition() {
         when (result) {
             is ImageResult.Success -> target.onSuccess(
-                requestContext,
-                TestCrossfadeImage(result.image)
+                sketch = sketch,
+                request = request,
+                result = TestCrossfadeImage(result.image)
             )
 
-            is ImageResult.Error -> target.onError(requestContext,
-                result.image?.let { TestCrossfadeImage(it) })
+            is ImageResult.Error -> target.onError(
+                sketch = sketch,
+                request = request,
+                error = result.image?.let { TestCrossfadeImage(it) })
         }
     }
 
     class Factory : Transition.Factory {
 
         override fun create(
-            requestContext: RequestContext,
+            sketch: Sketch,
+            request: ImageRequest,
             target: TransitionTarget,
             result: ImageResult,
         ): Transition {
-            return TestCrossfadeTransition(requestContext, target, result)
+            return TestCrossfadeTransition(sketch, request, target, result)
         }
 
         override val key: String = "TestTransition.Factory"

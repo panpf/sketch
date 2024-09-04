@@ -112,7 +112,7 @@ open class ImageDecoderAnimatedDecoder(
                     height = info.size.height,
                     mimeType = info.mimeType,
                 )
-                val size = requestContext.size!!
+                val size = requestContext.size
                 val precision = request.precisionDecider.get(
                     imageSize = Size(info.size.width, info.size.height),
                     targetSize = size,

@@ -14,11 +14,9 @@ import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.target.GenericViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.toRequestContextSync
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +39,6 @@ class GenericViewTargetTest {
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             allowNullImage()
         }
-        val requestContext = request.toRequestContextSync(sketch)
 
         val imageView = ImageView(context)
         assertNull(imageView.drawable)
@@ -53,21 +50,21 @@ class GenericViewTargetTest {
         val drawable2 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
 
         runBlocking(Dispatchers.Main) {
-            imageViewTarget.onSuccess(requestContext, drawable1.asSketchImage())
+            imageViewTarget.onSuccess(sketch, request, drawable1.asSketchImage())
         }
 
         assertSame(drawable1, imageView.drawable)
         assertSame(drawable1, imageViewTarget.drawable)
 
         runBlocking(Dispatchers.Main) {
-            imageViewTarget.onSuccess(requestContext, drawable2.asSketchImage())
+            imageViewTarget.onSuccess(sketch, request, drawable2.asSketchImage())
         }
 
         assertSame(drawable2, imageView.drawable)
         assertSame(drawable2, imageViewTarget.drawable)
 
         runBlocking(Dispatchers.Main) {
-            imageViewTarget.onError(requestContext, null)
+            imageViewTarget.onError(sketch, request, null)
         }
         assertNull(imageView.drawable)
         assertNull(imageViewTarget.drawable)
@@ -109,19 +106,19 @@ class GenericViewTargetTest {
     fun testAnimatableDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
-        val requestContext = RequestContext(sketch, ImageRequest(context, null))
+        val request = ImageRequest(context, null)
 
         TestViewTarget(imageView).apply {
             val drawable = ColorDrawable(Color.RED)
-            onStart(requestContext, drawable.asSketchImage())
-            onError(requestContext, drawable.asSketchImage())
-            onSuccess(requestContext, drawable.asSketchImage())
+            onStart(sketch, request, drawable.asSketchImage())
+            onError(sketch, request, drawable.asSketchImage())
+            onSuccess(sketch, request, drawable.asSketchImage())
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
 
-            onStart(requestContext, drawable.asSketchImage())
-            onError(requestContext, drawable.asSketchImage())
-            onSuccess(requestContext, drawable.asSketchImage())
+            onStart(sketch, request, drawable.asSketchImage())
+            onError(sketch, request, drawable.asSketchImage())
+            onSuccess(sketch, request, drawable.asSketchImage())
         }
 
         TestViewTarget(imageView).apply {
@@ -131,7 +128,7 @@ class GenericViewTargetTest {
             val animatableDrawable = TestAnimatableColorDrawable(Color.RED)
             assertFalse(animatableDrawable.running)
 
-            onSuccess(requestContext, animatableDrawable.asSketchImage())
+            onSuccess(sketch, request, animatableDrawable.asSketchImage())
             assertFalse(getFieldValue<Boolean>("isStarted")!!)
             assertFalse(getFieldValue<Boolean>("isAttached")!!)
             assertFalse(animatableDrawable.running)
@@ -166,10 +163,10 @@ class GenericViewTargetTest {
             assertTrue(getFieldValue<Boolean>("isAttached")!!)
             assertTrue(animatableDrawable.running)
 
-            onSuccess(requestContext, ColorDrawable(Color.RED).asSketchImage())
+            onSuccess(sketch, request, ColorDrawable(Color.RED).asSketchImage())
             assertFalse(animatableDrawable.running)
 
-            onSuccess(requestContext, animatableDrawable.asSketchImage())
+            onSuccess(sketch, request, animatableDrawable.asSketchImage())
             assertTrue(animatableDrawable.running)
         }
     }

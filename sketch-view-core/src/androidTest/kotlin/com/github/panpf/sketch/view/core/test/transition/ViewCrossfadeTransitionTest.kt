@@ -75,13 +75,14 @@ class ViewCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        ViewCrossfadeTransition(requestContext, imageViewTarget, result).apply {
+        ViewCrossfadeTransition(sketch, request, imageViewTarget, result).apply {
             assertEquals(200, durationMillis)
             assertEquals(false, preferExactIntrinsicSize)
             assertEquals(true, fitScale)
         }
         ViewCrossfadeTransition(
-            requestContext = requestContext,
+            sketch = sketch,
+            request = request,
             target = imageViewTarget,
             result = result,
             durationMillis = 300,
@@ -93,7 +94,7 @@ class ViewCrossfadeTransitionTest {
             assertEquals(false, fitScale)
         }
         assertThrow(IllegalArgumentException::class) {
-            ViewCrossfadeTransition(requestContext, imageViewTarget, result, durationMillis = 0)
+            ViewCrossfadeTransition(sketch, request, imageViewTarget, result, durationMillis = 0)
         }
     }
 
@@ -101,7 +102,6 @@ class ViewCrossfadeTransitionTest {
     fun testTransition() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
-        val requestContext = request.toRequestContext(sketch)
 
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
@@ -130,7 +130,7 @@ class ViewCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        ViewCrossfadeTransition(requestContext, imageViewTarget, success).transition()
+        ViewCrossfadeTransition(sketch, request, imageViewTarget, success).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
             assertEquals(Color.GREEN, (start as ColorDrawable).color)
             assertTrue(end is BitmapDrawable)
@@ -148,7 +148,7 @@ class ViewCrossfadeTransitionTest {
             image = resultDrawable.asSketchImage(),
             throwable = Exception(""),
         )
-        ViewCrossfadeTransition(requestContext, imageViewTarget, error).transition()
+        ViewCrossfadeTransition(sketch, request, imageViewTarget, error).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
             assertEquals(Color.GREEN, (start as ColorDrawable).color)
             assertTrue(end is BitmapDrawable)
@@ -160,7 +160,8 @@ class ViewCrossfadeTransitionTest {
         }
         assertTrue(imageViewTarget.drawable!! is ColorDrawable)
         ViewCrossfadeTransition(
-            requestContext = requestContext,
+            sketch = sketch,
+            request = request,
             target = imageViewTarget,
             result = ImageResult.Success(
                 request = request,
@@ -222,14 +223,14 @@ class ViewCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        assertNotNull(factory.create(requestContext, imageViewTarget, successResult))
+        assertNotNull(factory.create(sketch, request, imageViewTarget, successResult))
 
         val errorResult = ImageResult.Error(
             request = request,
             image = resultDrawable.asSketchImage(),
             throwable = Exception("")
         )
-        assertNotNull(factory.create(requestContext, imageViewTarget, errorResult))
+        assertNotNull(factory.create(sketch, request, imageViewTarget, errorResult))
 
         val fromMemoryCacheSuccessResult = ImageResult.Success(
             request = request,
@@ -243,15 +244,16 @@ class ViewCrossfadeTransitionTest {
         )
         assertNull(
             factory.create(
-                requestContext,
-                imageViewTarget,
-                fromMemoryCacheSuccessResult
+                sketch = sketch,
+                request = request,
+                target = imageViewTarget,
+                result = fromMemoryCacheSuccessResult
             )
         )
 
         val alwaysUseFactory = ViewCrossfadeTransition.Factory(alwaysUse = true)
         assertNotNull(
-            alwaysUseFactory.create(requestContext, imageViewTarget, fromMemoryCacheSuccessResult)
+            alwaysUseFactory.create(sketch, request, imageViewTarget, fromMemoryCacheSuccessResult)
         )
     }
 

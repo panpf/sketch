@@ -19,7 +19,6 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.BaseRequestDelegate
 import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -36,15 +35,15 @@ class TestTransitionTarget : Target, TransitionTarget {
 
     override val fitScale: Boolean get() = true
 
-    override fun onStart(requestContext: RequestContext, placeholder: Image?) {
+    override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         this.image = placeholder
     }
 
-    override fun onSuccess(requestContext: RequestContext, result: Image) {
+    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
         this.image = result
     }
 
-    override fun onError(requestContext: RequestContext, error: Image?) {
+    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
         this.image = error
     }
 
