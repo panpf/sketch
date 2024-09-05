@@ -12,7 +12,6 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.sample.ui.util.valueOf
 import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
@@ -20,7 +19,6 @@ import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
 import com.github.panpf.sketch.sample.util.intSettingsStateFlow
 import com.github.panpf.sketch.sample.util.isDebugMode
-import com.github.panpf.sketch.sample.util.stateCombine
 import com.github.panpf.sketch.sample.util.stateMap
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
@@ -116,13 +114,14 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
             convert = { Scale.valueOf(it) },
         )
     }
-    actual val scale: StateFlow<ScaleDecider> =
-        stateCombine(listOf(scaleName, longImageScale, otherImageScale)) {
-            val scaleName: String = it[0] as String
-            val longImageScale: Scale = it[1] as Scale
-            val otherImageScale: Scale = it[2] as Scale
-            buildScale(scaleName, longImageScale, otherImageScale)
-        }
+    // stateCombine will cause UI lag
+//    actual val scale: StateFlow<ScaleDecider> =
+//        stateCombine(listOf(scaleName, longImageScale, otherImageScale)) {
+//            val scaleName: String = it[0] as String
+//            val longImageScale: Scale = it[1] as Scale
+//            val otherImageScale: Scale = it[2] as Scale
+//            buildScale(scaleName, longImageScale, otherImageScale)
+//        }
 
     actual val saveCellularTrafficInList: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "saveCellularTrafficInList", false)

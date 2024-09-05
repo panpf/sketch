@@ -39,7 +39,8 @@ expect class AppSettings constructor(context: PlatformContext) {
     val scaleName: SettingsStateFlow<String>
     val longImageScale: SettingsStateFlow<Scale>
     val otherImageScale: SettingsStateFlow<Scale>
-    val scale: StateFlow<ScaleDecider>
+    // stateCombine will cause UI lag
+//    val scale: StateFlow<ScaleDecider>
 
     val saveCellularTrafficInList: SettingsStateFlow<Boolean>
 

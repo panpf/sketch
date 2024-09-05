@@ -114,7 +114,14 @@ class MyListImageView @JvmOverloads constructor(
             downloadCachePolicy(appSettings.downloadCache.value)
 
             precision(appSettings.precision.value)
-            scale(appSettings.scale.value)
+//            scale(appSettings.scale.value)
+            scale(
+                buildScale(
+                    appSettings.scaleName.value,
+                    appSettings.longImageScale.value,
+                    appSettings.otherImageScale.value
+                )
+            )
 
             disallowAnimatedImage(appSettings.disallowAnimatedImageInList.value)
 
