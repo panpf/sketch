@@ -39,11 +39,11 @@ import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.calculateFitBounds
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.tools4a.dimen.ktx.dp2px
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.runner.RunWith
 import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
@@ -74,7 +74,7 @@ class IconAnimatableDrawableTest {
             assertEquals(Color.GREEN, background!!.asOrThrow<ColorDrawable>().color)
         }
 
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             IconAnimatableDrawable(icon = context.getDrawableCompat(android.R.drawable.ic_delete))
         }
     }

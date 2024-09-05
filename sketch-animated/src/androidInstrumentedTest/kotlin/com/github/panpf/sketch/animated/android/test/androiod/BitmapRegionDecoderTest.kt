@@ -15,11 +15,11 @@ import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.runner.RunWith
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertSame
@@ -222,7 +222,7 @@ class BitmapRegionDecoderTest {
             }
             if (bytes.isAnimatedWebP()) {
                 when (VERSION.SDK_INT) {
-                    16 -> assertThrow(IOException::class) {
+                    16 -> assertFailsWith(IOException::class) {
                         decodeWithInBitmap(options)
                     }
 
@@ -230,7 +230,7 @@ class BitmapRegionDecoderTest {
                     else -> assertNull(decodeWithInBitmap(options))
                 }
             } else {
-                assertThrow(IOException::class) {
+                assertFailsWith(IOException::class) {
                     decodeWithInBitmap(options)
                 }
             }

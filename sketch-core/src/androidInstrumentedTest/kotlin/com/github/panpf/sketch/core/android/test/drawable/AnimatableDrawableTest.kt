@@ -32,13 +32,13 @@ import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.toLogString
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
@@ -67,7 +67,7 @@ class AnimatableDrawableTest {
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
         )
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             AnimatableDrawable(
                 BitmapDrawable(
                     context.resources,

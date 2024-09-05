@@ -12,13 +12,13 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.findLeafChildDrawable
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -37,7 +37,7 @@ class ViewCoreUtilsTest {
 
     @Test
     fun testRequiredMainThread() = runTest {
-        assertThrow(IllegalStateException::class) {
+        assertFailsWith(IllegalStateException::class) {
             requiredMainThread()
         }
         withContext(Dispatchers.Main) {

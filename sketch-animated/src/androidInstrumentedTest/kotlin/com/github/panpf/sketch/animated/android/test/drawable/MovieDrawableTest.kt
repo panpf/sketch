@@ -27,13 +27,13 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
@@ -72,10 +72,10 @@ class MovieDrawableTest {
 
             setAnimatedTransformation(TranslucentAnimatedTransformation)
 
-            assertThrow(IllegalArgumentException::class) {
+            assertFailsWith(IllegalArgumentException::class) {
                 alpha = -1
             }
-            assertThrow(IllegalArgumentException::class) {
+            assertFailsWith(IllegalArgumentException::class) {
                 alpha = 256
             }
             alpha = 200

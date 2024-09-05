@@ -8,7 +8,6 @@ import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
 import org.junit.runner.RunWith
 import java.io.File
@@ -16,6 +15,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 @RunWith(AndroidJUnit4::class)
 class ContentDataSourceTest {
@@ -50,7 +50,7 @@ class ContentDataSourceTest {
             contentUri = contentUri,
         ).openSource().asOrThrow<Closeable>().close()
 
-        assertThrow(FileNotFoundException::class) {
+        assertFailsWith(FileNotFoundException::class) {
             val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
             ContentDataSource(
                 context = sketch.context,
@@ -83,7 +83,7 @@ class ContentDataSourceTest {
             assertEquals("/sdcard/error.jpeg", file.toFile().path)
         }
 
-        assertThrow(IOException::class) {
+        assertFailsWith(IOException::class) {
             val errorContentUri1 = Uri.parse("content://fake/fake.jpeg")
             ContentDataSource(
                 context = sketch.context,

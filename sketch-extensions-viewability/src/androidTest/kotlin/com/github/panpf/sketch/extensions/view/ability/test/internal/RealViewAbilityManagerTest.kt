@@ -16,10 +16,10 @@ import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.RequestState
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.ProgressListeners
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 @RunWith(AndroidJUnit4::class)
 class RealViewAbilityManagerTest {
@@ -30,12 +30,12 @@ class RealViewAbilityManagerTest {
         val view = TestAbilityImageView(context)
 
         view.addViewAbility(TestScaleTypeViewAbility())
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             view.addViewAbility(TestScaleTypeViewAbility())
         }
 
         view.addViewAbility(TestImageMatrixViewAbility())
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             view.addViewAbility(TestImageMatrixViewAbility())
         }
     }

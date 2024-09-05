@@ -23,7 +23,6 @@ kotlin {
             api(libs.kotlin.test.junit)
             api(libs.panpf.tools4j.reflect)
             api(libs.panpf.tools4j.security)
-            api(libs.panpf.tools4j.test)
         }
         androidMain.dependencies {
             api(projects.sketchViewCore)

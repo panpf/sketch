@@ -34,7 +34,6 @@ import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Path
 import okio.Source
 import org.junit.runner.RunWith
@@ -42,6 +41,7 @@ import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 @RunWith(AndroidJUnit4::class)
@@ -171,7 +171,7 @@ class GifInfoHandlerHelperTest {
             assertNotNull(createGifDrawable().apply { recycle() })
         }
 
-        assertThrow(Exception::class) {
+        assertFailsWith(Exception::class) {
             GifInfoHandleHelper(
                 sketch,
                 object : DataSource {

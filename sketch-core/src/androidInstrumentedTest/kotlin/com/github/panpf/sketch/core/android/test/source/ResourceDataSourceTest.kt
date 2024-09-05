@@ -8,11 +8,11 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.md5
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import okio.Closeable
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 @RunWith(AndroidJUnit4::class)
 class ResourceDataSourceTest {
@@ -46,7 +46,7 @@ class ResourceDataSourceTest {
             openSource().asOrThrow<Closeable>().close()
         }
 
-        assertThrow(NotFoundException::class) {
+        assertFailsWith(NotFoundException::class) {
             ResourceDataSource(
                 resources = context.resources,
                 packageName = context.packageName,

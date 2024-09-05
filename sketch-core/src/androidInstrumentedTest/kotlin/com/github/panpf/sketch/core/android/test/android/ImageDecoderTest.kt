@@ -10,10 +10,10 @@ import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -200,7 +200,7 @@ class ImageDecoderTest {
                 }
             }
         } else {
-            assertThrow(NoClassDefFoundError::class) {
+            assertFailsWith(NoClassDefFoundError::class) {
                 ImageDecoder.decodeBitmap(
                     ImageDecoder.createSource(context.assets, image.assetName)
                 )

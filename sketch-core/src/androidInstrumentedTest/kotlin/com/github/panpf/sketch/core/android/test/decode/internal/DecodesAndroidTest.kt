@@ -49,11 +49,11 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toSizeString
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.test.runTest
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -1043,7 +1043,7 @@ class DecodesAndroidTest {
                 assertEquals(200, height)
             }
 
-        assertThrow(IOException::class) {
+        assertFailsWith(IOException::class) {
             ResourceDataSource(
                 resources = context.resources,
                 packageName = context.packageName,

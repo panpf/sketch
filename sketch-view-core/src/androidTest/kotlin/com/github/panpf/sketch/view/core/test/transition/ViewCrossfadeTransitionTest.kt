@@ -40,13 +40,13 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import com.github.panpf.tools4j.reflect.ktx.setFieldValue
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -93,7 +93,7 @@ class ViewCrossfadeTransitionTest {
             assertEquals(true, preferExactIntrinsicSize)
             assertEquals(false, fitScale)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ViewCrossfadeTransition(sketch, request, imageViewTarget, result, durationMillis = 0)
         }
     }
@@ -185,7 +185,7 @@ class ViewCrossfadeTransitionTest {
             assertEquals(false, alwaysUse)
         }
 
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ViewCrossfadeTransition.Factory(0)
         }
 

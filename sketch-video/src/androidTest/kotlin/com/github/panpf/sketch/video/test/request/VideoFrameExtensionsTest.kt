@@ -27,10 +27,10 @@ import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContextSync
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 
@@ -54,7 +54,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 this.videoFrameMillis(-1)
             }
@@ -73,7 +73,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFrameMillis(-1)
             }
@@ -92,7 +92,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFrameMillis(-1)
             }
@@ -111,7 +111,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageOptions {
                 videoFrameMillis(-1)
             }
@@ -143,12 +143,12 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 this.videoFramePercent(-0.1f)
             }
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 this.videoFramePercent(-1.1f)
             }
@@ -162,12 +162,12 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFramePercent(-0.1f)
             }
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFramePercent(-1.1f)
             }
@@ -181,12 +181,12 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFramePercent(-0.1f)
             }
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFramePercent(-1.1f)
             }
@@ -200,12 +200,12 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageOptions {
                 videoFramePercent(-0.1f)
             }
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageOptions {
                 videoFramePercent(-1.1f)
             }
@@ -252,7 +252,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 this.videoFrameOption(-1)
             }
@@ -281,7 +281,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFrameOption(-1)
             }
@@ -310,7 +310,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ResourceImages.mp4.uri) {
                 videoFrameOption(-1)
             }
@@ -339,7 +339,7 @@ class VideoFrameExtensionsTest {
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
-        assertThrow(IllegalArgumentException::class) {
+        assertFailsWith(IllegalArgumentException::class) {
             ImageOptions {
                 videoFrameOption(-1)
             }

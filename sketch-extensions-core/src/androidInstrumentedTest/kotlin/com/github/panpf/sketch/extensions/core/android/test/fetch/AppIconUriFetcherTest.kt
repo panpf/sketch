@@ -28,11 +28,11 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
@@ -131,31 +131,31 @@ class AppIconUriFetcherTest {
             )
         )
 
-        assertThrow(UriInvalidException::class) {
+        assertFailsWith(UriInvalidException::class) {
             fetcherFactory.create(
                 ImageRequest(context, "app.icon:///12412")
                     .toRequestContext(sketch, Size.Empty)
             )
         }
-        assertThrow(UriInvalidException::class) {
+        assertFailsWith(UriInvalidException::class) {
             fetcherFactory.create(
                 ImageRequest(context, "app.icon:// /12412")
                     .toRequestContext(sketch, Size.Empty)
             )
         }
-        assertThrow(UriInvalidException::class) {
+        assertFailsWith(UriInvalidException::class) {
             fetcherFactory.create(
                 ImageRequest(context, "app.icon://packageName1/")
                     .toRequestContext(sketch, Size.Empty)
             )
         }
-        assertThrow(UriInvalidException::class) {
+        assertFailsWith(UriInvalidException::class) {
             fetcherFactory.create(
                 ImageRequest(context, "app.icon://packageName1/ ")
                     .toRequestContext(sketch, Size.Empty)
             )
         }
-        assertThrow(UriInvalidException::class) {
+        assertFailsWith(UriInvalidException::class) {
             fetcherFactory.create(
                 ImageRequest(context, "app.icon://packageName1/errorCode")
                     .toRequestContext(sketch, Size.Empty)

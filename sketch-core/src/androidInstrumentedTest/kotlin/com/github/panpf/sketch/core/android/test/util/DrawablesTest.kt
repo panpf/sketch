@@ -30,10 +30,10 @@ import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
 import com.github.panpf.sketch.util.toNewBitmap
 import com.github.panpf.sketch.util.toShortInfoString
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -45,14 +45,14 @@ class DrawablesTest {
         val context = getTestContext()
 
         assertNotNull(context.getDrawableCompat(android.R.drawable.ic_delete))
-        assertThrow(Resources.NotFoundException::class) {
+        assertFailsWith(Resources.NotFoundException::class) {
             context.getDrawableCompat(1101)
         }
 
         assertNotNull(
             context.resources.getDrawableCompat(android.R.drawable.ic_delete, null)
         )
-        assertThrow(Resources.NotFoundException::class) {
+        assertFailsWith(Resources.NotFoundException::class) {
             context.resources.getDrawableCompat(1101, null)
         }
     }
@@ -73,7 +73,7 @@ class DrawablesTest {
                 }
             }
         } else {
-            assertThrow(Resources.NotFoundException::class) {
+            assertFailsWith(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
                     com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
@@ -96,7 +96,7 @@ class DrawablesTest {
                 assertTrue(this is BitmapDrawable)
             }
         } else {
-            assertThrow(Resources.NotFoundException::class) {
+            assertFailsWith(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
                     com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher

@@ -147,7 +147,6 @@ panpf-tools4j-date = { module = "io.github.panpf.tools4j:tools4j-date-ktx", vers
 panpf-tools4j-io = { module = "io.github.panpf.tools4j:tools4j-io-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-reflect = { module = "io.github.panpf.tools4j:tools4j-reflect-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4j-security = { module = "io.github.panpf.tools4j:tools4j-security-ktx", version.ref = "panpf-tools4j" }
-panpf-tools4j-test = { module = "io.github.panpf.tools4j:tools4j-test-ktx", version.ref = "panpf-tools4j" }
 panpf-tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "panpf-tools4k" }
 panpf-zoomimage-view = { module = "io.github.panpf.zoomimage:zoomimage-view", version.ref = "panpf-zoomimage" }
 panpf-zoomimage-compose = { module = "io.github.panpf.zoomimage:zoomimage-compose", version.ref = "panpf-zoomimage" }
