@@ -29,17 +29,17 @@ import java.io.File
 /**
  * Returns true if currently on the main thread
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testIsMainThread
  */
 internal actual fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
 /**
  * Throws an exception if not currently on the main thread
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testRequiredMainThread
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredMainThread
  */
 internal actual fun requiredMainThread() {
-    check(Looper.myLooper() == Looper.getMainLooper()) {
+    check(isMainThread()) {
         "This method must be executed in the UI thread"
     }
 }
@@ -47,10 +47,10 @@ internal actual fun requiredMainThread() {
 /**
  * Throws an exception if not currently on the work thread
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testRequiredWorkThread
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredWorkThread
  */
 internal actual fun requiredWorkThread() {
-    check(Looper.myLooper() != Looper.getMainLooper()) {
+    check(!isMainThread()) {
         "This method must be executed in the work thread"
     }
 }
@@ -58,7 +58,7 @@ internal actual fun requiredWorkThread() {
 /**
  * Get memory trim level name
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testGetTrimLevelName
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetTrimLevelName
  */
 internal fun getTrimLevelName(level: Int): String = when (level) {
     ComponentCallbacks2.TRIM_MEMORY_COMPLETE -> "COMPLETE"
@@ -74,7 +74,7 @@ internal fun getTrimLevelName(level: Int): String = when (level) {
 /**
  * Get the suffix of the current process name
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testFileNameCompatibilityMultiProcess
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testFileNameCompatibilityMultiProcess
  */
 internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): File {
     val processNameSuffix = getProcessNameSuffix(context)
@@ -88,7 +88,7 @@ internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): Fi
 /**
  * Get the current process name
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testGetProcessNameCompat
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetProcessNameCompat
  */
 // The getRunningAppProcesses() method is a privacy method and cannot be called before agreeing to the privacy agreement,
 // so the process name can only be obtained in this way
@@ -130,7 +130,7 @@ internal fun getProcessNameCompat(context: Context): String? {
 /**
  * Get the suffix of the current process name
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testGetProcessNameSuffix
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetProcessNameSuffix
  */
 internal fun getProcessNameSuffix(context: Context, processName: String? = null): String? {
     val packageName = context.packageName

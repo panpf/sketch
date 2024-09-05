@@ -11,7 +11,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class UtilsTest {
+class CoreUtilsTest {
 
     @Test
     fun testIfOrNull() {

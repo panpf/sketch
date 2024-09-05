@@ -29,7 +29,7 @@ import kotlin.math.round
 /**
  * If [value] is true, execute [block] and return the result, otherwise return null
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testIfOrNull
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIfOrNull
  */
 internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? =
     if (value) block() else null
@@ -37,7 +37,7 @@ internal inline fun <R> ifOrNull(value: Boolean, block: () -> R?): R? =
 /**
  * If [value] is true, execute [block]
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testIfApply
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIfApply
  */
 internal inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
     if (value) {
@@ -49,7 +49,7 @@ internal inline fun <T> T.ifApply(value: Boolean, block: T.() -> Unit): T {
 /**
  * If [value] is true, execute [block] and return the result, otherwise return itself
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testIfLet
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIfLet
  */
 internal inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
     return if (value) block(this) else this
@@ -58,7 +58,7 @@ internal inline fun <T> T.ifLet(value: Boolean, block: (T) -> T): T {
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testAsOrNull
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testAsOrNull
  */
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
@@ -67,7 +67,7 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
 /**
  * Convert to the type specified by the generic
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testAsOrThrow
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testAsOrThrow
  */
 internal inline fun <R> Any.asOrThrow(): R {
     @Suppress("UNCHECKED_CAST")
@@ -77,35 +77,37 @@ internal inline fun <R> Any.asOrThrow(): R {
 /**
  * Returns true if currently on the main thread
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testIsMainThread
- * @see com.github.panpf.sketch.core.nonandroid.test.util.UtilsNonAndroidTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
  */
 internal expect fun isMainThread(): Boolean
-// TODO Replaced with coroutine versions because they must be executed in the Main dispatcher
-//fun CoroutineContext.isMainThread(): Boolean {
-//    return !Dispatchers.Main.isDispatchNeeded(this)
-//}
 
 /**
  * Throws an exception if not currently on the main thread
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testRequiredMainThread
- * @see com.github.panpf.sketch.core.nonandroid.test.util.UtilsNonAndroidTest.testRequiredMainThread
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredMainThread
+ * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testRequiredMainThread
+ * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredMainThread
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredMainThread
  */
 internal expect fun requiredMainThread()
 
 /**
  * Throws an exception if not currently on the work thread
  *
- * @see com.github.panpf.sketch.core.android.test.util.UtilsAndroidTest.testRequiredWorkThread
- * @see com.github.panpf.sketch.core.nonandroid.test.util.UtilsNonAndroidTest.testRequiredWorkThread
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredWorkThread
+ * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testRequiredWorkThread
+ * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredWorkThread
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredWorkThread
  */
 internal expect fun requiredWorkThread()
 
 /**
  * Gets the completed results, or null if not yet completed
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testGetCompletedOrNull
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testGetCompletedOrNull
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
@@ -119,21 +121,21 @@ internal fun <T> Deferred<T>.getCompletedOrNull(): T? {
 /**
  * Calculate MD5
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testMd5
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testMd5
  */
 internal fun String.md5() = encodeUtf8().md5().hex()
 
 /**
  * Returns a string representation of this Int value in the specified radix.
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testToHexString
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testToHexString
  */
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
 /**
  * Format Float with specified number of decimal places
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testFloatFormat
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testFloatFormat
  */
 internal fun Float.format(newScale: Int): Float {
     return if (this.isNaN()) {
@@ -147,7 +149,7 @@ internal fun Float.format(newScale: Int): Float {
 /**
  * Format a Double with the specified number of decimal places
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testFloatFormat
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testFloatFormat
  */
 internal fun Double.format(newScale: Int): Double {
     return if (this.isNaN()) {
@@ -161,7 +163,7 @@ internal fun Double.format(newScale: Int): Double {
 /**
  * Returns the this size in human-readable format.
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testFormatFileSize
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testFormatFileSize
  */
 internal fun Long.formatFileSize(decimals: Int = 1): String {
     val doubleString: (Double) -> String = { number ->
@@ -189,14 +191,14 @@ internal fun Long.formatFileSize(decimals: Int = 1): String {
 /**
  * Returns the this size in human-readable format.
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testFormatFileSize
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testFormatFileSize
  */
 internal fun Int.formatFileSize(decimals: Int = 1): String = toLong().formatFileSize(decimals)
 
 /**
  * Combine two Int values, the high 16 bits are highInt and the low 16 bits are lowInt
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testIntMergedAndIntSplit
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIntMergedAndIntSplit
  */
 internal fun intMerged(highInt: Int, lowInt: Int): Int {
     require(highInt in 0.rangeTo(Short.MAX_VALUE)) {
@@ -213,7 +215,7 @@ internal fun intMerged(highInt: Int, lowInt: Int): Int {
 /**
  * Split the Int value into two Int values, the high 16 bits are highInt and the low 16 bits are lowInt
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testIntMergedAndIntSplit
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIntMergedAndIntSplit
  */
 internal fun intSplit(value: Int): Pair<Int, Int> {
     return (value shr 16) to ((value shl 16) shr 16)
@@ -225,7 +227,7 @@ internal fun intSplit(value: Int): Pair<Int, Int> {
  *
  * Examples: -1->1，0->1，1->1，2->2，3->2，4->4，5->4，6->4，7->4，8->8，9->8
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testFloorRoundPow2
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testFloorRoundPow2
  */
 internal fun floorRoundPow2(number: Int): Int {
     return number.takeHighestOneBit().coerceAtLeast(1)
@@ -238,7 +240,7 @@ internal fun floorRoundPow2(number: Int): Int {
  *
  * Copy from Java 17 'HashMap.tableSizeFor()' method
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testCeilRoundPow2
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCeilRoundPow2
  */
 internal fun ceilRoundPow2(number: Int): Int {
     val n = -1 ushr (number - 1).countLeadingZeroBits()
@@ -248,7 +250,7 @@ internal fun ceilRoundPow2(number: Int): Int {
 /**
  * Calculate the scale multiplier according to the fit scale
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testComputeScaleMultiplierWithFit
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithFit
  */
 fun computeScaleMultiplierWithFit(
     srcWidth: Int,
@@ -269,7 +271,7 @@ fun computeScaleMultiplierWithFit(
 /**
  * Calculate the scale multiplier according to the one side scale
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testComputeScaleMultiplierWithOneSide
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithOneSide
  */
 fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: SketchSize): Float {
     val scaleFactor: Float = when {
@@ -289,7 +291,7 @@ fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: Sketch
 /**
  * Get the difference between two ImageRequests
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testImageRequestDifference
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testImageRequestDifference
  */
 fun ImageRequest?.difference(other: ImageRequest?): String {
     if (this == null && other == null) return "Both are null"
@@ -341,7 +343,7 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
 /**
  * Get the difference between two ImageOptions
  *
- * @see com.github.panpf.sketch.core.common.test.util.UtilsTest.testImageOptionsDifference
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testImageOptionsDifference
  */
 fun ImageOptions?.difference(other: ImageOptions?): String {
     if (this == null && other == null) return "Both are null"

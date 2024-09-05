@@ -34,11 +34,13 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
-class UtilsAndroidTest {
+class CoreUtilsAndroidTest {
 
     @Test
     fun testIsMainThread() = runTest {
-        assertFalse(isMainThread())
+        withContext(Dispatchers.IO) {
+            assertFalse(isMainThread())
+        }
         withContext(Dispatchers.Main) {
             assertTrue(isMainThread())
         }
@@ -46,8 +48,10 @@ class UtilsAndroidTest {
 
     @Test
     fun testRequiredMainThread() = runTest {
-        assertFailsWith(IllegalStateException::class) {
-            requiredMainThread()
+        withContext(Dispatchers.IO) {
+            assertFailsWith(IllegalStateException::class) {
+                requiredMainThread()
+            }
         }
         withContext(Dispatchers.Main) {
             requiredMainThread()
@@ -56,10 +60,11 @@ class UtilsAndroidTest {
 
     @Test
     fun testRequiredWorkThread() = runTest {
-        requiredWorkThread()
-
-        assertFailsWith(IllegalStateException::class) {
-            withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
+            requiredWorkThread()
+        }
+        withContext(Dispatchers.Main) {
+            assertFailsWith(IllegalStateException::class) {
                 requiredWorkThread()
             }
         }
