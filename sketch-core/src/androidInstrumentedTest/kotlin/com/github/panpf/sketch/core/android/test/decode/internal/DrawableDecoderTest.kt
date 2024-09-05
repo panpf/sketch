@@ -34,7 +34,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.dimen.ktx.dp2px
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -42,6 +41,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -106,7 +106,7 @@ class DrawableDecoderTest {
     // TODO test: decodeImageInfo
 
     @Test
-    fun testDecode() {
+    fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val factory = DrawableDecoder.Factory()
@@ -164,9 +164,7 @@ class DrawableDecoderTest {
                     .toRequestContext(sketch, Size.Empty)
             )
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             val scale = min(
                 (imageWidth / 2) / imageWidth.toFloat(),
@@ -191,13 +189,10 @@ class DrawableDecoderTest {
             resize(imageWidth * 2, imageWidth * 2)
         }.run {
             val fetcher = sketch.components.newFetcherOrThrow(
-                this
-                    .toRequestContext(sketch, Size.Empty)
+                this.toRequestContext(sketch, Size.Empty)
             )
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             val scale = min(
                 (imageWidth * 2) / imageWidth.toFloat(),
@@ -216,20 +211,18 @@ class DrawableDecoderTest {
         }
 
         ImageRequest(context, newResourceUri(8801)).run {
-            assertThrow(Resources.NotFoundException::class) {
-                runBlocking {
-                    factory.create(
-                        requestContext = this@run.toRequestContext(sketch),
-                        fetchResult = FetchResult(
-                            dataSource = DrawableDataSource(
-                                context = context,
-                                dataFrom = LOCAL,
-                                drawableFetcher = ResDrawable(8801)
-                            ),
-                            mimeType = "image/png"
-                        )
-                    )!!.decode()
-                }.getOrThrow()
+            assertFailsWith(Resources.NotFoundException::class) {
+                factory.create(
+                    requestContext = this@run.toRequestContext(sketch),
+                    fetchResult = FetchResult(
+                        dataSource = DrawableDataSource(
+                            context = context,
+                            dataFrom = LOCAL,
+                            drawableFetcher = ResDrawable(8801)
+                        ),
+                        mimeType = "image/png"
+                    )
+                )!!.decode()
             }
         }
     }

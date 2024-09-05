@@ -41,13 +41,13 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.math.ceil
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -263,10 +263,8 @@ class ApkIconDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            assertThrow(NullPointerException::class) {
-                runBlocking {
-                    factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-                }.getOrThrow()
+            assertFailsWith(NullPointerException::class) {
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }
         }
     }

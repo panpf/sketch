@@ -65,7 +65,7 @@ open class DrawableDecoder(
         }
 
     @WorkerThread
-    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): DecodeResult {
         val request = requestContext.request
         val drawable = drawableDataSource.drawable
 
@@ -108,7 +108,7 @@ open class DrawableDecoder(
             extras = null
         )
         val resizedResult = decodeResult.appliedResize(resize)
-        resizedResult
+        return resizedResult
     }
 
     class Factory : Decoder.Factory {

@@ -38,8 +38,7 @@ interface Decoder {
      * Decode Image from [DataSource] and wrap it as a [DecodeResult] return.
      */
     @WorkerThread
-    // TODO remove Result
-    fun decode(): Result<DecodeResult>
+    fun decode(): DecodeResult
 
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]

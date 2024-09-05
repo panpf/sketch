@@ -62,7 +62,7 @@ open class HelperDecoder(
         }
 
     @WorkerThread
-    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): DecodeResult {
         requiredWorkThread()
         val decodeHelper = decodeHelperFactory()
         try {
@@ -110,7 +110,7 @@ open class HelperDecoder(
                 extras = null,
             )
             val resizedResult = decodeResult.appliedResize(resize)
-            resizedResult
+            return resizedResult
         } finally {
             decodeHelper.close()
         }

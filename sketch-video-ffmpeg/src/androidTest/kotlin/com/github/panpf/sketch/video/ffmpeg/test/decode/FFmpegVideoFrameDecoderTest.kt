@@ -40,11 +40,12 @@ import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.device.Devicex
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -170,10 +171,10 @@ class FFmpegVideoFrameDecoderTest {
     }
 
     @Test
-    fun testDecode() {
+    fun testDecode() = runTest {
         if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
-            return
+            return@runTest
         }
 
         val context = InstrumentationRegistry.getInstrumentation().context
@@ -187,7 +188,6 @@ class FFmpegVideoFrameDecoderTest {
                 )
                 val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-                    .getOrThrow()
             }
         }.apply {
             assertEquals(
@@ -210,7 +210,6 @@ class FFmpegVideoFrameDecoderTest {
                     this@run.toRequestContext(sketch, Size.Empty)
                 ).fetch().getOrThrow()
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-                    .getOrThrow()
             }
         }.apply {
             assertEquals(
@@ -229,20 +228,18 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            assertThrow(NullPointerException::class) {
-                runBlocking {
-                    factory.create(this@run.toRequestContext(sketch), fetchResult)!!
-                        .decode()
-                }.getOrThrow()
+            assertFailsWith(NullPointerException::class) {
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!
+                    .decode()
             }
         }
     }
 
     @Test
-    fun testDecodeVideoFrameMicros() {
+    fun testDecodeVideoFrameMicros() = runTest {
         if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
-            return
+            return@runTest
         }
 
         val context = InstrumentationRegistry.getInstrumentation().context
@@ -257,9 +254,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -269,9 +264,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -282,19 +275,17 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         assertEquals(bitmap1.corners(), bitmap11.corners())
         assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     @Test
-    fun testDecodeVideoFramePercent() {
+    fun testDecodeVideoFramePercent() = runTest {
         if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
-            return
+            return@runTest
         }
 
         val context = InstrumentationRegistry.getInstrumentation().context
@@ -309,9 +300,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -321,9 +310,7 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -334,19 +321,17 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         assertEquals(bitmap1.corners(), bitmap11.corners())
         assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     @Test
-    fun testDecodeVideoOption() {
+    fun testDecodeVideoOption() = runTest {
         if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
-            return
+            return@runTest
         }
 
         val context = InstrumentationRegistry.getInstrumentation().context
@@ -356,15 +341,14 @@ class FFmpegVideoFrameDecoderTest {
         val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            videoFramePercent(0.5f)
+//            videoFramePercent(0.51f)
         }.run {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrNull()
-        }?.image?.getBitmapOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
+        }.image.getBitmapOrThrow()
+
         val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
@@ -374,11 +358,9 @@ class FFmpegVideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
-        assertNotEquals(bitmap1?.corners(), bitmap2.corners())
+        assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"

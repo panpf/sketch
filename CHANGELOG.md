@@ -12,10 +12,12 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fix the bug that the image cannot be loaded when the ImageView is attached to the window but
   the size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
+* remove: Remove ComposeBitmapImage
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
   ComposeBitmapImage.
-* remove: Remove ComposeBitmapImage
 * change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
+* change: Decoder's decode() method removes the suspend modifier and changes the return type from
+  Result<DecodeResult> to DecodeResult
 
 # 4.0.0-alpha08
 

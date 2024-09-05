@@ -25,7 +25,7 @@ import kotlin.test.assertNull
 
 class HelperDecoderTest {
 
-    private suspend fun ImageRequest.helperDecode(sketch: Sketch): Result<DecodeResult> {
+    private suspend fun ImageRequest.helperDecode(sketch: Sketch): DecodeResult {
         val request = this
         val requestContext = request.toRequestContext(sketch)
         val fetchResult =
@@ -49,7 +49,7 @@ class HelperDecoderTest {
         val result1 = ImageRequest(context, exifRotate90ImageUri) {
             size(3000, 3000)
             precision(Precision.LESS_PIXELS)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(imageInfo.size, image.size)
             // TODO resize
@@ -60,7 +60,7 @@ class HelperDecoderTest {
         ImageRequest(context, exifRotate90ImageUri) {
             size(3000, 3000)
             precision(Precision.LESS_PIXELS)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(imageInfo.size, image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -71,7 +71,7 @@ class HelperDecoderTest {
         val result3 = ImageRequest(context, exifRotate90ImageUri).newRequest {
             size(100, 200)
             precision(Precision.EXACTLY)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(100, 200), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -88,7 +88,7 @@ class HelperDecoderTest {
         ImageRequest(context, exifRotate90ImageUri).newRequest {
             size(100, 200)
             precision(Precision.EXACTLY)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(100, 200), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -106,7 +106,7 @@ class HelperDecoderTest {
         val result5 = ImageRequest(context, exifRotate90ImageUri).newRequest {
             size(100, 200)
             precision(Precision.SAME_ASPECT_RATIO)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(94, 188), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -122,7 +122,7 @@ class HelperDecoderTest {
         ImageRequest(context, exifRotate90ImageUri).newRequest {
             size(100, 200)
             precision(Precision.SAME_ASPECT_RATIO)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(94, 188), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -139,7 +139,7 @@ class HelperDecoderTest {
         val result7 = ImageRequest(context, exifRotate90ImageUri).newRequest {
             size(100, 200)
             precision(Precision.LESS_PIXELS)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(188, 94), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -149,7 +149,7 @@ class HelperDecoderTest {
         ImageRequest(context, exifRotate90ImageUri).newRequest {
             size(100, 200)
             precision(Precision.LESS_PIXELS)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(188, 94), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -160,7 +160,7 @@ class HelperDecoderTest {
         val result9 = ImageRequest(context, ResourceImages.bmp.uri) {
             size(100, 200)
             precision(Precision.EXACTLY)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
             assertEquals(Size(100, 200), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)
@@ -177,7 +177,7 @@ class HelperDecoderTest {
         ImageRequest(context, ResourceImages.bmp.uri).newRequest {
             size(100, 200)
             precision(Precision.EXACTLY)
-        }.helperDecode(sketch).getOrThrow().apply {
+        }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
             assertEquals(Size(100, 200), image.size)
             assertEquals(DataFrom.LOCAL, dataFrom)

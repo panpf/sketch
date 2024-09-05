@@ -204,7 +204,7 @@ class WebpAnimatedDecoderTest {
         )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request.toRequestContext(sketch), fetchResult)!!
-            .decode().getOrThrow().apply {
+            .decode().apply {
                 assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 assertEquals(Size(480, 270), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)
@@ -224,7 +224,7 @@ class WebpAnimatedDecoderTest {
         )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
-            .let { runBlocking { it.decode().getOrThrow() } }.apply {
+            .let { runBlocking { it.decode() } }.apply {
                 assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 assertEquals(Size(240, 135), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)

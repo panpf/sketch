@@ -60,7 +60,7 @@ fun ImageRequest.decode(sketch: Sketch): DecodeResult {
     return BitmapFactoryDecoder(
         requestContext = requestContext,
         dataSource = fetchResult.dataSource.asOrThrow()
-    ).decode().getOrThrow()
+    ).decode()
 }
 
 @Suppress("DEPRECATION")

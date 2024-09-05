@@ -13,7 +13,7 @@ suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory? = null
     val decoder =
         factory?.create(requestContext, fetchResult)
             ?: sketch.components.newDecoderOrThrow(requestContext, fetchResult)
-    return decoder.decode().getOrThrow()
+    return decoder.decode()
 }
 
 expect fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): DecodeHelper

@@ -87,7 +87,7 @@ open class ImageDecoderAnimatedDecoder(
         }
 
     @WorkerThread
-    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): DecodeResult {
         val context = requestContext.request.context
         val source = when (dataSource) {
             is AssetDataSource -> {
@@ -176,7 +176,7 @@ open class ImageDecoderAnimatedDecoder(
                 }
             }
         val resize = requestContext.computeResize(imageInfo!!.size)
-        DecodeResult(
+        return DecodeResult(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,

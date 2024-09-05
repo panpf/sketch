@@ -98,7 +98,7 @@ class GifMovieDecoder(
         }
 
     @WorkerThread
-    override fun decode(): Result<DecodeResult> = kotlin.runCatching {
+    override fun decode(): DecodeResult {
         val request = requestContext.request
         val movie: Movie? = dataSource.openSource()
             .buffer().inputStream().use { Movie.decodeStream(it) }
@@ -138,7 +138,7 @@ class GifMovieDecoder(
         }
 
         val resize = requestContext.computeResize(imageInfo.size)
-        DecodeResult(
+        return DecodeResult(
             image = animatableDrawable.asSketchImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,

@@ -878,9 +878,7 @@ class BitmapFactoryDecoderTest {
             requestContext = request.toRequestContext(sketch),
             dataSource = FullTestDataSource(dataSource.asOrThrow(), enabledCount = true)
         )
-        val result = runBlocking { bitmapDecoder.decode() }
-        result.exceptionOrNull()?.printStackTrace()
-        result.getOrThrow()
+        bitmapDecoder.decode()
 
         /* region */
         val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -896,7 +894,7 @@ class BitmapFactoryDecoderTest {
         BitmapFactoryDecoder(
             request1.toRequestContext(sketch),
             RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)
-        ).decode().getOrThrow()
+        ).decode()
     }
 
     class FullTestDataSource(

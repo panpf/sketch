@@ -27,7 +27,7 @@ class TestDecoder : Decoder {
     override val imageInfo: ImageInfo
         get() = throw UnsupportedOperationException()
 
-    override fun decode(): Result<DecodeResult> {
+    override fun decode(): DecodeResult {
         throw UnsupportedOperationException()
     }
 

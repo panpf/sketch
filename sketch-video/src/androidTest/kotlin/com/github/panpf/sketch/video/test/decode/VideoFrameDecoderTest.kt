@@ -43,11 +43,12 @@ import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -179,8 +180,8 @@ class VideoFrameDecoderTest {
     }
 
     @Test
-    fun testDecode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+    fun testDecode() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val sketch = context.sketch
@@ -190,9 +191,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 assertEquals(
@@ -220,9 +219,7 @@ class VideoFrameDecoderTest {
                 val fetcher =
                     sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
                 val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-                runBlocking {
-                    factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-                }.getOrThrow()
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.apply {
                 assertEquals(
                     "Bitmap(500x250,RGB_565)",
@@ -243,9 +240,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 assertEquals(
@@ -280,17 +275,15 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            assertThrow(NullPointerException::class) {
-                runBlocking {
-                    factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-                }.getOrThrow()
+            assertFailsWith(NullPointerException::class) {
+                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }
         }
     }
 
     @Test
-    fun testDecodeVideoFrameMicros() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+    fun testDecodeVideoFrameMicros() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -304,9 +297,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -316,9 +307,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -329,17 +318,15 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         assertEquals(bitmap1.corners(), bitmap11.corners())
         assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     @Test
-    fun testDecodeVideoFramePercent() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+    fun testDecodeVideoFramePercent() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -353,9 +340,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -365,9 +350,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -378,17 +361,15 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         assertEquals(bitmap1.corners(), bitmap11.corners())
         assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }
 
     @Test
-    fun testDecodeVideoOption() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return
+    fun testDecodeVideoOption() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -402,9 +383,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
             memoryCachePolicy(DISABLED)
@@ -415,9 +394,7 @@ class VideoFrameDecoderTest {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
             val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-            runBlocking {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }.getOrThrow()
+            factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.image.getBitmapOrThrow()
         assertNotEquals(bitmap1.corners(), bitmap2.corners())
     }

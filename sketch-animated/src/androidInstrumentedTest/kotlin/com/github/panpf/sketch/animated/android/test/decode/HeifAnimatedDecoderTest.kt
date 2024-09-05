@@ -204,7 +204,7 @@ class HeifAnimatedDecoderTest {
         )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request.toRequestContext(sketch), fetchResult)!!
-            .decode().getOrThrow().apply {
+            .decode().apply {
                 assertEquals(ImageInfo(256, 144, "image/heif"), this.imageInfo)
                 assertEquals(Size(256, 144), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)
@@ -224,7 +224,7 @@ class HeifAnimatedDecoderTest {
         )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
-            .let { runBlocking { it.decode().getOrThrow() } }.apply {
+            .let { runBlocking { it.decode() } }.apply {
                 assertEquals(ImageInfo(256, 144, "image/heif"), this.imageInfo)
                 assertEquals(Size(128, 72), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)

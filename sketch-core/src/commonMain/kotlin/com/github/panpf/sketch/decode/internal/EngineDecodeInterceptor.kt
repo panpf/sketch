@@ -16,9 +16,12 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.Components
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.RequestContext
 
 /**
  * The final decode interceptor is used to actually execute the decode
@@ -32,18 +35,24 @@ class EngineDecodeInterceptor : DecodeInterceptor {
     override val sortWeight: Int = 100
 
     @WorkerThread
-    override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
+    override suspend fun intercept(
+        chain: DecodeInterceptor.Chain
+    ): Result<DecodeResult> = runCatching {
         val components = chain.sketch.components
         val requestContext = chain.requestContext
-        val fetchResult = chain.fetchResult
-            ?: kotlin.runCatching { components.newFetcherOrThrow(requestContext) }
-                .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
-                .fetch()
-                .let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
-        val decoder = kotlin.runCatching {
-            components.newDecoderOrThrow(requestContext, fetchResult)
-        }.let { it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!) }
-        return decoder.decode()
+        val fetchResult = chain.fetchResult ?: newFetch(components, requestContext)
+        val decoder = components.newDecoderOrThrow(requestContext, fetchResult)
+        val decodeResult = decoder.decode()
+        decodeResult
+    }
+
+    private suspend fun newFetch(
+        components: Components,
+        requestContext: RequestContext
+    ): FetchResult {
+        val fetcher = components.newFetcherOrThrow(requestContext)
+        val fetchResult = fetcher.fetch().getOrThrow()
+        return fetchResult
     }
 
     override fun equals(other: Any?): Boolean {

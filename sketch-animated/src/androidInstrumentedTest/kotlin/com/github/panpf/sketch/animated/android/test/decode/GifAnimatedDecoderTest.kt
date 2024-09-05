@@ -194,7 +194,7 @@ class GifAnimatedDecoderTest {
         )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request.toRequestContext(sketch), fetchResult)!!
-            .decode().getOrThrow().apply {
+            .decode().apply {
                 assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 assertEquals(Size(480, 480), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)
@@ -214,7 +214,7 @@ class GifAnimatedDecoderTest {
         )
             .let { runBlocking { it.fetch() }.getOrThrow() }
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
-            .decode().getOrThrow().apply {
+            .decode().apply {
                 assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
                 assertEquals(Size(240, 240), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)
