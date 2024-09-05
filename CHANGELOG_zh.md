@@ -15,6 +15,7 @@
 * change: Fetcher.Factory.create() 的传参改为 RequestContext
 * change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为
   DecodeResult
+* change: Transformation 的 transform() 方法移除 suspend 修饰符
 
 # 4.0.0-alpha08
 

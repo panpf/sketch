@@ -81,7 +81,7 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
 
     @WorkerThread
-    override suspend fun transform(
+    override fun transform(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {

@@ -18,6 +18,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
 * change: Decoder's decode() method removes the suspend modifier and changes the return type from
   Result<DecodeResult> to DecodeResult
+* change: Transformation's transform() method removes the suspend modifier
 
 # 4.0.0-alpha08
 

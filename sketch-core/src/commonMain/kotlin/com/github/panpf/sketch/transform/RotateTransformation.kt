@@ -31,7 +31,7 @@ class RotateTransformation(val degrees: Int) : Transformation {
     override val key: String = "RotateTransformation($degrees)"
 
     @WorkerThread
-    override suspend fun transform(
+    override fun transform(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {

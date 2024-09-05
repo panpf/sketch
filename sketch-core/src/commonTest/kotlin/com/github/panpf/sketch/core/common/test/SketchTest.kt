@@ -23,7 +23,7 @@ import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.DelayTransformation
+import com.github.panpf.sketch.test.utils.DelayDecodeInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
@@ -270,9 +270,11 @@ class SketchTest {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
-            addTransformations(DelayTransformation {
-                disposable3?.job?.cancel()
-            })
+            components {
+                addDecodeInterceptor(DelayDecodeInterceptor(1000) {
+                    disposable3?.job?.cancel()
+                })
+            }
             registerListener(listenerSupervisor3)
         }
         disposable3 = sketch.enqueue(request3)

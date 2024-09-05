@@ -49,7 +49,7 @@ interface Transformation : Key {
      * @return The transformed [Image].
      */
     @WorkerThread
-    suspend fun transform(
+    fun transform(
         requestContext: RequestContext,
         input: Image
     ): TransformResult?

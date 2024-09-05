@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.image
+package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult

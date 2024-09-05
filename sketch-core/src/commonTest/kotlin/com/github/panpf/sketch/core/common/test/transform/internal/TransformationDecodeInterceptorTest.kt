@@ -102,7 +102,7 @@ class TransformationDecodeInterceptorTest {
                     override val key: String
                         get() = "TestTransformation"
 
-                    override suspend fun transform(
+                    override fun transform(
                         requestContext: RequestContext,
                         input: Image
                     ): TransformResult = TransformResult(input, "TestTransformation")
@@ -132,7 +132,7 @@ class TransformationDecodeInterceptorTest {
                     override val key: String
                         get() = "TestTransformation"
 
-                    override suspend fun transform(
+                    override fun transform(
                         requestContext: RequestContext,
                         input: Image
                     ): TransformResult? = null

@@ -38,7 +38,7 @@ class MaskTransformation constructor(
     override fun toString(): String = key
 
     @WorkerThread
-    override suspend fun transform(
+    override fun transform(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.imageResult
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.singleton.loadImage
-import com.github.panpf.sketch.test.utils.DelayTransformation
+import com.github.panpf.sketch.test.utils.DelayDecodeInterceptor
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -55,9 +55,11 @@ class ImageViewExtensionsTest {
         imageView.loadImage(ResourceImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            addTransformations(DelayTransformation {
-                imageView.disposeLoad()
-            })
+            components {
+                addDecodeInterceptor(DelayDecodeInterceptor(1000) {
+                    imageView.disposeLoad()
+                })
+            }
         }.job.join()
         assertNull(imageView.drawable)
     }
@@ -78,9 +80,11 @@ class ImageViewExtensionsTest {
         imageView.loadImage(ResourceImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            addTransformations(DelayTransformation {
-                imageView.disposeLoad()
-            })
+            components {
+                addDecodeInterceptor(DelayDecodeInterceptor(1000) {
+                    imageView.disposeLoad()
+                })
+            }
         }.job.join()
         assertNull(imageView.imageResult)
     }

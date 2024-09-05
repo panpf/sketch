@@ -53,7 +53,7 @@ class BlurTransformation constructor(
     override val key: String = "BlurTransformation(${radius},$hasAlphaBitmapBgColor,$maskColor)"
 
     @WorkerThread
-    override suspend fun transform(
+    override fun transform(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {

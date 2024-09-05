@@ -38,7 +38,7 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
     override val key: String = "CircleCropTransformation($scale)"
 
     @WorkerThread
-    override suspend fun transform(
+    override fun transform(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {
