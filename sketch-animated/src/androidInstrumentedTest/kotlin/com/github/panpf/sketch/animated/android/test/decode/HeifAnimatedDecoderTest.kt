@@ -40,7 +40,6 @@ import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -199,10 +198,8 @@ class HeifAnimatedDecoderTest {
             onAnimationStart { }
         }
         val fetchResult = sketch.components.newFetcherOrThrow(
-            request
-                .toRequestContext(sketch, Size.Empty)
-        )
-            .let { runBlocking { it.fetch() }.getOrThrow() }
+            request.toRequestContext(sketch, Size.Empty)
+        ).fetch().getOrThrow()
         factory.create(request.toRequestContext(sketch), fetchResult)!!
             .decode().apply {
                 assertEquals(ImageInfo(256, 144, "image/heif"), this.imageInfo)
@@ -222,9 +219,9 @@ class HeifAnimatedDecoderTest {
             request1
                 .toRequestContext(sketch, Size.Empty)
         )
-            .let { runBlocking { it.fetch() }.getOrThrow() }
+            .fetch().getOrThrow()
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
-            .let { runBlocking { it.decode() } }.apply {
+            .decode().apply {
                 assertEquals(ImageInfo(256, 144, "image/heif"), this.imageInfo)
                 assertEquals(Size(128, 72), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)

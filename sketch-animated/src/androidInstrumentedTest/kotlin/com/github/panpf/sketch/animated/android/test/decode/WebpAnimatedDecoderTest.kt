@@ -40,7 +40,6 @@ import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -199,10 +198,8 @@ class WebpAnimatedDecoderTest {
             onAnimationStart { }
         }
         val fetchResult = sketch.components.newFetcherOrThrow(
-            request
-                .toRequestContext(sketch, Size.Empty)
-        )
-            .let { runBlocking { it.fetch() }.getOrThrow() }
+            request.toRequestContext(sketch, Size.Empty)
+        ).fetch().getOrThrow()
         factory.create(request.toRequestContext(sketch), fetchResult)!!
             .decode().apply {
                 assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
@@ -219,12 +216,10 @@ class WebpAnimatedDecoderTest {
             size(300, 300)
         }
         val fetchResult1 = sketch.components.newFetcherOrThrow(
-            request1
-                .toRequestContext(sketch, Size.Empty)
-        )
-            .let { runBlocking { it.fetch() }.getOrThrow() }
+            request1.toRequestContext(sketch, Size.Empty)
+        ).fetch().getOrThrow()
         factory.create(request1.toRequestContext(sketch), fetchResult1)!!
-            .let { runBlocking { it.decode() } }.apply {
+            .decode().apply {
                 assertEquals(ImageInfo(480, 270, "image/webp"), this.imageInfo)
                 assertEquals(Size(240, 135), image.getDrawableOrThrow().intrinsicSize)
                 assertEquals(LOCAL, this.dataFrom)

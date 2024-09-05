@@ -23,12 +23,13 @@ import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
-import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -36,29 +37,29 @@ import kotlin.test.assertTrue
 class UtilsAndroidTest {
 
     @Test
-    fun testIsMainThread() {
+    fun testIsMainThread() = runTest {
         assertFalse(isMainThread())
-        assertTrue(runBlocking(Dispatchers.Main) {
-            isMainThread()
-        })
-    }
-
-    @Test
-    fun testRequiredMainThread() {
-        assertThrow(IllegalStateException::class) {
-            requiredMainThread()
-        }
-        runBlocking(Dispatchers.Main) {
-            requiredMainThread()
+        withContext(Dispatchers.Main) {
+            assertTrue(isMainThread())
         }
     }
 
     @Test
-    fun testRequiredWorkThread() {
+    fun testRequiredMainThread() = runTest {
+        assertFailsWith(IllegalStateException::class) {
+            requiredMainThread()
+        }
+        withContext(Dispatchers.Main) {
+            requiredMainThread()
+        }
+    }
+
+    @Test
+    fun testRequiredWorkThread() = runTest {
         requiredWorkThread()
 
-        assertThrow(IllegalStateException::class) {
-            runBlocking(Dispatchers.Main) {
+        assertFailsWith(IllegalStateException::class) {
+            withContext(Dispatchers.Main) {
                 requiredWorkThread()
             }
         }

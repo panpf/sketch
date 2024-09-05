@@ -28,7 +28,8 @@ import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -39,58 +40,48 @@ import kotlin.test.assertTrue
 class ImageViewExtensionsTest {
 
     @Test
-    fun testDisposeLoad() {
+    fun testDisposeLoad() = runTest {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
-        }
+        imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         assertNotNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(ResourceImages.png.uri) {
-                resultCachePolicy(DISABLED)
-                memoryCachePolicy(DISABLED)
-                addTransformations(DelayTransformation {
-                    imageView.disposeLoad()
-                })
-            }.job.join()
-        }
+        imageView.loadImage(ResourceImages.png.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            addTransformations(DelayTransformation {
+                imageView.disposeLoad()
+            })
+        }.job.join()
         assertNull(imageView.drawable)
     }
 
     @Test
-    fun testImageResult() {
+    fun testImageResult() = runTest {
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
         assertNull(imageView.imageResult)
 
-        runBlocking {
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
-        }
+        imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         assertTrue(imageView.imageResult is ImageResult.Success)
 
-        runBlocking {
-            imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
-        }
+        imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
         assertTrue(imageView.imageResult is ImageResult.Error)
 
-        runBlocking {
-            imageView.loadImage(ResourceImages.png.uri) {
-                resultCachePolicy(DISABLED)
-                memoryCachePolicy(DISABLED)
-                addTransformations(DelayTransformation {
-                    imageView.disposeLoad()
-                })
-            }.job.join()
-        }
+        imageView.loadImage(ResourceImages.png.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            addTransformations(DelayTransformation {
+                imageView.disposeLoad()
+            })
+        }.job.join()
         assertNull(imageView.imageResult)
     }
 }

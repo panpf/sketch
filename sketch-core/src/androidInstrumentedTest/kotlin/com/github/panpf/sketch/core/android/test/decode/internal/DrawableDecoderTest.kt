@@ -34,7 +34,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.dimen.ktx.dp2px
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.math.min
@@ -63,10 +62,9 @@ class DrawableDecoderTest {
             newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
         ).let {
             val fetcher = sketch.components.newFetcherOrThrow(
-                it
-                    .toRequestContext(sketch, Size.Empty)
+                it.toRequestContext(sketch, Size.Empty)
             )
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            val fetchResult = fetcher.fetch().getOrThrow()
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             assertNotNull(this)
@@ -75,10 +73,9 @@ class DrawableDecoderTest {
         // data error
         ImageRequest(context, ResourceImages.png.uri).let {
             val fetcher = sketch.components.newFetcherOrThrow(
-                it
-                    .toRequestContext(sketch, Size.Empty)
+                it.toRequestContext(sketch, Size.Empty)
             )
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            val fetchResult = fetcher.fetch().getOrThrow()
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
             assertNull(this)
@@ -115,10 +112,8 @@ class DrawableDecoderTest {
 
 //        ImageRequest(context, newResourceUri(R.drawable.test)).run {
 //            val fetcher = sketch.components.newFetcherOrThrow(this)
-//            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-//            runBlocking {
+//            val fetchResult = fetcher.fetch().getOrThrow()
 //                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
-//            }.getOrThrow()
 //        }.apply {
 //            assertEquals(
 //                "Bitmap(${imageWidth}x${imageHeight},ARGB_8888)",
@@ -136,10 +131,8 @@ class DrawableDecoderTest {
 //            bitmapConfig(Bitmap.Config.RGB_565)
 //        }.run {
 //            val fetcher = sketch.components.newFetcherOrThrow(this)
-//            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
-//            runBlocking {
+//            val fetchResult = fetcher.fetch().getOrThrow()
 //                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
-//            }.getOrThrow()
 //        }.apply {
 //            assertEquals(
 //                "Bitmap(${imageWidth}x${imageHeight},RGB_565)",
@@ -163,7 +156,7 @@ class DrawableDecoderTest {
                 this
                     .toRequestContext(sketch, Size.Empty)
             )
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            val fetchResult = fetcher.fetch().getOrThrow()
             factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             val scale = min(
@@ -191,7 +184,7 @@ class DrawableDecoderTest {
             val fetcher = sketch.components.newFetcherOrThrow(
                 this.toRequestContext(sketch, Size.Empty)
             )
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            val fetchResult = fetcher.fetch().getOrThrow()
             factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             val scale = min(

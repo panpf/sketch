@@ -8,7 +8,6 @@ import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.content
 import com.github.panpf.sketch.test.utils.slow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import okio.Buffer
 import okio.buffer
@@ -42,7 +41,7 @@ class HttpUtilsTest {
                 )
             }
         }
-        delay(100)
+        block(100)
         assertEquals(string, buffer.readByteArray().decodeToString())
         assertEquals(listOf("9", "26"), progressListener.callbackActionList)
 
@@ -61,7 +60,7 @@ class HttpUtilsTest {
                 )
             }
         }
-        delay(100)
+        block(100)
         assertEquals(string, buffer2.readByteArray().decodeToString())
         assertEquals(listOf(), progressListener.callbackActionList)
 

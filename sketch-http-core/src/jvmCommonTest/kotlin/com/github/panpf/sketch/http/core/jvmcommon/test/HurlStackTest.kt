@@ -3,7 +3,7 @@ package com.github.panpf.sketch.http.core.jvmcommon.test
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack.Builder
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -81,21 +81,19 @@ class HurlStackTest {
     }
 
     @Test
-    fun testGetResponse() {
+    fun testGetResponse() = runTest {
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
 
-        Builder().build()
-            .let { runBlocking { it.getResponse(url, null, null) } }
-            .apply {
-                assertEquals(200, code)
-                assertEquals("OK", message)
-                assertEquals(9904, contentLength)
-                assertEquals("image/png", contentType)
-                assertEquals("image/png", getHeaderField("Content-Type"))
-                runBlocking { content() }.use {
-                    assertNotNull(it)
-                }
+        Builder().build().getResponse(url, null, null).apply {
+            assertEquals(200, code)
+            assertEquals("OK", message)
+            assertEquals(9904, contentLength)
+            assertEquals("image/png", contentType)
+            assertEquals("image/png", getHeaderField("Content-Type"))
+            content().use {
+                assertNotNull(it)
             }
+        }
 
         Builder().apply {
             userAgent("Android 8.1")
@@ -106,26 +104,20 @@ class HurlStackTest {
                 add("addHttpHeader1", "setHttpValue1")
                 set("setHttpHeader1", "setHttpValue1")
             }.build()
-            runBlocking {
-                it.getResponse(url, httpHeaders, null)
-            }
+            it.getResponse(url, httpHeaders, null)
         }.apply {
             assertEquals(200, code)
             assertEquals("OK", message)
             assertEquals(9904, contentLength)
             assertEquals("image/png", contentType)
             assertEquals("image/png", getHeaderField("Content-Type"))
-            runBlocking { content() }.use {
+            content().use {
                 assertNotNull(it)
             }
         }
 
         assertFailsWith(IOException::class) {
-            Builder().build().let {
-                runBlocking {
-                    it.getResponse("", null, null)
-                }
-            }
+            Builder().build().getResponse("", null, null)
         }
     }
 

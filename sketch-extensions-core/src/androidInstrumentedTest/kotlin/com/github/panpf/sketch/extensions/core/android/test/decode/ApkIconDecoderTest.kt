@@ -41,7 +41,6 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.math.ceil
@@ -262,7 +261,7 @@ class ApkIconDecoderTest {
         ImageRequest(context, ResourceImages.png.uri).run {
             val fetcher =
                 sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
-            val fetchResult = runBlocking { fetcher.fetch() }.getOrThrow()
+            val fetchResult = fetcher.fetch().getOrThrow()
             assertFailsWith(NullPointerException::class) {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }

@@ -24,12 +24,13 @@ import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,8 +43,8 @@ import kotlin.test.assertTrue
 class MovieDrawableTest {
 
     @Test
-    fun test() {
-        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
+    fun test() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -83,20 +84,20 @@ class MovieDrawableTest {
         }
 
         MyTestFragment::class.launchFragmentInContainer().getFragmentSync().apply {
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(movieDrawable)
             }
             assertFalse(movieDrawable.isRunning)
-            assertEquals(listOf<String>(), callbackList)
+            assertEquals(listOf(), callbackList)
 
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 movieDrawable.start()
             }
             assertEquals(listOf("onAnimationStart"), callbackList)
             assertTrue(movieDrawable.isRunning)
 
-            runBlocking(Dispatchers.Main) {
-                delay(1000)
+            block(1000)
+            withContext(Dispatchers.Main) {
                 movieDrawable.stop()
             }
             assertEquals(listOf("onAnimationStart", "onAnimationEnd"), callbackList)
@@ -105,8 +106,8 @@ class MovieDrawableTest {
     }
 
     @Test
-    fun test2() {
-        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
+    fun test2() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -116,14 +117,14 @@ class MovieDrawableTest {
         val movieDrawable = MovieDrawable(movie)
 
         MyTestFragment::class.launchFragmentInContainer().getFragmentSync().apply {
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(movieDrawable)
             }
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 movieDrawable.start()
             }
-            runBlocking(Dispatchers.Main) {
-                delay(1000)
+            block(1000)
+            withContext(Dispatchers.Main) {
                 movieDrawable.stop()
             }
         }

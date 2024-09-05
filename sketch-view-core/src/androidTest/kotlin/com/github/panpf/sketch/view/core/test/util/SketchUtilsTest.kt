@@ -10,7 +10,8 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -45,10 +46,10 @@ class SketchUtilsTest {
     }
 
     @Test
-    fun testGetRequest() {
+    fun testGetRequest() = runTest {
         val activity = TestActivity::class.launchActivity().getActivitySync()
         val imageView = ImageView(activity)
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             activity.setContentView(imageView, LayoutParams(500, 500))
         }
         Thread.sleep(100)
@@ -60,10 +61,10 @@ class SketchUtilsTest {
     }
 
     @Test
-    fun testGetSketch() {
+    fun testGetSketch() = runTest {
         val activity = TestActivity::class.launchActivity().getActivitySync()
         val imageView = ImageView(activity)
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             activity.setContentView(imageView, LayoutParams(500, 500))
         }
         Thread.sleep(100)

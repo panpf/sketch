@@ -54,7 +54,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toShortInfoString
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import okio.Source
 import org.junit.runner.RunWith
@@ -868,12 +867,9 @@ class BitmapFactoryDecoderTest {
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             resize(ResourceImages.jpeg.size.width * 2, ResourceImages.jpeg.size.height * 2)
         }
-        val dataSource = runBlocking {
-            sketch.components.newFetcherOrThrow(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            ).fetch()
-        }.getOrThrow().dataSource
+        val dataSource = sketch.components.newFetcherOrThrow(
+            request.toRequestContext(sketch, Size.Empty)
+        ).fetch().getOrThrow().dataSource
         val bitmapDecoder = BitmapFactoryDecoder(
             requestContext = request.toRequestContext(sketch),
             dataSource = FullTestDataSource(dataSource.asOrThrow(), enabledCount = true)
@@ -885,12 +881,9 @@ class BitmapFactoryDecoderTest {
             size(500, 500)
             precision(EXACTLY)
         }
-        val dataSource1 = runBlocking {
-            sketch.components.newFetcherOrThrow(
-                request1
-                    .toRequestContext(sketch, Size.Empty)
-            ).fetch()
-        }.getOrThrow().dataSource
+        val dataSource1 = sketch.components.newFetcherOrThrow(
+            request1.toRequestContext(sketch, Size.Empty)
+        ).fetch().getOrThrow().dataSource
         BitmapFactoryDecoder(
             request1.toRequestContext(sketch),
             RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)

@@ -30,7 +30,7 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newSketch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -39,8 +39,8 @@ import kotlin.test.assertTrue
 class ImageRequestExecuteAnimatedTest {
 
     @Test
-    fun testDisallowAnimatedImage() {
-        if (VERSION.SDK_INT < VERSION_CODES.P) return
+    fun testDisallowAnimatedImage() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val context = getTestContext()
         val sketch = newSketch {
@@ -52,28 +52,28 @@ class ImageRequestExecuteAnimatedTest {
         val imageUri = ResourceImages.animGif.uri
         val request = ImageRequest(context, imageUri)
 
-        request.let { runBlocking { sketch.execute(it) } }
+        request.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(false)
-        }.let { runBlocking { sketch.execute(it) } }
+        }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(null)
-        }.let { runBlocking { sketch.execute(it) } }
+        }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(true)
-        }.let { runBlocking { sketch.execute(it) } }
+        }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 assertTrue(image.asOrNull<AndroidBitmapImage>() != null)
             }

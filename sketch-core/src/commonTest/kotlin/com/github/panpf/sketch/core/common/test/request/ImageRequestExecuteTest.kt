@@ -1,21 +1,3 @@
-@file:Suppress("DEPRECATION")
-
-/*
- * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.github.panpf.sketch.core.common.test.request
 
 import androidx.lifecycle.Lifecycle.State.CREATED
@@ -63,6 +45,7 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestResizeOnDrawImage
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransitionTarget
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -86,7 +69,6 @@ import com.github.panpf.sketch.util.screenSize
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
@@ -1499,13 +1481,13 @@ class ImageRequestExecuteTest {
             val deferred = async {
                 sketch.execute(request)
             }
-            delay(2000)
+            block(2000)
             if (!deferred.isCompleted) {
                 withContext(Dispatchers.Main) {
                     lifecycle.currentState = STARTED
                 }
             }
-            delay(2000)
+            block(2000)
             deferred.await()
         }.apply {
             assertTrue(this is ImageResult.Success)

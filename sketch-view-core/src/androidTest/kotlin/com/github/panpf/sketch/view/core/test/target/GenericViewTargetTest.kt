@@ -20,7 +20,8 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -34,7 +35,7 @@ class GenericViewTargetTest {
     // TODO test allowSetNullDrawable
 
     @Test
-    fun testUpdateDrawable() {
+    fun testUpdateDrawable() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             allowNullImage()
@@ -49,21 +50,21 @@ class GenericViewTargetTest {
         val drawable1 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
         val drawable2 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageViewTarget.onSuccess(sketch, request, drawable1.asSketchImage())
         }
 
         assertSame(drawable1, imageView.drawable)
         assertSame(drawable1, imageViewTarget.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageViewTarget.onSuccess(sketch, request, drawable2.asSketchImage())
         }
 
         assertSame(drawable2, imageView.drawable)
         assertSame(drawable2, imageViewTarget.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageViewTarget.onError(sketch, request, null)
         }
         assertNull(imageView.drawable)

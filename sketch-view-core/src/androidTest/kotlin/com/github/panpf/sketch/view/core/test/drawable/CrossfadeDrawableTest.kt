@@ -40,7 +40,8 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -118,7 +119,7 @@ class CrossfadeDrawableTest {
     }
 
     @Test
-    fun testCallback() {
+    fun testCallback() = runTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
@@ -126,11 +127,11 @@ class CrossfadeDrawableTest {
             context.getDrawableCompat(android.R.drawable.ic_delete),
         ).apply {
             val callback = object : Animatable2Compat.AnimationCallback() {}
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             unregisterAnimationCallback(callback)
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             clearAnimationCallbacks()
@@ -198,7 +199,7 @@ class CrossfadeDrawableTest {
     }
 
     @Test
-    fun testStartStopIsRunning() {
+    fun testStartStopIsRunning() = runTest {
         val context = getTestContext()
 
         CrossfadeDrawable(
@@ -217,7 +218,7 @@ class CrossfadeDrawableTest {
                     callbackAction.add("onAnimationEnd")
                 }
             }
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback3)
             }
 

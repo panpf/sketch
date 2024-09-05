@@ -16,6 +16,7 @@ import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ReusableDisposable
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.test.singleton.loadImage
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.view.core.R.id
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
@@ -24,8 +25,7 @@ import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -56,13 +56,13 @@ class ViewRequestManagerTest {
     }
 
     @Test
-    fun testDispose() {
+    fun testDispose() = runTest {
         val context = getTestContext()
 
         val imageView = ImageView(context)
         val request = ImageRequest(imageView, ResourceImages.jpeg.uri)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             val deferred = async {
                 Error(request, null, Exception(""))
             }
@@ -88,7 +88,7 @@ class ViewRequestManagerTest {
     }
 
     @Test
-    fun testAttachedAndDetached() {
+    fun testAttachedAndDetached() = runTest {
         val fragment = MyTestFragment::class.launchFragmentInContainer().getFragmentSync()
         assertEquals(RESUMED, fragment.lifecycle.currentState)
 
@@ -98,21 +98,17 @@ class ViewRequestManagerTest {
         assertNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // If there is no attached to the window, the display will inevitably fail
-        runBlocking {
-            imageView.loadImage(ResourceImages.jpeg.uri)
-            delay(1500)
-        }
+        imageView.loadImage(ResourceImages.jpeg.uri)
+        block(1500)
         assertFalse(imageView.isAttachedToWindow)
         assertNull(imageView.drawable)
         assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // Automatically restart tasks when attached to a window
-        runBlocking {
-            withContext(Dispatchers.Main) {
-                fragment.attachImageView()
-            }
-            delay(1500)
+        withContext(Dispatchers.Main) {
+            fragment.attachImageView()
         }
+        block(1500)
         assertTrue(imageView.isAttachedToWindow)
         assertNotNull(imageView.drawable)
         assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
@@ -120,23 +116,19 @@ class ViewRequestManagerTest {
         // detached from window, request and drawable is null
 
         // Automatically restart tasks when attached to a window
-        runBlocking {
-            withContext(Dispatchers.Main) {
-                fragment.detachImageView()
-            }
-            delay(1500)
+        withContext(Dispatchers.Main) {
+            fragment.detachImageView()
         }
+        block(1500)
         assertFalse(imageView.isAttachedToWindow)
         assertNotNull(imageView.drawable)
         assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // Automatically restart tasks when attached to a window
-        runBlocking {
-            withContext(Dispatchers.Main) {
-                fragment.attachImageView()
-            }
-            delay(1500)
+        withContext(Dispatchers.Main) {
+            fragment.attachImageView()
         }
+        block(1500)
         assertTrue(imageView.isAttachedToWindow)
         assertNotNull(imageView.drawable)
         assertNotNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))

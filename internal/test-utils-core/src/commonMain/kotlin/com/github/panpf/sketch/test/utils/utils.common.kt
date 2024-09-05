@@ -5,6 +5,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.util.Size
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.time.TimeSource
 
 
 fun Long.pow(n: Int): Long = this.toDouble().pow(n).toLong()
@@ -43,4 +44,18 @@ fun Float.format(newScale: Int): Float {
  */
 inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
+}
+
+/**
+ * Replacement for delay as delay does not work in runTest
+ *
+ * Note: Because block will really block the current thread, so please do not use it in the UI thread.
+ */
+fun block(millis: Long) {
+    if (millis > 0) {
+        val startTime = TimeSource.Monotonic.markNow()
+        while (startTime.elapsedNow().inWholeMilliseconds < millis) {
+            // Do nothing
+        }
+    }
 }

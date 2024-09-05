@@ -9,7 +9,6 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
 import okio.Closeable
 import org.junit.runner.RunWith
 import java.io.File
@@ -49,20 +48,14 @@ class ContentDataSourceTest {
         ContentDataSource(
             context = sketch.context,
             contentUri = contentUri,
-        ).apply {
-            openSource().asOrThrow<Closeable>().close()
-        }
+        ).openSource().asOrThrow<Closeable>().close()
 
         assertThrow(FileNotFoundException::class) {
-            val errorContentUri = runBlocking {
-                Uri.fromFile(File("/sdcard/error.jpeg"))
-            }
+            val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
             ContentDataSource(
                 context = sketch.context,
                 contentUri = errorContentUri,
-            ).apply {
-                openSource()
-            }
+            ).openSource()
         }
     }
 
@@ -118,9 +111,7 @@ class ContentDataSourceTest {
             )
         }
 
-        val errorContentUri = runBlocking {
-            Uri.fromFile(File("/sdcard/error.jpeg"))
-        }
+        val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
         ContentDataSource(
             context = sketch.context,
             contentUri = errorContentUri,

@@ -32,7 +32,8 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toLogString
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +44,7 @@ import kotlin.test.assertTrue
 class ResizeAnimatableDrawableTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         ResizeAnimatableDrawable(
             AnimatableDrawable(TestAnimatableDrawable1(ColorDrawable(Color.GREEN))),
             Size(100, 500),
@@ -55,7 +56,7 @@ class ResizeAnimatableDrawableTest {
 
             val callback = object : AnimationCallback() {}
             assertFalse(unregisterAnimationCallback(callback))
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             assertTrue(unregisterAnimationCallback(callback))

@@ -34,7 +34,8 @@ import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -77,7 +78,7 @@ class AnimatableDrawableTest {
     }
 
     @Test
-    fun testStartStopIsRunning() {
+    fun testStartStopIsRunning() = runTest {
         val context = getTestContext()
 
         AnimatableDrawable(
@@ -97,7 +98,7 @@ class AnimatableDrawableTest {
                     callbackAction.add("onAnimationEnd")
                 }
             }
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback3)
             }
 
@@ -133,7 +134,7 @@ class AnimatableDrawableTest {
                         callbackAction.add("onAnimationEnd")
                     }
                 }
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     registerAnimationCallback(callback3)
                 }
 
@@ -169,7 +170,7 @@ class AnimatableDrawableTest {
                     callbackAction.add("onAnimationEnd")
                 }
             }
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback3)
             }
 
@@ -189,7 +190,7 @@ class AnimatableDrawableTest {
     }
 
     @Test
-    fun testCallback() {
+    fun testCallback() = runTest {
         val context = getTestContext()
 
         AnimatableDrawable(
@@ -198,11 +199,11 @@ class AnimatableDrawableTest {
             ),
         ).apply {
             val callback = object : Animatable2Compat.AnimationCallback() {}
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             unregisterAnimationCallback(callback)
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             clearAnimationCallbacks()
@@ -216,11 +217,11 @@ class AnimatableDrawableTest {
                 )
             ).apply {
                 val callback = object : Animatable2Compat.AnimationCallback() {}
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     registerAnimationCallback(callback)
                 }
                 unregisterAnimationCallback(callback)
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     registerAnimationCallback(callback)
                 }
                 clearAnimationCallbacks()
@@ -233,11 +234,11 @@ class AnimatableDrawableTest {
             ),
         ).apply {
             val callback = object : Animatable2Compat.AnimationCallback() {}
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             unregisterAnimationCallback(callback)
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             clearAnimationCallbacks()

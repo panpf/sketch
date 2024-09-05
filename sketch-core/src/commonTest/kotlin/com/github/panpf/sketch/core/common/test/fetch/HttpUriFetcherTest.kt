@@ -35,7 +35,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okio.IOException
@@ -302,7 +301,7 @@ class HttpUriFetcherTest {
             request
                 .toRequestContext(sketch, Size.Empty)
         )!!.fetch().getOrThrow()
-        delay(1000)
+        block(1000)
         assertTrue(progressList.size > 0)
         assertEquals(testUri.contentLength, progressList.last())
 
@@ -479,7 +478,7 @@ class HttpUriFetcherTest {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        delay(1000)
+        block(1000)
         assertTrue(progressList.size > 0)
         assertNotNull(progressList.find { it == testUri.contentLength + 1 })
 
@@ -510,7 +509,7 @@ class HttpUriFetcherTest {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        delay(1000)
+        block(1000)
         assertTrue(progressList.size > 0)
         assertNotNull(progressList.find { it == testUri.contentLength + 1 })
 

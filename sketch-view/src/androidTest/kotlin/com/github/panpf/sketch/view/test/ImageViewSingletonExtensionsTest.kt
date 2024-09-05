@@ -30,7 +30,8 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import java.io.File
 import kotlin.test.Test
@@ -41,128 +42,98 @@ import kotlin.test.assertNull
 class ImageViewSingletonExtensionsTest {
 
     @Test
-    fun testLoadImage() {
+    fun testLoadImage() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
         val imageView = activity.imageView
 
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
-        }
+        imageView.loadImage(ResourceImages.jpeg.uri).job.join()
         assertNotNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(Uri.parse(ResourceImages.png.uri)).job.join()
-        }
+        imageView.loadImage(Uri.parse(ResourceImages.png.uri)).job.join()
         assertNotNull(imageView.drawable)
-        runBlocking(Dispatchers.Main) {
-            imageView.setImageDrawable(null)
-        }
+        imageView.setImageDrawable(null)
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(null as Uri?).job.join()
-        }
+        imageView.loadImage(null as Uri?).job.join()
         assertNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher).job.join()
-        }
+        imageView.loadImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher).job.join()
         assertNotNull(imageView.drawable)
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(null as Int?).job.join()
-        }
+        imageView.loadImage(null as Int?).job.join()
         assertNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadResourceImage(com.github.panpf.sketch.test.utils.core.R.drawable.test).job.join()
-        }
+        imageView.loadResourceImage(com.github.panpf.sketch.test.utils.core.R.drawable.test).job.join()
         assertNotNull(imageView.drawable)
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadResourceImage(null).job.join()
-        }
+        imageView.loadResourceImage(null).job.join()
         assertNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadResourceImage(
-                context.packageName,
-                com.github.panpf.sketch.test.utils.core.R.drawable.test
-            ).job.join()
-        }
+        imageView.loadResourceImage(
+            context.packageName,
+            com.github.panpf.sketch.test.utils.core.R.drawable.test
+        ).job.join()
         assertNotNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(ResourceImages.animGif.uri).job.join()
-        }
+        imageView.loadImage(ResourceImages.animGif.uri).job.join()
         assertNotNull(imageView.drawable)
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadAssetImage(null).job.join()
-        }
+        imageView.loadAssetImage(null).job.join()
         assertNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
 
-        val file = runBlocking {
-            sketch.components.newFetcherOrThrow(
+        val file = sketch.components.newFetcherOrThrow(
                 ImageRequest(context, ResourceImages.png.uri).toRequestContext(sketch, Size.Empty)
             ).fetch().getOrThrow().dataSource.getFile(sketch).toFile()
-        }
-        runBlocking {
-            imageView.loadImage(file).job.join()
-        }
+        imageView.loadImage(file).job.join()
         assertNotNull(imageView.drawable)
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(null as File?).job.join()
-        }
+        imageView.loadImage(null as File?).job.join()
         assertNull(imageView.drawable)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.setImageDrawable(null)
         }
         assertNull(imageView.drawable)
-        runBlocking {
-            imageView.loadImage(null as String?).job.join()
-        }
+        imageView.loadImage(null as String?).job.join()
         assertNull(imageView.drawable)
     }
 }

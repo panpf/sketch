@@ -23,7 +23,7 @@ import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -90,7 +90,7 @@ class ContentUriFetcherTest {
     }
 
     @Test
-    fun testFetch() {
+    fun testFetch() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = ContentUriFetcher.Factory()
         val contentUri = "content://sample_app/sample"
@@ -99,9 +99,7 @@ class ContentUriFetcherTest {
             ImageRequest(context, contentUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!
-        val source = runBlocking {
-            fetcher.fetch()
-        }.getOrThrow().dataSource
+        val source = fetcher.fetch().getOrThrow().dataSource
         assertTrue(source is ContentDataSource)
     }
 }

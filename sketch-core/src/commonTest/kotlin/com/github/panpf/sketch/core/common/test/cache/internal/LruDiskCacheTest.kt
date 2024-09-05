@@ -17,12 +17,12 @@
 package com.github.panpf.sketch.core.common.test.cache.internal
 
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newAloneTestDiskCacheDirectory
 import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.md5
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import okio.buffer
@@ -419,7 +419,7 @@ class LruDiskCacheTest {
         assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
-    private suspend fun DiskCache.putFile(fileName: String, sizeMB: Int) {
+    private fun DiskCache.putFile(fileName: String, sizeMB: Int) {
         val sizeBytes = sizeMB * 1024 * 1024
         openEditor(fileName)?.apply {
             try {
@@ -436,6 +436,6 @@ class LruDiskCacheTest {
                 commit()
             }
         }
-        delay(100)   // Waiting to calculate size
+        block(100)   // Waiting to calculate size
     }
 }

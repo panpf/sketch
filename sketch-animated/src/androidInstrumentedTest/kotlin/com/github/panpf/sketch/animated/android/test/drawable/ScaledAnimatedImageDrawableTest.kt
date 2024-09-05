@@ -36,7 +36,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -73,8 +74,8 @@ class ScaledAnimatedImageDrawableTest {
     }
 
     @Test
-    fun testCallback() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+    fun testCallback() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
         val context = getTestContext()
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
@@ -83,14 +84,13 @@ class ScaledAnimatedImageDrawableTest {
             ) as AnimatedImageDrawable
         ).apply {
             val callback = object : Animatable2.AnimationCallback() {}
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 unregisterAnimationCallback(callback)
             }
-
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback)
             }
             clearAnimationCallbacks()
@@ -131,8 +131,8 @@ class ScaledAnimatedImageDrawableTest {
     }
 
     @Test
-    fun testStartStopIsRunning() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+    fun testStartStopIsRunning() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
         val context = getTestContext()
 
         com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(
@@ -152,12 +152,12 @@ class ScaledAnimatedImageDrawableTest {
                     callbackAction.add("onAnimationEnd")
                 }
             }
-            runBlocking(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 registerAnimationCallback(callback3)
             }
 
             assertFalse(isRunning)
-            assertEquals(listOf<String>(), callbackAction)
+            assertEquals(listOf(), callbackAction)
 
             start()
             val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))

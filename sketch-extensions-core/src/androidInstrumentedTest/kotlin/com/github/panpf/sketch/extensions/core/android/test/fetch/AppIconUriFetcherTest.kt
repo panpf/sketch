@@ -29,7 +29,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -181,7 +181,7 @@ class AppIconUriFetcherTest {
     }
 
     @Test
-    fun testFetch() {
+    fun testFetch() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AppIconUriFetcher.Factory()
 
@@ -195,7 +195,7 @@ class AppIconUriFetcherTest {
             ImageRequest(context, appIconUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!
-        (runBlocking { fetcher.fetch() }.getOrThrow().dataSource as DrawableDataSource).apply {
+        (fetcher.fetch().getOrThrow().dataSource as DrawableDataSource).apply {
             assertEquals(DataFrom.LOCAL, dataFrom)
 
             assertEquals(

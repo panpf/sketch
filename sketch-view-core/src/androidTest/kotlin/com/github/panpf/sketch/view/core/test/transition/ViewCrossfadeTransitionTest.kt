@@ -42,8 +42,8 @@ import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import com.github.panpf.tools4j.reflect.ktx.setFieldValue
 import com.github.panpf.tools4j.test.ktx.assertThrow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -113,7 +113,7 @@ class ViewCrossfadeTransitionTest {
         assertEquals(true, imageViewTarget.getFieldValue<Boolean>("isStarted"))
 
         // success
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
@@ -138,7 +138,7 @@ class ViewCrossfadeTransitionTest {
         }
 
         // error
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
@@ -155,7 +155,7 @@ class ViewCrossfadeTransitionTest {
         }
 
         // start end same
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageViewTarget.drawable = ColorDrawable(Color.GREEN)
         }
         assertTrue(imageViewTarget.drawable!! is ColorDrawable)

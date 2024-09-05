@@ -4,11 +4,11 @@ import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.http.OkHttpStack.MyInterceptor
-import com.github.panpf.tools4j.test.ktx.assertThrow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -128,24 +128,18 @@ class OkHttpStackTest {
     }
 
     @Test
-    fun testGetResponse() {
+    fun testGetResponse() = runTest {
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
-        OkHttpStack.Builder().build()
-            .let {
-                runBlocking {
-                    it.getResponse(url, null, null)
-                }
+        OkHttpStack.Builder().build().getResponse(url, null, null).apply {
+            assertEquals(200, code)
+            assertEquals("", message)
+            assertEquals(9904, contentLength)
+            assertEquals("image/png", contentType)
+            assertEquals("image/png", getHeaderField("Content-Type"))
+            content().use {
+                assertNotNull(it)
             }
-            .apply {
-                assertEquals(200, code)
-                assertEquals("", message)
-                assertEquals(9904, contentLength)
-                assertEquals("image/png", contentType)
-                assertEquals("image/png", getHeaderField("Content-Type"))
-                runBlocking { content() }.use {
-                    assertNotNull(it)
-                }
-            }
+        }
 
         OkHttpStack.Builder().apply {
             userAgent("Android 8.1")
@@ -156,26 +150,20 @@ class OkHttpStackTest {
                 add("addHttpHeader1", "setHttpValue1")
                 set("setHttpHeader1", "setHttpValue1")
             }.build()
-            runBlocking {
-                it.getResponse(url, httpHeaders, null)
-            }
+            it.getResponse(url, httpHeaders, null)
         }.apply {
             assertEquals(200, code)
             assertEquals("", message)
             assertEquals(9904, contentLength)
             assertEquals("image/png", contentType)
             assertEquals("image/png", getHeaderField("Content-Type"))
-            runBlocking { content() }.use {
+            content().use {
                 assertNotNull(it)
             }
         }
 
-        assertThrow(IllegalArgumentException::class) {
-            OkHttpStack.Builder().build().let {
-                runBlocking {
-                    it.getResponse("", null, null)
-                }
-            }
+        assertFailsWith(IllegalArgumentException::class) {
+            OkHttpStack.Builder().build().getResponse("", null, null)
         }
     }
 

@@ -20,7 +20,8 @@ import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,7 +47,7 @@ class ViewSizeResolverTest {
     }
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val context = getTestContext()
         val displaySize = context.resources.displayMetrics.let {
             Size(it.widthPixels, it.heightPixels)
@@ -56,7 +57,7 @@ class ViewSizeResolverTest {
             .let { fragment ->
                 assertEquals(RESUMED, fragment.lifecycle.currentState)
 
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
                     assertTrue(
@@ -70,7 +71,7 @@ class ViewSizeResolverTest {
             .let { fragment ->
                 assertEquals(RESUMED, fragment.lifecycle.currentState)
 
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
                     assertEquals(displaySize.width, this.width)
@@ -85,12 +86,12 @@ class ViewSizeResolverTest {
             .let { fragment ->
                 assertEquals(RESUMED, fragment.lifecycle.currentState)
 
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView).size()
                 }.apply {
                     assertEquals(Size(500 - 40, 600 - 60), this)
                 }
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     ViewSizeResolver(fragment.imageView, subtractPadding = false).size()
                 }.apply {
                     assertEquals(Size(500, 600), this)
@@ -101,7 +102,7 @@ class ViewSizeResolverTest {
             .let { fragment ->
                 assertEquals(RESUMED, fragment.lifecycle.currentState)
 
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     val de = async {
                         ViewSizeResolver(fragment.imageView).size()
                     }
@@ -114,7 +115,7 @@ class ViewSizeResolverTest {
                 }
             }
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             ViewSizeResolver(ImageView(context)).size()
         }.apply {
             assertTrue(
@@ -127,7 +128,7 @@ class ViewSizeResolverTest {
             .let { fragment ->
                 assertEquals(RESUMED, fragment.lifecycle.currentState)
 
-                runBlocking(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     val imageView = ImageView(context)
                     val deferred = async {
                         ViewSizeResolver(imageView).size()

@@ -4,7 +4,6 @@ import com.github.panpf.sketch.http.HttpStack
 import okio.Buffer
 import okio.Source
 import okio.Timeout
-import kotlin.time.TimeSource
 
 class SlowSource constructor(
     private val source: Source,
@@ -48,13 +47,4 @@ class SourceContent(private val source: Source) : HttpStack.Content {
 
 fun Source.content(): HttpStack.Content {
     return SourceContent(this)
-}
-
-fun block(millis: Long) {
-    if (millis > 0) {
-        val startTime = TimeSource.Monotonic.markNow()
-        while (startTime.elapsedNow().inWholeMilliseconds < millis) {
-            // Do nothing
-        }
-    }
 }

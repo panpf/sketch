@@ -29,7 +29,8 @@ import com.github.panpf.sketch.drawable.MaskProgressDrawable
 import com.github.panpf.sketch.drawable.RingProgressDrawable
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -39,13 +40,13 @@ import kotlin.test.assertTrue
 class ProgressIndicatorAbilityTest {
 
     @Test
-    fun testShowProgressIndicator() {
+    fun testShowProgressIndicator() = runTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val imageView = SketchImageView(context)
 
         assertFalse(imageView.isShowProgressIndicator)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.showSectorProgressIndicator()
         }
         assertTrue(imageView.isShowProgressIndicator)
@@ -54,12 +55,12 @@ class ProgressIndicatorAbilityTest {
                 assertTrue(this.progressDrawable is SectorProgressDrawable)
             }
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.removeProgressIndicator()
         }
         assertFalse(imageView.isShowProgressIndicator)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.showMaskProgressIndicator()
         }
         assertTrue(imageView.isShowProgressIndicator)
@@ -68,12 +69,12 @@ class ProgressIndicatorAbilityTest {
                 assertTrue(this.progressDrawable is MaskProgressDrawable)
             }
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.removeProgressIndicator()
         }
         assertFalse(imageView.isShowProgressIndicator)
 
-        runBlocking(Dispatchers.Main) {
+        withContext(Dispatchers.Main) {
             imageView.showRingProgressIndicator()
         }
         assertTrue(imageView.isShowProgressIndicator)
