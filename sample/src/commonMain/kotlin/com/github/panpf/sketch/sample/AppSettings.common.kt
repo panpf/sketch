@@ -4,6 +4,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.resize.LongImagePrecisionDecider
+import com.github.panpf.sketch.resize.LongImageScaleDecider
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -82,4 +86,23 @@ expect class AppSettings constructor(context: PlatformContext) {
     val currentPageIndex: SettingsStateFlow<Int>
 
     val pagerGuideShowed: SettingsStateFlow<Boolean>
+}
+
+fun buildPrecision(precisionName: String): PrecisionDecider {
+    return if (precisionName == "LongImageMode") {
+        LongImagePrecisionDecider(longImage = SAME_ASPECT_RATIO)
+    } else {
+        PrecisionDecider(Precision.valueOf(precisionName))
+    }
+}
+
+fun buildScale(scaleName: String, longImageScale: Scale, otherImageScale: Scale): ScaleDecider {
+    return if (scaleName == "LongImageMode") {
+        LongImageScaleDecider(
+            longImage = longImageScale,
+            otherImage = otherImageScale
+        )
+    } else {
+        ScaleDecider(Scale.valueOf(value = scaleName))
+    }
 }

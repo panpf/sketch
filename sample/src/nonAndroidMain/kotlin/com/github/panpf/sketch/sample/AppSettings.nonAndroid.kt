@@ -6,10 +6,6 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.resize.LongImagePrecisionDecider
-import com.github.panpf.sketch.resize.LongImageScaleDecider
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -66,11 +62,7 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
         stringSettingsStateFlow(context, "precision1", "LongImageMode")
     }
     actual val precision: StateFlow<PrecisionDecider> = precisionName.stateMap {
-        if (it == "LongImageMode") {
-            LongImagePrecisionDecider(longImage = SAME_ASPECT_RATIO)
-        } else {
-            PrecisionDecider(Precision.valueOf(it))
-        }
+        buildPrecision(it)
     }
 
     actual val scaleName: SettingsStateFlow<String> by lazy {
@@ -97,14 +89,7 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
             val scaleName: String = it[0] as String
             val longImageScale: Scale = it[1] as Scale
             val otherImageScale: Scale = it[2] as Scale
-            if (scaleName == "LongImageMode") {
-                LongImageScaleDecider(
-                    longImage = longImageScale,
-                    otherImage = otherImageScale
-                )
-            } else {
-                ScaleDecider(Scale.valueOf(value = scaleName))
-            }
+            buildScale(scaleName, longImageScale, otherImageScale)
         }
 
     actual val saveCellularTrafficInList: SettingsStateFlow<Boolean> by lazy {

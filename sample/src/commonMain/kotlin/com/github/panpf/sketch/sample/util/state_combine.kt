@@ -25,6 +25,7 @@ inline fun <reified T, R> stateCombine(
         get() = transform(sources.map { it.value }.toTypedArray())
 
     override suspend fun collect(collector: FlowCollector<R>): Nothing = coroutineScope {
+        // TODO collectAsState in compose will cause UI lag
         suspendCancellableCoroutine<Nothing> { continuation ->
             val flow: Flow<R> = combine(flows = sources, transform)
             val job = launch {

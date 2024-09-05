@@ -39,6 +39,7 @@ import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.buildScale
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
@@ -179,9 +180,37 @@ class MyListImageView @JvmOverloads constructor(
         listenSettings(appSettings.precision) { precision ->
             precision(precision)
         }
-        listenSettings(appSettings.scale) { scale ->
-            scale(scale)
+
+        listenSettings(appSettings.scaleName) {
+            scale(
+                buildScale(
+                    appSettings.scaleName.value,
+                    appSettings.longImageScale.value,
+                    appSettings.otherImageScale.value
+                )
+            )
         }
+        listenSettings(appSettings.longImageScale) {
+            scale(
+                buildScale(
+                    appSettings.scaleName.value,
+                    appSettings.longImageScale.value,
+                    appSettings.otherImageScale.value
+                )
+            )
+        }
+        listenSettings(appSettings.otherImageScale) {
+            scale(
+                buildScale(
+                    appSettings.scaleName.value,
+                    appSettings.longImageScale.value,
+                    appSettings.otherImageScale.value
+                )
+            )
+        }
+//        listenSettings(appSettings.scale) { scale ->
+//            scale(scale)
+//        }
 
         listenSettings(appSettings.disallowAnimatedImageInList) { disallowAnimatedImage ->
             disallowAnimatedImage(disallowAnimatedImage)
