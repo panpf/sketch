@@ -51,6 +51,7 @@ import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.platformLogPipeline
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
@@ -63,6 +64,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import okio.FileSystem
 
 /**
@@ -208,7 +210,13 @@ class Sketch private constructor(options: Options) {
     suspend fun executeDownload(request: ImageRequest): Result<DownloadData> = kotlin.runCatching {
         val requestContext = RequestContext(this, request, Size.Empty)
         val fetcher = components.newFetcherOrThrow(requestContext)
-        val fetchResultResult = fetcher.fetch()
+        val fetchResultResult = if (!isMainThread()) {
+            fetcher.fetch()
+        } else {
+            withContext(ioCoroutineDispatcher()) {
+                fetcher.fetch()
+            }
+        }
         val fetchResult = fetchResultResult.getOrThrow()
         @Suppress("MoveVariableDeclarationIntoWhen") val dataSource = fetchResult.dataSource
         when (dataSource) {
