@@ -26,7 +26,8 @@ import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.toRequestContextSync
+import com.github.panpf.sketch.test.utils.toRequestContext
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,7 +39,7 @@ import kotlin.test.assertNull
 class VideoFrameExtensionsTest {
 
     @Test
-    fun testVideoFrameMicros() {
+    fun testVideoFrameMicros() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.mp4.uri).apply {
@@ -124,15 +125,15 @@ class VideoFrameExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 = ImageRequest(context, ResourceImages.mp4.uri)
-            .toRequestContextSync(sketch).cacheKey
+            .toRequestContext(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.mp4.uri) {
             videoFrameMillis(500)
-        }.toRequestContextSync(sketch).cacheKey
+        }.toRequestContext(sketch).cacheKey
         assertNotEquals(cacheKey1, cacheKey2)
     }
 
     @Test
-    fun testVideoPercent() {
+    fun testVideoPercent() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.mp4.uri).apply {
@@ -218,15 +219,15 @@ class VideoFrameExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.mp4.uri).toRequestContextSync(sketch).cacheKey
+            ImageRequest(context, ResourceImages.mp4.uri).toRequestContext(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.mp4.uri) {
             videoFramePercent(0.45f)
-        }.toRequestContextSync(sketch).cacheKey
+        }.toRequestContext(sketch).cacheKey
         assertNotEquals(cacheKey1, cacheKey2)
     }
 
     @Test
-    fun testVideoOption() {
+    fun testVideoOption() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.mp4.uri).apply {
@@ -352,10 +353,10 @@ class VideoFrameExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.mp4.uri).toRequestContextSync(sketch).cacheKey
+            ImageRequest(context, ResourceImages.mp4.uri).toRequestContext(sketch).cacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
-        }.toRequestContextSync(sketch).cacheKey
+        }.toRequestContext(sketch).cacheKey
         assertNotEquals(cacheKey1, cacheKey2)
     }
 }

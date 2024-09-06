@@ -9,6 +9,7 @@ import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.FakeDecoder
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -19,7 +20,6 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Size
@@ -127,8 +127,7 @@ class ComponentsTest {
 
     @Test
     fun testNewFetcher() {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         Components(ComponentRegistry()).apply {
             assertFailsWith(IllegalArgumentException::class) {
@@ -233,8 +232,7 @@ class ComponentsTest {
 
     @Test
     fun testNewDecoder() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         Components(ComponentRegistry {
             addFetcher(FileUriFetcher.Factory())

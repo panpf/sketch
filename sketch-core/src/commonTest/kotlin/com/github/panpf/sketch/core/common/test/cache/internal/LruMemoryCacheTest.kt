@@ -22,9 +22,9 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createCacheValue
 import com.github.panpf.sketch.test.utils.createImage
-import com.github.panpf.sketch.test.utils.newSketch
 import com.github.panpf.sketch.util.formatFileSize
 import kotlin.math.roundToLong
 import kotlin.test.Test
@@ -103,7 +103,7 @@ class LruMemoryCacheTest {
 
     @Test
     fun testLRU() {
-        val sketch = newSketch()
+        val sketch = getTestContextAndSketch().second
         LruMemoryCache(
             maxSize = 10L * 1024 * 1024,
             valueLimitedSize = (10L * 1024 * 1024 * 0.8f).roundToLong()

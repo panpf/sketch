@@ -20,42 +20,33 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.util.Logger
+import com.github.panpf.sketch.util.appCacheDirectory
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import okio.Path
 
 expect fun getTestContext(): PlatformContext
 
-// TODO No longer use
-fun newSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Sketch {
+// TODO Change to use the newly created Sketch in the block,
+//  and automatically clear the downloadCache and resultCache after the block ends to
+//  prevent more and more junk files from being generated.
+fun getTestContextAndNewSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Pair<PlatformContext, Sketch> {
     val context = getTestContext()
-    return Sketch.Builder(context).apply {
+    val newSketch = Sketch.Builder(context).apply {
         logger(level = Logger.Level.Verbose)
         val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         block.invoke(this, context)
     }.build()
-}
-
-// TODO No longer use
-fun newSketch(): Sketch {
-    return newSketch {}
-}
-
-// TODO Change to use the newly created Sketch in the block, and automatically clear the downloadCache and resultCache after the block ends to prevent more and more junk files from being generated.
-fun getTestContextAndNewSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Pair<PlatformContext, Sketch> {
-    val context = getTestContext()
-    return context to newSketch(block)
+    return context to newSketch
 }
 
 var sketchCount = 0
 val sketchCountLock = SynchronizedObject()
 
 fun PlatformContext.newAloneTestDiskCacheDirectory(): Path? {
-    val testDiskCacheDirectory = getTestDiskCacheDirectory() ?: return null
+    val testDiskCacheDirectory = appCacheDirectory() ?: return null
     val newSketchCount = synchronized(sketchCountLock) { sketchCount++ }
     return testDiskCacheDirectory.resolve("test_alone_${newSketchCount}")
 }
-
-expect fun PlatformContext.getTestDiskCacheDirectory(): Path?

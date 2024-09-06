@@ -49,7 +49,7 @@ import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.newSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.target
@@ -83,9 +83,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDepth() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch {
-            httpStack(TestHttpStack(context))
+        val (context, sketch) = getTestContextAndNewSketch {
+            httpStack(TestHttpStack(it))
         }
         val imageUri = TestHttpStack.testImages.first().uri
 
@@ -175,9 +174,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDownloadCachePolicy() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch {
-            httpStack(TestHttpStack(context))
+        val (context, sketch) = getTestContextAndNewSketch {
+            httpStack(TestHttpStack(it))
         }
         val diskCache = sketch.downloadCache
         val imageUri = TestHttpStack.testImages.first().uri
@@ -705,7 +703,7 @@ class ImageRequestExecuteTest {
         assertNotEquals(exactlyEndCropBitmap!!.corners(), exactlyFillCropBitmap!!.corners())
 
         // origin
-        var size1: Size? = null
+        var size1: Size?
         ImageRequest(context, ResourceImages.longQMSHT.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
@@ -740,8 +738,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTransformations() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
@@ -833,8 +830,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResultCachePolicy() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val diskCache = sketch.resultCache
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
@@ -941,8 +937,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testPlaceholder() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         var onStartImage: Image?
         val request = ImageRequest(context, imageUri) {
@@ -984,8 +979,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testError() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         var onErrorImage: Image?
         val request = ImageRequest(context, imageUri) {
@@ -1037,8 +1031,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTransition() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val testTarget = TestTransitionTarget()
         val request = ImageRequest(context, imageUri) {
@@ -1078,8 +1071,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResizeOnDraw() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
@@ -1117,8 +1109,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testMemoryCachePolicy() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
@@ -1226,13 +1217,12 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testListener() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val errorImageUri = ResourceImages.jpeg.uri + ".fake"
 
         ListenerSupervisor().let { listenerSupervisor ->
-            assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
+            assertEquals(listOf(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, imageUri) {
                 registerListener(listenerSupervisor)
@@ -1246,7 +1236,7 @@ class ImageRequestExecuteTest {
         }
 
         ListenerSupervisor().let { listenerSupervisor ->
-            assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
+            assertEquals(listOf(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, errorImageUri) {
                 registerListener(listenerSupervisor)
@@ -1275,14 +1265,13 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testProgressListener() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch {
-            httpStack(TestHttpStack(context, 20))
+        val (context, sketch) = getTestContextAndNewSketch {
+            httpStack(TestHttpStack(it, 20))
         }
         val testImage = TestHttpStack.testImages.first()
 
         ProgressListenerSupervisor().let { listenerSupervisor ->
-            assertEquals(listOf<String>(), listenerSupervisor.callbackActionList)
+            assertEquals(listOf(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, testImage.uri) {
                 memoryCachePolicy(DISABLED)
@@ -1373,8 +1362,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTarget() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         TestTarget().let { testTarget ->
             assertNull(testTarget.startImage)
@@ -1454,8 +1442,7 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testLifecycle() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
         val lifecycle = TestLifecycle()
         withContext(Dispatchers.Main) {
             lifecycle.currentState = CREATED

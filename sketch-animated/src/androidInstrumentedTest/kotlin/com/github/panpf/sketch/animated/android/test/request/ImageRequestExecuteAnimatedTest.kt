@@ -28,8 +28,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrNull
-import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.newSketch
+import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -42,12 +41,11 @@ class ImageRequestExecuteAnimatedTest {
     fun testDisallowAnimatedImage() = runTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
-        val context = getTestContext()
-        val sketch = newSketch {
+        val (context, sketch) = getTestContextAndNewSketch {
             components {
                 addDecoder(GifAnimatedDecoder.Factory())
             }
-            httpStack(TestHttpStack(context))
+            httpStack(TestHttpStack(it))
         }
         val imageUri = ResourceImages.animGif.uri
         val request = ImageRequest(context, imageUri)

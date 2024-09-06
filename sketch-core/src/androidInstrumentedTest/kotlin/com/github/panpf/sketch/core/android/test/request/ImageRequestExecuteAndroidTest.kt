@@ -37,8 +37,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
-import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.newSketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -51,8 +50,7 @@ class ImageRequestExecuteAndroidTest {
 
     @Test
     fun testBitmapConfig() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
@@ -178,8 +176,7 @@ class ImageRequestExecuteAndroidTest {
     fun testColorSpace() = runTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return@runTest
 
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
@@ -219,8 +216,7 @@ class ImageRequestExecuteAndroidTest {
 
     @Test
     fun testPreferQualityOverSpeed() = runTest {
-        val context = getTestContext()
-        val sketch = newSketch()
+        val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
