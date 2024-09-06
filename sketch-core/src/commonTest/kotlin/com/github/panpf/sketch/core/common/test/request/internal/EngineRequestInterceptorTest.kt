@@ -25,7 +25,9 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -40,11 +42,14 @@ class EngineRequestInterceptorTest {
         }
 
         val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
-            RequestInterceptorChain(
+            val chain = RequestInterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = listOf(EngineRequestInterceptor()),
                 index = 0,
-            ).proceed(request).getOrThrow()
+            )
+            withContext(Dispatchers.Main) {
+                chain.proceed(request)
+            }.getOrThrow()
         }
 
         executeRequest(ImageRequest(context, ResourceImages.jpeg.uri)).asOrThrow<ImageData>()

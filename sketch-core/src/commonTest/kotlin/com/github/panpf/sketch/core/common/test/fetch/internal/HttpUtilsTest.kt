@@ -3,10 +3,10 @@ package com.github.panpf.sketch.core.common.test.fetch.internal
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.content
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.slow
 import kotlinx.coroutines.test.runTest
 import okio.Buffer
@@ -20,7 +20,7 @@ class HttpUtilsTest {
 
     @Test
     fun testWriteAllWithProgress() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
+        val context = getTestContext()
         val string = "abcdefghijklmnopqrstuvwxyz"
         val progressListener = ProgressListenerSupervisor()
 
@@ -30,9 +30,9 @@ class HttpUtilsTest {
         buffer.use { sink ->
             Buffer().writeUtf8(string).slow(100).content().use { content ->
                 writeAllWithProgress(
+                    coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
-                    sketch = sketch,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                         registerProgressListener(progressListener)
                     },
@@ -51,9 +51,9 @@ class HttpUtilsTest {
         buffer2.use { sink ->
             Buffer().writeUtf8(string).slow(100).content().use { content ->
                 writeAllWithProgress(
+                    coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
-                    sketch = sketch,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg"),
                     contentLength = string.length.toLong(),
                     bufferSize = ceil(string.length / 3f).toInt(),
@@ -70,9 +70,9 @@ class HttpUtilsTest {
         buffer3.use { sink ->
             Buffer().writeUtf8(string).slow(100).buffer().content().use { content ->
                 writeAllWithProgress(
+                    coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
-                    sketch = sketch,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                         registerProgressListener(progressListener)
                     },
@@ -91,9 +91,9 @@ class HttpUtilsTest {
         buffer4.use { sink ->
             Buffer().writeUtf8(string).slow(readDelayMillis = 400).content().use { content ->
                 writeAllWithProgress(
+                    coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
-                    sketch = sketch,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                         registerProgressListener(progressListener)
                     },

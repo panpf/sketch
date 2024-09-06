@@ -46,24 +46,21 @@ class RequestExecutorTest {
         val (context, sketch) = getTestContextAndSketch()
 
         withContext(Dispatchers.Main) {
-            RequestExecutor().execute(
-                sketch,
+            RequestExecutor(sketch).execute(
                 ImageRequest(context, ResourceImages.jpeg.uri),
                 false
             ).apply {
                 assertTrue(this is ImageResult.Success)
             }
 
-            RequestExecutor().execute(
-                sketch,
+            RequestExecutor(sketch).execute(
                 ImageRequest(context, ""),
                 false
             ).apply {
                 assertTrue(this is ImageResult.Error)
             }
 
-            RequestExecutor().execute(
-                sketch,
+            RequestExecutor(sketch).execute(
                 ImageRequest(context, "  "),
                 false
             ).apply {
@@ -82,7 +79,7 @@ class RequestExecutorTest {
             assertEquals(SizeResolver(context.screenSize()), sizeResolver)
         }
         withContext(Dispatchers.Main) {
-            RequestExecutor().execute(sketch, request, false).apply {
+            RequestExecutor(sketch).execute(request, false).apply {
                 assertEquals(Depth.NETWORK, this.request.depthHolder.depth)
                 assertEquals(CachePolicy.ENABLED, this.request.downloadCachePolicy)
                 assertEquals(SizeResolver(context.screenSize()), this.request.sizeResolver)
@@ -102,7 +99,7 @@ class RequestExecutorTest {
             assertEquals(SizeResolver(context.screenSize()), sizeResolver)
         }
         withContext(Dispatchers.Main) {
-            RequestExecutor().execute(sketch2, request2, false).apply {
+            RequestExecutor(sketch2).execute(request2, false).apply {
                 assertEquals(MEMORY, this.request.depthHolder.depth)
                 assertEquals(WRITE_ONLY, this.request.downloadCachePolicy)
                 assertTrue(this.request.sizeResolver is FixedSizeResolver)
