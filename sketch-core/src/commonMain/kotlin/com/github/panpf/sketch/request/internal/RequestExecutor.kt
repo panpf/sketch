@@ -40,18 +40,14 @@ import kotlin.coroutines.coroutineContext
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.RequestExecutorTest
  */
-class RequestExecutor {
+class RequestExecutor constructor(val sketch: Sketch) {
 
     companion object {
         private const val URI_EMPTY_MESSAGE = "Request uri is empty or blank"
     }
 
     @MainThread
-    suspend fun execute(
-        sketch: Sketch,
-        request: ImageRequest,
-        enqueue: Boolean
-    ): ImageResult {
+    suspend fun execute(request: ImageRequest, enqueue: Boolean): ImageResult {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.

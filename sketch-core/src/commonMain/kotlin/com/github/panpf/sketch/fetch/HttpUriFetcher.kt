@@ -36,6 +36,7 @@ import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.requiredWorkThread
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import okio.Buffer
@@ -126,16 +127,17 @@ class HttpUriFetcher(
             }
 
             // Save to download cache
+            val coroutineScope: CoroutineScope = this@withContext
             val mimeType = getMimeType(url, response.contentType)
             if (request.downloadCachePolicy.writeEnabled) {
-                val result = writeCache(response, mimeType)
+                val result = writeCache(coroutineScope, response, mimeType)
                 if (result != null) {
                     return@withContext result
                 }
             }
 
             // Save to ByteArray
-            val result = readBytes(response, mimeType)
+            val result = readBytes(coroutineScope, response, mimeType)
             return@withContext result
         }
     }
@@ -178,6 +180,7 @@ class HttpUriFetcher(
     }
 
     private suspend fun writeCache(
+        coroutineScope: CoroutineScope,
         response: Response,
         mimeType: String?
     ): Result<FetchResult>? {
@@ -189,7 +192,7 @@ class HttpUriFetcher(
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
                 downloadCache.fileSystem.sink(editor.data).buffer().use { sink ->
-                    writeAllWithProgress(sink, content, sketch, request, contentLength)
+                    writeAllWithProgress(coroutineScope, sink, content, request, contentLength)
                 }
             }
             // 'Transform-Encoding: chunked' contentLength is -1
@@ -231,13 +234,14 @@ class HttpUriFetcher(
     }
 
     private suspend fun readBytes(
+        coroutineScope: CoroutineScope,
         response: Response,
         mimeType: String?
     ): Result<FetchResult> {
         val contentLength = response.contentLength
         val buffer = Buffer()
         val readLength = response.content().use { content ->
-            writeAllWithProgress(buffer, content, sketch, request, contentLength)
+            writeAllWithProgress(coroutineScope, buffer, content, request, contentLength)
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =

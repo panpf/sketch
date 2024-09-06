@@ -86,8 +86,13 @@ import okio.FileSystem
  */
 class Sketch private constructor(options: Options) {
 
-    private val requestExecutor = RequestExecutor()
+    private val requestExecutor = RequestExecutor(this)
     private val isShutdown = atomic(false)
+    private val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
+            logger.e(throwable, "CoroutineScope. An uncaught exception")
+        }
+    )
 
     /** Application Context */
     val context: PlatformContext = options.context.application
@@ -138,12 +143,6 @@ class Sketch private constructor(options: Options) {
             ?: dispatcher
     }
 
-    internal val scope = CoroutineScope(
-        SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
-            logger.e(throwable, "CoroutineScope. An uncaught exception")
-        }
-    )
-
     init {
         checkPlatformContext(context)
         systemCallbacks.register()
@@ -177,7 +176,7 @@ class Sketch private constructor(options: Options) {
     @AnyThread
     fun enqueue(request: ImageRequest): Disposable {
         val job = scope.async {
-            requestExecutor.execute(this@Sketch, request, enqueue = true)
+            requestExecutor.execute(request, enqueue = true)
         }
         // Update the current request attached to the view and return a new disposable.
         val requestManager = request.target?.getRequestManager()
@@ -194,7 +193,7 @@ class Sketch private constructor(options: Options) {
      */
     suspend fun execute(request: ImageRequest): ImageResult = coroutineScope {
         val job = async(Dispatchers.Main.immediate) {
-            requestExecutor.execute(this@Sketch, request, enqueue = false)
+            requestExecutor.execute(request, enqueue = false)
         }
         // Update the current request attached to the view and await the result.
         val requestManager = request.target?.getRequestManager()

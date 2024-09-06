@@ -16,13 +16,12 @@
 
 package com.github.panpf.sketch.fetch.internal
 
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack.Content
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
 import com.github.panpf.sketch.util.MimeTypeMap
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
 import okio.BufferedSink
 import okio.IOException
@@ -37,24 +36,22 @@ import kotlin.time.TimeSource.Monotonic.ValueTimeMark
  */
 @Throws(IOException::class, CancellationException::class)
 internal suspend fun writeAllWithProgress(
+    coroutineScope: CoroutineScope,
     sink: BufferedSink,
     content: Content,
-    sketch: Sketch,
     request: ImageRequest,
     contentLength: Long,
     bufferSize: Int = 1024 * 8,
-): Long = coroutineScope {  // for access isActive
+): Long {
     var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
     var bytes = content.read(buffer)
     var lastTimeMark: ValueTimeMark? = null
     val progressListenerDelegate = request.progressListener?.let {
-        // This@coroutineScope cannot be used, it will cause all download tasks to be completed before returning to the decoding task
-        // This is because coroutineScope will wait for all sub-coroutines to complete before returning
-        ProgressListenerDelegate(sketch.scope, it)
+        ProgressListenerDelegate(coroutineScope, it)
     }
     var lastUpdateProgressBytesCopied = 0L
-    while (bytes >= 0 && isActive) {
+    while (bytes >= 0 && coroutineScope.isActive) {
         sink.write(buffer, 0, bytes)
         bytesCopied += bytes
         if (progressListenerDelegate != null && contentLength > 0) {
@@ -70,7 +67,7 @@ internal suspend fun writeAllWithProgress(
         }
         bytes = content.read(buffer)
     }
-    if (!isActive) {
+    if (!coroutineScope.isActive) {
         throw CancellationException("Canceled")
     }
     if (progressListenerDelegate != null
@@ -79,7 +76,7 @@ internal suspend fun writeAllWithProgress(
     ) {
         progressListenerDelegate.onUpdateProgress(request, contentLength, bytesCopied)
     }
-    return@coroutineScope bytesCopied
+    return bytesCopied
 }
 
 /**
