@@ -20,7 +20,6 @@ package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
-import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.ClassLoaderResourceLoader
 import okio.Path
 import okio.Source
@@ -38,7 +37,7 @@ class KotlinResourceDataSource constructor(
 
     override val key: String by lazy { newKotlinResourceUri(resourcePath) }
 
-    override val dataFrom: DataFrom = LOCAL
+    override val dataFrom: DataFrom = DataFrom.LOCAL
 
     @Throws(IOException::class)
     override fun openSource(): Source =

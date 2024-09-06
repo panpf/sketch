@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.source.DataFrom
@@ -74,7 +76,7 @@ interface FetchResult {
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest
  */
-open class FetchResultImpl constructor(
+data class FetchResultImpl constructor(
     override val dataSource: DataSource,
     override val mimeType: String?
 ) : FetchResult {
@@ -96,5 +98,5 @@ open class FetchResultImpl constructor(
         }
     }
 
-    override fun toString(): String = "FetchResult(source=$dataSource,mimeType='$mimeType')"
+    override fun toString(): String = "FetchResult(source=$dataSource, mimeType='$mimeType')"
 }
