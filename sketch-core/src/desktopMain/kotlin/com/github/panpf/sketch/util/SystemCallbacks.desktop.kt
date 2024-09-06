@@ -18,27 +18,20 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Sketch
 import kotlinx.atomicfu.atomic
-import java.lang.management.ManagementFactory
-import java.lang.management.MemoryNotificationInfo
-import java.lang.management.MemoryType
-import javax.management.NotificationEmitter
-import javax.management.NotificationListener
-import kotlin.math.roundToLong
 
 /**
  * Create an instance of [SystemCallbacks] for desktop platforms
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testSystemCallbacks
  */
-internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks =
-    DesktopSystemCallbacks(sketch)
+internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = DesktopSystemCallbacks()
 
 /**
  * Noop implementation of [SystemCallbacks]
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testDesktopSystemCallbacks
  */
-private class DesktopSystemCallbacks(val sketch: Sketch) : SystemCallbacks {
+private class DesktopSystemCallbacks : SystemCallbacks {
 
     // TODO Implement network type detection for desktop platforms.
     //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
@@ -47,31 +40,12 @@ private class DesktopSystemCallbacks(val sketch: Sketch) : SystemCallbacks {
     private val _isShutdown = atomic(false)
     override var isShutdown: Boolean by _isShutdown
 
-    private val listener = NotificationListener { notification, _ ->
-        if (notification.type == MemoryNotificationInfo.MEMORY_THRESHOLD_EXCEEDED) {
-            sketch.memoryCache.clear()
-        }
-    }
-    private val oldGenPool by lazy {
-        ManagementFactory.getMemoryPoolMXBeans()
-            .find { it.type == MemoryType.HEAP && it.name.contains("Old") }
-    }
-
+    // TODO Listen for memory-pressure events to trim the memory cache on desktop platforms.
     override fun register() {
-        val oldGenPool = oldGenPool
-        if (oldGenPool != null) {
-            oldGenPool.usageThreshold = (oldGenPool.usage.max * 0.8).roundToLong()
-            val emitter = oldGenPool as NotificationEmitter
-            emitter.addNotificationListener(listener, null, null)
-        }
+
     }
 
     override fun shutdown() {
         if (_isShutdown.getAndSet(true)) return
-        val oldGenPool = oldGenPool
-        if (oldGenPool != null) {
-            val emitter = oldGenPool as NotificationEmitter
-            emitter.removeNotificationListener(listener)
-        }
     }
 }

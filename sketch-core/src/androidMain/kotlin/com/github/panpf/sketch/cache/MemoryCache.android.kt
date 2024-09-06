@@ -18,25 +18,35 @@ package com.github.panpf.sketch.cache
 
 import android.app.ActivityManager
 import android.content.Context
-import android.os.Build
+import android.content.pm.ApplicationInfo
 import com.github.panpf.sketch.PlatformContext
+import kotlin.math.roundToLong
 
 
 /**
- * Return the default percent of the application's total memory to use for the memory cache.
+ * Returns the default memory cache size
  *
- * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testDefaultMemoryCacheSize
  */
-internal actual fun PlatformContext.defaultMemoryCacheSizePercent(): Double {
+internal actual fun PlatformContext.defaultMemoryCacheSize(): Long {
     val standardMemoryPercent = 0.30
     val lowMemoryPercent = 0.20
-    return try {
+    var memoryPercent: Double
+    var memoryClassMegabytes: Int
+    try {
         val activityManager =
             getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val isLowRamDevice =
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || activityManager.isLowRamDevice
-        if (isLowRamDevice) lowMemoryPercent else standardMemoryPercent
-    } catch (_: Exception) {
-        standardMemoryPercent
+        val isLargeHeap =
+            (applicationInfo.flags and ApplicationInfo.FLAG_LARGE_HEAP) != 0
+        memoryClassMegabytes =
+            if (isLargeHeap) activityManager.largeMemoryClass else activityManager.memoryClass
+        memoryPercent =
+            if (activityManager.isLowRamDevice) lowMemoryPercent else standardMemoryPercent
+    } catch (e: Throwable) {
+        e.printStackTrace()
+        memoryClassMegabytes = 128
+        memoryPercent = standardMemoryPercent
     }
+    val maxMemory = memoryClassMegabytes * 1024L * 1024L
+    return (maxMemory * memoryPercent).roundToLong()
 }

@@ -19,7 +19,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: Decoder's decode() method removes the suspend modifier and changes the return type from
   Result<DecodeResult> to DecodeResult
 * change: Transformation's transform() method removes the suspend modifier
-* improve: Desktop platforms now use 20% of Runtime.maxMemory() as the memory cache maximum
+* change: The default memory cache size is now 256MB for desktop and web platforms and 128MB for ios
+  platforms
 
 # 4.0.0-alpha08
 
