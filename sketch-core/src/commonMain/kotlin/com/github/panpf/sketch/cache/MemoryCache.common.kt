@@ -22,7 +22,7 @@ import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.util.totalAvailableMemoryBytes
+import com.github.panpf.sketch.util.maxMemory
 import kotlin.math.roundToLong
 
 /**
@@ -132,7 +132,7 @@ interface MemoryCache {
          * available memory.
          */
         fun maxSizePercent(
-            percent: Double = context.platformDefaultMemoryCacheSizePercent()
+            percent: Double = context.defaultMemoryCacheSizePercent()
         ) = apply {
             require(percent in 0.1..1.0) { "percent must be in the range [0.1, 1.0]." }
             this.maxSizePercent = percent
@@ -144,10 +144,10 @@ interface MemoryCache {
             val finalMaxSizeBytes = if (maxSizeBytes != null) {
                 maxSizeBytes
             } else {
-                val totalAvailableMemoryBytes = context.totalAvailableMemoryBytes()
+                val maxMemory = context.maxMemory()
                 val finalMaxSizePercent =
-                    maxSizePercent ?: context.platformDefaultMemoryCacheSizePercent()
-                (totalAvailableMemoryBytes * finalMaxSizePercent).roundToLong()
+                    maxSizePercent ?: context.defaultMemoryCacheSizePercent()
+                (maxMemory * finalMaxSizePercent).roundToLong()
             }
             return LruMemoryCache(finalMaxSizeBytes)
         }
@@ -157,10 +157,12 @@ interface MemoryCache {
 /**
  * Return the default percent of the application's total memory to use for the memory cache.
  *
- * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testPlatformDefaultMemoryCacheSizePercent
- * @see com.github.panpf.sketch.core.nonandroid.test.cache.MemoryCacheNonAndroidTest.testPlatformDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.desktop.test.cache.MemoryCacheDesktopTest.testDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.ios.test.cache.MemoryCacheIosTest.testDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.jscommon.test.cache.MemoryCacheJsCommonTest.testDefaultMemoryCacheSizePercent
  */
-internal expect fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double
+internal expect fun PlatformContext.defaultMemoryCacheSizePercent(): Double
 
 /**
  * Memory cache key

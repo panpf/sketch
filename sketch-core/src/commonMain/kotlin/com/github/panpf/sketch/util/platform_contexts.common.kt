@@ -30,10 +30,12 @@ expect val PlatformContext.application: PlatformContext
 /**
  * Return the application's total memory in bytes.
  *
- * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testTotalAvailableMemoryBytes
- * @see com.github.panpf.sketch.core.nonandroid.test.util.PlatformContextsNonAndroidTest.testTotalAvailableMemoryBytes
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testMaxMemory
+ * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testMaxMemory
+ * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testMaxMemory
+ * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testMaxMemory
  */
-expect fun PlatformContext.totalAvailableMemoryBytes(): Long
+expect fun PlatformContext.maxMemory(): Long
 
 /**
  * Return the application's cache directory.

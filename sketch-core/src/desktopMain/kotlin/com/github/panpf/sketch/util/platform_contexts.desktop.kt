@@ -24,6 +24,15 @@ import okio.Path.Companion.toPath
 import java.io.File
 
 /**
+ * Return the application's total memory in bytes.
+ *
+ * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testMaxMemory
+ */
+actual fun PlatformContext.maxMemory(): Long {
+    return Runtime.getRuntime().maxMemory()
+}
+
+/**
  * Return the application's cache directory.
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testAppCacheDirectory

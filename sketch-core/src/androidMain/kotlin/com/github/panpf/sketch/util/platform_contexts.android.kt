@@ -31,14 +31,12 @@ import okio.Path.Companion.toOkioPath
 actual val PlatformContext.application: PlatformContext
     get() = applicationContext
 
-private const val DEFAULT_MEMORY_CLASS_MEGABYTES = 128
-
 /**
  * Return the application's total memory in bytes.
  *
- * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testTotalAvailableMemoryBytes
+ * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testMaxMemory
  */
-actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
+actual fun PlatformContext.maxMemory(): Long {
     val memoryClassMegabytes = try {
         val activityManager =
             getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -47,7 +45,7 @@ actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
         if (isLargeHeap) activityManager.largeMemoryClass else activityManager.memoryClass
     } catch (e: Throwable) {
         e.printStackTrace()
-        DEFAULT_MEMORY_CLASS_MEGABYTES
+        128
     }
     return memoryClassMegabytes * 1024L * 1024L
 }

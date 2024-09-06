@@ -8,9 +8,4 @@ class PlatformContextsNonAndroidTest {
     fun testApplication() {
         // TODO test
     }
-
-    @Test
-    fun testTotalAvailableMemoryBytes() {
-        // TODO test
-    }
 }

@@ -138,7 +138,7 @@ class Sketch private constructor(options: Options) {
             ?: dispatcher
     }
 
-    val scope = CoroutineScope(
+    internal val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
             logger.e(throwable, "CoroutineScope. An uncaught exception")
         }

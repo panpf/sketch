@@ -16,6 +16,7 @@
 * change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为
   DecodeResult
 * change: Transformation 的 transform() 方法移除 suspend 修饰符
+* improve: 桌面平台现在使用 Runtime.maxMemory() 的 20% 作为内存缓存最大值
 
 # 4.0.0-alpha08
 

@@ -16,27 +16,13 @@
 
 package com.github.panpf.sketch.cache
 
-import android.app.ActivityManager
-import android.content.Context
-import android.os.Build
 import com.github.panpf.sketch.PlatformContext
-
 
 /**
  * Return the default percent of the application's total memory to use for the memory cache.
  *
- * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testDefaultMemoryCacheSizePercent
+ * @see com.github.panpf.sketch.core.jscommon.test.cache.MemoryCacheJsCommonTest.testDefaultMemoryCacheSizePercent
  */
 internal actual fun PlatformContext.defaultMemoryCacheSizePercent(): Double {
-    val standardMemoryPercent = 0.30
-    val lowMemoryPercent = 0.20
-    return try {
-        val activityManager =
-            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val isLowRamDevice =
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || activityManager.isLowRamDevice
-        if (isLowRamDevice) lowMemoryPercent else standardMemoryPercent
-    } catch (_: Exception) {
-        standardMemoryPercent
-    }
+    return 0.20
 }

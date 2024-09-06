@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.core.nonandroid.test.util
+package com.github.panpf.sketch.core.desktop.test.util
 
 import kotlin.test.Test
 
-class SystemCallbacksNonAndroidTest {
+class SystemCallbacksDesktopTest {
 
     @Test
     fun testSystemCallbacks() {
@@ -10,7 +10,7 @@ class SystemCallbacksNonAndroidTest {
     }
 
     @Test
-    fun testNoopSystemCallbacks() {
+    fun testDesktopSystemCallbacks() {
         // TODO test
     }
 }

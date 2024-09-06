@@ -25,13 +25,3 @@ import com.github.panpf.sketch.PlatformContext
  */
 actual val PlatformContext.application: PlatformContext
     get() = this
-
-/**
- * Return the application's total memory in bytes.
- *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.PlatformContextsNonAndroidTest.testTotalAvailableMemoryBytes
- */
-// TODO: Compute the total available memory on non-Android platforms.
-actual fun PlatformContext.totalAvailableMemoryBytes(): Long {
-    return 512L * 1024L * 1024L // 512 MB
-}

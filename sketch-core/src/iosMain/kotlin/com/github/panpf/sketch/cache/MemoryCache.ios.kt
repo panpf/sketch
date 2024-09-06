@@ -19,8 +19,10 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.PlatformContext
 
 /**
- * @see com.github.panpf.sketch.core.nonandroid.test.cache.MemoryCacheNonAndroidTest.testPlatformDefaultMemoryCacheSizePercent
+ * Return the default percent of the application's total memory to use for the memory cache.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.cache.MemoryCacheIosTest.testDefaultMemoryCacheSizePercent
  */
-internal actual fun PlatformContext.platformDefaultMemoryCacheSizePercent(): Double {
-    return 0.15
+internal actual fun PlatformContext.defaultMemoryCacheSizePercent(): Double {
+    return 0.20
 }

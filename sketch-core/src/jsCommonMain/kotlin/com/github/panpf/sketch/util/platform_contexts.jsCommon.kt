@@ -20,6 +20,16 @@ import com.github.panpf.sketch.PlatformContext
 import okio.Path
 
 /**
+ * Return the application's total memory in bytes.
+ *
+ * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testMaxMemory
+ */
+actual fun PlatformContext.maxMemory(): Long {
+    // TODO Get the accurate max memory on the js platform
+    return 512L * 1024L * 1024L // 512 MB
+}
+
+/**
  * Return the application's cache directory.
  *
  * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testAppCacheDirectory
@@ -32,5 +42,6 @@ actual fun PlatformContext.appCacheDirectory(): Path? = null
  * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testScreenSize
  */
 actual fun PlatformContext.screenSize(): Size {
-    return Size(1920, 1080) // TODO I hope there is another way to get the screen size
+    // TODO Get accurate screen size on js platform
+    return Size(1920, 1080)
 }

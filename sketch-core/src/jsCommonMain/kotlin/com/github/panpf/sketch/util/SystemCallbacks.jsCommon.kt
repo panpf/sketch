@@ -20,26 +20,27 @@ import com.github.panpf.sketch.Sketch
 import kotlinx.atomicfu.atomic
 
 /**
- * Create an instance of [SystemCallbacks] for non-Android platforms
+ * Create an instance of [SystemCallbacks] for js platforms
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SystemCallbacksNonAndroidTest.testSystemCallbacks
+ * @see com.github.panpf.sketch.core.jscommon.test.util.SystemCallbacksJsCommonTest.testSystemCallbacks
  */
-internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = NoopSystemCallbacks()
+internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = JsSystemCallbacks()
 
 /**
  * Noop implementation of [SystemCallbacks]
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SystemCallbacksNonAndroidTest.testNoopSystemCallbacks
+ * @see com.github.panpf.sketch.core.jscommon.test.util.SystemCallbacksJsCommonTest.testJsSystemCallbacks
  */
-private class NoopSystemCallbacks : SystemCallbacks {
+private class JsSystemCallbacks : SystemCallbacks {
 
-    // TODO Implement network type detection for non-Android platforms. https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
+    // TODO Implement network type detection for js platforms.
+    //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
     override val isCellularNetworkConnected get() = false
 
     private val _isShutdown = atomic(false)
     override var isShutdown: Boolean by _isShutdown
 
-    // TODO Listen for memory-pressure events to trim the memory cache on non-Android platforms.
+    // TODO Listen for memory-pressure events to trim the memory cache on js platforms.
     override fun register() {
 
     }

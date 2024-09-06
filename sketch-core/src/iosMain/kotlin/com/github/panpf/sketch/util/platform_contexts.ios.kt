@@ -28,6 +28,16 @@ import platform.UIKit.UIScreen
 import kotlin.math.roundToInt
 
 /**
+ * Return the application's total memory in bytes.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testMaxMemory
+ */
+actual fun PlatformContext.maxMemory(): Long {
+    // TODO Get the accurate max memory on the ios platform
+    return 512L * 1024L * 1024L // 512 MB
+}
+
+/**
  * Return the application's cache directory.
  *
  * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testAppCacheDirectory
