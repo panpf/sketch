@@ -50,8 +50,7 @@ class SkiaBitmapImageSerializer : ImageSerializer {
 
     override fun compress(image: Image, sink: BufferedSink) {
         require(image is SkiaBitmapImage) { "Unsupported image type: ${image::class}" }
-        val skiaImage = SkiaImage.makeFromBitmap(image.bitmap)
-        val encodedData = skiaImage.use {
+        val encodedData = SkiaImage.makeFromBitmap(image.bitmap).use {
             it.encodeToData(format = EncodedImageFormat.PNG, quality = 100)
         }
         encodedData?.use {
@@ -59,14 +58,15 @@ class SkiaBitmapImageSerializer : ImageSerializer {
         }
     }
 
-    // TODO SkiaImage、SkiaBitmap、SkiaData、SkiaCodec now close
     override fun decode(
         requestContext: RequestContext,
         imageInfo: ImageInfo,
         dataSource: DataSource
     ): Image {
         val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
-        val skiaImage = SkiaImage.makeFromEncoded(bytes)
-        return SkiaBitmap.makeFromImage(skiaImage).asSketchImage()
+        val skiaBitmap = SkiaImage.makeFromEncoded(bytes).use {
+            SkiaBitmap.makeFromImage(it)
+        }
+        return skiaBitmap.asSketchImage()
     }
 }

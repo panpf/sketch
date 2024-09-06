@@ -30,6 +30,7 @@ import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.Rect
+import org.jetbrains.skia.impl.use
 import kotlin.math.ceil
 
 
@@ -123,12 +124,11 @@ internal fun SkiaImage.decodeRegion(srcRect: SketchRect, sampleSize: Int): SkiaB
  */
 fun DataSource.readImageInfo(): ImageInfo {
     val bytes = openSource().buffer().use { it.readByteArray() }
-    val image = SkiaImage.makeFromEncoded(bytes)
-    val codec = Codec.makeFromData(Data.makeFromBytes(bytes))
-    val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
-    return ImageInfo(
-        width = image.width,
-        height = image.height,
-        mimeType = mimeType,
-    )
+    val imageSize = SkiaImage.makeFromEncoded(bytes).use {
+        Size(it.width, it.height)
+    }
+    val mimeType = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
+        "image/${it.encodedImageFormat.name.lowercase()}"
+    }
+    return ImageInfo(size = imageSize, mimeType = mimeType)
 }

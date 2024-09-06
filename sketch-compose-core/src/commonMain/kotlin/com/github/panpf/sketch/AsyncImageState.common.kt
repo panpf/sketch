@@ -221,7 +221,6 @@ class AsyncImageState internal constructor(
                     if (lastRequest != null) {
                         if (lastRequest.key == request.key) {
                             if (lastRequest != request) {
-                                // TODO Test whether onAnimationStart, onAnimationEnd, animatedTransformation will cause this problem
                                 val diffImageRequest = lastRequest.difference(request)
                                 throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
                             }
