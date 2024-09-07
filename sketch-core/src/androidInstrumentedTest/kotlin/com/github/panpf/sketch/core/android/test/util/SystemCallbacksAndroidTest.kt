@@ -17,7 +17,9 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.test.singleton.getSketch
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.util.AndroidSystemCallbacks
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.tools4a.network.ktx.isCellularNetworkConnected
 import org.junit.runner.RunWith
@@ -31,7 +33,11 @@ class SystemCallbacksAndroidTest {
 
     @Test
     fun testSystemCallbacks() {
-        // TODO test
+        val sketch = getSketch()
+        assertEquals(
+            expected = true,
+            actual = SystemCallbacks(sketch) is AndroidSystemCallbacks
+        )
     }
 
     @Test
@@ -51,6 +57,7 @@ class SystemCallbacksAndroidTest {
                 assertFalse(isShutdown)
                 shutdown()
                 assertTrue(isShutdown)
+                shutdown()
             }
         } finally {
             systemCallbacks.shutdown()

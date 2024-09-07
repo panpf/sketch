@@ -1,14 +1,18 @@
 package com.github.panpf.sketch.core.desktop.test.source
 
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.KotlinResourceDataSource
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import kotlinx.coroutines.test.runTest
+import okio.Path
 import okio.buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class KotlinResourceDataSourceTest {
 
@@ -41,21 +45,33 @@ class KotlinResourceDataSourceTest {
 
     @Test
     fun testOpenSource() {
-        val resourceName1 = ResourceImages.jpeg.resourceName
-        val resourceName2 = ResourceImages.png.resourceName
-
-        KotlinResourceDataSource(resourceName1).openSource().buffer().use {
+        KotlinResourceDataSource(ResourceImages.jpeg.resourceName).openSource().buffer().use {
             it.readByteArray()
         }
 
-        KotlinResourceDataSource(resourceName2).openSource().buffer().use {
+        KotlinResourceDataSource(ResourceImages.png.resourceName).openSource().buffer().use {
             it.readByteArray().decodeToString()
         }
     }
 
     @Test
     fun testGetFile() {
-        // TODO test
+        val (_, sketch) = getTestContextAndSketch()
+        val path1: Path
+        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+            .getFile(sketch).apply {
+                path1 = this
+                assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+            }
+
+        val path2: Path
+        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+            .getFile(sketch).apply {
+                path2 = this
+                assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+            }
+
+        assertEquals(expected = path1, actual = path2)
     }
 
     @Test

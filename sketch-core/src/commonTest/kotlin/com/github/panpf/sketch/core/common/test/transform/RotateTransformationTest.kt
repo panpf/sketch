@@ -20,6 +20,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -28,7 +29,6 @@ import com.github.panpf.sketch.transform.createRotateTransformed
 import com.github.panpf.sketch.transform.getRotateTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import org.jetbrains.skia.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -68,7 +68,12 @@ class RotateTransformationTest {
 
         val inBitmap = request.decode(sketch).image.apply {
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 this.corners()
             )
             assertEquals(
@@ -117,7 +122,12 @@ class RotateTransformationTest {
         RotateTransformation(45).transform(requestContext, inBitmap).apply {
             assertNotSame(inBitmap, this.image)
             assertEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 image.corners()
             )
             assertEquals(Size(2281, 2281), image.size)

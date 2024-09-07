@@ -20,6 +20,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -28,7 +29,6 @@ import com.github.panpf.sketch.transform.createMaskTransformed
 import com.github.panpf.sketch.transform.getMaskTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import org.jetbrains.skia.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -38,23 +38,23 @@ class MaskTransformationTest {
 
     @Test
     fun testConstructor() {
-        MaskTransformation(Color.BLACK).apply {
-            assertEquals(Color.BLACK, maskColor)
+        MaskTransformation(TestColor.BLACK).apply {
+            assertEquals(TestColor.BLACK, maskColor)
         }
-        MaskTransformation(Color.GREEN).apply {
-            assertEquals(Color.GREEN, maskColor)
+        MaskTransformation(TestColor.GREEN).apply {
+            assertEquals(TestColor.GREEN, maskColor)
         }
     }
 
     @Test
     fun testKeyAndToString() {
-        MaskTransformation(Color.BLACK).apply {
-            assertEquals("MaskTransformation(${Color.BLACK})", key)
-            assertEquals("MaskTransformation(${Color.BLACK})", toString())
+        MaskTransformation(TestColor.BLACK).apply {
+            assertEquals("MaskTransformation(${TestColor.BLACK})", key)
+            assertEquals("MaskTransformation(${TestColor.BLACK})", toString())
         }
-        MaskTransformation(Color.GREEN).apply {
-            assertEquals("MaskTransformation(${Color.GREEN})", key)
-            assertEquals("MaskTransformation(${Color.GREEN})", toString())
+        MaskTransformation(TestColor.GREEN).apply {
+            assertEquals("MaskTransformation(${TestColor.GREEN})", key)
+            assertEquals("MaskTransformation(${TestColor.GREEN})", toString())
         }
     }
 
@@ -68,7 +68,12 @@ class MaskTransformationTest {
 
         val inBitmap = request.decode(sketch).image.apply {
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 this.corners()
             )
             assertEquals(
@@ -78,7 +83,7 @@ class MaskTransformationTest {
         }
         val inBitmapCorners = inBitmap.corners()
 
-        val maskColor = Color.withA(Color.GREEN, 100)
+        val maskColor = TestColor.withA(TestColor.GREEN, 100)
         MaskTransformation(maskColor).transform(requestContext, inBitmap).apply {
             assertNotSame(inBitmap, this.image)
             assertNotEquals(inBitmapCorners, image.corners())
@@ -89,9 +94,9 @@ class MaskTransformationTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = MaskTransformation(Color.RED)
-        val element11 = MaskTransformation(Color.RED)
-        val element2 = MaskTransformation(Color.BLACK)
+        val element1 = MaskTransformation(TestColor.RED)
+        val element11 = MaskTransformation(TestColor.RED)
+        val element2 = MaskTransformation(TestColor.BLACK)
 
         assertNotSame(element1, element11)
         assertNotSame(element1, element2)

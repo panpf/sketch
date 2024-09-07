@@ -18,4 +18,9 @@ class DataSourceTest {
     fun testCacheFile() {
         // TODO test
     }
+
+    @Test
+    fun testCacheFileOrNull() {
+        // TODO test
+    }
 }

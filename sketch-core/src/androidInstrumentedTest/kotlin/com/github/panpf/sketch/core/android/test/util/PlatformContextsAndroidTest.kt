@@ -4,7 +4,11 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.maxMemory
+import com.github.panpf.sketch.util.screenSize
+import okio.Path.Companion.toOkioPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,11 +38,23 @@ class PlatformContextsAndroidTest {
 
     @Test
     fun testAppCacheDirectory() {
-        // TODO test
+        val context = getTestContext()
+        val appCacheDirectory = context.externalCacheDir ?: context.cacheDir
+        val cacheDir = appCacheDirectory.toOkioPath()
+        assertEquals(
+            expected = cacheDir,
+            actual = context.appCacheDirectory(),
+        )
     }
 
     @Test
     fun testScreenSize() {
-        // TODO test
+        val context = getTestContext()
+        val screenSize = context.resources.displayMetrics
+            .let { Size(it.widthPixels, it.heightPixels) }
+        assertEquals(
+            expected = screenSize,
+            actual = context.screenSize(),
+        )
     }
 }

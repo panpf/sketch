@@ -26,6 +26,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -36,7 +37,6 @@ import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import org.jetbrains.skia.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -66,7 +66,12 @@ class TransformationDecodeInterceptorTest {
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 image.corners()
             )
             assertNull(transformeds)
@@ -88,7 +93,12 @@ class TransformationDecodeInterceptorTest {
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1291), image.size)
             assertEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 image.corners()
             )
             assertEquals(listOf(createCircleCropTransformed(CENTER_CROP)), transformeds)
@@ -118,7 +128,12 @@ class TransformationDecodeInterceptorTest {
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 image.corners()
             )
             assertNotNull(transformeds)
@@ -148,7 +163,12 @@ class TransformationDecodeInterceptorTest {
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 image.corners()
             )
             assertNull(transformeds)

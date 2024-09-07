@@ -20,6 +20,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.runBlock
@@ -29,7 +30,6 @@ import com.github.panpf.sketch.transform.createRoundedCornersTransformed
 import com.github.panpf.sketch.transform.getRoundedCornersTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import org.jetbrains.skia.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -112,7 +112,12 @@ class RoundedCornersTransformationTest {
 
         val inBitmap = request.decode(sketch).image.apply {
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 this.corners()
             )
             assertEquals(
@@ -129,7 +134,12 @@ class RoundedCornersTransformationTest {
         }.apply {
             assertNotSame(inBitmap, image)
             assertEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 image.corners()
             )
             assertEquals(Size(1291, 1936), image.size)

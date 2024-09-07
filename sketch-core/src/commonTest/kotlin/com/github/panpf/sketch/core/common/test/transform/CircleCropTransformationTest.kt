@@ -21,6 +21,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -29,7 +30,6 @@ import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.getCircleCropTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import org.jetbrains.skia.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -69,7 +69,12 @@ class CircleCropTransformationTest {
 
         val inBitmap = request.decode(sketch).image.apply {
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 this.corners()
             )
             assertEquals(
@@ -83,10 +88,10 @@ class CircleCropTransformationTest {
                 assertNotSame(inBitmap, image)
                 assertEquals(
                     listOf(
-                        Color.TRANSPARENT,
-                        Color.TRANSPARENT,
-                        Color.TRANSPARENT,
-                        Color.TRANSPARENT
+                        TestColor.TRANSPARENT,
+                        TestColor.TRANSPARENT,
+                        TestColor.TRANSPARENT,
+                        TestColor.TRANSPARENT
                     ),
                     image.corners()
                 )

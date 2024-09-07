@@ -20,6 +20,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.hasAlpha
@@ -29,7 +30,6 @@ import com.github.panpf.sketch.transform.createBlurTransformed
 import com.github.panpf.sketch.transform.getBlurTransformed
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import org.jetbrains.skia.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -51,30 +51,30 @@ class BlurTransformationTest {
         }
         assertFailsWith(IllegalArgumentException::class) {
             BlurTransformation(
-                hasAlphaBitmapBgColor = Color.withA(color = Color.BLACK, a = 244)
+                hasAlphaBitmapBgColor = TestColor.withA(color = TestColor.BLACK, a = 244)
             )
         }
         BlurTransformation(12).apply {
             assertEquals(12, radius)
-            assertEquals(Color.BLACK, hasAlphaBitmapBgColor)
+            assertEquals(TestColor.BLACK, hasAlphaBitmapBgColor)
             assertNull(maskColor)
         }
-        BlurTransformation(20, hasAlphaBitmapBgColor = null, maskColor = Color.GREEN).apply {
+        BlurTransformation(20, hasAlphaBitmapBgColor = null, maskColor = TestColor.GREEN).apply {
             assertEquals(20, radius)
             assertNull(hasAlphaBitmapBgColor)
-            assertEquals(Color.GREEN, maskColor)
+            assertEquals(TestColor.GREEN, maskColor)
         }
     }
 
     @Test
     fun testKeyAndToString() {
         BlurTransformation().apply {
-            assertEquals("BlurTransformation(15,${Color.BLACK},null)", key)
-            assertEquals("BlurTransformation(15,${Color.BLACK},null)", toString())
+            assertEquals("BlurTransformation(15,${TestColor.BLACK},null)", key)
+            assertEquals("BlurTransformation(15,${TestColor.BLACK},null)", toString())
         }
-        BlurTransformation(20, hasAlphaBitmapBgColor = null, maskColor = Color.GREEN).apply {
-            assertEquals("BlurTransformation(20,null,${Color.GREEN})", key)
-            assertEquals("BlurTransformation(20,null,${Color.GREEN})", toString())
+        BlurTransformation(20, hasAlphaBitmapBgColor = null, maskColor = TestColor.GREEN).apply {
+            assertEquals("BlurTransformation(20,null,${TestColor.GREEN})", key)
+            assertEquals("BlurTransformation(20,null,${TestColor.GREEN})", toString())
         }
     }
 
@@ -91,7 +91,12 @@ class BlurTransformationTest {
         }
         inBitmap.apply {
             assertNotEquals(
-                listOf(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT),
+                listOf(
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT,
+                    TestColor.TRANSPARENT
+                ),
                 this.corners()
             )
             assertEquals(
@@ -103,7 +108,7 @@ class BlurTransformationTest {
 
         val transformResult = BlurTransformation(
             radius = 30,
-            maskColor = Color.withA(Color.BLUE, 80)
+            maskColor = TestColor.withA(TestColor.BLUE, 80)
         ).transform(jpegRequestContext, inBitmap)
         transformResult.apply {
             assertNotSame(inBitmap, image)
@@ -112,8 +117,8 @@ class BlurTransformationTest {
             assertEquals(
                 expected = createBlurTransformed(
                     radius = 30,
-                    hasAlphaBitmapBgColor = Color.BLACK,
-                    maskColor = Color.withA(Color.BLUE, 80)
+                    hasAlphaBitmapBgColor = TestColor.BLACK,
+                    maskColor = TestColor.withA(TestColor.BLUE, 80)
                 ),
                 actual = transformed
             )
@@ -148,9 +153,9 @@ class BlurTransformationTest {
     fun testEqualsAndHashCode() {
         val element1 = BlurTransformation(20, null, null)
         val element11 = BlurTransformation(20, null, null)
-        val element2 = BlurTransformation(10, Color.GREEN, null)
-        val element3 = BlurTransformation(20, Color.BLACK, Color.BLUE)
-        val element4 = BlurTransformation(20, Color.BLACK, Color.WHITE)
+        val element2 = BlurTransformation(10, TestColor.GREEN, null)
+        val element3 = BlurTransformation(20, TestColor.BLACK, TestColor.BLUE)
+        val element4 = BlurTransformation(20, TestColor.BLACK, TestColor.WHITE)
 
         assertNotSame(element1, element11)
         assertNotSame(element1, element2)

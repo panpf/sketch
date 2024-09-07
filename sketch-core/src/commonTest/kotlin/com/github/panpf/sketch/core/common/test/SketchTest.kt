@@ -140,7 +140,7 @@ class SketchTest {
 
             build().apply {
                 assertEquals(
-                    expected = platformComponents().merged(defaultComponents()),
+                    expected = platformComponents(context).merged(defaultComponents()),
                     actual = components.registry
                 )
             }
@@ -154,7 +154,7 @@ class SketchTest {
                     expected = ComponentRegistry {
                         addFetcher(TestFetcher.Factory())
                         addDecoder(TestDecoder.Factory())
-                    }.merged(platformComponents().merged(defaultComponents())),
+                    }.merged(platformComponents(context).merged(defaultComponents())),
                     actual = components.registry
                 )
             }

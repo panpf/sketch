@@ -1,7 +1,10 @@
 package com.github.panpf.sketch.core.jscommon.test.util
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.maxMemory
+import com.github.panpf.sketch.util.screenSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -17,11 +20,17 @@ class PlatformContextsJsCommonTest {
 
     @Test
     fun testAppCacheDirectory() {
-        // TODO test
+        assertEquals(
+            expected = null,
+            actual = PlatformContext.INSTANCE.appCacheDirectory(),
+        )
     }
 
     @Test
     fun testScreenSize() {
-        // TODO test
+        assertEquals(
+            expected = Size(1920, 1080),
+            actual = PlatformContext.INSTANCE.screenSize(),
+        )
     }
 }

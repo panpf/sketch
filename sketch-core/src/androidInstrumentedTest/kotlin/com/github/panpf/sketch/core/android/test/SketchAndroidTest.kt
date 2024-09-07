@@ -1,14 +1,22 @@
 package com.github.panpf.sketch.core.android.test
 
 import android.widget.ImageView
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch.Builder
+import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
+import com.github.panpf.sketch.decode.internal.DrawableDecoder
+import com.github.panpf.sketch.fetch.AssetUriFetcher
+import com.github.panpf.sketch.fetch.ContentUriFetcher
+import com.github.panpf.sketch.fetch.ResourceUriFetcher
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.platformComponents
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.test.runTest
@@ -50,6 +58,17 @@ class SketchAndroidTest {
 
     @Test
     fun testPlatformComponents() {
-        // TODO test
+        val context = getTestContext()
+        assertEquals(
+            expected = ComponentRegistry {
+                addFetcher(ContentUriFetcher.Factory())
+                addFetcher(ResourceUriFetcher.Factory())
+                addFetcher(AssetUriFetcher.Factory())
+
+                addDecoder(DrawableDecoder.Factory())
+                addDecoder(BitmapFactoryDecoder.Factory())
+            },
+            actual = platformComponents(context)
+        )
     }
 }
