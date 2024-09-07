@@ -196,7 +196,7 @@ interface DiskCache : Closeable {
         }
 
         fun build(): DiskCache {
-            val platformDefaultMaxSize = platformDefaultDiskCacheMaxSize(context)
+            val platformDefaultMaxSize = defaultDiskCacheMaxSize(context)
             @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
             if (platformDefaultMaxSize == null) {
                 return EmptyDiskCache(fileSystem)
@@ -278,10 +278,10 @@ interface DiskCache : Closeable {
 /**
  * Get the default maximum size of the disk cache
  *
- * @see com.github.panpf.sketch.core.jscommon.test.cache.DiskCacheJsCommonTest.testPlatformDefaultDiskCacheMaxSize
- * @see com.github.panpf.sketch.core.nonjscommon.test.cache.DiskCacheNonJsCommonTest.testPlatformDefaultDiskCacheMaxSize
+ * @see com.github.panpf.sketch.core.jscommon.test.cache.DiskCacheJsCommonTest.testDefaultDiskCacheMaxSize
+ * @see com.github.panpf.sketch.core.nonjscommon.test.cache.DiskCacheNonJsCommonTest.testDefaultDiskCacheMaxSize
  */
-expect fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long?
+internal expect fun defaultDiskCacheMaxSize(context: PlatformContext): Long?
 
 /**
  * Result cache key

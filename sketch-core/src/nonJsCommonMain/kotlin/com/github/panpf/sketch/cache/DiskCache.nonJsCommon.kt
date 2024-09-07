@@ -21,6 +21,6 @@ import com.github.panpf.sketch.PlatformContext
 /**
  * Get the default maximum size of the disk cache
  *
- * @see com.github.panpf.sketch.core.nonjscommon.test.cache.DiskCacheNonJsCommonTest.testPlatformDefaultDiskCacheMaxSize
+ * @see com.github.panpf.sketch.core.nonjscommon.test.cache.DiskCacheNonJsCommonTest.testDefaultDiskCacheMaxSize
  */
-actual fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long? = 500L * 1024 * 1024
+internal actual fun defaultDiskCacheMaxSize(context: PlatformContext): Long? = 512L * 1024 * 1024

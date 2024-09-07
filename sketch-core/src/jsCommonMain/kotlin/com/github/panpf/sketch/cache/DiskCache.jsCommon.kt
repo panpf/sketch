@@ -21,6 +21,6 @@ import com.github.panpf.sketch.PlatformContext
 /**
  * Get the maximum size of the disk cache. But Js platform does not support disk caching
  *
- * @see com.github.panpf.sketch.core.jscommon.test.cache.DiskCacheJsCommonTest.testPlatformDefaultDiskCacheMaxSize
+ * @see com.github.panpf.sketch.core.jscommon.test.cache.DiskCacheJsCommonTest.testDefaultDiskCacheMaxSize
  */
-actual fun platformDefaultDiskCacheMaxSize(context: PlatformContext): Long? = null
+internal actual fun defaultDiskCacheMaxSize(context: PlatformContext): Long? = null

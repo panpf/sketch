@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.core.common.test.cache
 
 import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.defaultDiskCacheMaxSize
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
-import com.github.panpf.sketch.cache.platformDefaultDiskCacheMaxSize
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -25,7 +25,7 @@ class DiskCacheTest {
     fun testDownloadBuilder() {
         val context = getTestContext()
         val fileSystem = defaultFileSystem()
-        val platformDefaultDiskCacheMaxSize = platformDefaultDiskCacheMaxSize(context)
+        val platformDefaultDiskCacheMaxSize = defaultDiskCacheMaxSize(context)
         val defaultAppCacheDirectory = context.appCacheDirectory()
         val appCacheDir = "/fake/fakeApp/cache".toPath()
         val appCacheDir2 = "/fake/fakeApp/cache2".toPath()
@@ -113,7 +113,7 @@ class DiskCacheTest {
     fun testResultBuilder() {
         val context = getTestContext()
         val fileSystem = defaultFileSystem()
-        val platformDefaultDiskCacheMaxSize = platformDefaultDiskCacheMaxSize(context)
+        val platformDefaultDiskCacheMaxSize = defaultDiskCacheMaxSize(context)
         val defaultAppCacheDirectory = context.appCacheDirectory()
         val appCacheDir = "/fake/fakeApp/cache".toPath()
         val appCacheDir2 = "/fake/fakeApp/cache2".toPath()
