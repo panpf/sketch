@@ -16,5 +16,27 @@
 
 package com.github.panpf.sketch
 
+/**
+ * Android Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmap
+ */
 typealias AndroidBitmap = android.graphics.Bitmap
+
+/**
+ * Android Bitmap Config
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmapConfig
+ */
 typealias AndroidBitmapConfig = android.graphics.Bitmap.Config
+
+/**
+ * Create a new [AndroidBitmap] with the specified width, height, and [AndroidBitmapConfig] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmap
+ */
+fun AndroidBitmap(
+    width: Int,
+    height: Int,
+    config: AndroidBitmapConfig = AndroidBitmapConfig.ARGB_8888
+): AndroidBitmap = AndroidBitmap.createBitmap(width, height, config)

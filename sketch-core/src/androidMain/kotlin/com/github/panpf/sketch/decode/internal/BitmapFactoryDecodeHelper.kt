@@ -32,8 +32,10 @@ import com.github.panpf.sketch.util.toAndroidRect
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecodeHelperTest
  */
-class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataSource) :
-    DecodeHelper {
+class BitmapFactoryDecodeHelper(
+    val request: ImageRequest,
+    val dataSource: DataSource
+) : DecodeHelper {
 
     private val exifOrientation: Int by lazy { dataSource.readExifOrientation() }
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
@@ -75,6 +77,6 @@ class BitmapFactoryDecodeHelper(val request: ImageRequest, val dataSource: DataS
     }
 
     override fun toString(): String {
-        return "BitmapFactoryDecodeHelper(uri='${request.uri}', dataSource=$dataSource)"
+        return "BitmapFactoryDecodeHelper($dataSource)"
     }
 }

@@ -55,7 +55,7 @@ data class SkiaBitmapImage(
 
     override fun checkValid(): Boolean = true
 
-    override fun transformer(): ImageTransformer = SkiaBitmapImageTransformer()
+    override fun transformer(): ImageTransformer = SkiaBitmapImageTransformer
 
     override fun getPixels(): IntArray? = bitmap.readIntPixels()
 
@@ -68,7 +68,7 @@ data class SkiaBitmapImage(
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest.testSkiaBitmapImageTransformer
  */
-class SkiaBitmapImageTransformer : ImageTransformer {
+internal object SkiaBitmapImageTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {
         val inputBitmap = image.asOrThrow<SkiaBitmapImage>().bitmap

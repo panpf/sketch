@@ -103,7 +103,7 @@ data class AndroidBitmapImage internal constructor(
 
     override fun checkValid(): Boolean = !bitmap.isRecycled
 
-    override fun transformer(): ImageTransformer = BitmapImageTransformer()
+    override fun transformer(): ImageTransformer = AndroidBitmapImageTransformer
 
     override fun getPixels(): IntArray {
         val pixels = IntArray(bitmap.width * bitmap.height)
@@ -118,9 +118,9 @@ data class AndroidBitmapImage internal constructor(
 /**
  * Android Bitmap Image Transformer
  *
- * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testBitmapImageTransformer
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testAndroidBitmapImageTransformer
  */
-class BitmapImageTransformer : ImageTransformer {
+internal object AndroidBitmapImageTransformer : ImageTransformer {
 
     override fun scale(image: Image, scaleFactor: Float): Image {
         val inputBitmap = image.asOrThrow<AndroidBitmapImage>().bitmap

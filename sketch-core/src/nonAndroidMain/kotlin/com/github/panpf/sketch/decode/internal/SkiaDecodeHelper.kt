@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaImage
@@ -33,7 +35,10 @@ import org.jetbrains.skia.impl.use
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.SkiaDecodeHelperTest
  */
-class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : DecodeHelper {
+class SkiaDecodeHelper constructor(
+    val request: ImageRequest,
+    val dataSource: DataSource
+) : DecodeHelper {
 
     override val imageInfo: ImageInfo by lazy { readImageInfo() }
     override val supportRegion: Boolean = true
@@ -73,6 +78,6 @@ class SkiaDecodeHelper(val request: ImageRequest, val dataSource: DataSource) : 
     }
 
     override fun toString(): String {
-        return "SkiaDecodeHelper(uri='${request.uri}', imageInfo=$imageInfo, supportRegion=$supportRegion)"
+        return "SkiaDecodeHelper($dataSource)"
     }
 }

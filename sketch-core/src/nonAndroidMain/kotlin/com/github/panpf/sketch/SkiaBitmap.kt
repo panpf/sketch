@@ -16,6 +16,10 @@
 
 package com.github.panpf.sketch
 
+import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorInfo
+import org.jetbrains.skia.ColorType
+
 typealias SkiaBitmap = org.jetbrains.skia.Bitmap
 
 /**
@@ -25,3 +29,16 @@ typealias SkiaBitmap = org.jetbrains.skia.Bitmap
  */
 fun SkiaBitmap(imageInfo: SkiaImageInfo): SkiaBitmap = SkiaBitmap()
     .apply { allocPixels(imageInfo) }
+
+/**
+ * Create a new [SkiaBitmap] with the specified width, height, and [ColorInfo] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapTest.testSkiaBitmap
+ */
+fun SkiaBitmap(
+    width: Int,
+    height: Int,
+    colorType: ColorType = ColorType.N32,
+    alphaType: ColorAlphaType = ColorAlphaType.PREMUL
+): SkiaBitmap = SkiaBitmap()
+    .apply { allocPixels(SkiaImageInfo(width, height, colorType, alphaType)) }
