@@ -31,7 +31,7 @@ internal actual fun <K : Any, V : Any> LruMutableMap(
  *
  * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testLruMutableMap
  */
-private class LruMutableMap<K : Any, V : Any>(
+internal class LruMutableMap<K : Any, V : Any>(
     private val delegate: MutableMap<K, V>,
 ) : MutableMap<K, V> by delegate {
 

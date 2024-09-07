@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.annotation.WorkerThread
@@ -29,8 +31,8 @@ import okio.FileSystem
  *
  * @see com.github.panpf.sketch.core.ios.test.fetch.KotlinResourceUriFetcherTest.testNewKotlinResourceUri
  */
-fun newKotlinResourceUri(resourceName: String): String =
-    "${KotlinResourceUriFetcher.SCHEME}:///${KotlinResourceUriFetcher.PATH_ROOT}/$resourceName"
+fun newKotlinResourceUri(resourcePath: String): String =
+    "${KotlinResourceUriFetcher.SCHEME}:///${KotlinResourceUriFetcher.PATH_ROOT}/$resourcePath"
 
 /**
  * Check if the uri is a Kotlin resource uri
@@ -50,7 +52,7 @@ fun isKotlinResourceUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.ios.test.fetch.KotlinResourceUriFetcherTest
  */
-class KotlinResourceUriFetcher(
+class KotlinResourceUriFetcher constructor(
     val resourcePath: String,
     val fileSystem: FileSystem = defaultFileSystem()
 ) : Fetcher {

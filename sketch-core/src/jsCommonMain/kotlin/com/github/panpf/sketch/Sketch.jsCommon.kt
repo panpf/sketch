@@ -23,8 +23,8 @@ import com.github.panpf.sketch.decode.SkiaDecoder
  *
  * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest.testPlatformComponents
  */
-internal actual fun platformComponents(): ComponentRegistry {
-    return ComponentRegistry.Builder().apply {
+internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
+    return ComponentRegistry {
         addDecoder(SkiaDecoder.Factory())
-    }.build()
+    }
 }

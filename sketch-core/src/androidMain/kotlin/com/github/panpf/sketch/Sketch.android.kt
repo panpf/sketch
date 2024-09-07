@@ -27,13 +27,13 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher
  *
  * @see com.github.panpf.sketch.core.android.test.SketchAndroidTest.testPlatformComponents
  */
-internal actual fun platformComponents(): ComponentRegistry {
-    return ComponentRegistry.Builder().apply {
+internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
+    return ComponentRegistry {
         addFetcher(ContentUriFetcher.Factory())
         addFetcher(ResourceUriFetcher.Factory())
         addFetcher(AssetUriFetcher.Factory())
 
         addDecoder(DrawableDecoder.Factory())
         addDecoder(BitmapFactoryDecoder.Factory())
-    }.build()
+    }
 }

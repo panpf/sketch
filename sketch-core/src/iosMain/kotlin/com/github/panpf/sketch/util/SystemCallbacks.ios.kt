@@ -31,7 +31,7 @@ internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = IosSystem
  *
  * @see com.github.panpf.sketch.core.ios.test.util.SystemCallbacksIosTest.testIosSystemCallbacks
  */
-private class IosSystemCallbacks : SystemCallbacks {
+internal class IosSystemCallbacks : SystemCallbacks {
 
     // TODO Implement network type detection for ios platforms.
     //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt

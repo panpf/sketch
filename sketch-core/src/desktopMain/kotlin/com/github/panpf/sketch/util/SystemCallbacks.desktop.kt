@@ -31,13 +31,13 @@ internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = DesktopSy
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testDesktopSystemCallbacks
  */
-private class DesktopSystemCallbacks : SystemCallbacks {
+internal class DesktopSystemCallbacks : SystemCallbacks {
+
+    private val _isShutdown = atomic(false)
 
     // TODO Implement network type detection for desktop platforms.
     //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
     override val isCellularNetworkConnected get() = false
-
-    private val _isShutdown = atomic(false)
     override var isShutdown: Boolean by _isShutdown
 
     // TODO Listen for memory-pressure events to trim the memory cache on desktop platforms.

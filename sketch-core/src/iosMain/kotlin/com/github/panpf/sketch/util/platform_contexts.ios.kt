@@ -43,12 +43,8 @@ actual fun PlatformContext.maxMemory(): Long {
  * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testAppCacheDirectory
  */
 actual fun PlatformContext.appCacheDirectory(): Path? {
-    return getCacheDirectory().toPath()
-}
-
-private fun getCacheDirectory(): String {
     val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
-    return paths.first() as String
+    return (paths.first() as String).toPath()
 }
 
 /**

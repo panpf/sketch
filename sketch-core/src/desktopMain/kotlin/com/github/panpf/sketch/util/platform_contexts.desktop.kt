@@ -38,19 +38,16 @@ actual fun PlatformContext.maxMemory(): Long {
  * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testAppCacheDirectory
  */
 actual fun PlatformContext.appCacheDirectory(): Path? {
-    val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java))
+    val appFlag = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java))
         ?.md5()
         ?: throw UnsupportedOperationException(
             "Unable to generate application aliases to automatically initialize downloadCache and resultCache, " +
                     "please configure them manually. Documentation address 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
         )
-    return requireNotNull(
-        AppDirsFactory.getInstance().getUserCacheDir(
-            /* appName = */ "SketchImageLoader${File.separator}${appName}",
-            /* appVersion = */ null,
-            /* appAuthor = */ null,
-        )
-    ) { "Failed to get the cache directory of the App" }.toPath()
+    val fakeAppName = "SketchImageLoader${File.separator}${appFlag}"
+    val cacheDir = AppDirsFactory.getInstance()
+        .getUserCacheDir(fakeAppName, /* appVersion = */ null,/* appAuthor = */ null)?.toPath()
+    return requireNotNull(cacheDir) { "Failed to get the cache directory of the App" }
 }
 
 /**

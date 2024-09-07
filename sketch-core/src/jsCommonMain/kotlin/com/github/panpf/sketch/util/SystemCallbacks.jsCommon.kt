@@ -31,7 +31,7 @@ internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = JsSystemC
  *
  * @see com.github.panpf.sketch.core.jscommon.test.util.SystemCallbacksJsCommonTest.testJsSystemCallbacks
  */
-private class JsSystemCallbacks : SystemCallbacks {
+internal class JsSystemCallbacks : SystemCallbacks {
 
     // TODO Implement network type detection for js platforms.
     //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt

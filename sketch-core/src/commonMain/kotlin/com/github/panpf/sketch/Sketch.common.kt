@@ -266,7 +266,7 @@ class Sketch private constructor(options: Options) {
         val decodeParallelismLimited: Int,
     )
 
-    class Builder constructor(context: PlatformContext) {
+    class Builder(context: PlatformContext) {
 
         private val context: PlatformContext = context.application
         private var logger: Logger? = null
@@ -437,7 +437,7 @@ class Sketch private constructor(options: Options) {
         fun build(): Sketch {
             val finalFileSystem = fileSystem ?: defaultFileSystem()
             val componentRegistry1 = componentRegistry
-                .merged(platformComponents())
+                .merged(platformComponents(context))
                 .merged(defaultComponents())
                 ?: ComponentRegistry.Builder().build()
             val options = Options(
@@ -480,7 +480,7 @@ class Sketch private constructor(options: Options) {
  * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest.testPlatformComponents
  * @see com.github.panpf.sketch.core.ios.test.SketchIosTest.testPlatformComponents
  */
-internal expect fun platformComponents(): ComponentRegistry
+internal expect fun platformComponents(context: PlatformContext): ComponentRegistry
 
 /**
  * Provide components applicable to all platforms
@@ -488,7 +488,7 @@ internal expect fun platformComponents(): ComponentRegistry
  * @see com.github.panpf.sketch.core.common.test.SketchTest.testDefaultComponents
  */
 internal fun defaultComponents(): ComponentRegistry {
-    return ComponentRegistry.Builder().apply {
+    return ComponentRegistry {
         addFetcher(HttpUriFetcher.Factory())
         addFetcher(Base64UriFetcher.Factory())
         addFetcher(FileUriFetcher.Factory())
@@ -499,7 +499,7 @@ internal fun defaultComponents(): ComponentRegistry {
         addDecodeInterceptor(ResultCacheDecodeInterceptor())
         addDecodeInterceptor(TransformationDecodeInterceptor())
         addDecodeInterceptor(EngineDecodeInterceptor())
-    }.build()
+    }
 }
 
 /**
