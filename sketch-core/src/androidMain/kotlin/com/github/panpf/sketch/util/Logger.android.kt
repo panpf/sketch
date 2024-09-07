@@ -21,9 +21,9 @@ import android.util.Log
 /**
  * Get the platform default log pipeline
  *
- * @see com.github.panpf.sketch.core.android.test.util.LoggerAndroidTest.testPlatformLogPipeline
+ * @see com.github.panpf.sketch.core.android.test.util.LoggerAndroidTest.testDefaultLogPipeline
  */
-actual fun platformLogPipeline(): Logger.Pipeline = AndroidLogPipeline
+internal actual fun defaultLogPipeline(): Logger.Pipeline = AndroidLogPipeline
 
 /**
  * Android log pipeline

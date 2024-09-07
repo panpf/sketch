@@ -50,9 +50,9 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SystemCallbacks
 import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.defaultFileSystem
+import com.github.panpf.sketch.util.defaultLogPipeline
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import com.github.panpf.sketch.util.isMainThread
-import com.github.panpf.sketch.util.platformLogPipeline
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -292,7 +292,7 @@ class Sketch private constructor(options: Options) {
          */
         fun logger(
             level: Level = Level.Info,
-            pipeline: Pipeline = platformLogPipeline()
+            pipeline: Pipeline = defaultLogPipeline()
         ): Builder = apply {
             this.logger = Logger(level, pipeline)
         }

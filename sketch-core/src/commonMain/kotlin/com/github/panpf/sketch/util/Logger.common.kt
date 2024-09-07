@@ -19,10 +19,10 @@ package com.github.panpf.sketch.util
 /**
  * Get the platform default log pipeline
  *
- * @see com.github.panpf.sketch.core.android.test.util.LoggerAndroidTest.testPlatformLogPipeline
- * @see com.github.panpf.sketch.core.nonandroid.test.util.LoggerNonAndroidTest.testPlatformLogPipeline
+ * @see com.github.panpf.sketch.core.android.test.util.LoggerAndroidTest.testDefaultLogPipeline
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.LoggerNonAndroidTest.testDefaultLogPipeline
  */
-expect fun platformLogPipeline(): Logger.Pipeline
+internal expect fun defaultLogPipeline(): Logger.Pipeline
 
 /**
  * Used to print log
@@ -31,7 +31,7 @@ expect fun platformLogPipeline(): Logger.Pipeline
  */
 class Logger(
     level: Level = Level.Info,
-    private val pipeline: Pipeline = platformLogPipeline(),
+    private val pipeline: Pipeline = defaultLogPipeline(),
 ) {
 
     companion object {

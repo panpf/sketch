@@ -5,7 +5,7 @@ import kotlin.test.Test
 class LoggerAndroidTest {
 
     @Test
-    fun testPlatformLogPipeline() {
+    fun testDefaultLogPipeline() {
         // TODO test
     }
 

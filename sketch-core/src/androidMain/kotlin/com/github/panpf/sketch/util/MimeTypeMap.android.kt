@@ -21,17 +21,17 @@ import android.webkit.MimeTypeMap
 /**
  * A map of file extensions to MIME types.
  *
- * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformExtensionToMimeType
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testExtensionToMimeType
  */
-internal actual fun platformExtensionToMimeType(extension: String): String? {
+internal actual fun extensionToMimeType(extension: String): String? {
     return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 }
 
 /**
  * A map of MIME types to file extensions.
  *
- * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformMimeTypeToExtension
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testMimeTypeToExtension
  */
-internal actual fun platformMimeTypeToExtension(mimeType: String): String? {
+internal actual fun mimeTypeToExtension(mimeType: String): String? {
     return MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
 }

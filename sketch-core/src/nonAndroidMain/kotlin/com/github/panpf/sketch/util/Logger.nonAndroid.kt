@@ -19,9 +19,9 @@ package com.github.panpf.sketch.util
 /**
  * Get the platform default log pipeline
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.LoggerNonAndroidTest.testPlatformLogPipeline
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.LoggerNonAndroidTest.testDefaultLogPipeline
  */
-actual fun platformLogPipeline(): Logger.Pipeline = PrintLogPipeline
+internal actual fun defaultLogPipeline(): Logger.Pipeline = PrintLogPipeline
 
 /**
  * Used to print log

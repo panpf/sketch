@@ -5,12 +5,12 @@ import kotlin.test.Test
 class MimeTypeMapAndroidTest {
 
     @Test
-    fun testPlatformExtensionToMimeType() {
+    fun testExtensionToMimeType() {
         // TODO test
     }
 
     @Test
-    fun testPlatformMimeTypeToExtension() {
+    fun testMimeTypeToExtension() {
         // TODO test
     }
 }
