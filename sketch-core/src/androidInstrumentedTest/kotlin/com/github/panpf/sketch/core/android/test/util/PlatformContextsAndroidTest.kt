@@ -1,22 +1,28 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.app.ActivityManager
+import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.appCacheDirectory
+import com.github.panpf.sketch.util.application
 import com.github.panpf.sketch.util.maxMemory
 import com.github.panpf.sketch.util.screenSize
 import okio.Path.Companion.toOkioPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class PlatformContextsAndroidTest {
 
     @Test
     fun testApplication() {
-        // TODO test
+        val context = getTestContext()
+        assertNotEquals(context, context.application)
+        assertTrue(context.application is Application)
     }
 
     @Test

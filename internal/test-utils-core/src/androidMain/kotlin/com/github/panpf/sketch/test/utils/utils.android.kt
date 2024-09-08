@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.test.utils
 
 import android.content.pm.PackageInfo
-import android.graphics.Bitmap
 import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.DrawableCompat
@@ -31,9 +30,6 @@ import java.io.InputStream
 
 val Drawable.intrinsicSize: Size
     get() = Size(intrinsicWidth, intrinsicHeight)
-
-val Bitmap.size: Size
-    get() = Size(width, height)
 
 fun InputStream.newBitmapRegionDecoderInstanceCompat(): BitmapRegionDecoder? =
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {

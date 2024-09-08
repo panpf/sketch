@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.test.utils
 
 import android.graphics.Bitmap
+import com.github.panpf.sketch.util.Size
 
 
 fun Bitmap.toSizeString(): String = "${width}x${height}"
@@ -42,3 +43,6 @@ fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
 }
 
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
+
+val Bitmap.size: Size
+    get() = Size(width, height)
