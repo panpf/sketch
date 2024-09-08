@@ -36,7 +36,6 @@ val Image.size: Size
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaAnimatedImageTest
  * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest
- * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapImageTest
  */
 interface Image {
 
@@ -93,7 +92,7 @@ interface Image {
 /**
  * Image transformer, used for later resize after decoding
  *
- * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testBitmapImageTransformer
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testAndroidBitmapImageTransformer
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest.testSkiaBitmapImageTransformer
  */
 interface ImageTransformer {
