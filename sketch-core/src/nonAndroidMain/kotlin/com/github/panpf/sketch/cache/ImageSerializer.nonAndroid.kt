@@ -35,14 +35,14 @@ import org.jetbrains.skia.impl.use
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest.testCreateImageSerializer
  */
-actual fun createImageSerializer(): ImageSerializer? = SkiaBitmapImageSerializer()
+actual fun createImageSerializer(): ImageSerializer = SkiaBitmapImageSerializer
 
 /**
  * Skia platform image serialization implementation
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest.testSkiaBitmapImageSerializer
  */
-class SkiaBitmapImageSerializer : ImageSerializer {
+object SkiaBitmapImageSerializer : ImageSerializer {
 
     override fun supportImage(image: Image): Boolean {
         return image is SkiaBitmapImage

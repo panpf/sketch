@@ -33,14 +33,14 @@ import okio.BufferedSink
  *
  * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest.testCreateImageSerializer
  */
-actual fun createImageSerializer(): ImageSerializer? = AndroidImageSerializer()
+actual fun createImageSerializer(): ImageSerializer = AndroidBitmapImageSerializer
 
 /**
  * Android platform image serialization implementation
  *
- * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest
+ * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest.testAndroidBitmapImageSerializer
  */
-class AndroidImageSerializer : ImageSerializer {
+object AndroidBitmapImageSerializer : ImageSerializer {
 
     override fun supportImage(image: Image): Boolean {
         return image is AndroidBitmapImage

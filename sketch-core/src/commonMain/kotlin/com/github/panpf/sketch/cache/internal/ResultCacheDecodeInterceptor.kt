@@ -79,7 +79,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val resultCache = requestContext.sketch.resultCache
         val fileSystem = resultCache.fileSystem
         val resultCacheKey = requestContext.resultCacheKey
-        val imageSerializer = createImageSerializer() ?: return null
+        val imageSerializer = createImageSerializer()
         val snapshot = runCatching { resultCache.openSnapshot(resultCacheKey) }.getOrNull()
         if (snapshot == null) return null
         val result = runCatching {
@@ -122,7 +122,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         if (transformeds.isNullOrEmpty()) return false
         val image = decodeResult.image
         val imageSerializer =
-            createImageSerializer()?.takeIf { it.supportImage(image) } ?: return false
+            createImageSerializer().takeIf { it.supportImage(image) } ?: return false
         val resultCache = requestContext.sketch.resultCache
         val resultCacheKey = requestContext.resultCacheKey
         val editor = resultCache.openEditor(resultCacheKey)

@@ -29,21 +29,30 @@ import okio.BufferedSink
  * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest.testCreateImageSerializer
  * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest.testCreateImageSerializer
  */
-expect fun createImageSerializer(): ImageSerializer?
+expect fun createImageSerializer(): ImageSerializer
 
 /**
  * Image serialization interface, used to serialize image objects into disk cache
  *
- * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest
- * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest
+ * @see com.github.panpf.sketch.core.android.test.cache.ImageSerializerAndroidTest.testAndroidBitmapImageSerializer
+ * @see com.github.panpf.sketch.core.nonandroid.test.cache.ImageSerializerNonAndroidTest.testSkiaBitmapImageSerializer
  */
 interface ImageSerializer {
 
+    /**
+     * Determine whether the image can be serialized
+     */
     fun supportImage(image: Image): Boolean
 
+    /**
+     * Compress the image and write it to the disk cache
+     */
     @WorkerThread
     fun compress(image: Image, sink: BufferedSink)
 
+    /**
+     * Decode the image from the disk cache
+     */
     @WorkerThread
     fun decode(requestContext: RequestContext, imageInfo: ImageInfo, dataSource: DataSource): Image
 }

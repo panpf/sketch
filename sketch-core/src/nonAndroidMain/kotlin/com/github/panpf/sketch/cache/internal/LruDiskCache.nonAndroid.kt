@@ -20,6 +20,11 @@ import com.github.panpf.sketch.PlatformContext
 import okio.Path
 
 /**
+ * Check whether the disk cache directory meets the requirements of the platform.
+ * If it does not meet the requirements, it will try to repair it.
+ *
+ * Implementation of non-Android platforms does not require any processing
+ *
  * @see com.github.panpf.sketch.core.nonandroid.test.cache.internal.LruDiskCacheNonAndroidTest.testCheckDiskCacheDirectory
  */
 actual fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): Path = directory

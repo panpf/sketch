@@ -22,6 +22,9 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 
 /**
+ * Check whether the disk cache directory meets the requirements of the platform.
+ * If it does not meet the requirements, it will try to repair it.
+ *
  * Make the cache directory support multiple processes. If it is a non-main process, add the process name after the directory.
  *
  * @see com.github.panpf.sketch.core.android.test.cache.internal.LruDiskCacheAndroidTest.testCheckDiskCacheDirectory
