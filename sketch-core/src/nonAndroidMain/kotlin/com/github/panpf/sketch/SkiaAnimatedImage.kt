@@ -39,7 +39,7 @@ data class SkiaAnimatedImage constructor(
 
     override val height: Int = codec.height
 
-    override val byteCount: Long = 4L * width * height
+    override val byteCount: Long = codec.imageInfo.bytesPerPixel.toLong() * width * height
 
     override val allocationByteCount: Long = byteCount
 
