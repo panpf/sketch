@@ -52,6 +52,11 @@ class BitmapFactoryTest {
         val context = getTestContext()
         val imageName = ResourceImages.jpeg.resourceName
 
+        val bitmap0 = context.assets.open(imageName).use {
+            BitmapFactory.decodeStream(it, null, null)
+        }!!
+        assertEquals(ARGB_8888, bitmap0.config)
+
         val options = Options()
         assertEquals(ARGB_8888, options.inPreferredConfig)
         val bitmap = context.assets.open(imageName).use {

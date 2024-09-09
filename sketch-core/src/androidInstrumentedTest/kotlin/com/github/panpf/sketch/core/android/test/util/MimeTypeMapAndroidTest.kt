@@ -1,23 +1,27 @@
 package com.github.panpf.sketch.core.android.test.util
 
-import com.github.panpf.sketch.util.extensionToMimeType
-import com.github.panpf.sketch.util.mimeTypeToExtension
+import com.github.panpf.sketch.util.platformExtensionToMimeType
+import com.github.panpf.sketch.util.platformMimeTypeToExtension
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class MimeTypeMapAndroidTest {
 
     @Test
-    fun testExtensionToMimeType() {
-        assertEquals("image/jpeg", extensionToMimeType("jpg"))
-        assertEquals("image/png", extensionToMimeType("png"))
-        assertEquals("image/webp", extensionToMimeType("webp"))
+    fun testPlatformExtensionToMimeType() {
+        assertEquals("image/jpeg", platformExtensionToMimeType("jpg"))
+        assertEquals("image/png", platformExtensionToMimeType("png"))
+        assertEquals("image/webp", platformExtensionToMimeType("webp"))
     }
 
     @Test
-    fun testMimeTypeToExtension() {
-        assertEquals("jpg", mimeTypeToExtension("image/jpeg"))
-        assertEquals("png", mimeTypeToExtension("image/png"))
-        assertEquals("webp", mimeTypeToExtension("image/webp"))
+    fun testPlatformMimeTypeToExtension() {
+        assertTrue(
+            platformMimeTypeToExtension("image/jpeg") == "jpeg"
+                    || platformMimeTypeToExtension("image/jpeg") == "jpg"
+        )
+        assertEquals("png", platformMimeTypeToExtension("image/png"))
+        assertEquals("webp", platformMimeTypeToExtension("image/webp"))
     }
 }

@@ -23,7 +23,7 @@ class SkiaAnimatedImagesTest {
         val data = Data.makeFromBytes(bytes)
         val codec = Codec.makeFromData(data)
         assertEquals(
-            expected = "Codec@${codec.toHexString()}(${codec.width.toFloat()}x${codec.height.toFloat()},${codec.colorType})",
+            expected = "Codec@${codec.toHexString()}(${codec.width}x${codec.height},${codec.colorType})",
             actual = codec.toLogString()
         )
     }

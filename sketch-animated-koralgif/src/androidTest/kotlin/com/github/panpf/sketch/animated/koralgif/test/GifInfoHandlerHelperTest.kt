@@ -57,7 +57,7 @@ class GifInfoHandlerHelperTest {
             fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
         ).getFile(sketch)
         val snapshot =
-            sketch.resultCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
+            sketch.downloadCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
 
         GifInfoHandleHelper(
             sketch,

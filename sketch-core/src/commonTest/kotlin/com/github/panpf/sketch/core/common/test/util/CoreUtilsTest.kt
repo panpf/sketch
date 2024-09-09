@@ -1,15 +1,21 @@
 package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.test.utils.pow
+import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.intSplit
+import com.github.panpf.sketch.util.toHexString
+import okio.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class CoreUtilsTest {
 
@@ -31,12 +37,20 @@ class CoreUtilsTest {
 
     @Test
     fun testAsOrNull() {
-        // TODO test
+        assertNotNull(IOException().asOrNull<Exception>())
+        assertNull((null as Exception?).asOrNull<Exception>())
+        assertFailsWith(ClassCastException::class) {
+            Throwable() as Exception
+        }
+        assertNull(Throwable().asOrNull<Exception>())
     }
 
     @Test
     fun testAsOrThrow() {
-        // TODO test
+        assertNotNull(IOException().asOrThrow<Exception>())
+        assertFailsWith(ClassCastException::class) {
+            Throwable() as Exception
+        }
     }
 
     @Test
@@ -51,7 +65,11 @@ class CoreUtilsTest {
 
     @Test
     fun testToHexString() {
-        // TODO test
+        val any = Any()
+        assertEquals(
+            expected = any.hashCode().toString(16),
+            actual = any.toHexString()
+        )
     }
 
     @Test

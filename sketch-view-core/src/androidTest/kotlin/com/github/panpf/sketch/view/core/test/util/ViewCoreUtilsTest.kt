@@ -9,17 +9,22 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.findLeafChildDrawable
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
+import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
+import okio.IOException
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -27,12 +32,22 @@ class ViewCoreUtilsTest {
 
     @Test
     fun testAnyAsOrNull() {
-        // TODO test
+        assertNotNull(IOException().asOrNull<Exception>())
+        assertNull((null as Exception?).asOrNull<Exception>())
+        assertFailsWith(ClassCastException::class) {
+            @Suppress("KotlinConstantConditions")
+            Throwable() as Exception
+        }
+        assertNull(Throwable().asOrNull<Exception>())
     }
 
     @Test
     fun testAnyToHexString() {
-        // TODO test
+        val any = Any()
+        assertEquals(
+            expected = any.hashCode().toString(16),
+            actual = any.toHexString()
+        )
     }
 
     @Test

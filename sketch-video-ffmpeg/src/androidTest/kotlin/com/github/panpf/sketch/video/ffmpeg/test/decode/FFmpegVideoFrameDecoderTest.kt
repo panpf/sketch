@@ -109,7 +109,7 @@ class FFmpegVideoFrameDecoderTest {
         val mp4FetchResult = sketch.components.newFetcherOrThrow(mp4RequestContext)
             .fetch().getOrThrow().apply {
                 assertEquals(
-                    "FetchResult(source=AssetDataSource('sample.mp4'),mimeType='video/mp4')",
+                    "FetchResult(source=AssetDataSource('sample.mp4'), mimeType='video/mp4')",
                     this@apply.toString()
                 )
             }
@@ -119,7 +119,7 @@ class FFmpegVideoFrameDecoderTest {
         val pngFetchResult = sketch.components.newFetcherOrThrow(pngRequestContext)
             .fetch().getOrThrow().apply {
                 assertEquals(
-                    "FetchResult(source=AssetDataSource('sample.png'),mimeType='image/png')",
+                    "FetchResult(source=AssetDataSource('sample.png'), mimeType='image/png')",
                     this@apply.toString()
                 )
             }

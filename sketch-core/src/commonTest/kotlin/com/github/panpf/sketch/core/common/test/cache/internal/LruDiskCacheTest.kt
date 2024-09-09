@@ -296,7 +296,7 @@ class LruDiskCacheTest {
                 directory(defaultCacheDir)
             }.build().use {
                 assertEquals(
-                    "LruDiskCache(maxSize=300MB,appVersion=1,internalVersion=${DiskCache.DownloadBuilder.INTERNAL_VERSION},directory='${defaultCacheDir}')",
+                    "LruDiskCache(maxSize=307.2MB,appVersion=1,internalVersion=${DiskCache.DownloadBuilder.INTERNAL_VERSION},directory='${defaultCacheDir}')",
                     it.toString()
                 )
             }
