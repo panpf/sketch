@@ -7,6 +7,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
 import com.github.panpf.sketch.cache.AndroidBitmapImageValue
 import com.github.panpf.sketch.cache.MemoryCache
+import com.github.panpf.sketch.util.hasAlphaPixels
 
 actual fun createImage(width: Int, height: Int): Image {
     return Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).asSketchImage()
@@ -16,7 +17,7 @@ actual fun createCacheValue(image: Image, extras: Map<String, Any?>): MemoryCach
     return AndroidBitmapImageValue(image = image as AndroidBitmapImage, extras = extras)
 }
 
-actual fun Image.hasAlpha(): Boolean = (this as AndroidBitmapImage).bitmap.hasAlpha()
+actual fun Image.hasAlphaPixels(): Boolean = (this as AndroidBitmapImage).bitmap.hasAlphaPixels()
 
 /**
  * Returns the Color at the specified location.

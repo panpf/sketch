@@ -25,7 +25,12 @@ import com.github.panpf.sketch.resize.Scale
  * @see com.github.panpf.sketch.core.android.test.util.ImagesAndroidTest.testBlur
  * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testBlur
  */
-internal expect fun Image.blur(radius: Int, hasAlphaBitmapBgColor: Int?, maskColor: Int?): Image
+internal expect fun Image.blur(
+    radius: Int,
+    hasAlphaBitmapBgColor: Int? = null,
+    maskColor: Int? = null,
+    firstReuseSelf: Boolean = false
+): Image
 
 /**
  * Crop the image into a circle
@@ -41,7 +46,7 @@ internal expect fun Image.circleCrop(scale: Scale): Image
  * @see com.github.panpf.sketch.core.android.test.util.ImagesAndroidTest.testMask
  * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testMask
  */
-internal expect fun Image.mask(maskColor: Int): Image
+internal expect fun Image.mask(maskColor: Int, firstReuseSelf: Boolean = false): Image
 
 /**
  * Rotate the image

@@ -57,7 +57,7 @@ class BlurTransformation constructor(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {
-        val out = input.blur(radius, hasAlphaBitmapBgColor, maskColor)
+        val out = input.blur(radius, hasAlphaBitmapBgColor, maskColor, firstReuseSelf = false)
         val transformed = createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor)
         return TransformResult(image = out, transformed = transformed)
     }

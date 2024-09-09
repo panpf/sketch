@@ -35,6 +35,7 @@ import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -62,7 +63,16 @@ class DecodesAndroidTest {
 
     @Test
     fun testGetMaxBitmapSize() {
-        // TODO test
+        val maxSize = getMaxBitmapSize()
+        assertTrue(
+            actual = arrayOf(
+                Size(2048, 2048),
+                Size(4096, 4096),
+                Size(8192, 8192),
+                Size(16384, 16384)
+            ).any { it == maxSize },
+            message = "maxSize=$maxSize"
+        )
     }
 
     @Test
@@ -130,6 +140,8 @@ class DecodesAndroidTest {
                 mimeType = "image/heif"
             )
         )
+
+        // TODO Real decoding test
     }
 
     @Test
@@ -187,6 +199,8 @@ class DecodesAndroidTest {
                 mimeType = "image/jpeg",
             )
         )
+
+        // TODO Real decoding test
     }
 
     @Test
@@ -864,9 +878,9 @@ class DecodesAndroidTest {
         var result = newResult()
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
-            assertTrue(this !== result)
-            assertEquals("20x13", this.image.getBitmapOrThrow().toSizeString())
-        }
+                assertTrue(this !== result)
+                assertEquals("20x13", this.image.getBitmapOrThrow().toSizeString())
+            }
         // big
         request = request.newRequest {
             resize(50, 150, LESS_PIXELS)
@@ -874,8 +888,8 @@ class DecodesAndroidTest {
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
-            assertTrue(this === result)
-        }
+                assertTrue(this === result)
+            }
 
         /*
          * SAME_ASPECT_RATIO
@@ -887,9 +901,9 @@ class DecodesAndroidTest {
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
-            assertTrue(this !== result)
-            assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
-        }
+                assertTrue(this !== result)
+                assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
+            }
         // big
         request = request.newRequest {
             resize(50, 150, SAME_ASPECT_RATIO)
@@ -897,9 +911,9 @@ class DecodesAndroidTest {
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
-            assertTrue(this !== result)
-            assertEquals("17x50", this.image.getBitmapOrThrow().toSizeString())
-        }
+                assertTrue(this !== result)
+                assertEquals("17x50", this.image.getBitmapOrThrow().toSizeString())
+            }
 
         /*
          * EXACTLY
@@ -911,9 +925,9 @@ class DecodesAndroidTest {
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
-            assertTrue(this !== result)
-            assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
-        }
+                assertTrue(this !== result)
+                assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
+            }
         // big
         request = request.newRequest {
             resize(50, 150, EXACTLY)
@@ -921,9 +935,9 @@ class DecodesAndroidTest {
         result = newResult()
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
-            assertTrue(this !== result)
-            assertEquals("50x150", this.image.getBitmapOrThrow().toSizeString())
-        }
+                assertTrue(this !== result)
+                assertEquals("50x150", this.image.getBitmapOrThrow().toSizeString())
+            }
     }
 
     @Test
@@ -975,27 +989,19 @@ class DecodesAndroidTest {
     fun testDecodeBitmap() {
         val context = getTestContext()
 
-        AssetDataSource(
-            context = context,
-            fileName = ResourceImages.jpeg.resourceName
-        ).decodeBitmap()!!.apply {
+        ResourceImages.jpeg.toDataSource(context).decodeBitmap()!!.apply {
             assertEquals(1291, width)
             assertEquals(1936, height)
         }
 
-        AssetDataSource(
-            context = context,
-            fileName = ResourceImages.jpeg.resourceName
-        ).decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
+        ResourceImages.jpeg.toDataSource(context)
+            .decodeBitmap(BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
                 assertEquals(646, width)
                 assertEquals(968, height)
             }
 
-        AssetDataSource(
-            context,
-            ResourceImages.webp.resourceName
-        ).decodeBitmap()!!.apply {
+        ResourceImages.webp.toDataSource(context).decodeBitmap()!!.apply {
             assertEquals(1080, width)
             assertEquals(1344, height)
         }

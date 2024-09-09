@@ -29,7 +29,8 @@ import com.github.panpf.sketch.resize.Scale
 internal actual fun Image.blur(
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
-    maskColor: Int?
+    maskColor: Int?,
+    firstReuseSelf: Boolean
 ): Image {
     val image = this
     require(image is AndroidBitmapImage) {
@@ -39,12 +40,14 @@ internal actual fun Image.blur(
     // Transparent pixels cannot be blurred
     val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
         inputBitmap.backgrounded(hasAlphaBitmapBgColor)
+    } else if (!firstReuseSelf) {
+        inputBitmap.copy(/* config = */ inputBitmap.safeConfig, /* isMutable = */ true)
     } else {
-        inputBitmap
+        inputBitmap.getMutableCopy()
     }
-    val blurImage = compatAlphaBitmap.getMutableCopy().apply { blur(radius) }
-    val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
-    return maskImage.asSketchImage()
+    val blurBitmap = compatAlphaBitmap.apply { blur(radius) }
+    val maskBitmap = blurBitmap.apply { if (maskColor != null) mask(maskColor) }
+    return maskBitmap.asSketchImage()
 }
 
 /**
@@ -67,13 +70,17 @@ internal actual fun Image.circleCrop(scale: Scale): Image {
  *
  * @see com.github.panpf.sketch.core.android.test.util.ImagesAndroidTest.testMask
  */
-internal actual fun Image.mask(maskColor: Int): Image {
+internal actual fun Image.mask(maskColor: Int, firstReuseSelf: Boolean): Image {
     val image = this
     require(image is AndroidBitmapImage) {
         "Only AndroidBitmapImage is supported: ${image::class}"
     }
-    val inputBitmap = image.bitmap
-    val outBitmap = inputBitmap.getMutableCopy().apply { mask(maskColor) }
+    val inputBitmap = if (!firstReuseSelf) {
+        image.bitmap.copy(/* config = */ image.bitmap.safeConfig, /* isMutable = */ true)
+    } else {
+        image.bitmap.getMutableCopy()
+    }
+    val outBitmap = inputBitmap.apply { mask(maskColor) }
     return outBitmap.asSketchImage()
 }
 

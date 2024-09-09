@@ -38,6 +38,33 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 /**
+ * Check if the current Bitmap configuration is HARDWARE
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testIsHardware
+ */
+internal fun AndroidBitmapConfig.isHardware(): Boolean =
+    VERSION.SDK_INT >= VERSION_CODES.O && this == AndroidBitmapConfig.HARDWARE
+
+/**
+ * Gets the number of bytes occupied by a single pixel in a specified configuration
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetBytesPerPixel
+ */
+internal fun AndroidBitmapConfig?.getBytesPerPixel(): Int {
+    // A bitmap by decoding a gif has null "config" in certain environments.
+    val config = this ?: AndroidBitmapConfig.ARGB_8888
+    @Suppress("DEPRECATION")
+    return when {
+        config == AndroidBitmapConfig.ALPHA_8 -> 1
+        config == AndroidBitmapConfig.RGB_565 || config == AndroidBitmapConfig.ARGB_4444 -> 2
+        config == AndroidBitmapConfig.ARGB_8888 -> 4
+        VERSION.SDK_INT >= VERSION_CODES.O && config == AndroidBitmapConfig.RGBA_F16 -> 8
+        else -> 4
+    }
+}
+
+
+/**
  * The number of bytes required for calculation based on width, height, and configuration
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testAllocationByteCountCompat
@@ -78,11 +105,20 @@ internal val AndroidBitmap.safeConfig: AndroidBitmapConfig
 /**
  * Get a mutable copy of the bitmap, if it is already mutable, return itself
  *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetMutableCopy
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testMutableCopy
  */
 internal fun AndroidBitmap.getMutableCopy(): AndroidBitmap {
     return if (isMutable) this else copy(safeConfig, true)
 }
+
+
+/**
+ * Get the string applicable to the log
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToLogString
+ */
+internal fun AndroidBitmap.toLogString(): String =
+    "AndroidBitmap@${toHexString()}(${width}x${height},$configOrNull)"
 
 /**
  * Get an information string suitable for display
@@ -100,19 +136,34 @@ internal fun AndroidBitmap.toInfoString(): String =
 internal fun AndroidBitmap.toShortInfoString(): String =
     "AndroidBitmap(${width}x${height},$configOrNull)"
 
+
 /**
- * Get the string applicable to the log
+ * Returns true if there are transparent pixels
  *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToLogString
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testHasAlphaPixels
  */
-internal fun AndroidBitmap.toLogString(): String =
-    "AndroidBitmap@${toHexString()}(${width}x${height},$configOrNull)"
+fun AndroidBitmap.hasAlphaPixels(): Boolean {
+    val height = this.height
+    val width = this.width
+    var hasAlpha = false
+    for (i in 0 until width) {
+        for (j in 0 until height) {
+            val pixelAlpha = this.getPixel(i, j) shr 24
+            if (pixelAlpha in 0..254) {
+                hasAlpha = true
+                break
+            }
+        }
+    }
+    return hasAlpha
+}
 
 
 /**
  * Add a background color to the current Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testBackgrounded
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testBackgrounded2
  */
 internal fun AndroidBitmap.backgrounded(backgroundColor: Int): AndroidBitmap {
     val inputBitmap = this
@@ -198,6 +249,28 @@ internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
 }
 
 /**
+ * Resize the current Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testMapping
+ */
+internal fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
+    val inputBitmap = this
+    val config = inputBitmap.safeConfig
+    val outBitmap = AndroidBitmap.createBitmap(
+        /* width = */ mapping.newSize.width,
+        /* height = */ mapping.newSize.height,
+        /* config = */ config,
+    )
+    Canvas(outBitmap).drawBitmap(
+        /* bitmap = */ inputBitmap,
+        /* src = */ mapping.srcRect.toAndroidRect(),
+        /* dst = */ mapping.dstRect.toAndroidRect(),
+        /* paint = */ null
+    )
+    return outBitmap
+}
+
+/**
  * Mask the current Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testMask
@@ -216,6 +289,43 @@ internal fun AndroidBitmap.mask(maskColor: Int) {
         /* bottom = */ this.height.toFloat(),
         /* paint = */ paint
     )
+}
+
+/**
+ * Rotate the current Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testRotated
+ */
+internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
+    val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
+    val inputBitmap = this
+    val matrix = Matrix()
+    matrix.setRotate(finalAngle.toFloat())
+    val newRect = RectF(
+        /* left = */ 0f,
+        /* top = */ 0f,
+        /* right = */ inputBitmap.width.toFloat(),
+        /* bottom = */ inputBitmap.height.toFloat()
+    )
+    matrix.mapRect(newRect)
+    val newWidth = newRect.width().toInt()
+    val newHeight = newRect.height().toInt()
+
+    // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
+    var config = inputBitmap.safeConfig
+    if (finalAngle % 90 != 0 && config != AndroidBitmapConfig.ARGB_8888) {
+        config = AndroidBitmapConfig.ARGB_8888
+    }
+    val outBitmap = AndroidBitmap.createBitmap(
+        /* width = */ newWidth,
+        /* height = */ newHeight,
+        /* config = */ config,
+    )
+    matrix.postTranslate(-newRect.left, -newRect.top)
+    val canvas = Canvas(outBitmap)
+    val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
+    canvas.drawBitmap(inputBitmap, matrix, paint)
+    return outBitmap
 }
 
 /**
@@ -258,65 +368,6 @@ internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitm
 }
 
 /**
- * Rotate the current Bitmap
- *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testRotated
- */
-internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
-    val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
-    val inputBitmap = this
-    val matrix = Matrix()
-    matrix.setRotate(finalAngle.toFloat())
-    val newRect = RectF(
-        /* left = */ 0f,
-        /* top = */ 0f,
-        /* right = */ inputBitmap.width.toFloat(),
-        /* bottom = */ inputBitmap.height.toFloat()
-    )
-    matrix.mapRect(newRect)
-    val newWidth = newRect.width().toInt()
-    val newHeight = newRect.height().toInt()
-
-    // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-    var config = inputBitmap.safeConfig
-    if (finalAngle % 90 != 0 && config != AndroidBitmapConfig.ARGB_8888) {
-        config = AndroidBitmapConfig.ARGB_8888
-    }
-    val outBitmap = AndroidBitmap.createBitmap(
-        /* width = */ newWidth,
-        /* height = */ newHeight,
-        /* config = */ config,
-    )
-    matrix.postTranslate(-newRect.left, -newRect.top)
-    val canvas = Canvas(outBitmap)
-    val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
-    canvas.drawBitmap(inputBitmap, matrix, paint)
-    return outBitmap
-}
-
-/**
- * Resize the current Bitmap
- *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testMapping
- */
-internal fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
-    val inputBitmap = this
-    val config = inputBitmap.safeConfig
-    val outBitmap = AndroidBitmap.createBitmap(
-        /* width = */ mapping.newSize.width,
-        /* height = */ mapping.newSize.height,
-        /* config = */ config,
-    )
-    Canvas(outBitmap).drawBitmap(
-        /* bitmap = */ inputBitmap,
-        /* src = */ mapping.srcRect.toAndroidRect(),
-        /* dst = */ mapping.dstRect.toAndroidRect(),
-        /* paint = */ null
-    )
-    return outBitmap
-}
-
-/**
  * Zoom current Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testScaled
@@ -336,39 +387,4 @@ internal fun AndroidBitmap.scaled(scaleFactor: Float): AndroidBitmap {
     }
     canvas.drawBitmap(this, matrix, null)
     return newBitmap
-}
-
-/**
- * Check if the current Bitmap configuration is HARDWARE
- *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testIsHardware
- */
-internal fun AndroidBitmapConfig.isHardware(): Boolean =
-    VERSION.SDK_INT >= VERSION_CODES.O && this == AndroidBitmapConfig.HARDWARE
-
-/**
- * Gets the number of bytes occupied by a single pixel in a specified configuration
- *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetBytesPerPixel
- */
-internal fun AndroidBitmapConfig?.getBytesPerPixel(): Int {
-    // A bitmap by decoding a gif has null "config" in certain environments.
-    val config = this ?: AndroidBitmapConfig.ARGB_8888
-    @Suppress("DEPRECATION")
-    return when {
-        config == AndroidBitmapConfig.ALPHA_8 -> 1
-        config == AndroidBitmapConfig.RGB_565 || config == AndroidBitmapConfig.ARGB_4444 -> 2
-        config == AndroidBitmapConfig.ARGB_8888 -> 4
-        VERSION.SDK_INT >= VERSION_CODES.O && config == AndroidBitmapConfig.RGBA_F16 -> 8
-        else -> 4
-    }
-}
-
-/**
- * The number of bytes required for calculation based on width, height, and configuration
- *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testCalculateBitmapByteCount
- */
-internal fun calculateBitmapByteCount(width: Int, height: Int, config: AndroidBitmapConfig?): Int {
-    return width * height * config.getBytesPerPixel()
 }

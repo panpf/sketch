@@ -22,7 +22,7 @@ fun Image.corners(block: Image.() -> List<Int>): List<Int> {
 
 fun Image.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
 
-expect fun Image.hasAlpha(): Boolean
+expect fun Image.hasAlphaPixels(): Boolean
 
 /**
  * Returns the Color at the specified location.

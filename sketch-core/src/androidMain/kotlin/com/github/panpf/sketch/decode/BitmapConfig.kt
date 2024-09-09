@@ -28,6 +28,7 @@ import com.github.panpf.sketch.util.Key
  *
  * @see com.github.panpf.sketch.core.android.test.decode.BitmapConfigTest.testBitmapConfig
  */
+// TODO Support skia
 fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedBitmapConfig(config)
 
 /**

@@ -42,7 +42,7 @@ class MaskTransformation constructor(
         requestContext: RequestContext,
         input: Image
     ): TransformResult {
-        val out = input.mask(maskColor)
+        val out = input.mask(maskColor, firstReuseSelf = false)
         val transformed = createMaskTransformed(maskColor)
         return TransformResult(image = out, transformed = transformed)
     }

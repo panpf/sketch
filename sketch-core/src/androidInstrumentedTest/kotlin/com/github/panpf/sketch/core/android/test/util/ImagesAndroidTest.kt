@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.core.android.test.util
 
+import android.graphics.Bitmap
 import com.github.panpf.sketch.AndroidBitmapImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Scale
@@ -10,13 +11,18 @@ import com.github.panpf.sketch.test.utils.produceFingerPrint
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.blur
 import com.github.panpf.sketch.util.circleCrop
+import com.github.panpf.sketch.util.isImmutable
 import com.github.panpf.sketch.util.mask
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.roundedCorners
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class ImagesAndroidTest {
 
@@ -94,6 +100,59 @@ class ImagesAndroidTest {
         assertNotEquals(illegal = blur1BitmapFinger, actual = blur2BitmapFinger)
         assertNotEquals(illegal = blur1BitmapFinger, actual = blur3BitmapFinger)
         assertNotEquals(illegal = blur2BitmapFinger, actual = blur3BitmapFinger)
+    }
+
+    @Test
+    fun testBlur2() {
+        val mutableSourceImage = ResourceImages.png.decode().asOrThrow<AndroidBitmapImage>().let {
+            it.copy(it.bitmap.copy(/* config = */ Bitmap.Config.ARGB_8888, /* isMutable = */ true))
+        }
+        assertFalse(mutableSourceImage.bitmap.isImmutable)
+
+        // mutable, hasAlphaBitmapBgColor null, firstReuseSelf false
+        mutableSourceImage.blur(20, hasAlphaBitmapBgColor = null, firstReuseSelf = false)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = mutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // mutable, hasAlphaBitmapBgColor null, firstReuseSelf true
+        mutableSourceImage.blur(20, hasAlphaBitmapBgColor = null, firstReuseSelf = true)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertSame(expected = mutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // mutable, hasAlphaBitmapBgColor not null, firstReuseSelf false
+        mutableSourceImage.blur(20, hasAlphaBitmapBgColor = TestColor.RED, firstReuseSelf = false)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = mutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // mutable, hasAlphaBitmapBgColor not null, firstReuseSelf true
+        mutableSourceImage.blur(20, hasAlphaBitmapBgColor = TestColor.RED, firstReuseSelf = true)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = mutableSourceImage.bitmap, actual = this.bitmap)
+            }
+
+        val immutableSourceImage = ResourceImages.png.decode().asOrThrow<AndroidBitmapImage>()
+        assertTrue(immutableSourceImage.bitmap.isImmutable)
+
+        // immutable, hasAlphaBitmapBgColor null, firstReuseSelf false
+        immutableSourceImage.blur(20, hasAlphaBitmapBgColor = null, firstReuseSelf = false)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = immutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // immutable, hasAlphaBitmapBgColor null, firstReuseSelf true
+        immutableSourceImage.blur(20, hasAlphaBitmapBgColor = null, firstReuseSelf = true)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = immutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // immutable, hasAlphaBitmapBgColor not null, firstReuseSelf false
+        immutableSourceImage.blur(20, hasAlphaBitmapBgColor = TestColor.RED, firstReuseSelf = false)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = immutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // immutable, hasAlphaBitmapBgColor not null, firstReuseSelf true
+        immutableSourceImage.blur(20, hasAlphaBitmapBgColor = TestColor.RED, firstReuseSelf = true)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = immutableSourceImage.bitmap, actual = this.bitmap)
+            }
     }
 
     @Test
@@ -216,6 +275,39 @@ class ImagesAndroidTest {
         assertEquals(expected = sourceBitmapFinger, actual = redMaskBitmapFinger)
         assertEquals(expected = sourceBitmapFinger, actual = greenMaskBitmapFinger)
         assertEquals(expected = redMaskBitmapFinger, actual = greenMaskBitmapFinger)
+    }
+
+    @Test
+    fun testMask2() {
+        val mutableSourceImage = ResourceImages.png.decode().asOrThrow<AndroidBitmapImage>().let {
+            it.copy(it.bitmap.copy(/* config = */ Bitmap.Config.ARGB_8888, /* isMutable = */ true))
+        }
+        assertFalse(mutableSourceImage.bitmap.isImmutable)
+
+        // mutable, hasAlphaBitmapBgColor null, firstReuseSelf false
+        mutableSourceImage.mask(TestColor.RED, firstReuseSelf = false)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = mutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // mutable, hasAlphaBitmapBgColor null, firstReuseSelf true
+        mutableSourceImage.mask(TestColor.RED, firstReuseSelf = true)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertSame(expected = mutableSourceImage.bitmap, actual = this.bitmap)
+            }
+
+        val immutableSourceImage = ResourceImages.png.decode().asOrThrow<AndroidBitmapImage>()
+        assertTrue(immutableSourceImage.bitmap.isImmutable)
+
+        // immutable, hasAlphaBitmapBgColor null, firstReuseSelf false
+        immutableSourceImage.mask(TestColor.RED, firstReuseSelf = false)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = immutableSourceImage.bitmap, actual = this.bitmap)
+            }
+        // immutable, hasAlphaBitmapBgColor null, firstReuseSelf true
+        immutableSourceImage.mask(TestColor.RED, firstReuseSelf = true)
+            .asOrThrow<AndroidBitmapImage>().apply {
+                assertNotSame(illegal = immutableSourceImage.bitmap, actual = this.bitmap)
+            }
     }
 
     @Test

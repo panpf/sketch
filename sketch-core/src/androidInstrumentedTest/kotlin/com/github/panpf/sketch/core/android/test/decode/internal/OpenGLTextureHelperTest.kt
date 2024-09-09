@@ -29,8 +29,8 @@ class OpenGLTextureHelperTest {
     fun test() {
         val maxSize = OpenGLTextureHelper.maxSize
         assertTrue(
-            arrayOf(2048, 4096, 8192, 16384).any { it == maxSize },
-            "maxSize=$maxSize"
+            actual = arrayOf(2048, 4096, 8192, 16384).any { it == maxSize },
+            message = "maxSize=$maxSize"
         )
     }
 }

@@ -26,11 +26,13 @@ import com.github.panpf.sketch.resize.Scale
  * Apply a blur effect to the image
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testBlur
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testBlur2
  */
 internal actual fun Image.blur(
     radius: Int,
     hasAlphaBitmapBgColor: Int?,
-    maskColor: Int?
+    maskColor: Int?,
+    firstReuseSelf: Boolean
 ): Image {
     val image = this
     require(image is SkiaBitmapImage) {
@@ -38,14 +40,16 @@ internal actual fun Image.blur(
     }
     val inputBitmap = image.bitmap
     // Transparent pixels cannot be blurred
-    val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
+    val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlphaPixels()) {
         inputBitmap.backgrounded(hasAlphaBitmapBgColor)
+    } else if (!firstReuseSelf) {
+        inputBitmap.copied()
     } else {
-        inputBitmap
+        inputBitmap.getMutableCopy()
     }
-    val blurImage = compatAlphaBitmap.apply { blur(radius) }
-    val maskImage = blurImage.apply { if (maskColor != null) mask(maskColor) }
-    return maskImage.asSketchImage()
+    val blurBitmap = compatAlphaBitmap.apply { blur(radius) }
+    val maskBitmap = blurBitmap.apply { if (maskColor != null) mask(maskColor) }
+    return maskBitmap.asSketchImage()
 }
 
 /**
@@ -67,14 +71,19 @@ internal actual fun Image.circleCrop(scale: Scale): Image {
  * Apply a mask effect to the image
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testMask
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testMask2
  */
-internal actual fun Image.mask(maskColor: Int): Image {
+internal actual fun Image.mask(maskColor: Int, firstReuseSelf: Boolean): Image {
     val image = this
     require(image is SkiaBitmapImage) {
         "Only SkiaBitmapImage is supported: ${image::class}"
     }
-    val inputBitmap = image.bitmap
-    val outBitmap: SkiaBitmap = inputBitmap.apply { mask(maskColor) }
+    val inputBitmap = if (!firstReuseSelf) {
+        image.bitmap.copied()
+    } else {
+        image.bitmap.getMutableCopy()
+    }
+    val outBitmap = inputBitmap.apply { mask(maskColor) }
     return outBitmap.asSketchImage()
 }
 

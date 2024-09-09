@@ -85,6 +85,7 @@ actual fun calculateSampledBitmapSizeForRegion(
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecode
  */
 internal fun SkiaImage.decode(sampleSize: Int): SkiaBitmap {
+    // TODO Support custom colorType
     val bitmapSize = calculateSampledBitmapSize(Size(width, height), sampleSize)
     val newImageInfo =
         SkiaImageInfo(bitmapSize.width, bitmapSize.height, colorType, alphaType, colorSpace)

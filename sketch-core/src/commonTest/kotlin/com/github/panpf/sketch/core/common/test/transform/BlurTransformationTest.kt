@@ -23,7 +23,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
-import com.github.panpf.sketch.test.utils.hasAlpha
+import com.github.panpf.sketch.test.utils.hasAlphaPixels
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.createBlurTransformed
@@ -87,7 +87,7 @@ class BlurTransformationTest {
         val jpegRequestContext = jpegRequest.toRequestContext(sketch)
 
         val inBitmap = jpegRequest.decode(sketch).image.apply {
-            assertFalse(this.hasAlpha())
+            assertFalse(this.hasAlphaPixels())
         }
         inBitmap.apply {
             assertNotEquals(
@@ -130,21 +130,21 @@ class BlurTransformationTest {
         }
         val pngRequestContext = pngRequest.toRequestContext(sketch)
         val hasAlphaBitmap1 = pngRequest.decode(sketch).image.apply {
-            assertTrue(this.hasAlpha())
+            assertTrue(this.hasAlphaPixels())
         }
         val hasAlphaBitmapBlurred1 = BlurTransformation(30).transform(
             requestContext = pngRequestContext,
             input = hasAlphaBitmap1
         ).apply {
-            assertFalse(this.image.hasAlpha())
+            assertFalse(this.image.hasAlphaPixels())
         }.image
 
         val hasAlphaBitmap2 = pngRequest.decode(sketch).image.apply {
-            assertTrue(this.hasAlpha())
+            assertTrue(this.hasAlphaPixels())
         }
         val hasAlphaBitmapBlurred2 = BlurTransformation(30, hasAlphaBitmapBgColor = null)
             .transform(pngRequestContext, hasAlphaBitmap2).apply {
-                assertTrue(this.image.hasAlpha())
+                assertTrue(this.image.hasAlphaPixels())
             }.image
         assertNotEquals(hasAlphaBitmapBlurred1.corners(), hasAlphaBitmapBlurred2.corners())
     }
