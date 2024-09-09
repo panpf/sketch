@@ -23,7 +23,5 @@ import org.jetbrains.skia.Codec
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaAnimatedImagesTest.testCodecToLogString
  */
-internal fun Codec.toLogString(): String {
-    // TODO remove toFloat
-    return "Codec@${toHexString()}(${width.toFloat()}x${height.toFloat()},${colorType})"
-}
+internal fun Codec.toLogString(): String =
+    "Codec@${toHexString()}(${width}x${height},${colorType})"

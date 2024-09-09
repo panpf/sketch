@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.ComposeBitmap
+import com.github.panpf.sketch.util.toHexString
 
 /**
  * [ComposeBitmap] converted to [ComposeBitmapPainter]
@@ -36,7 +37,7 @@ fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest.testComposeBitmapToLogString
  */
 fun ComposeBitmap.toLogString(): String =
-    "ComposeBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},$config)"
+    "ComposeBitmap@${toHexString()}(${width}x${height},$config)"
 
 /**
  * [ComposeBitmap] painter

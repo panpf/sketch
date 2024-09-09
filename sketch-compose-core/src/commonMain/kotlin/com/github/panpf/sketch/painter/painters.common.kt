@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.VectorPainter
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.util.toHexString
 
 /**
  * Convert the Image to a Painter
@@ -39,10 +40,10 @@ expect fun Image.asPainter(): Painter
  */
 fun Painter.toLogString(): String = when (this) {
     is SketchPainter -> toString()
-    is BitmapPainter -> "BitmapPainter@${hashCode().toString(16)}(${toSizeString()})"
-    is ColorPainter -> "ColorPainter@${hashCode().toString(16)}(${color})"
-    is BrushPainter -> "BrushPainter@${hashCode().toString(16)}(${brush})"
-    is VectorPainter -> "VectorPainter@${hashCode().toString(16)}(${toSizeString()})"
+    is BitmapPainter -> "BitmapPainter@${toHexString()}(${toSizeString()})"
+    is ColorPainter -> "ColorPainter@${toHexString()}(${color})"
+    is BrushPainter -> "BrushPainter@${toHexString()}(${brush})"
+    is VectorPainter -> "VectorPainter@${toHexString()}(${toSizeString()})"
     else -> platformToLogString() ?: toString()
 }
 

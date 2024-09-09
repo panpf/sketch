@@ -54,6 +54,7 @@ import com.github.panpf.sketch.target.GenericComposeTarget
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.isEmpty
+import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toScale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -301,7 +302,7 @@ class AsyncImageState internal constructor(
 
     internal fun isRemembered(): Boolean = rememberedCount > 0
 
-    override fun toString(): String = "AsyncImageState@${hashCode().toString(16)}"
+    override fun toString(): String = "AsyncImageState@${toHexString()}"
 
     class AsyncImageTarget(val state: AsyncImageState) : GenericComposeTarget() {
 

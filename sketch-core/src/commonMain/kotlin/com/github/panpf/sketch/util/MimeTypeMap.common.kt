@@ -20,18 +20,18 @@ package com.github.panpf.sketch.util
 /**
  * A map of file extensions to MIME types.
  *
- * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testExtensionToMimeType
- * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testExtensionToMimeType
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformExtensionToMimeType
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testPlatformExtensionToMimeType
  */
-internal expect fun extensionToMimeType(extension: String): String?
+internal expect fun platformExtensionToMimeType(extension: String): String?
 
 /**
  * A map of MIME types to file extensions.
  *
- * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testMimeTypeToExtension
- * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testMimeTypeToExtension
+ * @see com.github.panpf.sketch.core.android.test.util.MimeTypeMapAndroidTest.testPlatformMimeTypeToExtension
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testPlatformMimeTypeToExtension
  */
-internal expect fun mimeTypeToExtension(mimeType: String): String?
+internal expect fun platformMimeTypeToExtension(mimeType: String): String?
 
 /**
  * A map of file extensions to MIME types.
@@ -58,12 +58,12 @@ object MimeTypeMap {
 
     fun getMimeTypeFromExtension(extension: String): String? {
         val lowerExtension = extension.lowercase()
-        return extensionToMimeType(lowerExtension) ?: mimeTypeData[lowerExtension]
+        return platformExtensionToMimeType(lowerExtension) ?: mimeTypeData[lowerExtension]
     }
 
     fun getExtensionFromMimeType(mimeType: String): String? {
         val lowerMimeType = mimeType.lowercase()
-        return mimeTypeToExtension(lowerMimeType)
+        return platformMimeTypeToExtension(lowerMimeType)
             ?: mimeTypeData.entries.find { it.value == lowerMimeType }?.key
     }
 

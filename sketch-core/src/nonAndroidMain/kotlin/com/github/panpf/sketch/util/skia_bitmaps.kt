@@ -93,28 +93,24 @@ internal fun SkiaBitmap.readIntPixels(): IntArray? {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
  */
-internal fun SkiaBitmap.toInfoString(): String {
-    return "SkiaBitmap(width=${width}, height=${height}, colorType=${colorType})"
-}
+internal fun SkiaBitmap.toInfoString(): String =
+    "SkiaBitmap(width=${width}, height=${height}, colorType=${colorType})"
 
 /**
  * Get a short information string suitable for display
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
  */
-internal fun SkiaBitmap.toShortInfoString(): String {
-    return "SkiaBitmap(${width}x${height},${colorType})"
-}
+internal fun SkiaBitmap.toShortInfoString(): String =
+    "SkiaBitmap(${width}x${height},${colorType})"
 
 /**
  * Returns a log string of this SkiaBitmap.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
  */
-internal fun SkiaBitmap.toLogString(): String {
-    // TODO remove toFloat
-    return "SkiaBitmap@${hashCode().toString(16)}(${width.toFloat()}x${height.toFloat()},${colorType})"
-}
+internal fun SkiaBitmap.toLogString(): String =
+    "SkiaBitmap@${toHexString()}(${width}x${height},${colorType})"
 
 
 /**

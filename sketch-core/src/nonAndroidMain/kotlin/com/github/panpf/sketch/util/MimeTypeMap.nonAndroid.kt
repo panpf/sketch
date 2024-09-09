@@ -19,17 +19,17 @@ package com.github.panpf.sketch.util
 /**
  * A map of file extensions to MIME types.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testExtensionToMimeType
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testPlatformExtensionToMimeType
  */
-internal actual fun extensionToMimeType(extension: String): String? {
+internal actual fun platformExtensionToMimeType(extension: String): String? {
     return null
 }
 
 /**
  * A map of MIME types to file extensions.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testMimeTypeToExtension
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.MimeTypeMapNonAndroidTest.testPlatformMimeTypeToExtension
  */
-internal actual fun mimeTypeToExtension(mimeType: String): String? {
+internal actual fun platformMimeTypeToExtension(mimeType: String): String? {
     return null
 }

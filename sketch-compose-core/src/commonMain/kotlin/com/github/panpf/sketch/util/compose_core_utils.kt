@@ -17,6 +17,7 @@
 
 package com.github.panpf.sketch.util
 
+import com.github.panpf.sketch.util.Size as SketchSize
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
-import com.github.panpf.sketch.util.Size as SketchSize
 
 /**
  * Convert [ContentScale] to [Scale]
@@ -159,3 +159,10 @@ fun Painter.findLeafChildPainter(): Painter? {
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
 }
+
+/**
+ * Returns a string representation of this Int value in the specified radix.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testToHexString
+ */
+internal fun Any.toHexString(): String = this.hashCode().toString(16)
