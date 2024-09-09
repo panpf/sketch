@@ -157,42 +157,13 @@ fun ImageRequest.Builder.error(
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageRequest.Builder = error(ColorDrawableStateImage(color), configBlock)
 
-
-const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"
-
 /**
- * Set [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ * Configure bitmap quality
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
  */
-fun ImageRequest.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageRequest.Builder = apply {
-    if (bitmapConfig != null) {
-        setExtra(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
-    } else {
-        removeExtra(BITMAP_CONFIG_KEY)
-    }
-}
-
-/**
- * Set [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
- */
-fun ImageRequest.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageRequest.Builder =
-    bitmapConfig(BitmapConfig(bitmapConfig))
-
-/**
- * Specify [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
- *
- * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
- */
-val ImageRequest.bitmapConfig: BitmapConfig?
-    get() = BitmapConfig.valueOf(extras?.value<String>(BITMAP_CONFIG_KEY))
+fun ImageRequest.Builder.bitmapConfig(config: Bitmap.Config): ImageRequest.Builder =
+    bitmapConfig(BitmapConfig(config))
 
 
 const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"

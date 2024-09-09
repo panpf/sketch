@@ -23,6 +23,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
+import com.github.panpf.sketch.decode.toAndroidBitmapConfig
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.bitmapConfig
@@ -90,7 +91,7 @@ open class DrawableDecoder(
         )
         val bitmapSize = Size(width = dstSize.width, height = dstSize.height)
         val bitmap = drawable.toNewBitmap(
-            preferredConfig = request.bitmapConfig?.getConfig(PNG.mimeType),
+            preferredConfig = request.bitmapConfig?.toAndroidBitmapConfig(PNG.mimeType),
             targetSize = bitmapSize
         )
         val imageInfo = ImageInfo(

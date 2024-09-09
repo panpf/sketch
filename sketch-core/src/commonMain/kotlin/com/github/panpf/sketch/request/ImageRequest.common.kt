@@ -21,6 +21,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.checkPlatformContext
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
@@ -850,3 +851,30 @@ data class ImageRequest(
         }
     }
 }
+
+
+const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"
+
+/**
+ * Configure bitmap quality
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
+ * @see com.github.panpf.sketch.core.nonandroid.test.request.ImageRequestNonAndroidTest.testBitmapConfig
+ */
+// TODO Move inside ImageRequest.kt
+fun ImageRequest.Builder.bitmapConfig(config: BitmapConfig?): ImageRequest.Builder = apply {
+    if (config != null) {
+        setExtra(key = BITMAP_CONFIG_KEY, value = config.value)
+    } else {
+        removeExtra(BITMAP_CONFIG_KEY)
+    }
+}
+
+/**
+ * Get bitmap quality configuration
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
+ * @see com.github.panpf.sketch.core.nonandroid.test.request.ImageRequestNonAndroidTest.testBitmapConfig
+ */
+val ImageRequest.bitmapConfig: BitmapConfig?
+    get() = extras?.value<String>(BITMAP_CONFIG_KEY)?.let { BitmapConfig.valueOf(it) }

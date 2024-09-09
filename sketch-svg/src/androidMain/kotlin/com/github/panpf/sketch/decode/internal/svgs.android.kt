@@ -27,6 +27,7 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder
+import com.github.panpf.sketch.decode.toAndroidBitmapConfig
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.source.DataSource
@@ -103,7 +104,8 @@ internal actual fun DataSource.decodeSvg(
         computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
     val request = requestContext.request
-    val bitmapConfig = request.bitmapConfig?.getConfig(ImageFormat.PNG.mimeType).toSoftware()
+    val bitmapConfig =
+        request.bitmapConfig?.toAndroidBitmapConfig(ImageFormat.PNG.mimeType).toSoftware()
     val bitmap = Bitmap.createBitmap(
         /* width = */ bitmapSize.width,
         /* height = */ bitmapSize.height,

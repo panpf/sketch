@@ -16,8 +16,10 @@
 
 package com.github.panpf.sketch.request
 
+import android
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
@@ -747,3 +749,29 @@ data class ImageOptions(
  * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testIsEmpty
  */
 fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()
+
+/**
+ * Set [Bitmap.Config] to use when creating the bitmap.
+ * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
+ */
+// TODO Move inside ImageOptions.kt
+fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions.Builder = apply {
+    if (bitmapConfig != null) {
+        setExtra(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
+    } else {
+        removeExtra(BITMAP_CONFIG_KEY)
+    }
+}
+
+/**
+ * Specify [Bitmap.Config] to use when creating the bitmap.
+ * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
+ *
+ * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
+ *
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
+ */
+val ImageOptions.bitmapConfig: BitmapConfig?
+    get() = extras?.value<String>(BITMAP_CONFIG_KEY)?.let { BitmapConfig.valueOf(it) }

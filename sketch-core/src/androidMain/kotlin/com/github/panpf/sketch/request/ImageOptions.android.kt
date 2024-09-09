@@ -164,33 +164,8 @@ fun ImageOptions.Builder.error(
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
  */
-fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions.Builder = apply {
-    if (bitmapConfig != null) {
-        setExtra(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
-    } else {
-        removeExtra(BITMAP_CONFIG_KEY)
-    }
-}
-
-/**
- * Set [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
- */
 fun ImageOptions.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageOptions.Builder =
     bitmapConfig(BitmapConfig(bitmapConfig))
-
-/**
- * Specify [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
- *
- * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
- */
-val ImageOptions.bitmapConfig: BitmapConfig?
-    get() = BitmapConfig.valueOf(extras?.value<String>(BITMAP_CONFIG_KEY))
 
 
 /**

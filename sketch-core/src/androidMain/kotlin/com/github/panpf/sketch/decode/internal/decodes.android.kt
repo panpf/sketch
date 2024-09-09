@@ -30,6 +30,7 @@ import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.decode.internal.ImageFormat.JPEG
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.decode.internal.ImageFormat.WEBP
+import com.github.panpf.sketch.decode.toAndroidBitmapConfig
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
@@ -189,7 +190,7 @@ fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig 
             inPreferQualityOverSpeed = true
         }
 
-        val newConfig = bitmapConfig?.getConfig(mimeType)
+        val newConfig = bitmapConfig?.toAndroidBitmapConfig(mimeType)
         if (newConfig != null) {
             inPreferredConfig = newConfig
         }
