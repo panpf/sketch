@@ -63,6 +63,9 @@ fun MyZoomAsyncImage(
         val downloadCache by appSettings.downloadCache.collectAsState()
         downloadCachePolicy(downloadCache)
 
+        val bitmapQuality by appSettings.bitmapQuality.collectAsState()
+        bitmapConfig(bitmapQuality)
+
         placeholder(ThumbnailMemoryCacheStateImage(placeholderUri))
         crossfade(fadeStart = false)
 

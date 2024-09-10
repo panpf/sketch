@@ -76,9 +76,7 @@ internal fun SkiaBitmap.toShortInfoString(): String =
  */
 internal fun SkiaBitmap.copied(): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap().apply {
-        allocPixels(inputBitmap.imageInfo)
-    }
+    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
     outBitmap.installPixels(inputBitmap.readPixels())
     return outBitmap
 }
@@ -250,9 +248,7 @@ fun SkiaBitmap.hasAlphaPixels(): Boolean {
  */
 internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap().apply {
-        allocPixels(inputBitmap.imageInfo)
-    }
+    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawRect(
         r = SkiaRect(0f, 0f, outBitmap.width.toFloat(), outBitmap.height.toFloat()),
@@ -293,10 +289,8 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     val newSize = min(inputBitmap.width, inputBitmap.height)
     val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
         .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
-    val outBitmap = SkiaBitmap().apply {
-        val inputImageInfo = inputBitmap.imageInfo
-        allocPixels(inputImageInfo.withWidthHeight(width = newSize, height = newSize))
-    }
+    val newImageInfo = inputBitmap.imageInfo.withWidthHeight(newSize, newSize)
+    val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawCircle(
         x = outBitmap.width / 2f,
@@ -331,9 +325,7 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
  */
 internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap().apply {
-        allocPixels(inputBitmap.imageInfo)
-    }
+    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
     val x = if (horizontal) outBitmap.width.toFloat() else 0f
     val y = if (!horizontal) outBitmap.height.toFloat() else 0f
@@ -359,10 +351,8 @@ internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
     val inputBitmap = this
     val newWidth = mapping.newSize.width
     val newHeight = mapping.newSize.height
-    val outBitmap = SkiaBitmap().apply {
-        val inputImageInfo = inputBitmap.imageInfo
-        allocPixels(inputImageInfo.withWidthHeight(width = newWidth, height = newHeight))
-    }
+    val newImageInfo = inputBitmap.imageInfo.withWidthHeight(newWidth, newHeight)
+    val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         isAntiAlias = true
@@ -409,10 +399,8 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
     val inputSize = Size(inputBitmap.width, inputBitmap.height)
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
     val outSize = calculateRotatedSize(size = inputSize, angle = finalAngle.toDouble())
-    val outBitmap = SkiaBitmap().apply {
-        val inputImageInfo = inputBitmap.imageInfo
-        allocPixels(inputImageInfo.withWidthHeight(width = outSize.width, height = outSize.height))
-    }
+    val newImageInfo = inputBitmap.imageInfo.withWidthHeight(outSize.width, outSize.height)
+    val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.translate(
         dx = (outSize.width - inputSize.width) / 2.0f,
@@ -439,9 +427,7 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
  */
 internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap().apply {
-        allocPixels(inputBitmap.imageInfo)
-    }
+    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawRRect(
         r = RRect.makeComplexLTRB(0f, 0f, width.toFloat(), height.toFloat(), cornerRadii),
@@ -476,10 +462,8 @@ internal fun SkiaBitmap.scaled(scaleFactor: Float): SkiaBitmap {
     val inputBitmap = this
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
-    val outBitmap = SkiaBitmap().apply {
-        val inputImageInfo = inputBitmap.imageInfo
-        allocPixels(inputImageInfo.withWidthHeight(width = scaledWidth, height = scaledHeight))
-    }
+    val newImageInfo = inputBitmap.imageInfo.withWidthHeight(scaledWidth, scaledHeight)
+    val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         isAntiAlias = true

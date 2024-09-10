@@ -21,6 +21,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.ResourceImages
@@ -558,6 +559,37 @@ class ImageRequestTest {
             downloadCachePolicy(null)
             build().apply {
                 assertEquals(ENABLED, downloadCachePolicy)
+            }
+        }
+    }
+
+    @Test
+    fun testBitmapConfig() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(bitmapConfig)
+            }
+
+            bitmapConfig(BitmapConfig.LowQuality)
+            build().apply {
+                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
+            }
+
+            bitmapConfig(BitmapConfig.HighQuality)
+            build().apply {
+                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
+            }
+
+            bitmapConfig(BitmapConfig.FixedQuality("ARGB_8888"))
+            build().apply {
+                assertEquals(BitmapConfig.FixedQuality("ARGB_8888"), bitmapConfig)
+            }
+
+            bitmapConfig(null)
+            build().apply {
+                assertNull(bitmapConfig)
             }
         }
     }

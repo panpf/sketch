@@ -17,11 +17,12 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.decode
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import okio.BufferedSink
@@ -65,7 +66,12 @@ object SkiaBitmapImageSerializer : ImageSerializer {
     ): Image {
         val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
         val skiaBitmap = SkiaImage.makeFromEncoded(bytes).use {
-            SkiaBitmap.makeFromImage(it)
+            val decodeConfig = DecodeConfig(
+                request = requestContext.request,
+                mimeType = imageInfo.mimeType,
+                isOpaque = it.imageInfo.isOpaque
+            )
+            it.decode(decodeConfig)
         }
         return skiaBitmap.asSketchImage()
     }

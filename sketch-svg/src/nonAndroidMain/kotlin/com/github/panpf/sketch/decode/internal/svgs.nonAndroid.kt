@@ -17,11 +17,14 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
+import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.SketchSize
@@ -30,6 +33,8 @@ import com.github.panpf.sketch.util.times
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.Canvas
+import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.Rect
@@ -114,9 +119,19 @@ internal actual fun DataSource.decodeSvg(
     val bitmapSize = svgSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 
-    val bitmap = SkiaBitmap().apply {
-        allocN32Pixels(bitmapSize.width, bitmapSize.height)
-    }
+    val decodeConfig = DecodeConfig(
+        request = requestContext.request,
+        mimeType = PNG.mimeType,
+        isOpaque = false
+    )
+    val bitmap = SkiaBitmap(
+        SkiaImageInfo(
+            width = bitmapSize.width,
+            height = bitmapSize.height,
+            colorType = decodeConfig.colorType ?: ColorType.RGBA_8888,
+            alphaType = ColorAlphaType.PREMUL
+        )
+    )
     val canvas = Canvas(bitmap)
     if (backgroundColor != null) {
         val rect = Rect(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())

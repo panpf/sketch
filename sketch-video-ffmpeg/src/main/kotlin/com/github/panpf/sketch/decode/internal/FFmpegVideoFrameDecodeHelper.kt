@@ -22,6 +22,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
@@ -66,7 +67,7 @@ class FFmpegVideoFrameDecodeHelper(
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
 
     override fun decode(sampleSize: Int): Image {
-        val config = request.newDecodeConfigByQualityParams(imageInfo.mimeType).apply {
+        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
             inSampleSize = sampleSize
         }
         val option = request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC

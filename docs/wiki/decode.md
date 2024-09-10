@@ -185,6 +185,14 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
      method and return a new [DecodeResult]
 > 3. If you don’t want to execute the request anymore, just don’t execute the proceed method.
 
+## Decoding Related Properties
+
+* ImageRequest.bitmapConfig(BitmapConfig): Sets the color quality of the bitmap. Available on all
+  platforms
+* ImageRequest.colorSpace(ColorSpace): Set the color space of the bitmap. Available only on Android
+  platform
+* ImageRequest.preferQualityOverSpeed(Boolean): Set quality priority decoding mode. Available only
+  on Android platform
 
 [comment]: <> (classs)
 

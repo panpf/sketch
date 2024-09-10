@@ -18,7 +18,7 @@
 
 package com.github.panpf.sketch.core.android.test.decode
 
-import android.graphics.Bitmap
+import android.graphics.Bitmap.Config
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -34,12 +34,12 @@ class BitmapConfigAndroidTest {
     @Test
     fun testBitmapConfig() {
         assertEquals(
-            expected = FixedQuality(Bitmap.Config.ARGB_8888.name),
-            actual = BitmapConfig(Bitmap.Config.ARGB_8888)
+            expected = FixedQuality(Config.ARGB_8888.name),
+            actual = BitmapConfig(Config.ARGB_8888)
         )
         assertEquals(
-            expected = FixedQuality(Bitmap.Config.RGB_565.name),
-            actual = BitmapConfig(Bitmap.Config.RGB_565)
+            expected = FixedQuality(Config.RGB_565.name),
+            actual = BitmapConfig(Config.RGB_565)
         )
     }
 
@@ -47,36 +47,41 @@ class BitmapConfigAndroidTest {
     fun testToAndroidBitmapConfig() {
         BitmapConfig.HighQuality.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                assertEquals(Bitmap.Config.RGBA_F16, toAndroidBitmapConfig("image/jpeg"))
-                assertEquals(Bitmap.Config.RGBA_F16, toAndroidBitmapConfig("image/png"))
-                assertEquals(Bitmap.Config.RGBA_F16, toAndroidBitmapConfig(null))
+                assertEquals(Config.RGBA_F16, toAndroidBitmapConfig("image/jpeg", isOpaque = false))
+                assertEquals(Config.RGBA_F16, toAndroidBitmapConfig("image/jpeg", isOpaque = true))
+                assertEquals(Config.RGBA_F16, toAndroidBitmapConfig("image/png", isOpaque = false))
+                assertEquals(Config.RGBA_F16, toAndroidBitmapConfig("image/png", isOpaque = true))
+                assertEquals(Config.RGBA_F16, toAndroidBitmapConfig(null, isOpaque = false))
+                assertEquals(Config.RGBA_F16, toAndroidBitmapConfig(null, isOpaque = true))
             } else {
-                assertEquals(Bitmap.Config.ARGB_8888, toAndroidBitmapConfig("image/jpeg"))
-                assertEquals(Bitmap.Config.ARGB_8888, toAndroidBitmapConfig("image/png"))
-                assertEquals(Bitmap.Config.ARGB_8888, toAndroidBitmapConfig(null))
+                assertEquals(
+                    Config.ARGB_8888,
+                    toAndroidBitmapConfig("image/jpeg", isOpaque = false)
+                )
+                assertEquals(Config.ARGB_8888, toAndroidBitmapConfig("image/jpeg", isOpaque = true))
+                assertEquals(Config.ARGB_8888, toAndroidBitmapConfig("image/png", isOpaque = false))
+                assertEquals(Config.ARGB_8888, toAndroidBitmapConfig("image/png", isOpaque = true))
+                assertEquals(Config.ARGB_8888, toAndroidBitmapConfig(null, isOpaque = false))
+                assertEquals(Config.ARGB_8888, toAndroidBitmapConfig(null, isOpaque = true))
             }
         }
 
         BitmapConfig.LowQuality.apply {
-            assertEquals(Bitmap.Config.RGB_565, toAndroidBitmapConfig("image/jpeg"))
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                @Suppress("DEPRECATION")
-                (assertEquals(Bitmap.Config.ARGB_4444, toAndroidBitmapConfig("image/png")))
-            } else {
-                assertEquals(Bitmap.Config.ARGB_8888, toAndroidBitmapConfig("image/png"))
-            }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                @Suppress("DEPRECATION")
-                (assertEquals(Bitmap.Config.ARGB_4444, toAndroidBitmapConfig(null)))
-            } else {
-                assertEquals(Bitmap.Config.ARGB_8888, toAndroidBitmapConfig(null))
-            }
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/jpeg", isOpaque = false))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/jpeg", isOpaque = true))
+            assertEquals(Config.ARGB_8888, toAndroidBitmapConfig("image/png", isOpaque = false))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/png", isOpaque = true))
+            assertEquals(Config.ARGB_8888, toAndroidBitmapConfig(null, isOpaque = false))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig(null, isOpaque = true))
         }
 
-        BitmapConfig(Bitmap.Config.RGB_565).apply {
-            assertEquals(Bitmap.Config.RGB_565, toAndroidBitmapConfig("image/jpeg"))
-            assertEquals(Bitmap.Config.RGB_565, toAndroidBitmapConfig("image/png"))
-            assertEquals(Bitmap.Config.RGB_565, toAndroidBitmapConfig(null))
+        BitmapConfig(Config.RGB_565).apply {
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/jpeg", isOpaque = false))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/jpeg", isOpaque = true))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/png", isOpaque = false))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig("image/png", isOpaque = true))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig(null, isOpaque = false))
+            assertEquals(Config.RGB_565, toAndroidBitmapConfig(null, isOpaque = true))
         }
     }
 }

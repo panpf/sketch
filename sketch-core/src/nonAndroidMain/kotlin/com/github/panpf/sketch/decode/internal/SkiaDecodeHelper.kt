@@ -20,6 +20,7 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
@@ -52,12 +53,18 @@ class SkiaDecodeHelper constructor(
     }
 
     override fun decode(sampleSize: Int): com.github.panpf.sketch.Image {
-        val skiaBitmap = skiaImage.decode(sampleSize)
+        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
+            this.inSampleSize = sampleSize
+        }
+        val skiaBitmap = skiaImage.decode(decodeConfig)
         return skiaBitmap.asSketchImage()
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): com.github.panpf.sketch.Image {
-        val skiaBitmap = skiaImage.decodeRegion(region, sampleSize)
+        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
+            this.inSampleSize = sampleSize
+        }
+        val skiaBitmap = skiaImage.decodeRegion(region, decodeConfig)
         return skiaBitmap.asSketchImage()
     }
 

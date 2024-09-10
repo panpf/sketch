@@ -32,16 +32,16 @@ fun BitmapConfig(config: ColorType): BitmapConfig = FixedQuality(config.name)
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.BitmapConfigNonAndroidTest.testToSkiaBitmapConfig
  */
-fun BitmapConfig.toSkiaColorType(mimeType: String?): ColorType = when (this) {
+fun BitmapConfig.toSkiaColorType(mimeType: String?, isOpaque: Boolean): ColorType = when (this) {
     is BitmapConfig.HighQuality -> {
         ColorType.RGBA_F16
     }
 
     is BitmapConfig.LowQuality -> {
-        if (ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG) {
+        if (ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG || isOpaque) {
             ColorType.RGB_565
         } else {
-            ColorType.RGBA_8888
+            ColorType.ARGB_4444
         }
     }
 

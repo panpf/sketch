@@ -1,43 +1,24 @@
 package com.github.panpf.sketch.core.nonandroid.test.request
 
+import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.test.utils.getTestContext
+import org.jetbrains.skia.ColorType
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ImageRequestNonAndroidTest {
 
     @Test
     fun testBitmapConfig() {
-        // TODO test
-//        val context1 = getTestContext()
-//        val uri = ResourceImages.jpeg.uri
-//        ImageRequest.Builder(context1, uri).apply {
-//            build().apply {
-//                assertNull(bitmapConfig)
-//            }
-//
-//            bitmapConfig(BitmapConfig(RGB_565))
-//            build().apply {
-//                assertEquals(BitmapConfig(RGB_565), bitmapConfig)
-//            }
-//
-//            bitmapConfig(ARGB_8888)
-//            build().apply {
-//                assertEquals(BitmapConfig(ARGB_8888), bitmapConfig)
-//            }
-//
-//            bitmapConfig(BitmapConfig.LowQuality)
-//            build().apply {
-//                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
-//            }
-//
-//            bitmapConfig(BitmapConfig.HighQuality)
-//            build().apply {
-//                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
-//            }
-//
-//            bitmapConfig(null)
-//            build().apply {
-//                assertNull(bitmapConfig)
-//            }
-//        }
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest(context1, uri) {
+            bitmapConfig(ColorType.RGB_565)
+        }.apply {
+            assertEquals(BitmapConfig.FixedQuality(ColorType.RGB_565.name), bitmapConfig)
+        }
     }
 }

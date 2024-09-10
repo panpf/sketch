@@ -21,6 +21,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: Transformation's transform() method removes the suspend modifier
 * change: The default memory cache size is now 256MB for desktop and web platforms and 128MB for ios
   platforms
+* new: Non-Android platforms now also support BitmapConfig
 
 # 4.0.0-alpha08
 

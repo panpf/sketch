@@ -55,52 +55,47 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(ARGB_8888)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             @Suppress("DEPRECATION")
             bitmapConfig(ARGB_4444)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                if (VERSION.SDK_INT > VERSION_CODES.M) {
-                    assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-                } else {
-                    @Suppress("DEPRECATION")
-                    (assertEquals(ARGB_4444, image.getBitmapOrThrow().config))
-                }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            if (VERSION.SDK_INT > VERSION_CODES.M) {
+                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
+            } else {
+                @Suppress("DEPRECATION")
+                (assertEquals(ARGB_4444, image.getBitmapOrThrow().config))
             }
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(ALPHA_8)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(RGB_565)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(RGB_565, image.getBitmapOrThrow().config)
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(RGB_565, image.getBitmapOrThrow().config)
+        }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -118,58 +113,53 @@ class ImageRequestExecuteAndroidTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 bitmapConfig(HARDWARE)
-            }.let { sketch.execute(it) }
-                .asOrNull<ImageResult.Success>()!!.apply {
-                    assertEquals(HARDWARE, image.getBitmapOrThrow().config)
-                }
+            }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(HARDWARE, image.getBitmapOrThrow().config)
+            }
         }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.LowQuality)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(RGB_565, image.getBitmapOrThrow().config)
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(RGB_565, image.getBitmapOrThrow().config)
+        }
         ImageRequest(context, ResourceImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.LowQuality)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                    assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-                } else {
-                    @Suppress("DEPRECATION")
-                    (assertEquals(ARGB_4444, image.getBitmapOrThrow().config))
-                }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
+            } else {
+                @Suppress("DEPRECATION")
+                (assertEquals(ARGB_4444, image.getBitmapOrThrow().config))
             }
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.HighQuality)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
-                } else {
-                    assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-                }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
+            } else {
+                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
+        }
         ImageRequest(context, ResourceImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             bitmapConfig(BitmapConfig.HighQuality)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
-                } else {
-                    assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
-                }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
+            } else {
+                assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
             }
+        }
     }
 
     @Test
@@ -181,37 +171,34 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(
-                    ColorSpace.get(ColorSpace.Named.SRGB).name,
-                    image.getBitmapOrThrow().colorSpace!!.name
-                )
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(
+                ColorSpace.get(ColorSpace.Named.SRGB).name,
+                image.getBitmapOrThrow().colorSpace!!.name
+            )
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.Named.ADOBE_RGB)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(
-                    ColorSpace.get(ColorSpace.Named.ADOBE_RGB).name,
-                    image.getBitmapOrThrow().colorSpace!!.name
-                )
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(
+                ColorSpace.get(ColorSpace.Named.ADOBE_RGB).name,
+                image.getBitmapOrThrow().colorSpace!!.name
+            )
+        }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.Named.DISPLAY_P3)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(
-                    ColorSpace.get(ColorSpace.Named.DISPLAY_P3).name,
-                    image.getBitmapOrThrow().colorSpace!!.name
-                )
-            }
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(
+                ColorSpace.get(ColorSpace.Named.DISPLAY_P3).name,
+                image.getBitmapOrThrow().colorSpace!!.name
+            )
+        }
     }
 
     @Test

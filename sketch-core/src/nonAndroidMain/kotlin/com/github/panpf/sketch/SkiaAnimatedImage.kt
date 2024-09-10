@@ -29,6 +29,7 @@ import org.jetbrains.skia.Codec
  */
 data class SkiaAnimatedImage constructor(
     val codec: Codec,
+    val imageInfo: SkiaImageInfo = codec.imageInfo,
     val repeatCount: Int? = null,
     val cacheDecodeTimeoutFrame: Boolean = false,
     val animationStartCallback: (() -> Unit)? = null,
@@ -39,7 +40,7 @@ data class SkiaAnimatedImage constructor(
 
     override val height: Int = codec.height
 
-    override val byteCount: Long = codec.imageInfo.bytesPerPixel.toLong() * width * height
+    override val byteCount: Long = imageInfo.bytesPerPixel.toLong() * width * height
 
     override val allocationByteCount: Long = byteCount
 

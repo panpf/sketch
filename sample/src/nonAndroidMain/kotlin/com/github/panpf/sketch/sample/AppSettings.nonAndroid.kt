@@ -6,6 +6,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.ui.util.valueOf
@@ -48,6 +49,19 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     }
     actual val downloadCache: StateFlow<CachePolicy> =
         downloadCacheName.stateMap { if (it) ENABLED else DISABLED }
+
+    actual val bitmapQualityName: SettingsStateFlow<String> by lazy {
+        stringSettingsStateFlow(context, "bitmapQuality1", "Default")
+    }
+    actual val bitmapQuality: StateFlow<BitmapConfig?> =
+        bitmapQualityName.stateMap {
+            when (it) {
+                "Default" -> null
+                "LOW" -> BitmapConfig.LowQuality
+                "HIGH" -> BitmapConfig.HighQuality
+                else -> BitmapConfig.FixedQuality(it)
+            }
+        }
 
     val cacheDecodeTimeoutFrame: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)

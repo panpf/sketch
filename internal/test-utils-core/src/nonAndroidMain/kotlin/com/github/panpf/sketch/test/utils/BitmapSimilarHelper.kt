@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.utils
 
+import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.util.SkiaRect
 import org.jetbrains.skia.Bitmap
@@ -73,9 +74,7 @@ fun hammingDistance(sourceImageFingerPrint: String, otherImageFingerPrint: Strin
  * 创建缩略图
  */
 private fun createThumbnail(source: Bitmap, width: Int, height: Int): Bitmap {
-    val newBitmap = Bitmap().apply {
-        allocN32Pixels(width, height)
-    }
+    val newBitmap = SkiaBitmap(source.imageInfo.withWidthHeight(width, height))
     val canvas = Canvas(newBitmap)
     val skiaImage = SkiaImage.makeFromBitmap(source)
     canvas.drawImageRect(

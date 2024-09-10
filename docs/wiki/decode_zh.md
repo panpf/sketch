@@ -174,6 +174,11 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [DecodeResult] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
+## 解码相关属性
+
+* ImageRequest.bitmapConfig(BitmapConfig): 设置位图的颜色质量。全平台可用
+* ImageRequest.colorSpace(ColorSpace): 设置位图的色彩空间。仅 Android 平台可用
+* ImageRequest.preferQualityOverSpeed(Boolean): 设置质量优先解码模式。仅 Android 平台可用
 
 [comment]: <> (classs)
 

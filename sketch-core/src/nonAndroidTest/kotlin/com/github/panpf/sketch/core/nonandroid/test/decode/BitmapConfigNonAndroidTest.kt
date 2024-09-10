@@ -42,21 +42,30 @@ class BitmapConfigNonAndroidTest {
     @Test
     fun testToSkiaBitmapConfig() {
         BitmapConfig.HighQuality.apply {
-            assertEquals(ColorType.RGBA_F16, toSkiaColorType("image/jpeg"))
-            assertEquals(ColorType.RGBA_F16, toSkiaColorType("image/png"))
-            assertEquals(ColorType.RGBA_F16, toSkiaColorType(null))
+            assertEquals(ColorType.RGBA_F16, toSkiaColorType("image/jpeg", isOpaque = false))
+            assertEquals(ColorType.RGBA_F16, toSkiaColorType("image/jpeg", isOpaque = true))
+            assertEquals(ColorType.RGBA_F16, toSkiaColorType("image/png", isOpaque = false))
+            assertEquals(ColorType.RGBA_F16, toSkiaColorType("image/png", isOpaque = true))
+            assertEquals(ColorType.RGBA_F16, toSkiaColorType(null, isOpaque = false))
+            assertEquals(ColorType.RGBA_F16, toSkiaColorType(null, isOpaque = true))
         }
 
         BitmapConfig.LowQuality.apply {
-            assertEquals(ColorType.RGB_565, toSkiaColorType("image/jpeg"))
-            assertEquals(ColorType.RGBA_8888, toSkiaColorType("image/png"))
-            assertEquals(ColorType.RGBA_8888, toSkiaColorType(null))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/jpeg", isOpaque = false))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/jpeg", isOpaque = true))
+            assertEquals(ColorType.ARGB_4444, toSkiaColorType("image/png", isOpaque = false))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/png", isOpaque = true))
+            assertEquals(ColorType.ARGB_4444, toSkiaColorType(null, isOpaque = false))
+            assertEquals(ColorType.RGB_565, toSkiaColorType(null, isOpaque = true))
         }
 
         BitmapConfig(ColorType.RGB_565).apply {
-            assertEquals(ColorType.RGB_565, toSkiaColorType("image/jpeg"))
-            assertEquals(ColorType.RGB_565, toSkiaColorType("image/png"))
-            assertEquals(ColorType.RGB_565, toSkiaColorType(null))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/jpeg", isOpaque = false))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/jpeg", isOpaque = true))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/png", isOpaque = false))
+            assertEquals(ColorType.RGB_565, toSkiaColorType("image/png", isOpaque = true))
+            assertEquals(ColorType.RGB_565, toSkiaColorType(null, isOpaque = false))
+            assertEquals(ColorType.RGB_565, toSkiaColorType(null, isOpaque = true))
         }
     }
 }

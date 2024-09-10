@@ -157,35 +157,10 @@ class ImageOptionsAndroidTest {
 
     @Test
     fun testBitmapConfig() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(bitmapConfig)
-            }
-
-            bitmapConfig(BitmapConfig(Bitmap.Config.RGB_565))
-            build().apply {
-                assertEquals(BitmapConfig(Bitmap.Config.RGB_565), bitmapConfig)
-            }
-
+        ImageOptions {
             bitmapConfig(Bitmap.Config.ARGB_8888)
-            build().apply {
-                assertEquals(BitmapConfig(Bitmap.Config.ARGB_8888), bitmapConfig)
-            }
-
-            bitmapConfig(BitmapConfig.LowQuality)
-            build().apply {
-                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
-            }
-
-            bitmapConfig(BitmapConfig.HighQuality)
-            build().apply {
-                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
-            }
-
-            bitmapConfig(null)
-            build().apply {
-                assertNull(bitmapConfig)
-            }
+        }.apply {
+            assertEquals(BitmapConfig.FixedQuality(Bitmap.Config.ARGB_8888.name), bitmapConfig)
         }
     }
 

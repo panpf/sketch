@@ -19,7 +19,6 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Movie
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -37,7 +36,6 @@ import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
@@ -107,8 +105,9 @@ class GifMovieDecoder(
         val height = movie?.height() ?: 0
         check(movie != null && width > 0 && height > 0) { "Failed to decode GIF." }
 
-        val config = if (movie.isOpaque && request.bitmapConfig?.isLowQuality == true)
-            RGB_565 else ARGB_8888
+        val decodeConfig =
+            DecodeConfig(request, ImageFormat.GIF.mimeType, isOpaque = movie.isOpaque)
+        val config = decodeConfig.inPreferredConfig ?: ARGB_8888
         val movieDrawable = MovieDrawable(movie, config).apply {
             setRepeatCount(request.repeatCount ?: ANIMATION_REPEAT_INFINITE)
 

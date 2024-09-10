@@ -31,7 +31,6 @@ import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.ability.showProgressIndicator
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.preferQualityOverSpeed

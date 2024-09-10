@@ -31,6 +31,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendRequestExtras()
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
+    .appendBitmapConfig()
     .appendSize()
     .appendSizeMultiplier()
     .appendPrecision()
@@ -57,6 +58,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
  */
 internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
     .appendCacheExtras()
+    .appendBitmapConfig()
     .appendSize(size)
     .appendSizeMultiplier()
     .appendPrecision()
@@ -112,6 +114,12 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     fun appendDownloadCachePolicy(): ImageRequestKeyBuilder = apply {
         request.downloadCachePolicy.takeIf { it != ENABLED }?.also { cachePolicy ->
             appendQueryParameter("_downloadCachePolicy", cachePolicy.name)
+        }
+    }
+
+    fun appendBitmapConfig(): ImageRequestKeyBuilder = apply {
+        request.bitmapConfig?.also { bitmapConfig ->
+            appendQueryParameter("_bitmapConfig", bitmapConfig.key)
         }
     }
 

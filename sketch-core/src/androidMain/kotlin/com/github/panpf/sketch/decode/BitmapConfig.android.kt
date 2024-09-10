@@ -34,7 +34,8 @@ fun BitmapConfig(config: Bitmap.Config): BitmapConfig = FixedQuality(config.name
  *
  * @see com.github.panpf.sketch.core.android.test.decode.BitmapConfigAndroidTest.testToAndroidBitmapConfig
  */
-fun BitmapConfig.toAndroidBitmapConfig(mimeType: String?): AndroidBitmapConfig = when (this) {
+fun BitmapConfig.toAndroidBitmapConfig(mimeType: String?, isOpaque: Boolean): AndroidBitmapConfig =
+    when (this) {
     is BitmapConfig.HighQuality -> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Bitmap.Config.RGBA_F16
@@ -44,7 +45,7 @@ fun BitmapConfig.toAndroidBitmapConfig(mimeType: String?): AndroidBitmapConfig =
     }
 
     is BitmapConfig.LowQuality -> {
-        if (ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG) {
+        if (ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG || isOpaque) {
             Bitmap.Config.RGB_565
         } else {
             Bitmap.Config.ARGB_8888

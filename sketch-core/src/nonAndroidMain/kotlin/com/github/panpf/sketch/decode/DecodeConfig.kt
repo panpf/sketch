@@ -1,13 +1,29 @@
 package com.github.panpf.sketch.decode
 
+import com.github.panpf.sketch.request.ImageRequest
 import org.jetbrains.skia.ColorType
+
+/**
+ * Create a DecodeConfig based on the parameters related to image quality in the request
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.DecodeConfigTest.testDecodeConfig
+ */
+fun DecodeConfig(
+    request: ImageRequest,
+    mimeType: String? = null,
+    isOpaque: Boolean = false,
+): DecodeConfig = DecodeConfig().apply {
+    val colorType1 = request.bitmapConfig?.toSkiaColorType(mimeType, isOpaque)
+    if (colorType1 != null) {
+        colorType = colorType1
+    }
+}
 
 /**
  * Decode configuration
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.DecodeConfigTest
  */
-// TODO Use it
 class DecodeConfig {
 
     /**
@@ -26,4 +42,6 @@ class DecodeConfig {
      * Color configuration
      */
     var colorType: ColorType? = null
+
+    // TODO Support colorSpace
 }

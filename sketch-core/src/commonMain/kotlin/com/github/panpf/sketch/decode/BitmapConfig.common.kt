@@ -48,6 +48,12 @@ val BitmapConfig.isDynamic: Boolean
 /**
  * Configure bitmap quality
  *
+ * The following decoders are not supported:
+ * * [com.github.panpf.sketch.decode.GifDrawableDecoder]
+ * * [com.github.panpf.sketch.decode.GifAnimatedDecoder]
+ * * [com.github.panpf.sketch.decode.WebpAnimatedDecoder]
+ * * [com.github.panpf.sketch.decode.HeifAnimatedDecoder]
+ *
  * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest
  */
 sealed interface BitmapConfig : Key {

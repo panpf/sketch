@@ -23,6 +23,36 @@ import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.preferQualityOverSpeed
+
+
+/**
+ * Create a DecodeConfig based on the parameters related to image quality in the request
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.DecodeConfigTest.testDecodeConfig
+ */
+fun DecodeConfig(
+    request: ImageRequest,
+    mimeType: String? = null,
+    isOpaque: Boolean = false
+): DecodeConfig =
+    DecodeConfig().apply {
+        @Suppress("DEPRECATION")
+        if (VERSION.SDK_INT <= VERSION_CODES.M && request.preferQualityOverSpeed) {
+            inPreferQualityOverSpeed = true
+        }
+
+        val newConfig = request.bitmapConfig?.toAndroidBitmapConfig(mimeType, isOpaque)
+        if (newConfig != null) {
+            inPreferredConfig = newConfig
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.O && request.colorSpace != null) {
+            inPreferredColorSpace = request.colorSpace
+        }
+    }
 
 /**
  * Android Bitmap Decode configuration
@@ -96,24 +126,29 @@ class DecodeConfig {
      */
     @RequiresApi(VERSION_CODES.O)
     var inPreferredColorSpace: ColorSpace? = null
+}
 
-    fun toBitmapOptions(): BitmapFactory.Options {
-        val options = BitmapFactory.Options()
-        inSampleSize?.let {
-            options.inSampleSize = it
-        }
-        @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed == true) {
-            options.inPreferQualityOverSpeed = true
-        }
-        inPreferredConfig?.let {
-            options.inPreferredConfig = it
-        }
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            inPreferredColorSpace?.let {
-                options.inPreferredColorSpace = it
-            }
-        }
-        return options
+/**
+ * Convert [DecodeConfig] to [BitmapFactory.Options]
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.DecodeConfigTest.testToBitmapOptions
+ */
+fun DecodeConfig.toBitmapOptions(): BitmapFactory.Options {
+    val options = BitmapFactory.Options()
+    inSampleSize?.let {
+        options.inSampleSize = it
     }
+    @Suppress("DEPRECATION")
+    if (VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed == true) {
+        options.inPreferQualityOverSpeed = true
+    }
+    inPreferredConfig?.let {
+        options.inPreferredConfig = it
+    }
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        inPreferredColorSpace?.let {
+            options.inPreferredColorSpace = it
+        }
+    }
+    return options
 }

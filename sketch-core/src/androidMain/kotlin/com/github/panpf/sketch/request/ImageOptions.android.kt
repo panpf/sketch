@@ -160,12 +160,11 @@ fun ImageOptions.Builder.error(
 
 /**
  * Set [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
  */
-fun ImageOptions.Builder.bitmapConfig(bitmapConfig: Bitmap.Config): ImageOptions.Builder =
-    bitmapConfig(BitmapConfig(bitmapConfig))
+fun ImageOptions.Builder.bitmapConfig(config: Bitmap.Config): ImageOptions.Builder =
+    bitmapConfig(BitmapConfig(config))
 
 
 /**

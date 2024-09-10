@@ -23,18 +23,12 @@ import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
 import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.decode.internal.ImageFormat.JPEG
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.decode.internal.ImageFormat.WEBP
-import com.github.panpf.sketch.decode.toAndroidBitmapConfig
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
-import com.github.panpf.sketch.request.colorSpace
-import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import okio.buffer
@@ -175,28 +169,6 @@ fun DataSource.decodeRegionBitmap(
             regionDecoder?.decodeRegion(srcRect, options)
         } finally {
             regionDecoder?.recycle()
-        }
-    }
-
-/**
- * Create a DecodeConfig based on the parameters related to image quality in the request
- *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testNewDecodeConfigByQualityParams
- */
-fun ImageRequest.newDecodeConfigByQualityParams(mimeType: String): DecodeConfig =
-    DecodeConfig().apply {
-        @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed) {
-            inPreferQualityOverSpeed = true
-        }
-
-        val newConfig = bitmapConfig?.toAndroidBitmapConfig(mimeType)
-        if (newConfig != null) {
-            inPreferredConfig = newConfig
-        }
-
-        if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != null) {
-            inPreferredColorSpace = colorSpace
         }
     }
 

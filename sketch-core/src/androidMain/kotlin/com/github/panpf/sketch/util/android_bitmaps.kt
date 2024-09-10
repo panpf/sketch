@@ -94,7 +94,7 @@ internal val AndroidBitmap.isImmutable: Boolean
     get() = !isMutable
 
 /**
- * Get the configuration of the bitmap, if it is null, return [AndroidBitmapConfig.ARGB_8888]
+ * Get the configuration of the bitmap, if it is null, return [AndroidBitmapConfig].ARGB_8888
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testSafeConfig
  */
@@ -219,11 +219,10 @@ internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
     val newSize = min(inputBitmap.width, inputBitmap.height)
     val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
         .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
-    val config = inputBitmap.safeConfig
     val outBitmap = AndroidBitmap.createBitmap(
         /* width = */ resizeMapping.newSize.width,
         /* height = */ resizeMapping.newSize.height,
-        /* config = */ config,
+        /* config = */ inputBitmap.safeConfig,
     )
     val paint = Paint().apply {
         isAntiAlias = true
@@ -255,11 +254,10 @@ internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
  */
 internal fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
     val inputBitmap = this
-    val config = inputBitmap.safeConfig
     val outBitmap = AndroidBitmap.createBitmap(
         /* width = */ mapping.newSize.width,
         /* height = */ mapping.newSize.height,
-        /* config = */ config,
+        /* config = */ inputBitmap.safeConfig,
     )
     Canvas(outBitmap).drawBitmap(
         /* bitmap = */ inputBitmap,
@@ -313,7 +311,7 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
 
     // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
     var config = inputBitmap.safeConfig
-    if (finalAngle % 90 != 0 && config != AndroidBitmapConfig.ARGB_8888) {
+    if (finalAngle % 90 != 0 && config == AndroidBitmapConfig.RGB_565) {
         config = AndroidBitmapConfig.ARGB_8888
     }
     val outBitmap = AndroidBitmap.createBitmap(
@@ -337,11 +335,10 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
  */
 internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitmap {
     val inputBitmap = this
-    val config = inputBitmap.safeConfig
     val newBitmap = AndroidBitmap.createBitmap(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
-        /* config = */ config,
+        /* config = */ inputBitmap.safeConfig,
     )
     val paint = Paint().apply {
         isAntiAlias = true
@@ -373,13 +370,12 @@ internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitm
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testScaled
  */
 internal fun AndroidBitmap.scaled(scaleFactor: Float): AndroidBitmap {
-    val config = this.safeConfig
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
     val newBitmap = AndroidBitmap.createBitmap(
         /* width = */ scaledWidth,
         /* height = */ scaledHeight,
-        /* config = */ config,
+        /* config = */ safeConfig,
     )
     val canvas = Canvas(newBitmap)
     val matrix = Matrix().apply {

@@ -18,15 +18,14 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
-import com.github.panpf.sketch.decode.toAndroidBitmapConfig
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Size
@@ -90,8 +89,9 @@ open class DrawableDecoder(
             height = (imageHeight * scale).roundToInt()
         )
         val bitmapSize = Size(width = dstSize.width, height = dstSize.height)
+        val decodeConfig = DecodeConfig(request, PNG.mimeType, isOpaque = false)
         val bitmap = drawable.toNewBitmap(
-            preferredConfig = request.bitmapConfig?.toAndroidBitmapConfig(PNG.mimeType),
+            preferredConfig = decodeConfig.inPreferredConfig,
             targetSize = bitmapSize
         )
         val imageInfo = ImageInfo(

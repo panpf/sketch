@@ -8,7 +8,6 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ViewLifecycleResolver
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.resize.FixedPrecisionDecider

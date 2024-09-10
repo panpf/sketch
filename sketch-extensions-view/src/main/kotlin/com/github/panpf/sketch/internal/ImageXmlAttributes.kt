@@ -36,7 +36,6 @@ import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.extensions.view.R
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.placeholder

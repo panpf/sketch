@@ -24,6 +24,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.DecodeConfig
+import com.github.panpf.sketch.decode.toBitmapOptions
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,6 +32,11 @@ import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class DecodeConfigTest {
+
+    @Test
+    fun testDecodeConfig() {
+        // TODO test
+    }
 
     @Test
     fun testInSampleSize() {

@@ -58,17 +58,16 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     actual val downloadCache: StateFlow<CachePolicy> =
         downloadCacheName.stateMap { if (it) ENABLED else DISABLED }
 
-    // TODO Move to common
-    val bitmapQualityName: SettingsStateFlow<String> by lazy {
+    actual val bitmapQualityName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "bitmapQuality1", "Default")
     }
-    val bitmapQuality: StateFlow<BitmapConfig?> =
+    actual val bitmapQuality: StateFlow<BitmapConfig?> =
         bitmapQualityName.stateMap {
             when (it) {
+                "Default" -> null
                 "LOW" -> BitmapConfig.LowQuality
                 "HIGH" -> BitmapConfig.HighQuality
-                // TODO more ...
-                else -> null
+                else -> BitmapConfig.FixedQuality(it)
             }
         }
 

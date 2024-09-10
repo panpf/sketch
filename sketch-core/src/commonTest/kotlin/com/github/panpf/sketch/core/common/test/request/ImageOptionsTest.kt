@@ -21,6 +21,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -141,6 +142,14 @@ class ImageOptionsTest {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
             assertNotNull(this.downloadCachePolicy)
+        }
+
+        ImageOptions {
+            bitmapConfig(BitmapConfig.HighQuality)
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.bitmapConfig)
         }
 
         ImageOptions {
@@ -367,6 +376,18 @@ class ImageOptionsTest {
             downloadCachePolicy(READ_ONLY)
         }).apply {
             assertEquals(DISABLED, this.downloadCachePolicy)
+        }
+
+        ImageOptions().apply {
+            assertEquals(null, this.bitmapConfig)
+        }.merged(ImageOptions {
+            bitmapConfig(BitmapConfig.HighQuality)
+        }).apply {
+            assertEquals(BitmapConfig.HighQuality, this.bitmapConfig)
+        }.merged(ImageOptions {
+            bitmapConfig(BitmapConfig.LowQuality)
+        }).apply {
+            assertEquals(BitmapConfig.HighQuality, this.bitmapConfig)
         }
 
         ImageOptions().apply {
@@ -861,6 +882,36 @@ class ImageOptionsTest {
             downloadCachePolicy(null)
             build().apply {
                 assertNull(downloadCachePolicy)
+            }
+        }
+    }
+
+
+    @Test
+    fun testBitmapConfig() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(bitmapConfig)
+            }
+
+            bitmapConfig(BitmapConfig.LowQuality)
+            build().apply {
+                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
+            }
+
+            bitmapConfig(BitmapConfig.HighQuality)
+            build().apply {
+                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
+            }
+
+            bitmapConfig(BitmapConfig.FixedQuality("ARGB_8888"))
+            build().apply {
+                assertEquals(BitmapConfig.FixedQuality("ARGB_8888"), bitmapConfig)
+            }
+
+            bitmapConfig(null)
+            build().apply {
+                assertNull(bitmapConfig)
             }
         }
     }

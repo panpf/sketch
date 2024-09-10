@@ -150,6 +150,11 @@ data class ImageRequest(
 
 
     /**
+     * Bitmap quality configuration
+     */
+    val bitmapConfig: BitmapConfig?,
+
+    /**
      * Lazy calculation of resize size. If size is null at runtime, size is calculated and assigned to size
      */
     val sizeResolver: SizeResolver,
@@ -449,6 +454,13 @@ data class ImageRequest(
          */
         fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.downloadCachePolicy(cachePolicy)
+        }
+
+        /**
+         * Set bitmap quality
+         */
+        fun bitmapConfig(config: BitmapConfig?): Builder = apply {
+            definedOptionsBuilder.bitmapConfig(config)
         }
 
         /**
@@ -763,6 +775,7 @@ data class ImageRequest(
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
+            val bitmapConfig = finalOptions.bitmapConfig
             val sizeResolver = finalOptions.sizeResolver ?: resolveSizeResolver()
             val sizeMultiplier = finalOptions.sizeMultiplier
             val precisionDecider =
@@ -795,6 +808,7 @@ data class ImageRequest(
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
+                bitmapConfig = bitmapConfig,
                 sizeResolver = sizeResolver,
                 sizeMultiplier = sizeMultiplier,
                 precisionDecider = precisionDecider,
@@ -851,30 +865,3 @@ data class ImageRequest(
         }
     }
 }
-
-
-const val BITMAP_CONFIG_KEY = "sketch#bitmap_config"
-
-/**
- * Configure bitmap quality
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
- * @see com.github.panpf.sketch.core.nonandroid.test.request.ImageRequestNonAndroidTest.testBitmapConfig
- */
-// TODO Move inside ImageRequest.kt
-fun ImageRequest.Builder.bitmapConfig(config: BitmapConfig?): ImageRequest.Builder = apply {
-    if (config != null) {
-        setExtra(key = BITMAP_CONFIG_KEY, value = config.value)
-    } else {
-        removeExtra(BITMAP_CONFIG_KEY)
-    }
-}
-
-/**
- * Get bitmap quality configuration
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
- * @see com.github.panpf.sketch.core.nonandroid.test.request.ImageRequestNonAndroidTest.testBitmapConfig
- */
-val ImageRequest.bitmapConfig: BitmapConfig?
-    get() = extras?.value<String>(BITMAP_CONFIG_KEY)?.let { BitmapConfig.valueOf(it) }

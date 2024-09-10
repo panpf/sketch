@@ -19,6 +19,7 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.SkiaImageInfo
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
@@ -84,11 +85,20 @@ actual fun calculateSampledBitmapSizeForRegion(
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecode
  */
-internal fun SkiaImage.decode(sampleSize: Int): SkiaBitmap {
-    // TODO Support custom colorType
-    val bitmapSize = calculateSampledBitmapSize(Size(width, height), sampleSize)
-    val newImageInfo =
-        SkiaImageInfo(bitmapSize.width, bitmapSize.height, colorType, alphaType, colorSpace)
+internal fun SkiaImage.decode(decodeConfig: DecodeConfig? = null): SkiaBitmap {
+    val sampleSize = decodeConfig?.inSampleSize ?: 1
+    val bitmapSize = calculateSampledBitmapSize(
+        imageSize = Size(width, height),
+        sampleSize = sampleSize
+    )
+    val newColorType = decodeConfig?.colorType ?: colorType
+    val newImageInfo = SkiaImageInfo(
+        width = bitmapSize.width,
+        height = bitmapSize.height,
+        colorType = newColorType,
+        alphaType = alphaType,
+        colorSpace = colorSpace
+    )
     val bitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(bitmap)
     canvas.drawImageRect(
@@ -104,10 +114,23 @@ internal fun SkiaImage.decode(sampleSize: Int): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecodeRegion
  */
-internal fun SkiaImage.decodeRegion(srcRect: SketchRect, sampleSize: Int): SkiaBitmap {
-    val bitmapSize = calculateSampledBitmapSize(Size(srcRect.width(), srcRect.height()), sampleSize)
-    val newImageInfo =
-        SkiaImageInfo(bitmapSize.width, bitmapSize.height, colorType, alphaType, colorSpace)
+internal fun SkiaImage.decodeRegion(
+    srcRect: SketchRect,
+    decodeConfig: DecodeConfig? = null
+): SkiaBitmap {
+    val sampleSize = decodeConfig?.inSampleSize ?: 1
+    val bitmapSize = calculateSampledBitmapSize(
+        imageSize = Size(srcRect.width(), srcRect.height()),
+        sampleSize = sampleSize
+    )
+    val newColorType = decodeConfig?.colorType ?: colorType
+    val newImageInfo = SkiaImageInfo(
+        width = bitmapSize.width,
+        height = bitmapSize.height,
+        colorType = newColorType,
+        alphaType = alphaType,
+        colorSpace = colorSpace
+    )
     val bitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(bitmap)
     canvas.drawImageRect(

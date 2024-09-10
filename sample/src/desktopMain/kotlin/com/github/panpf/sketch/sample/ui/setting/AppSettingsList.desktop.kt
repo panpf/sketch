@@ -2,8 +2,18 @@ package com.github.panpf.sketch.sample.ui.setting
 
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.EventBus
+import org.jetbrains.skia.ColorType
 
-actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+    add(
+        DropdownSettingItem(
+            title = "Bitmap Quality",
+            desc = null,
+            values = listOf("Default", "LOW", "HIGH").plus(ColorType.values().map { it.name }),
+            state = appSettings.bitmapQualityName,
+        )
+    )
+}
 
 actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(

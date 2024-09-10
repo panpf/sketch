@@ -20,8 +20,10 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
+import com.github.panpf.sketch.decode.toBitmapOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
@@ -47,7 +49,7 @@ class BitmapFactoryDecodeHelper(
     }
 
     override fun decode(sampleSize: Int): Image {
-        val config = request.newDecodeConfigByQualityParams(imageInfo.mimeType).apply {
+        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
             inSampleSize = sampleSize
         }
         val options = config.toBitmapOptions()
@@ -59,7 +61,7 @@ class BitmapFactoryDecodeHelper(
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): Image {
-        val config = request.newDecodeConfigByQualityParams(imageInfo.mimeType).apply {
+        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
             inSampleSize = sampleSize
         }
         val options = config.toBitmapOptions()

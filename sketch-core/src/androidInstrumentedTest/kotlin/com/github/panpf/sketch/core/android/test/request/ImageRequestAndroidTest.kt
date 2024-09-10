@@ -16,8 +16,7 @@
 
 package com.github.panpf.sketch.core.android.test.request
 
-import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
@@ -187,35 +186,10 @@ class ImageRequestAndroidTest {
     fun testBitmapConfig() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
-        ImageRequest.Builder(context1, uri).apply {
-            build().apply {
-                assertNull(bitmapConfig)
-            }
-
-            bitmapConfig(BitmapConfig(RGB_565))
-            build().apply {
-                assertEquals(BitmapConfig(RGB_565), bitmapConfig)
-            }
-
-            bitmapConfig(ARGB_8888)
-            build().apply {
-                assertEquals(BitmapConfig(ARGB_8888), bitmapConfig)
-            }
-
-            bitmapConfig(BitmapConfig.LowQuality)
-            build().apply {
-                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
-            }
-
-            bitmapConfig(BitmapConfig.HighQuality)
-            build().apply {
-                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
-            }
-
-            bitmapConfig(null)
-            build().apply {
-                assertNull(bitmapConfig)
-            }
+        ImageRequest(context1, uri) {
+            bitmapConfig(Bitmap.Config.ARGB_8888)
+        }.apply {
+            assertEquals(BitmapConfig.FixedQuality(Bitmap.Config.ARGB_8888.name), bitmapConfig)
         }
     }
 

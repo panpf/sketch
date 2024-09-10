@@ -1059,11 +1059,6 @@ class DecodesAndroidTest {
     }
 
     @Test
-    fun testNewDecodeConfigByQualityParams() {
-        // TODO test
-    }
-
-    @Test
     fun testSupportBitmapRegionDecoder() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             assertTrue(ImageFormat.HEIC.supportBitmapRegionDecoder())

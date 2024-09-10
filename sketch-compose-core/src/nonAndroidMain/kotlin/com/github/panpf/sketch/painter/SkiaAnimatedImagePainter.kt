@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.toSize
 import com.github.panpf.sketch.ComposeBitmap
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +76,7 @@ class SkiaAnimatedImagePainter constructor(
     private var composeBitmap: ComposeBitmap? = null
     private var animatedPlayer = AnimatedPlayer(
         codec = codec,
+        imageInfo = animatedImage.imageInfo,
         cacheDecodeTimeoutFrame = animatedImage.cacheDecodeTimeoutFrame,
         repeatCount = animatedImage.repeatCount ?: codec.repetitionCount,
         onFrame = {
@@ -120,7 +122,7 @@ class SkiaAnimatedImagePainter constructor(
         @Suppress("OPT_IN_USAGE")
         loadFirstFrameJob = GlobalScope.launch(Dispatchers.Main) {
             val bitmap = withContext(ioCoroutineDispatcher()) {
-                val bitmap = SkiaBitmap(codec.imageInfo)
+                val bitmap = SkiaBitmap(animatedImage.imageInfo)
                 codec.readPixels(bitmap, 0)
                 bitmap
             }
@@ -247,6 +249,7 @@ class SkiaAnimatedImagePainter constructor(
 
     class AnimatedPlayer(
         private val codec: Codec,
+        private val imageInfo: SkiaImageInfo,
         private val repeatCount: Int,
         private val cacheDecodeTimeoutFrame: Boolean,
         private val onFrame: (ComposeBitmap) -> Unit,
@@ -273,8 +276,7 @@ class SkiaAnimatedImagePainter constructor(
                 return
             }
             if (codec.frameCount <= 0) {
-                val blackBitmap = SkiaBitmap().apply {
-                    allocPixels(imageInfo)
+                val blackBitmap = SkiaBitmap(imageInfo).apply {
                     erase(Color.BLACK)
                 }
                 onFrame(blackBitmap.asComposeImageBitmap())
@@ -339,7 +341,7 @@ class SkiaAnimatedImagePainter constructor(
                                 decodeElapsedTime.inWholeMilliseconds > lastFrameDuration
                             if (needCache) {
                                 val byteArray = frame.bitmap.bitmap.readPixels()
-                                val bitmap = SkiaBitmap(codec.imageInfo)
+                                val bitmap = SkiaBitmap(imageInfo)
                                 bitmap.installPixels(byteArray)
                                 val frameCaches =
                                     frameCaches ?: mutableMapOf<Int, SkiaBitmap>().apply {
@@ -381,7 +383,7 @@ class SkiaAnimatedImagePainter constructor(
             return last?.copy(index = nextFrameIndex)
                 ?: Frame(
                     index = nextFrameIndex,
-                    bitmap = FrameBitmap(SkiaBitmap(codec.imageInfo))
+                    bitmap = FrameBitmap(SkiaBitmap(imageInfo))
                 )
         }
 

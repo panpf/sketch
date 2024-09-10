@@ -10,9 +10,7 @@ import com.github.panpf.sketch.util.getPixel
 import com.github.panpf.sketch.util.hasAlphaPixels
 
 actual fun createImage(width: Int, height: Int): Image {
-    return SkiaBitmap().apply {
-        allocN32Pixels(width, height)
-    }.asSketchImage()
+    return SkiaBitmap(width, height).asSketchImage()
 }
 
 actual fun createCacheValue(image: Image, extras: Map<String, Any?>): MemoryCache.Value {

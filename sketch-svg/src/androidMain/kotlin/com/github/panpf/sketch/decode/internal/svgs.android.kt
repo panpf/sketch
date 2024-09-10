@@ -23,13 +23,13 @@ import android.os.Build
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder
-import com.github.panpf.sketch.decode.toAndroidBitmapConfig
+import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
@@ -103,9 +103,8 @@ internal actual fun DataSource.decodeSvg(
     val targetScale =
         computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
-    val request = requestContext.request
-    val bitmapConfig =
-        request.bitmapConfig?.toAndroidBitmapConfig(ImageFormat.PNG.mimeType).toSoftware()
+    val decodeConfig = DecodeConfig(requestContext.request, PNG.mimeType, isOpaque = false)
+    val bitmapConfig = decodeConfig.inPreferredConfig.toSoftware()
     val bitmap = Bitmap.createBitmap(
         /* width = */ bitmapSize.width,
         /* height = */ bitmapSize.height,

@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.request
 
-import android
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapConfig
@@ -87,6 +86,11 @@ data class ImageOptions(
      */
     val downloadCachePolicy: CachePolicy?,
 
+
+    /**
+     * Bitmap quality configuration
+     */
+    val bitmapConfig: BitmapConfig?,
 
     /**
      * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to size
@@ -212,6 +216,7 @@ data class ImageOptions(
                 && extras?.isEmpty() != false
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
+                && bitmapConfig == null
                 && sizeResolver == null
                 && sizeMultiplier == null
                 && precisionDecider == null
@@ -236,6 +241,7 @@ data class ImageOptions(
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
 
+        private var bitmapConfig: BitmapConfig? = null
         private var sizeResolver: SizeResolver? = null
         private var sizeMultiplier: Float? = null
         private var precisionDecider: PrecisionDecider? = null
@@ -263,6 +269,7 @@ data class ImageOptions(
             this.httpHeadersBuilder = options.httpHeaders?.newBuilder()
             this.downloadCachePolicy = options.downloadCachePolicy
 
+            this.bitmapConfig = options.bitmapConfig
             this.sizeResolver = options.sizeResolver
             this.sizeMultiplier = options.sizeMultiplier
             this.precisionDecider = options.precisionDecider
@@ -357,6 +364,13 @@ data class ImageOptions(
          */
         fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             this.downloadCachePolicy = cachePolicy
+        }
+
+        /**
+         * Set bitmap quality
+         */
+        fun bitmapConfig(config: BitmapConfig?): Builder = apply {
+            this.bitmapConfig = config
         }
 
         /**
@@ -666,6 +680,9 @@ data class ImageOptions(
                 this.downloadCachePolicy = options.downloadCachePolicy
             }
 
+            if (this.bitmapConfig == null) {
+                this.bitmapConfig = options.bitmapConfig
+            }
             if (this.sizeResolver == null) {
                 this.sizeResolver = options.sizeResolver
             }
@@ -724,6 +741,7 @@ data class ImageOptions(
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
+                bitmapConfig = bitmapConfig,
                 sizeResolver = sizeResolver,
                 sizeMultiplier = sizeMultiplier,
                 precisionDecider = precisionDecider,
@@ -749,29 +767,3 @@ data class ImageOptions(
  * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testIsEmpty
  */
 fun ImageOptions.isNotEmpty(): Boolean = !isEmpty()
-
-/**
- * Set [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
- */
-// TODO Move inside ImageOptions.kt
-fun ImageOptions.Builder.bitmapConfig(bitmapConfig: BitmapConfig?): ImageOptions.Builder = apply {
-    if (bitmapConfig != null) {
-        setExtra(key = BITMAP_CONFIG_KEY, value = bitmapConfig.value)
-    } else {
-        removeExtra(BITMAP_CONFIG_KEY)
-    }
-}
-
-/**
- * Specify [Bitmap.Config] to use when creating the bitmap.
- * KITKAT and above [Bitmap.Config.ARGB_4444] will be forced to be replaced with [Bitmap.Config.ARGB_8888].
- *
- * Applied to [android.graphics.BitmapFactory.Options.inPreferredConfig]
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
- */
-val ImageOptions.bitmapConfig: BitmapConfig?
-    get() = extras?.value<String>(BITMAP_CONFIG_KEY)?.let { BitmapConfig.valueOf(it) }

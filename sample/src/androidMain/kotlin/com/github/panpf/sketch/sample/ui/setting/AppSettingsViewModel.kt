@@ -19,6 +19,7 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.graphics.ColorSpace.Named
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -263,7 +264,8 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             MultiSelectMenu(
                 title = "Bitmap Quality",
                 desc = null,
-                values = listOf("Default", "LOW", "HIGH"),
+                values = listOf("Default", "LOW", "HIGH").plus(
+                    Bitmap.Config.values().map { it.name }),
                 getValue = { appSettings.bitmapQualityName.value },
                 onSelect = { _, value -> appSettings.bitmapQualityName.value = value }
             )

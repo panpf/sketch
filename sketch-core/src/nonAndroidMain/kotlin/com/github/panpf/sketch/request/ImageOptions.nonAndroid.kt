@@ -5,7 +5,7 @@ import org.jetbrains.skia.ColorType
 
 
 /**
- * Configure bitmap quality
+ * Set [ColorType] to use when creating the bitmap.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.request.ImageOptionsNonAndroidTest.testBitmapConfig
  */
