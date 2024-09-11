@@ -27,6 +27,8 @@ import org.jetbrains.skia.BlendMode
 import org.jetbrains.skia.BlendMode.SRC_IN
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Color
+import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorInfo
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.RRect
@@ -109,12 +111,13 @@ internal fun SkiaBitmap.readIntPixels(
             intArray
         }
 
-        ColorType.RGB_565 -> {
+        ColorType.RGB_565 -> {  // TODO There seems to be a problem, causing blur exception
             val intArray = IntArray(bytePixels.size / 2)
             for (i in intArray.indices) {
                 val r = bytePixels[i * 2].toInt() and 0xF8
-                val g = bytePixels[i * 2 + 1].toInt() and 0xFC
-                val b = bytePixels[i * 2 + 2].toInt() and 0xF8
+                val g =
+                    (bytePixels[i * 2].toInt() and 0x07 shl 5) or (bytePixels[i * 2 + 1].toInt() and 0xE0 shr 3)
+                val b = bytePixels[i * 2 + 1].toInt() and 0x1F shl 3
                 intArray[i] = (r shl 16) or (g shl 8) or b
             }
             intArray
@@ -162,15 +165,15 @@ internal fun SkiaBitmap.installIntPixels(intArray: IntArray): Boolean {
             byteArray
         }
 
-        ColorType.RGB_565 -> {
+        ColorType.RGB_565 -> {  // TODO There seems to be a problem, causing blur exception
             val byteArray = ByteArray(intArray.size * 2)
             for (i in intArray.indices) {
-                val r = (intArray[i] shr 16) and 0xF8
-                val g = (intArray[i] shr 8) and 0xFC
-                val b = intArray[i] and 0xF8
-                byteArray[i * 2] = r.toByte()
-                byteArray[i * 2 + 1] = g.toByte()
-                byteArray[i * 2 + 2] = b.toByte()
+                val r = (intArray[i] shr 19) and 0x1F
+                val g = (intArray[i] shr 10) and 0x3F
+                val b = (intArray[i] shr 3) and 0x1F
+                val rgb565 = (r shl 11) or (g shl 5) or b
+                byteArray[i * 2] = (rgb565 shr 8).toByte()
+                byteArray[i * 2 + 1] = rgb565.toByte()
             }
             byteArray
         }
@@ -287,9 +290,24 @@ internal fun SkiaBitmap.blur(radius: Int) {
 internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
-    val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
-        .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
-    val newImageInfo = inputBitmap.imageInfo.withWidthHeight(newSize, newSize)
+    var newColorType: ColorType = inputBitmap.colorType
+    var newColorAlphaType: ColorAlphaType = inputBitmap.alphaType
+    if (inputBitmap.colorType.isAlwaysOpaque) {
+        // Circle cropped require support alpha
+        newColorType = ColorType.RGBA_8888
+    }
+    if (newColorAlphaType == ColorAlphaType.UNKNOWN || newColorAlphaType == ColorAlphaType.OPAQUE) {
+        newColorAlphaType = ColorAlphaType.PREMUL
+    }
+    val newImageInfo = SkiaImageInfo(
+        colorInfo = ColorInfo(
+            colorType = newColorType,
+            alphaType = newColorAlphaType,
+            colorSpace = inputBitmap.colorSpace
+        ),
+        width = newSize,
+        height = newSize
+    )
     val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawCircle(
@@ -303,6 +321,8 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
     )
     val skiaImage = SkiaImage.makeFromBitmap(inputBitmap)
     try {
+        val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
+            .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
         canvas.drawImageRect(
             image = skiaImage,
             src = resizeMapping.srcRect.toSkiaRect(),
@@ -398,13 +418,33 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
     val inputBitmap = this
     val inputSize = Size(inputBitmap.width, inputBitmap.height)
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
-    val outSize = calculateRotatedSize(size = inputSize, angle = finalAngle.toDouble())
-    val newImageInfo = inputBitmap.imageInfo.withWidthHeight(outSize.width, outSize.height)
+    val newSize = calculateRotatedSize(size = inputSize, angle = finalAngle.toDouble())
+
+    // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
+    var newColorType: ColorType = inputBitmap.colorType
+    var newColorAlphaType: ColorAlphaType = inputBitmap.alphaType
+    if (finalAngle % 90 != 0 && inputBitmap.colorType.isAlwaysOpaque) {
+        // Non-positive angle require support alpha
+        newColorType = ColorType.RGBA_8888
+    }
+    if (newColorAlphaType == ColorAlphaType.UNKNOWN || newColorAlphaType == ColorAlphaType.OPAQUE) {
+        newColorAlphaType = ColorAlphaType.PREMUL
+    }
+    val newImageInfo = SkiaImageInfo(
+        colorInfo = ColorInfo(
+            colorType = newColorType,
+            alphaType = newColorAlphaType,
+            colorSpace = inputBitmap.colorSpace
+        ),
+        width = newSize.width,
+        height = newSize.height
+    )
     val outBitmap = SkiaBitmap(newImageInfo)
+
     val canvas = Canvas(outBitmap)
     canvas.translate(
-        dx = (outSize.width - inputSize.width) / 2.0f,
-        dy = (outSize.height - inputSize.height) / 2.0f,
+        dx = (newSize.width - inputSize.width) / 2.0f,
+        dy = (newSize.height - inputSize.height) / 2.0f,
     )
     canvas.rotate(
         deg = finalAngle.toFloat(),
@@ -427,7 +467,25 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
  */
 internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
+    var newColorType: ColorType = inputBitmap.colorType
+    var newColorAlphaType: ColorAlphaType = inputBitmap.alphaType
+    if (inputBitmap.colorType.isAlwaysOpaque) {
+        // Rounded corners require support alpha
+        newColorType = ColorType.RGBA_8888
+    }
+    if (newColorAlphaType == ColorAlphaType.UNKNOWN || newColorAlphaType == ColorAlphaType.OPAQUE) {
+        newColorAlphaType = ColorAlphaType.PREMUL
+    }
+    val newImageInfo = SkiaImageInfo(
+        colorInfo = ColorInfo(
+            colorType = newColorType,
+            alphaType = newColorAlphaType,
+            colorSpace = inputBitmap.colorSpace
+        ),
+        width = inputBitmap.width,
+        height = inputBitmap.height
+    )
+    val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawRRect(
         r = RRect.makeComplexLTRB(0f, 0f, width.toFloat(), height.toFloat(), cornerRadii),

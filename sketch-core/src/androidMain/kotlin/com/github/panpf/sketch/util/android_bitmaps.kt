@@ -217,12 +217,15 @@ internal fun AndroidBitmap.blur(radius: Int) {
 internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
-    val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
-        .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
+    var newConfig = inputBitmap.safeConfig
+    if (newConfig == AndroidBitmapConfig.RGB_565) {
+        // Circle cropped require support alpha
+        newConfig = AndroidBitmapConfig.ARGB_8888
+    }
     val outBitmap = AndroidBitmap.createBitmap(
-        /* width = */ resizeMapping.newSize.width,
-        /* height = */ resizeMapping.newSize.height,
-        /* config = */ inputBitmap.safeConfig,
+        /* width = */ newSize,
+        /* height = */ newSize,
+        /* config = */ newConfig,
     )
     val paint = Paint().apply {
         isAntiAlias = true
@@ -238,6 +241,11 @@ internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
         /* paint = */ paint
     )
     paint.xfermode = PorterDuffXfermode(SRC_IN)
+    val resizeMapping = Resize(
+        size = Size(newSize, newSize),
+        precision = SAME_ASPECT_RATIO,
+        scale = scale
+    ).calculateMapping(Size(inputBitmap.width, inputBitmap.height))
     canvas.drawBitmap(
         /* bitmap = */ inputBitmap,
         /* src = */ resizeMapping.srcRect.toAndroidRect(),
@@ -297,8 +305,9 @@ internal fun AndroidBitmap.mask(maskColor: Int) {
 internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
     val inputBitmap = this
-    val matrix = Matrix()
-    matrix.setRotate(finalAngle.toFloat())
+    val matrix = Matrix().apply {
+        setRotate(finalAngle.toFloat())
+    }
     val newRect = RectF(
         /* left = */ 0f,
         /* top = */ 0f,
@@ -310,15 +319,17 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
     val newHeight = newRect.height().toInt()
 
     // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-    var config = inputBitmap.safeConfig
-    if (finalAngle % 90 != 0 && config == AndroidBitmapConfig.RGB_565) {
-        config = AndroidBitmapConfig.ARGB_8888
+    var newConfig = inputBitmap.safeConfig
+    if (finalAngle % 90 != 0 && newConfig == AndroidBitmapConfig.RGB_565) {
+        // Non-positive angle require support alpha
+        newConfig = AndroidBitmapConfig.ARGB_8888
     }
     val outBitmap = AndroidBitmap.createBitmap(
         /* width = */ newWidth,
         /* height = */ newHeight,
-        /* config = */ config,
+        /* config = */ newConfig,
     )
+
     matrix.postTranslate(-newRect.left, -newRect.top)
     val canvas = Canvas(outBitmap)
     val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
@@ -335,10 +346,15 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
  */
 internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitmap {
     val inputBitmap = this
+    var newConfig = inputBitmap.safeConfig
+    if (newConfig == AndroidBitmapConfig.RGB_565) {
+        // Rounded corners require support alpha
+        newConfig = AndroidBitmapConfig.ARGB_8888
+    }
     val newBitmap = AndroidBitmap.createBitmap(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
-        /* config = */ inputBitmap.safeConfig,
+        /* config = */ newConfig,
     )
     val paint = Paint().apply {
         isAntiAlias = true
@@ -372,10 +388,11 @@ internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitm
 internal fun AndroidBitmap.scaled(scaleFactor: Float): AndroidBitmap {
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
+    val newConfig = this.safeConfig
     val newBitmap = AndroidBitmap.createBitmap(
         /* width = */ scaledWidth,
         /* height = */ scaledHeight,
-        /* config = */ safeConfig,
+        /* config = */ newConfig,
     )
     val canvas = Canvas(newBitmap)
     val matrix = Matrix().apply {

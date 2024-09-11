@@ -17,12 +17,14 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
+import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -56,6 +58,7 @@ class CircleCropTransformationTestFragment :
                 resultCachePolicy(DISABLED)
                 scale(it)
                 addTransformations(CircleCropTransformation())
+                bitmapConfig(Bitmap.Config.RGB_565) // To test automatic conversion Config
             }
         }
 

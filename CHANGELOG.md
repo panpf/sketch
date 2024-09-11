@@ -27,6 +27,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fixed the bug that the ComposableImageRequest() and ComposableImageOptions() functions cannot
   listen and update the Compose State. [#207](https://github.com/panpf/sketch/issues/207)
+* fix: Fix the bug that CircleCrop, Rotate, RoundedCorners Transformation does not work at
+  RGB_565. [#209](https://github.com/panpf/sketch/issues/209)
 * remove: Remove SkiaExifOrientationHelper
 * remove: DataSource removes sketch and request attributes
 * change: DataSource's getFile() and getFileOrNull() methods add Sketch parameters

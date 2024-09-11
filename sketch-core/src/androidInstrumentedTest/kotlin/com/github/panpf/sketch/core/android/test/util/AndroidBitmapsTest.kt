@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.AndroidBitmapConfig
 import com.github.panpf.sketch.AndroidBitmapImage
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -475,6 +476,24 @@ class AndroidBitmapsTest {
             actual = hammingDistance(centerCropBitmapFinger, endCropBitmapFinger) >= 5,
             message = hammingDistance(centerCropBitmapFinger, endCropBitmapFinger).toString()
         )
+
+
+        ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().bitmap.apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.circleCropped(Scale.CENTER_CROP).apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+
+        val bitmapConfig = BitmapConfig.FixedQuality(Bitmap.Config.RGB_565.name)
+        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
+            assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.circleCropped(Scale.CENTER_CROP).apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
     }
 
     @Test
@@ -772,6 +791,24 @@ class AndroidBitmapsTest {
             actual = hammingDistance(rotate270BitmapFinger, rotate360BitmapFinger) >= 5,
             message = hammingDistance(rotate270BitmapFinger, rotate360BitmapFinger).toString()
         )
+
+
+        ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().bitmap.apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.rotated(130).apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+
+        val bitmapConfig = BitmapConfig.FixedQuality(Bitmap.Config.RGB_565.name)
+        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
+            assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.rotated(130).apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
     }
 
     @Test
@@ -835,6 +872,24 @@ class AndroidBitmapsTest {
             expected = smallRoundedCorneredBitmapFinger,
             actual = bigRoundedCorneredBitmapFinger
         )
+
+
+        ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().bitmap.apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.roundedCornered(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+
+        val bitmapConfig = BitmapConfig.FixedQuality(Bitmap.Config.RGB_565.name)
+        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
+            assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.roundedCornered(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
+            assertEquals(expected = Bitmap.Config.ARGB_8888, actual = config)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
     }
 
     @Test

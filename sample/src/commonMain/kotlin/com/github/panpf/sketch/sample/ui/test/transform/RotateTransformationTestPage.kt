@@ -16,10 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.transform.RotateTransformation
 import kotlin.math.roundToInt
@@ -33,6 +34,7 @@ fun RotateTransformationTestPage() {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(rotateDegrees))
+                bitmapConfig(BitmapConfig.FixedQuality("RGB_565")) // To test automatic conversion Config
             },
             contentDescription = "image",
             modifier = Modifier.fillMaxWidth().weight(1f)

@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.fragment.app.viewModels
@@ -25,6 +26,7 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
+import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRoundedCornersBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
@@ -150,6 +152,7 @@ class RoundedCornersTransformationTestFragment :
                     bottomRight = viewModel.bottomRightRadiusData.value.toFloat(),
                 )
             )
+            bitmapConfig(Bitmap.Config.RGB_565) // To test automatic conversion Config
         }
     }
 

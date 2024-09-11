@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
 import com.github.panpf.sketch.SkiaBitmapImage
+import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -32,6 +33,8 @@ import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toShortInfoString
+import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorType
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.test.Test
@@ -446,6 +449,32 @@ class SkiaBitmapsTest {
             actual = hammingDistance(centerCropBitmapFinger, endCropBitmapFinger) >= 5,
             message = hammingDistance(centerCropBitmapFinger, endCropBitmapFinger).toString()
         )
+
+
+        ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>().bitmap.apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
+            assertTrue(actual = isOpaque)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.circleCropped(Scale.CENTER_CROP).apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
+            assertFalse(actual = isOpaque)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+
+        val bitmapConfig = BitmapConfig.FixedQuality(ColorType.RGB_565.name)
+        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
+            assertEquals(expected = ColorType.RGB_565, actual = colorType)
+            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
+            assertTrue(actual = isOpaque)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.circleCropped(Scale.CENTER_CROP).apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
+            assertFalse(actual = isOpaque)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
     }
 
     @Test
@@ -754,6 +783,32 @@ class SkiaBitmapsTest {
             actual = hammingDistance(rotate270BitmapFinger, rotate360BitmapFinger) >= 5,
             message = hammingDistance(rotate270BitmapFinger, rotate360BitmapFinger).toString()
         )
+
+
+        ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>().bitmap.apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
+            assertTrue(actual = isOpaque)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.rotated(130).apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
+            assertFalse(actual = isOpaque)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+
+        val bitmapConfig = BitmapConfig.FixedQuality(ColorType.RGB_565.name)
+        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
+            assertEquals(expected = ColorType.RGB_565, actual = colorType)
+            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
+            assertTrue(actual = isOpaque)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.rotated(130).apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
+            assertFalse(actual = isOpaque)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
     }
 
     @Test
@@ -813,6 +868,32 @@ class SkiaBitmapsTest {
             expected = smallRoundedCorneredBitmapFinger,
             actual = bigRoundedCorneredBitmapFinger
         )
+
+
+        ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>().bitmap.apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
+            assertTrue(actual = isOpaque)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.roundedCornered(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
+            assertFalse(actual = isOpaque)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+
+        val bitmapConfig = BitmapConfig.FixedQuality(ColorType.RGB_565.name)
+        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
+            assertEquals(expected = ColorType.RGB_565, actual = colorType)
+            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
+            assertTrue(actual = isOpaque)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.roundedCornered(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
+            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
+            assertFalse(actual = isOpaque)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
     }
 
     @Test
