@@ -4,8 +4,9 @@ package com.github.panpf.sketch.sample.ui.util
  * "PainterImage(painter=ResizeAnimatablePainter(painter=DrawableAnimatablePainter(drawable=AnimatableDrawable(drawable=ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(240x240), fitScale=true))), size=Size(346.0x346.0), scale=CENTER_CROP), shareable=false)"
  */
 
-fun Any.toStringFormat(): String =
-    formatItemToString(parseToStringToItem(this@toStringFormat.toString()))
+// TODO error in android
+fun Any.toFormattedString(): String =
+    formatItemToString(parseToStringToItem(this@toFormattedString.toString()))
 
 private fun parseToStringToItem(toString: String): Item {
     val startIndex = toString.indexOf('(').takeIf { it != -1 } ?: return Item2(toString)

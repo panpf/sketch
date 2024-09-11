@@ -8,6 +8,7 @@ import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.produceFingerPrint
+import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.blur
 import com.github.panpf.sketch.util.circleCrop
@@ -33,7 +34,7 @@ class ImagesAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.png.decode().asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(750x719,ARGB_8888)",
+                expected = "AndroidBitmap(750x719,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -46,7 +47,7 @@ class ImagesAndroidTest {
             sourceImage.blur(radius = 15, hasAlphaBitmapBgColor = null, maskColor = null)
                 .asOrThrow<AndroidBitmapImage>().apply {
                     assertEquals(
-                        expected = "AndroidBitmap(750x719,ARGB_8888)",
+                        expected = "AndroidBitmap(750x719,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                         actual = bitmap.toShortInfoString()
                     )
                     blur1BitmapFinger = produceFingerPrint(this.bitmap)
@@ -59,7 +60,7 @@ class ImagesAndroidTest {
             sourceImage.blur(radius = 15, hasAlphaBitmapBgColor = TestColor.GREEN, maskColor = null)
                 .asOrThrow<AndroidBitmapImage>().apply {
                     assertEquals(
-                        expected = "AndroidBitmap(750x719,ARGB_8888)",
+                        expected = "AndroidBitmap(750x719,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                         actual = bitmap.toShortInfoString()
                     )
                     blur2BitmapFinger = produceFingerPrint(this.bitmap)
@@ -75,7 +76,7 @@ class ImagesAndroidTest {
                 maskColor = TestColor.RED
             ).asOrThrow<AndroidBitmapImage>().apply {
                 assertEquals(
-                    expected = "AndroidBitmap(750x719,ARGB_8888)",
+                    expected = "AndroidBitmap(750x719,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 blur3BitmapFinger = produceFingerPrint(this.bitmap)
@@ -162,7 +163,7 @@ class ImagesAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -174,7 +175,7 @@ class ImagesAndroidTest {
         val startCropBitmap =
             sourceImage.circleCrop(Scale.START_CROP).asOrThrow<AndroidBitmapImage>().apply {
                 assertEquals(
-                    expected = "AndroidBitmap(1291x1291,ARGB_8888)",
+                    expected = "AndroidBitmap(1291x1291,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 startCropBitmapFinger = produceFingerPrint(this.bitmap)
@@ -186,7 +187,7 @@ class ImagesAndroidTest {
         val centerCropBitmap =
             sourceImage.circleCrop(Scale.CENTER_CROP).asOrThrow<AndroidBitmapImage>().apply {
                 assertEquals(
-                    expected = "AndroidBitmap(1291x1291,ARGB_8888)",
+                    expected = "AndroidBitmap(1291x1291,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 centerCropBitmapFinger = produceFingerPrint(this.bitmap)
@@ -198,7 +199,7 @@ class ImagesAndroidTest {
         val endCropBitmap =
             sourceImage.circleCrop(Scale.END_CROP).asOrThrow<AndroidBitmapImage>().apply {
                 assertEquals(
-                    expected = "AndroidBitmap(1291x1291,ARGB_8888)",
+                    expected = "AndroidBitmap(1291x1291,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 endCropBitmapFinger = produceFingerPrint(this.bitmap)
@@ -232,7 +233,7 @@ class ImagesAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -244,7 +245,7 @@ class ImagesAndroidTest {
         val redMaskBitmap = sourceImage.mask(TestColor.withA(TestColor.RED, a = 100))
             .asOrThrow<AndroidBitmapImage>().apply {
                 assertEquals(
-                    expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                    expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 redMaskBitmapFinger = produceFingerPrint(this.bitmap)
@@ -256,7 +257,7 @@ class ImagesAndroidTest {
         val greenMaskBitmap = sourceImage.mask(TestColor.withA(TestColor.GREEN, a = 100))
             .asOrThrow<AndroidBitmapImage>().apply {
                 assertEquals(
-                    expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                    expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 greenMaskBitmapFinger = produceFingerPrint(this.bitmap)
@@ -317,7 +318,7 @@ class ImagesAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -330,7 +331,7 @@ class ImagesAndroidTest {
             sourceImage.roundedCorners(floatArrayOf(10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f))
                 .asOrThrow<AndroidBitmapImage>().apply {
                     assertEquals(
-                        expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                        expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                         actual = bitmap.toShortInfoString()
                     )
                     smallRoundedCorneredBitmapFinger = produceFingerPrint(this.bitmap)
@@ -343,7 +344,7 @@ class ImagesAndroidTest {
             sourceImage.roundedCorners(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f))
                 .asOrThrow<AndroidBitmapImage>().apply {
                     assertEquals(
-                        expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                        expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                         actual = bitmap.toShortInfoString()
                     )
                     bigRoundedCorneredBitmapFinger = produceFingerPrint(this.bitmap)
@@ -380,7 +381,7 @@ class ImagesAndroidTest {
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>()
             .apply {
                 assertEquals(
-                    expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                    expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     actual = bitmap.toShortInfoString()
                 )
                 sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -391,7 +392,7 @@ class ImagesAndroidTest {
         val rotate90BitmapCorners: List<Int>
         val rotate90Bitmap = sourceImage.rotate(90).asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1936x1291,ARGB_8888)",
+                expected = "AndroidBitmap(1936x1291,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             rotate90BitmapFinger = produceFingerPrint(this.bitmap)
@@ -402,7 +403,7 @@ class ImagesAndroidTest {
         val rotate180BitmapCorners: List<Int>
         val rotate180Bitmap = sourceImage.rotate(180).asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             rotate180BitmapFinger = produceFingerPrint(this.bitmap)
@@ -413,7 +414,7 @@ class ImagesAndroidTest {
         val rotate270BitmapCorners: List<Int>
         val rotate270Bitmap = sourceImage.rotate(270).asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1936x1291,ARGB_8888)",
+                expected = "AndroidBitmap(1936x1291,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             rotate270BitmapFinger = produceFingerPrint(this.bitmap)
@@ -424,7 +425,7 @@ class ImagesAndroidTest {
         val rotate360BitmapCorners: List<Int>
         val rotate360Bitmap = sourceImage.rotate(360).asOrThrow<AndroidBitmapImage>().apply {
             assertEquals(
-                expected = "AndroidBitmap(1291x1936,ARGB_8888)",
+                expected = "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 actual = bitmap.toShortInfoString()
             )
             rotate360BitmapFinger = produceFingerPrint(this.bitmap)

@@ -595,6 +595,32 @@ class ImageRequestTest {
     }
 
     @Test
+    fun testColorSpace() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(colorSpace)
+            }
+
+            colorSpace("ACES")
+            build().apply {
+                assertEquals("ACES", colorSpace)
+            }
+
+            colorSpace("BT709")
+            build().apply {
+                assertEquals("BT709", colorSpace)
+            }
+
+            colorSpace(null)
+            build().apply {
+                assertNull(colorSpace)
+            }
+        }
+    }
+
+    @Test
     fun testResize() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri

@@ -19,6 +19,7 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.SkiaImageInfo
+import com.github.panpf.sketch.decode.name
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeMapping
@@ -52,7 +53,7 @@ internal fun SkiaBitmap.getMutableCopy(): SkiaBitmap {
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
  */
 internal fun SkiaBitmap.toLogString(): String =
-    "SkiaBitmap@${toHexString()}(${width}x${height},${colorType})"
+    "SkiaBitmap@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
 
 /**
  * Get an information string suitable for display
@@ -60,7 +61,7 @@ internal fun SkiaBitmap.toLogString(): String =
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
  */
 internal fun SkiaBitmap.toInfoString(): String =
-    "SkiaBitmap(width=${width}, height=${height}, colorType=${colorType})"
+    "SkiaBitmap(width=${width}, height=${height}, colorType=${colorType}, colorSpace=${colorSpace?.name()})"
 
 /**
  * Get a short information string suitable for display
@@ -68,7 +69,7 @@ internal fun SkiaBitmap.toInfoString(): String =
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
  */
 internal fun SkiaBitmap.toShortInfoString(): String =
-    "SkiaBitmap(${width}x${height},${colorType})"
+    "SkiaBitmap(${width}x${height},${colorType},${colorSpace?.name()})"
 
 
 /**

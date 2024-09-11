@@ -8,6 +8,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
@@ -45,7 +46,7 @@ class SvgsAndroidTest {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap($bitmapSize,ARGB_8888)",
+                    "AndroidBitmap($bitmapSize,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
             }
@@ -63,7 +64,7 @@ class SvgsAndroidTest {
             val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, targetSize)
             val bitmapSize = imageInfo.size.times(sizeMultiplier)
             assertEquals(
-                "Bitmap(${bitmapSize},RGB_565)",
+                "AndroidBitmap(${bitmapSize},RGB_565${shortInfoColorSpaceName("SRGB")})",
                 image.getBitmapOrThrow().toShortInfoString()
             )
         }

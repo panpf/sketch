@@ -18,6 +18,7 @@ package com.github.panpf.sketch.util
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -28,6 +29,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.AndroidBitmapConfig
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
@@ -118,7 +120,40 @@ internal fun AndroidBitmap.getMutableCopy(): AndroidBitmap {
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToLogString
  */
 internal fun AndroidBitmap.toLogString(): String =
-    "AndroidBitmap@${toHexString()}(${width}x${height},$configOrNull)"
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        "AndroidBitmap@${toHexString()}(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
+    } else {
+        "AndroidBitmap@${toHexString()}(${width}x${height},$configOrNull)"
+    }
+
+/**
+ * Get the simple name of the color space
+ */
+val ColorSpace.simpleName: String
+    @RequiresApi(VERSION_CODES.O)
+    get() {
+        return when {
+            this == ColorSpace.get(ColorSpace.Named.SRGB) -> "SRGB"
+            this == ColorSpace.get(ColorSpace.Named.LINEAR_SRGB) -> "LINEAR_SRGB"
+            this == ColorSpace.get(ColorSpace.Named.EXTENDED_SRGB) -> "EXTENDED_SRGB"
+            this == ColorSpace.get(ColorSpace.Named.LINEAR_EXTENDED_SRGB) -> "LINEAR_EXTENDED_SRGB"
+            this == ColorSpace.get(ColorSpace.Named.BT709) -> "BT709"
+            this == ColorSpace.get(ColorSpace.Named.BT2020) -> "BT2020"
+            this == ColorSpace.get(ColorSpace.Named.DCI_P3) -> "DCI_P3"
+            this == ColorSpace.get(ColorSpace.Named.DISPLAY_P3) -> "DISPLAY_P3"
+            this == ColorSpace.get(ColorSpace.Named.NTSC_1953) -> "NTSC_1953"
+            this == ColorSpace.get(ColorSpace.Named.SMPTE_C) -> "SMPTE_C"
+            this == ColorSpace.get(ColorSpace.Named.ADOBE_RGB) -> "ADOBE_RGB"
+            this == ColorSpace.get(ColorSpace.Named.PRO_PHOTO_RGB) -> "PRO_PHOTO_RGB"
+            this == ColorSpace.get(ColorSpace.Named.ACES) -> "ACES"
+            this == ColorSpace.get(ColorSpace.Named.ACESCG) -> "ACESCG"
+            this == ColorSpace.get(ColorSpace.Named.CIE_XYZ) -> "CIE_XYZ"
+            this == ColorSpace.get(ColorSpace.Named.CIE_LAB) -> "CIE_LAB"
+            VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE && this == ColorSpace.get(ColorSpace.Named.BT2020_HLG) -> "BT2020_HLG"
+            VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE && this == ColorSpace.get(ColorSpace.Named.BT2020_PQ) -> "BT2020_PQ"
+            else -> name
+        }
+    }
 
 /**
  * Get an information string suitable for display
@@ -126,7 +161,11 @@ internal fun AndroidBitmap.toLogString(): String =
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToInfoString
  */
 internal fun AndroidBitmap.toInfoString(): String =
-    "AndroidBitmap(width=${width}, height=${height}, config=$configOrNull)"
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        "AndroidBitmap(width=${width}, height=${height}, config=$configOrNull, colorSpace=${colorSpace?.simpleName})"
+    } else {
+        "AndroidBitmap(width=${width}, height=${height}, config=$configOrNull)"
+    }
 
 /**
  * Get a short information string suitable for display
@@ -134,7 +173,11 @@ internal fun AndroidBitmap.toInfoString(): String =
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToShortInfoString
  */
 internal fun AndroidBitmap.toShortInfoString(): String =
-    "AndroidBitmap(${width}x${height},$configOrNull)"
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        "AndroidBitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
+    } else {
+        "AndroidBitmap(${width}x${height},$configOrNull)"
+    }
 
 
 /**

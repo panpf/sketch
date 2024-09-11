@@ -37,7 +37,9 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
+import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
@@ -166,7 +168,7 @@ class ApkIconDecoderTest {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888)",
+                    "AndroidBitmap(${bitmapSize},ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
@@ -184,7 +186,7 @@ class ApkIconDecoderTest {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},RGB_565)",
+                    "AndroidBitmap(${bitmapSize},RGB_565${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
@@ -200,7 +202,11 @@ class ApkIconDecoderTest {
         }.decode(sketch, factory)
             .apply {
                 assertEquals(
-                    "Bitmap(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},ARGB_8888)",
+                    "AndroidBitmap(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},ARGB_8888${
+                        shortInfoColorSpaceName(
+                            "SRGB"
+                        )
+                    })",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertNull(transformeds)
@@ -219,7 +225,7 @@ class ApkIconDecoderTest {
                     computeScaleMultiplierWithOneSide(imageInfo.size, Size(100, 100))
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888)",
+                    "AndroidBitmap(${bitmapSize},ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
@@ -235,7 +241,11 @@ class ApkIconDecoderTest {
         }.decode(sketch, factory)
             .apply {
                 assertEquals(
-                    "Bitmap(${ceil(iconDrawable.intrinsicWidth / 2f).toInt()}x${iconDrawable.intrinsicHeight},ARGB_8888)",
+                    "AndroidBitmap(${ceil(iconDrawable.intrinsicWidth / 2f).toInt()}x${iconDrawable.intrinsicHeight},ARGB_8888${
+                        shortInfoColorSpaceName(
+                            "SRGB"
+                        )
+                    })",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
@@ -267,6 +277,4 @@ class ApkIconDecoderTest {
             }
         }
     }
-
-    private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
 }

@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.sample.ui.util.toStringFormat
+import com.github.panpf.sketch.sample.ui.util.toFormattedString
 
 @Composable
 fun PhotoInfo(imageResult: ImageResult?) {
@@ -42,7 +42,7 @@ fun PhotoInfo(imageResult: ImageResult?) {
             }
             PhotoInfoItem("Source Image: ", sourceImageInfo)
 
-            val resultImageInfo = imageResult.image.toStringFormat()
+            val resultImageInfo = imageResult.image.toFormattedString()
             PhotoInfoItem("Result Image: ", resultImageInfo)
 
             val dataFromInfo = imageResult.dataFrom.name

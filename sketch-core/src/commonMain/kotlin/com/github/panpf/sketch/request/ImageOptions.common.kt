@@ -93,6 +93,11 @@ data class ImageOptions(
     val bitmapConfig: BitmapConfig?,
 
     /**
+     * Bitmap color space
+     */
+    val colorSpace: String?,
+
+    /**
      * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to size
      */
     val sizeResolver: SizeResolver?,
@@ -217,6 +222,7 @@ data class ImageOptions(
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
                 && bitmapConfig == null
+                && colorSpace == null
                 && sizeResolver == null
                 && sizeMultiplier == null
                 && precisionDecider == null
@@ -242,6 +248,7 @@ data class ImageOptions(
         private var downloadCachePolicy: CachePolicy? = null
 
         private var bitmapConfig: BitmapConfig? = null
+        private var colorSpace: String? = null
         private var sizeResolver: SizeResolver? = null
         private var sizeMultiplier: Float? = null
         private var precisionDecider: PrecisionDecider? = null
@@ -270,6 +277,7 @@ data class ImageOptions(
             this.downloadCachePolicy = options.downloadCachePolicy
 
             this.bitmapConfig = options.bitmapConfig
+            this.colorSpace = options.colorSpace
             this.sizeResolver = options.sizeResolver
             this.sizeMultiplier = options.sizeMultiplier
             this.precisionDecider = options.precisionDecider
@@ -371,6 +379,13 @@ data class ImageOptions(
          */
         fun bitmapConfig(config: BitmapConfig?): Builder = apply {
             this.bitmapConfig = config
+        }
+
+        /**
+         * Set bitmap color space
+         */
+        fun colorSpace(colorSpace: String?): Builder = apply {
+            this.colorSpace = colorSpace
         }
 
         /**
@@ -683,6 +698,9 @@ data class ImageOptions(
             if (this.bitmapConfig == null) {
                 this.bitmapConfig = options.bitmapConfig
             }
+            if (this.colorSpace == null) {
+                this.colorSpace = options.colorSpace
+            }
             if (this.sizeResolver == null) {
                 this.sizeResolver = options.sizeResolver
             }
@@ -742,6 +760,7 @@ data class ImageOptions(
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
                 bitmapConfig = bitmapConfig,
+                colorSpace = colorSpace,
                 sizeResolver = sizeResolver,
                 sizeMultiplier = sizeMultiplier,
                 precisionDecider = precisionDecider,

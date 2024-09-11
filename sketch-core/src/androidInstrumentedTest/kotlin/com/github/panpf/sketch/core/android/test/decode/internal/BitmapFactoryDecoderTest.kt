@@ -49,6 +49,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -77,7 +78,10 @@ class BitmapFactoryDecoderTest {
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -91,7 +95,10 @@ class BitmapFactoryDecoderTest {
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1080x1344,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
                     "ImageInfo(1080x1344,'image/webp')",
@@ -116,7 +123,7 @@ class BitmapFactoryDecoderTest {
                 }.decode(sketch).apply {
                     val bitmap = image.getBitmapOrThrow()
                     assertEquals(
-                        "AndroidBitmap(1500x750,ARGB_8888)",
+                        "AndroidBitmap(1500x750,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                         bitmap.toShortInfoString()
                     )
                     assertEquals(
@@ -139,7 +146,10 @@ class BitmapFactoryDecoderTest {
             bitmapConfig(RGB_565)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1291x1936,RGB_565)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1291x1936,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -154,7 +164,10 @@ class BitmapFactoryDecoderTest {
             bitmapConfig(RGB_565)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1080x1344,RGB_565)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1080x1344,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
                     "ImageInfo(1080x1344,'image/webp')",
@@ -179,7 +192,10 @@ class BitmapFactoryDecoderTest {
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -194,7 +210,10 @@ class BitmapFactoryDecoderTest {
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1080x1344,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
                     "ImageInfo(1080x1344,'image/webp')",
@@ -214,7 +233,10 @@ class BitmapFactoryDecoderTest {
             colorSpace(ADOBE_RGB)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1291x1936,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("ADOBE_RGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -230,7 +252,10 @@ class BitmapFactoryDecoderTest {
             colorSpace(ADOBE_RGB)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals("AndroidBitmap(1080x1344,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(1080x1344,ARGB_8888${shortInfoColorSpaceName("ADOBE_RGB")})",
+                bitmap.toShortInfoString()
+            )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
                     "ImageInfo(1080x1344,'image/webp')",
@@ -263,7 +288,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals("AndroidBitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(646x968,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -286,7 +314,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals("AndroidBitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(323x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -311,7 +342,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            assertEquals("AndroidBitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(322x193,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -334,7 +368,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            assertEquals("AndroidBitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(290x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -355,7 +392,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(500x300,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -374,7 +414,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(300x500,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -451,7 +494,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals("AndroidBitmap(350x506,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(350x506,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
                 imageInfo.toShortString()
@@ -473,7 +519,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals("AndroidBitmap(87x126,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(87x126,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
                 imageInfo.toShortString()
@@ -497,7 +546,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            assertEquals("AndroidBitmap(175x105,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(175x105,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
                 imageInfo.toShortString()
@@ -519,7 +571,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            assertEquals("AndroidBitmap(152x253,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(152x253,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
                 imageInfo.toShortString()
@@ -538,7 +593,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(500x300,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
                 imageInfo.toShortString()
@@ -556,7 +614,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(300x500,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
                 imageInfo.toShortString()
@@ -638,7 +699,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals("AndroidBitmap(646x968,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(646x968,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -661,7 +725,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals("AndroidBitmap(323x484,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(323x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -686,7 +753,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            assertEquals("AndroidBitmap(322x193,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(322x193,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -709,7 +779,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            assertEquals("AndroidBitmap(290x484,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(290x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -730,7 +803,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(500x300,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(500x300,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -749,7 +825,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(300x500,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(300x500,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()
@@ -777,7 +856,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals("AndroidBitmap(161x215,ARGB_8888)", bitmap.toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(161x215,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                bitmap.toShortInfoString()
+            )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
                 imageInfo.toShortString()

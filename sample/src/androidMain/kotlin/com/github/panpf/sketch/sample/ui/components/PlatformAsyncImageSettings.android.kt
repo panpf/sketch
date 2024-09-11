@@ -7,7 +7,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.panpf.sketch.request.ComposableImageOptions
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.sample.AppSettings
 

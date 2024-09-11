@@ -31,7 +31,7 @@ class ImagesNonAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.png.decode().asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(750x719,RGBA_8888)",
+                expected = "SkiaBitmap(750x719,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -44,7 +44,7 @@ class ImagesNonAndroidTest {
             sourceImage.blur(radius = 15, hasAlphaBitmapBgColor = null, maskColor = null)
                 .asOrThrow<SkiaBitmapImage>().apply {
                     assertEquals(
-                        expected = "SkiaBitmap(750x719,RGBA_8888)",
+                        expected = "SkiaBitmap(750x719,RGBA_8888,sRGB)",
                         actual = bitmap.toShortInfoString()
                     )
                     blur1BitmapFinger = produceFingerPrint(this.bitmap)
@@ -57,7 +57,7 @@ class ImagesNonAndroidTest {
             sourceImage.blur(radius = 15, hasAlphaBitmapBgColor = TestColor.GREEN, maskColor = null)
                 .asOrThrow<SkiaBitmapImage>().apply {
                     assertEquals(
-                        expected = "SkiaBitmap(750x719,RGBA_8888)",
+                        expected = "SkiaBitmap(750x719,RGBA_8888,sRGB)",
                         actual = bitmap.toShortInfoString()
                     )
                     blur2BitmapFinger = produceFingerPrint(this.bitmap)
@@ -73,7 +73,7 @@ class ImagesNonAndroidTest {
                 maskColor = TestColor.RED
             ).asOrThrow<SkiaBitmapImage>().apply {
                 assertEquals(
-                    expected = "SkiaBitmap(750x719,RGBA_8888)",
+                    expected = "SkiaBitmap(750x719,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 blur3BitmapFinger = produceFingerPrint(this.bitmap)
@@ -160,7 +160,7 @@ class ImagesNonAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -172,7 +172,7 @@ class ImagesNonAndroidTest {
         val startCropBitmap =
             sourceImage.circleCrop(Scale.START_CROP).asOrThrow<SkiaBitmapImage>().apply {
                 assertEquals(
-                    expected = "SkiaBitmap(1291x1291,RGBA_8888)",
+                    expected = "SkiaBitmap(1291x1291,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 startCropBitmapFinger = produceFingerPrint(this.bitmap)
@@ -184,7 +184,7 @@ class ImagesNonAndroidTest {
         val centerCropBitmap =
             sourceImage.circleCrop(Scale.CENTER_CROP).asOrThrow<SkiaBitmapImage>().apply {
                 assertEquals(
-                    expected = "SkiaBitmap(1291x1291,RGBA_8888)",
+                    expected = "SkiaBitmap(1291x1291,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 centerCropBitmapFinger = produceFingerPrint(this.bitmap)
@@ -196,7 +196,7 @@ class ImagesNonAndroidTest {
         val endCropBitmap =
             sourceImage.circleCrop(Scale.END_CROP).asOrThrow<SkiaBitmapImage>().apply {
                 assertEquals(
-                    expected = "SkiaBitmap(1291x1291,RGBA_8888)",
+                    expected = "SkiaBitmap(1291x1291,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 endCropBitmapFinger = produceFingerPrint(this.bitmap)
@@ -230,7 +230,7 @@ class ImagesNonAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -242,7 +242,7 @@ class ImagesNonAndroidTest {
         val redMaskBitmap = sourceImage.mask(TestColor.withA(TestColor.RED, a = 100))
             .asOrThrow<SkiaBitmapImage>().apply {
                 assertEquals(
-                    expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                    expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 redMaskBitmapFinger = produceFingerPrint(this.bitmap)
@@ -254,7 +254,7 @@ class ImagesNonAndroidTest {
         val greenMaskBitmap = sourceImage.mask(TestColor.withA(TestColor.GREEN, a = 100))
             .asOrThrow<SkiaBitmapImage>().apply {
                 assertEquals(
-                    expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                    expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 greenMaskBitmapFinger = produceFingerPrint(this.bitmap)
@@ -315,7 +315,7 @@ class ImagesNonAndroidTest {
         val sourceBitmapCorners: List<Int>
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -328,7 +328,7 @@ class ImagesNonAndroidTest {
             sourceImage.roundedCorners(floatArrayOf(10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f))
                 .asOrThrow<SkiaBitmapImage>().apply {
                     assertEquals(
-                        expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                        expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                         actual = bitmap.toShortInfoString()
                     )
                     smallRoundedCorneredBitmapFinger = produceFingerPrint(this.bitmap)
@@ -341,7 +341,7 @@ class ImagesNonAndroidTest {
             sourceImage.roundedCorners(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f))
                 .asOrThrow<SkiaBitmapImage>().apply {
                     assertEquals(
-                        expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                        expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                         actual = bitmap.toShortInfoString()
                     )
                     bigRoundedCorneredBitmapFinger = produceFingerPrint(this.bitmap)
@@ -378,7 +378,7 @@ class ImagesNonAndroidTest {
         val sourceImage = ResourceImages.jpeg.decode().asOrThrow<SkiaBitmapImage>()
             .apply {
                 assertEquals(
-                    expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                    expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 sourceBitmapFinger = produceFingerPrint(this.bitmap)
@@ -389,7 +389,7 @@ class ImagesNonAndroidTest {
         val rotate90BitmapCorners: List<Int>
         val rotate90Bitmap = sourceImage.rotate(90).asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1936x1291,RGBA_8888)",
+                expected = "SkiaBitmap(1936x1291,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             rotate90BitmapFinger = produceFingerPrint(this.bitmap)
@@ -400,7 +400,7 @@ class ImagesNonAndroidTest {
         val rotate180BitmapCorners: List<Int>
         val rotate180Bitmap = sourceImage.rotate(180).asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             rotate180BitmapFinger = produceFingerPrint(this.bitmap)
@@ -411,7 +411,7 @@ class ImagesNonAndroidTest {
         val rotate270BitmapCorners: List<Int>
         val rotate270Bitmap = sourceImage.rotate(270).asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1936x1291,RGBA_8888)",
+                expected = "SkiaBitmap(1936x1291,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             rotate270BitmapFinger = produceFingerPrint(this.bitmap)
@@ -422,7 +422,7 @@ class ImagesNonAndroidTest {
         val rotate360BitmapCorners: List<Int>
         val rotate360Bitmap = sourceImage.rotate(360).asOrThrow<SkiaBitmapImage>().apply {
             assertEquals(
-                expected = "SkiaBitmap(1291x1936,RGBA_8888)",
+                expected = "SkiaBitmap(1291x1936,RGBA_8888,sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             rotate360BitmapFinger = produceFingerPrint(this.bitmap)

@@ -63,6 +63,14 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
             }
         }
 
+    actual val colorSpaceName: SettingsStateFlow<String> by lazy {
+        stringSettingsStateFlow(context, "colorSpace", "Default")
+    }
+    actual val colorSpace: StateFlow<String?> =
+        colorSpaceName.stateMap {
+            it.takeIf { it != "Default" }
+        }
+
     val cacheDecodeTimeoutFrame: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)
     }

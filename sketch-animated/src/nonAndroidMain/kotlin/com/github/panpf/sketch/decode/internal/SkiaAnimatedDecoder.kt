@@ -86,12 +86,14 @@ open class SkiaAnimatedDecoder(
         val cacheDecodeTimeoutFrame = request.cacheDecodeTimeoutFrame == true
         val resize = requestContext.computeResize(imageInfo.size)
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, codec.isOpaque)
+        val newColorType = decodeConfig.colorType ?: codec.imageInfo.colorType
+        val newColorSpace = decodeConfig.colorSpace ?: codec.imageInfo.colorSpace
         val skiaImageInfo = SkiaImageInfo(
             width = codec.imageInfo.width,
             height = codec.imageInfo.height,
-            colorType = decodeConfig.colorType ?: codec.imageInfo.colorType,
+            colorType = newColorType,
             alphaType = codec.imageInfo.colorAlphaType,
-            colorSpace = codec.imageInfo.colorSpace
+            colorSpace = newColorSpace
         )
         return DecodeResult(
             image = SkiaAnimatedImage(

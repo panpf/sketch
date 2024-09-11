@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.graphics.Bitmap
-import android.graphics.ColorSpace.Named
+import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.sample.AppSettings
@@ -18,7 +18,7 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
     )
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         // Cannot use Named.entries, crashes on versions lower than O
-        val items = listOf("Default").plus(Named.values().map { it.name })
+        val items = listOf("Default").plus(ColorSpace.Named.values().map { it.name })
         add(
             DropdownSettingItem(
                 title = "Color Space",

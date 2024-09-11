@@ -124,12 +124,15 @@ internal actual fun DataSource.decodeSvg(
         mimeType = PNG.mimeType,
         isOpaque = false
     )
+    val newColorType = decodeConfig.colorType ?: ColorType.RGBA_8888
+    val newColorSpace = decodeConfig.colorSpace
     val bitmap = SkiaBitmap(
         SkiaImageInfo(
             width = bitmapSize.width,
             height = bitmapSize.height,
-            colorType = decodeConfig.colorType ?: ColorType.RGBA_8888,
-            alphaType = ColorAlphaType.PREMUL
+            colorType = newColorType,
+            alphaType = ColorAlphaType.PREMUL,
+            colorSpace = newColorSpace
         )
     )
     val canvas = Canvas(bitmap)

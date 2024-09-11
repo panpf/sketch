@@ -22,10 +22,14 @@ suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory? = null
 
 expect fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): DecodeHelper
 
-fun ResourceImageFile.decode(bitmapConfig: BitmapConfig? = null): Image {
+fun ResourceImageFile.decode(
+    bitmapConfig: BitmapConfig? = null,
+    colorSpace: String? = null
+): Image {
     val context = getTestContext()
     val request = ImageRequest(context, uri) {
         bitmapConfig(bitmapConfig)
+        colorSpace(colorSpace)
     }
     val dataSource = toDataSource(context)
     val decoderHelper = createDecodeHelper(request, dataSource)

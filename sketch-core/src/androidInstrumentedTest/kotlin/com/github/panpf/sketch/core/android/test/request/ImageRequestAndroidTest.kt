@@ -18,9 +18,7 @@ package com.github.panpf.sketch.core.android.test.request
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ColorSpace
 import android.graphics.ColorSpace.Named.ACES
-import android.graphics.ColorSpace.Named.BT709
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -199,25 +197,10 @@ class ImageRequestAndroidTest {
 
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
-        ImageRequest.Builder(context1, uri).apply {
-            build().apply {
-                assertNull(colorSpace)
-            }
-
+        ImageRequest(context1, uri) {
             colorSpace(ACES)
-            build().apply {
-                assertEquals(ColorSpace.get(ACES), colorSpace)
-            }
-
-            colorSpace(BT709)
-            build().apply {
-                assertEquals(ColorSpace.get(BT709), colorSpace)
-            }
-
-            colorSpace(null)
-            build().apply {
-                assertNull(colorSpace)
-            }
+        }.apply {
+            assertEquals("ACES", colorSpace)
         }
     }
 

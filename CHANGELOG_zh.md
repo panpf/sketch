@@ -20,6 +20,7 @@
 * change: Transformation 的 transform() 方法移除 suspend 修饰符
 * change: 桌面和 web 平台的默认内存缓存大小现在是 256MB，ios 平台是 128MB
 * new: 非安卓平台现在也支持 BitmapConfig 了
+* new: 非安卓平台现在也支持 ColorSpace 了
 
 # 4.0.0-alpha08
 

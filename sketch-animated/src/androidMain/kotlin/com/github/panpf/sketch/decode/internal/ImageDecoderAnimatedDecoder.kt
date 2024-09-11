@@ -24,6 +24,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
@@ -36,7 +37,6 @@ import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
-import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.source.AssetDataSource
@@ -141,9 +141,12 @@ open class ImageDecoderAnimatedDecoder(
                 )
                 decoder.setTargetSampleSize(inSampleSize)
 
-                request.colorSpace?.let {
+                val decodeConfig = DecodeConfig(request, info.mimeType, isOpaque = true)
+                decodeConfig.inPreferredColorSpace?.let {
                     decoder.setTargetColorSpace(it)
                 }
+
+                // TODO inPreferredConfig is not supported
 
                 // Set the animated transformation to be applied on each frame.
                 decoder.postProcessor = request.animatedTransformation?.asPostProcessor()

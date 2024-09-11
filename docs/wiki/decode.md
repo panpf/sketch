@@ -189,8 +189,8 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
 * ImageRequest.bitmapConfig(BitmapConfig): Sets the color quality of the bitmap. Available on all
   platforms
-* ImageRequest.colorSpace(ColorSpace): Set the color space of the bitmap. Available only on Android
-  platform
+* ImageRequest.colorSpace(ColorSpace): Set the color space of the bitmap. Available on all
+  platforms
 * ImageRequest.preferQualityOverSpeed(Boolean): Set quality priority decoding mode. Available only
   on Android platform
 

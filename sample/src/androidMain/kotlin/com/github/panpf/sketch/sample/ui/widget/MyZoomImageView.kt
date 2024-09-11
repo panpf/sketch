@@ -22,7 +22,6 @@ import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.appSettings

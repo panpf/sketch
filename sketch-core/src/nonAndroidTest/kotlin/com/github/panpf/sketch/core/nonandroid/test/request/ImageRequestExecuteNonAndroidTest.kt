@@ -23,10 +23,12 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.test.runTest
+import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -141,6 +143,43 @@ class ImageRequestExecuteNonAndroidTest {
             assertEquals(
                 expected = ColorType.RGBA_F16,
                 actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+            )
+        }
+    }
+
+    @Test
+    fun testColorSpace() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(
+                expected = ColorSpace.sRGB,
+                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorSpace
+            )
+        }
+
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            colorSpace(ColorSpace.sRGBLinear)
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(
+                expected = ColorSpace.sRGBLinear,
+                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorSpace
+            )
+        }
+
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            resultCachePolicy(DISABLED)
+            memoryCachePolicy(DISABLED)
+            colorSpace(ColorSpace.displayP3)
+        }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
+            assertEquals(
+                expected = ColorSpace.displayP3,
+                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorSpace
             )
         }
     }

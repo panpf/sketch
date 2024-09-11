@@ -18,6 +18,8 @@ package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.colorspace.ColorSpace
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
@@ -37,7 +39,7 @@ fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest.testComposeBitmapToLogString
  */
 fun ComposeBitmap.toLogString(): String =
-    "ComposeBitmap@${toHexString()}(${width}x${height},$config)"
+    "ComposeBitmap@${toHexString()}(${width}x${height},$config,${colorSpace.simpleName})"
 
 /**
  * [ComposeBitmap] painter
@@ -69,3 +71,27 @@ class ComposeBitmapPainter(val bitmap: ComposeBitmap) : Painter(), SketchPainter
         return "ComposeBitmapPainter(bitmap=${bitmap.toLogString()})"
     }
 }
+
+private val ColorSpace.simpleName: String
+    get() {
+        return when (this) {
+            ColorSpaces.Srgb -> "Srgb"
+            ColorSpaces.LinearSrgb -> "LinearSrgb"
+            ColorSpaces.ExtendedSrgb -> "ExtendedSrgb"
+            ColorSpaces.LinearExtendedSrgb -> "LinearExtendedSrgb"
+            ColorSpaces.Bt709 -> "Bt709"
+            ColorSpaces.Bt2020 -> "Bt2020"
+            ColorSpaces.DciP3 -> "DciP3"
+            ColorSpaces.DisplayP3 -> "DisplayP3"
+            ColorSpaces.Ntsc1953 -> "Ntsc1953"
+            ColorSpaces.SmpteC -> "SmpteC"
+            ColorSpaces.AdobeRgb -> "AdobeRgb"
+            ColorSpaces.ProPhotoRgb -> "ProPhotoRgb"
+            ColorSpaces.Aces -> "Aces"
+            ColorSpaces.Acescg -> "Acescg"
+            ColorSpaces.CieXyz -> "CieXyz"
+            ColorSpaces.CieLab -> "CieLab"
+            ColorSpaces.Oklab -> "Oklab"
+            else -> name
+        }
+    }

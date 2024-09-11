@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.request.ImageRequest
+import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 
 /**
@@ -16,6 +17,11 @@ fun DecodeConfig(
     val colorType1 = request.bitmapConfig?.toSkiaColorType(mimeType, isOpaque)
     if (colorType1 != null) {
         colorType = colorType1
+    }
+
+    val colorSpace1 = request.colorSpace?.let { ColorSpace.fromName(it) }
+    if (colorSpace1 != null) {
+        colorSpace = colorSpace1
     }
 }
 
@@ -43,5 +49,8 @@ class DecodeConfig {
      */
     var colorType: ColorType? = null
 
-    // TODO Support colorSpace
+    /**
+     * Color Space
+     */
+    var colorSpace: ColorSpace? = null
 }

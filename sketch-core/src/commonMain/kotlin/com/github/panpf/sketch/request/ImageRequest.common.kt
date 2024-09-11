@@ -155,6 +155,11 @@ data class ImageRequest(
     val bitmapConfig: BitmapConfig?,
 
     /**
+     * Bitmap color space
+     */
+    val colorSpace: String?,
+
+    /**
      * Lazy calculation of resize size. If size is null at runtime, size is calculated and assigned to size
      */
     val sizeResolver: SizeResolver,
@@ -461,6 +466,13 @@ data class ImageRequest(
          */
         fun bitmapConfig(config: BitmapConfig?): Builder = apply {
             definedOptionsBuilder.bitmapConfig(config)
+        }
+
+        /**
+         * Set bitmap color space
+         */
+        fun colorSpace(colorSpace: String?): Builder = apply {
+            definedOptionsBuilder.colorSpace(colorSpace)
         }
 
         /**
@@ -776,6 +788,7 @@ data class ImageRequest(
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
             val bitmapConfig = finalOptions.bitmapConfig
+            val colorSpace = finalOptions.colorSpace
             val sizeResolver = finalOptions.sizeResolver ?: resolveSizeResolver()
             val sizeMultiplier = finalOptions.sizeMultiplier
             val precisionDecider =
@@ -809,6 +822,7 @@ data class ImageRequest(
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
                 bitmapConfig = bitmapConfig,
+                colorSpace = colorSpace,
                 sizeResolver = sizeResolver,
                 sizeMultiplier = sizeMultiplier,
                 precisionDecider = precisionDecider,

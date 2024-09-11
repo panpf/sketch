@@ -97,6 +97,8 @@ class ImageOptionsTest {
             assertNull(this.extras)
             assertNull(this.httpHeaders)
             assertNull(this.downloadCachePolicy)
+            assertNull(this.bitmapConfig)
+            assertNull(this.colorSpace)
             assertNull(this.sizeResolver)
             assertNull(this.precisionDecider)
             assertNull(this.scaleDecider)
@@ -150,6 +152,14 @@ class ImageOptionsTest {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
             assertNotNull(this.bitmapConfig)
+        }
+
+        ImageOptions {
+            colorSpace("SRGB")
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.colorSpace)
         }
 
         ImageOptions {
@@ -388,6 +398,18 @@ class ImageOptionsTest {
             bitmapConfig(BitmapConfig.LowQuality)
         }).apply {
             assertEquals(BitmapConfig.HighQuality, this.bitmapConfig)
+        }
+
+        ImageOptions().apply {
+            assertEquals(null, this.colorSpace)
+        }.merged(ImageOptions {
+            colorSpace("SRGB")
+        }).apply {
+            assertEquals("SRGB", this.colorSpace)
+        }.merged(ImageOptions {
+            colorSpace("LINEAR_SRGB")
+        }).apply {
+            assertEquals("SRGB", this.colorSpace)
         }
 
         ImageOptions().apply {
@@ -912,6 +934,30 @@ class ImageOptionsTest {
             bitmapConfig(null)
             build().apply {
                 assertNull(bitmapConfig)
+            }
+        }
+    }
+
+    @Test
+    fun testColorSpace() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(colorSpace)
+            }
+
+            colorSpace("SRGB")
+            build().apply {
+                assertEquals("SRGB", this.colorSpace)
+            }
+
+            colorSpace("LINEAR_SRGB")
+            build().apply {
+                assertEquals("LINEAR_SRGB", this.colorSpace)
+            }
+
+            colorSpace(null)
+            build().apply {
+                assertNull(colorSpace)
             }
         }
     }

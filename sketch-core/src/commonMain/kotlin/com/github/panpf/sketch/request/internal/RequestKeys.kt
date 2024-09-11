@@ -32,6 +32,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendHttpHeaders()
     .appendDownloadCachePolicy()
     .appendBitmapConfig()
+    .appendColorSpace()
     .appendSize()
     .appendSizeMultiplier()
     .appendPrecision()
@@ -59,6 +60,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
 internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
     .appendCacheExtras()
     .appendBitmapConfig()
+    .appendColorSpace()
     .appendSize(size)
     .appendSizeMultiplier()
     .appendPrecision()
@@ -120,6 +122,12 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     fun appendBitmapConfig(): ImageRequestKeyBuilder = apply {
         request.bitmapConfig?.also { bitmapConfig ->
             appendQueryParameter("_bitmapConfig", bitmapConfig.key)
+        }
+    }
+
+    fun appendColorSpace(): ImageRequestKeyBuilder = apply {
+        request.colorSpace?.also { colorSpace ->
+            appendQueryParameter("_colorSpace", colorSpace)
         }
     }
 

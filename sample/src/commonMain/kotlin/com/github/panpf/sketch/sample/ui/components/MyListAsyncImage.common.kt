@@ -176,6 +176,9 @@ private fun buildListImageRequest(
         val bitmapQuality by appSettings.bitmapQuality.collectAsState()
         bitmapConfig(bitmapQuality)
 
+        val colorSpace by appSettings.colorSpace.collectAsState()
+        colorSpace(colorSpace)
+
         val precision by appSettings.precision.collectAsState()
         precision(precision)
 

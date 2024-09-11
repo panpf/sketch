@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.core.android.test.decode.internal
 
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
@@ -31,8 +30,10 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -116,7 +117,7 @@ class DrawableDecoderTest {
 //                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
 //        }.apply {
 //            assertEquals(
-//                "Bitmap(${imageWidth}x${imageHeight},ARGB_8888)",
+//                "Bitmap(${imageWidth}x${imageHeight},ARGB_8888${shortInfoColorSpaceName("SRGB")})",
 //                bitmap.toShortInfoString()
 //            )
 //            assertEquals(
@@ -164,7 +165,11 @@ class DrawableDecoderTest {
                 (imageWidth / 2) / imageHeight.toFloat()
             )
             assertEquals(
-                "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
+                "AndroidBitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888${
+                    shortInfoColorSpaceName(
+                        "SRGB"
+                    )
+                })",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(listOf(createScaledTransformed(scale)), transformeds)
@@ -192,7 +197,11 @@ class DrawableDecoderTest {
                 (imageWidth * 2) / imageHeight.toFloat()
             )
             assertEquals(
-                "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888)",
+                "AndroidBitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888${
+                    shortInfoColorSpaceName(
+                        "SRGB"
+                    )
+                })",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(listOf(createScaledTransformed(2.0f)), transformeds)
@@ -219,6 +228,4 @@ class DrawableDecoderTest {
             }
         }
     }
-
-    private fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$config)"
 }

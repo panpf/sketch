@@ -26,6 +26,7 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
 import com.github.panpf.sketch.util.toNewBitmap
@@ -117,7 +118,10 @@ class DrawablesTest {
         assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
         drawable.toNewBitmap().apply {
             assertEquals(Bitmap.Config.ARGB_8888, config)
-            assertEquals("AndroidBitmap(100x100,ARGB_8888)", toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(100x100,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                toShortInfoString()
+            )
         }
         assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
 
@@ -125,7 +129,10 @@ class DrawablesTest {
         assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
         drawable.toNewBitmap(Bitmap.Config.RGB_565).apply {
             assertEquals(Bitmap.Config.RGB_565, config)
-            assertEquals("AndroidBitmap(100x100,RGB_565)", toShortInfoString())
+            assertEquals(
+                "AndroidBitmap(100x100,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                toShortInfoString()
+            )
         }
         assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
     }

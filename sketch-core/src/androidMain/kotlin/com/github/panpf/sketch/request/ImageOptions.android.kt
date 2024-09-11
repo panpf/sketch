@@ -174,24 +174,8 @@ fun ImageOptions.Builder.bitmapConfig(config: Bitmap.Config): ImageOptions.Build
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Builder = apply {
-    if (named != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setExtra(key = COLOR_SPACE_NAMED_KEY, value = named.name)
-    } else {
-        removeExtra(COLOR_SPACE_NAMED_KEY)
-    }
+    colorSpace(named?.name)
 }
-
-/**
- * [Bitmap]'s [ColorSpace]
- *
- * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testColorSpace
- */
-@get:RequiresApi(Build.VERSION_CODES.O)
-val ImageOptions.colorSpace: ColorSpace?
-    get() = extras?.value<String>(COLOR_SPACE_NAMED_KEY)
-        ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
 
 /**

@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample
 
-import android.graphics.ColorSpace
 import android.view.View
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
@@ -71,15 +70,12 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
             }
         }
 
-    val colorSpaceName: SettingsStateFlow<String> by lazy {
+    actual val colorSpaceName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "colorSpace", "Default")
     }
-    val colorSpace: StateFlow<ColorSpace.Named?> =
+    actual val colorSpace: StateFlow<String?> =
         colorSpaceName.stateMap {
-            when (it) {
-                "Default" -> null
-                else -> ColorSpace.Named.valueOf(it)
-            }
+            it.takeIf { it != "Default" }
         }
 
     val inPreferQualityOverSpeed: SettingsStateFlow<Boolean> by lazy {

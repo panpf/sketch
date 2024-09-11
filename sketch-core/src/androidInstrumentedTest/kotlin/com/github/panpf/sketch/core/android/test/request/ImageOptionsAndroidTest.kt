@@ -168,25 +168,10 @@ class ImageOptionsAndroidTest {
     fun testColorSpace() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(colorSpace)
-            }
-
-            colorSpace(ColorSpace.Named.ACES)
-            build().apply {
-                assertEquals(ColorSpace.get(ColorSpace.Named.ACES), colorSpace)
-            }
-
-            colorSpace(ColorSpace.Named.BT709)
-            build().apply {
-                assertEquals(ColorSpace.get(ColorSpace.Named.BT709), colorSpace)
-            }
-
-            colorSpace(null)
-            build().apply {
-                assertNull(colorSpace)
-            }
+        ImageOptions {
+            colorSpace(ColorSpace.Named.LINEAR_SRGB)
+        }.apply {
+            assertEquals("LINEAR_SRGB", colorSpace)
         }
     }
 
@@ -220,30 +205,8 @@ class ImageOptionsAndroidTest {
         ImageOptions().apply {
             assertTrue(this.isEmpty())
             assertFalse(this.isNotEmpty())
-            assertNull(this.bitmapConfig)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                assertNull(this.colorSpace)
-            }
             @Suppress("DEPRECATION")
             assertNull(this.preferQualityOverSpeed)
-        }
-
-        ImageOptions {
-            bitmapConfig(Bitmap.Config.ALPHA_8)
-        }.apply {
-            assertFalse(this.isEmpty())
-            assertTrue(this.isNotEmpty())
-            assertNotNull(this.bitmapConfig)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ImageOptions {
-                colorSpace(ColorSpace.Named.BT709)
-            }.apply {
-                assertFalse(this.isEmpty())
-                assertTrue(this.isNotEmpty())
-                assertNotNull(this.colorSpace)
-            }
         }
 
         ImageOptions {
@@ -259,32 +222,6 @@ class ImageOptionsAndroidTest {
 
     @Test
     fun testMerged() {
-        ImageOptions().apply {
-            assertEquals(null, this.bitmapConfig)
-        }.merged(ImageOptions {
-            bitmapConfig(Bitmap.Config.ARGB_8888)
-        }).apply {
-            assertEquals(BitmapConfig(Bitmap.Config.ARGB_8888), this.bitmapConfig)
-        }.merged(ImageOptions {
-            bitmapConfig(Bitmap.Config.RGB_565)
-        }).apply {
-            assertEquals(BitmapConfig(Bitmap.Config.ARGB_8888), this.bitmapConfig)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ImageOptions().apply {
-                assertEquals(null, this.colorSpace)
-            }.merged(ImageOptions {
-                colorSpace(ColorSpace.Named.BT709)
-            }).apply {
-                assertEquals(ColorSpace.get(ColorSpace.Named.BT709), this.colorSpace)
-            }.merged(ImageOptions {
-                colorSpace(ColorSpace.Named.ACES)
-            }).apply {
-                assertEquals(ColorSpace.get(ColorSpace.Named.BT709), this.colorSpace)
-            }
-        }
-
         @Suppress("DEPRECATION")
         ImageOptions().apply {
             assertEquals(null, this.preferQualityOverSpeed)

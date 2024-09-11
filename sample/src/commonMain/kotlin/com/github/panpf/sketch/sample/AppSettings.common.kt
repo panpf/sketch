@@ -34,6 +34,9 @@ expect class AppSettings constructor(context: PlatformContext) {
     val bitmapQualityName: SettingsStateFlow<String>
     val bitmapQuality: StateFlow<BitmapConfig?>
 
+    val colorSpaceName: SettingsStateFlow<String>
+    val colorSpace: StateFlow<String?>
+
 
     // -------------------------------------- list image --------------------------------------
 

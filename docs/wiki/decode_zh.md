@@ -176,8 +176,10 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
 ## 解码相关属性
 
+[//]: # (TODO Each decoding related attribute is introduced separately)
+
 * ImageRequest.bitmapConfig(BitmapConfig): 设置位图的颜色质量。全平台可用
-* ImageRequest.colorSpace(ColorSpace): 设置位图的色彩空间。仅 Android 平台可用
+* ImageRequest.colorSpace(ColorSpace): 设置位图的色彩空间。全平台可用
 * ImageRequest.preferQualityOverSpeed(Boolean): 设置质量优先解码模式。仅 Android 平台可用
 
 [comment]: <> (classs)

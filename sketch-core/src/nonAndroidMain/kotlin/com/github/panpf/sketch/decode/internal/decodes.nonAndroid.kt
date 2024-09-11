@@ -92,12 +92,13 @@ internal fun SkiaImage.decode(decodeConfig: DecodeConfig? = null): SkiaBitmap {
         sampleSize = sampleSize
     )
     val newColorType = decodeConfig?.colorType ?: colorType
+    val newColorSpace = decodeConfig?.colorSpace ?: colorSpace
     val newImageInfo = SkiaImageInfo(
         width = bitmapSize.width,
         height = bitmapSize.height,
         colorType = newColorType,
         alphaType = alphaType,
-        colorSpace = colorSpace
+        colorSpace = newColorSpace
     )
     val bitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(bitmap)
@@ -124,12 +125,13 @@ internal fun SkiaImage.decodeRegion(
         sampleSize = sampleSize
     )
     val newColorType = decodeConfig?.colorType ?: colorType
+    val newColorSpace = decodeConfig?.colorSpace ?: colorSpace
     val newImageInfo = SkiaImageInfo(
         width = bitmapSize.width,
         height = bitmapSize.height,
         colorType = newColorType,
         alphaType = alphaType,
-        colorSpace = colorSpace
+        colorSpace = newColorSpace
     )
     val bitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(bitmap)

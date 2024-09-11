@@ -166,8 +166,6 @@ fun ImageRequest.Builder.bitmapConfig(config: Bitmap.Config): ImageRequest.Build
     bitmapConfig(BitmapConfig(config))
 
 
-const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"
-
 /**
  * Set preferred [Bitmap]'s [ColorSpace]
  *
@@ -175,24 +173,8 @@ const val COLOR_SPACE_NAMED_KEY = "sketch#color_space_named"
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Builder = apply {
-    if (named != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setExtra(key = COLOR_SPACE_NAMED_KEY, value = named.name)
-    } else {
-        removeExtra(COLOR_SPACE_NAMED_KEY)
-    }
+    colorSpace(named?.name)
 }
-
-/**
- * [Bitmap]'s [ColorSpace]
- *
- * Applied to [android.graphics.BitmapFactory.Options.inPreferredColorSpace]
- *
- * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testColorSpace
- */
-@get:RequiresApi(Build.VERSION_CODES.O)
-val ImageRequest.colorSpace: ColorSpace?
-    get() = extras?.value<String>(COLOR_SPACE_NAMED_KEY)
-        ?.let { ColorSpace.get(ColorSpace.Named.valueOf(it)) }
 
 
 const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"

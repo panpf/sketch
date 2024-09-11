@@ -17,7 +17,10 @@
 package com.github.panpf.sketch.test.utils
 
 import android.graphics.Bitmap
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.simpleName
 
 
 fun Bitmap.toSizeString(): String = "${width}x${height}"
@@ -26,7 +29,28 @@ fun Bitmap.toSizeString(): String = "${width}x${height}"
 val Bitmap.configOrNull: Bitmap.Config?
     get() = config ?: null
 
-fun Bitmap.toShortInfoString(): String = "Bitmap(${width}x${height},$configOrNull)"
+fun Bitmap.toShortInfoString(): String =
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        "AndroidBitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
+    } else {
+        "AndroidBitmap(${width}x${height},$configOrNull)"
+    }
+
+fun shortInfoColorSpaceName(name: String): String {
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        ",${name}"
+    } else {
+        ""
+    }
+}
+
+fun logColorSpaceName(name: String): String {
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        ",${name}"
+    } else {
+        ""
+    }
+}
 
 
 val Bitmap.cornerA: Int

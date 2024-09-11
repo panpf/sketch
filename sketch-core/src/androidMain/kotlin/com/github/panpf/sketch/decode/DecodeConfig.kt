@@ -24,7 +24,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 
 
@@ -50,7 +49,7 @@ fun DecodeConfig(
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O && request.colorSpace != null) {
-            inPreferredColorSpace = request.colorSpace
+            inPreferredColorSpace = ColorSpace.get(ColorSpace.Named.valueOf(request.colorSpace))
         }
     }
 
