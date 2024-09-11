@@ -463,7 +463,7 @@ class SkiaBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig.FixedQuality(ColorType.RGB_565.name)
+        val bitmapConfig = BitmapConfig(ColorType.RGB_565)
         ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
             assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
@@ -797,7 +797,7 @@ class SkiaBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig.FixedQuality(ColorType.RGB_565.name)
+        val bitmapConfig = BitmapConfig(ColorType.RGB_565)
         ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
             assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
@@ -882,7 +882,7 @@ class SkiaBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig.FixedQuality(ColorType.RGB_565.name)
+        val bitmapConfig = BitmapConfig(ColorType.RGB_565)
         ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
             assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)

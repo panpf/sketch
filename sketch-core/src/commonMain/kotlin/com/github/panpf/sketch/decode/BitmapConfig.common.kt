@@ -22,25 +22,42 @@ import com.github.panpf.sketch.decode.BitmapConfig.LowQuality
 import com.github.panpf.sketch.util.Key
 
 /**
+ * Create a [BitmapConfig] instance from the specified value
+ */
+fun BitmapConfig(value: String): BitmapConfig = when (value) {
+    LowQuality.value -> LowQuality
+    HighQuality.value -> HighQuality
+    else -> FixedQuality(value)
+}
+
+/**
  * Whether configured for low-quality bitmaps
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testIsLowQuality
  */
 val BitmapConfig.isLowQuality: Boolean
     get() = this === LowQuality
 
 /**
  * Whether configured for high-quality bitmaps
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testIsHighQuality
  */
 val BitmapConfig.isHighQuality: Boolean
     get() = this === HighQuality
 
 /**
  * Whether configured for fixed bitmaps
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testIsFixed
  */
 val BitmapConfig.isFixed: Boolean
     get() = this is FixedQuality
 
 /**
  * Whether configured for dynamic bitmaps
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testIsDynamic
  */
 val BitmapConfig.isDynamic: Boolean
     get() = this !is FixedQuality
@@ -60,16 +77,10 @@ sealed interface BitmapConfig : Key {
 
     val value: String
 
-    companion object {
-        fun valueOf(value: String): BitmapConfig = when (value) {
-            LowQuality.value -> LowQuality
-            HighQuality.value -> HighQuality
-            else -> FixedQuality(value)
-        }
-    }
-
     /**
      * Low quality bitmap config. RGB_565 is preferred, followed by ARGB_8888
+     *
+     * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testLowQuality
      */
     data object LowQuality : BitmapConfig {
 
@@ -82,6 +93,8 @@ sealed interface BitmapConfig : Key {
 
     /**
      * High quality bitmap config. RGBA_F16 is preferred, followed by ARGB_8888
+     *
+     * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testHighQuality
      */
     data object HighQuality : BitmapConfig {
 
@@ -94,6 +107,8 @@ sealed interface BitmapConfig : Key {
 
     /**
      * Fixed bitmap config, whatever mimeTye is will return the specified config
+     *
+     * @see com.github.panpf.sketch.core.common.test.decode.BitmapConfigTest.testFixedQuality
      */
     class FixedQuality(override val value: String) : BitmapConfig {
 

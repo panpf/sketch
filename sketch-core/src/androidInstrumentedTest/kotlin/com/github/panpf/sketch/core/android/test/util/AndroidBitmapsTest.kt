@@ -486,7 +486,7 @@ class AndroidBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig.FixedQuality(Bitmap.Config.RGB_565.name)
+        val bitmapConfig = BitmapConfig(Bitmap.Config.RGB_565)
         ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
             assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -801,7 +801,7 @@ class AndroidBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig.FixedQuality(Bitmap.Config.RGB_565.name)
+        val bitmapConfig = BitmapConfig(Bitmap.Config.RGB_565)
         ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
             assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -882,7 +882,7 @@ class AndroidBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig.FixedQuality(Bitmap.Config.RGB_565.name)
+        val bitmapConfig = BitmapConfig(Bitmap.Config.RGB_565)
         ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
             assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())

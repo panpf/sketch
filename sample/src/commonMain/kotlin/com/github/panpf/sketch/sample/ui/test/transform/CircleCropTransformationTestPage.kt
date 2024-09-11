@@ -36,7 +36,7 @@ fun CircleTransformationTestPage() {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(CircleCropTransformation(scale))
-                bitmapConfig(BitmapConfig.FixedQuality("RGB_565")) // To test automatic conversion Config
+                bitmapConfig(BitmapConfig("RGB_565")) // To test automatic conversion Config
             },
             contentDescription = "image",
             modifier = Modifier.fillMaxWidth().weight(1f)

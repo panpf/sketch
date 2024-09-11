@@ -67,7 +67,7 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
                 "Default" -> null
                 "LOW" -> BitmapConfig.LowQuality
                 "HIGH" -> BitmapConfig.HighQuality
-                else -> BitmapConfig.FixedQuality(it)
+                else -> BitmapConfig(it)
             }
         }
 

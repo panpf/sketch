@@ -31,31 +31,47 @@ import kotlin.test.assertTrue
 class BitmapConfigTest {
 
     @Test
+    fun testBitmapConfig() {
+        assertEquals(
+            BitmapConfig.LowQuality,
+            BitmapConfig("LowQuality")
+        )
+        assertEquals(
+            BitmapConfig.HighQuality,
+            BitmapConfig("HighQuality")
+        )
+        assertEquals(
+            BitmapConfig.FixedQuality("ARGB_8888"),
+            BitmapConfig("ARGB_8888")
+        )
+    }
+
+    @Test
     fun testIsLowQuality() {
         assertTrue(BitmapConfig.LowQuality.isLowQuality)
         assertFalse(BitmapConfig.HighQuality.isLowQuality)
-        assertFalse(BitmapConfig.FixedQuality("ARGB_8888").isLowQuality)
+        assertFalse(BitmapConfig("ARGB_8888").isLowQuality)
     }
 
     @Test
     fun testIsHighQuality() {
         assertFalse(BitmapConfig.LowQuality.isHighQuality)
         assertTrue(BitmapConfig.HighQuality.isHighQuality)
-        assertFalse(BitmapConfig.FixedQuality("ARGB_8888").isHighQuality)
+        assertFalse(BitmapConfig("ARGB_8888").isHighQuality)
     }
 
     @Test
     fun testIsFixed() {
         assertFalse(BitmapConfig.LowQuality.isFixed)
         assertFalse(BitmapConfig.HighQuality.isFixed)
-        assertTrue(BitmapConfig.FixedQuality("ARGB_8888").isFixed)
+        assertTrue(BitmapConfig("ARGB_8888").isFixed)
     }
 
     @Test
     fun testIsDynamic() {
         assertTrue(BitmapConfig.LowQuality.isDynamic)
         assertTrue(BitmapConfig.HighQuality.isDynamic)
-        assertFalse(BitmapConfig.FixedQuality("ARGB_8888").isDynamic)
+        assertFalse(BitmapConfig("ARGB_8888").isDynamic)
     }
 
     @Test
@@ -103,21 +119,5 @@ class BitmapConfigTest {
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element2.hashCode(), element11.hashCode())
-    }
-
-    @Test
-    fun testValueOf() {
-        assertEquals(
-            BitmapConfig.LowQuality,
-            BitmapConfig.valueOf("LowQuality")
-        )
-        assertEquals(
-            BitmapConfig.HighQuality,
-            BitmapConfig.valueOf("HighQuality")
-        )
-        assertEquals(
-            BitmapConfig.FixedQuality("ARGB_8888"),
-            BitmapConfig.valueOf("ARGB_8888")
-        )
     }
 }

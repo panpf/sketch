@@ -582,9 +582,9 @@ class ImageRequestTest {
                 assertEquals(BitmapConfig.HighQuality, bitmapConfig)
             }
 
-            bitmapConfig(BitmapConfig.FixedQuality("ARGB_8888"))
+            bitmapConfig(BitmapConfig("ARGB_8888"))
             build().apply {
-                assertEquals(BitmapConfig.FixedQuality("ARGB_8888"), bitmapConfig)
+                assertEquals(BitmapConfig("ARGB_8888"), bitmapConfig)
             }
 
             bitmapConfig(null)
