@@ -1,14 +1,14 @@
 package com.github.panpf.sketch.sample.ui.util
 
-/*
- * "PainterImage(painter=ResizeAnimatablePainter(painter=DrawableAnimatablePainter(drawable=AnimatableDrawable(drawable=ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(240x240), fitScale=true))), size=Size(346.0x346.0), scale=CENTER_CROP), shareable=false)"
+/**
+ * Convert the string to a formatted string
+ *
+ * @see com.github.panpf.sketch.sample.ui.util.ToFormatStringTest
  */
-
-// TODO error in android
 fun Any.toFormattedString(): String =
-    formatItemToString(parseToStringToItem(this@toFormattedString.toString()))
+    itemToFormattedString(parseItem(this@toFormattedString.toString()))
 
-private fun parseToStringToItem(toString: String): Item {
+private fun parseItem(toString: String): Item {
     val startIndex = toString.indexOf('(').takeIf { it != -1 } ?: return Item2(toString)
     val endIndex = toString.lastIndexOf(')').takeIf { it != -1 } ?: return Item2(toString)
     val name = toString.substring(0, startIndex)
@@ -22,11 +22,13 @@ private fun parseToStringToItem(toString: String): Item {
                 2 -> {
                     val (propertyName, propertyValue) = propertyValues
                     val restorePropertyValue = decodeToStringString(propertyValue)
-                    Item3(propertyName, parseToStringToItem(restorePropertyValue))
+                    Item3(propertyName, parseItem(restorePropertyValue))
                 }
 
                 1 -> {
-                    Item2(propertyValues[0])
+                    val value1 = propertyValues[0]
+                    val decodedValue1 = decodeToStringString(value1)
+                    parseItem(decodedValue1)
                 }
 
                 else -> {
@@ -37,7 +39,7 @@ private fun parseToStringToItem(toString: String): Item {
     return Item1(name, propertyValues)
 }
 
-private fun formatItemToString(item: Item, deep: Int = 0): String {
+private fun itemToFormattedString(item: Item, deep: Int = 0): String {
     return buildString {
         when (item) {
             is Item1 -> {
@@ -50,7 +52,7 @@ private fun formatItemToString(item: Item, deep: Int = 0): String {
                         appendLine()
                         repeat(currentDeep) { _ -> append("    ") }
                     }
-                    append(formatItemToString(property, currentDeep))
+                    append(itemToFormattedString(property, currentDeep))
                     if (item.properties.size > 1 && index != item.properties.size - 1) {
                         append(",")
                     }
@@ -67,7 +69,7 @@ private fun formatItemToString(item: Item, deep: Int = 0): String {
             }
 
             is Item3 -> {
-                append("${item.name}=${formatItemToString(item.value, deep)}")
+                append("${item.name}=${itemToFormattedString(item.value, deep)}")
             }
         }
     }
