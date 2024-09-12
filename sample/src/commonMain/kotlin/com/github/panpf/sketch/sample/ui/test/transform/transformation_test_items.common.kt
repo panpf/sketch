@@ -1,14 +1,17 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -31,14 +34,11 @@ fun singleChoiceListItem(
     Column(Modifier.fillMaxWidth()) {
         Text(text = title, fontSize = 12.sp, fontWeight = FontWeight.Bold)
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(30.dp).horizontalScroll(rememberScrollState())
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            values.forEachIndexed { index, value ->
-                if (index > 0) {
-                    Spacer(Modifier.size(8.dp))
-                }
+            values.forEach { value ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable { state.value = value }

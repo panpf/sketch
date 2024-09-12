@@ -95,6 +95,8 @@ internal fun SkiaBitmap.readIntPixels(
     width: Int = this.width,
     height: Int = this.height
 ): IntArray? {
+    val pixelsConverter = PixelsConverter(this.colorType)
+        ?: throw UnsupportedOperationException("Unsupported colorType: ${this.colorType}")
     val imageInfo = SkiaImageInfo(this.colorInfo, width, height)
     val bytePixels = this.readPixels(
         dstInfo = imageInfo,
@@ -102,114 +104,16 @@ internal fun SkiaBitmap.readIntPixels(
         srcX = x,
         srcY = y
     ) ?: return null
-    return when (imageInfo.colorType) {
-        ColorType.ALPHA_8 -> {
-            val intArray = IntArray(bytePixels.size)
-            for (i in intArray.indices) {
-                val a = bytePixels[i].toInt() and 0xFF
-                intArray[i] = a shl 24
-            }
-            intArray
-        }
-
-        ColorType.RGB_565 -> {  // TODO There seems to be a problem, causing blur exception
-            val intArray = IntArray(bytePixels.size / 2)
-            for (i in intArray.indices) {
-                val r = bytePixels[i * 2].toInt() and 0xF8
-                val g =
-                    (bytePixels[i * 2].toInt() and 0x07 shl 5) or (bytePixels[i * 2 + 1].toInt() and 0xE0 shr 3)
-                val b = bytePixels[i * 2 + 1].toInt() and 0x1F shl 3
-                intArray[i] = (r shl 16) or (g shl 8) or b
-            }
-            intArray
-        }
-
-        ColorType.RGB_888X, ColorType.RGB_101010X -> {
-            val intArray = IntArray(bytePixels.size / 3)
-            for (i in intArray.indices) {
-                val r = bytePixels[i * 3].toInt() and 0xFF
-                val g = bytePixels[i * 3 + 1].toInt() and 0xFF
-                val b = bytePixels[i * 3 + 2].toInt() and 0xFF
-                intArray[i] = (r shl 16) or (g shl 8) or b
-            }
-            intArray
-        }
-
-        // TODO ColorType.ARGB_4444 error
-        ColorType.ARGB_4444, ColorType.RGBA_8888, ColorType.BGRA_8888, ColorType.RGBA_1010102 -> {
-            val intArray = IntArray(bytePixels.size / 4)
-            for (i in intArray.indices) {
-                val r = bytePixels[i * 4].toInt() and 0xFF
-                val g = bytePixels[i * 4 + 1].toInt() and 0xFF
-                val b = bytePixels[i * 4 + 2].toInt() and 0xFF
-                val a = bytePixels[i * 4 + 3].toInt() and 0xFF
-                intArray[i] = (a shl 24) or (r shl 16) or (g shl 8) or b
-            }
-            intArray
-        }
-
-        else -> throw IllegalArgumentException("Unsupported color type: ${imageInfo.colorType}")
-    }
+    return pixelsConverter.bytePixelsToIntPixels(bytePixels)
 }
 
 /**
  * Installs the specified intArray as the pixels of this SkiaBitmap.
  */
-internal fun SkiaBitmap.installIntPixels(intArray: IntArray): Boolean {
-    val bytePixels = when (imageInfo.colorType) {
-        ColorType.ALPHA_8 -> {
-            val byteArray = ByteArray(intArray.size)
-            for (i in intArray.indices) {
-                val a = intArray[i] shr 24
-                byteArray[i] = a.toByte()
-            }
-            byteArray
-        }
-
-        ColorType.RGB_565 -> {  // TODO There seems to be a problem, causing blur exception
-            val byteArray = ByteArray(intArray.size * 2)
-            for (i in intArray.indices) {
-                val r = (intArray[i] shr 19) and 0x1F
-                val g = (intArray[i] shr 10) and 0x3F
-                val b = (intArray[i] shr 3) and 0x1F
-                val rgb565 = (r shl 11) or (g shl 5) or b
-                byteArray[i * 2] = (rgb565 shr 8).toByte()
-                byteArray[i * 2 + 1] = rgb565.toByte()
-            }
-            byteArray
-        }
-
-        ColorType.RGB_888X, ColorType.RGB_101010X -> {
-            val byteArray = ByteArray(intArray.size * 3)
-            for (i in intArray.indices) {
-                val r = (intArray[i] shr 16) and 0xFF
-                val g = (intArray[i] shr 8) and 0xFF
-                val b = intArray[i] and 0xFF
-                byteArray[i * 3] = r.toByte()
-                byteArray[i * 3 + 1] = g.toByte()
-                byteArray[i * 3 + 2] = b.toByte()
-            }
-            byteArray
-        }
-
-        // TODO ColorType.ARGB_4444 error
-        ColorType.ARGB_4444, ColorType.RGBA_8888, ColorType.BGRA_8888, ColorType.RGBA_1010102 -> {
-            val byteArray = ByteArray(intArray.size * 4)
-            for (i in intArray.indices) {
-                val r = (intArray[i] shr 16) and 0xFF
-                val g = (intArray[i] shr 8) and 0xFF
-                val b = intArray[i] and 0xFF
-                val a = intArray[i] shr 24
-                byteArray[i * 4] = r.toByte()
-                byteArray[i * 4 + 1] = g.toByte()
-                byteArray[i * 4 + 2] = b.toByte()
-                byteArray[i * 4 + 3] = a.toByte()
-            }
-            byteArray
-        }
-
-        else -> throw IllegalArgumentException("Unsupported color type: ${imageInfo.colorType}")
-    }
+internal fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
+    val pixelsConverter = PixelsConverter(this.colorType)
+        ?: throw UnsupportedOperationException("Unsupported colorType: ${this.colorType}")
+    val bytePixels = pixelsConverter.intPixelsToBytePixels(intPixels)
     return installPixels(bytePixels)
 }
 

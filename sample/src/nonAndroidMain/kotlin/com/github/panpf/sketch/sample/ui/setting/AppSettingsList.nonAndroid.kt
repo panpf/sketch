@@ -7,7 +7,7 @@ import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 
 actual fun platformBitmapConfigs(): List<String> {
-    return ColorType.values().map { it.name }
+    return ColorType.values().filter { it != ColorType.UNKNOWN }.map { it.name }
 }
 
 actual fun platformColorSpaces(): List<String> {
