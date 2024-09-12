@@ -1,75 +1,63 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.BitmapConfig
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
+import com.github.panpf.sketch.sample.ui.setting.platformBitmapConfigs
 import com.github.panpf.sketch.transform.CircleCropTransformation
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun CircleTransformationTestPage() {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
-        var scale by remember { mutableStateOf(Scale.CENTER_CROP) }
+        val scaleValues =
+            remember { Scale.values().map { it.name }.toImmutableList() }
+        val scaleState = remember { mutableStateOf(Scale.CENTER_CROP.name) }
+
+        val bitmapConfigValues =
+            remember { listOf("Default").plus(platformBitmapConfigs()).toImmutableList() }
+        val bitmapConfigState = remember { mutableStateOf("Default") }
+        val bitmapConfig = remember(bitmapConfigState.value) {
+            bitmapConfigState.value.takeIf { it != "Default" }?.let { BitmapConfig(it) }
+        }
+
         MyAsyncImage(
-            request = ImageRequest(LocalPlatformContext.current, ResourceImages.jpeg.uri) {
+            request = ComposableImageRequest(ResourceImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                addTransformations(CircleCropTransformation(scale))
-                bitmapConfig(BitmapConfig("RGB_565")) // To test automatic conversion Config
+                addTransformations(CircleCropTransformation(Scale.valueOf(scaleState.value)))
+                bitmapConfig(bitmapConfig)
             },
             contentDescription = "image",
             modifier = Modifier.fillMaxWidth().weight(1f)
         )
 
         Spacer(Modifier.size(16.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            RadioButton(
-                selected = scale == Scale.START_CROP,
-                onClick = { scale = Scale.START_CROP },
-            )
-            Text(text = "START", fontSize = 12.sp)
 
-            Spacer(Modifier.size(4.dp))
-            RadioButton(
-                selected = scale == Scale.CENTER_CROP,
-                onClick = { scale = Scale.CENTER_CROP },
-            )
-            Text(text = "CENTER", fontSize = 12.sp)
+        singleChoiceListItem(
+            title = "Scale",
+            values = scaleValues,
+            state = scaleState
+        )
 
-            Spacer(Modifier.size(4.dp))
-            RadioButton(
-                selected = scale == Scale.END_CROP,
-                onClick = { scale = Scale.END_CROP },
-            )
-            Text(text = "END", fontSize = 12.sp)
-
-            Spacer(Modifier.size(4.dp))
-            RadioButton(
-                selected = scale == Scale.FILL,
-                onClick = { scale = Scale.FILL },
-            )
-            Text(text = "FILL", fontSize = 12.sp)
-        }
+        singleChoiceListItem(
+            title = "Bitmap Config",
+            values = bitmapConfigValues,
+            state = bitmapConfigState
+        )
     }
 }

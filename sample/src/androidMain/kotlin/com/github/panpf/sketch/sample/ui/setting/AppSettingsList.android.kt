@@ -7,18 +7,22 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.EventBus
 
+actual fun platformBitmapConfigs(): List<String> {
+    return Bitmap.Config.values().map { it.name }
+}
+
+actual fun platformColorSpaces(): List<String> {
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        ColorSpace.Named.values().map { it.name }
+    } else {
+        emptyList()
+    }
+}
+
 actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        DropdownSettingItem(
-            title = "Bitmap Quality",
-            desc = null,
-            values = listOf("Default", "LOW", "HIGH").plus(Bitmap.Config.values().map { it.name }),
-            state = appSettings.bitmapQualityName,
-        )
-    )
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         // Cannot use Named.entries, crashes on versions lower than O
-        val items = listOf("Default").plus(ColorSpace.Named.values().map { it.name })
+        val items = listOf("Default").plus(platformColorSpaces())
         add(
             DropdownSettingItem(
                 title = "Color Space",

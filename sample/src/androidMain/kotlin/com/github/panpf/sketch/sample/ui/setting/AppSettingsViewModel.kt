@@ -19,8 +19,6 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.ColorSpace.Named
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.lifecycle.ViewModel
@@ -264,15 +262,14 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             MultiSelectMenu(
                 title = "Bitmap Quality",
                 desc = null,
-                values = listOf("Default", "LOW", "HIGH").plus(
-                    Bitmap.Config.values().map { it.name }),
+                values = listOf("Default", "LOW", "HIGH").plus(platformBitmapConfigs()),
                 getValue = { appSettings.bitmapQualityName.value },
                 onSelect = { _, value -> appSettings.bitmapQualityName.value = value }
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             // Cannot use Named.entries, crashes on versions lower than O
-            val items = listOf("Default").plus(Named.values().map { it.name })
+            val items = listOf("Default").plus(platformColorSpaces())
             add(
                 MultiSelectMenu(
                     title = "Color Space",

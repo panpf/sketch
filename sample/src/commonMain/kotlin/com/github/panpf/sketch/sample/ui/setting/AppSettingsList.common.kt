@@ -100,6 +100,14 @@ fun createSettingItems(
     }
     platformMakeDecodeMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
         add(GroupSettingItem("Decode"))
+        add(
+            DropdownSettingItem(
+                title = "Bitmap Quality",
+                desc = null,
+                values = listOf("Default", "LOW", "HIGH").plus(platformBitmapConfigs()),
+                state = appSettings.bitmapQualityName,
+            )
+        )
         addAll(it)
     }
     add(GroupSettingItem("Cache"))
@@ -251,6 +259,10 @@ fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
 expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem>
 
 expect fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
+
+expect fun platformBitmapConfigs(): List<String>
+
+expect fun platformColorSpaces(): List<String>
 
 
 private fun makeCacheMenuList(
