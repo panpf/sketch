@@ -31,8 +31,10 @@ import org.jetbrains.skia.Color
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorInfo
 import org.jetbrains.skia.ColorType
+import org.jetbrains.skia.Image
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.RRect
+import org.jetbrains.skia.impl.use
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -85,36 +87,90 @@ internal fun SkiaBitmap.copied(): SkiaBitmap {
 }
 
 /**
- * Reads the pixels of this SkiaBitmap as an intArray.
+ * Read an integer pixel array in the format ARGB_8888
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testReadIntPixels
  */
-internal fun SkiaBitmap.readIntPixels(
+fun SkiaBitmap.readIntPixels(
     x: Int = 0,
     y: Int = 0,
     width: Int = this.width,
     height: Int = this.height
-): IntArray? {
-    val pixelsConverter = PixelsConverter(this.colorType)
-        ?: throw UnsupportedOperationException("Unsupported colorType: ${this.colorType}")
-    val imageInfo = SkiaImageInfo(this.colorInfo, width, height)
-    val bytePixels = this.readPixels(
-        dstInfo = imageInfo,
-        dstRowBytes = width * bytesPerPixel,
-        srcX = x,
-        srcY = y
-    ) ?: return null
-    return pixelsConverter.bytePixelsToIntPixels(bytePixels)
+): IntArray {
+    val inputBitmap = this
+    val rgbaBitmap = if (inputBitmap.colorType == ColorType.RGBA_8888) {
+        inputBitmap
+    } else {
+        SkiaBitmap(inputBitmap.imageInfo.withColorType(ColorType.RGBA_8888)).also { rgbaBitmap ->
+            SkiaImage.makeFromBitmap(inputBitmap).use { inputImage ->
+                Canvas(rgbaBitmap).drawImageRect(
+                    image = inputImage,
+                    src = SkiaRect.makeWH(
+                        w = inputBitmap.width.toFloat(),
+                        h = inputBitmap.height.toFloat()
+                    ),
+                    dst = SkiaRect.makeWH(
+                        w = rgbaBitmap.width.toFloat(),
+                        h = rgbaBitmap.height.toFloat()
+                    ),
+                    paint = Paint().apply {
+                        isAntiAlias = true
+                    },
+                )
+            }
+        }
+    }
+
+    val imageInfo = SkiaImageInfo(rgbaBitmap.colorInfo, width, height)
+    val dstRowBytes = width * rgbaBitmap.bytesPerPixel
+    val rgbaBytePixels = rgbaBitmap
+        .readPixels(dstInfo = imageInfo, dstRowBytes = dstRowBytes, srcX = x, srcY = y)!!
+
+    val argbIntPixels = IntArray(rgbaBytePixels.size / 4)
+    for (i in argbIntPixels.indices) {
+        val r = rgbaBytePixels[i * 4].toInt() and 0xFF
+        val g = rgbaBytePixels[i * 4 + 1].toInt() and 0xFF
+        val b = rgbaBytePixels[i * 4 + 2].toInt() and 0xFF
+        val a = rgbaBytePixels[i * 4 + 3].toInt() and 0xFF
+        argbIntPixels[i] = (a shl 24) or (r shl 16) or (g shl 8) or b
+    }
+    return argbIntPixels
 }
 
 /**
- * Installs the specified intArray as the pixels of this SkiaBitmap.
+ * Install integer pixels in the format ARGB_8888
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testInstallIntPixels
  */
-internal fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
-    val pixelsConverter = PixelsConverter(this.colorType)
-        ?: throw UnsupportedOperationException("Unsupported colorType: ${this.colorType}")
-    val bytePixels = pixelsConverter.intPixelsToBytePixels(intPixels)
-    return installPixels(bytePixels)
+fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
+    val outBitmap = this
+
+    val rgbaBytePixels = ByteArray(intPixels.size * 4)
+    for (i in intPixels.indices) {
+        val pixel = intPixels[i]
+        val a = pixel shr 24 and 0xFF
+        val r = pixel shr 16 and 0xFF
+        val g = pixel shr 8 and 0xFF
+        val b = pixel and 0xFF
+        rgbaBytePixels[i * 4] = r.toByte()
+        rgbaBytePixels[i * 4 + 1] = g.toByte()
+        rgbaBytePixels[i * 4 + 2] = b.toByte()
+        rgbaBytePixels[i * 4 + 3] = a.toByte()
+    }
+    val rgbaBitmap = SkiaBitmap(outBitmap.imageInfo.withColorType(ColorType.RGBA_8888))
+    rgbaBitmap.installPixels(rgbaBytePixels)
+
+    Image.makeFromBitmap(rgbaBitmap).use { rgbaImage ->
+        Canvas(outBitmap).drawImageRect(
+            image = rgbaImage,
+            src = SkiaRect.makeWH(rgbaBitmap.width.toFloat(), rgbaBitmap.height.toFloat()),
+            dst = SkiaRect.makeWH(outBitmap.width.toFloat(), outBitmap.height.toFloat()),
+            paint = Paint().apply {
+                isAntiAlias = true
+            },
+        )
+    }
+    return true
 }
 
 /**
@@ -123,7 +179,7 @@ internal fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testGetPixel
  */
 fun SkiaBitmap.getPixel(x: Int, y: Int): Int {
-    return readIntPixels(x, y, 1, 1)!!.first()
+    return readIntPixels(x, y, 1, 1).first()
 }
 
 /**
@@ -182,7 +238,7 @@ internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
 internal fun SkiaBitmap.blur(radius: Int) {
     val imageWidth = this.width
     val imageHeight = this.height
-    val pixels: IntArray = readIntPixels()!!
+    val pixels: IntArray = readIntPixels()
     fastGaussianBlur(pixels, imageWidth, imageHeight, radius)
     this.installIntPixels(pixels)
 }

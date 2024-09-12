@@ -31,7 +31,8 @@ import com.github.panpf.sketch.sample.ui.setting.platformBitmapConfigs
 import com.github.panpf.sketch.sample.ui.test.transform.singleChoiceListItem
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
-import com.github.panpf.sketch.util.PixelsConverter
+import com.github.panpf.sketch.util.installIntPixels
+import com.github.panpf.sketch.util.readIntPixels
 import kotlinx.collections.immutable.toImmutableList
 
 class SkiaColorTypeTestScreen : BaseScreen() {
@@ -104,18 +105,14 @@ class SkiaColorTypeTestScreen : BaseScreen() {
 
         override val key: String = "ConvertPixelsTransformation"
 
-        override fun transform(requestContext: RequestContext, input: Image): TransformResult? {
+        override fun transform(requestContext: RequestContext, input: Image): TransformResult {
             val inputBitmap = (input as SkiaBitmapImage).bitmap
-            val pixelsConverter = PixelsConverter(inputBitmap.colorType)
-                ?: throw UnsupportedOperationException("Unsupported colorType: ${inputBitmap.colorType}")
-            val bytePixels = inputBitmap.readPixels()!!
-            val intPixels = pixelsConverter.bytePixelsToIntPixels(bytePixels)
-            val newBytePixels = pixelsConverter.intPixelsToBytePixels(intPixels)
+            val intPixels = inputBitmap.readIntPixels()
             val newSkiaBitmap = SkiaBitmap(inputBitmap.imageInfo)
-            newSkiaBitmap.installPixels(newBytePixels)
+            newSkiaBitmap.installIntPixels(intPixels)
             return TransformResult(
-                input.copy(bitmap = newSkiaBitmap),
-                "ConvertPixelsTransformation"
+                image = input.copy(bitmap = newSkiaBitmap),
+                transformed = "ConvertPixelsTransformation"
             )
         }
     }
