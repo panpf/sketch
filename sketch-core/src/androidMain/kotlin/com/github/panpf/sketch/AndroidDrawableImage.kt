@@ -106,14 +106,4 @@ data class AndroidDrawableImage internal constructor(
 
     override fun toString(): String =
         "AndroidDrawableImage(drawable=${drawable.toLogString()}, shareable=$shareable)"
-
-    override fun getPixels(): IntArray? {
-        if (drawable is BitmapDrawable) {
-            val bitmap = drawable.bitmap
-            val pixels = IntArray(bitmap.width * bitmap.height)
-            bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-            return pixels
-        }
-        return null
-    }
 }

@@ -13,6 +13,7 @@
 * fix: 修复 CircleCrop、Rotate、RoundedCorners Transformation 在 RGB_565 时不工作的
   bug。 [#209](https://github.com/panpf/sketch/issues/209)
 * remove: 移除 ComposeBitmapImage
+* remove: 删除 Image.getPixels()
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage
 * change: Fetcher.Factory.create() 的传参改为 RequestContext
 * change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为

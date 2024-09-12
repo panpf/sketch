@@ -21,7 +21,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Fast Gaussian blur
+ * Fast Gaussian blur, pixels format is ARGB_8888
  *
  * @see com.github.panpf.sketch.core.common.test.util.GraphicsTest.testFastGaussianBlur
  */

@@ -32,10 +32,6 @@ class FakeImage(val size: SketchSize) : Image {
         return null
     }
 
-    override fun getPixels(): IntArray? {
-        return null
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false

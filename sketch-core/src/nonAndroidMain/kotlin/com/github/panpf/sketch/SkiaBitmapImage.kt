@@ -21,7 +21,6 @@ import com.github.panpf.sketch.cache.SkiaBitmapImageValue
 import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.mapping
-import com.github.panpf.sketch.util.readIntPixels
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toLogString
 
@@ -56,8 +55,6 @@ data class SkiaBitmapImage(
     override fun checkValid(): Boolean = true
 
     override fun transformer(): ImageTransformer = SkiaBitmapImageTransformer
-
-    override fun getPixels(): IntArray? = bitmap.readIntPixels()
 
     override fun toString(): String =
         "SkiaBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"

@@ -52,8 +52,6 @@ data class SkiaAnimatedImage constructor(
 
     override fun transformer(): ImageTransformer? = null
 
-    override fun getPixels(): IntArray? = null
-
     override fun toString(): String =
         "SkiaAnimatedImage(image=${codec.toLogString()}, shareable=$shareable)"
 }

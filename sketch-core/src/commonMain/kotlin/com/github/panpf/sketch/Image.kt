@@ -81,12 +81,8 @@ interface Image {
     /**
      * Get the transformer used to resize the image
      */
+    // TODO remove
     fun transformer(): ImageTransformer?
-
-    /**
-     * Get the pixels of the image
-     */
-    fun getPixels(): IntArray?
 }
 
 /**

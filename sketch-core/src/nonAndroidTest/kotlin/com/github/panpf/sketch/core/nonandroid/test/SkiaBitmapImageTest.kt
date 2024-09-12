@@ -24,7 +24,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -95,15 +94,6 @@ class SkiaBitmapImageTest {
     fun testTransformer() {
         SkiaBitmapImage(SkiaBitmap(100, 200)).apply {
             assertTrue(actual = transformer() is SkiaBitmapImageTransformer)
-        }
-    }
-
-    @Test
-    fun testGetPixels() {
-        SkiaBitmapImage(SkiaBitmap(100, 200)).apply {
-            val pixels = getPixels()
-            assertNotNull(actual = pixels)
-            assertEquals(expected = 20000, actual = pixels.size)
         }
     }
 

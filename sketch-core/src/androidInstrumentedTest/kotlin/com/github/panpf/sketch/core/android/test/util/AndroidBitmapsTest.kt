@@ -273,6 +273,11 @@ class AndroidBitmapsTest {
     }
 
     @Test
+    fun testGetIntPixels() {
+        // TODO test
+    }
+
+    @Test
     fun testHasAlphaPixels() {
         assertFalse(
             ResourceImages.jpeg.decode().asOrThrow<AndroidBitmapImage>().bitmap.hasAlphaPixels()

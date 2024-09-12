@@ -59,8 +59,6 @@ data class PainterImage(
 
     override fun transformer(): ImageTransformer? = null
 
-    override fun getPixels(): IntArray? = null
-
     override fun toString(): String =
         "PainterImage(painter=${painter.toLogString()}, shareable=$shareable)"
 }

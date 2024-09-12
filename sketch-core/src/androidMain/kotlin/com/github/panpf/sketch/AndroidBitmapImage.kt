@@ -105,12 +105,6 @@ data class AndroidBitmapImage internal constructor(
 
     override fun transformer(): ImageTransformer = AndroidBitmapImageTransformer
 
-    override fun getPixels(): IntArray {
-        val pixels = IntArray(bitmap.width * bitmap.height)
-        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-        return pixels
-    }
-
     override fun toString(): String =
         "AndroidBitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
 }

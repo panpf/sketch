@@ -103,18 +103,6 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testGetPixels() {
-        val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        SkiaAnimatedImage(codec).apply {
-            assertNull(actual = getPixels())
-        }
-    }
-
-    @Test
     fun testToString() {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)

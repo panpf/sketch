@@ -179,6 +179,30 @@ internal fun AndroidBitmap.toShortInfoString(): String =
         "AndroidBitmap(${width}x${height},$configOrNull)"
     }
 
+/**
+ * Get the pixels in the bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetIntPixels
+ */
+fun AndroidBitmap.readIntPixels(
+    x: Int = 0,
+    y: Int = 0,
+    width: Int = this.width,
+    height: Int = this.height
+): IntArray {
+    val pixels = IntArray(width * height)
+    getPixels(
+        /* pixels = */ pixels,
+        /* offset = */ 0,
+        /* stride = */ this.width,
+        /* x = */ x,
+        /* y = */ x,
+        /* width = */ width,
+        /* height = */ height
+    )
+    return pixels
+}
+
 
 /**
  * Returns true if there are transparent pixels

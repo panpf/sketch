@@ -174,7 +174,7 @@ fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
 }
 
 /**
- * Returns the Color at the specified location.
+ * Returns the pixel at the specified position in ARGB_8888 format
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testGetPixel
  */
