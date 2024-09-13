@@ -429,7 +429,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             MultiSelectMenu(
                 title = "Gif Decoder",
                 desc = null,
-                values = listOf("KoralGif", "ImageDecoder+Movie"),
+                values = listOf("KoralGif", "Movie", "Movie+ImageDecoder"),
                 getValue = { appSettings.gifDecoder.value },
                 onSelect = { _, value ->
                     appSettings.gifDecoder.value = value

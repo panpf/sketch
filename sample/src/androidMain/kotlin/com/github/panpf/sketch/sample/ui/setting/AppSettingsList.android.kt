@@ -72,7 +72,7 @@ actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem
         DropdownSettingItem(
             title = "Gif Decoder",
             desc = null,
-            values = listOf("KoralGif", "ImageDecoder+Movie"),
+            values = listOf("KoralGif", "Movie", "Movie+ImageDecoder"),
             state = appSettings.gifDecoder,
             onItemClick = {
                 EventBus.toastFlow.emit("Restart the app to take effect")

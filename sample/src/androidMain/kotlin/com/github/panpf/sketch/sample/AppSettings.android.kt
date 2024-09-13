@@ -200,7 +200,7 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     }
 
     val gifDecoder: SettingsStateFlow<String> by lazy {
-        stringSettingsStateFlow(context, key = "gifDecoder", initialize = "KoralGif")
+        stringSettingsStateFlow(context, key = "gifDecoder1", initialize = "Movie+ImageDecoder")
     }
 
     actual val networkParallelismLimited: SettingsStateFlow<Int> by lazy {

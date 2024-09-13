@@ -29,7 +29,8 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
         // gif
         when (appSettings.gifDecoder.value) {
             "KoralGif" -> supportKoralGif()
-            "ImageDecoder+Movie" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) supportAnimatedGif() else supportMovieGif()
+            "Movie" -> supportMovieGif()
+            "Movie+ImageDecoder" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) supportAnimatedGif() else supportMovieGif()
             else -> throw IllegalArgumentException("Unknown animatedDecoder: ${appSettings.gifDecoder.value}")
         }
 
