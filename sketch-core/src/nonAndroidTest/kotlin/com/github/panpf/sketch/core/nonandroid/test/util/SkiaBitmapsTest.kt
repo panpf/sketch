@@ -176,7 +176,7 @@ class SkiaBitmapsTest {
                 actual = toShortInfoString()
             )
         }
-        val intPixels = sourceBitmap.readIntPixels()!!
+        val intPixels = sourceBitmap.readIntPixels()
 
         val topLeftPixel = Offset(
             x = (sourceBitmap.width * 0.25f).roundToInt(),

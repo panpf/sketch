@@ -189,7 +189,7 @@ internal fun AndroidBitmap.toShortInfoString(): String =
     }
 
 /**
- * Get the pixels in the bitmap
+ * Read an integer pixel array in the format ARGB_8888
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetIntPixels
  */
@@ -205,7 +205,7 @@ fun AndroidBitmap.readIntPixels(
         /* offset = */ 0,
         /* stride = */ this.width,
         /* x = */ x,
-        /* y = */ x,
+        /* y = */ y,
         /* width = */ width,
         /* height = */ height
     )

@@ -20,6 +20,19 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.resize.Scale
 
 /**
+ * Read an integer pixel array in the format ARGB_8888
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.ImagesAndroidTest.testReadIntPixels
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.ImagesNonAndroidTest.testReadIntPixels
+ */
+expect fun Image.readIntPixels(
+    x: Int = 0,
+    y: Int = 0,
+    width: Int = this.width,
+    height: Int = this.height
+): IntArray
+
+/**
  * Apply a blur effect to the image
  *
  * @see com.github.panpf.sketch.core.android.test.util.ImagesAndroidTest.testBlur

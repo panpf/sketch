@@ -19,7 +19,7 @@ package com.kmpalette.palette.graphics
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.sample.image.readIntPixels
+import com.github.panpf.sketch.util.readIntPixels
 import com.kmpalette.palette.graphics.Palette.Builder
 import com.kmpalette.palette.internal.ColorCutQuantizer
 import com.kmpalette.palette.internal.annotation.ColorInt

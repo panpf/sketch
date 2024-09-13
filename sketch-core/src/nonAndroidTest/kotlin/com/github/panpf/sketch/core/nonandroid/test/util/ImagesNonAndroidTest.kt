@@ -25,6 +25,11 @@ import kotlin.test.assertTrue
 class ImagesNonAndroidTest {
 
     @Test
+    fun testReadIntPixels() {
+        // TODO test
+    }
+
+    @Test
     @Suppress("UNUSED_VARIABLE")
     fun testBlur() {
         val sourceBitmapFinger: String
