@@ -66,7 +66,7 @@ fun Image.getBitmapOrThrow(): AndroidBitmap = getBitmapOrNull()
  * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testToBitmapOrNull
  */
 fun Image.toBitmapOrNull(): AndroidBitmap? = when (this) {
-    is AndroidBitmapImage -> bitmap.copy(bitmap.config, false)
+    is AndroidBitmapImage -> bitmap.copy(/* config = */ bitmap.config, /* isMutable = */ false)
     is AndroidDrawableImage -> drawable.toBitmap()
     else -> null
 }

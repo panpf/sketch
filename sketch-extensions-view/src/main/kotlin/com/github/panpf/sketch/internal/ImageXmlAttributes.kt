@@ -20,17 +20,12 @@ package com.github.panpf.sketch.internal
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.Bitmap.Config.ALPHA_8
-import android.graphics.Bitmap.Config.ARGB_4444
-import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Bitmap.Config.HARDWARE
-import android.graphics.Bitmap.Config.RGBA_F16
-import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
@@ -175,18 +170,18 @@ private fun parseColorTypeAttribute(value: Int): BitmapColorType? =
     when (value) {
         1 -> LowQualityColorType
         2 -> HighQualityColorType
-        3 -> BitmapColorType(ALPHA_8)
-        4 -> BitmapColorType(RGB_565)
-        5 -> BitmapColorType(ARGB_4444)
-        6 -> BitmapColorType(ARGB_8888)
+        3 -> BitmapColorType(ColorType.ALPHA_8)
+        4 -> BitmapColorType(ColorType.RGB_565)
+        5 -> BitmapColorType(ColorType.ARGB_4444)
+        6 -> BitmapColorType(ColorType.ARGB_8888)
         7 -> if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            BitmapColorType(RGBA_F16)
+            BitmapColorType(ColorType.RGBA_F16)
         } else {
             null
         }
 
         8 -> if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            BitmapColorType(HARDWARE)
+            BitmapColorType(ColorType.HARDWARE)
         } else {
             null
         }

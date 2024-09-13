@@ -26,17 +26,17 @@ typealias AndroidBitmap = android.graphics.Bitmap
 /**
  * Android Bitmap Config
  *
- * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmapConfig
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testColorType
  */
-typealias AndroidBitmapConfig = android.graphics.Bitmap.Config
+typealias ColorType = android.graphics.Bitmap.Config
 
 /**
- * Create a new [AndroidBitmap] with the specified width, height, and [AndroidBitmapConfig] and allocate memory
+ * Create a new [AndroidBitmap] with the specified width, height, and [ColorType] and allocate memory
  *
  * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmap
  */
 fun AndroidBitmap(
     width: Int,
     height: Int,
-    config: AndroidBitmapConfig = AndroidBitmapConfig.ARGB_8888
+    config: ColorType = ColorType.ARGB_8888
 ): AndroidBitmap = AndroidBitmap.createBitmap(width, height, config)

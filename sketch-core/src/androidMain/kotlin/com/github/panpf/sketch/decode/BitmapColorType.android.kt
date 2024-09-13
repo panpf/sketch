@@ -18,8 +18,8 @@
 
 package com.github.panpf.sketch.decode
 
-import android.graphics.Bitmap
 import android.os.Build
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.decode.internal.ImageFormat
 
 /**
@@ -27,14 +27,14 @@ import com.github.panpf.sketch.decode.internal.ImageFormat
  *
  * @see com.github.panpf.sketch.core.android.test.decode.BitmapColorTypeAndroidTest.testBitmapColorType
  */
-fun BitmapColorType(colorType: Bitmap.Config): BitmapColorType = FixedColorType(colorType)
+fun BitmapColorType(colorType: ColorType): BitmapColorType = FixedColorType(colorType)
 
 /**
  * Color type of packaging android platform
  *
  * @see com.github.panpf.sketch.core.android.test.decode.BitmapColorTypeAndroidTest.testPlatformColorType
  */
-actual data class PlatformColorType(val colorType: Bitmap.Config)
+actual data class PlatformColorType(val colorType: ColorType)
 
 /**
  * Low quality bitmap config. RGB_565 is preferred, followed by ARGB_8888
@@ -47,7 +47,7 @@ actual data object LowQualityColorType : BitmapColorType {
 
     actual override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType? {
         return if (ImageFormat.parseMimeType(mimeType) == ImageFormat.JPEG || isOpaque) {
-            PlatformColorType(Bitmap.Config.RGB_565)
+            PlatformColorType(ColorType.RGB_565)
         } else {
             null
         }
@@ -67,7 +67,7 @@ actual data object HighQualityColorType : BitmapColorType {
 
     actual override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PlatformColorType(Bitmap.Config.RGBA_F16)
+            PlatformColorType(ColorType.RGBA_F16)
         } else {
             null
         }
@@ -83,12 +83,12 @@ actual data object HighQualityColorType : BitmapColorType {
  */
 actual data class FixedColorType actual constructor(val value: String) : BitmapColorType {
 
-    constructor(colorType: Bitmap.Config) : this(colorType.name)
+    constructor(colorType: ColorType) : this(colorType.name)
 
     override val key: String = "Fixed($value)"
 
     actual override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType? {
-        val config = Bitmap.Config.valueOf(this.value)
+        val config = ColorType.valueOf(this.value)
         return PlatformColorType(config)
     }
 

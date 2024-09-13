@@ -22,8 +22,8 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidBitmap
-import com.github.panpf.sketch.AndroidBitmapConfig
 import com.github.panpf.sketch.AndroidBitmapImage
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Precision
@@ -74,54 +74,54 @@ class AndroidBitmapsTest {
 
     @Test
     fun testIsHardware() {
-        assertFalse(actual = AndroidBitmapConfig.ARGB_8888.isHardware())
-        assertFalse(actual = AndroidBitmapConfig.RGB_565.isHardware())
-        assertFalse(actual = AndroidBitmapConfig.ALPHA_8.isHardware())
+        assertFalse(actual = ColorType.ARGB_8888.isHardware())
+        assertFalse(actual = ColorType.RGB_565.isHardware())
+        assertFalse(actual = ColorType.ALPHA_8.isHardware())
         @Suppress("DEPRECATION")
-        assertFalse(actual = AndroidBitmapConfig.ARGB_4444.isHardware())
+        assertFalse(actual = ColorType.ARGB_4444.isHardware())
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            assertFalse(actual = AndroidBitmapConfig.RGBA_F16.isHardware())
-            assertTrue(actual = AndroidBitmapConfig.HARDWARE.isHardware())
+            assertFalse(actual = ColorType.RGBA_F16.isHardware())
+            assertTrue(actual = ColorType.HARDWARE.isHardware())
         }
     }
 
     @Test
     fun testToSoftware() {
         assertEquals(
-            expected = AndroidBitmapConfig.ARGB_8888,
+            expected = ColorType.ARGB_8888,
             actual = null.safeToSoftware()
         )
         assertEquals(
-            expected = AndroidBitmapConfig.ARGB_8888,
-            actual = AndroidBitmapConfig.ARGB_8888.safeToSoftware()
+            expected = ColorType.ARGB_8888,
+            actual = ColorType.ARGB_8888.safeToSoftware()
         )
         assertEquals(
-            expected = AndroidBitmapConfig.RGB_565,
-            actual = AndroidBitmapConfig.RGB_565.safeToSoftware()
+            expected = ColorType.RGB_565,
+            actual = ColorType.RGB_565.safeToSoftware()
         )
         assertEquals(
-            expected = AndroidBitmapConfig.ALPHA_8,
-            actual = AndroidBitmapConfig.ALPHA_8.safeToSoftware()
+            expected = ColorType.ALPHA_8,
+            actual = ColorType.ALPHA_8.safeToSoftware()
         )
         @Suppress("DEPRECATION")
         assertEquals(
-            expected = AndroidBitmapConfig.ARGB_4444,
-            actual = AndroidBitmapConfig.ARGB_4444.safeToSoftware()
+            expected = ColorType.ARGB_4444,
+            actual = ColorType.ARGB_4444.safeToSoftware()
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             assertEquals(
-                expected = AndroidBitmapConfig.RGBA_F16,
-                actual = AndroidBitmapConfig.RGBA_F16.safeToSoftware()
+                expected = ColorType.RGBA_F16,
+                actual = ColorType.RGBA_F16.safeToSoftware()
             )
             assertEquals(
-                expected = AndroidBitmapConfig.ARGB_8888,
-                actual = AndroidBitmapConfig.HARDWARE.safeToSoftware()
+                expected = ColorType.ARGB_8888,
+                actual = ColorType.HARDWARE.safeToSoftware()
             )
         }
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
             assertEquals(
-                expected = AndroidBitmapConfig.RGBA_1010102,
-                actual = AndroidBitmapConfig.RGBA_1010102.safeToSoftware()
+                expected = ColorType.RGBA_1010102,
+                actual = ColorType.RGBA_1010102.safeToSoftware()
             )
         }
     }

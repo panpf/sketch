@@ -31,7 +31,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.AndroidBitmap
-import com.github.panpf.sketch.AndroidBitmapConfig
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeMapping
@@ -44,31 +44,31 @@ import kotlin.math.min
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testIsHardware
  */
-internal fun AndroidBitmapConfig.isHardware(): Boolean =
-    VERSION.SDK_INT >= VERSION_CODES.O && this == AndroidBitmapConfig.HARDWARE
+internal fun ColorType.isHardware(): Boolean =
+    VERSION.SDK_INT >= VERSION_CODES.O && this == ColorType.HARDWARE
 
 /**
  * Gets the safe mutable bitmap configuration, returns ARGB_8888 if it is HARDWARE, otherwise returns itself
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToSoftware
  */
-fun AndroidBitmapConfig?.safeToSoftware(): AndroidBitmapConfig =
-    if (this == null || (VERSION.SDK_INT >= VERSION_CODES.O && this == AndroidBitmapConfig.HARDWARE)) AndroidBitmapConfig.ARGB_8888 else this
+fun ColorType?.safeToSoftware(): ColorType =
+    if (this == null || (VERSION.SDK_INT >= VERSION_CODES.O && this == ColorType.HARDWARE)) ColorType.ARGB_8888 else this
 
 /**
  * Gets the number of bytes occupied by a single pixel in a specified configuration
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetBytesPerPixel
  */
-internal fun AndroidBitmapConfig?.getBytesPerPixel(): Int {
+internal fun ColorType?.getBytesPerPixel(): Int {
     // A bitmap by decoding a gif has null "config" in certain environments.
-    val config = this ?: AndroidBitmapConfig.ARGB_8888
+    val config = this ?: ColorType.ARGB_8888
     @Suppress("DEPRECATION")
     return when {
-        config == AndroidBitmapConfig.ALPHA_8 -> 1
-        config == AndroidBitmapConfig.RGB_565 || config == AndroidBitmapConfig.ARGB_4444 -> 2
-        config == AndroidBitmapConfig.ARGB_8888 -> 4
-        VERSION.SDK_INT >= VERSION_CODES.O && config == AndroidBitmapConfig.RGBA_F16 -> 8
+        config == ColorType.ALPHA_8 -> 1
+        config == ColorType.RGB_565 || config == ColorType.ARGB_4444 -> 2
+        config == ColorType.ARGB_8888 -> 4
+        VERSION.SDK_INT >= VERSION_CODES.O && config == ColorType.RGBA_F16 -> 8
         else -> 4
     }
 }
@@ -92,7 +92,7 @@ internal val AndroidBitmap.allocationByteCountCompat: Int
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testConfigOrNull
  */
 @Suppress("USELESS_ELVIS")
-internal val AndroidBitmap.configOrNull: AndroidBitmapConfig?
+internal val AndroidBitmap.configOrNull: ColorType?
     get() = config ?: null
 
 /**
@@ -104,13 +104,13 @@ internal val AndroidBitmap.isImmutable: Boolean
     get() = !isMutable
 
 /**
- * Get the configuration of the bitmap, if it is null, return [AndroidBitmapConfig].ARGB_8888
+ * Get the configuration of the bitmap, if it is null, return [ColorType].ARGB_8888
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testSafeConfig
  */
 @Suppress("USELESS_ELVIS")
-internal val AndroidBitmap.safeConfig: AndroidBitmapConfig
-    get() = config ?: AndroidBitmapConfig.ARGB_8888
+internal val AndroidBitmap.safeConfig: ColorType
+    get() = config ?: ColorType.ARGB_8888
 
 /**
  * Get a mutable copy of the bitmap, if it is already mutable, return itself
@@ -294,9 +294,9 @@ internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
     var newConfig = inputBitmap.safeConfig.safeToSoftware()
-    if (newConfig == AndroidBitmapConfig.RGB_565) {
+    if (newConfig == ColorType.RGB_565) {
         // Circle cropped require support alpha
-        newConfig = AndroidBitmapConfig.ARGB_8888
+        newConfig = ColorType.ARGB_8888
     }
     val outBitmap = AndroidBitmap.createBitmap(
         /* width = */ newSize,
@@ -396,9 +396,9 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
 
     // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
     var newConfig = inputBitmap.safeConfig.safeToSoftware()
-    if (finalAngle % 90 != 0 && newConfig == AndroidBitmapConfig.RGB_565) {
+    if (finalAngle % 90 != 0 && newConfig == ColorType.RGB_565) {
         // Non-positive angle require support alpha
-        newConfig = AndroidBitmapConfig.ARGB_8888
+        newConfig = ColorType.ARGB_8888
     }
     val outBitmap = AndroidBitmap.createBitmap(
         /* width = */ newWidth,
@@ -423,9 +423,9 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
 internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitmap {
     val inputBitmap = this
     var newConfig = inputBitmap.safeConfig.safeToSoftware()
-    if (newConfig == AndroidBitmapConfig.RGB_565) {
+    if (newConfig == ColorType.RGB_565) {
         // Rounded corners require support alpha
-        newConfig = AndroidBitmapConfig.ARGB_8888
+        newConfig = ColorType.ARGB_8888
     }
     val newBitmap = AndroidBitmap.createBitmap(
         /* width = */ inputBitmap.width,

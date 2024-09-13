@@ -22,6 +22,7 @@ import android.graphics.ColorSpace
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.drawable.DrawableEqualizer
@@ -160,11 +161,11 @@ fun ImageOptions.Builder.error(
 
 
 /**
- * Set [Bitmap.Config] to use when creating the bitmap.
+ * Set [ColorType] to use when creating the bitmap.
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testColorType
  */
-fun ImageOptions.Builder.colorType(colorType: Bitmap.Config?): ImageOptions.Builder =
+fun ImageOptions.Builder.colorType(colorType: ColorType?): ImageOptions.Builder =
     colorType(colorType?.let { BitmapColorType(it) })
 
 
