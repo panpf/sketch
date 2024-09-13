@@ -121,12 +121,15 @@ class SkiaAnimatedImagePainter constructor(
         if (loadFirstFrameJob?.isActive == true) return
         @Suppress("OPT_IN_USAGE")
         loadFirstFrameJob = GlobalScope.launch(Dispatchers.Main) {
-            val bitmap = withContext(ioCoroutineDispatcher()) {
-                val bitmap = SkiaBitmap(animatedImage.imageInfo)
-                codec.readPixels(bitmap, 0)
-                bitmap
+            val bitmapResult = withContext(ioCoroutineDispatcher()) {
+                runCatching {
+                    SkiaBitmap(animatedImage.imageInfo).apply {
+                        codec.readPixels(this@apply, 0)
+                    }
+                }
             }
-            composeBitmap = bitmap.asComposeImageBitmap()
+            bitmapResult.exceptionOrNull()?.printStackTrace()
+            composeBitmap = bitmapResult.getOrNull()?.asComposeImageBitmap()
             invalidateSelf()
         }
     }
@@ -288,7 +291,7 @@ class SkiaAnimatedImagePainter constructor(
                 for (newFrame in renderChannel) {
                     val lastFrame = currentFrame
                     currentFrame = newFrame
-                    onFrame(newFrame.bitmap.composeBitmap)
+                    onFrame(newFrame.frameBitmap.composeBitmap)
 
                     // Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
                     if ((repeatCount < 0 || repeatIndex <= repeatCount)) {
@@ -313,17 +316,18 @@ class SkiaAnimatedImagePainter constructor(
             }
             decodeJob = coroutineScope.launch(ioCoroutineDispatcher()) {
                 for (frame in decodeChannel) {
-                    frame.bitmap.bitmap.erase(Color.TRANSPARENT)
+                    frame.frameBitmap.bitmap.erase(Color.TRANSPARENT)
 
                     val cacheBitmap = frameCaches?.get(frame.index)
                     if (cacheBitmap != null) {
-                        frame.bitmap.bitmap.installPixels(cacheBitmap.readPixels())
+                        frame.frameBitmap.bitmap.installPixels(cacheBitmap.readPixels())
                     } else {
                         val decodeElapsedTime = measureTime {
                             try {
-                                codec.readPixels(frame.bitmap.bitmap, frame.index)
+                                codec.readPixels(frame.frameBitmap.bitmap, frame.index)
                             } catch (e: Throwable) {
                                 e.printStackTrace()
+                                stop()
                             }
                         }
 
@@ -340,7 +344,7 @@ class SkiaAnimatedImagePainter constructor(
                             val needCache =
                                 decodeElapsedTime.inWholeMilliseconds > lastFrameDuration
                             if (needCache) {
-                                val byteArray = frame.bitmap.bitmap.readPixels()
+                                val byteArray = frame.frameBitmap.bitmap.readPixels()
                                 val bitmap = SkiaBitmap(imageInfo)
                                 bitmap.installPixels(byteArray)
                                 val frameCaches =
@@ -383,7 +387,7 @@ class SkiaAnimatedImagePainter constructor(
             return last?.copy(index = nextFrameIndex)
                 ?: Frame(
                     index = nextFrameIndex,
-                    bitmap = FrameBitmap(SkiaBitmap(imageInfo))
+                    frameBitmap = FrameBitmap(SkiaBitmap(imageInfo))
                 )
         }
 
@@ -399,6 +403,6 @@ class SkiaAnimatedImagePainter constructor(
             val composeBitmap: ComposeBitmap = bitmap.asComposeImageBitmap()
         }
 
-        private data class Frame(val index: Int, val bitmap: FrameBitmap)
+        private data class Frame(val index: Int, val frameBitmap: FrameBitmap)
     }
 }
