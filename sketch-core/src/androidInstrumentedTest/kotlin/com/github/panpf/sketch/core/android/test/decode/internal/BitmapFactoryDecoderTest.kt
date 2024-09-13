@@ -32,8 +32,8 @@ import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.resize.DefaultLongImageDecider
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -137,13 +137,13 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testBitmapConfig() {
+    fun testColorType() {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
-            bitmapConfig(RGB_565)
+            colorType(RGB_565)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
@@ -161,7 +161,7 @@ class BitmapFactoryDecoderTest {
         ImageRequest(context, ResourceImages.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
-            bitmapConfig(RGB_565)
+            colorType(RGB_565)
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(

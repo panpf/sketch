@@ -24,7 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.AndroidBitmapConfig
 import com.github.panpf.sketch.AndroidBitmapImage
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -556,8 +556,8 @@ class AndroidBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig(Bitmap.Config.RGB_565)
-        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
+        val bitmapColorType = BitmapColorType(Bitmap.Config.RGB_565)
+        ResourceImages.jpeg.decode(bitmapColorType).asOrThrow<AndroidBitmapImage>().bitmap.apply {
             assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
         }.circleCropped(Scale.CENTER_CROP).apply {
@@ -871,8 +871,8 @@ class AndroidBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig(Bitmap.Config.RGB_565)
-        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
+        val bitmapColorType = BitmapColorType(Bitmap.Config.RGB_565)
+        ResourceImages.jpeg.decode(bitmapColorType).asOrThrow<AndroidBitmapImage>().bitmap.apply {
             assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
         }.rotated(130).apply {
@@ -952,8 +952,8 @@ class AndroidBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig(Bitmap.Config.RGB_565)
-        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<AndroidBitmapImage>().bitmap.apply {
+        val bitmapColorType = BitmapColorType(Bitmap.Config.RGB_565)
+        ResourceImages.jpeg.decode(bitmapColorType).asOrThrow<AndroidBitmapImage>().bitmap.apply {
             assertEquals(expected = Bitmap.Config.RGB_565, actual = config)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
         }.roundedCornered(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {

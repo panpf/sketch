@@ -129,7 +129,7 @@ class DrawableDecoderTest {
 //        }
 //
 //        ImageRequest(context, newResourceUri(R.drawable.test)) {
-//            bitmapConfig(Bitmap.Config.RGB_565)
+//            colorType(Bitmap.Config.RGB_565)
 //        }.run {
 //            val fetcher = sketch.components.newFetcherOrThrow(this)
 //            val fetchResult = fetcher.fetch().getOrThrow()

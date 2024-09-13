@@ -14,16 +14,35 @@
     </attr>
 
     <attr name="sketch_preferQualityOverSpeed" format="boolean|reference" />
-    <attr name="sketch_bitmapConfig" format="enum">
+    <attr name="sketch_colorType" format="enum">
         <enum name="lowQuality" value="1" />
-        <enum name="middenQuality" value="2" />
-        <enum name="highQuality" value="3" />
-        <enum name="alpha8" value="4" />
-        <enum name="rgb565" value="5" />
-        <enum name="argb4444" value="6" />
-        <enum name="argb8888" value="7" />
-        <enum name="rgbaF16" value="8" />
-        <enum name="hardware" value="9" />
+        <enum name="highQuality" value="2" />
+        <enum name="alpha8" value="3" />
+        <enum name="rgb565" value="4" />
+        <enum name="argb4444" value="5" />
+        <enum name="argb8888" value="6" />
+        <enum name="rgbaF16" value="7" />
+        <enum name="hardware" value="8" />
+    </attr>
+    <attr name="sketch_colorSpace" format="enum">
+        <enum name="srgb" value="1" />
+        <enum name="linearSrgb" value="2" />
+        <enum name="extendedSrgb" value="3" />
+        <enum name="linearExtendedSrgb" value="4" />
+        <enum name="bt709" value="5" />
+        <enum name="bt2020" value="6" />
+        <enum name="dciP3" value="7" />
+        <enum name="displayP3" value="8" />
+        <enum name="ntsc1953" value="9" />
+        <enum name="smpteC" value="10" />
+        <enum name="adobeRgb" value="11" />
+        <enum name="proPhotoRgb" value="12" />
+        <enum name="aces" value="13" />
+        <enum name="acescg" value="14" />
+        <enum name="cieXyz" value="15" />
+        <enum name="cieLab" value="16" />
+        <enum name="bt2020Hlg" value="17" />
+        <enum name="bt2020Pq" value="18" />
     </attr>
     <attr name="sketch_sizeWidth" format="dimension|reference" />
     <attr name="sketch_sizeHeight" format="dimension|reference" />
@@ -90,7 +109,8 @@
         <attr name="sketch_depth" />
         <attr name="sketch_downloadCachePolicy" />
         <attr name="sketch_preferQualityOverSpeed" />
-        <attr name="sketch_bitmapConfig" />
+        <attr name="sketch_colorType" />
+        <attr name="sketch_colorSpace" />
         <attr name="sketch_sizeWidth" />
         <attr name="sketch_sizeHeight" />
         <attr name="sketch_precision" />

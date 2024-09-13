@@ -5,7 +5,7 @@ import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
@@ -30,7 +30,7 @@ class SvgsAndroidTest {
     }
 
     @Test
-    fun testBitmapConfig() = runTest {
+    fun testColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val factory = SvgDecoder.Factory()
@@ -55,7 +55,7 @@ class SvgsAndroidTest {
             .let { Size(it.widthPixels / 2, it.heightPixels / 2) }
         ImageRequest(context, ResourceImages.svg.uri) {
             size(targetSize)
-            bitmapConfig(Bitmap.Config.RGB_565)
+            colorType(Bitmap.Config.RGB_565)
         }.decode(sketch, factory).apply {
             assertEquals(
                 "ImageInfo(256x225,'image/svg+xml')",

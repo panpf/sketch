@@ -14,14 +14,14 @@ fun DecodeConfig(
     mimeType: String? = null,
     isOpaque: Boolean = false,
 ): DecodeConfig = DecodeConfig().apply {
-    val colorType1 = request.bitmapConfig?.toSkiaColorType(mimeType, isOpaque)
-    if (colorType1 != null) {
-        colorType = colorType1
+    val userColorType = request.colorType?.getColorType(mimeType, isOpaque)?.colorType
+    if (userColorType != null) {
+        colorType = userColorType
     }
 
-    val colorSpace1 = request.colorSpace?.let { ColorSpace.fromName(it) }
-    if (colorSpace1 != null) {
-        colorSpace = colorSpace1
+    val userColorSpace = request.colorSpace?.getColorSpace(mimeType, isOpaque)?.colorSpace
+    if (userColorSpace != null) {
+        colorSpace = userColorSpace
     }
 }
 

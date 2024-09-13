@@ -12,11 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.sample.ui.setting.platformBitmapConfigs
+import com.github.panpf.sketch.sample.ui.setting.platformColorTypes
 import com.github.panpf.sketch.transform.RotateTransformation
 import kotlinx.collections.immutable.toImmutableList
 
@@ -25,11 +25,11 @@ fun RotateTransformationTestPage() {
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         val rotateDegreesState = remember { mutableStateOf(45) }
 
-        val bitmapConfigValues =
-            remember { listOf("Default").plus(platformBitmapConfigs()).toImmutableList() }
-        val bitmapConfigState = remember { mutableStateOf("Default") }
-        val bitmapConfig = remember(bitmapConfigState.value) {
-            bitmapConfigState.value.takeIf { it != "Default" }?.let { BitmapConfig(it) }
+        val colorTypeValues =
+            remember { listOf("Default").plus(platformColorTypes()).toImmutableList() }
+        val colorTypeState = remember { mutableStateOf("Default") }
+        val colorType = remember(colorTypeState.value) {
+            colorTypeState.value.takeIf { it != "Default" }?.let { BitmapColorType(it) }
         }
 
         MyAsyncImage(
@@ -37,7 +37,7 @@ fun RotateTransformationTestPage() {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(rotateDegreesState.value))
-                bitmapConfig(bitmapConfig)
+                colorType(colorType)
             },
             contentDescription = "image",
             modifier = Modifier.fillMaxWidth().weight(1f)
@@ -53,9 +53,9 @@ fun RotateTransformationTestPage() {
         )
 
         singleChoiceListItem(
-            title = "Bitmap Config",
-            values = bitmapConfigValues,
-            state = bitmapConfigState
+            title = "Bitmap Color Type",
+            values = colorTypeValues,
+            state = colorTypeState
         )
     }
 }

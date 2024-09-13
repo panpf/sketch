@@ -21,7 +21,8 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.checkPlatformContext
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
@@ -150,14 +151,14 @@ data class ImageRequest(
 
 
     /**
-     * Bitmap quality configuration
+     * Bitmap color type
      */
-    val bitmapConfig: BitmapConfig?,
+    val colorType: BitmapColorType?,
 
     /**
      * Bitmap color space
      */
-    val colorSpace: String?,
+    val colorSpace: BitmapColorSpace?,
 
     /**
      * Lazy calculation of resize size. If size is null at runtime, size is calculated and assigned to size
@@ -462,10 +463,24 @@ data class ImageRequest(
         }
 
         /**
-         * Set bitmap quality
+         * Set bitmap color type
          */
-        fun bitmapConfig(config: BitmapConfig?): Builder = apply {
-            definedOptionsBuilder.bitmapConfig(config)
+        fun colorType(colorType: BitmapColorType?): Builder = apply {
+            definedOptionsBuilder.colorType(colorType)
+        }
+
+        /**
+         * Set bitmap color type
+         */
+        fun colorType(colorType: String?): Builder = apply {
+            definedOptionsBuilder.colorType(colorType)
+        }
+
+        /**
+         * Set bitmap color space
+         */
+        fun colorSpace(colorSpace: BitmapColorSpace?): Builder = apply {
+            definedOptionsBuilder.colorSpace(colorSpace)
         }
 
         /**
@@ -787,7 +802,7 @@ data class ImageRequest(
             val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
-            val bitmapConfig = finalOptions.bitmapConfig
+            val colorType = finalOptions.colorType
             val colorSpace = finalOptions.colorSpace
             val sizeResolver = finalOptions.sizeResolver ?: resolveSizeResolver()
             val sizeMultiplier = finalOptions.sizeMultiplier
@@ -821,7 +836,7 @@ data class ImageRequest(
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
-                bitmapConfig = bitmapConfig,
+                colorType = colorType,
                 colorSpace = colorSpace,
                 sizeResolver = sizeResolver,
                 sizeMultiplier = sizeMultiplier,

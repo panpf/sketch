@@ -21,7 +21,10 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
+import com.github.panpf.sketch.decode.HighQualityColorType
+import com.github.panpf.sketch.decode.LowQualityColorType
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
@@ -97,7 +100,7 @@ class ImageOptionsTest {
             assertNull(this.extras)
             assertNull(this.httpHeaders)
             assertNull(this.downloadCachePolicy)
-            assertNull(this.bitmapConfig)
+            assertNull(this.colorType)
             assertNull(this.colorSpace)
             assertNull(this.sizeResolver)
             assertNull(this.precisionDecider)
@@ -147,11 +150,11 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
-            bitmapConfig(BitmapConfig.HighQuality)
+            colorType(HighQualityColorType)
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertNotNull(this.bitmapConfig)
+            assertNotNull(this.colorType)
         }
 
         ImageOptions {
@@ -389,15 +392,15 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
-            assertEquals(null, this.bitmapConfig)
+            assertEquals(null, this.colorType)
         }.merged(ImageOptions {
-            bitmapConfig(BitmapConfig.HighQuality)
+            colorType(HighQualityColorType)
         }).apply {
-            assertEquals(BitmapConfig.HighQuality, this.bitmapConfig)
+            assertEquals(HighQualityColorType, this.colorType)
         }.merged(ImageOptions {
-            bitmapConfig(BitmapConfig.LowQuality)
+            colorType(LowQualityColorType)
         }).apply {
-            assertEquals(BitmapConfig.HighQuality, this.bitmapConfig)
+            assertEquals(HighQualityColorType, this.colorType)
         }
 
         ImageOptions().apply {
@@ -405,11 +408,11 @@ class ImageOptionsTest {
         }.merged(ImageOptions {
             colorSpace("SRGB")
         }).apply {
-            assertEquals("SRGB", this.colorSpace)
+            assertEquals(BitmapColorSpace("SRGB"), this.colorSpace)
         }.merged(ImageOptions {
             colorSpace("LINEAR_SRGB")
         }).apply {
-            assertEquals("SRGB", this.colorSpace)
+            assertEquals(BitmapColorSpace("SRGB"), this.colorSpace)
         }
 
         ImageOptions().apply {
@@ -910,30 +913,30 @@ class ImageOptionsTest {
 
 
     @Test
-    fun testBitmapConfig() {
+    fun testColorType() {
         ImageOptions.Builder().apply {
             build().apply {
-                assertNull(bitmapConfig)
+                assertNull(colorType)
             }
 
-            bitmapConfig(BitmapConfig.LowQuality)
+            colorType(LowQualityColorType)
             build().apply {
-                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
+                assertEquals(LowQualityColorType, colorType)
             }
 
-            bitmapConfig(BitmapConfig.HighQuality)
+            colorType(HighQualityColorType)
             build().apply {
-                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
+                assertEquals(HighQualityColorType, colorType)
             }
 
-            bitmapConfig(BitmapConfig("ARGB_8888"))
+            colorType("ARGB_8888")
             build().apply {
-                assertEquals(BitmapConfig("ARGB_8888"), bitmapConfig)
+                assertEquals(BitmapColorType("ARGB_8888"), colorType)
             }
 
-            bitmapConfig(null)
+            colorType(null as BitmapColorType?)
             build().apply {
-                assertNull(bitmapConfig)
+                assertNull(colorType)
             }
         }
     }
@@ -945,17 +948,17 @@ class ImageOptionsTest {
                 assertNull(colorSpace)
             }
 
-            colorSpace("SRGB")
+            colorSpace(BitmapColorSpace("SRGB"))
             build().apply {
-                assertEquals("SRGB", this.colorSpace)
+                assertEquals(BitmapColorSpace("SRGB"), this.colorSpace)
             }
 
             colorSpace("LINEAR_SRGB")
             build().apply {
-                assertEquals("LINEAR_SRGB", this.colorSpace)
+                assertEquals(BitmapColorSpace("LINEAR_SRGB"), this.colorSpace)
             }
 
-            colorSpace(null)
+            colorSpace(null as BitmapColorSpace?)
             build().apply {
                 assertNull(colorSpace)
             }
@@ -1367,7 +1370,10 @@ class ImageOptionsTest {
             build().apply {
                 assertEquals(
                     ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
-                        addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(300, 300))))
+                        addState(
+                            UriInvalidCondition,
+                            FakeStateImage(FakeImage(SketchSize(300, 300)))
+                        )
                     },
                     error
                 )

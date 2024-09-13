@@ -22,12 +22,13 @@ import android.graphics.ColorSpace.Named.ACES
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.FixedColorType
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.placeholder
@@ -181,13 +182,13 @@ class ImageRequestAndroidTest {
     }
 
     @Test
-    fun testBitmapConfig() {
+    fun testColorType() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         ImageRequest(context1, uri) {
-            bitmapConfig(Bitmap.Config.ARGB_8888)
+            colorType(Bitmap.Config.ARGB_8888)
         }.apply {
-            assertEquals(BitmapConfig.FixedQuality(Bitmap.Config.ARGB_8888.name), bitmapConfig)
+            assertEquals(FixedColorType(Bitmap.Config.ARGB_8888.name), colorType)
         }
     }
 
@@ -200,7 +201,7 @@ class ImageRequestAndroidTest {
         ImageRequest(context1, uri) {
             colorSpace(ACES)
         }.apply {
-            assertEquals("ACES", colorSpace)
+            assertEquals(BitmapColorSpace("ACES"), colorSpace)
         }
     }
 

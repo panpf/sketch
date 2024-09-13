@@ -17,7 +17,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.RequestContext
@@ -27,7 +27,7 @@ import com.github.panpf.sketch.sample.resources.ic_image_broken_outline
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.sample.ui.setting.platformBitmapConfigs
+import com.github.panpf.sketch.sample.ui.setting.platformColorTypes
 import com.github.panpf.sketch.sample.ui.test.transform.singleChoiceListItem
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
@@ -45,11 +45,11 @@ class SkiaColorTypeTestScreen : BaseScreen() {
                     remember { listOf("Enabled", "Disabled").toImmutableList() }
                 val convertPixelsState = remember { mutableStateOf("Disabled") }
 
-                val bitmapConfigValues =
-                    remember { listOf("Default").plus(platformBitmapConfigs()).toImmutableList() }
-                val bitmapConfigState = remember { mutableStateOf("Default") }
-                val bitmapConfig = remember(bitmapConfigState.value) {
-                    bitmapConfigState.value.takeIf { it != "Default" }?.let { BitmapConfig(it) }
+                val colorTypeValues =
+                    remember { listOf("Default").plus(platformColorTypes()).toImmutableList() }
+                val colorTypeState = remember { mutableStateOf("Default") }
+                val colorType = remember(colorTypeState.value) {
+                    colorTypeState.value.takeIf { it != "Default" }?.let { BitmapColorType(it) }
                 }
 
                 Row(Modifier.fillMaxWidth().weight(1f)) {
@@ -57,7 +57,7 @@ class SkiaColorTypeTestScreen : BaseScreen() {
                         request = ComposableImageRequest(ResourceImages.jpeg.uri) {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)
-                            bitmapConfig(bitmapConfig)
+                            colorType(colorType)
                             if (convertPixelsState.value == "Enabled") {
                                 addTransformations(ConvertPixelsTransformation)
                             }
@@ -73,7 +73,7 @@ class SkiaColorTypeTestScreen : BaseScreen() {
                         request = ComposableImageRequest(ResourceImages.png.uri) {
                             memoryCachePolicy(DISABLED)
                             resultCachePolicy(DISABLED)
-                            bitmapConfig(bitmapConfig)
+                            colorType(colorType)
                             if (convertPixelsState.value == "Enabled") {
                                 addTransformations(ConvertPixelsTransformation)
                             }
@@ -93,9 +93,9 @@ class SkiaColorTypeTestScreen : BaseScreen() {
                 )
 
                 singleChoiceListItem(
-                    title = "Bitmap Config",
-                    values = bitmapConfigValues,
-                    state = bitmapConfigState
+                    title = "Bitmap Color Type",
+                    values = colorTypeValues,
+                    state = colorTypeState
                 )
             }
         }

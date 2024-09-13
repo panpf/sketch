@@ -63,8 +63,8 @@ fun MyZoomAsyncImage(
         val downloadCache by appSettings.downloadCache.collectAsState()
         downloadCachePolicy(downloadCache)
 
-        val bitmapQuality by appSettings.bitmapQuality.collectAsState()
-        bitmapConfig(bitmapQuality)
+        val colorType by appSettings.colorType.collectAsState()
+        colorType(colorType)
 
         val colorSpace by appSettings.colorSpace.collectAsState()
         colorSpace(colorSpace)

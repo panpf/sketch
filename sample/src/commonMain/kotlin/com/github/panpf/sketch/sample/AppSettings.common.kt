@@ -4,7 +4,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
@@ -31,8 +31,8 @@ expect class AppSettings constructor(context: PlatformContext) {
     val downloadCacheName: SettingsStateFlow<Boolean>
     val downloadCache: StateFlow<CachePolicy>
 
-    val bitmapQualityName: SettingsStateFlow<String>
-    val bitmapQuality: StateFlow<BitmapConfig?>
+    val colorTypeName: SettingsStateFlow<String>
+    val colorType: StateFlow<BitmapColorType?>
 
     val colorSpaceName: SettingsStateFlow<String>
     val colorSpace: StateFlow<String?>

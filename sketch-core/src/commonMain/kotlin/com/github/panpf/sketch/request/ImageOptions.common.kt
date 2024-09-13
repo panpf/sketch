@@ -18,7 +18,8 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
@@ -88,14 +89,14 @@ data class ImageOptions(
 
 
     /**
-     * Bitmap quality configuration
+     * Bitmap color type
      */
-    val bitmapConfig: BitmapConfig?,
+    val colorType: BitmapColorType?,
 
     /**
      * Bitmap color space
      */
-    val colorSpace: String?,
+    val colorSpace: BitmapColorSpace?,
 
     /**
      * Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to size
@@ -221,7 +222,7 @@ data class ImageOptions(
                 && extras?.isEmpty() != false
                 && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
-                && bitmapConfig == null
+                && colorType == null
                 && colorSpace == null
                 && sizeResolver == null
                 && sizeMultiplier == null
@@ -247,8 +248,8 @@ data class ImageOptions(
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
 
-        private var bitmapConfig: BitmapConfig? = null
-        private var colorSpace: String? = null
+        private var colorType: BitmapColorType? = null
+        private var colorSpace: BitmapColorSpace? = null
         private var sizeResolver: SizeResolver? = null
         private var sizeMultiplier: Float? = null
         private var precisionDecider: PrecisionDecider? = null
@@ -276,7 +277,7 @@ data class ImageOptions(
             this.httpHeadersBuilder = options.httpHeaders?.newBuilder()
             this.downloadCachePolicy = options.downloadCachePolicy
 
-            this.bitmapConfig = options.bitmapConfig
+            this.colorType = options.colorType
             this.colorSpace = options.colorSpace
             this.sizeResolver = options.sizeResolver
             this.sizeMultiplier = options.sizeMultiplier
@@ -375,17 +376,31 @@ data class ImageOptions(
         }
 
         /**
-         * Set bitmap quality
+         * Set bitmap color type
          */
-        fun bitmapConfig(config: BitmapConfig?): Builder = apply {
-            this.bitmapConfig = config
+        fun colorType(colorType: BitmapColorType?): Builder = apply {
+            this.colorType = colorType
+        }
+
+        /**
+         * Set bitmap color type
+         */
+        fun colorType(colorType: String?): Builder = apply {
+            this.colorType = colorType?.let { BitmapColorType(it) }
+        }
+
+        /**
+         * Set bitmap color space
+         */
+        fun colorSpace(colorSpace: BitmapColorSpace?): Builder = apply {
+            this.colorSpace = colorSpace
         }
 
         /**
          * Set bitmap color space
          */
         fun colorSpace(colorSpace: String?): Builder = apply {
-            this.colorSpace = colorSpace
+            this.colorSpace = colorSpace?.let { BitmapColorSpace(it) }
         }
 
         /**
@@ -695,8 +710,8 @@ data class ImageOptions(
                 this.downloadCachePolicy = options.downloadCachePolicy
             }
 
-            if (this.bitmapConfig == null) {
-                this.bitmapConfig = options.bitmapConfig
+            if (this.colorType == null) {
+                this.colorType = options.colorType
             }
             if (this.colorSpace == null) {
                 this.colorSpace = options.colorSpace
@@ -759,7 +774,7 @@ data class ImageOptions(
                 httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
-                bitmapConfig = bitmapConfig,
+                colorType = colorType,
                 colorSpace = colorSpace,
                 sizeResolver = sizeResolver,
                 sizeMultiplier = sizeMultiplier,

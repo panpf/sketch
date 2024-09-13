@@ -21,7 +21,10 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
+import com.github.panpf.sketch.decode.HighQualityColorType
+import com.github.panpf.sketch.decode.LowQualityColorType
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.ResourceImages
@@ -564,32 +567,32 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testBitmapConfig() {
+    fun testColorType() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
-                assertNull(bitmapConfig)
+                assertNull(colorType)
             }
 
-            bitmapConfig(BitmapConfig.LowQuality)
+            colorType(LowQualityColorType)
             build().apply {
-                assertEquals(BitmapConfig.LowQuality, bitmapConfig)
+                assertEquals(LowQualityColorType, colorType)
             }
 
-            bitmapConfig(BitmapConfig.HighQuality)
+            colorType(HighQualityColorType)
             build().apply {
-                assertEquals(BitmapConfig.HighQuality, bitmapConfig)
+                assertEquals(HighQualityColorType, colorType)
             }
 
-            bitmapConfig(BitmapConfig("ARGB_8888"))
+            colorType("ARGB_8888")
             build().apply {
-                assertEquals(BitmapConfig("ARGB_8888"), bitmapConfig)
+                assertEquals(BitmapColorType("ARGB_8888"), colorType)
             }
 
-            bitmapConfig(null)
+            colorType(null as BitmapColorType?)
             build().apply {
-                assertNull(bitmapConfig)
+                assertNull(colorType)
             }
         }
     }
@@ -603,17 +606,17 @@ class ImageRequestTest {
                 assertNull(colorSpace)
             }
 
-            colorSpace("ACES")
+            colorSpace(BitmapColorSpace("ACES"))
             build().apply {
-                assertEquals("ACES", colorSpace)
+                assertEquals(BitmapColorSpace("ACES"), colorSpace)
             }
 
             colorSpace("BT709")
             build().apply {
-                assertEquals("BT709", colorSpace)
+                assertEquals(BitmapColorSpace("BT709"), colorSpace)
             }
 
-            colorSpace(null)
+            colorSpace(null as BitmapColorSpace?)
             build().apply {
                 assertNull(colorSpace)
             }

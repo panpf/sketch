@@ -42,7 +42,7 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
  *
  * Notes：ImageRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
- * The bitmapConfig attribute takes effect only on Android 30 or later
+ * The colorType attribute takes effect only on Android 30 or later
  *
  * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest
  */

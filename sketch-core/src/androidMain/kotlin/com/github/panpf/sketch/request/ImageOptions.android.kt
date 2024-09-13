@@ -22,7 +22,8 @@ import android.graphics.ColorSpace
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
@@ -161,10 +162,10 @@ fun ImageOptions.Builder.error(
 /**
  * Set [Bitmap.Config] to use when creating the bitmap.
  *
- * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testBitmapConfig
+ * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testColorType
  */
-fun ImageOptions.Builder.bitmapConfig(config: Bitmap.Config): ImageOptions.Builder =
-    bitmapConfig(BitmapConfig(config))
+fun ImageOptions.Builder.colorType(colorType: Bitmap.Config?): ImageOptions.Builder =
+    colorType(colorType?.let { BitmapColorType(it) })
 
 
 /**
@@ -173,9 +174,8 @@ fun ImageOptions.Builder.bitmapConfig(config: Bitmap.Config): ImageOptions.Build
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testColorSpace
  */
 @RequiresApi(Build.VERSION_CODES.O)
-fun ImageOptions.Builder.colorSpace(named: ColorSpace.Named?): ImageOptions.Builder = apply {
-    colorSpace(named?.name)
-}
+fun ImageOptions.Builder.colorSpace(colorSpace: ColorSpace.Named?): ImageOptions.Builder =
+    this.colorSpace(colorSpace?.let { BitmapColorSpace(it) })
 
 
 /**

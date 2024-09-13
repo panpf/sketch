@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.sample.ui.setting.platformBitmapConfigs
+import com.github.panpf.sketch.sample.ui.setting.platformColorTypes
 import com.github.panpf.sketch.transform.BlurTransformation
 import kotlinx.collections.immutable.toImmutableList
 
@@ -54,11 +54,11 @@ fun BlurTransformationTestPage() {
                 )
             }
 
-        val bitmapConfigValues =
-            remember { listOf("Default").plus(platformBitmapConfigs()).toImmutableList() }
-        val bitmapConfigState = remember { mutableStateOf("Default") }
-        val bitmapConfig = remember(bitmapConfigState.value) {
-            bitmapConfigState.value.takeIf { it != "Default" }?.let { BitmapConfig(it) }
+        val colorTypeValues =
+            remember { listOf("Default").plus(platformColorTypes()).toImmutableList() }
+        val colorTypeState = remember { mutableStateOf("Default") }
+        val colorType = remember(colorTypeState.value) {
+            colorTypeState.value.takeIf { it != "Default" }?.let { BitmapColorType(it) }
         }
 
         Row(Modifier.fillMaxWidth().weight(1f)) {
@@ -67,7 +67,7 @@ fun BlurTransformationTestPage() {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
                     addTransformations(blurTransformation)
-                    bitmapConfig(bitmapConfig)
+                    colorType(colorType)
                 },
                 contentDescription = "image",
                 modifier = Modifier.fillMaxHeight().weight(1f)
@@ -80,7 +80,7 @@ fun BlurTransformationTestPage() {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
                     addTransformations(blurTransformation)
-                    bitmapConfig(bitmapConfig)
+                    colorType(colorType)
                 },
                 contentDescription = "image",
                 modifier = Modifier.fillMaxHeight().weight(1f)
@@ -108,9 +108,9 @@ fun BlurTransformationTestPage() {
         )
 
         singleChoiceListItem(
-            title = "Bitmap Config",
-            values = bitmapConfigValues,
-            state = bitmapConfigState
+            title = "Bitmap Color Type",
+            values = colorTypeValues,
+            state = colorTypeState
         )
     }
 }

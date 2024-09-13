@@ -37,7 +37,7 @@ fun ComponentRegistry.Builder.supportFFmpegVideoFrame(): ComponentRegistry.Build
  *
  * Notes: It is not support MediaMetadataRetriever.BitmapParams
  *
- * Notes：ImageRequest's preferQualityOverSpeed, bitmapConfig, colorSpace attributes will not take effect
+ * Notes：ImageRequest's preferQualityOverSpeed, colorType, colorSpace attributes will not take effect
  *
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.FFmpegVideoFrameDecoderTest
  */

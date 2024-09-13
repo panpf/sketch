@@ -27,11 +27,15 @@ import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.Bitmap.Config.RGBA_F16
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
+import com.github.panpf.sketch.decode.HighQualityColorType
+import com.github.panpf.sketch.decode.LowQualityColorType
 import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.extensions.view.R
 import com.github.panpf.sketch.request.Depth
@@ -73,9 +77,13 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                     @Suppress("DEPRECATION")
                     preferQualityOverSpeed(this)
                 }
-            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_bitmapConfig)
+            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_colorType)
                 ?.apply {
-                    bitmapConfig(parseBitmapConfigAttribute(this))
+                    colorType(parseColorTypeAttribute(this))
+                }
+            typedArray.getIntOrNull(R.styleable.SketchImageView_sketch_colorSpace)
+                ?.apply {
+                    colorSpace(parseColorSpaceAttribute(this))
                 }
             val sizeWidth =
                 typedArray.getDimensionPixelSizeOrNull(R.styleable.SketchImageView_sketch_sizeWidth)
@@ -163,28 +171,66 @@ private fun parseCachePolicyAttribute(value: Int, name: String): CachePolicy =
     }
 
 @Suppress("DEPRECATION")
-private fun parseBitmapConfigAttribute(value: Int): BitmapConfig =
+private fun parseColorTypeAttribute(value: Int): BitmapColorType? =
     when (value) {
-        1 -> BitmapConfig.LowQuality
-        3 -> BitmapConfig.HighQuality
-        4 -> BitmapConfig(ALPHA_8)
-        5 -> BitmapConfig(RGB_565)
-        6 -> BitmapConfig(ARGB_4444)
-        7 -> BitmapConfig(ARGB_8888)
+        1 -> LowQualityColorType
+        2 -> HighQualityColorType
+        3 -> BitmapColorType(ALPHA_8)
+        4 -> BitmapColorType(RGB_565)
+        5 -> BitmapColorType(ARGB_4444)
+        6 -> BitmapColorType(ARGB_8888)
+        7 -> if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            BitmapColorType(RGBA_F16)
+        } else {
+            null
+        }
+
         8 -> if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            BitmapConfig(RGBA_F16)
+            BitmapColorType(HARDWARE)
         } else {
-            throw IllegalArgumentException("VERSION.SDK_INT < O, Does not support RGBA_F16")
+            null
         }
 
-        9 -> if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            BitmapConfig(HARDWARE)
-        } else {
-            throw IllegalArgumentException("VERSION.SDK_INT < O, Does not support HARDWARE")
-        }
-
-        else -> throw IllegalArgumentException("Value not supported by the 'sketch_bitmapConfig' attribute: $value")
+        else -> throw IllegalArgumentException("Value not supported by the 'sketch_colorType' attribute: $value")
     }
+
+private fun parseColorSpaceAttribute(value: Int): BitmapColorSpace? =
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        when (value) {
+            1 -> BitmapColorSpace(ColorSpace.Named.SRGB)
+            2 -> BitmapColorSpace(ColorSpace.Named.LINEAR_SRGB)
+            3 -> BitmapColorSpace(ColorSpace.Named.EXTENDED_SRGB)
+            4 -> BitmapColorSpace(ColorSpace.Named.LINEAR_EXTENDED_SRGB)
+            5 -> BitmapColorSpace(ColorSpace.Named.BT709)
+            6 -> BitmapColorSpace(ColorSpace.Named.BT2020)
+            7 -> BitmapColorSpace(ColorSpace.Named.DCI_P3)
+            8 -> BitmapColorSpace(ColorSpace.Named.DISPLAY_P3)
+            9 -> BitmapColorSpace(ColorSpace.Named.NTSC_1953)
+            10 -> BitmapColorSpace(ColorSpace.Named.SMPTE_C)
+            11 -> BitmapColorSpace(ColorSpace.Named.ADOBE_RGB)
+            12 -> BitmapColorSpace(ColorSpace.Named.PRO_PHOTO_RGB)
+            13 -> BitmapColorSpace(ColorSpace.Named.ACES)
+            14 -> BitmapColorSpace(ColorSpace.Named.ACESCG)
+            15 -> BitmapColorSpace(ColorSpace.Named.CIE_XYZ)
+            16 -> BitmapColorSpace(ColorSpace.Named.CIE_LAB)
+            17 -> if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                BitmapColorSpace(ColorSpace.Named.BT2020_HLG)
+            } else {
+                null
+            }
+
+            18 -> if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                BitmapColorSpace(ColorSpace.Named.BT2020_PQ)
+            } else {
+                null
+            }
+
+            else -> throw IllegalArgumentException("Value not supported by the 'sketch_colorSpace' attribute: $value")
+        }
+    } else {
+        null
+    }
+
 
 private fun TypedArray.getIntOrNull(index: Int): Int? = getInt(index, -1).takeIf { it != -1 }
 

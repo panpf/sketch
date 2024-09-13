@@ -2,6 +2,8 @@ package com.github.panpf.sketch.extensions.view.test
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ColorSpace
+import android.os.Build
 import android.view.LayoutInflater
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -14,7 +16,8 @@ import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
@@ -53,7 +56,10 @@ class SketchImageViewTest {
         (LayoutInflater.from(context)
             .inflate(R.layout.attrs_test, null, false) as SketchImageView).apply {
             assertEquals(ImageOptions {
-                bitmapConfig(Bitmap.Config.RGB_565)
+                colorType(Bitmap.Config.RGB_565)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    colorSpace(ColorSpace.Named.LINEAR_SRGB)
+                }
                 crossfade(3000, preferExactIntrinsicSize = true)
                 depth(Depth.LOCAL)
                 downloadCachePolicy(CachePolicy.WRITE_ONLY)

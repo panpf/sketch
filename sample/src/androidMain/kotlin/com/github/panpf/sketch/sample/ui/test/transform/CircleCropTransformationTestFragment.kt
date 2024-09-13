@@ -24,7 +24,7 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
@@ -58,7 +58,7 @@ class CircleCropTransformationTestFragment :
                 resultCachePolicy(DISABLED)
                 scale(it)
                 addTransformations(CircleCropTransformation())
-                bitmapConfig(Bitmap.Config.RGB_565) // To test automatic conversion Config
+                colorType(Bitmap.Config.RGB_565) // To test automatic conversion Config
             }
         }
 

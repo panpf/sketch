@@ -130,7 +130,7 @@ ImageRequest(context, "file:///android_asset/sample.mypng") {
 
 > [!CAUTION]
 > 1. Customizing [Decoder] requires applying many properties related to image quality and size in
-     ImageRequest, such as bitmapConfig, size, colorSpace, etc. You can refer to other [Decoder]
+     ImageRequest, such as size, colorType, colorSpace, etc. You can refer to other [Decoder]
      implementations
 > 2. If your [Decoder] is decoding animated images, you must determine the [ImageRequest]
      .disallowAnimatedImage parameter.
@@ -157,7 +157,7 @@ class MyDecodeInterceptor : DecodeInterceptor {
         chain: DecodeInterceptor.Chain,
     ): Result<DecodeResult> {
         val newRequest = chain.request.newRequest {
-            bitmapConfig(Bitmap.Config.ARGB_4444)
+            colorType(Bitmap.Config.RGB_565)
         }
         return chain.proceed(newRequest)
     }
@@ -180,16 +180,16 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
 > [!TIP]
 > 1. MyDecodeInterceptor demonstrates a case of changing the Bitmap.Config of all requests to
-     ARGB_4444
+     RGB_565
 > 2. If you want to modify the return result, just intercept the result returned by the proceed
      method and return a new [DecodeResult]
 > 3. If you don’t want to execute the request anymore, just don’t execute the proceed method.
 
 ## Decoding Related Properties
 
-* ImageRequest.bitmapConfig(BitmapConfig): Sets the color quality of the bitmap. Available on all
+* ImageRequest.colorType(BitmapColorSpace): Sets the color type of the bitmap. Available on all
   platforms
-* ImageRequest.colorSpace(ColorSpace): Set the color space of the bitmap. Available on all
+* ImageRequest.colorSpace(BitmapColorSpace): Set the color space of the bitmap. Available on all
   platforms
 * ImageRequest.preferQualityOverSpeed(Boolean): Set quality priority decoding mode. Available only
   on Android platform

@@ -14,7 +14,7 @@ actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
 }
 
 
-actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
             title = "Http Client",

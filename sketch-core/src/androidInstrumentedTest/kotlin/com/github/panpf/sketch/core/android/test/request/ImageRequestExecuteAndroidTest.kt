@@ -29,13 +29,14 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.HighQualityColorType
+import com.github.panpf.sketch.decode.LowQualityColorType
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrNull
@@ -49,7 +50,7 @@ import kotlin.test.assertTrue
 class ImageRequestExecuteAndroidTest {
 
     @Test
-    fun testBitmapConfig() = runTest {
+    fun testColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -62,7 +63,7 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(ARGB_8888)
+            colorType(ARGB_8888)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
         }
@@ -71,7 +72,7 @@ class ImageRequestExecuteAndroidTest {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             @Suppress("DEPRECATION")
-            bitmapConfig(ARGB_4444)
+            colorType(ARGB_4444)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             if (VERSION.SDK_INT > VERSION_CODES.M) {
                 assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
@@ -84,7 +85,7 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(ALPHA_8)
+            colorType(ALPHA_8)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
         }
@@ -92,7 +93,7 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(RGB_565)
+            colorType(RGB_565)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(RGB_565, image.getBitmapOrThrow().config)
         }
@@ -101,7 +102,7 @@ class ImageRequestExecuteAndroidTest {
             ImageRequest(context, ResourceImages.jpeg.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
-                bitmapConfig(RGBA_F16)
+                colorType(RGBA_F16)
             }.let { sketch.execute(it) }
                 .asOrNull<ImageResult.Success>()!!.apply {
                     assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
@@ -112,7 +113,7 @@ class ImageRequestExecuteAndroidTest {
             ImageRequest(context, ResourceImages.jpeg.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
-                bitmapConfig(HARDWARE)
+                colorType(HARDWARE)
             }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
                 assertEquals(HARDWARE, image.getBitmapOrThrow().config)
             }
@@ -121,14 +122,14 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(BitmapConfig.LowQuality)
+            this.colorType(LowQualityColorType)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(RGB_565, image.getBitmapOrThrow().config)
         }
         ImageRequest(context, ResourceImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(BitmapConfig.LowQuality)
+            this.colorType(LowQualityColorType)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(ARGB_8888, image.getBitmapOrThrow().config)
@@ -141,7 +142,7 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(BitmapConfig.HighQuality)
+            this.colorType(HighQualityColorType)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertEquals(RGBA_F16, image.getBitmapOrThrow().config)
@@ -152,7 +153,7 @@ class ImageRequestExecuteAndroidTest {
         ImageRequest(context, ResourceImages.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
-            bitmapConfig(BitmapConfig.HighQuality)
+            this.colorType(HighQualityColorType)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertEquals(RGBA_F16, image.getBitmapOrThrow().config)

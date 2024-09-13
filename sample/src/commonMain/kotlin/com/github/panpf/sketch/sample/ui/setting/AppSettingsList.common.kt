@@ -93,36 +93,36 @@ fun createSettingItems(
 ): List<SettingItem> = buildList {
     if (page == LIST) {
         add(GroupSettingItem("List"))
-        addAll(makeListMenuList(appSettings))
+        addAll(listMenuList(appSettings))
     } else if (page == ZOOM) {
         add(GroupSettingItem("Zoom"))
-        addAll(makeZoomMenuList(appSettings))
+        addAll(zoomMenuList(appSettings))
     }
-    platformMakeDecodeMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
+    platformDecodeMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
         add(GroupSettingItem("Decode"))
         add(
             DropdownSettingItem(
-                title = "Bitmap Quality",
+                title = "Bitmap Color Type",
                 desc = null,
-                values = listOf("Default", "LOW", "HIGH").plus(platformBitmapConfigs()),
-                state = appSettings.bitmapQualityName,
+                values = listOf("Default", "LowQuality", "HighQuality").plus(platformColorTypes()),
+                state = appSettings.colorTypeName,
             )
         )
         addAll(it)
     }
     add(GroupSettingItem("Cache"))
-    addAll(makeCacheMenuList(context, appSettings, recreateSettingItems))
+    addAll(cacheMenuList(context, appSettings, recreateSettingItems))
     platformAnimatedMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
         add(GroupSettingItem("Animated"))
         addAll(it)
     }
     add(GroupSettingItem("Other"))
-    addAll(makeOtherMenuList(appSettings))
-    addAll(platformMakeOtherMenuList(appSettings))
+    addAll(otherMenuList(appSettings))
+    addAll(platformOtherMenuList(appSettings))
 }
 
 
-private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+private fun listMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         SwitchSettingItem(
             title = "MimeType Logo",
@@ -195,7 +195,7 @@ private fun makeListMenuList(appSettings: AppSettings): List<SettingItem> = buil
     )
 }
 
-fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+fun zoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     val contentScales = listOf(
         ContentScaleCompat.Fit,
         ContentScaleCompat.Crop,
@@ -256,16 +256,16 @@ fun makeZoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     )
 }
 
-expect fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem>
+expect fun platformDecodeMenuList(appSettings: AppSettings): List<SettingItem>
 
 expect fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
 
-expect fun platformBitmapConfigs(): List<String>
+expect fun platformColorTypes(): List<String>
 
 expect fun platformColorSpaces(): List<String>
 
 
-private fun makeCacheMenuList(
+private fun cacheMenuList(
     context: PlatformContext,
     appSettings: AppSettings,
     recreateSettingItems: MutableState<Int>,
@@ -321,7 +321,7 @@ private fun makeCacheMenuList(
     )
 }
 
-private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+private fun otherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
             title = "Logger Level",
@@ -355,7 +355,7 @@ private fun makeOtherMenuList(appSettings: AppSettings): List<SettingItem> = bui
     )
 }
 
-expect fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem>
+expect fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem>
 
 interface SettingItem {
     val title: String

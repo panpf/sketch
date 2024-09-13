@@ -126,7 +126,7 @@ class MyListImageView @JvmOverloads constructor(
             pauseLoadWhenScrolling(appSettings.pauseLoadWhenScrollInList.value)
             saveCellularTraffic(appSettings.saveCellularTrafficInList.value)
 
-            bitmapConfig(appSettings.bitmapQuality.value)
+            colorType(appSettings.colorType.value)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 colorSpace(appSettings.colorSpace.value)
             }
@@ -228,8 +228,8 @@ class MyListImageView @JvmOverloads constructor(
             saveCellularTraffic(saveCellularTraffic)
         }
 
-        listenSettings(appSettings.bitmapQuality) { bitmapQuality ->
-            bitmapConfig(bitmapQuality)
+        listenSettings(appSettings.colorType) { colorType ->
+            colorType(colorType)
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             listenSettings(appSettings.colorSpace) { colorSpace ->

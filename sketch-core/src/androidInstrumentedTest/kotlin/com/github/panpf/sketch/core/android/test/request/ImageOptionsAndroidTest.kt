@@ -4,11 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.os.Build
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.FixedColorType
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.isNotEmpty
@@ -156,11 +157,11 @@ class ImageOptionsAndroidTest {
     }
 
     @Test
-    fun testBitmapConfig() {
+    fun testColorType() {
         ImageOptions {
-            bitmapConfig(Bitmap.Config.ARGB_8888)
+            colorType(Bitmap.Config.ARGB_8888)
         }.apply {
-            assertEquals(BitmapConfig.FixedQuality(Bitmap.Config.ARGB_8888.name), bitmapConfig)
+            assertEquals(FixedColorType(Bitmap.Config.ARGB_8888.name), colorType)
         }
     }
 
@@ -171,7 +172,7 @@ class ImageOptionsAndroidTest {
         ImageOptions {
             colorSpace(ColorSpace.Named.LINEAR_SRGB)
         }.apply {
-            assertEquals("LINEAR_SRGB", colorSpace)
+            assertEquals(BitmapColorSpace("LINEAR_SRGB"), colorSpace)
         }
     }
 
@@ -241,7 +242,7 @@ class ImageOptionsAndroidTest {
         val optionsList = buildList {
             ImageOptions()
                 .apply { add(this) }.newOptions {
-                    bitmapConfig(Bitmap.Config.RGB_565)
+                    colorType(Bitmap.Config.RGB_565)
                 }.apply { add(this) }.let { options ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         options.newOptions {

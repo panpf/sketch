@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
 import com.github.panpf.sketch.SkiaBitmapImage
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -502,8 +502,8 @@ class SkiaBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig(ColorType.RGB_565)
-        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
+        val bitmapColorType = BitmapColorType(ColorType.RGB_565)
+        ResourceImages.jpeg.decode(bitmapColorType).asOrThrow<SkiaBitmapImage>().bitmap.apply {
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
             assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
             assertTrue(actual = isOpaque)
@@ -878,8 +878,8 @@ class SkiaBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig(ColorType.RGB_565)
-        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
+        val bitmapColorType = BitmapColorType(ColorType.RGB_565)
+        ResourceImages.jpeg.decode(bitmapColorType).asOrThrow<SkiaBitmapImage>().bitmap.apply {
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
             assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
             assertTrue(actual = isOpaque)
@@ -966,8 +966,8 @@ class SkiaBitmapsTest {
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
 
-        val bitmapConfig = BitmapConfig(ColorType.RGB_565)
-        ResourceImages.jpeg.decode(bitmapConfig).asOrThrow<SkiaBitmapImage>().bitmap.apply {
+        val bitmapColorType = BitmapColorType(ColorType.RGB_565)
+        ResourceImages.jpeg.decode(bitmapColorType).asOrThrow<SkiaBitmapImage>().bitmap.apply {
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
             assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
             assertTrue(actual = isOpaque)

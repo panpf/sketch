@@ -14,11 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.sample.ui.setting.platformBitmapConfigs
+import com.github.panpf.sketch.sample.ui.setting.platformColorTypes
 import com.github.panpf.sketch.transform.MaskTransformation
 import kotlinx.collections.immutable.toImmutableList
 
@@ -29,11 +29,11 @@ fun MaskTransformationTestPage() {
             remember { listOf("RED", "GREEN", "BLUE").toImmutableList() }
         val maskColorState = remember { mutableStateOf("RED") }
 
-        val bitmapConfigValues =
-            remember { listOf("Default").plus(platformBitmapConfigs()).toImmutableList() }
-        val bitmapConfigState = remember { mutableStateOf("Default") }
-        val bitmapConfig = remember(bitmapConfigState.value) {
-            bitmapConfigState.value.takeIf { it != "Default" }?.let { BitmapConfig(it) }
+        val colorTypeValues =
+            remember { listOf("Default").plus(platformColorTypes()).toImmutableList() }
+        val colorTypeState = remember { mutableStateOf("Default") }
+        val colorType = remember(colorTypeState.value) {
+            colorTypeState.value.takeIf { it != "Default" }?.let { BitmapColorType(it) }
         }
 
         MyAsyncImage(
@@ -47,7 +47,7 @@ fun MaskTransformationTestPage() {
                     else -> throw IllegalArgumentException()
                 }.toArgb()
                 addTransformations(MaskTransformation(maskColor = maskColor))
-                bitmapConfig(bitmapConfig)
+                colorType(colorType)
             },
             contentDescription = "image",
             modifier = Modifier.fillMaxWidth().weight(1f)
@@ -62,9 +62,9 @@ fun MaskTransformationTestPage() {
         )
 
         singleChoiceListItem(
-            title = "Bitmap Config",
-            values = bitmapConfigValues,
-            state = bitmapConfigState
+            title = "Bitmap Color Type",
+            values = colorTypeValues,
+            state = colorTypeState
         )
     }
 }

@@ -41,7 +41,7 @@ class MyZoomImageView @JvmOverloads constructor(
             memoryCachePolicy(appSettings.memoryCache.value)
             resultCachePolicy(appSettings.resultCache.value)
             downloadCachePolicy(appSettings.downloadCache.value)
-            bitmapConfig(appSettings.bitmapQuality.value)
+            colorType(appSettings.colorType.value)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 colorSpace(appSettings.colorSpace.value)
             }
@@ -63,8 +63,8 @@ class MyZoomImageView @JvmOverloads constructor(
             downloadCachePolicy(cachePolicy)
         }
 
-        listenSettings(appSettings.bitmapQuality) { bitmapQuality ->
-            bitmapConfig(bitmapQuality)
+        listenSettings(appSettings.colorType) { colorType ->
+            colorType(colorType)
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             listenSettings(appSettings.colorSpace) { colorSpace ->

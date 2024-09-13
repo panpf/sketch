@@ -125,7 +125,7 @@ ImageRequest(context, "file:///android_asset/sample.mypng") {
 
 > [!CAUTION]
 > 1. 自定义 [Decoder] 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如
-     bitmapConfig、size、colorSpace 等，可参考其它 [Decoder] 实现
+     size、colorType、colorSpace 等，可参考其它 [Decoder] 实现
 > 2. 如果你的 [Decoder] 是解码动图的话一定要判断 [ImageRequest].disallowAnimatedImage 参数
 
 ## 解码拦截器
@@ -148,7 +148,7 @@ class MyDecodeInterceptor : DecodeInterceptor {
         chain: DecodeInterceptor.Chain,
     ): Result<DecodeResult> {
         val newRequest = chain.request.newRequest {
-            bitmapConfig(Bitmap.Config.ARGB_4444)
+          colorType(Bitmap.Config.RGB_565)
         }
         return chain.proceed(newRequest)
     }
@@ -170,7 +170,7 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 ```
 
 > [!TIP]
-> 1. MyDecodeInterceptor 演示了一个将所有请求的 Bitmap.Config 改为 ARGB_4444 的案例
+> 1. MyDecodeInterceptor 演示了一个将所有请求的 Bitmap.Config 改为 RGB_565 的案例
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [DecodeResult] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
@@ -178,8 +178,8 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
 [//]: # (TODO Each decoding related attribute is introduced separately)
 
-* ImageRequest.bitmapConfig(BitmapConfig): 设置位图的颜色质量。全平台可用
-* ImageRequest.colorSpace(ColorSpace): 设置位图的色彩空间。全平台可用
+* ImageRequest.colorType(BitmapColorType): 设置位图的颜色类型。全平台可用
+* ImageRequest.colorSpace(BitmapColorSpace): 设置位图的色彩空间。全平台可用
 * ImageRequest.preferQualityOverSpeed(Boolean): 设置质量优先解码模式。仅 Android 平台可用
 
 [comment]: <> (classs)

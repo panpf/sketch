@@ -41,7 +41,7 @@ class ImageRequestViewTest {
             assertNull(this.extras)
             assertNull(this.httpHeaders)
             assertEquals(ENABLED, this.downloadCachePolicy)
-            assertNull(this.bitmapConfig)
+            assertNull(this.colorType)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertNull(this.colorSpace)
             }

@@ -1,9 +1,10 @@
 package com.github.panpf.sketch.core.nonandroid.test.request
 
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.bitmapConfig
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.colorType
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 import kotlin.test.Test
@@ -12,11 +13,11 @@ import kotlin.test.assertEquals
 class ImageOptionsNonAndroidTest {
 
     @Test
-    fun testBitmapConfig() {
+    fun testColorType() {
         ImageOptions {
-            bitmapConfig(ColorType.RGB_565)
+            colorType(ColorType.RGB_565)
         }.apply {
-            assertEquals(BitmapConfig.FixedQuality(ColorType.RGB_565.name), bitmapConfig)
+            assertEquals(BitmapColorType(ColorType.RGB_565.name), colorType)
         }
     }
 
@@ -25,7 +26,7 @@ class ImageOptionsNonAndroidTest {
         ImageOptions {
             colorSpace(ColorSpace.displayP3)
         }.apply {
-            assertEquals("displayP3", colorSpace)
+            assertEquals(BitmapColorSpace("displayP3"), colorSpace)
         }
     }
 }

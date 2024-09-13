@@ -6,7 +6,7 @@ import com.github.panpf.sketch.sample.AppSettings
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 
-actual fun platformBitmapConfigs(): List<String> {
+actual fun platformColorTypes(): List<String> {
     return ColorType.values().filter { it != ColorType.UNKNOWN }.map { it.name }
 }
 
@@ -14,10 +14,10 @@ actual fun platformColorSpaces(): List<String> {
     return ColorSpace.values().map { it.name() }
 }
 
-actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+actual fun platformDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
-            title = "Color Space",
+            title = "Bitmap Color Space",
             desc = null,
             values = listOf("Default").plus(platformColorSpaces()),
             state = appSettings.colorSpaceName,

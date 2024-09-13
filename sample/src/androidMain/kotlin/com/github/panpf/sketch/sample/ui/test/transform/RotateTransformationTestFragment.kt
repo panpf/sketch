@@ -25,7 +25,7 @@ import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRotateBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
@@ -48,7 +48,7 @@ class RotateTransformationTestFragment :
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addTransformations(RotateTransformation(it))
-                bitmapConfig(Bitmap.Config.RGB_565) // To test automatic conversion Config
+                colorType(Bitmap.Config.RGB_565) // To test automatic conversion Config
             }
 
             binding.degreesText.text = "$it"

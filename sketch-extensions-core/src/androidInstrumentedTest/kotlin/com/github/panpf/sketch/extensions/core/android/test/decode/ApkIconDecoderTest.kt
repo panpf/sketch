@@ -28,7 +28,7 @@ import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
@@ -180,7 +180,7 @@ class ApkIconDecoderTest {
             }
 
         ImageRequest(context, apkFilePath) {
-            bitmapConfig(Bitmap.Config.RGB_565)
+            colorType(Bitmap.Config.RGB_565)
         }.decode(sketch, factory)
             .apply {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)

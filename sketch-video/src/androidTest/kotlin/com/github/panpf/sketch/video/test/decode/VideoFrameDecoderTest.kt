@@ -31,7 +31,7 @@ import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.bitmapConfig
+import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
@@ -206,7 +206,7 @@ class VideoFrameDecoderTest {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             ImageRequest(context, ResourceImages.mp4.uri) {
-                bitmapConfig(RGB_565)
+                colorType(RGB_565)
             }.run {
                 val fetcher =
                     sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))

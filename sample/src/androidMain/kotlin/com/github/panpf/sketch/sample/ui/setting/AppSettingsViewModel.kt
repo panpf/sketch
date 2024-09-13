@@ -74,7 +74,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             appSettings.longImageScale.ignoreFirst(),
             appSettings.otherImageScale.ignoreFirst(),
             appSettings.inPreferQualityOverSpeed.ignoreFirst(),
-            appSettings.bitmapQualityName.ignoreFirst(),
+            appSettings.colorTypeName.ignoreFirst(),
             if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpaceName.ignoreFirst() else null,
             appSettings.memoryCacheName.ignoreFirst(),
             appSettings.resultCacheName.ignoreFirst(),
@@ -260,11 +260,11 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
     private fun makeDecodeMenuList(): List<Any> = buildList {
         add(
             MultiSelectMenu(
-                title = "Bitmap Quality",
+                title = "Bitmap Color Type",
                 desc = null,
-                values = listOf("Default", "LOW", "HIGH").plus(platformBitmapConfigs()),
-                getValue = { appSettings.bitmapQualityName.value },
-                onSelect = { _, value -> appSettings.bitmapQualityName.value = value }
+                values = listOf("Default", "LowQuality", "HighQuality").plus(platformColorTypes()),
+                getValue = { appSettings.colorTypeName.value },
+                onSelect = { _, value -> appSettings.colorTypeName.value = value }
             )
         )
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -272,7 +272,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             val items = listOf("Default").plus(platformColorSpaces())
             add(
                 MultiSelectMenu(
-                    title = "Color Space",
+                    title = "Bitmap Color Space",
                     desc = null,
                     values = items,
                     getValue = { appSettings.colorSpaceName.value },

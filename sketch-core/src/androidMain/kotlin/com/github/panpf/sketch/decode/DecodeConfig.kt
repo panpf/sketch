@@ -43,13 +43,16 @@ fun DecodeConfig(
             inPreferQualityOverSpeed = true
         }
 
-        val newConfig = request.bitmapConfig?.toAndroidBitmapConfig(mimeType, isOpaque)
-        if (newConfig != null) {
-            inPreferredConfig = newConfig
+        val userColorType = request.colorType?.getColorType(mimeType, isOpaque)?.colorType
+        if (userColorType != null) {
+            inPreferredConfig = userColorType
         }
 
-        if (VERSION.SDK_INT >= VERSION_CODES.O && request.colorSpace != null) {
-            inPreferredColorSpace = ColorSpace.get(ColorSpace.Named.valueOf(request.colorSpace))
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            val userColorSpace = request.colorSpace?.getColorSpace(mimeType, isOpaque)?.colorSpace
+            if (userColorSpace != null) {
+                inPreferredColorSpace = userColorSpace
+            }
         }
     }
 

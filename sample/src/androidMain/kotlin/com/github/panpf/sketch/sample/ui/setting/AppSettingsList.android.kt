@@ -7,7 +7,7 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.EventBus
 
-actual fun platformBitmapConfigs(): List<String> {
+actual fun platformColorTypes(): List<String> {
     return Bitmap.Config.values().map { it.name }
 }
 
@@ -19,13 +19,13 @@ actual fun platformColorSpaces(): List<String> {
     }
 }
 
-actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+actual fun platformDecodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         // Cannot use Named.entries, crashes on versions lower than O
         val items = listOf("Default").plus(platformColorSpaces())
         add(
             DropdownSettingItem(
-                title = "Color Space",
+                title = "Bitmap Color Space",
                 desc = null,
                 values = items,
                 state = appSettings.colorSpaceName,
@@ -45,7 +45,7 @@ actual fun platformMakeDecodeMenuList(appSettings: AppSettings): List<SettingIte
 
 actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
 
-actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
             title = "Http Client",

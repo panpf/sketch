@@ -22,7 +22,8 @@ import android.graphics.ColorSpace
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
-import com.github.panpf.sketch.decode.BitmapConfig
+import com.github.panpf.sketch.decode.BitmapColorSpace
+import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
@@ -158,12 +159,12 @@ fun ImageRequest.Builder.error(
 ): ImageRequest.Builder = error(ColorDrawableStateImage(color), configBlock)
 
 /**
- * Configure bitmap quality
+ * Configure bitmap color type
  *
- * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testBitmapConfig
+ * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testColorType
  */
-fun ImageRequest.Builder.bitmapConfig(config: Bitmap.Config): ImageRequest.Builder =
-    bitmapConfig(BitmapConfig(config))
+fun ImageRequest.Builder.colorType(colorType: Bitmap.Config?): ImageRequest.Builder =
+    this.colorType(colorType?.let { BitmapColorType(it) })
 
 
 /**
@@ -172,9 +173,8 @@ fun ImageRequest.Builder.bitmapConfig(config: Bitmap.Config): ImageRequest.Build
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testColorSpace
  */
 @RequiresApi(Build.VERSION_CODES.O)
-fun ImageRequest.Builder.colorSpace(named: ColorSpace.Named?): ImageRequest.Builder = apply {
-    colorSpace(named?.name)
-}
+fun ImageRequest.Builder.colorSpace(colorSpace: ColorSpace.Named?): ImageRequest.Builder =
+    this.colorSpace(colorSpace?.let { BitmapColorSpace(it) })
 
 
 const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"

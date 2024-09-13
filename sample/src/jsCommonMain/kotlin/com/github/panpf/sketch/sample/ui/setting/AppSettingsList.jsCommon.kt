@@ -12,4 +12,4 @@ actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
     )
 }
 
-actual fun platformMakeOtherMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
