@@ -19,7 +19,6 @@ package com.github.panpf.sketch.decode.internal
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.RectF
-import android.os.Build
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.github.panpf.sketch.asSketchImage
@@ -33,6 +32,7 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.times
 import okio.buffer
 import kotlin.math.roundToInt
@@ -104,7 +104,7 @@ internal actual fun DataSource.decodeSvg(
         computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
     val decodeConfig = DecodeConfig(requestContext.request, PNG.mimeType, isOpaque = false)
-    val bitmapConfig = decodeConfig.inPreferredConfig.toSoftware()
+    val bitmapConfig = decodeConfig.inPreferredConfig.safeToSoftware()
     val bitmap = Bitmap.createBitmap(
         /* width = */ bitmapSize.width,
         /* height = */ bitmapSize.height,
@@ -135,12 +135,4 @@ internal actual fun DataSource.decodeSvg(
     @Suppress("UnnecessaryVariable", "RedundantSuppression")
     val resizedResult = decodeResult.appliedResize(resize)
     return resizedResult
-}
-
-/**
- * Convert null and [Bitmap.Config.HARDWARE] configs to [Bitmap.Config.ARGB_8888].
- */
-private fun Bitmap.Config?.toSoftware(): Bitmap.Config {
-    return if (this == null || Build.VERSION.SDK_INT >= 26 && this == Bitmap.Config.HARDWARE)
-        Bitmap.Config.ARGB_8888 else this
 }

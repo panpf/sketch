@@ -41,7 +41,10 @@ internal actual fun Image.blur(
     val compatAlphaBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlpha()) {
         inputBitmap.backgrounded(hasAlphaBitmapBgColor)
     } else if (!firstReuseSelf) {
-        inputBitmap.copy(/* config = */ inputBitmap.safeConfig, /* isMutable = */ true)
+        inputBitmap.copy(
+            /* config = */ inputBitmap.safeConfig.safeToSoftware(),
+            /* isMutable = */ true
+        )
     } else {
         inputBitmap.getMutableCopy()
     }
@@ -76,7 +79,10 @@ internal actual fun Image.mask(maskColor: Int, firstReuseSelf: Boolean): Image {
         "Only AndroidBitmapImage is supported: ${image::class}"
     }
     val inputBitmap = if (!firstReuseSelf) {
-        image.bitmap.copy(/* config = */ image.bitmap.safeConfig, /* isMutable = */ true)
+        image.bitmap.copy(
+            /* config = */ image.bitmap.safeConfig.safeToSoftware(),
+            /* isMutable = */ true
+        )
     } else {
         image.bitmap.getMutableCopy()
     }

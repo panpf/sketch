@@ -38,6 +38,7 @@ import com.github.panpf.sketch.util.flipped
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.rotateInSpace
 import com.github.panpf.sketch.util.safeConfig
+import com.github.panpf.sketch.util.safeToSoftware
 import okio.buffer
 import java.io.IOException
 import kotlin.math.abs
@@ -203,7 +204,7 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         matrix.mapRect(newRect)
         matrix.postTranslate(-newRect.left, -newRect.top)
 
-        val config = inBitmap.safeConfig
+        val config = inBitmap.safeConfig.safeToSoftware()
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
         val outBitmap = Bitmap.createBitmap(

@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.AnimatedImageDrawable
@@ -124,11 +123,10 @@ internal fun Drawable.toNewBitmap(
     val targetHeight = targetSize?.height ?: intrinsicHeight
     setBounds(0, 0, targetWidth, targetHeight)
 
-    val config = preferredConfig ?: ARGB_8888
     val bitmap: Bitmap = Bitmap.createBitmap(
         /* width = */ targetWidth,
         /* height = */ targetHeight,
-        /* config = */ config,
+        /* config = */ preferredConfig.safeToSoftware(),
     )
     val canvas = Canvas(bitmap)
     draw(canvas)

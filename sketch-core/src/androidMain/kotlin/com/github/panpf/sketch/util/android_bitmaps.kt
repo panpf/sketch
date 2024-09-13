@@ -48,6 +48,14 @@ internal fun AndroidBitmapConfig.isHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == AndroidBitmapConfig.HARDWARE
 
 /**
+ * Gets the safe mutable bitmap configuration, returns ARGB_8888 if it is HARDWARE, otherwise returns itself
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testToSoftware
+ */
+fun AndroidBitmapConfig?.safeToSoftware(): AndroidBitmapConfig =
+    if (this == null || (VERSION.SDK_INT >= VERSION_CODES.O && this == AndroidBitmapConfig.HARDWARE)) AndroidBitmapConfig.ARGB_8888 else this
+
+/**
  * Gets the number of bytes occupied by a single pixel in a specified configuration
  *
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testGetBytesPerPixel
@@ -110,7 +118,8 @@ internal val AndroidBitmap.safeConfig: AndroidBitmapConfig
  * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testMutableCopy
  */
 internal fun AndroidBitmap.getMutableCopy(): AndroidBitmap {
-    return if (isMutable) this else copy(safeConfig, true)
+    return if (isMutable)
+        this else copy(/* config = */ safeConfig.safeToSoftware(),/* isMutable = */ true)
 }
 
 
@@ -237,7 +246,7 @@ internal fun AndroidBitmap.backgrounded(backgroundColor: Int): AndroidBitmap {
     val bitmap = AndroidBitmap.createBitmap(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
-        /* config = */ inputBitmap.safeConfig,
+        /* config = */ inputBitmap.safeConfig.safeToSoftware(),
     )
     val canvas = Canvas(bitmap)
     canvas.drawColor(backgroundColor)
@@ -284,7 +293,7 @@ internal fun AndroidBitmap.blur(radius: Int) {
 internal fun AndroidBitmap.circleCropped(scale: Scale): AndroidBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
-    var newConfig = inputBitmap.safeConfig
+    var newConfig = inputBitmap.safeConfig.safeToSoftware()
     if (newConfig == AndroidBitmapConfig.RGB_565) {
         // Circle cropped require support alpha
         newConfig = AndroidBitmapConfig.ARGB_8888
@@ -332,7 +341,7 @@ internal fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
     val outBitmap = AndroidBitmap.createBitmap(
         /* width = */ mapping.newSize.width,
         /* height = */ mapping.newSize.height,
-        /* config = */ inputBitmap.safeConfig,
+        /* config = */ inputBitmap.safeConfig.safeToSoftware(),
     )
     Canvas(outBitmap).drawBitmap(
         /* bitmap = */ inputBitmap,
@@ -386,7 +395,7 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
     val newHeight = newRect.height().toInt()
 
     // If the Angle is not divisible by 90°, the new image will be oblique, so support transparency so that the oblique part is not black
-    var newConfig = inputBitmap.safeConfig
+    var newConfig = inputBitmap.safeConfig.safeToSoftware()
     if (finalAngle % 90 != 0 && newConfig == AndroidBitmapConfig.RGB_565) {
         // Non-positive angle require support alpha
         newConfig = AndroidBitmapConfig.ARGB_8888
@@ -413,7 +422,7 @@ internal fun AndroidBitmap.rotated(angle: Int): AndroidBitmap {
  */
 internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitmap {
     val inputBitmap = this
-    var newConfig = inputBitmap.safeConfig
+    var newConfig = inputBitmap.safeConfig.safeToSoftware()
     if (newConfig == AndroidBitmapConfig.RGB_565) {
         // Rounded corners require support alpha
         newConfig = AndroidBitmapConfig.ARGB_8888
@@ -455,7 +464,7 @@ internal fun AndroidBitmap.roundedCornered(radiusArray: FloatArray): AndroidBitm
 internal fun AndroidBitmap.scaled(scaleFactor: Float): AndroidBitmap {
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
-    val newConfig = this.safeConfig
+    val newConfig = this.safeConfig.safeToSoftware()
     val newBitmap = AndroidBitmap.createBitmap(
         /* width = */ scaledWidth,
         /* height = */ scaledHeight,

@@ -53,6 +53,7 @@ import com.github.panpf.sketch.util.mask
 import com.github.panpf.sketch.util.rotated
 import com.github.panpf.sketch.util.roundedCornered
 import com.github.panpf.sketch.util.safeConfig
+import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.scaled
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toInfoString
@@ -81,6 +82,47 @@ class AndroidBitmapsTest {
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             assertFalse(actual = AndroidBitmapConfig.RGBA_F16.isHardware())
             assertTrue(actual = AndroidBitmapConfig.HARDWARE.isHardware())
+        }
+    }
+
+    @Test
+    fun testToSoftware() {
+        assertEquals(
+            expected = AndroidBitmapConfig.ARGB_8888,
+            actual = null.safeToSoftware()
+        )
+        assertEquals(
+            expected = AndroidBitmapConfig.ARGB_8888,
+            actual = AndroidBitmapConfig.ARGB_8888.safeToSoftware()
+        )
+        assertEquals(
+            expected = AndroidBitmapConfig.RGB_565,
+            actual = AndroidBitmapConfig.RGB_565.safeToSoftware()
+        )
+        assertEquals(
+            expected = AndroidBitmapConfig.ALPHA_8,
+            actual = AndroidBitmapConfig.ALPHA_8.safeToSoftware()
+        )
+        @Suppress("DEPRECATION")
+        assertEquals(
+            expected = AndroidBitmapConfig.ARGB_4444,
+            actual = AndroidBitmapConfig.ARGB_4444.safeToSoftware()
+        )
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            assertEquals(
+                expected = AndroidBitmapConfig.RGBA_F16,
+                actual = AndroidBitmapConfig.RGBA_F16.safeToSoftware()
+            )
+            assertEquals(
+                expected = AndroidBitmapConfig.ARGB_8888,
+                actual = AndroidBitmapConfig.HARDWARE.safeToSoftware()
+            )
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            assertEquals(
+                expected = AndroidBitmapConfig.RGBA_1010102,
+                actual = AndroidBitmapConfig.RGBA_1010102.safeToSoftware()
+            )
         }
     }
 

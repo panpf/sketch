@@ -18,7 +18,6 @@
 
 package com.github.panpf.sketch.decode
 
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Movie
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -39,6 +38,7 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.safeToSoftware
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -107,7 +107,7 @@ class GifMovieDecoder(
 
         val decodeConfig =
             DecodeConfig(request, ImageFormat.GIF.mimeType, isOpaque = movie.isOpaque)
-        val config = decodeConfig.inPreferredConfig ?: ARGB_8888
+        val config = decodeConfig.inPreferredConfig.safeToSoftware()
         val movieDrawable = MovieDrawable(movie, config).apply {
             setRepeatCount(request.repeatCount ?: ANIMATION_REPEAT_INFINITE)
 
