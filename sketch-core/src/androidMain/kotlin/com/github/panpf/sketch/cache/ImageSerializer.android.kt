@@ -17,9 +17,9 @@
 package com.github.panpf.sketch.cache
 
 import android.graphics.Bitmap.CompressFormat
-import com.github.panpf.sketch.AndroidBitmapImage
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
@@ -44,11 +44,11 @@ actual fun createImageSerializer(): ImageSerializer = AndroidBitmapImageSerializ
 object AndroidBitmapImageSerializer : ImageSerializer {
 
     override fun supportImage(image: Image): Boolean {
-        return image is AndroidBitmapImage
+        return image is BitmapImage
     }
 
     override fun compress(image: Image, sink: BufferedSink) {
-        image as AndroidBitmapImage
+        image as BitmapImage
         image.bitmap.compress(CompressFormat.PNG, 100, sink.outputStream())
     }
 
@@ -64,6 +64,6 @@ object AndroidBitmapImageSerializer : ImageSerializer {
         ).toBitmapOptions()
         val bitmap = dataSource.decodeBitmap(decodeOptions)
             ?: throw DecodeException("Decode bitmap return null. '${requestContext.logKey}'")
-        return bitmap.asSketchImage()
+        return bitmap.asImage()
     }
 }

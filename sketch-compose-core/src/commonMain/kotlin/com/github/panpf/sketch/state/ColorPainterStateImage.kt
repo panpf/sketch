@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -80,7 +80,7 @@ class ColorPainterStateImage(val color: Color) : StateImage {
     override val key: String = "ColorPainterStateImage(${color.value})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
-        return ColorPainter(color).asSketchImage()
+        return ColorPainter(color).asImage()
     }
 
     override fun equals(other: Any?): Boolean {

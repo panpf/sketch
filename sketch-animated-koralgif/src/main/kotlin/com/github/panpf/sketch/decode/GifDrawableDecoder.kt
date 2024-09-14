@@ -24,7 +24,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
@@ -150,7 +150,7 @@ class GifDrawableDecoder(
             }
 
         return DecodeResult(
-            image = animatableDrawable.asSketchImage(),
+            image = animatableDrawable.asImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             resize = resize,

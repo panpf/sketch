@@ -34,7 +34,6 @@ import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.internal.AsyncImageSizeResolver
-import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest

@@ -22,16 +22,7 @@ import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.VectorPainter
-import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.util.toHexString
-
-/**
- * Convert the Image to a Painter
- *
- * @see com.github.panpf.sketch.compose.core.android.test.painter.PaintersAndroidTest.testImageAsPainter
- * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testImageAsPainter
- */
-expect fun Image.asPainter(): Painter
 
 /**
  * Convert the painter to a log string

@@ -21,7 +21,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.drawable.IconAnimatableDrawable
 import com.github.panpf.sketch.drawable.asEquality
@@ -332,7 +332,7 @@ class IconAnimatableDrawableStateImageTest {
             background = greenBgDrawable
         ).apply {
             getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
+                ?.asOrThrow<DrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
                     assertEquals(iconDrawable.wrapped, icon)
                     assertEquals(greenBgDrawable.wrapped, background)
@@ -346,7 +346,7 @@ class IconAnimatableDrawableStateImageTest {
             iconSize = SketchSize(40, 40),
         ).apply {
             getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
+                ?.asOrThrow<DrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
                     assertEquals(iconDrawable.wrapped, icon)
                     assertTrue(background is BitmapDrawable)
@@ -359,7 +359,7 @@ class IconAnimatableDrawableStateImageTest {
             background = IntColor(Color.BLUE)
         ).apply {
             getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
+                ?.asOrThrow<DrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
                     assertEquals(iconDrawable.wrapped, icon)
                     assertEquals(Color.BLUE, (background as ColorDrawable).color)
@@ -369,7 +369,7 @@ class IconAnimatableDrawableStateImageTest {
 
         IconAnimatableDrawableStateImage(iconDrawable).apply {
             getImage(sketch, request, null)
-                ?.asOrThrow<AndroidDrawableImage>()?.drawable
+                ?.asOrThrow<DrawableImage>()?.drawable
                 .asOrNull<IconAnimatableDrawable>()!!.apply {
                     assertEquals(iconDrawable.wrapped, icon)
                     assertNull(background)

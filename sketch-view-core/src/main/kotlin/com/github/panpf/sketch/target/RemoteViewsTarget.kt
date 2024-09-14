@@ -18,6 +18,9 @@ package com.github.panpf.sketch.target
 
 import android.widget.RemoteViews
 import androidx.annotation.IdRes
+import androidx.core.graphics.drawable.toBitmap
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageOptions
@@ -30,7 +33,6 @@ import com.github.panpf.sketch.request.internal.BaseRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.toBitmapOrThrow
 import kotlinx.coroutines.Job
 
 /**
@@ -57,7 +59,12 @@ class RemoteViewsTarget constructor(
 
     private fun setDrawable(request: ImageRequest, result: Image?) {
         if (result != null || request.allowNullImage == true) {
-            remoteViews.setImageViewBitmap(imageViewId, result?.toBitmapOrThrow())
+            val bitmap = when (result) {
+                is BitmapImage -> result.bitmap
+                is DrawableImage -> result.drawable.toBitmap()
+                else -> null
+            }
+            remoteViews.setImageViewBitmap(imageViewId, bitmap)
             onUpdated()
         }
     }

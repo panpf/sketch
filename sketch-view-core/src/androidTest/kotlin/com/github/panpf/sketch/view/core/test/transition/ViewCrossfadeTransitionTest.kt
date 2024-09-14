@@ -23,7 +23,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.images.ResourceImages
@@ -68,7 +68,7 @@ class ViewCrossfadeTransitionTest {
         val result = ImageResult.Success(
             request = request,
             cacheKey = requestContext.cacheKey,
-            image = resultDrawable.asSketchImage(),
+            image = resultDrawable.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
             resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
@@ -123,7 +123,7 @@ class ViewCrossfadeTransitionTest {
         val success = ImageResult.Success(
             request = request,
             cacheKey = request.toRequestContext(sketch).cacheKey,
-            image = resultDrawable.asSketchImage(),
+            image = resultDrawable.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
             dataFrom = LOCAL,
@@ -145,7 +145,7 @@ class ViewCrossfadeTransitionTest {
         assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
         val error = ImageResult.Error(
             request = request,
-            image = resultDrawable.asSketchImage(),
+            image = resultDrawable.asImage(),
             throwable = Exception(""),
         )
         ViewCrossfadeTransition(sketch, request, imageViewTarget, error).transition()
@@ -166,7 +166,7 @@ class ViewCrossfadeTransitionTest {
             result = ImageResult.Success(
                 request = request,
                 cacheKey = request.toRequestContext(sketch).cacheKey,
-                image = imageViewTarget.drawable!!.asSketchImage(),
+                image = imageViewTarget.drawable!!.asImage(),
                 imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 dataFrom = LOCAL,
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
@@ -216,7 +216,7 @@ class ViewCrossfadeTransitionTest {
         val successResult = ImageResult.Success(
             request = request,
             cacheKey = request.toRequestContext(sketch).cacheKey,
-            image = resultDrawable.asSketchImage(),
+            image = resultDrawable.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
             resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
@@ -227,7 +227,7 @@ class ViewCrossfadeTransitionTest {
 
         val errorResult = ImageResult.Error(
             request = request,
-            image = resultDrawable.asSketchImage(),
+            image = resultDrawable.asImage(),
             throwable = Exception("")
         )
         assertNotNull(factory.create(sketch, request, imageViewTarget, errorResult))
@@ -235,7 +235,7 @@ class ViewCrossfadeTransitionTest {
         val fromMemoryCacheSuccessResult = ImageResult.Success(
             request = request,
             cacheKey = request.toRequestContext(sketch).cacheKey,
-            image = resultDrawable.asSketchImage(),
+            image = resultDrawable.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = MEMORY_CACHE,
             resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),

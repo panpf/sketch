@@ -18,13 +18,25 @@
 
 package com.github.panpf.sketch
 
-import com.github.panpf.sketch.cache.MemoryCache.Value
 import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.toLogString
 
+/**
+ * Convert [Bitmap] to [BitmapImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest.testAsImage
+ */
+actual fun Bitmap.asImage(): BitmapImage = BitmapImage(this)
+
+/**
+ * Bitmap image, which is a wrapper for [Bitmap]
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest
+ */
 actual data class BitmapImage(
     actual val bitmap: Bitmap,
     actual override val shareable: Boolean = !bitmap.isMutable,
+    actual override val cachedInMemory: Boolean = true
 ) : Image {
 
     actual override val width: Int = bitmap.width
@@ -35,18 +47,8 @@ actual data class BitmapImage(
 
     actual override val allocationByteCount: Long = bitmap.allocationByteCountCompat.toLong()
 
-    actual override fun cacheValue(extras: Map<String, Any?>?): Value? = null
-
     actual override fun checkValid(): Boolean = !bitmap.isRecycled
-
-    override fun transformer(): ImageTransformer = AndroidBitmapImageTransformer
 
     override fun toString(): String =
         "BitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
-}
-
-actual typealias Bitmap = android.graphics.Bitmap
-
-actual fun Bitmap.asImage(): BitmapImage {
-    return BitmapImage(this)
 }

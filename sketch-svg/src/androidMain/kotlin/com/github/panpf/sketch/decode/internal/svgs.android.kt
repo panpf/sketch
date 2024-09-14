@@ -21,7 +21,7 @@ import android.graphics.Canvas
 import android.graphics.RectF
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
@@ -124,7 +124,7 @@ internal actual fun DataSource.decodeSvg(
         listOf(createScaledTransformed(targetScale)) else null
     val resize = requestContext.computeResize(imageInfo.size)
     val decodeResult = DecodeResult(
-        image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
+        image = bitmap.asImage(),
         imageInfo = imageInfo,
         dataFrom = dataFrom,
         resize = resize,

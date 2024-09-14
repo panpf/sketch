@@ -16,8 +16,6 @@
 
 package com.github.panpf.sketch
 
-import com.github.panpf.sketch.cache.MemoryCache.Value
-import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.util.Size
 
 /**
@@ -31,9 +29,9 @@ val Image.size: Size
 /**
  * An image
  *
- * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest
+ * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest
  * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest
- * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapImageNonAndroidTest
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaAnimatedImageTest
  * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest
  */
@@ -69,39 +67,14 @@ interface Image {
     val shareable: Boolean
 
     /**
-     * Get the cache value used to cache the current Image into the memory cache
+     * True if the image can be cached in memory.
      */
-    fun cacheValue(extras: Map<String, Any?>? = null): Value?
+    val cachedInMemory: Boolean
 
     /**
      * Check if the image is valid
      */
     fun checkValid(): Boolean
-
-    /**
-     * Get the transformer used to resize the image
-     */
-    // TODO remove
-    fun transformer(): ImageTransformer?
-}
-
-/**
- * Image transformer, used for later resize after decoding
- *
- * @see com.github.panpf.sketch.core.android.test.AndroidBitmapImageTest.testAndroidBitmapImageTransformer
- * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapImageTest.testSkiaBitmapImageTransformer
- */
-interface ImageTransformer {
-
-    /**
-     * Zoom image
-     */
-    fun scale(image: Image, scaleFactor: Float): Image
-
-    /**
-     * Create a new image based on the mapping relationship represented by [ResizeMapping]
-     */
-    fun mapping(image: Image, mapping: ResizeMapping): Image
 }
 
 /**

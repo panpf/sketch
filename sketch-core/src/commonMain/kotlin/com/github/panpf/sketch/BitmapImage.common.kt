@@ -18,8 +18,20 @@
 
 package com.github.panpf.sketch
 
-import com.github.panpf.sketch.cache.MemoryCache.Value
+/**
+ * Convert [Bitmap] to [BitmapImage]
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest.testAsImage
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapImageNonAndroidTest.testAsImage
+ */
+expect fun Bitmap.asImage(): BitmapImage
 
+/**
+ * Bitmap image, which is a wrapper for [Bitmap]
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapImageNonAndroidTest
+ */
 expect class BitmapImage : Image {
 
     val bitmap: Bitmap
@@ -34,11 +46,7 @@ expect class BitmapImage : Image {
 
     override val shareable: Boolean
 
-    override fun cacheValue(extras: Map<String, Any?>?): Value?
+    override val cachedInMemory: Boolean
 
     override fun checkValid(): Boolean
 }
-
-expect class Bitmap
-
-expect fun Bitmap.asImage(): BitmapImage

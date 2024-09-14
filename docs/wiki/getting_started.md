@@ -361,14 +361,11 @@ val imageResult: ImageResult = ...
 val request: ImageRequest = imageResult.request
 val image: Image = imageResult.image
 when (image) {
-    is AndroidBitmapImage -> {
+     is BitmapImage -> {
         val bitmap: Bitmap = image.bitmap
     }
-    is AndroidDrawableImage -> {
+     is DrawableImage -> {
         val drawable: Drawable = image.drawable
-    }
-    is ComposeBitmapImage -> {
-        val bitmap: ComposeBitmap = image.bitmap
     }
     is PainterImage -> {
         val painter: Painter = image.painter

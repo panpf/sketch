@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.DecodeResult
@@ -22,10 +22,10 @@ suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory? = null
 
 expect fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): DecodeHelper
 
-fun ResourceImageFile.decode(
+fun ResourceImageFile.decode2(
     colorType: BitmapColorType? = null,
     colorSpace: String? = null
-): Image {
+): BitmapImage {
     val context = getTestContext()
     val request = ImageRequest(context, uri) {
         colorType(colorType)
@@ -33,5 +33,5 @@ fun ResourceImageFile.decode(
     }
     val dataSource = toDataSource(context)
     val decoderHelper = createDecodeHelper(request, dataSource)
-    return decoderHelper.decode(1)
+    return decoderHelper.decode(1) as BitmapImage
 }

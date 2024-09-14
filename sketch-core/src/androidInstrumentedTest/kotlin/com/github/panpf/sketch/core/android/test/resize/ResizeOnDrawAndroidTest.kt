@@ -3,8 +3,8 @@ package com.github.panpf.sketch.core.android.test.resize
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asDrawableOrThrow
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
@@ -40,7 +40,7 @@ class ResizeOnDrawAndroidTest {
             BitmapDrawable(resources, Bitmap.createBitmap(100, 200, Bitmap.Config.RGB_565))
 
         val request = ImageRequest(imageView, imageUri)
-        val bitmapDrawableImage = bitmapDrawable.asSketchImage()
+        val bitmapDrawableImage = bitmapDrawable.asImage()
         assertSame(
             bitmapDrawableImage,
             bitmapDrawableImage.resizeOnDraw(request, null)
@@ -60,7 +60,7 @@ class ResizeOnDrawAndroidTest {
             bitmapDrawable,
             bitmapDrawableImage
                 .resizeOnDraw(request2, request2.toRequestContext(sketch).size)
-                .asDrawableOrThrow()
+                .asDrawable()
         )
         val request3 = ImageRequest(imageView, imageUri) {
             resizeOnDraw(true)
@@ -69,7 +69,7 @@ class ResizeOnDrawAndroidTest {
         }
         bitmapDrawableImage
             .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
-            .asDrawableOrThrow()
+            .asDrawable()
             .let { it as ResizeDrawable }
             .apply {
                 assertSame(bitmapDrawable, drawable)
@@ -77,9 +77,9 @@ class ResizeOnDrawAndroidTest {
             }
 
         val animDrawable = AnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
-        animDrawable.asSketchImage()
+        animDrawable.asImage()
             .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
-            .asDrawableOrThrow()
+            .asDrawable()
             .let { it as ResizeAnimatableDrawable }
             .apply {
                 assertSame(animDrawable, drawable)

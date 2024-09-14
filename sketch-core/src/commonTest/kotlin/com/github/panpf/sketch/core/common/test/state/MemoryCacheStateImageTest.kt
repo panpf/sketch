@@ -27,8 +27,8 @@ import com.github.panpf.sketch.state.MemoryCacheStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
-import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.SketchSize
 import kotlinx.coroutines.test.runTest
@@ -84,7 +84,7 @@ class MemoryCacheStateImageTest {
             assertEquals(stateImage.image, getImage(sketch, request, null))
         }
 
-        val newImage = createImage(100, 100)
+        val newImage = createBitmapImage(100, 100)
         memoryCache.put(
             key = memoryCacheKey,
             value = createCacheValue(

@@ -18,8 +18,11 @@ package com.kmpalette.palette.graphics
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.height
 import com.github.panpf.sketch.util.readIntPixels
+import com.github.panpf.sketch.util.scale
+import com.github.panpf.sketch.width
 import com.kmpalette.palette.graphics.Palette.Builder
 import com.kmpalette.palette.internal.ColorCutQuantizer
 import com.kmpalette.palette.internal.annotation.ColorInt
@@ -414,7 +417,7 @@ class Palette internal constructor(
     class Builder {
 
         private val swatches: List<Swatch>?
-        private val imageBitmap: Image?
+        private val imageBitmap: Bitmap?
         private val targets: MutableList<Target> = mutableListOf()
         private var maxColors = DEFAULT_CALCULATE_NUMBER_COLORS
         private var resizeArea = DEFAULT_RESIZE_BITMAP_AREA
@@ -425,7 +428,7 @@ class Palette internal constructor(
         /**
          * Construct a new [Builder] using a source [ImageBitmap]
          */
-        constructor(bitmap: Image) {
+        constructor(bitmap: Bitmap) {
             filters.add(DEFAULT_FILTER)
             imageBitmap = bitmap
             swatches = null
@@ -574,7 +577,7 @@ class Palette internal constructor(
             if (imageBitmap != null) {
                 // We have a Bitmap so we need to use quantization to reduce the number of colors
                 // First we'll scale down the bitmap if needed
-                val bitmap: Image = scaleBitmapDown(imageBitmap)
+                val bitmap: Bitmap = scaleBitmapDown(imageBitmap)
                 val region: Rect? = region
                 if (bitmap != imageBitmap && region != null) {
                     // If we have a scaled bitmap and a selected region, we need to scale down the
@@ -610,7 +613,7 @@ class Palette internal constructor(
             return p
         }
 
-        private fun getPixelsFromBitmap(bitmap: Image): IntArray {
+        private fun getPixelsFromBitmap(bitmap: Bitmap): IntArray {
             val bitmapWidth: Int = bitmap.width
 //            val bitmapHeight: Int = bitmap.height
             val pixels = requireNotNull(bitmap.readIntPixels())
@@ -642,7 +645,7 @@ class Palette internal constructor(
         /**
          * Scale the bitmap down as needed.
          */
-        private fun scaleBitmapDown(bitmap: Image): Image {
+        private fun scaleBitmapDown(bitmap: Bitmap): Bitmap {
             var scaleRatio = -1.0
             if (resizeArea > 0) {
                 val bitmapArea: Int = bitmap.width * bitmap.height
@@ -659,8 +662,7 @@ class Palette internal constructor(
                 // Scaling has been disabled or not needed so just return the Bitmap
                 bitmap
             } else {
-                val transformer = requireNotNull(bitmap.transformer())
-                transformer.scale(bitmap, scaleRatio.toFloat())
+                bitmap.scale(scaleRatio.toFloat())
             }
         }
     }
@@ -694,7 +696,7 @@ class Palette internal constructor(
         /**
          * Start generating a [Palette] with the returned [Builder] instance.
          */
-        fun from(bitmap: Image): Builder {
+        fun from(bitmap: Bitmap): Builder {
             return Builder(bitmap)
         }
 

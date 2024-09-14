@@ -25,7 +25,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
-import com.github.panpf.sketch.test.utils.createImage
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -92,7 +92,7 @@ class ListenersTest {
                 request,
                 ImageResult.Success(
                     request = request,
-                    image = createImage(100, 100),
+                    image = createBitmapImage(100, 100),
                     cacheKey = "",
                     imageInfo = ImageInfo(100, 100, "image/jpeg"),
                     dataFrom = MEMORY,

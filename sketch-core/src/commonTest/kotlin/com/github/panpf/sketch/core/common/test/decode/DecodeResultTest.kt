@@ -26,7 +26,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY
-import com.github.panpf.sketch.test.utils.createImage
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.createRotateTransformed
 import com.github.panpf.sketch.util.Size
@@ -40,7 +40,7 @@ class DecodeResultTest {
 
     @Test
     fun testConstructor() {
-        val newImage = createImage(100, 100)
+        val newImage = createBitmapImage(100, 100)
         val imageInfo = ImageInfo(3000, 500, "image/png")
         val transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45))
         DecodeResult(
@@ -71,7 +71,7 @@ class DecodeResultTest {
 
     @Test
     fun testToString() {
-        val image = createImage(100, 100)
+        val image = createBitmapImage(100, 100)
         DecodeResult(
             image = image,
             imageInfo = ImageInfo(3000, 500, "image/png"),
@@ -95,8 +95,8 @@ class DecodeResultTest {
 
     @Test
     fun testNewResult() {
-        val image1 = createImage(100, 100)
-        val image2 = createImage(200, 200)
+        val image1 = createBitmapImage(100, 100)
+        val image2 = createBitmapImage(200, 200)
 
         val result = DecodeResult(
             image = image1,

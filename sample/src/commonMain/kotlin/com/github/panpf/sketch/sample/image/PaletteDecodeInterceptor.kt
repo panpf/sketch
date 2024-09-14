@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.image
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
 import com.github.panpf.sketch.decode.DecodeResult
@@ -16,8 +17,13 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
         val result = chain.proceed()
         val decodeResult = result.getOrNull() ?: return result
         val image = decodeResult.image
+        val bitmap = if (image is BitmapImage) {
+            image.bitmap
+        } else {
+            return result
+        }
         val palette = try {
-            Palette.Builder(image).generate()
+            Palette.Builder(bitmap).generate()
         } catch (e: Throwable) {
             e.printStackTrace()
             return result

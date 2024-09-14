@@ -6,7 +6,7 @@ class PainterImageTest {
     // TODO test
 
     @Test
-    fun testAsSketchImage() {
+    fun testAsImage() {
         // TODO test
     }
 }

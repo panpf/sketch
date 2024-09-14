@@ -20,7 +20,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
@@ -57,7 +57,7 @@ class DrawableStateImageTest {
             assertEquals(
                 Color.BLUE,
                 getImage(sketch, request, null)
-                    ?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
+                    ?.asOrThrow<DrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
             )
         }
 
@@ -65,14 +65,14 @@ class DrawableStateImageTest {
             assertEquals(
                 Color.GREEN,
                 getImage(sketch, request, null)
-                    ?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
+                    ?.asOrThrow<DrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
             )
         }
 
         DrawableStateImage(android.R.drawable.btn_radio).apply {
             assertTrue(
                 getImage(sketch, request, null)
-                    ?.asOrThrow<AndroidDrawableImage>()?.drawable is StateListDrawable
+                    ?.asOrThrow<DrawableImage>()?.drawable is StateListDrawable
             )
         }
     }

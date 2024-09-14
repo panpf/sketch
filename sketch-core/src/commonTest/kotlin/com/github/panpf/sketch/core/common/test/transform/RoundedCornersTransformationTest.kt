@@ -130,7 +130,7 @@ class RoundedCornersTransformationTest {
             RoundedCornersTransformation(20f).transform(
                 request.toRequestContext(sketch),
                 inBitmap
-            )
+            )!!
         }.apply {
             assertNotSame(inBitmap, image)
             assertEquals(

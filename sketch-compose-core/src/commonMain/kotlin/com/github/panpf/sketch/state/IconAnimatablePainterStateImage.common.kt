@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.painter.IconPainter
 import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.painter.asEquality
@@ -113,7 +113,7 @@ class IconAnimatablePainterStateImage(
         "IconAnimatablePainterStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=$iconTint)"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
-        return IconPainter(icon, background, iconSize, iconTint).asSketchImage()
+        return IconPainter(icon, background, iconSize, iconTint).asImage()
     }
 
     override fun equals(other: Any?): Boolean {

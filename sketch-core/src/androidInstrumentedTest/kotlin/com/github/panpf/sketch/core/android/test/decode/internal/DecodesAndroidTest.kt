@@ -20,7 +20,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.BitmapFactory
 import android.os.Build
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat
@@ -33,7 +33,6 @@ import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
@@ -46,6 +45,7 @@ import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toSizeString
@@ -859,7 +859,7 @@ class DecodesAndroidTest {
         var request = ImageRequest(context, ResourceImages.jpeg.uri)
         val newResult: () -> DecodeResult = {
             DecodeResult(
-                image = Bitmap.createBitmap(80, 50, ARGB_8888).asSketchImage(),
+                image = Bitmap.createBitmap(80, 50, ARGB_8888).asImage(),
                 imageInfo = ImageInfo(80, 50, "image/png"),
                 dataFrom = MEMORY,
                 resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),

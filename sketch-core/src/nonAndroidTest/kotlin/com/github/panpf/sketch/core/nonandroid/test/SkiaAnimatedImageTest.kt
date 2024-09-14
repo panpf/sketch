@@ -11,7 +11,7 @@ import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertFalse
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -64,15 +64,13 @@ class SkiaAnimatedImageTest {
 
     @Test
     fun testCacheValue() {
-        val extras = mapOf<String, Any?>("key" to 10)
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
-            assertNull(actual = cacheValue())
-            assertNull(actual = cacheValue(extras))
+            assertFalse(actual = cachedInMemory)
         }
     }
 
@@ -87,18 +85,6 @@ class SkiaAnimatedImageTest {
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
-        }
-    }
-
-    @Test
-    fun testTransformer() {
-        val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        SkiaAnimatedImage(codec).apply {
-            assertNull(actual = transformer())
         }
     }
 

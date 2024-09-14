@@ -16,11 +16,14 @@
 
 package com.github.panpf.sketch.transform
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.circleCrop
 import kotlin.math.min
 
@@ -41,15 +44,16 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
     override fun transform(
         requestContext: RequestContext,
         input: Image
-    ): TransformResult {
+    ): TransformResult? {
+        val inputBitmap = input.asOrNull<BitmapImage>()?.bitmap ?: return null
         val newSize = min(input.width, input.height)
         val scale = scale ?: requestContext.request.scaleDecider.get(
             imageSize = Size(input.width, input.height),
             targetSize = Size(newSize, newSize)
         )
-        val out = input.circleCrop(scale)
+        val outImage = inputBitmap.circleCrop(scale)
         val transformed = createCircleCropTransformed(scale)
-        return TransformResult(image = out, transformed = transformed)
+        return TransformResult(image = outImage.asImage(), transformed = transformed)
     }
 
     override fun toString(): String = key

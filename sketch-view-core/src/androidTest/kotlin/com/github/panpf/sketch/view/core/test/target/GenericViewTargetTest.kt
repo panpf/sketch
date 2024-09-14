@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
@@ -51,14 +51,14 @@ class GenericViewTargetTest {
         val drawable2 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
 
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, drawable1.asSketchImage())
+            imageViewTarget.onSuccess(sketch, request, drawable1.asImage())
         }
 
         assertSame(drawable1, imageView.drawable)
         assertSame(drawable1, imageViewTarget.drawable)
 
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, drawable2.asSketchImage())
+            imageViewTarget.onSuccess(sketch, request, drawable2.asImage())
         }
 
         assertSame(drawable2, imageView.drawable)
@@ -111,15 +111,15 @@ class GenericViewTargetTest {
 
         TestViewTarget(imageView).apply {
             val drawable = ColorDrawable(Color.RED)
-            onStart(sketch, request, drawable.asSketchImage())
-            onError(sketch, request, drawable.asSketchImage())
-            onSuccess(sketch, request, drawable.asSketchImage())
+            onStart(sketch, request, drawable.asImage())
+            onError(sketch, request, drawable.asImage())
+            onSuccess(sketch, request, drawable.asImage())
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
 
-            onStart(sketch, request, drawable.asSketchImage())
-            onError(sketch, request, drawable.asSketchImage())
-            onSuccess(sketch, request, drawable.asSketchImage())
+            onStart(sketch, request, drawable.asImage())
+            onError(sketch, request, drawable.asImage())
+            onSuccess(sketch, request, drawable.asImage())
         }
 
         TestViewTarget(imageView).apply {
@@ -129,7 +129,7 @@ class GenericViewTargetTest {
             val animatableDrawable = TestAnimatableColorDrawable(Color.RED)
             assertFalse(animatableDrawable.running)
 
-            onSuccess(sketch, request, animatableDrawable.asSketchImage())
+            onSuccess(sketch, request, animatableDrawable.asImage())
             assertFalse(getFieldValue<Boolean>("isStarted")!!)
             assertFalse(getFieldValue<Boolean>("isAttached")!!)
             assertFalse(animatableDrawable.running)
@@ -164,10 +164,10 @@ class GenericViewTargetTest {
             assertTrue(getFieldValue<Boolean>("isAttached")!!)
             assertTrue(animatableDrawable.running)
 
-            onSuccess(sketch, request, ColorDrawable(Color.RED).asSketchImage())
+            onSuccess(sketch, request, ColorDrawable(Color.RED).asImage())
             assertFalse(animatableDrawable.running)
 
-            onSuccess(sketch, request, animatableDrawable.asSketchImage())
+            onSuccess(sketch, request, animatableDrawable.asImage())
             assertTrue(animatableDrawable.running)
         }
     }

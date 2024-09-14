@@ -66,7 +66,7 @@ scope.launch {
     memoryCache.withLock(memoryCacheKey) {
         // put
         val newBitmap: Bitmap = Bitmap.create(100, 100, Bitmap.Config.ARGB_8888)
-        val newCacheValue = newBitmap.asSketchImage().cacheValue()!!
+        val newCacheValue = newBitmap.asImage().cacheValue()!!
         put(memoryCacheKey, newCacheValue)
 
         // exist

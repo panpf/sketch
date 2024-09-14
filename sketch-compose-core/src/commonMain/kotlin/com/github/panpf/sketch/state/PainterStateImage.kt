@@ -21,7 +21,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.painter.PainterEqualizer
 import com.github.panpf.sketch.request.ImageRequest
 
@@ -45,7 +45,7 @@ class PainterStateImage(val painter: PainterEqualizer) : StateImage {
     override val key: String = "PainterStateImage(${painter.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
-        return painter.wrapped.asSketchImage()
+        return painter.wrapped.asImage()
     }
 
     override fun equals(other: Any?): Boolean {

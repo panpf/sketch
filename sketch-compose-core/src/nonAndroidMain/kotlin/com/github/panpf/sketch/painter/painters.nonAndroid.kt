@@ -16,24 +16,7 @@
 
 package com.github.panpf.sketch.painter
 
-import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.PainterImage
-import com.github.panpf.sketch.SkiaAnimatedImage
-import com.github.panpf.sketch.SkiaBitmapImage
-
-/**
- * Convert the Image to a Painter
- *
- * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testImageAsPainter
- */
-actual fun Image.asPainter(): Painter = when (this) {
-    is PainterImage -> painter
-    is SkiaBitmapImage -> bitmap.asComposeImageBitmap().asPainter()
-    is SkiaAnimatedImage -> SkiaAnimatedImagePainter(this)
-    else -> throw IllegalArgumentException("Not supported conversion to Painter from Image '$this'")
-}
 
 /**
  * Convert the painter to a platform log string

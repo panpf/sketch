@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.annotation.MainThread
+import com.github.panpf.sketch.cache.ImageCacheValue
 import com.github.panpf.sketch.cache.getExtras
 import com.github.panpf.sketch.cache.getImageInfo
 import com.github.panpf.sketch.cache.getResize
@@ -109,7 +110,9 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     private fun saveToMemoryCache(requestContext: RequestContext, imageData: ImageData): Boolean {
         val request = requestContext.request
         if (!request.memoryCachePolicy.writeEnabled) return false
-        val newCacheValue = imageData.image.cacheValue(
+        if (!imageData.image.cachedInMemory) return false
+        val cacheValue = ImageCacheValue(
+            image = imageData.image,
             extras = newCacheValueExtras(
                 imageInfo = imageData.imageInfo,
                 resize = imageData.resize,
@@ -117,12 +120,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 extras = imageData.extras,
             )
         )
-        if (newCacheValue == null) {
-            // Usually AnimatedDrawable
-            return false
-        }
         val sketch = requestContext.sketch
-        val saveState = sketch.memoryCache.put(requestContext.memoryCacheKey, newCacheValue)
+        val saveState = sketch.memoryCache.put(requestContext.memoryCacheKey, cacheValue)
         if (saveState != 0) {
             sketch.logger.w(
                 "MemoryCacheRequestInterceptor. " +

@@ -22,7 +22,6 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.simpleName
 
-
 fun Bitmap.toSizeString(): String = "${width}x${height}"
 
 @Suppress("USELESS_ELVIS")
@@ -31,10 +30,13 @@ val Bitmap.configOrNull: Bitmap.Config?
 
 fun Bitmap.toShortInfoString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        "AndroidBitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
+        "Bitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
     } else {
-        "AndroidBitmap(${width}x${height},$configOrNull)"
+        "Bitmap(${width}x${height},$configOrNull)"
     }
+
+val Bitmap.size: Size
+    get() = Size(width, height)
 
 fun shortInfoColorSpaceName(name: String): String {
     return if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -51,22 +53,3 @@ fun logColorSpaceName(name: String): String {
         ""
     }
 }
-
-
-val Bitmap.cornerA: Int
-    get() = getPixel(0, 0)
-val Bitmap.cornerB: Int
-    get() = getPixel(width - 1, 0)
-val Bitmap.cornerC: Int
-    get() = getPixel(width - 1, height - 1)
-val Bitmap.cornerD: Int
-    get() = getPixel(0, height - 1)
-
-fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
-    return block(this)
-}
-
-fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
-
-val Bitmap.size: Size
-    get() = Size(width, height)

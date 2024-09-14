@@ -1,27 +1,15 @@
 package com.github.panpf.sketch.test.utils
 
 import android.graphics.Bitmap
-import androidx.core.graphics.get
-import com.github.panpf.sketch.AndroidBitmapImage
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.cache.AndroidBitmapImageValue
-import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.util.hasAlphaPixels
+import com.github.panpf.sketch.asImage
 
-actual fun createImage(width: Int, height: Int): Image {
-    return Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).asSketchImage()
-}
+actual fun createBitmapImage(width: Int, height: Int): BitmapImage =
+    Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).asImage()
 
-actual fun createCacheValue(image: Image, extras: Map<String, Any?>): MemoryCache.Value {
-    return AndroidBitmapImageValue(image = image as AndroidBitmapImage, extras = extras)
-}
-
-actual fun Image.hasAlphaPixels(): Boolean = (this as AndroidBitmapImage).bitmap.hasAlphaPixels()
-
-/**
- * Returns the Color at the specified location.
- */
-actual fun Image.getPixel(x: Int, y: Int): Int {
-    return (this as AndroidBitmapImage).bitmap.get(x, y)
-}
+fun Image.getDrawableOrThrow(): Drawable =
+    if (this is DrawableImage)
+        drawable else throw IllegalArgumentException("Unable to get Drawable from Image '$this'")

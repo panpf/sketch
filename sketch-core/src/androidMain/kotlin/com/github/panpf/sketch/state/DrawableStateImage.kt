@@ -20,7 +20,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.drawable.RealEqualityDrawable
@@ -72,7 +72,7 @@ class DrawableStateImage(
             sketch.logger.w("DrawableStateImage. getDrawable error. ${e.message}")
             e.printStackTrace()
             null
-        }?.asSketchImage()
+        }?.asImage()
     }
 
     override fun equals(other: Any?): Boolean {

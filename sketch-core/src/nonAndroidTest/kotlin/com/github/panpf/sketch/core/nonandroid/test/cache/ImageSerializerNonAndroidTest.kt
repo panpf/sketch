@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.core.nonandroid.test.cache
 
-import com.github.panpf.sketch.SkiaBitmapImage
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.cache.SkiaBitmapImageSerializer
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.decode.ImageInfo
@@ -11,7 +11,7 @@ import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
-import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.decode2
 import com.github.panpf.sketch.test.utils.produceFingerPrint
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -38,7 +38,7 @@ class ImageSerializerNonAndroidTest {
         val request = ImageRequest(context, imageFile.uri)
 
         val imageFinger: String
-        val image = imageFile.decode().asOrThrow<SkiaBitmapImage>().apply {
+        val image = imageFile.decode2().apply {
             assertEquals(expected = Size(1291, 1936), actual = size)
             imageFinger = produceFingerPrint(this.bitmap)
         }
@@ -58,7 +58,7 @@ class ImageSerializerNonAndroidTest {
 
         val newImageFinger: String
         imageSerializer.decode(requestContext, imageInfo, dataSource1)
-            .asOrThrow<SkiaBitmapImage>().apply {
+            .asOrThrow<BitmapImage>().apply {
                 assertEquals(expected = Size(1291, 1936), actual = size)
                 newImageFinger = produceFingerPrint(this.bitmap)
             }

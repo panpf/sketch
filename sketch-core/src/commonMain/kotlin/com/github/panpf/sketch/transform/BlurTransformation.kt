@@ -18,11 +18,18 @@
 
 package com.github.panpf.sketch.transform
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.IntRange
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.background
 import com.github.panpf.sketch.util.blur
+import com.github.panpf.sketch.util.copy
+import com.github.panpf.sketch.util.hasAlphaPixels
+import com.github.panpf.sketch.util.mask
 
 /**
  * Bitmap blur transformation
@@ -53,13 +60,14 @@ class BlurTransformation constructor(
     override val key: String = "BlurTransformation(${radius},$hasAlphaBitmapBgColor,$maskColor)"
 
     @WorkerThread
-    override fun transform(
-        requestContext: RequestContext,
-        input: Image
-    ): TransformResult {
-        val out = input.blur(radius, hasAlphaBitmapBgColor, maskColor, firstReuseSelf = false)
+    override fun transform(requestContext: RequestContext, input: Image): TransformResult? {
+        val inputBitmap = input.asOrNull<BitmapImage>()?.bitmap ?: return null
+        val backgroundBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlphaPixels())
+            inputBitmap.background(hasAlphaBitmapBgColor) else inputBitmap.copy()
+        val blurBitmap = backgroundBitmap.blur(radius, firstReuseSelf = true)
+        val maskBitmap = maskColor?.let { blurBitmap.mask(it, firstReuseSelf = true) } ?: blurBitmap
         val transformed = createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor)
-        return TransformResult(image = out, transformed = transformed)
+        return TransformResult(image = maskBitmap.asImage(), transformed = transformed)
     }
 
     override fun toString(): String = key

@@ -16,9 +16,12 @@
 
 package com.github.panpf.sketch.transform
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.rotate
 
 /**
@@ -34,10 +37,11 @@ class RotateTransformation(val degrees: Int) : Transformation {
     override fun transform(
         requestContext: RequestContext,
         input: Image
-    ): TransformResult {
-        val out = input.rotate(degrees)
+    ): TransformResult? {
+        val inputBitmap = input.asOrNull<BitmapImage>()?.bitmap ?: return null
+        val outBitmap = inputBitmap.rotate(degrees)
         val transformed = createRotateTransformed(degrees)
-        return TransformResult(image = out, transformed = transformed)
+        return TransformResult(image = outBitmap.asImage(), transformed = transformed)
     }
 
     override fun toString(): String = key

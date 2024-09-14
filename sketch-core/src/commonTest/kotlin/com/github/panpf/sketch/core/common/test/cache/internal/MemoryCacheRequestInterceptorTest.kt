@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.cache.internal
 
-import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
@@ -38,8 +38,8 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
-import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +83,7 @@ class MemoryCacheRequestInterceptorTest {
         assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest - ENABLED */
-        val cacheImage: Image
+        val cacheImage: BitmapImage
         val imageData: ImageData
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
             target(TestCountTarget())
@@ -93,7 +93,7 @@ class MemoryCacheRequestInterceptorTest {
         }).asOrThrow<ImageData>().apply {
             assertEquals(expected = DataFrom.LOCAL, actual = dataFrom)
             imageData = this
-            cacheImage = image
+            cacheImage = image as BitmapImage
         }
         assertEquals(expected = 40000, actual = memoryCache.size)
 
@@ -244,7 +244,7 @@ class MemoryCacheRequestInterceptorTest {
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {
-            val image = createImage(100, 100)
+            val image = createBitmapImage(100, 100)
             val imageInfo = ImageInfo(100, 100, "image/png")
             ImageData(
                 image = image,

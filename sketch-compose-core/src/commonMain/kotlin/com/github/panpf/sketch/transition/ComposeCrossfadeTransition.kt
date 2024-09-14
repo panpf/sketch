@@ -20,9 +20,9 @@ package com.github.panpf.sketch.transition
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.painter.CrossfadePainter
-import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
@@ -69,13 +69,13 @@ class ComposeCrossfadeTransition constructor(
             is ImageResult.Success -> target.onSuccess(
                 sketch = sketch,
                 request = request,
-                result = crossfadePainter.asSketchImage()
+                result = crossfadePainter.asImage()
             )
 
             is ImageResult.Error -> target.onError(
                 sketch = sketch,
                 request = request,
-                error = crossfadePainter.asSketchImage()
+                error = crossfadePainter.asImage()
             )
         }
     }

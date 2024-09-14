@@ -16,14 +16,18 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.requiredWorkThread
+import com.github.panpf.sketch.util.scale
 
 
 /* ************************************** sampling ********************************************** */
@@ -227,29 +231,28 @@ private fun Size.checkAreaLimit(limitSize: Size): Boolean {
 @WorkerThread
 fun DecodeResult.appliedResize(resize: Resize): DecodeResult {
     requiredWorkThread()
-    val imageTransformer = image.transformer() ?: return this
-    if (resize.size.isEmpty) {
-        return this
-    }
-    val newImage = if (resize.precision == LESS_PIXELS) {
+    if (resize.size.isEmpty) return this
+    if (image !is BitmapImage) return this
+    val inputBitmap = image.bitmap
+    val newBitmap = if (resize.precision == LESS_PIXELS) {
         val sampleSize = calculateSampleSize(
             imageSize = image.size,
             targetSize = resize.size,
             smallerSizeMode = resize.precision.isSmallerSizeMode()
         )
         if (sampleSize != 1) {
-            imageTransformer.scale(image = image, scaleFactor = 1 / sampleSize.toFloat())
+            inputBitmap.scale(scaleFactor = 1 / sampleSize.toFloat())
         } else {
             null
         }
     } else if (resize.shouldClip(image.size)) {
         val mapping = resize.calculateMapping(imageSize = image.size)
-        imageTransformer.mapping(image, mapping)
+        inputBitmap.mapping(mapping)
     } else {
         null
     }
-    return if (newImage != null) {
-        newResult(image = newImage) {
+    return if (newBitmap != null) {
+        newResult(image = newBitmap.asImage()) {
             addTransformed(createResizeTransformed(resize))
         }
     } else {

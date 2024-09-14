@@ -31,7 +31,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -39,6 +38,7 @@ import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.util.asOrNull
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith

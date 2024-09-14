@@ -40,62 +40,95 @@ import kotlin.math.min
 
 
 /**
- * Get a mutable copy of the bitmap, if it is already mutable, return itself
- *
- * @see com.github.panpf.sketch.core.android.test.util.AndroidBitmapsTest.testMutableCopy
- */
-internal fun SkiaBitmap.getMutableCopy(): SkiaBitmap {
-    return if (isImmutable) copied() else this
-}
-
-
-/**
  * Returns a log string of this SkiaBitmap.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
 internal fun SkiaBitmap.toLogString(): String =
-    "SkiaBitmap@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
+    "Bitmap@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
 
 /**
  * Get an information string suitable for display
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
 internal fun SkiaBitmap.toInfoString(): String =
-    "SkiaBitmap(width=${width}, height=${height}, colorType=${colorType}, colorSpace=${colorSpace?.name()})"
+    "Bitmap(width=${width}, height=${height}, colorType=${colorType}, colorSpace=${colorSpace?.name()})"
 
 /**
  * Get a short information string suitable for display
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testToLogString
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
 internal fun SkiaBitmap.toShortInfoString(): String =
-    "SkiaBitmap(${width}x${height},${colorType},${colorSpace?.name()})"
+    "Bitmap(${width}x${height},${colorType},${colorSpace?.name()})"
 
 
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testCopied
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCopy
  */
-internal fun SkiaBitmap.copied(): SkiaBitmap {
+actual fun SkiaBitmap.copy(): SkiaBitmap = copyWith()
+
+/**
+ * Returns a new SkiaBitmap that is a copy of this SkiaBitmap.
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCopyWith
+ */
+internal fun SkiaBitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
-    outBitmap.installPixels(inputBitmap.readPixels())
+    val outBitmap = SkiaBitmap(inputBitmap.imageInfo.withColorInfo(colorInfo))
+    val canvas = Canvas(outBitmap)
+    SkiaImage.makeFromBitmap(inputBitmap).use { sourceImage ->
+        canvas.drawImage(
+            image = sourceImage,
+            left = 0f,
+            top = 0f,
+            paint = Paint().apply { isAntiAlias = true },
+        )
+    }
     return outBitmap
+}
+
+/**
+ * Get a mutable copy of the bitmap, if it is already mutable, return itself
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopy
+ */
+actual fun SkiaBitmap.mutableCopy(): SkiaBitmap {
+    return if (isImmutable) copy() else this
+}
+
+
+/**
+ * Returns true if there are transparent pixels
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testHasAlphaPixels
+ */
+actual fun SkiaBitmap.hasAlphaPixels(): Boolean {
+    val height = this.height
+    val width = this.width
+    var hasAlpha = false
+    for (i in 0 until width) {
+        for (j in 0 until height) {
+            val pixelAlpha = this.getColor(i, j) shr 24
+            if (pixelAlpha in 0..254) {
+                hasAlpha = true
+                break
+            }
+        }
+    }
+    return hasAlpha
 }
 
 /**
  * Read an integer pixel array in the format ARGB_8888
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testReadIntPixels
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testReadIntPixels
  */
-fun SkiaBitmap.readIntPixels(
-    x: Int = 0,
-    y: Int = 0,
-    width: Int = this.width,
-    height: Int = this.height
+actual fun SkiaBitmap.readIntPixels(
+    x: Int, y: Int, width: Int, height: Int
 ): IntArray {
     val inputBitmap = this
     val rgbaBitmap = if (inputBitmap.colorType == ColorType.RGBA_8888) {
@@ -140,9 +173,9 @@ fun SkiaBitmap.readIntPixels(
 /**
  * Install integer pixels in the format ARGB_8888
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testInstallIntPixels
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testInstallIntPixels
  */
-fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
+actual fun SkiaBitmap.installIntPixels(intPixels: IntArray) {
     val outBitmap = this
 
     val rgbaBytePixels = ByteArray(intPixels.size * 4)
@@ -170,47 +203,25 @@ fun SkiaBitmap.installIntPixels(intPixels: IntArray): Boolean {
             },
         )
     }
-    return true
 }
 
 /**
  * Returns the pixel at the specified position in ARGB_8888 format
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testGetPixel
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testReadIntPixel
  */
-fun SkiaBitmap.getPixel(x: Int, y: Int): Int {
+actual fun SkiaBitmap.readIntPixel(x: Int, y: Int): Int {
     return readIntPixels(x, y, 1, 1).first()
-}
-
-/**
- * Returns true if there are transparent pixels
- *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testHasAlphaPixels
- */
-fun SkiaBitmap.hasAlphaPixels(): Boolean {
-    val height = this.height
-    val width = this.width
-    var hasAlpha = false
-    for (i in 0 until width) {
-        for (j in 0 until height) {
-            val pixelAlpha = this.getColor(i, j) shr 24
-            if (pixelAlpha in 0..254) {
-                hasAlpha = true
-                break
-            }
-        }
-    }
-    return hasAlpha
 }
 
 
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with a background color.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testBackgrounded
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testBackgrounded2
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackgrounded
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackgrounded2
  */
-internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
+actual fun SkiaBitmap.background(color: Int): SkiaBitmap {
     val inputBitmap = this
     val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
@@ -218,7 +229,7 @@ internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
         r = SkiaRect(0f, 0f, outBitmap.width.toFloat(), outBitmap.height.toFloat()),
         paint = Paint().apply {
             isAntiAlias = true
-            color = backgroundColor
+            this.color = color
         }
     )
     val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
@@ -233,22 +244,25 @@ internal fun SkiaBitmap.backgrounded(backgroundColor: Int): SkiaBitmap {
 /**
  * Blurs this SkiaBitmap with the specified radius.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testBlur
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBlur
  */
-internal fun SkiaBitmap.blur(radius: Int) {
-    val imageWidth = this.width
-    val imageHeight = this.height
-    val pixels: IntArray = readIntPixels()
+actual fun SkiaBitmap.blur(radius: Int, firstReuseSelf: Boolean): SkiaBitmap {
+    val inputBitmap = this
+    val outBitmap = if (firstReuseSelf) inputBitmap.mutableCopy() else inputBitmap.copy()
+    val imageWidth = outBitmap.width
+    val imageHeight = outBitmap.height
+    val pixels: IntArray = outBitmap.readIntPixels()
     fastGaussianBlur(pixels, imageWidth, imageHeight, radius)
-    this.installIntPixels(pixels)
+    outBitmap.installIntPixels(pixels)
+    return outBitmap
 }
 
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with a circle cropped.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testCircleCropped
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCircleCrop
  */
-internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
+actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
     var newColorType: ColorType = inputBitmap.colorType
@@ -302,7 +316,7 @@ internal fun SkiaBitmap.circleCropped(scale: Scale): SkiaBitmap {
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap flipped horizontally or vertically.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testFlipped
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testFlipped
  */
 internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
     val inputBitmap = this
@@ -326,9 +340,9 @@ internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap resized to the specified size.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testMapping
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMapping
  */
-internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
+actual fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
     val inputBitmap = this
     val newWidth = mapping.newSize.width
     val newHeight = mapping.newSize.height
@@ -355,10 +369,12 @@ internal fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
 /**
  * Masks this SkiaBitmap with the specified color.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testMask
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMask
  */
-internal fun SkiaBitmap.mask(maskColor: Int) {
-    val canvas = Canvas(this)
+actual fun SkiaBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): SkiaBitmap {
+    val inputBitmap = this
+    val outBitmap = if (firstReuseSelf) inputBitmap.mutableCopy() else inputBitmap.copy()
+    val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         isAntiAlias = true
         color = maskColor
@@ -368,14 +384,15 @@ internal fun SkiaBitmap.mask(maskColor: Int) {
         r = SkiaRect(0f, 0f, width.toFloat(), height.toFloat()),
         paint = paint
     )
+    return outBitmap
 }
 
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap rotated by the specified angle.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testRotated
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRotate
  */
-internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
+actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
     val inputBitmap = this
     val inputSize = Size(inputBitmap.width, inputBitmap.height)
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
@@ -424,9 +441,9 @@ internal fun SkiaBitmap.rotated(angle: Int): SkiaBitmap {
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with rounded corners.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testRoundedCornered
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRoundedCorners
  */
-internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
+actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
     val inputBitmap = this
     var newColorType: ColorType = inputBitmap.colorType
     var newColorAlphaType: ColorAlphaType = inputBitmap.alphaType
@@ -449,7 +466,7 @@ internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
     val outBitmap = SkiaBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawRRect(
-        r = RRect.makeComplexLTRB(0f, 0f, width.toFloat(), height.toFloat(), cornerRadii),
+        r = RRect.makeComplexLTRB(0f, 0f, width.toFloat(), height.toFloat(), radiusArray),
         paint = Paint().apply {
             isAntiAlias = true
             color = Color.BLACK
@@ -475,9 +492,9 @@ internal fun SkiaBitmap.roundedCornered(cornerRadii: FloatArray): SkiaBitmap {
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap scaled by the specified factor.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaBitmapsTest.testScaled
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testScale
  */
-internal fun SkiaBitmap.scaled(scaleFactor: Float): SkiaBitmap {
+actual fun SkiaBitmap.scale(scaleFactor: Float): SkiaBitmap {
     val inputBitmap = this
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()

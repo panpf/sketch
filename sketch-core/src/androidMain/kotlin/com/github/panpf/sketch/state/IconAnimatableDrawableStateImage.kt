@@ -20,7 +20,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.ColorFetcherDrawable
 import com.github.panpf.sketch.drawable.DrawableEqualizer
@@ -364,7 +364,7 @@ class IconAnimatableDrawableStateImage internal constructor(
             sketch.logger.w("IconAnimatableDrawableDrawable. getDrawable error. ${e.message}")
             e.printStackTrace()
             null
-        }?.asSketchImage()
+        }?.asImage()
     }
 
     override fun equals(other: Any?): Boolean {

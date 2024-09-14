@@ -25,7 +25,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.createImage
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import kotlinx.coroutines.test.runTest
@@ -40,8 +40,8 @@ class ImageResultTest {
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request1 = ImageRequest(context, "http://sample.com/sample.jpeg")
-        val image1 = createImage(111, 222)
-        val image2 = createImage(222, 111)
+        val image1 = createBitmapImage(111, 222)
+        val image2 = createBitmapImage(222, 111)
 
         ImageResult.Success(
             request = request1,

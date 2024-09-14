@@ -16,9 +16,10 @@
 
 package com.github.panpf.zoomimage.sketch
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
-import com.github.panpf.sketch.cache.SkiaBitmapImageValue
+import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.cache.ImageCacheValue
 import com.github.panpf.zoomimage.subsampling.BitmapFrom
 import com.github.panpf.zoomimage.subsampling.ImageInfo
 import com.github.panpf.zoomimage.subsampling.SkiaTileBitmap
@@ -37,8 +38,8 @@ actual class SketchTileBitmapCache actual constructor(
 
     actual override fun get(key: String): TileBitmap? {
         val cacheValue = sketch.memoryCache[key] ?: return null
-        cacheValue as SkiaBitmapImageValue
-        val skiaBitmapImage = cacheValue.image
+        cacheValue as ImageCacheValue
+        val skiaBitmapImage = cacheValue.image as BitmapImage
         val skiaBitmap = skiaBitmapImage.bitmap
         return SkiaTileBitmap(skiaBitmap, key, BitmapFrom.MEMORY_CACHE)
     }
@@ -51,8 +52,7 @@ actual class SketchTileBitmapCache actual constructor(
     ): TileBitmap? {
         tileBitmap as SkiaTileBitmap
         val bitmap = tileBitmap.bitmap
-        val cacheValue =
-            SkiaBitmapImageValue(bitmap.asSketchImage(), extras = null)
+        val cacheValue = ImageCacheValue(bitmap.asImage(), extras = null)
         sketch.memoryCache.put(key, cacheValue)
         return null
     }

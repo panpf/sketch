@@ -16,10 +16,10 @@
 
 package com.github.panpf.sketch.cache
 
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.SkiaBitmapImage
 import com.github.panpf.sketch.SkiaImage
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.decode
@@ -46,11 +46,11 @@ actual fun createImageSerializer(): ImageSerializer = SkiaBitmapImageSerializer
 object SkiaBitmapImageSerializer : ImageSerializer {
 
     override fun supportImage(image: Image): Boolean {
-        return image is SkiaBitmapImage
+        return image is BitmapImage
     }
 
     override fun compress(image: Image, sink: BufferedSink) {
-        require(image is SkiaBitmapImage) { "Unsupported image type: ${image::class}" }
+        require(image is BitmapImage) { "Unsupported image type: ${image::class}" }
         val encodedData = SkiaImage.makeFromBitmap(image.bitmap).use {
             it.encodeToData(format = EncodedImageFormat.PNG, quality = 100)
         }
@@ -73,6 +73,6 @@ object SkiaBitmapImageSerializer : ImageSerializer {
             )
             it.decode(decodeConfig)
         }
-        return skiaBitmap.asSketchImage()
+        return skiaBitmap.asImage()
     }
 }

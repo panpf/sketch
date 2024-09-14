@@ -28,7 +28,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.createImage
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -135,7 +135,7 @@ class DecodeInterceptorChainTest {
             historyList.add("TestDecoderInterceptor3")
             return Result.success(
                 DecodeResult(
-                    image = createImage(12, 45),
+                    image = createBitmapImage(12, 45),
                     imageInfo = ImageInfo(12, 45, "image/jpeg"),
                     dataFrom = LOCAL,
                     resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),

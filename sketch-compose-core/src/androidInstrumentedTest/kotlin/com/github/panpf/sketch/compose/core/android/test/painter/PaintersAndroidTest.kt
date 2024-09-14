@@ -5,11 +5,6 @@ import kotlin.test.Test
 class PaintersAndroidTest {
 
     @Test
-    fun testImageAsPainter() {
-        // TODO test
-    }
-
-    @Test
     fun testPainterPlatformToLogString() {
         // TODO test
     }

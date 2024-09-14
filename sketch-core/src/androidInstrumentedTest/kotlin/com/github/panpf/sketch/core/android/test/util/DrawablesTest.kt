@@ -119,7 +119,7 @@ class DrawablesTest {
         drawable.toNewBitmap().apply {
             assertEquals(Bitmap.Config.ARGB_8888, config)
             assertEquals(
-                "AndroidBitmap(100x100,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(100x100,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                 toShortInfoString()
             )
         }
@@ -130,7 +130,7 @@ class DrawablesTest {
         drawable.toNewBitmap(Bitmap.Config.RGB_565).apply {
             assertEquals(Bitmap.Config.RGB_565, config)
             assertEquals(
-                "AndroidBitmap(100x100,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(100x100,RGB_565${shortInfoColorSpaceName("SRGB")})",
                 toShortInfoString()
             )
         }

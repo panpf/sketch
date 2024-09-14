@@ -83,7 +83,7 @@ class RotateTransformationTest {
         }
         val inBitmapCorners = inBitmap.corners()
 
-        RotateTransformation(90).transform(requestContext, inBitmap).apply {
+        RotateTransformation(90).transform(requestContext, inBitmap)!!.apply {
             assertNotSame(inBitmap, this.image)
             assertEquals(
                 listOf(
@@ -101,7 +101,7 @@ class RotateTransformationTest {
             )
         }
 
-        RotateTransformation(450).transform(requestContext, inBitmap).apply {
+        RotateTransformation(450).transform(requestContext, inBitmap)!!.apply {
             assertNotSame(inBitmap, this.image)
             assertEquals(
                 listOf(
@@ -119,7 +119,7 @@ class RotateTransformationTest {
             )
         }
 
-        RotateTransformation(45).transform(requestContext, inBitmap).apply {
+        RotateTransformation(45).transform(requestContext, inBitmap)!!.apply {
             assertNotSame(inBitmap, this.image)
             assertEquals(
                 listOf(

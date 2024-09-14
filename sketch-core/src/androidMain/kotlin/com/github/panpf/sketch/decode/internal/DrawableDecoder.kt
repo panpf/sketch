@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
@@ -102,7 +102,7 @@ open class DrawableDecoder(
         )
         val resize = requestContext.computeResize(imageInfo.size)
         val decodeResult = DecodeResult(
-            image = bitmap.asSketchImage(resources = requestContext.request.context.resources),
+            image = bitmap.asImage(),
             imageInfo = imageInfo,
             dataFrom = LOCAL,
             resize = resize,

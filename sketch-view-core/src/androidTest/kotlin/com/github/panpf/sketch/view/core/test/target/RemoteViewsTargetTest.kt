@@ -4,7 +4,7 @@ import android.R.id
 import android.R.layout
 import android.widget.RemoteViews
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.RemoteViewsTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -31,7 +31,7 @@ class RemoteViewsTargetTest {
 
             onStart(
                 sketch, request,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
+                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
             )
             assertEquals(1, callbackCount)
 
@@ -40,7 +40,7 @@ class RemoteViewsTargetTest {
 
             onError(
                 sketch, request,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
+                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
             )
             assertEquals(2, callbackCount)
 
@@ -49,7 +49,7 @@ class RemoteViewsTargetTest {
 
             onSuccess(
                 sketch, request,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
+                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
             )
             assertEquals(3, callbackCount)
         }
@@ -63,7 +63,7 @@ class RemoteViewsTargetTest {
 
             onStart(
                 sketch, request2,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
+                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
             )
             assertEquals(1, callbackCount)
 
@@ -72,7 +72,7 @@ class RemoteViewsTargetTest {
 
             onError(
                 sketch, request2,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
+                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
             )
             assertEquals(3, callbackCount)
 
@@ -81,7 +81,7 @@ class RemoteViewsTargetTest {
 
             onSuccess(
                 sketch, request2,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asSketchImage()
+                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
             )
             assertEquals(5, callbackCount)
         }

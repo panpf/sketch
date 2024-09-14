@@ -23,7 +23,7 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
@@ -180,7 +180,7 @@ open class ImageDecoderAnimatedDecoder(
             }
         val resize = requestContext.computeResize(imageInfo!!.size)
         return DecodeResult(
-            image = animatableDrawable.asSketchImage(),
+            image = animatableDrawable.asImage(),
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
             resize = resize,

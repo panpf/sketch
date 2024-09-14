@@ -22,7 +22,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
 import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.drawable.asEquality
@@ -330,7 +330,7 @@ class IconDrawableStateImageTest {
 
         IconDrawableStateImage(icon = iconDrawable, background = greenBgDrawable)
             .getImage(sketch, request, null)
-            ?.asOrThrow<AndroidDrawableImage>()
+            ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertEquals(iconDrawable.wrapped, icon)
                 assertEquals(greenBgDrawable.wrapped, background)
@@ -342,7 +342,7 @@ class IconDrawableStateImageTest {
             iconSize = SketchSize(40, 40),
             background = android.R.drawable.bottom_bar,
         ).getImage(sketch, request, null)
-            ?.asOrThrow<AndroidDrawableImage>()
+            ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertEquals(iconDrawable.wrapped, icon)
                 assertTrue(background is BitmapDrawable)
@@ -353,7 +353,7 @@ class IconDrawableStateImageTest {
             icon = iconDrawable,
             background = IntColor(Color.BLUE),
         ).getImage(sketch, request, null)
-            ?.asOrThrow<AndroidDrawableImage>()
+            ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertEquals(iconDrawable.wrapped, icon)
                 assertEquals(Color.BLUE, (background as ColorDrawable).color)
@@ -362,7 +362,7 @@ class IconDrawableStateImageTest {
 
         IconDrawableStateImage(icon = iconDrawable)
             .getImage(sketch, request, null)
-            ?.asOrThrow<AndroidDrawableImage>()
+            ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertEquals(iconDrawable.wrapped, icon)
                 assertNull(background)
@@ -374,7 +374,7 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             background = greenBgDrawable
         ).getImage(sketch, request, null)
-            ?.asOrThrow<AndroidDrawableImage>()
+            ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertTrue(icon is BitmapDrawable)
                 assertEquals(greenBgDrawable.wrapped, background)
@@ -386,7 +386,7 @@ class IconDrawableStateImageTest {
             iconSize = SketchSize(30, 30),
             background = android.R.drawable.bottom_bar,
         ).getImage(sketch, request, null)
-            ?.asOrThrow<AndroidDrawableImage>()
+            ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertTrue(icon is BitmapDrawable)
                 assertTrue(background is BitmapDrawable)
@@ -400,7 +400,7 @@ class IconDrawableStateImageTest {
             sketch,
             request,
             null
-        )?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
+        )?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
             assertTrue(icon is BitmapDrawable)
             assertEquals(Color.BLUE, (background as ColorDrawable).color)
             assertNull(iconSize)
@@ -411,7 +411,7 @@ class IconDrawableStateImageTest {
                 sketch,
                 request,
                 null
-            )?.asOrThrow<AndroidDrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
+            )?.asOrThrow<DrawableImage>()?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertTrue(icon is BitmapDrawable)
                 assertNull(background)
                 assertNull(iconSize)

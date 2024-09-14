@@ -19,8 +19,8 @@ package com.github.panpf.sketch.animated.android.test.request
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.AndroidBitmapImage
-import com.github.panpf.sketch.AndroidDrawableImage
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.decode.GifAnimatedDecoder
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.images.ResourceImages
@@ -52,28 +52,28 @@ class ImageRequestExecuteAnimatedTest {
 
         request.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
+                assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(false)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
+                assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(null)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<AndroidDrawableImage>()!!.drawable is AnimatableDrawable)
+                assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
             }
 
         request.newRequest {
             disallowAnimatedImage(true)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<AndroidBitmapImage>() != null)
+                assertTrue(image.asOrNull<BitmapImage>() != null)
             }
     }
 }

@@ -18,8 +18,8 @@
 package com.github.panpf.sketch.transition
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asDrawableOrThrow
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -52,7 +52,7 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
 
     override fun transition() {
         val startDrawable = target.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: target.drawable
-        val endDrawable = result.image?.asDrawableOrThrow()
+        val endDrawable = result.image?.asDrawable()
         if (startDrawable === endDrawable) {
             return
         }
@@ -69,13 +69,13 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
             is ImageResult.Success -> target.onSuccess(
                 sketch = sketch,
                 request = request,
-                result = crossfadeDrawable.asSketchImage()
+                result = crossfadeDrawable.asImage()
             )
 
             is ImageResult.Error -> target.onError(
                 sketch = sketch,
                 request = request,
-                error = crossfadeDrawable.asSketchImage()
+                error = crossfadeDrawable.asImage()
             )
         }
     }

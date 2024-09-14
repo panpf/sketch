@@ -19,18 +19,25 @@ package com.github.panpf.sketch
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.painter.toLogString
 import kotlin.math.roundToInt
 
 /**
  * Convert [Painter] to [PainterImage]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest.testAsSketchImage
+ * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest.testAsImage
  */
-fun Painter.asSketchImage(shareable: Boolean = false): PainterImage {
+fun Painter.asImage(shareable: Boolean = false): PainterImage {
     return PainterImage(this, shareable)
 }
+
+/**
+ * Convert the Image to a Painter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainter
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.PainterImageNonAndroidTest.testImageAsPainter
+ */
+expect fun Image.asPainter(): Painter
 
 /**
  * Painter image
@@ -53,11 +60,9 @@ data class PainterImage(
 
     override val allocationByteCount: Long = 4L * width * height
 
-    override fun cacheValue(extras: Map<String, Any?>?): MemoryCache.Value? = null
+    override val cachedInMemory: Boolean = false
 
     override fun checkValid(): Boolean = true
-
-    override fun transformer(): ImageTransformer? = null
 
     override fun toString(): String =
         "PainterImage(painter=${painter.toLogString()}, shareable=$shareable)"

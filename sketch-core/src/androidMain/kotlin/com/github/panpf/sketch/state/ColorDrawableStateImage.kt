@@ -22,7 +22,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ColorFetcher
 import com.github.panpf.sketch.util.IntColor
@@ -74,7 +74,7 @@ class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
         request: ImageRequest,
         throwable: Throwable?
     ): Image {
-        return ColorDrawable(color.getColor(request.context)).asSketchImage()
+        return ColorDrawable(color.getColor(request.context)).asImage()
     }
 
     override fun equals(other: Any?): Boolean {

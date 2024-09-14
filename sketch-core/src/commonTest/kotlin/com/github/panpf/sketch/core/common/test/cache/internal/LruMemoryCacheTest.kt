@@ -23,8 +23,8 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
-import com.github.panpf.sketch.test.utils.createImage
 import com.github.panpf.sketch.util.formatFileSize
 import kotlin.math.roundToLong
 import kotlin.test.Test
@@ -264,7 +264,7 @@ class LruMemoryCacheTest {
         val pixelCount = bytes / 4
         val width = 10
         val height = pixelCount / width
-        val image = createImage(width, height)
+        val image = createBitmapImage(width, height)
         val newCacheValue = createCacheValue(
             image = image,
             extras = newCacheValueExtras(

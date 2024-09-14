@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.core.nonandroid.test.request
 
-import com.github.panpf.sketch.SkiaBitmapImage
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
@@ -46,7 +46,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGBA_8888,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -57,7 +57,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGBA_8888,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -68,7 +68,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.ARGB_4444,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -79,7 +79,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.ALPHA_8,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -90,7 +90,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGB_565,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -101,7 +101,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGBA_F16,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -112,7 +112,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGB_565,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
         ImageRequest(context, ResourceImages.png.uri) {
@@ -122,7 +122,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.ARGB_4444,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
 
@@ -133,7 +133,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGBA_F16,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
         ImageRequest(context, ResourceImages.png.uri) {
@@ -143,7 +143,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorType.RGBA_F16,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorType
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
     }
@@ -158,7 +158,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorSpace.sRGB,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorSpace
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorSpace
             )
         }
 
@@ -169,7 +169,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorSpace.sRGBLinear,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorSpace
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorSpace
             )
         }
 
@@ -180,7 +180,7 @@ class ImageRequestExecuteNonAndroidTest {
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
                 expected = ColorSpace.displayP3,
-                actual = image.asOrThrow<SkiaBitmapImage>().bitmap.colorSpace
+                actual = image.asOrThrow<BitmapImage>().bitmap.colorSpace
             )
         }
     }

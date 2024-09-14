@@ -19,12 +19,11 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.addToResize
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -40,6 +39,7 @@ import com.github.panpf.sketch.test.utils.cornerB
 import com.github.panpf.sketch.test.utils.cornerC
 import com.github.panpf.sketch.test.utils.cornerD
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
@@ -1416,6 +1416,6 @@ class ExifOrientationHelperTest {
         bitmap: Bitmap,
         reverse: Boolean = false
     ): Bitmap? {
-        return applyToImage(bitmap.asSketchImage(), reverse)?.getBitmapOrThrow()
+        return applyToImage(bitmap.asImage(), reverse)?.getBitmapOrThrow()
     }
 }

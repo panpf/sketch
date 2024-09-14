@@ -22,7 +22,7 @@ import android.view.View
 import androidx.lifecycle.LifecycleObserver
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.ImageRequest
@@ -64,7 +64,7 @@ interface ViewTarget<T : View> : Target {
     var drawable: Drawable?
 
     override val currentImage: Image?
-        get() = drawable?.asSketchImage()
+        get() = drawable?.asImage()
 
 
     override fun newRequestDelegate(

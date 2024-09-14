@@ -20,7 +20,7 @@ package com.github.panpf.sketch.target
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -44,7 +44,7 @@ interface ComposeTarget : Target {
     var painter: Painter?
 
     override val currentImage: Image?
-        get() = painter?.asSketchImage()
+        get() = painter?.asImage()
 
 
     override fun newRequestDelegate(

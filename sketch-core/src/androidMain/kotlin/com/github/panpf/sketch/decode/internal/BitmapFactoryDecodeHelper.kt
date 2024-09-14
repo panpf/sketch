@@ -19,7 +19,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
@@ -55,7 +55,7 @@ class BitmapFactoryDecodeHelper(
         val options = config.toBitmapOptions()
         val bitmap = dataSource.decodeBitmap(options)
             ?: throw ImageInvalidException("Invalid image. decode return null")
-        val image = bitmap.asSketchImage()
+        val image = bitmap.asImage()
         val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
         return correctedImage
     }
@@ -69,7 +69,7 @@ class BitmapFactoryDecodeHelper(
             exifOrientationHelper.applyToRect(region, imageInfo.size, reverse = true)
         val bitmap = dataSource.decodeRegionBitmap(originalRegion.toAndroidRect(), options)
             ?: throw ImageInvalidException("Invalid image. region decode return null")
-        val image = bitmap.asSketchImage()
+        val image = bitmap.asImage()
         val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
         return correctedImage
     }

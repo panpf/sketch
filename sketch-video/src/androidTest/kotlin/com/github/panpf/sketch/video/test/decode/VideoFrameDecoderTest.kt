@@ -28,7 +28,6 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.copy
-import com.github.panpf.sketch.getBitmapOrThrow
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorType
@@ -40,6 +39,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toShortInfoString
@@ -187,12 +187,12 @@ class VideoFrameDecoderTest {
         }.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 assertEquals(
-                    "AndroidBitmap(500x250,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(500x250,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
             } else {
                 assertEquals(
-                    "AndroidBitmap(500x250,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(500x250,RGB_565${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
             }
@@ -214,7 +214,7 @@ class VideoFrameDecoderTest {
                 factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
             }.apply {
                 assertEquals(
-                    "AndroidBitmap(500x250,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(500x250,RGB_565${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
@@ -236,19 +236,19 @@ class VideoFrameDecoderTest {
         }.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 assertEquals(
-                    "AndroidBitmap(250x125,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(250x125,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(listOf(createInSampledTransformed(2)), transformeds)
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 assertEquals(
-                    "AndroidBitmap(250x125,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(250x125,RGB_565${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(listOf(createInSampledTransformed(2)), transformeds)
             } else {
                 assertEquals(
-                    "AndroidBitmap(250x125,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(250x125,RGB_565${shortInfoColorSpaceName("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(

@@ -84,7 +84,7 @@ class MaskTransformationTest {
         val inBitmapCorners = inBitmap.corners()
 
         val maskColor = TestColor.withA(TestColor.GREEN, 100)
-        MaskTransformation(maskColor).transform(requestContext, inBitmap).apply {
+        MaskTransformation(maskColor).transform(requestContext, inBitmap)!!.apply {
             assertNotSame(inBitmap, this.image)
             assertNotEquals(inBitmapCorners, image.corners())
             assertEquals(Size(1291, 1936), image.size)

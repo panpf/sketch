@@ -21,7 +21,7 @@ package com.github.panpf.sketch.decode.internal
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.asSketchImage
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
@@ -102,7 +102,7 @@ class FFmpegVideoFrameDecodeHelper(
                         "image=${imageInfo.width}x${imageInfo.height}."
             )
         }
-        val image = bitmap.asSketchImage()
+        val image = bitmap.asImage()
         val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
         return correctedImage
     }
