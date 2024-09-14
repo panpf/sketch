@@ -185,7 +185,7 @@ internal fun AndroidBitmap.toShortInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCopy
  */
-actual fun AndroidBitmap.copy(): AndroidBitmap = this.copyWith(config, isMutable)
+actual fun AndroidBitmap.copy(): AndroidBitmap = this.copyWith(config, isMutable = true)
 
 /**
  * Get a copy of the bitmap
