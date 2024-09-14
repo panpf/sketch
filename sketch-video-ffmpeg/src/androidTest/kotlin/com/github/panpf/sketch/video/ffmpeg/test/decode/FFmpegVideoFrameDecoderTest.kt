@@ -36,7 +36,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
-import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
+import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
@@ -181,7 +181,7 @@ class FFmpegVideoFrameDecoderTest {
             factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             assertEquals(
-                "Bitmap(500x250,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(500x250,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(
@@ -201,7 +201,7 @@ class FFmpegVideoFrameDecoderTest {
             factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
         }.apply {
             assertEquals(
-                "Bitmap(250x125,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(250x125,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(

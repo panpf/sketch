@@ -22,7 +22,7 @@ suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory? = null
 
 expect fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): DecodeHelper
 
-fun ResourceImageFile.decode2(
+fun ResourceImageFile.decode(
     colorType: BitmapColorType? = null,
     colorSpace: String? = null
 ): BitmapImage {

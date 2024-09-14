@@ -37,7 +37,8 @@ import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
-import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
+import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
@@ -168,7 +169,7 @@ class ApkIconDecoderTest {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
@@ -186,7 +187,7 @@ class ApkIconDecoderTest {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},RGB_565${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(${bitmapSize},RGB_565${shortInfoColorSpace("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
@@ -201,17 +202,14 @@ class ApkIconDecoderTest {
             size(Size.Origin)
         }.decode(sketch, factory)
             .apply {
+                val iconSize = iconDrawable.intrinsicSize
                 assertEquals(
-                    "Bitmap(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},ARGB_8888${
-                        shortInfoColorSpaceName(
-                            "SRGB"
-                        )
-                    })",
+                    "Bitmap(${iconSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertNull(transformeds)
                 assertEquals(
-                    "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
+                    "ImageInfo(${iconSize},'image/png')",
                     imageInfo.toShortString()
                 )
                 assertEquals(LOCAL, dataFrom)
@@ -225,7 +223,7 @@ class ApkIconDecoderTest {
                     computeScaleMultiplierWithOneSide(imageInfo.size, Size(100, 100))
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
@@ -240,12 +238,12 @@ class ApkIconDecoderTest {
             resize(iconDrawable.intrinsicWidth, iconDrawable.intrinsicHeight * 2, SAME_ASPECT_RATIO)
         }.decode(sketch, factory)
             .apply {
+                val bitmapSize = Size(
+                    width = ceil(iconDrawable.intrinsicWidth / 2f).toInt(),
+                    height = iconDrawable.intrinsicHeight
+                )
                 assertEquals(
-                    "Bitmap(${ceil(iconDrawable.intrinsicWidth / 2f).toInt()}x${iconDrawable.intrinsicHeight},ARGB_8888${
-                        shortInfoColorSpaceName(
-                            "SRGB"
-                        )
-                    })",
+                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
                     image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(

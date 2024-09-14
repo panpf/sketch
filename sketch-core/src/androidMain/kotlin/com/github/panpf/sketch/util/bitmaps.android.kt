@@ -148,7 +148,6 @@ val ColorSpace.simpleName: String
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToLogString
  */
 internal fun AndroidBitmap.toLogString(): String =
-    // TODO rename to Bitmap@{hashcode}(widthxheight,config)
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap@${toHexString()}(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
     } else {
@@ -181,11 +180,22 @@ internal fun AndroidBitmap.toShortInfoString(): String =
 
 
 /**
- * Get a copy of the bitmap
+ * Get a mutable copy of the bitmap
  *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCopy
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopy
  */
-actual fun AndroidBitmap.copy(): AndroidBitmap = this.copyWith(config, isMutable = true)
+actual fun AndroidBitmap.mutableCopy(): AndroidBitmap {
+    return this.copyWith(config = config, isMutable = true)
+}
+
+/**
+ * Get a mutable copy of the bitmap, if it is already mutable, return itself
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopyOrSelf
+ */
+actual fun AndroidBitmap.mutableCopyOrSelf(): AndroidBitmap {
+    return if (!isMutable) this.copyWith(config = config, isMutable = true) else this
+}
 
 /**
  * Get a copy of the bitmap
@@ -194,19 +204,9 @@ actual fun AndroidBitmap.copy(): AndroidBitmap = this.copyWith(config, isMutable
  */
 internal fun AndroidBitmap.copyWith(
     config: ColorType = safeConfig,
-    isMutable: Boolean = true
+    isMutable: Boolean = isMutable()
 ): AndroidBitmap {
-    return this.copy(config, isMutable)
-}
-
-/**
- * Get a mutable copy of the bitmap, if it is already mutable, return itself
- *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopy
- */
-actual fun AndroidBitmap.mutableCopy(): AndroidBitmap {
-    return if (isMutable)
-        this else copy(/* config = */ safeConfig.safeToSoftware(),/* isMutable = */ true)
+    return this.copy(/* config = */ config, /* isMutable = */ isMutable)
 }
 
 
@@ -303,7 +303,8 @@ actual fun AndroidBitmap.background(color: Int): AndroidBitmap {
  */
 actual fun AndroidBitmap.blur(radius: Int, firstReuseSelf: Boolean): AndroidBitmap {
     val inputBitmap = this
-    val outBitmap = if (firstReuseSelf) inputBitmap.mutableCopy() else inputBitmap.copy()
+    val outBitmap =
+        if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val imageWidth = outBitmap.width
     val imageHeight = outBitmap.height
     val pixels = IntArray(imageWidth * imageHeight)
@@ -403,7 +404,8 @@ actual fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
  */
 actual fun AndroidBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): AndroidBitmap {
     val inputBitmap = this
-    val outBitmap = if (firstReuseSelf) inputBitmap.mutableCopy() else inputBitmap.copy()
+    val outBitmap =
+        if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         color = maskColor

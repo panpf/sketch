@@ -4,7 +4,7 @@ import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.test.utils.decode2
+import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.util.toLogString
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,9 +16,10 @@ class BitmapImageAndroidTest {
 
     @Test
     fun testAsImage() {
+        val bitmap = AndroidBitmap(100, 100)
         assertEquals(
-            expected = BitmapImage(AndroidBitmap(100, 100)),
-            actual = AndroidBitmap(100, 100).asImage()
+            expected = BitmapImage(bitmap),
+            actual = bitmap.asImage()
         )
     }
 
@@ -35,7 +36,7 @@ class BitmapImageAndroidTest {
             assertTrue(actual = shareable)
         }
 
-        val immutableBitmap = ResourceImages.jpeg.decode2().bitmap
+        val immutableBitmap = ResourceImages.jpeg.decode().bitmap
         assertFalse(immutableBitmap.isMutable)
         BitmapImage(immutableBitmap).apply {
             assertSame(expected = immutableBitmap, actual = bitmap)

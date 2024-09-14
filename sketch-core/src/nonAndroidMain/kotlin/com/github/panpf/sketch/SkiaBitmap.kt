@@ -20,6 +20,11 @@ import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorInfo
 import org.jetbrains.skia.ColorType
 
+/**
+ * Skia Bitmap
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapTest.testSkiaBitmap
+ */
 typealias SkiaBitmap = org.jetbrains.skia.Bitmap
 
 /**

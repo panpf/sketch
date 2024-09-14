@@ -24,7 +24,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
-import com.github.panpf.sketch.test.utils.decode2
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.createBlurTransformed
@@ -88,23 +87,12 @@ class BlurTransformationTest {
         }
         val jpegRequestContext = jpegRequest.toRequestContext(sketch)
 
-        val inBitmap = ResourceImages.jpeg.decode2().apply {
+        val inBitmap = ResourceImages.jpeg.decode().apply {
             assertFalse(bitmap.hasAlphaPixels())
         }
         inBitmap.apply {
-            assertNotEquals(
-                listOf(
-                    TestColor.TRANSPARENT,
-                    TestColor.TRANSPARENT,
-                    TestColor.TRANSPARENT,
-                    TestColor.TRANSPARENT
-                ),
-                this.corners()
-            )
-            assertEquals(
-                Size(1291, 1936),
-                this.size
-            )
+            assertNotEquals(listOf(0, 0, 0, 0), this.corners())
+            assertEquals(Size(1291, 1936), this.size)
         }
         val inBitmapCorners = inBitmap.corners()
 
@@ -137,17 +125,17 @@ class BlurTransformationTest {
         val hasAlphaBitmapBlurred1 = BlurTransformation(30).transform(
             requestContext = pngRequestContext,
             input = hasAlphaBitmap1
-        )!!.apply {
+        )!!.image.apply {
             assertFalse((this as BitmapImage).bitmap.hasAlphaPixels())
-        }.image
+        }
 
         val hasAlphaBitmap2 = pngRequest.decode(sketch).image.apply {
             assertTrue((this as BitmapImage).bitmap.hasAlphaPixels())
         }
         val hasAlphaBitmapBlurred2 = BlurTransformation(30, hasAlphaBitmapBgColor = null)
-            .transform(pngRequestContext, hasAlphaBitmap2)!!.apply {
+            .transform(pngRequestContext, hasAlphaBitmap2)!!.image.apply {
                 assertTrue((this as BitmapImage).bitmap.hasAlphaPixels())
-            }.image
+            }
         assertNotEquals(hasAlphaBitmapBlurred1.corners(), hasAlphaBitmapBlurred2.corners())
     }
 

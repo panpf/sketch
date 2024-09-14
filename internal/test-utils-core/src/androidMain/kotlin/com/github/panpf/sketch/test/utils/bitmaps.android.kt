@@ -38,7 +38,7 @@ fun Bitmap.toShortInfoString(): String =
 val Bitmap.size: Size
     get() = Size(width, height)
 
-fun shortInfoColorSpaceName(name: String): String {
+fun shortInfoColorSpace(name: String): String {
     return if (VERSION.SDK_INT >= VERSION_CODES.O) {
         ",${name}"
     } else {
@@ -46,7 +46,7 @@ fun shortInfoColorSpaceName(name: String): String {
     }
 }
 
-fun logColorSpaceName(name: String): String {
+fun logColorSpace(name: String): String {
     return if (VERSION.SDK_INT >= VERSION_CODES.O) {
         ",${name}"
     } else {

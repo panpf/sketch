@@ -24,20 +24,20 @@ import com.github.panpf.sketch.width
 
 
 /**
- * Get a copy of the bitmap
- *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCopy
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCopy
- */
-expect fun Bitmap.copy(): Bitmap
-
-/**
- * Get a mutable copy of the bitmap, if it is already mutable, return itself
+ * Get a mutable copy of the bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopy
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopy
  */
 expect fun Bitmap.mutableCopy(): Bitmap
+
+/**
+ * Get a mutable copy of the bitmap, if it is already mutable, return itself
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopyOrSelf
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopyOrSelf
+ */
+expect fun Bitmap.mutableCopyOrSelf(): Bitmap
 
 
 /**

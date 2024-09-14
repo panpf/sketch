@@ -49,7 +49,7 @@ import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
-import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
+import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -79,7 +79,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -96,7 +96,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -123,7 +123,7 @@ class BitmapFactoryDecoderTest {
                 }.decode(sketch).apply {
                     val bitmap = image.getBitmapOrThrow()
                     assertEquals(
-                        "Bitmap(1500x750,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                        "Bitmap(1500x750,ARGB_8888${shortInfoColorSpace("SRGB")})",
                         bitmap.toShortInfoString()
                     )
                     assertEquals(
@@ -147,7 +147,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -165,7 +165,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,RGB_565${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(1080x1344,RGB_565${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -193,7 +193,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -211,7 +211,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -234,7 +234,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpaceName("ADOBE_RGB")})",
+                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("ADOBE_RGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -253,7 +253,7 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpaceName("ADOBE_RGB")})",
+                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("ADOBE_RGB")})",
                 bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -289,7 +289,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertEquals(
-                "Bitmap(646x968,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(646x968,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -315,7 +315,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertEquals(
-                "Bitmap(323x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(323x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -343,7 +343,7 @@ class BitmapFactoryDecoderTest {
                 500f.div(300).format(1)
             )
             assertEquals(
-                "Bitmap(322x193,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(322x193,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -369,7 +369,7 @@ class BitmapFactoryDecoderTest {
                 300f.div(500).format(1)
             )
             assertEquals(
-                "Bitmap(290x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(290x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -393,7 +393,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(500x300,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(500x300,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -415,7 +415,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(300x500,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(300x500,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -495,7 +495,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertEquals(
-                "Bitmap(350x506,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(350x506,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -520,7 +520,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertEquals(
-                "Bitmap(87x126,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(87x126,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -547,7 +547,7 @@ class BitmapFactoryDecoderTest {
                 500f.div(300).format(1)
             )
             assertEquals(
-                "Bitmap(175x105,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(175x105,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -572,7 +572,7 @@ class BitmapFactoryDecoderTest {
                 300f.div(500).format(1)
             )
             assertEquals(
-                "Bitmap(152x253,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(152x253,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -594,7 +594,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(500x300,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(500x300,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -615,7 +615,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(300x500,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(300x500,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -700,7 +700,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertEquals(
-                "Bitmap(646x968,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(646x968,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -726,7 +726,7 @@ class BitmapFactoryDecoderTest {
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertEquals(
-                "Bitmap(323x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(323x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -754,7 +754,7 @@ class BitmapFactoryDecoderTest {
                 500f.div(300).format(1)
             )
             assertEquals(
-                "Bitmap(322x193,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(322x193,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -780,7 +780,7 @@ class BitmapFactoryDecoderTest {
                 300f.div(500).format(1)
             )
             assertEquals(
-                "Bitmap(290x484,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(290x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -804,7 +804,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(500x300,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(500x300,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -826,7 +826,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(300x500,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(300x500,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(
@@ -857,7 +857,7 @@ class BitmapFactoryDecoderTest {
                 "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                "Bitmap(161x215,ARGB_8888${shortInfoColorSpaceName("SRGB")})",
+                "Bitmap(161x215,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 bitmap.toShortInfoString()
             )
             assertEquals(

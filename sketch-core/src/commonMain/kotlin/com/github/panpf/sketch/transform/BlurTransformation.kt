@@ -27,9 +27,9 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.background
 import com.github.panpf.sketch.util.blur
-import com.github.panpf.sketch.util.copy
 import com.github.panpf.sketch.util.hasAlphaPixels
 import com.github.panpf.sketch.util.mask
+import com.github.panpf.sketch.util.mutableCopy
 
 /**
  * Bitmap blur transformation
@@ -63,7 +63,7 @@ class BlurTransformation constructor(
     override fun transform(requestContext: RequestContext, input: Image): TransformResult? {
         val inputBitmap = input.asOrNull<BitmapImage>()?.bitmap ?: return null
         val backgroundBitmap = if (hasAlphaBitmapBgColor != null && inputBitmap.hasAlphaPixels())
-            inputBitmap.background(hasAlphaBitmapBgColor) else inputBitmap.copy()
+            inputBitmap.background(hasAlphaBitmapBgColor) else inputBitmap.mutableCopy()
         val blurBitmap = backgroundBitmap.blur(radius, firstReuseSelf = true)
         val maskBitmap = maskColor?.let { blurBitmap.mask(it, firstReuseSelf = true) } ?: blurBitmap
         val transformed = createBlurTransformed(radius, hasAlphaBitmapBgColor, maskColor)

@@ -65,11 +65,20 @@ internal fun SkiaBitmap.toShortInfoString(): String =
 
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap.
+ * Get a mutable copy of the bitmap
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCopy
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopy
  */
-actual fun SkiaBitmap.copy(): SkiaBitmap = copyWith()
+actual fun SkiaBitmap.mutableCopy(): SkiaBitmap = copyWith()
+
+/**
+ * Get a mutable copy of the bitmap, if it is already mutable, return itself
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopyOrSelf
+ */
+actual fun SkiaBitmap.mutableCopyOrSelf(): SkiaBitmap {
+    return if (isImmutable) copyWith() else this
+}
 
 /**
  * Returns a new SkiaBitmap that is a copy of this SkiaBitmap.
@@ -89,15 +98,6 @@ internal fun SkiaBitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): Sk
         )
     }
     return outBitmap
-}
-
-/**
- * Get a mutable copy of the bitmap, if it is already mutable, return itself
- *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopy
- */
-actual fun SkiaBitmap.mutableCopy(): SkiaBitmap {
-    return if (isImmutable) copy() else this
 }
 
 
@@ -248,7 +248,8 @@ actual fun SkiaBitmap.background(color: Int): SkiaBitmap {
  */
 actual fun SkiaBitmap.blur(radius: Int, firstReuseSelf: Boolean): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = if (firstReuseSelf) inputBitmap.mutableCopy() else inputBitmap.copy()
+    val outBitmap =
+        if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val imageWidth = outBitmap.width
     val imageHeight = outBitmap.height
     val pixels: IntArray = outBitmap.readIntPixels()
@@ -373,7 +374,8 @@ actual fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
  */
 actual fun SkiaBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): SkiaBitmap {
     val inputBitmap = this
-    val outBitmap = if (firstReuseSelf) inputBitmap.mutableCopy() else inputBitmap.copy()
+    val outBitmap =
+        if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         isAntiAlias = true

@@ -30,7 +30,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
-import com.github.panpf.sketch.test.utils.shortInfoColorSpaceName
+import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
@@ -164,12 +164,12 @@ class DrawableDecoderTest {
                 (imageWidth / 2) / imageWidth.toFloat(),
                 (imageWidth / 2) / imageHeight.toFloat()
             )
+            val scaledSize = Size(
+                width = (imageWidth * scale).roundToInt(),
+                height = (imageHeight * scale).roundToInt()
+            )
             assertEquals(
-                "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888${
-                    shortInfoColorSpaceName(
-                        "SRGB"
-                    )
-                })",
+                "Bitmap(${scaledSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(listOf(createScaledTransformed(scale)), transformeds)
@@ -196,12 +196,12 @@ class DrawableDecoderTest {
                 (imageWidth * 2) / imageWidth.toFloat(),
                 (imageWidth * 2) / imageHeight.toFloat()
             )
+            val scaledSize = Size(
+                width = (imageWidth * scale).roundToInt(),
+                height = (imageHeight * scale).roundToInt()
+            )
             assertEquals(
-                "Bitmap(${(imageWidth * scale).roundToInt()}x${(imageHeight * scale).roundToInt()},ARGB_8888${
-                    shortInfoColorSpaceName(
-                        "SRGB"
-                    )
-                })",
+                "Bitmap(${scaledSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
                 image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(listOf(createScaledTransformed(2.0f)), transformeds)
