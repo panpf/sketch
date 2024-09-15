@@ -64,7 +64,7 @@ interface Image {
     /**
      * True if the image can be cached in memory.
      */
-    val cachedInMemory: Boolean
+    val cacheInMemory: Boolean
 
     /**
      * Check if the image is valid

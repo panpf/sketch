@@ -66,7 +66,7 @@ class SkiaAnimatedImageTest {
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
-            assertFalse(actual = cachedInMemory)
+            assertFalse(actual = cacheInMemory)
         }
     }
 

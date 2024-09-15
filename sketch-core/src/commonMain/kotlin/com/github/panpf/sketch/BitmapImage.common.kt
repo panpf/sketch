@@ -44,7 +44,7 @@ expect class BitmapImage : Image {
 
     override val shareable: Boolean
 
-    override val cachedInMemory: Boolean
+    override val cacheInMemory: Boolean
 
     override fun checkValid(): Boolean
 }

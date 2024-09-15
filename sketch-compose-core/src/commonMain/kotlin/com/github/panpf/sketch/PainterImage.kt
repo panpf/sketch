@@ -58,7 +58,7 @@ data class PainterImage(
 
     override val byteCount: Long = 4L * width * height
 
-    override val cachedInMemory: Boolean = false
+    override val cacheInMemory: Boolean = false
 
     override fun checkValid(): Boolean = true
 

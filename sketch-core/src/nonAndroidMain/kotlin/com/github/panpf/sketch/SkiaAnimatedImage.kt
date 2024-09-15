@@ -43,7 +43,7 @@ data class SkiaAnimatedImage constructor(
 
     override val shareable: Boolean = true
 
-    override val cachedInMemory: Boolean = false
+    override val cacheInMemory: Boolean = false
 
     override fun checkValid(): Boolean = true
 

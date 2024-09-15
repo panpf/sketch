@@ -69,18 +69,18 @@ class BitmapImageNonAndroidTest {
     }
 
     @Test
-    fun testCacheValue() {
+    fun testCacheInMemory() {
         val bitmap = SkiaBitmap(100, 200)
         BitmapImage(bitmap).apply {
-            assertTrue(actual = cachedInMemory)
+            assertTrue(actual = cacheInMemory)
         }
-        BitmapImage(bitmap, cachedInMemory = false).apply {
-            assertFalse(actual = cachedInMemory)
+        BitmapImage(bitmap, cacheInMemory = false).apply {
+            assertFalse(actual = cacheInMemory)
         }
     }
 
     @Test
-    fun testCachedInMemory() {
+    fun testCheckValid() {
         BitmapImage(SkiaBitmap(100, 200)).apply {
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())

@@ -65,7 +65,7 @@ data class DrawableImage internal constructor(
         }
     }
 
-    override val cachedInMemory: Boolean = false
+    override val cacheInMemory: Boolean = false
 
     override fun checkValid(): Boolean = true
 

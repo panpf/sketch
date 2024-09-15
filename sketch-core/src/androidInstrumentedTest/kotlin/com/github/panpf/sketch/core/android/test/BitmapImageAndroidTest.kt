@@ -67,13 +67,13 @@ class BitmapImageAndroidTest {
     }
 
     @Test
-    fun testCachedInMemory() {
+    fun testCacheInMemory() {
         val bitmap = AndroidBitmap(100, 200)
         BitmapImage(bitmap).apply {
-            assertTrue(actual = cachedInMemory)
+            assertTrue(actual = cacheInMemory)
         }
-        BitmapImage(bitmap, cachedInMemory = false).apply {
-            assertFalse(actual = cachedInMemory)
+        BitmapImage(bitmap, cacheInMemory = false).apply {
+            assertFalse(actual = cacheInMemory)
         }
     }
 

@@ -35,7 +35,7 @@ actual fun Bitmap.asImage(): BitmapImage = BitmapImage(this)
 actual data class BitmapImage(
     actual val bitmap: Bitmap,
     actual override val shareable: Boolean = !bitmap.isMutable,
-    actual override val cachedInMemory: Boolean = true
+    actual override val cacheInMemory: Boolean = true
 ) : Image {
 
     actual override val width: Int = bitmap.width
