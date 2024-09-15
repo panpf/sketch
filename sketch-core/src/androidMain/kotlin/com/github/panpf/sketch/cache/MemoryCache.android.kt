@@ -32,21 +32,19 @@ internal actual fun PlatformContext.defaultMemoryCacheSize(): Long {
     val standardMemoryPercent = 0.30
     val lowMemoryPercent = 0.20
     var memoryPercent: Double
-    var memoryClassMegabytes: Int
+    var maxMemory: Long
     try {
-        val activityManager =
-            getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val isLargeHeap =
-            (applicationInfo.flags and ApplicationInfo.FLAG_LARGE_HEAP) != 0
-        memoryClassMegabytes =
-            if (isLargeHeap) activityManager.largeMemoryClass else activityManager.memoryClass
-        memoryPercent =
-            if (activityManager.isLowRamDevice) lowMemoryPercent else standardMemoryPercent
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val isLargeHeap = (applicationInfo.flags and ApplicationInfo.FLAG_LARGE_HEAP) != 0
+        val lowRamDevice = activityManager.isLowRamDevice
+        val memoryClassMegabytes = if (isLargeHeap)
+            activityManager.largeMemoryClass else activityManager.memoryClass
+        maxMemory = memoryClassMegabytes * 1024L * 1024L
+        memoryPercent = if (lowRamDevice) lowMemoryPercent else standardMemoryPercent
     } catch (e: Throwable) {
         e.printStackTrace()
-        memoryClassMegabytes = 128
+        maxMemory = 128 * 1024L * 1024L
         memoryPercent = standardMemoryPercent
     }
-    val maxMemory = memoryClassMegabytes * 1024L * 1024L
     return (maxMemory * memoryPercent).roundToLong()
 }

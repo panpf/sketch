@@ -297,7 +297,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         add(
             SwitchMenuFlow(
                 title = "Memory Cache",
-                desc = "%s/%s（Long Click Clean）".format(
+                desc = "%s/%s（Long Press Clean）".format(
                     sketch.memoryCache.size.formatFileSize(
                         0,
                         decimalPlacesFillZero = false,
@@ -320,7 +320,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         add(
             SwitchMenuFlow(
                 title = "Result Cache",
-                desc = "%s/%s（Long Click Clean）".format(
+                desc = "%s/%s（Long Press Clean）".format(
                     sketch.resultCache.size.formatFileSize(
                         0,
                         decimalPlacesFillZero = false,
@@ -343,7 +343,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         add(
             SwitchMenuFlow(
                 title = "Download Cache",
-                desc = "%s/%s（Long Click Clean）".format(
+                desc = "%s/%s（Long Press Clean）".format(
                     sketch.downloadCache.size.formatFileSize(
                         0,
                         decimalPlacesFillZero = false,

@@ -279,7 +279,7 @@ private fun cacheMenuList(
                 sketch.memoryCache.maxSize.formatFileSize(
                     0
                 )
-            }（Long Click Clean）",
+            }（Long Press Clean）",
             state = appSettings.memoryCacheName,
             onLongClick = {
                 sketch.memoryCache.clear()
@@ -295,7 +295,7 @@ private fun cacheMenuList(
                 sketch.resultCache.maxSize.formatFileSize(
                     0
                 )
-            }（Long Click Clean）",
+            }（Long Press Clean）",
             state = appSettings.resultCacheName,
             onLongClick = {
                 sketch.resultCache.clear()
@@ -311,7 +311,7 @@ private fun cacheMenuList(
                 sketch.downloadCache.maxSize.formatFileSize(
                     0
                 )
-            }（Long Click Clean）",
+            }（Long Press Clean）",
             state = appSettings.downloadCacheName,
             onLongClick = {
                 sketch.downloadCache.clear()
