@@ -9,10 +9,10 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
-import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
+import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

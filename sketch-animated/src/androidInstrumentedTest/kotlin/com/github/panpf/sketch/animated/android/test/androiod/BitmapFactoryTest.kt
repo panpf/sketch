@@ -13,8 +13,8 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals

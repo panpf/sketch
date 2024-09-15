@@ -40,10 +40,10 @@ import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
+import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.math.ceil

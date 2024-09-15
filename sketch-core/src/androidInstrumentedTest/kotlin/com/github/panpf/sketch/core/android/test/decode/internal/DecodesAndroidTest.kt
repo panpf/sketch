@@ -47,8 +47,8 @@ import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.test.utils.toSizeString
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import java.io.IOException
@@ -879,7 +879,7 @@ class DecodesAndroidTest {
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
                 assertTrue(this !== result)
-                assertEquals("20x13", this.image.getBitmapOrThrow().toSizeString())
+                assertEquals("20x13", this.image.getBitmapOrThrow().size.toString())
             }
         // big
         request = request.newRequest {
@@ -902,7 +902,7 @@ class DecodesAndroidTest {
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
                 assertTrue(this !== result)
-                assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
+                assertEquals("40x20", this.image.getBitmapOrThrow().size.toString())
             }
         // big
         request = request.newRequest {
@@ -912,7 +912,7 @@ class DecodesAndroidTest {
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
                 assertTrue(this !== result)
-                assertEquals("17x50", this.image.getBitmapOrThrow().toSizeString())
+                assertEquals("17x50", this.image.getBitmapOrThrow().size.toString())
             }
 
         /*
@@ -926,7 +926,7 @@ class DecodesAndroidTest {
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
                 assertTrue(this !== result)
-                assertEquals("40x20", this.image.getBitmapOrThrow().toSizeString())
+                assertEquals("40x20", this.image.getBitmapOrThrow().size.toString())
             }
         // big
         request = request.newRequest {
@@ -936,7 +936,7 @@ class DecodesAndroidTest {
         result.appliedResize(request.toRequestContext(sketch).computeResize(result.imageInfo.size))
             .apply {
                 assertTrue(this !== result)
-                assertEquals("50x150", this.image.getBitmapOrThrow().toSizeString())
+                assertEquals("50x150", this.image.getBitmapOrThrow().size.toString())
             }
     }
 

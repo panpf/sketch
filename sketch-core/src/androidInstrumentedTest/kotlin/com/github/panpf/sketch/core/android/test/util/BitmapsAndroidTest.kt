@@ -41,10 +41,10 @@ import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.background
 import com.github.panpf.sketch.util.blur
+import com.github.panpf.sketch.util.bytesPerPixel
 import com.github.panpf.sketch.util.circleCrop
 import com.github.panpf.sketch.util.configOrNull
 import com.github.panpf.sketch.util.copyWith
-import com.github.panpf.sketch.util.getBytesPerPixel
 import com.github.panpf.sketch.util.hasAlphaPixels
 import com.github.panpf.sketch.util.isHardware
 import com.github.panpf.sketch.util.mapping
@@ -56,6 +56,7 @@ import com.github.panpf.sketch.util.roundedCorners
 import com.github.panpf.sketch.util.safeConfig
 import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.scale
+import com.github.panpf.sketch.util.simpleName
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toLogString
@@ -128,22 +129,94 @@ class BitmapsAndroidTest {
     }
 
     @Test
-    fun testGetBytesPerPixel() {
-        assertEquals(4, Bitmap.Config.ARGB_8888.getBytesPerPixel())
+    fun testBytesPerPixel() {
+        assertEquals(4, Bitmap.Config.ARGB_8888.bytesPerPixel)
         @Suppress("DEPRECATION")
-        assertEquals(2, Bitmap.Config.ARGB_4444.getBytesPerPixel())
-        assertEquals(1, Bitmap.Config.ALPHA_8.getBytesPerPixel())
-        assertEquals(2, Bitmap.Config.RGB_565.getBytesPerPixel())
-        assertEquals(4, null.getBytesPerPixel())
+        assertEquals(2, Bitmap.Config.ARGB_4444.bytesPerPixel)
+        assertEquals(1, Bitmap.Config.ALPHA_8.bytesPerPixel)
+        assertEquals(2, Bitmap.Config.RGB_565.bytesPerPixel)
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            assertEquals(8, Bitmap.Config.RGBA_F16.getBytesPerPixel())
-            assertEquals(4, Bitmap.Config.HARDWARE.getBytesPerPixel())
+            assertEquals(8, Bitmap.Config.RGBA_F16.bytesPerPixel)
+            assertEquals(4, Bitmap.Config.HARDWARE.bytesPerPixel)
         }
     }
 
     @Test
     fun testSimpleName() {
-        // TODO test
+        assertEquals(
+            expected = "SRGB",
+            actual = ColorSpace.get(ColorSpace.Named.SRGB).simpleName
+        )
+        assertEquals(
+            expected = "LINEAR_SRGB",
+            actual = ColorSpace.get(ColorSpace.Named.LINEAR_SRGB).simpleName
+        )
+        assertEquals(
+            expected = "EXTENDED_SRGB",
+            actual = ColorSpace.get(ColorSpace.Named.EXTENDED_SRGB).simpleName
+        )
+        assertEquals(
+            expected = "LINEAR_EXTENDED_SRGB",
+            actual = ColorSpace.get(ColorSpace.Named.LINEAR_EXTENDED_SRGB).simpleName
+        )
+        assertEquals(
+            expected = "BT709",
+            actual = ColorSpace.get(ColorSpace.Named.BT709).simpleName
+        )
+        assertEquals(
+            expected = "BT2020",
+            actual = ColorSpace.get(ColorSpace.Named.BT2020).simpleName
+        )
+        assertEquals(
+            expected = "DCI_P3",
+            actual = ColorSpace.get(ColorSpace.Named.DCI_P3).simpleName
+        )
+        assertEquals(
+            expected = "DISPLAY_P3",
+            actual = ColorSpace.get(ColorSpace.Named.DISPLAY_P3).simpleName
+        )
+        assertEquals(
+            expected = "NTSC_1953",
+            actual = ColorSpace.get(ColorSpace.Named.NTSC_1953).simpleName
+        )
+        assertEquals(
+            expected = "SMPTE_C",
+            actual = ColorSpace.get(ColorSpace.Named.SMPTE_C).simpleName
+        )
+        assertEquals(
+            expected = "ADOBE_RGB",
+            actual = ColorSpace.get(ColorSpace.Named.ADOBE_RGB).simpleName
+        )
+        assertEquals(
+            expected = "PRO_PHOTO_RGB",
+            actual = ColorSpace.get(ColorSpace.Named.PRO_PHOTO_RGB).simpleName
+        )
+        assertEquals(
+            expected = "ACES",
+            actual = ColorSpace.get(ColorSpace.Named.ACES).simpleName
+        )
+        assertEquals(
+            expected = "ACESCG",
+            actual = ColorSpace.get(ColorSpace.Named.ACESCG).simpleName
+        )
+        assertEquals(
+            expected = "CIE_XYZ",
+            actual = ColorSpace.get(ColorSpace.Named.CIE_XYZ).simpleName
+        )
+        assertEquals(
+            expected = "CIE_LAB",
+            actual = ColorSpace.get(ColorSpace.Named.CIE_LAB).simpleName
+        )
+        if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            assertEquals(
+                expected = "BT2020_HLG",
+                actual = ColorSpace.get(ColorSpace.Named.BT2020_HLG).simpleName
+            )
+            assertEquals(
+                expected = "BT2020_PQ",
+                actual = ColorSpace.get(ColorSpace.Named.BT2020_PQ).simpleName
+            )
+        }
     }
 
 

@@ -22,20 +22,6 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.copyWith
-import com.github.panpf.sketch.util.simpleName
-
-fun Bitmap.toSizeString(): String = "${width}x${height}"
-
-@Suppress("USELESS_ELVIS")
-val Bitmap.configOrNull: Bitmap.Config?
-    get() = config ?: null
-
-fun Bitmap.toShortInfoString(): String =
-    if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        "Bitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
-    } else {
-        "Bitmap(${width}x${height},$configOrNull)"
-    }
 
 val Bitmap.size: Size
     get() = Size(width, height)

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.core.nonandroid.test.util
 
+import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.resize.Precision
@@ -13,6 +14,7 @@ import com.github.panpf.sketch.test.utils.hammingDistance
 import com.github.panpf.sketch.test.utils.produceFingerPrint
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.background
 import com.github.panpf.sketch.util.blur
@@ -20,6 +22,7 @@ import com.github.panpf.sketch.util.circleCrop
 import com.github.panpf.sketch.util.copyWith
 import com.github.panpf.sketch.util.flip
 import com.github.panpf.sketch.util.hasAlphaPixels
+import com.github.panpf.sketch.util.installIntPixels
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.mask
 import com.github.panpf.sketch.util.mutableCopy
@@ -251,45 +254,268 @@ class BitmapsNonAndroidTest {
 
     @Test
     fun testHasAlphaPixels() {
-        assertFalse(
-            actual = ResourceImages.jpeg.decode().bitmap.hasAlphaPixels()
-        )
-        assertTrue(
-            actual = ResourceImages.png.decode().bitmap.hasAlphaPixels()
-        )
+        assertFalse(actual = ResourceImages.jpeg.decode().bitmap.hasAlphaPixels())
+        assertTrue(actual = ResourceImages.png.decode().bitmap.hasAlphaPixels())
     }
 
     @Test
     fun testReadIntPixels() {
-//        val sourceBitmap = ResourceImages.jpeg.decode2().bitmap.apply {
-//            assertEquals(
-//                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
-//                actual = toShortInfoString()
-//            )
-//        }
-//
-//        val bytePixels = sourceBitmap.readPixels()!!
-//        assertEquals(
-//            expected = sourceBitmap.rowBytes * sourceBitmap.height,
-//            actual = bytePixels.size
-//        )
-//
-//        assertEquals(
-//            expected = sourceBitmap.width * sourceBitmap.imageInfo.colorType.bytesPerPixel,
-//            actual = sourceBitmap.rowBytes
-//        )
-//
-//        val intPixels = sourceBitmap.readIntPixels()!!
-//        assertEquals(
-//            expected = sourceBitmap.width * sourceBitmap.height,
-//            actual = intPixels.size
-//        )
-        // TODO test all colorTypes
+        @Suppress("EnumValuesSoftDeprecate")
+        ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
+            val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
+            val newJpegBitmap = SkiaBitmap(jpegBitmap.imageInfo)
+            if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
+                assertTrue(
+                    actual = jpegBitmap.similarity(newJpegBitmap) == 0,
+                    message = "colorType=$colorType"
+                )
+            } else {
+                assertTrue(
+                    actual = jpegBitmap.similarity(newJpegBitmap) >= 10,
+                    message = "colorType=$colorType"
+                )
+            }
+            val jpegIntPixels = jpegBitmap.readIntPixels().apply {
+                assertEquals(
+                    expected = jpegBitmap.width * jpegBitmap.height,
+                    actual = size,
+                    message = "colorType=$colorType"
+                )
+            }
+            newJpegBitmap.installIntPixels(jpegIntPixels)
+            assertTrue(
+                actual = jpegBitmap.similarity(newJpegBitmap) == 0,
+                message = "colorType=$colorType"
+            )
+
+            val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
+            val newPngBitmap = SkiaBitmap(pngBitmap.imageInfo)
+            if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
+                assertTrue(
+                    actual = pngBitmap.similarity(newPngBitmap) == 0,
+                    message = "colorType=$colorType"
+                )
+            } else {
+                assertTrue(
+                    actual = pngBitmap.similarity(newPngBitmap) >= 10,
+                    message = "colorType=$colorType"
+                )
+            }
+            val pngIntPixels = pngBitmap.readIntPixels().apply {
+                assertEquals(
+                    expected = pngBitmap.width * pngBitmap.height,
+                    actual = size,
+                    message = "colorType=$colorType"
+                )
+            }
+            newPngBitmap.installIntPixels(pngIntPixels)
+            assertTrue(
+                actual = pngBitmap.similarity(newPngBitmap) == 0,
+                message = "colorType=$colorType"
+            )
+        }
+
+        val jpegBitmap =
+            ResourceImages.jpeg.decode(BitmapColorType(ColorType.RGBA_8888)).bitmap.apply {
+                assertEquals(expected = Size(1291, 1936), actual = size)
+                assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
+            }
+        val leftTopRect = Rect(
+            left = 0,
+            top = 0,
+            right = jpegBitmap.width / 2,
+            bottom = jpegBitmap.height / 2
+        ).apply {
+            assertTrue(right > left)
+            assertTrue(bottom > top)
+            assertEquals(0, actual = left)
+            assertEquals(0, actual = top)
+        }
+        val rightTopRect = Rect(
+            left = leftTopRect.right,
+            top = leftTopRect.top,
+            right = jpegBitmap.width,
+            bottom = leftTopRect.bottom
+        ).apply {
+            assertTrue(right > left)
+            assertTrue(bottom > top)
+            assertEquals(leftTopRect.right, actual = left)
+            assertEquals(leftTopRect.top, actual = top)
+            assertEquals(jpegBitmap.width, actual = right)
+            assertEquals(leftTopRect.bottom, actual = bottom)
+        }
+        val leftBottomRect = Rect(
+            left = leftTopRect.left,
+            top = leftTopRect.bottom,
+            right = leftTopRect.right,
+            bottom = jpegBitmap.height
+        ).apply {
+            assertTrue(right > left)
+            assertTrue(bottom > top)
+            assertEquals(leftTopRect.left, actual = left)
+            assertEquals(leftTopRect.bottom, actual = top)
+            assertEquals(leftTopRect.right, actual = right)
+            assertEquals(jpegBitmap.height, actual = bottom)
+        }
+        val rightBottomRect = Rect(
+            left = leftTopRect.right,
+            top = leftTopRect.bottom,
+            right = jpegBitmap.width,
+            bottom = jpegBitmap.height
+        ).apply {
+            assertTrue(right > left)
+            assertTrue(bottom > top)
+            assertEquals(leftTopRect.right, actual = left)
+            assertEquals(leftTopRect.bottom, actual = top)
+            assertEquals(jpegBitmap.width, actual = right)
+            assertEquals(jpegBitmap.height, actual = bottom)
+        }
+        assertEquals(
+            expected = jpegBitmap.width,
+            actual = leftTopRect.width() + rightTopRect.width(),
+            message = "leftTopRect=$leftTopRect, rightTopRect=$rightTopRect"
+        )
+        assertEquals(
+            expected = jpegBitmap.width,
+            actual = leftBottomRect.width() + rightBottomRect.width(),
+            message = "leftBottomRect=$leftBottomRect, rightBottomRect=$rightBottomRect"
+        )
+        assertEquals(
+            expected = jpegBitmap.height,
+            actual = leftTopRect.height() + leftBottomRect.height(),
+            message = "leftTopRect=$leftTopRect, leftBottomRect=$leftBottomRect"
+        )
+        assertEquals(
+            expected = jpegBitmap.height,
+            actual = rightTopRect.height() + rightBottomRect.height(),
+            message = "rightTopRect=$rightTopRect, rightBottomRect=$rightBottomRect"
+        )
+        val leftTopIntPexels = jpegBitmap.readIntPixels(
+            x = leftTopRect.left,
+            y = leftTopRect.top,
+            width = leftTopRect.width(),
+            height = leftTopRect.height()
+        ).apply {
+            assertEquals(
+                expected = leftTopRect.width() * leftTopRect.height(),
+                actual = size
+            )
+        }
+        val rightTopIntPexels = jpegBitmap.readIntPixels(
+            x = rightTopRect.left,
+            y = rightTopRect.top,
+            width = rightTopRect.width(),
+            height = rightTopRect.height()
+        ).apply {
+            assertEquals(
+                expected = rightTopRect.width() * rightTopRect.height(),
+                actual = size
+            )
+        }
+        val leftBottomIntPexels = jpegBitmap.readIntPixels(
+            x = leftBottomRect.left,
+            y = leftBottomRect.top,
+            width = leftBottomRect.width(),
+            height = leftBottomRect.height()
+        ).apply {
+            assertEquals(
+                expected = leftBottomRect.width() * leftBottomRect.height(),
+                actual = size
+            )
+        }
+        val rightBottomIntPexels = jpegBitmap.readIntPixels(
+            x = rightBottomRect.left,
+            y = rightBottomRect.top,
+            width = rightBottomRect.width(),
+            height = rightBottomRect.height()
+        ).apply {
+            assertEquals(
+                expected = rightBottomRect.width() * rightBottomRect.height(),
+                actual = size
+            )
+        }
+        val piecedIntPexels = IntArray(jpegBitmap.width * jpegBitmap.height).apply {
+            indices.forEach { index ->
+                val x = index % jpegBitmap.width
+                val y = index / jpegBitmap.width
+                val pixel = if (leftTopRect.contains(x, y)) {
+                    leftTopIntPexels[(y - leftTopRect.top) * leftTopRect.width() + (x - leftTopRect.left)]
+                } else if (rightTopRect.contains(x, y)) {
+                    rightTopIntPexels[(y - rightTopRect.top) * rightTopRect.width() + (x - rightTopRect.left)]
+                } else if (leftBottomRect.contains(x, y)) {
+                    leftBottomIntPexels[(y - leftBottomRect.top) * leftBottomRect.width() + (x - leftBottomRect.left)]
+                } else if (rightBottomRect.contains(x, y)) {
+                    rightBottomIntPexels[(y - rightBottomRect.top) * rightBottomRect.width() + (x - rightBottomRect.left)]
+                } else {
+                    throw IllegalArgumentException("Unknown rect, x=$x, y=$y")
+                }
+                this@apply[index] = pixel
+            }
+        }.apply {
+            assertEquals(expected = 1291 * 1936, actual = size)
+        }
+        val jpegIntPixels = jpegBitmap.readIntPixels().apply {
+            assertEquals(expected = 1291 * 1936, actual = size)
+        }
+        assertEquals(expected = jpegIntPixels.toList(), actual = piecedIntPexels.toList())
     }
 
     @Test
     fun testInstallIntPixels() {
-        // TODO test
+        @Suppress("EnumValuesSoftDeprecate")
+        ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
+            val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
+            val newJpegBitmap = SkiaBitmap(jpegBitmap.imageInfo)
+            if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
+                assertTrue(
+                    actual = jpegBitmap.similarity(newJpegBitmap) == 0,
+                    message = "colorType=$colorType"
+                )
+            } else {
+                assertTrue(
+                    actual = jpegBitmap.similarity(newJpegBitmap) >= 10,
+                    message = "colorType=$colorType"
+                )
+            }
+            val jpegIntPixels = jpegBitmap.readIntPixels().apply {
+                assertEquals(
+                    expected = jpegBitmap.width * jpegBitmap.height,
+                    actual = size,
+                    message = "colorType=$colorType"
+                )
+            }
+            newJpegBitmap.installIntPixels(jpegIntPixels)
+            assertTrue(
+                actual = jpegBitmap.similarity(newJpegBitmap) == 0,
+                message = "colorType=$colorType"
+            )
+
+            val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
+            val newPngBitmap = SkiaBitmap(pngBitmap.imageInfo)
+            if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
+                assertTrue(
+                    actual = pngBitmap.similarity(newPngBitmap) == 0,
+                    message = "colorType=$colorType"
+                )
+            } else {
+                assertTrue(
+                    actual = pngBitmap.similarity(newPngBitmap) >= 10,
+                    message = "colorType=$colorType"
+                )
+            }
+            val pngIntPixels = pngBitmap.readIntPixels().apply {
+                assertEquals(
+                    expected = pngBitmap.width * pngBitmap.height,
+                    actual = size,
+                    message = "colorType=$colorType"
+                )
+            }
+            newPngBitmap.installIntPixels(pngIntPixels)
+            assertTrue(
+                actual = pngBitmap.similarity(newPngBitmap) == 0,
+                message = "colorType=$colorType"
+            )
+        }
     }
 
     @Test
@@ -1066,7 +1292,6 @@ class BitmapsNonAndroidTest {
             expected = smallRoundedCorneredBitmapFinger,
             actual = bigRoundedCorneredBitmapFinger
         )
-
 
         ResourceImages.jpeg.decode().bitmap.apply {
             assertEquals(expected = ColorType.RGBA_8888, actual = colorType)

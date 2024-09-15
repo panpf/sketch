@@ -13,8 +13,8 @@ import com.github.panpf.sketch.test.utils.ImageDecodeCompatibility
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.test.utils.toShortInfoString
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toShortInfoString
 import org.junit.runner.RunWith
 import java.io.IOException
 import kotlin.test.Test
