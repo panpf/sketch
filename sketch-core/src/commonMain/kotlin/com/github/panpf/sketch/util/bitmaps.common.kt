@@ -78,13 +78,15 @@ expect fun Bitmap.readIntPixel(x: Int, y: Int): Int
 /**
  * Add a background color to the current Bitmap
  *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackgrounded
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackgrounded2
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground2
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground2
  */
 expect fun Bitmap.background(color: Int): Bitmap
 
 /**
- * Apply a blur effect to the image
+ * Apply a blur effect to the Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBlur
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBlur
@@ -92,7 +94,7 @@ expect fun Bitmap.background(color: Int): Bitmap
 expect fun Bitmap.blur(radius: Int, firstReuseSelf: Boolean = false): Bitmap
 
 /**
- * Crop the image into a circle
+ * Crop the Bitmap into a circle
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCircleCrop
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCircleCrop
@@ -100,7 +102,15 @@ expect fun Bitmap.blur(radius: Int, firstReuseSelf: Boolean = false): Bitmap
 expect fun Bitmap.circleCrop(scale: Scale): Bitmap
 
 /**
- * Create a new image based on the mapping relationship represented by [ResizeMapping]
+ * Returns a new Bitmap that is a copy of this Bitmap flip horizontally or vertically.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testFlip
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testFlip
+ */
+expect fun Bitmap.flip(horizontal: Boolean): Bitmap
+
+/**
+ * Create a new Bitmap based on the mapping relationship represented by [ResizeMapping]
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMapping
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMapping
@@ -108,7 +118,7 @@ expect fun Bitmap.circleCrop(scale: Scale): Bitmap
 expect fun Bitmap.mapping(mapping: ResizeMapping): Bitmap
 
 /**
- * Apply a mask effect to the image
+ * Apply a mask effect to the Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMask
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMask
@@ -116,7 +126,7 @@ expect fun Bitmap.mapping(mapping: ResizeMapping): Bitmap
 expect fun Bitmap.mask(maskColor: Int, firstReuseSelf: Boolean = false): Bitmap
 
 /**
- * Rotate the image
+ * Rotate the Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testRotate
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRotate
@@ -124,7 +134,7 @@ expect fun Bitmap.mask(maskColor: Int, firstReuseSelf: Boolean = false): Bitmap
 expect fun Bitmap.rotate(angle: Int): Bitmap
 
 /**
- * Apply rounded corners to the image
+ * Apply rounded corners to the Bitmap
  *
  * @param radiusArray Array of 8 values, 4 pairs of [X,Y] radii. The corners are ordered top-left, top-right, bottom-right, bottom-left
  *
@@ -134,9 +144,14 @@ expect fun Bitmap.rotate(angle: Int): Bitmap
 expect fun Bitmap.roundedCorners(radiusArray: FloatArray): Bitmap
 
 /**
- * Zoom image
+ * Zoom Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testScale
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testScale
  */
 expect fun Bitmap.scale(scaleFactor: Float): Bitmap
+
+/**
+ * Create thumbnails with specified width and height
+ */
+expect fun Bitmap.thumbnail(width: Int, height: Int): Bitmap

@@ -6,6 +6,16 @@ import com.github.panpf.sketch.util.readIntPixel
 import com.github.panpf.sketch.width
 
 
+expect fun createBitmap(width: Int, height: Int): Bitmap
+
+expect fun createARGBBitmap(width: Int, height: Int): Bitmap
+
+expect fun create565Bitmap(width: Int, height: Int): Bitmap
+
+expect fun getMutableBitmap(): Bitmap
+
+expect fun getImmutableBitmap(): Bitmap
+
 val Bitmap.cornerA: Int
     get() = readIntPixel(0, 0)
 val Bitmap.cornerB: Int

@@ -19,7 +19,9 @@ package com.github.panpf.sketch.test.utils
 import android.graphics.Bitmap
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.copyWith
 import com.github.panpf.sketch.util.simpleName
 
 fun Bitmap.toSizeString(): String = "${width}x${height}"
@@ -52,4 +54,24 @@ fun logColorSpace(name: String): String {
     } else {
         ""
     }
+}
+
+actual fun createBitmap(width: Int, height: Int): Bitmap {
+    return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+}
+
+actual fun createARGBBitmap(width: Int, height: Int): Bitmap {
+    return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+}
+
+actual fun create565Bitmap(width: Int, height: Int): Bitmap {
+    return Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+}
+
+actual fun getMutableBitmap(): Bitmap {
+    return ResourceImages.jpeg.decode().bitmap.copyWith(isMutable = true)
+}
+
+actual fun getImmutableBitmap(): Bitmap {
+    return ResourceImages.jpeg.decode().bitmap
 }

@@ -46,8 +46,24 @@ actual val Bitmap.height: Int
 /**
  * Returns the minimum number of bytes that can be used to store this bitmap's pixels.
  *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testByteCount
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testByteCount
  */
 actual val Bitmap.byteCount: Long
     get() = (rowBytes * height).toLong()
+
+/**
+ * Returns true if the bitmap is mutable
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testIsMutable
+ */
+actual val Bitmap.isMutable: Boolean
+    get() = !this.isImmutable
+
+/**
+ * Returns true if the bitmap is immutable
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testIsImmutable
+ */
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+actual val Bitmap.isImmutable: Boolean
+    get() = this.isImmutable

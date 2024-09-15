@@ -40,7 +40,7 @@ import kotlin.math.min
 
 
 /**
- * Returns a log string of this SkiaBitmap.
+ * Returns a log string of this Bitmap.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
@@ -81,11 +81,11 @@ actual fun SkiaBitmap.mutableCopyOrSelf(): SkiaBitmap {
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap.
+ * Returns a new Bitmap that is a copy of this Bitmap.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCopyWith
  */
-internal fun SkiaBitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): SkiaBitmap {
+fun SkiaBitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): SkiaBitmap {
     val inputBitmap = this
     val outBitmap = SkiaBitmap(inputBitmap.imageInfo.withColorInfo(colorInfo))
     val canvas = Canvas(outBitmap)
@@ -216,10 +216,10 @@ actual fun SkiaBitmap.readIntPixel(x: Int, y: Int): Int {
 
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with a background color.
+ * Returns a new Bitmap that is a copy of this Bitmap with a background color.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackgrounded
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackgrounded2
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground2
  */
 actual fun SkiaBitmap.background(color: Int): SkiaBitmap {
     val inputBitmap = this
@@ -242,7 +242,7 @@ actual fun SkiaBitmap.background(color: Int): SkiaBitmap {
 }
 
 /**
- * Blurs this SkiaBitmap with the specified radius.
+ * Blurs this Bitmap with the specified radius.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBlur
  */
@@ -259,7 +259,7 @@ actual fun SkiaBitmap.blur(radius: Int, firstReuseSelf: Boolean): SkiaBitmap {
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with a circle cropped.
+ * Returns a new Bitmap that is a copy of this Bitmap with a circle cropped.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCircleCrop
  */
@@ -315,11 +315,11 @@ actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap flipped horizontally or vertically.
+ * Returns a new Bitmap that is a copy of this Bitmap flipped horizontally or vertically.
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testFlipped
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testFlip
  */
-internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
+actual fun SkiaBitmap.flip(horizontal: Boolean): SkiaBitmap {
     val inputBitmap = this
     val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
@@ -339,7 +339,7 @@ internal fun SkiaBitmap.flipped(horizontal: Boolean): SkiaBitmap {
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap resized to the specified size.
+ * Returns a new Bitmap that is a copy of this Bitmap resized to the specified size.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMapping
  */
@@ -368,7 +368,7 @@ actual fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
 }
 
 /**
- * Masks this SkiaBitmap with the specified color.
+ * Masks this Bitmap with the specified color.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMask
  */
@@ -390,7 +390,7 @@ actual fun SkiaBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): SkiaBitmap 
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap rotated by the specified angle.
+ * Returns a new Bitmap that is a copy of this Bitmap rotated by the specified angle.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRotate
  */
@@ -441,7 +441,7 @@ actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap with rounded corners.
+ * Returns a new Bitmap that is a copy of this Bitmap with rounded corners.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRoundedCorners
  */
@@ -492,7 +492,7 @@ actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
 }
 
 /**
- * Returns a new SkiaBitmap that is a copy of this SkiaBitmap scaled by the specified factor.
+ * Returns a new Bitmap that is a copy of this Bitmap scaled by the specified factor.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testScale
  */
@@ -518,4 +518,23 @@ actual fun SkiaBitmap.scale(scaleFactor: Float): SkiaBitmap {
         sourceImage.close()
     }
     return outBitmap
+}
+
+/**
+ * Create thumbnails with specified width and height
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testThumbnail
+ */
+actual fun SkiaBitmap.thumbnail(width: Int, height: Int): SkiaBitmap {
+    val inputBitmap = this
+    val outputBitmap = SkiaBitmap(inputBitmap.imageInfo.withWidthHeight(width, height))
+    val canvas = Canvas(outputBitmap)
+    SkiaImage.makeFromBitmap(inputBitmap).use { skiaImage ->
+        canvas.drawImageRect(
+            image = skiaImage,
+            src = SkiaRect(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat()),
+            dst = SkiaRect(0f, 0f, outputBitmap.width.toFloat(), outputBitmap.height.toFloat()),
+        )
+    }
+    return outputBitmap
 }

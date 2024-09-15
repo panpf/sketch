@@ -40,7 +40,7 @@ class ImageSerializerNonAndroidTest {
         val imageFinger: String
         val image = imageFile.decode().apply {
             assertEquals(expected = Size(1291, 1936), actual = size)
-            imageFinger = produceFingerPrint(this.bitmap)
+            imageFinger = this.bitmap.produceFingerPrint()
         }
 
         assertTrue(imageSerializer.supportImage(image))
@@ -60,7 +60,7 @@ class ImageSerializerNonAndroidTest {
         imageSerializer.decode(requestContext, imageInfo, dataSource1)
             .asOrThrow<BitmapImage>().apply {
                 assertEquals(expected = Size(1291, 1936), actual = size)
-                newImageFinger = produceFingerPrint(this.bitmap)
+                newImageFinger = this.bitmap.produceFingerPrint()
             }
 
         assertEquals(expected = imageFinger, actual = newImageFinger)

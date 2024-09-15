@@ -51,3 +51,20 @@ actual val Bitmap.height: Int
 @Suppress("ConflictingExtensionProperty")
 actual val Bitmap.byteCount: Long
     get() = this.byteCount.toLong()
+
+/**
+ * Returns true if the bitmap is mutable
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testIsMutable
+ */
+@Suppress("ConflictingExtensionProperty")
+actual val Bitmap.isMutable: Boolean
+    get() = this.isMutable
+
+/**
+ * Returns true if the bitmap is immutable
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testIsImmutable
+ */
+actual val Bitmap.isImmutable: Boolean
+    get() = !this.isMutable

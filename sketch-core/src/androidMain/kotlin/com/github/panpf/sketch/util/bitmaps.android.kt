@@ -27,6 +27,7 @@ import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import android.media.ThumbnailUtils
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
@@ -50,7 +51,7 @@ internal fun ColorType.isHardware(): Boolean =
 /**
  * Gets the safe mutable bitmap configuration, returns ARGB_8888 if it is HARDWARE, otherwise returns itself
  *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToSoftware
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testSafeToSoftware
  */
 fun ColorType?.safeToSoftware(): ColorType =
     if (this == null || (VERSION.SDK_INT >= VERSION_CODES.O && this == ColorType.HARDWARE)) ColorType.ARGB_8888 else this
@@ -72,33 +73,6 @@ internal fun ColorType?.getBytesPerPixel(): Int {
         else -> 4
     }
 }
-
-
-/**
- * Get the configuration of the bitmap, if it is null, return null
- *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testConfigOrNull
- */
-@Suppress("USELESS_ELVIS")
-internal val AndroidBitmap.configOrNull: ColorType?
-    get() = config ?: null
-
-/**
- * Whether the bitmap is immutable
- *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testIsImmutable
- */
-internal val AndroidBitmap.isImmutable: Boolean
-    get() = !isMutable
-
-/**
- * Get the configuration of the bitmap, if it is null, return [ColorType].ARGB_8888
- *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testSafeConfig
- */
-@Suppress("USELESS_ELVIS")
-internal val AndroidBitmap.safeConfig: ColorType
-    get() = config ?: ColorType.ARGB_8888
 
 /**
  * Get the simple name of the color space
@@ -128,6 +102,25 @@ val ColorSpace.simpleName: String
             else -> name
         }
     }
+
+
+/**
+ * Get the configuration of the bitmap, if it is null, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testConfigOrNull
+ */
+@Suppress("USELESS_ELVIS")
+internal val AndroidBitmap.configOrNull: ColorType?
+    get() = config ?: null
+
+/**
+ * Get the configuration of the bitmap, if it is null, return [ColorType].ARGB_8888
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testSafeConfig
+ */
+@Suppress("USELESS_ELVIS")
+internal val AndroidBitmap.safeConfig: ColorType
+    get() = config ?: ColorType.ARGB_8888
 
 
 /**
@@ -190,7 +183,7 @@ actual fun AndroidBitmap.mutableCopyOrSelf(): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCopyWith
  */
-internal fun AndroidBitmap.copyWith(
+fun AndroidBitmap.copyWith(
     config: ColorType = safeConfig,
     isMutable: Boolean = isMutable()
 ): AndroidBitmap {
@@ -268,8 +261,8 @@ actual fun AndroidBitmap.readIntPixel(x: Int, y: Int): Int = getPixel(x, y)
 /**
  * Add a background color to the current Bitmap
  *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackgrounded
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackgrounded2
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground2
  */
 actual fun AndroidBitmap.background(color: Int): AndroidBitmap {
     val inputBitmap = this
@@ -362,6 +355,15 @@ actual fun AndroidBitmap.circleCrop(scale: Scale): AndroidBitmap {
         /* paint = */ paint
     )
     return outBitmap
+}
+
+/**
+ * Returns a new Bitmap that is a copy of this Bitmap flip horizontally or vertically.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testFlip
+ */
+actual fun AndroidBitmap.flip(horizontal: Boolean): AndroidBitmap {
+    TODO("Not yet implemented")
 }
 
 /**
@@ -512,4 +514,14 @@ actual fun AndroidBitmap.scale(scaleFactor: Float): AndroidBitmap {
     }
     canvas.drawBitmap(this, matrix, null)
     return newBitmap
+}
+
+/**
+ * Create thumbnails with specified width and height
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testThumbnail
+ */
+actual fun AndroidBitmap.thumbnail(width: Int, height: Int): AndroidBitmap {
+    val outputBitmap = ThumbnailUtils.extractThumbnail(this, width, height)
+    return outputBitmap
 }

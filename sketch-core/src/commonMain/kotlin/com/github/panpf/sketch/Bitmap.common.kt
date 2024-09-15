@@ -49,3 +49,19 @@ expect val Bitmap.height: Int
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testByteCount
  */
 expect val Bitmap.byteCount: Long
+
+/**
+ * Returns true if the bitmap is mutable
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testIsMutable
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testIsMutable
+ */
+expect val Bitmap.isMutable: Boolean
+
+/**
+ * Returns true if the bitmap is immutable
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testIsImmutable
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testIsImmutable
+ */
+expect val Bitmap.isImmutable: Boolean

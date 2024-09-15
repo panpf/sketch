@@ -1,7 +1,16 @@
 package com.github.panpf.sketch.core.nonandroid.test
 
+import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.byteCount
+import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.isMutable
+import com.github.panpf.sketch.test.utils.decode
+import org.jetbrains.skia.ColorType.RGBA_8888
+import org.jetbrains.skia.ColorType.RGB_565
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class BitmapNonAndroidTest {
 
@@ -15,16 +24,31 @@ class BitmapNonAndroidTest {
 
     @Test
     fun testWidth() {
-        // TODO test
+        assertEquals(expected = 100, actual = SkiaBitmap(100, 200).width)
+        assertEquals(expected = 200, actual = SkiaBitmap(200, 100).width)
     }
 
     @Test
     fun testHeight() {
-        // TODO test
+        assertEquals(expected = 200, actual = SkiaBitmap(100, 200).height)
+        assertEquals(expected = 100, actual = SkiaBitmap(200, 100).height)
     }
 
     @Test
     fun testByteCount() {
-        // TODO test
+        assertEquals(expected = 80000, actual = SkiaBitmap(100, 200, RGBA_8888).byteCount)
+        assertEquals(expected = 40000, actual = SkiaBitmap(200, 100, RGB_565).byteCount)
+    }
+
+    @Test
+    fun testIsMutable() {
+        assertTrue(ResourceImages.jpeg.decode().bitmap.isMutable)
+        assertFalse(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.isMutable)
+    }
+
+    @Test
+    fun testIsImmutable() {
+        assertFalse(ResourceImages.jpeg.decode().bitmap.isImmutable)
+        assertTrue(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.isImmutable)
     }
 }
