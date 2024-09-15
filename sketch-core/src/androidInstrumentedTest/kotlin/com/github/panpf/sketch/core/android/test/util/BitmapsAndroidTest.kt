@@ -36,7 +36,6 @@ import com.github.panpf.sketch.test.utils.produceFingerPrint
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.background
 import com.github.panpf.sketch.util.blur
 import com.github.panpf.sketch.util.circleCrop
@@ -136,28 +135,6 @@ class BitmapsAndroidTest {
             assertEquals(8, Bitmap.Config.RGBA_F16.getBytesPerPixel())
             assertEquals(4, Bitmap.Config.HARDWARE.getBytesPerPixel())
         }
-    }
-
-    @Test
-    fun testAllocationByteCountCompat() {
-        assertEquals(
-            expected = 110 * 210 * 4,
-            actual = Bitmap.createBitmap(
-                110,
-                210,
-                Bitmap.Config.ARGB_8888
-            ).allocationByteCountCompat
-        )
-        assertEquals(
-            expected = 110 * 210 * 2,
-            actual = Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565).allocationByteCountCompat
-        )
-        assertEquals(
-            expected = if (VERSION.SDK_INT >= VERSION_CODES.O) 0 else 110 * 210 * 2,
-            actual = Bitmap.createBitmap(110, 210, Bitmap.Config.RGB_565)
-                .apply { recycle() }
-                .allocationByteCountCompat
-        )
     }
 
     @Test

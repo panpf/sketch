@@ -75,18 +75,6 @@ internal fun ColorType?.getBytesPerPixel(): Int {
 
 
 /**
- * The number of bytes required for calculation based on width, height, and configuration
- *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testAllocationByteCountCompat
- */
-@Suppress("ObsoleteSdkInt")
-internal val AndroidBitmap.allocationByteCountCompat: Int
-    get() = when {
-        VERSION.SDK_INT >= VERSION_CODES.KITKAT -> this.allocationByteCount
-        else -> this.byteCount
-    }
-
-/**
  * Get the configuration of the bitmap, if it is null, return null
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testConfigOrNull

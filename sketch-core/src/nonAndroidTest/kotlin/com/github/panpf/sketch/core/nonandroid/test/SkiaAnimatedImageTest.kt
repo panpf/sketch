@@ -55,10 +55,6 @@ class SkiaAnimatedImageTest {
                 expected = 480 * 480 * codec.imageInfo.bytesPerPixel.toLong(),
                 actual = byteCount
             )
-            assertEquals(
-                expected = 480 * 480 * codec.imageInfo.bytesPerPixel.toLong(),
-                actual = allocationByteCount
-            )
         }
     }
 

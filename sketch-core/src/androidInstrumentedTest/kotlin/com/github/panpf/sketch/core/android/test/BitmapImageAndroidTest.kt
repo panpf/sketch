@@ -60,11 +60,9 @@ class BitmapImageAndroidTest {
     fun testByteCount() {
         BitmapImage(AndroidBitmap(100, 200)).apply {
             assertEquals(expected = 100 * 200 * 4L, actual = byteCount)
-            assertEquals(expected = 100 * 200 * 4L, actual = allocationByteCount)
         }
         BitmapImage(AndroidBitmap(200, 300)).apply {
             assertEquals(expected = 200 * 300 * 4L, actual = byteCount)
-            assertEquals(expected = 200 * 300 * 4L, actual = allocationByteCount)
         }
     }
 

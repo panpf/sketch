@@ -51,12 +51,3 @@ actual val Bitmap.height: Int
 @Suppress("ConflictingExtensionProperty")
 actual val Bitmap.byteCount: Long
     get() = this.byteCount.toLong()
-
-/**
- * Returns the size of the allocated memory used to store this bitmap's pixels..
- *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testAllocationByteCount
- */
-@Suppress("ConflictingExtensionProperty")
-actual val Bitmap.allocationByteCount: Long
-    get() = this.allocationByteCount.toLong()

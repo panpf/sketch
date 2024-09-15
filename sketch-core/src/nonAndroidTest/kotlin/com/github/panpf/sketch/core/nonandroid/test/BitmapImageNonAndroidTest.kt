@@ -62,11 +62,9 @@ class BitmapImageNonAndroidTest {
     fun testByteCount() {
         BitmapImage(SkiaBitmap(100, 200)).apply {
             assertEquals(expected = 100 * 200 * 4L, actual = byteCount)
-            assertEquals(expected = 100 * 200 * 4L, actual = allocationByteCount)
         }
         BitmapImage(SkiaBitmap(200, 300)).apply {
             assertEquals(expected = 200 * 300 * 4L, actual = byteCount)
-            assertEquals(expected = 200 * 300 * 4L, actual = allocationByteCount)
         }
     }
 

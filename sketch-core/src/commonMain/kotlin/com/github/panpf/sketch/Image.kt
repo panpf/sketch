@@ -30,7 +30,7 @@ val Image.size: Size
  * An image
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest
- * @see com.github.panpf.sketch.core.android.test.AndroidDrawableImageTest
+ * @see com.github.panpf.sketch.core.android.test.DrawableImageTest
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapImageNonAndroidTest
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaAnimatedImageTest
  * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest
@@ -51,11 +51,6 @@ interface Image {
      * Returns the minimum number of bytes that can be used to store this bitmap's pixels.
      */
     val byteCount: Long
-
-    /**
-     * Returns the size of the allocated memory used to store this bitmap's pixels..
-     */
-    val allocationByteCount: Long
 
     /**
      * True if the image can be shared between multiple [Target]s at the same time.
@@ -85,9 +80,4 @@ interface ByteCountProvider {
      * Returns the minimum number of bytes that can be used to store this object's data.
      */
     val byteCount: Long
-
-    /**
-     * Returns the size of the allocated memory used to store this object's data.
-     */
-    val allocationByteCount: Long
 }

@@ -19,7 +19,6 @@ package com.github.panpf.sketch
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.heightWithBitmapFirst
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.widthWithBitmapFirst
@@ -58,16 +57,12 @@ data class DrawableImage internal constructor(
 
     override val height: Int = drawable.intrinsicHeight
 
-    override val byteCount: Long = when (drawable) {
-        is ByteCountProvider -> drawable.byteCount
-        is BitmapDrawable -> drawable.bitmap.byteCount.toLong()
-        else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
-    }
-
-    override val allocationByteCount: Long = when (drawable) {
-        is ByteCountProvider -> drawable.allocationByteCount
-        is BitmapDrawable -> drawable.bitmap.allocationByteCountCompat.toLong()
-        else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
+    override val byteCount: Long by lazy {
+        when (drawable) {
+            is ByteCountProvider -> drawable.byteCount
+            is BitmapDrawable -> drawable.bitmap.byteCount.toLong()
+            else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
+        }
     }
 
     override val cachedInMemory: Boolean = false

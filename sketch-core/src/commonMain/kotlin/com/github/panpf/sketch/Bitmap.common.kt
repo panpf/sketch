@@ -49,11 +49,3 @@ expect val Bitmap.height: Int
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testByteCount
  */
 expect val Bitmap.byteCount: Long
-
-/**
- * Returns the size of the allocated memory used to store this bitmap's pixels..
- *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testAllocationByteCount
- * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testAllocationByteCount
- */
-expect val Bitmap.allocationByteCount: Long

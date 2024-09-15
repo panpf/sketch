@@ -41,8 +41,6 @@ data class SkiaAnimatedImage constructor(
 
     override val byteCount: Long = imageInfo.bytesPerPixel.toLong() * width * height
 
-    override val allocationByteCount: Long = byteCount
-
     override val shareable: Boolean = true
 
     override val cachedInMemory: Boolean = false

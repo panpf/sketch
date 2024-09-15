@@ -42,8 +42,6 @@ expect class BitmapImage : Image {
 
     override val byteCount: Long
 
-    override val allocationByteCount: Long
-
     override val shareable: Boolean
 
     override val cachedInMemory: Boolean

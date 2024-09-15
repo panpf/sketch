@@ -51,12 +51,3 @@ actual val Bitmap.height: Int
  */
 actual val Bitmap.byteCount: Long
     get() = (rowBytes * height).toLong()
-
-/**
- * Returns the size of the allocated memory used to store this bitmap's pixels..
- *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testAllocationByteCount
- * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testAllocationByteCount
- */
-actual val Bitmap.allocationByteCount: Long
-    get() = (rowBytes * height).toLong()

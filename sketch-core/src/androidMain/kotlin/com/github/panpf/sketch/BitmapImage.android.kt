@@ -18,7 +18,6 @@
 
 package com.github.panpf.sketch
 
-import com.github.panpf.sketch.util.allocationByteCountCompat
 import com.github.panpf.sketch.util.toLogString
 
 /**
@@ -44,8 +43,6 @@ actual data class BitmapImage(
     actual override val height: Int = bitmap.height
 
     actual override val byteCount: Long = bitmap.byteCount.toLong()
-
-    actual override val allocationByteCount: Long = bitmap.allocationByteCountCompat.toLong()
 
     actual override fun checkValid(): Boolean = !bitmap.isRecycled
 

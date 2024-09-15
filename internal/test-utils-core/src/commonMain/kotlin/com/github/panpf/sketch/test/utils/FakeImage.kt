@@ -14,9 +14,6 @@ class FakeImage(val size: SketchSize) : Image {
     override val byteCount: Long
         get() = size.width * size.height * 4L
 
-    override val allocationByteCount: Long
-        get() = byteCount
-
     override val shareable: Boolean
         get() = true
 

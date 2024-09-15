@@ -44,8 +44,6 @@ actual data class BitmapImage(
 
     actual override val byteCount: Long = (bitmap.rowBytes * bitmap.height).toLong()
 
-    actual override val allocationByteCount: Long = byteCount
-
     actual override fun checkValid(): Boolean = true
 
     override fun toString(): String =

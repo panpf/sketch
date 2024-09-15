@@ -27,9 +27,4 @@ class BitmapNonAndroidTest {
     fun testByteCount() {
         // TODO test
     }
-
-    @Test
-    fun testAllocationByteCount() {
-        // TODO test
-    }
 }
