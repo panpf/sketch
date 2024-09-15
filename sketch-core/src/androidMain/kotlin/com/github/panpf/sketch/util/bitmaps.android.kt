@@ -45,7 +45,7 @@ import kotlin.math.min
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testIsHardware
  */
-internal fun ColorType.isHardware(): Boolean =
+fun ColorType.isHardware(): Boolean =
     VERSION.SDK_INT >= VERSION_CODES.O && this == ColorType.HARDWARE
 
 /**
@@ -59,20 +59,19 @@ fun ColorType?.safeToSoftware(): ColorType =
 /**
  * Gets the number of bytes occupied by a single pixel in a specified configuration
  *
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testGetBytesPerPixel
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBytesPerPixel
  */
-internal fun ColorType?.getBytesPerPixel(): Int {
-    // A bitmap by decoding a gif has null "config" in certain environments.
-    val config = this ?: ColorType.ARGB_8888
-    @Suppress("DEPRECATION")
-    return when {
-        config == ColorType.ALPHA_8 -> 1
-        config == ColorType.RGB_565 || config == ColorType.ARGB_4444 -> 2
-        config == ColorType.ARGB_8888 -> 4
-        VERSION.SDK_INT >= VERSION_CODES.O && config == ColorType.RGBA_F16 -> 8
-        else -> 4
+val ColorType.bytesPerPixel: Int
+    get() {
+        @Suppress("DEPRECATION")
+        return when {
+            this == ColorType.ALPHA_8 -> 1
+            this == ColorType.RGB_565 || this == ColorType.ARGB_4444 -> 2
+            this == ColorType.ARGB_8888 -> 4
+            VERSION.SDK_INT >= VERSION_CODES.O && this == ColorType.RGBA_F16 -> 8
+            else -> 4
+        }
     }
-}
 
 /**
  * Get the simple name of the color space
@@ -110,7 +109,7 @@ val ColorSpace.simpleName: String
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testConfigOrNull
  */
 @Suppress("USELESS_ELVIS")
-internal val AndroidBitmap.configOrNull: ColorType?
+val AndroidBitmap.configOrNull: ColorType?
     get() = config ?: null
 
 /**
@@ -119,7 +118,7 @@ internal val AndroidBitmap.configOrNull: ColorType?
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testSafeConfig
  */
 @Suppress("USELESS_ELVIS")
-internal val AndroidBitmap.safeConfig: ColorType
+val AndroidBitmap.safeConfig: ColorType
     get() = config ?: ColorType.ARGB_8888
 
 
@@ -128,7 +127,7 @@ internal val AndroidBitmap.safeConfig: ColorType
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToLogString
  */
-internal fun AndroidBitmap.toLogString(): String =
+fun AndroidBitmap.toLogString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap@${toHexString()}(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
     } else {
@@ -140,7 +139,7 @@ internal fun AndroidBitmap.toLogString(): String =
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToInfoString
  */
-internal fun AndroidBitmap.toInfoString(): String =
+fun AndroidBitmap.toInfoString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap(width=${width}, height=${height}, config=$configOrNull, colorSpace=${colorSpace?.simpleName})"
     } else {
@@ -152,7 +151,7 @@ internal fun AndroidBitmap.toInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToShortInfoString
  */
-internal fun AndroidBitmap.toShortInfoString(): String =
+fun AndroidBitmap.toShortInfoString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
     } else {

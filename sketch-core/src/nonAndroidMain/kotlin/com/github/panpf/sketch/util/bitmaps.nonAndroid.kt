@@ -44,7 +44,7 @@ import kotlin.math.min
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
-internal fun SkiaBitmap.toLogString(): String =
+fun SkiaBitmap.toLogString(): String =
     "Bitmap@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
 
 /**
@@ -52,7 +52,7 @@ internal fun SkiaBitmap.toLogString(): String =
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
-internal fun SkiaBitmap.toInfoString(): String =
+fun SkiaBitmap.toInfoString(): String =
     "Bitmap(width=${width}, height=${height}, colorType=${colorType}, colorSpace=${colorSpace?.name()})"
 
 /**
@@ -60,7 +60,7 @@ internal fun SkiaBitmap.toInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
-internal fun SkiaBitmap.toShortInfoString(): String =
+fun SkiaBitmap.toShortInfoString(): String =
     "Bitmap(${width}x${height},${colorType},${colorSpace?.name()})"
 
 
@@ -252,9 +252,9 @@ actual fun SkiaBitmap.blur(radius: Int, firstReuseSelf: Boolean): SkiaBitmap {
         if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val imageWidth = outBitmap.width
     val imageHeight = outBitmap.height
-    val pixels: IntArray = outBitmap.readIntPixels()
-    fastGaussianBlur(pixels, imageWidth, imageHeight, radius)
-    outBitmap.installIntPixels(pixels)
+    val intPixels: IntArray = outBitmap.readIntPixels()
+    fastGaussianBlur(intPixels, imageWidth, imageHeight, radius)
+    outBitmap.installIntPixels(intPixels)
     return outBitmap
 }
 

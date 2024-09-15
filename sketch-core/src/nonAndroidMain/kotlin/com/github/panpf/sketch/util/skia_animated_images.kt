@@ -24,5 +24,5 @@ import org.jetbrains.skia.Codec
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.SkiaAnimatedImagesTest.testCodecToLogString
  */
-internal fun Codec.toLogString(): String =
+fun Codec.toLogString(): String =
     "Codec@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
