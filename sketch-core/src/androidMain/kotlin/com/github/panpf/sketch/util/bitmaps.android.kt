@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.util
 
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorSpace
@@ -223,7 +224,7 @@ actual fun AndroidBitmap.readIntPixels(
     getPixels(
         /* pixels = */ pixels,
         /* offset = */ 0,
-        /* stride = */ this.width,
+        /* stride = */ width,
         /* x = */ x,
         /* y = */ y,
         /* width = */ width,
@@ -362,7 +363,22 @@ actual fun AndroidBitmap.circleCrop(scale: Scale): AndroidBitmap {
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testFlip
  */
 actual fun AndroidBitmap.flip(horizontal: Boolean): AndroidBitmap {
-    TODO("Not yet implemented")
+    val inputBitmap = this
+    val matrix = Matrix()
+    if (horizontal) {
+        matrix.postScale(-1f, 1f)
+    } else {
+        matrix.postScale(1f, -1f)
+    }
+    return Bitmap.createBitmap(
+        /* source = */ inputBitmap,
+        /* x = */ 0,
+        /* y = */ 0,
+        /* width = */ inputBitmap.width,
+        /* height = */ inputBitmap.height,
+        /* m = */ matrix,
+        /* filter = */ true
+    )
 }
 
 /**
