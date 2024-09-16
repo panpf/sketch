@@ -2,6 +2,7 @@ package com.github.panpf.sketch.core.android.test
 
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.colorType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -32,5 +33,12 @@ class AndroidBitmapTest {
             expected = android.graphics.Bitmap.Config::class,
             actual = ColorType::class
         )
+
+        AndroidBitmap(100, 200).apply {
+            assertEquals(
+                expected = android.graphics.Bitmap.Config.ARGB_8888,
+                actual = this.colorType
+            )
+        }
     }
 }

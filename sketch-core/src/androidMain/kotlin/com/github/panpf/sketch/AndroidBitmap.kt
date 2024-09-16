@@ -31,6 +31,14 @@ typealias AndroidBitmap = android.graphics.Bitmap
 typealias ColorType = android.graphics.Bitmap.Config
 
 /**
+ * Get the [ColorType] of the bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testColorType
+ */
+val Bitmap.colorType: ColorType
+    get() = config
+
+/**
  * Create a new [AndroidBitmap] with the specified width, height, and [ColorType] and allocate memory
  *
  * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmap
