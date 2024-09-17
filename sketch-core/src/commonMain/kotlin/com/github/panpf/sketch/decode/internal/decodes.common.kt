@@ -29,9 +29,6 @@ import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.scale
 
-
-/* ************************************** sampling ********************************************** */
-
 /**
  * Get the maximum Bitmap size allowed by the runtime platform
  *
@@ -43,10 +40,10 @@ expect fun getMaxBitmapSize(): Size?
 /**
  * Get the maximum Bitmap size allowed by the runtime platform
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testGetMaxBitmapSize
- * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testGetMaxBitmapSize
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testGetMaxBitmapSizeOr
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testGetMaxBitmapSizeOr
  */
-fun getMaxBitmapSize(targetSize: Size): Size {
+fun getMaxBitmapSizeOr(targetSize: Size): Size {
     return getMaxBitmapSize() ?: Size(targetSize.width * 2, targetSize.height * 2)
 }
 
@@ -75,7 +72,6 @@ expect fun calculateSampledBitmapSizeForRegion(
     imageSize: Size? = null
 ): Size
 
-
 /**
  * Calculate the sample size
  *
@@ -93,7 +89,7 @@ fun calculateSampleSize(
     }
     var sampleSize = 1
     var accepted = false
-    val maxBitmapSize = getMaxBitmapSize(targetSize)
+    val maxBitmapSize = getMaxBitmapSizeOr(targetSize)
     while (!accepted) {
         val sampledBitmapSize = calculateSampledBitmapSize(
             imageSize = imageSize,
@@ -148,7 +144,7 @@ fun calculateSampleSizeForRegion(
     }
     var sampleSize = 1
     var accepted = false
-    val maxBitmapSize = getMaxBitmapSize(targetSize)
+    val maxBitmapSize = getMaxBitmapSizeOr(targetSize)
     while (!accepted) {
         val sampledBitmapSize = calculateSampledBitmapSizeForRegion(
             regionSize = regionSize,
@@ -218,9 +214,6 @@ private fun Size.checkSideLimit(limitSize: Size): Boolean {
 private fun Size.checkAreaLimit(limitSize: Size): Boolean {
     return (this.width * this.height) <= (limitSize.width * limitSize.height)
 }
-
-
-/* **************************************** decode ********************************************* */
 
 /**
  * Resize image according to [Resize]

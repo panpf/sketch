@@ -5,6 +5,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
+import com.github.panpf.sketch.decode.internal.getMaxBitmapSizeOr
 import com.github.panpf.sketch.util.Size
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,6 +16,14 @@ class DecodesNonAndroidTest {
     @Test
     fun testGetMaxBitmapSize() {
         assertNull(actual = getMaxBitmapSize())
+    }
+
+    @Test
+    fun testGetMaxBitmapSizeOr() {
+        assertEquals(
+            expected = Size(30, 50),
+            actual = getMaxBitmapSizeOr(Size(30, 50))
+        )
     }
 
     @Test

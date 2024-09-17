@@ -36,9 +36,6 @@ import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.floor
 
-
-/* ************************************** sampling ********************************************** */
-
 /**
  * Get the maximum Bitmap size allowed by the Android platform
  *
@@ -100,9 +97,6 @@ actual fun calculateSampledBitmapSizeForRegion(
     return Size(width, height)
 }
 
-
-/* **************************************** decode ********************************************* */
-
 /**
  * Read image information using BitmapFactory
  *
@@ -135,7 +129,6 @@ fun DataSource.readImageInfoWithExifOrientation(helper: ExifOrientationHelper? =
     val correctedImageSize = exifOrientationHelper.applyToSize(imageInfo.size)
     return imageInfo.copy(size = correctedImageSize)
 }
-
 
 /**
  * Decode bitmap using BitmapFactory

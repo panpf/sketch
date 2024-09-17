@@ -34,9 +34,6 @@ import org.jetbrains.skia.Rect
 import org.jetbrains.skia.impl.use
 import kotlin.math.ceil
 
-
-/* ************************************** sampling ********************************************** */
-
 /**
  * Get the maximum Bitmap size allowed by the Skia platform
  *
@@ -76,9 +73,6 @@ actual fun calculateSampledBitmapSizeForRegion(
     sampleSize = sampleSize,
     mimeType = mimeType
 )
-
-
-/* **************************************** decode ********************************************* */
 
 /**
  * Decode the image by sampling

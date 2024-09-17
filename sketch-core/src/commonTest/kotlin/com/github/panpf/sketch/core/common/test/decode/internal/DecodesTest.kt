@@ -4,10 +4,8 @@ import kotlin.test.Test
 
 class DecodesTest {
 
-    // TODO test
-
     @Test
     fun testCheckSampledBitmapSize() {
-
+        // TODO test
     }
 }

@@ -32,6 +32,7 @@ import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegi
 import com.github.panpf.sketch.decode.internal.decodeBitmap
 import com.github.panpf.sketch.decode.internal.decodeRegionBitmap
 import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
+import com.github.panpf.sketch.decode.internal.getMaxBitmapSizeOr
 import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
@@ -41,7 +42,6 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -73,6 +73,22 @@ class DecodesAndroidTest {
             ).any { it == maxSize },
             message = "maxSize=$maxSize"
         )
+    }
+
+    @Test
+    fun testGetMaxBitmapSizeOr() {
+        val maxSize = getMaxBitmapSize()
+        if (maxSize != null) {
+            assertEquals(
+                expected = maxSize,
+                actual = getMaxBitmapSizeOr(Size(30, 50))
+            )
+        } else {
+            assertEquals(
+                expected = Size(30, 50),
+                actual = getMaxBitmapSizeOr(Size(30, 50))
+            )
+        }
     }
 
     @Test
@@ -140,8 +156,6 @@ class DecodesAndroidTest {
                 mimeType = "image/heif"
             )
         )
-
-        // TODO Real decoding test
     }
 
     @Test
@@ -199,8 +213,6 @@ class DecodesAndroidTest {
                 mimeType = "image/jpeg",
             )
         )
-
-        // TODO Real decoding test
     }
 
     @Test
@@ -1019,31 +1031,22 @@ class DecodesAndroidTest {
     fun testDecodeRegionBitmap() {
         val context = getTestContext()
 
-        AssetDataSource(
-            context,
-            ResourceImages.jpeg.resourceName
-        )
+        ResourceImages.jpeg.toDataSource(context)
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 600, 600))!!.apply {
                 assertEquals(100, width)
                 assertEquals(100, height)
             }
 
-        AssetDataSource(
-            context,
-            ResourceImages.jpeg.resourceName
-        )
+        ResourceImages.jpeg.toDataSource(context)
             .decodeRegionBitmap(
-                android.graphics.Rect(500, 500, 600, 600),
-                BitmapFactory.Options().apply { inSampleSize = 2 })!!
+                srcRect = android.graphics.Rect(500, 500, 600, 600),
+                options = BitmapFactory.Options().apply { inSampleSize = 2 })!!
             .apply {
                 assertEquals(50, width)
                 assertEquals(50, height)
             }
 
-        AssetDataSource(
-            context,
-            ResourceImages.webp.resourceName
-        )
+        ResourceImages.webp.toDataSource(context)
             .decodeRegionBitmap(android.graphics.Rect(500, 500, 700, 700))!!.apply {
                 assertEquals(200, width)
                 assertEquals(200, height)
