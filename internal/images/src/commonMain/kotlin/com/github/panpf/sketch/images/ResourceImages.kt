@@ -20,77 +20,141 @@ import com.github.panpf.sketch.util.Size
 
 object ResourceImages {
 
-    val bmp: ResourceImageFile = ResourceImageFile("sample.bmp", "BMP", Size(700, 1012))
-    val heic: ResourceImageFile = ResourceImageFile("sample.heic", "HEIC", Size(750, 931))
-    val jpeg: ResourceImageFile = ResourceImageFile("sample.jpeg", "JPEG", Size(1291, 1936))
-    val png: ResourceImageFile = ResourceImageFile("sample.png", "PNG", Size(750, 719))
-    val svg: ResourceImageFile = ResourceImageFile("sample.svg", "SVG", Size(256, 225))
-    val webp: ResourceImageFile = ResourceImageFile("sample.webp", "WEBP", Size(1080, 1344))
+    val bmp: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.bmp",
+        name = "BMP",
+        size = Size(700, 1012),
+        mimeType = "image/bmp"
+    )
+    val heic: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.heic",
+        name = "HEIC",
+        size = Size(750, 932),
+        mimeType = "image/heif"
+    )
+    val jpeg: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.jpeg",
+        name = "JPEG",
+        size = Size(1291, 1936),
+        mimeType = "image/jpeg"
+    )
+    val png: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.png",
+        name = "PNG",
+        size = Size(750, 719),
+        mimeType = "image/png"
+    )
+    val svg: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.svg",
+        name = "SVG",
+        size = Size(256, 225),
+        mimeType = "image/svg+xml"
+    )
+    val webp: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.webp",
+        name = "WEBP",
+        size = Size(1080, 1344),
+        mimeType = "image/webp"
+    )
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic)
 
-    val animGif: ResourceImageFile = ResourceImageFile("sample_anim.gif", "GIF", Size(480, 480))
-    val animHeif: ResourceImageFile = ResourceImageFile("sample_anim.heif", "HEIF_ANIM", Size(256, 144))
-    val animWebp: ResourceImageFile = ResourceImageFile("sample_anim.webp", "WEBP_ANIM", Size(480, 270))
+    val animGif: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample_anim.gif",
+        name = "GIF",
+        size = Size(480, 480),
+        mimeType = "image/gif"
+    )
+    val animHeif: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample_anim.heif",
+        name = "HEIF_ANIM",
+        size = Size(256, 144),
+        mimeType = "image/heif"
+    )
+    val animWebp: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample_anim.webp",
+        name = "WEBP_ANIM",
+        size = Size(480, 270),
+        mimeType = "image/webp"
+    )
     val anims = arrayOf(animGif, animWebp, animHeif)
 
-    val mp4: ResourceImageFile = ResourceImageFile("sample.mp4", "MP4", Size(500, 250))
+    val mp4: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.mp4",
+        name = "MP4",
+        size = Size(500, 250),
+        mimeType = "video/mp4"
+    )
     val videos = arrayOf(mp4)
 
-    val longQMSHT: ResourceImageFile = ResourceImageFile("sample_long_qmsht.jpg", "QMSHT", Size(30000, 926))
+    val longQMSHT: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample_long_qmsht.jpg",
+        name = "QMSHT",
+        size = Size(30000, 926),
+        mimeType = "image/jpeg"
+    )
 
     val clockExifFlipHorizontal: ResourceImageFile = ResourceImageFile(
-        "clock_exif_flip_horizontal.jpeg",
-        "FLIP_HOR",
-        Size(1500, 750),
-        ExifOrientation.FLIP_HORIZONTAL
+        resourceName = "clock_exif_flip_horizontal.jpeg",
+        name = "FLIP_HOR",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.FLIP_HORIZONTAL
     )
     val clockExifFlipVertical: ResourceImageFile = ResourceImageFile(
-        "clock_exif_flip_vertical.jpeg",
-        "FLIP_VER",
-        Size(1500, 750),
-        ExifOrientation.FLIP_VERTICAL
+        resourceName = "clock_exif_flip_vertical.jpeg",
+        name = "FLIP_VER",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.FLIP_VERTICAL
     )
     val clockExifNormal: ResourceImageFile = ResourceImageFile(
-        "clock_exif_normal.jpeg",
-        "NORMAL",
-        Size(1500, 750),
-        ExifOrientation.NORMAL
+        resourceName = "clock_exif_normal.jpeg",
+        name = "NORMAL",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.NORMAL
     )
     val clockExifRotate90: ResourceImageFile = ResourceImageFile(
-        "clock_exif_rotate_90.jpeg",
-        "ROTATE_90",
-        Size(750, 1500),
-        ExifOrientation.ROTATE_90
+        resourceName = "clock_exif_rotate_90.jpeg",
+        name = "ROTATE_90",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.ROTATE_90
     )
     val clockExifRotate180: ResourceImageFile = ResourceImageFile(
-        "clock_exif_rotate_180.jpeg",
-        "ROTATE_180",
-        Size(1500, 750),
-        ExifOrientation.ROTATE_180
+        resourceName = "clock_exif_rotate_180.jpeg",
+        name = "ROTATE_180",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.ROTATE_180
     )
     val clockExifRotate270: ResourceImageFile = ResourceImageFile(
-        "clock_exif_rotate_270.jpeg",
-        "ROTATE_270",
-        Size(750, 1500),
-        ExifOrientation.ROTATE_270
+        resourceName = "clock_exif_rotate_270.jpeg",
+        name = "ROTATE_270",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.ROTATE_270
     )
     val clockExifTranspose: ResourceImageFile = ResourceImageFile(
-        "clock_exif_transpose.jpeg",
-        "TRANSPOSE",
-        Size(750, 1500),
-        ExifOrientation.TRANSPOSE
+        resourceName = "clock_exif_transpose.jpeg",
+        name = "TRANSPOSE",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.TRANSPOSE
     )
     val clockExifTransverse: ResourceImageFile = ResourceImageFile(
-        "clock_exif_transverse.jpeg",
-        "TRANSVERSE",
-        Size(750, 1500),
-        ExifOrientation.TRANSVERSE
+        resourceName = "clock_exif_transverse.jpeg",
+        name = "TRANSVERSE",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.TRANSVERSE
     )
     val clockExifUndefined: ResourceImageFile = ResourceImageFile(
-        "clock_exif_undefined.jpeg",
-        "UNDEFINED",
-        Size(1500, 750),
-        ExifOrientation.UNDEFINED
+        resourceName = "clock_exif_undefined.jpeg",
+        name = "UNDEFINED",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg",
+        exifOrientation = ExifOrientation.UNDEFINED
     )
     val clockExifs = arrayOf(
         clockExifFlipHorizontal,
@@ -104,20 +168,75 @@ object ResourceImages {
         clockExifUndefined,
     )
 
-    val number1: ResourceImageFile = ResourceImageFile("number_1.png", "NUMBER_1", Size(698, 776))
-    val number2: ResourceImageFile = ResourceImageFile("number_2.png", "NUMBER_2", Size(698, 776))
-    val number3: ResourceImageFile = ResourceImageFile("number_3.png", "NUMBER_3", Size(698, 776))
-    val number4: ResourceImageFile = ResourceImageFile("number_4.png", "NUMBER_4", Size(698, 776))
-    val number5: ResourceImageFile = ResourceImageFile("number_5.png", "NUMBER_5", Size(698, 776))
-    val number6: ResourceImageFile = ResourceImageFile("number_6.png", "NUMBER_6", Size(698, 776))
-    val number7: ResourceImageFile = ResourceImageFile("number_7.png", "NUMBER_7", Size(698, 776))
-    val number8: ResourceImageFile = ResourceImageFile("number_8.png", "NUMBER_8", Size(698, 776))
-    val number9: ResourceImageFile = ResourceImageFile("number_9.png", "NUMBER_9", Size(698, 776))
+    val number1: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_1.png",
+        name = "NUMBER_1",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number2: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_2.png",
+        name = "NUMBER_2",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number3: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_3.png",
+        name = "NUMBER_3",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number4: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_4.png",
+        name = "NUMBER_4",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number5: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_5.png",
+        name = "NUMBER_5",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number6: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_6.png",
+        name = "NUMBER_6",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number7: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_7.png",
+        name = "NUMBER_7",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number8: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_8.png",
+        name = "NUMBER_8",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
+    val number9: ResourceImageFile = ResourceImageFile(
+        resourceName = "number_9.png",
+        name = "NUMBER_9",
+        size = Size(698, 776),
+        mimeType = "image/png"
+    )
     val numbers =
         arrayOf(number1, number2, number3, number4, number5, number6, number7, number8, number9)
 
-    val clockHor: ResourceImageFile = ResourceImageFile("clock_hor.jpeg", "CLOCK_HOR", Size(1500, 750))
-    val clockVer: ResourceImageFile = ResourceImageFile("clock_ver.jpeg", "CLOCK_VER", Size(750, 1500))
+    val clockHor: ResourceImageFile = ResourceImageFile(
+        resourceName = "clock_hor.jpeg",
+        name = "CLOCK_HOR",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg"
+    )
+    val clockVer: ResourceImageFile = ResourceImageFile(
+        resourceName = "clock_ver.jpeg",
+        name = "CLOCK_VER",
+        size = Size(750, 1500),
+        mimeType = "image/jpeg"
+    )
 
     val values: Array<ResourceImageFile> = arrayOf(
         bmp, heic, jpeg, png, svg, webp, animGif, animHeif, animWebp, mp4, longQMSHT,

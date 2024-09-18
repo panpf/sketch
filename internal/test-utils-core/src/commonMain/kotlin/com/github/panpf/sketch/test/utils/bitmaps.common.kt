@@ -2,6 +2,7 @@ package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.height
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.readIntPixel
 import com.github.panpf.sketch.width
 
@@ -30,3 +31,8 @@ fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
 }
 
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
+
+val Bitmap.size: Size
+    get() = Size(width, height)
+
+expect fun Bitmap.toPreviewBitmap(): Any

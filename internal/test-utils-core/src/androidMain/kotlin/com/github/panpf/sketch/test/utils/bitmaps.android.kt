@@ -20,11 +20,7 @@ import android.graphics.Bitmap
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.copyWith
-
-val Bitmap.size: Size
-    get() = Size(width, height)
 
 fun shortInfoColorSpace(name: String): String {
     return if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -61,3 +57,5 @@ actual fun getMutableBitmap(): Bitmap {
 actual fun getImmutableBitmap(): Bitmap {
     return ResourceImages.jpeg.decode().bitmap
 }
+
+actual fun Bitmap.toPreviewBitmap(): Any = this

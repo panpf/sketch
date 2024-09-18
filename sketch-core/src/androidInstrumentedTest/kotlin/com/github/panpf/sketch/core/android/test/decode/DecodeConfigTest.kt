@@ -41,10 +41,10 @@ class DecodeConfigTest {
     @Test
     fun testInSampleSize() {
         DecodeConfig().apply {
-            assertNull(inSampleSize)
+            assertNull(sampleSize)
 
-            inSampleSize = 4
-            assertEquals(4, inSampleSize)
+            sampleSize = 4
+            assertEquals(4, sampleSize)
         }
     }
 
@@ -62,10 +62,10 @@ class DecodeConfigTest {
     @Test
     fun testInPreferredConfig() {
         DecodeConfig().apply {
-            assertNull(inPreferredConfig)
+            assertNull(colorType)
 
-            inPreferredConfig = RGB_565
-            assertEquals(RGB_565, inPreferredConfig)
+            colorType = RGB_565
+            assertEquals(RGB_565, colorType)
         }
     }
 
@@ -73,12 +73,12 @@ class DecodeConfigTest {
     fun testInPreferredColorSpace() {
         DecodeConfig().apply {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                assertNull(inPreferredColorSpace)
+                assertNull(colorSpace)
             }
 
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                inPreferredColorSpace = ColorSpace.get(SMPTE_C)
-                assertEquals(ColorSpace.get(SMPTE_C), inPreferredColorSpace)
+                colorSpace = ColorSpace.get(SMPTE_C)
+                assertEquals(ColorSpace.get(SMPTE_C), colorSpace)
             }
         }
     }
@@ -96,12 +96,12 @@ class DecodeConfigTest {
         }
 
         DecodeConfig().apply {
-            inSampleSize = 4
+            sampleSize = 4
             @Suppress("DEPRECATION")
             inPreferQualityOverSpeed = true
-            inPreferredConfig = RGB_565
+            colorType = RGB_565
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                inPreferredColorSpace = ColorSpace.get(SMPTE_C)
+                colorSpace = ColorSpace.get(SMPTE_C)
             }
         }.toBitmapOptions().apply {
             assertEquals(4, inSampleSize)
