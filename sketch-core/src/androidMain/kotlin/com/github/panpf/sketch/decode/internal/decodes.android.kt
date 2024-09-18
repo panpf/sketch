@@ -183,7 +183,7 @@ fun DataSource.decodeRegion(
     } else {
         BitmapRegionDecoder.newInstance(it, false)
     }
-    val imageInfo1 = imageInfo ?: readImageInfo()
+    val imageInfo1 = imageInfo ?: readImageInfo(exifOrientationHelper)
     val exifOrientationHelper1 =
         exifOrientationHelper ?: ExifOrientationHelper(readExifOrientation())
     val originalRegion =

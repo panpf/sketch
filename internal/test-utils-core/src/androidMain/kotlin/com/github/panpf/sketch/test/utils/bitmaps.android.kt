@@ -19,6 +19,7 @@ package com.github.panpf.sketch.test.utils
 import android.graphics.Bitmap
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.util.copyWith
 
@@ -59,3 +60,13 @@ actual fun getImmutableBitmap(): Bitmap {
 }
 
 actual fun Bitmap.toPreviewBitmap(): Any = this
+
+fun ColorType.expectedRgb565(mimeType: String): ColorType {
+    return if (this == ColorType.RGB_565
+        && (mimeType == "image/png" || mimeType == "image/gif")
+    ) {
+        ColorType.ARGB_8888
+    } else {
+        this
+    }
+}

@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.core.android.test.decode.internal
 
+import android.graphics.Canvas
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -56,23 +57,24 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.expectedRgb565
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.installIntPixels
 import com.github.panpf.sketch.util.isSameAspectRatio
-import com.github.panpf.sketch.util.readIntPixels
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.times
+import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.test.runTest
-import kotlin.math.ceil
+import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -178,6 +180,7 @@ class DecodesAndroidTest {
                 mimeType = "image/heif"
             )
         )
+        // TODO test real read
     }
 
     @Test
@@ -235,6 +238,7 @@ class DecodesAndroidTest {
                 mimeType = "image/jpeg",
             )
         )
+        // TODO test real read
     }
 
     @Test
@@ -1275,17 +1279,9 @@ class DecodesAndroidTest {
                 sampleSize = config1.sampleSize ?: 1,
                 mimeType = imageInfo.mimeType
             )
-            val expectedColorType = when (imageInfo.mimeType) {
-                "image/png", "image/gif" -> {
-                    ColorType.ARGB_8888
-                }
-
-                else -> {
-                    ColorType.RGB_565
-                }
-            }
+            val colorType = config1.colorType!!.expectedRgb565(imageInfo.mimeType)
             assertEquals(
-                expected = "Bitmap(${bitmapSize1},${expectedColorType}${shortInfoColorSpace("LINEAR_SRGB")})",
+                expected = "Bitmap(${bitmapSize1},$colorType${shortInfoColorSpace("LINEAR_SRGB")})",
                 actual = dataSource.decode(config1).toShortInfoString(),
                 message = "item=$item"
             )
@@ -1296,336 +1292,153 @@ class DecodesAndroidTest {
     fun testDecodeRegion() {
         val context = getTestContext()
 
-        data class Item(
-            val imageFile: ResourceImageFile,
-            val error: Boolean
-        )
         listOf(
-            Item(ResourceImages.jpeg, error = false),
-            Item(ResourceImages.png, error = false),
-            Item(ResourceImages.bmp, error = false),
-            Item(ResourceImages.webp, error = false),
-            Item(ResourceImages.heic, error = true),
-            Item(ResourceImages.svg, error = true),
-            Item(ResourceImages.animGif, error = false),
-            Item(ResourceImages.animWebp, error = false),
-            Item(ResourceImages.animHeif, error = true),
-            Item(ResourceImages.clockExifFlipHorizontal, error = false),
-            Item(ResourceImages.clockExifFlipVertical, error = false),
-            Item(ResourceImages.clockExifNormal, error = false),
-            Item(ResourceImages.clockExifRotate90, error = false),
-            Item(ResourceImages.clockExifRotate180, error = false),
-            Item(ResourceImages.clockExifRotate270, error = false),
-            Item(ResourceImages.clockExifTranspose, error = false),
-            Item(ResourceImages.clockExifTransverse, error = false),
-            Item(ResourceImages.clockExifUndefined, error = false),
-        ).forEach { item ->
-            val (imageFile, error) = item
+            ResourceImages.jpeg,
+            ResourceImages.png,
+            ResourceImages.bmp,
+            ResourceImages.webp,
+            ResourceImages.heic,
+            ResourceImages.svg,
+            ResourceImages.animGif,
+            ResourceImages.animWebp,
+            ResourceImages.animHeif,
+            ResourceImages.clockExifFlipHorizontal,
+            ResourceImages.clockExifFlipVertical,
+            ResourceImages.clockExifNormal,
+            ResourceImages.clockExifRotate90,
+            ResourceImages.clockExifRotate180,
+            ResourceImages.clockExifRotate270,
+            ResourceImages.clockExifTranspose,
+            ResourceImages.clockExifTransverse,
+            ResourceImages.clockExifUndefined,
+        ).forEach { imageFile ->
             val dataSource = imageFile.toDataSource(context)
-            if (error) {
+            if (ImageFormat.parseMimeType(imageFile.mimeType)
+                    ?.supportBitmapRegionDecoder() != true
+            ) {
                 assertFailsWith(
-                    exceptionClass = ImageInvalidException::class,
-                    message = "item=$item"
+                    exceptionClass = IOException::class,
+                    message = "imageFile=$imageFile"
                 ) {
-                    dataSource.decode()
+                    dataSource.decodeRegion(srcRect = imageFile.size.toRect())
                 }
                 return@forEach
             }
 
-            val sourceBitmap =
-                dataSource.decodeRegion(Rect(0, 0, imageFile.size.width, imageFile.size.height))
-            assertEquals(
-                expected = "Bitmap(${imageFile.size},ARGB_8888${shortInfoColorSpace("SRGB")})",
-                actual = sourceBitmap.toShortInfoString(),
-                message = "item=$item"
-            )
-
-            fun Rect.div(number: Int): Rect {
-                return Rect(
-                    left = ceil(left / number.toFloat()).toInt(),
-                    top = ceil(top / number.toFloat()).toInt(),
-                    right = ceil(right / number.toFloat()).toInt(),
-                    bottom = ceil(bottom / number.toFloat()).toInt(),
+            val sourceBitmap = try {
+                dataSource.decodeRegion(
+                    srcRect = imageFile.size.toRect(),
+                    imageInfo = ImageInfo(imageFile.size, imageFile.mimeType),
+                )
+            } catch (e: Exception) {
+                throw Exception("imageFile=$imageFile", e)
+            }.apply {
+                val colorSpace = shortInfoColorSpace("SRGB")
+                assertEquals(
+                    expected = "Bitmap(${imageFile.size},ARGB_8888$colorSpace)",
+                    actual = toShortInfoString(),
+                    message = "imageFile=$imageFile"
                 )
             }
 
-            val leftTopRect = Rect(
-                left = 0,
-                top = 0,
-                right = sourceBitmap.width / 2,
-                bottom = sourceBitmap.height / 2
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(0, actual = left)
-                assertEquals(0, actual = top)
-            }
-            val rightTopRect = Rect(
-                left = leftTopRect.right,
-                top = leftTopRect.top,
-                right = sourceBitmap.width,
-                bottom = leftTopRect.bottom
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(leftTopRect.right, actual = left)
-                assertEquals(leftTopRect.top, actual = top)
-                assertEquals(sourceBitmap.width, actual = right)
-                assertEquals(leftTopRect.bottom, actual = bottom)
-            }
-            val leftBottomRect = Rect(
-                left = leftTopRect.left,
-                top = leftTopRect.bottom,
-                right = leftTopRect.right,
-                bottom = sourceBitmap.height
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(leftTopRect.left, actual = left)
-                assertEquals(leftTopRect.bottom, actual = top)
-                assertEquals(leftTopRect.right, actual = right)
-                assertEquals(sourceBitmap.height, actual = bottom)
-            }
-            val rightBottomRect = Rect(
-                left = leftTopRect.right,
-                top = leftTopRect.bottom,
-                right = sourceBitmap.width,
-                bottom = sourceBitmap.height
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(leftTopRect.right, actual = left)
-                assertEquals(leftTopRect.bottom, actual = top)
-                assertEquals(sourceBitmap.width, actual = right)
-                assertEquals(sourceBitmap.height, actual = bottom)
-            }
-            assertEquals(
-                expected = sourceBitmap.width,
-                actual = leftTopRect.width() + rightTopRect.width(),
-                message = "leftTopRect=$leftTopRect, rightTopRect=$rightTopRect"
-            )
-            assertEquals(
-                expected = sourceBitmap.width,
-                actual = leftBottomRect.width() + rightBottomRect.width(),
-                message = "leftBottomRect=$leftBottomRect, rightBottomRect=$rightBottomRect"
-            )
-            assertEquals(
-                expected = sourceBitmap.height,
-                actual = leftTopRect.height() + leftBottomRect.height(),
-                message = "leftTopRect=$leftTopRect, leftBottomRect=$leftBottomRect"
-            )
-            assertEquals(
-                expected = sourceBitmap.height,
-                actual = rightTopRect.height() + rightBottomRect.height(),
-                message = "rightTopRect=$rightTopRect, rightBottomRect=$rightBottomRect"
-            )
-
+            val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
+                sourceBitmap.size.toRect().chunkingFour()
             listOf(
                 DecodeConfig(),
                 DecodeConfig().apply {
-                    sampleSize = 4
+                    sampleSize = 2
                     colorType = ColorType.RGB_565
                     if (VERSION.SDK_INT >= VERSION_CODES.O) {
                         colorSpace = ColorSpace.get(ColorSpace.Named.LINEAR_SRGB)
                     }
                 }
             ).forEach { decodeConfig ->
-                val leftTopBitmap = dataSource.decodeRegion(leftTopRect, decodeConfig).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = leftTopRect.size,
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = sourceBitmap.size
-                    )
+                // Divide into four pieces
+                val topLeftBitmap = dataSource.decodeRegion(topLeftRect, decodeConfig)
+                val topRightBitmap = dataSource.decodeRegion(topRightRect, decodeConfig)
+                val bottomLeftBitmap = dataSource.decodeRegion(bottomLeftRect, decodeConfig)
+                val bottomRightBitmap = dataSource.decodeRegion(bottomRightRect, decodeConfig)
+                listOf(
+                    topLeftBitmap to topLeftRect,
+                    topRightBitmap to topRightRect,
+                    bottomLeftBitmap to bottomLeftRect,
+                    bottomRightBitmap to bottomRightRect
+                ).forEach { (bitmap, tileRect) ->
                     assertEquals(
-                        expected = bitmapSize,
-                        actual = this.size,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.ARGB_8888,
-                        actual = this.colorType,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                    if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                        assertEquals(
-                            expected = decodeConfig.colorSpace
-                                ?: ColorSpace.get(ColorSpace.Named.SRGB),
-                            actual = this.colorSpace,
-                            message = "item=$item, decodeConfig=$decodeConfig"
-                        )
-                    }
-                }
-                val rightTopBitmap = dataSource.decodeRegion(rightTopRect, decodeConfig).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = rightTopRect.size,
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = sourceBitmap.size
-                    )
-                    assertEquals(expected = bitmapSize, actual = this.size)
-                    assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.ARGB_8888,
-                        actual = this.colorType,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                    if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                        assertEquals(
-                            expected = decodeConfig.colorSpace
-                                ?: ColorSpace.get(ColorSpace.Named.SRGB),
-                            actual = this.colorSpace,
-                            message = "item=$item, decodeConfig=$decodeConfig"
-                        )
-                    }
-                }
-                val leftBottomBitmap = dataSource.decodeRegion(leftBottomRect, decodeConfig).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = leftBottomRect.size,
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = sourceBitmap.size
-                    )
-                    assertEquals(expected = bitmapSize, actual = this.size)
-                    assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.ARGB_8888,
-                        actual = this.colorType,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                    if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                        assertEquals(
-                            expected = decodeConfig.colorSpace
-                                ?: ColorSpace.get(ColorSpace.Named.SRGB),
-                            actual = this.colorSpace,
-                            message = "item=$item, decodeConfig=$decodeConfig"
-                        )
-                    }
-                }
-                val rightBottomBitmap =
-                    dataSource.decodeRegion(rightBottomRect, decodeConfig).apply {
-                        val bitmapSize = calculateSampledBitmapSizeForRegion(
-                            regionSize = rightBottomRect.size,
+                        expected = calculateSampledBitmapSizeForRegion(
+                            regionSize = tileRect.size,
                             sampleSize = decodeConfig.sampleSize ?: 1,
                             mimeType = imageFile.mimeType,
-                            imageSize = sourceBitmap.size
-                        )
-                        assertEquals(expected = bitmapSize, actual = this.size)
-                        assertEquals(
-                            expected = decodeConfig.colorType ?: ColorType.ARGB_8888,
-                            actual = this.colorType,
-                            message = "item=$item, decodeConfig=$decodeConfig"
-                        )
-                        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                            assertEquals(
-                                expected = decodeConfig.colorSpace
-                                    ?: ColorSpace.get(ColorSpace.Named.SRGB),
-                                actual = this.colorSpace,
-                                message = "item=$item, decodeConfig=$decodeConfig"
-                            )
-                        }
-                    }
-                leftTopBitmap.similarity(rightTopBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                leftTopBitmap.similarity(leftBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                leftTopBitmap.similarity(rightBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                rightTopBitmap.similarity(leftBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                rightTopBitmap.similarity(rightBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                leftBottomBitmap.similarity(rightBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-
-                val bitmap = dataSource.decodeRegion(
-                    Rect(0, 0, sourceBitmap.width, sourceBitmap.height),
-                    decodeConfig
-                ).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = Size(sourceBitmap.width, sourceBitmap.height),
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = sourceBitmap.size
+                            imageSize = null
+                        ),
+                        actual = bitmap.size,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                     assertEquals(
-                        expected = bitmapSize,
-                        actual = size,
-                        message = "item=$item, decodeConfig: $decodeConfig"
+                        expected = decodeConfig.colorType?.expectedRgb565(imageFile.mimeType)
+                            ?: ColorType.ARGB_8888,
+                        actual = bitmap.colorType,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
-                }
-                val intPixels = bitmap.readIntPixels()
-
-                val leftTopIntPexels = leftTopBitmap.readIntPixels()
-                val rightTopIntPexels = rightTopBitmap.readIntPixels()
-                val leftBottomIntPexels = leftBottomBitmap.readIntPixels()
-                val rightBottomIntPexels = rightBottomBitmap.readIntPixels()
-                val sampledLeftTopRect = leftTopRect.div(decodeConfig.sampleSize ?: 1)
-                val sampledRightTopRect = rightTopRect.div(decodeConfig.sampleSize ?: 1)
-                val sampledLeftBottomRect = leftBottomRect.div(decodeConfig.sampleSize ?: 1)
-                val sampledRightBottomRect = rightBottomRect.div(decodeConfig.sampleSize ?: 1)
-                val piecedIntPexels = IntArray(bitmap.width * bitmap.height).apply {
-                    indices.forEach { index ->
-                        val x = index % bitmap.width
-                        val y = index / bitmap.width
-                        val pixel = try {
-                            if (sampledLeftTopRect.contains(x, y)) {
-                                leftTopIntPexels[(y - sampledLeftTopRect.top) * sampledLeftTopRect.width() + (x - sampledLeftTopRect.left)]
-                            } else if (sampledRightTopRect.contains(x, y)) {
-                                rightTopIntPexels[(y - sampledRightTopRect.top) * sampledRightTopRect.width() + (x - sampledRightTopRect.left)]
-                            } else if (sampledLeftBottomRect.contains(x, y)) {
-                                leftBottomIntPexels[(y - sampledLeftBottomRect.top) * sampledLeftBottomRect.width() + (x - sampledLeftBottomRect.left)]
-                            } else if (sampledRightBottomRect.contains(x, y)) {
-                                rightBottomIntPexels[(y - sampledRightBottomRect.top) * sampledRightBottomRect.width() + (x - sampledRightBottomRect.left)]
-                            } else {
-                                throw IllegalArgumentException("Unknown rect, x=$x, y=$y")
-                            }
-                        } catch (e: Exception) {
-                            throw Exception("item=$item, decodeConfig: $decodeConfig", e)
-                        }
-                        this@apply[index] = pixel
+                    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                        assertEquals(
+                            expected = decodeConfig.colorSpace
+                                ?: ColorSpace.get(ColorSpace.Named.SRGB),
+                            actual = bitmap.colorSpace,
+                            message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                        )
                     }
                 }
-                assertEquals(
-                    expected = bitmap.width * bitmap.height,
-                    actual = piecedIntPexels.size,
-                    message = "item=$item, decodeConfig=$decodeConfig"
-                )
-                assertEquals(
-                    expected = intPixels.size,
-                    actual = piecedIntPexels.size,
-                    message = "item=$item, decodeConfig=$decodeConfig"
-                )
-
-                val newBitmap = AndroidBitmap(bitmap.width, bitmap.height, bitmap.config)
-                newBitmap.installIntPixels(piecedIntPexels)
-
-                bitmap.similarity(newBitmap).apply {
+                listOf(
+                    topLeftBitmap.similarity(topRightBitmap),
+                    topLeftBitmap.similarity(bottomLeftBitmap),
+                    topLeftBitmap.similarity(bottomRightBitmap),
+                    topRightBitmap.similarity(bottomLeftBitmap),
+                    topRightBitmap.similarity(bottomRightBitmap),
+                    bottomLeftBitmap.similarity(bottomRightBitmap)
+                ).forEachIndexed { index, similarity ->
                     assertTrue(
-                        actual = this < 10,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
+                        actual = similarity >= 4,
+                        message = "index=$index, similarity=$similarity, imageFile=$imageFile, decodeConfig: $decodeConfig"
+                    )
+                }
+
+                // Merge four pictures
+                val mergedBitmap = AndroidBitmap(
+                    width = sourceBitmap.width,
+                    height = sourceBitmap.height,
+                    config = topLeftBitmap.config
+                ).apply {
+                    val canvas = Canvas(this)
+                    canvas.drawBitmap(
+                        /* bitmap = */ topLeftBitmap,
+                        /* src = */ topLeftBitmap.size.toRect().toAndroidRect(),
+                        /* dst = */ topLeftRect.toAndroidRect(),
+                        /* paint = */ null
+                    )
+                    canvas.drawBitmap(
+                        /* bitmap = */ topRightBitmap,
+                        /* src = */ topRightBitmap.size.toRect().toAndroidRect(),
+                        /* dst = */ topRightRect.toAndroidRect(),
+                        /* paint = */ null
+                    )
+                    canvas.drawBitmap(
+                        /* bitmap = */ bottomLeftBitmap,
+                        /* src = */ bottomLeftBitmap.size.toRect().toAndroidRect(),
+                        /* dst = */ bottomLeftRect.toAndroidRect(),
+                        /* paint = */ null
+                    )
+                    canvas.drawBitmap(
+                        /* bitmap = */ bottomRightBitmap,
+                        /* src = */ bottomRightBitmap.size.toRect().toAndroidRect(),
+                        /* dst = */ bottomRightRect.toAndroidRect(),
+                        /* paint = */ null
+                    )
+                }
+                sourceBitmap.similarity(mergedBitmap).apply {
+                    assertTrue(
+                        actual = this <= 1,
+                        message = "similarity=$this, imageFile=$imageFile, decodeConfig: $decodeConfig"
                     )
                 }
             }
