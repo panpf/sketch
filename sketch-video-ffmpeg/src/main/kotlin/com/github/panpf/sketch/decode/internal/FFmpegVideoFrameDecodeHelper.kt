@@ -68,7 +68,7 @@ class FFmpegVideoFrameDecodeHelper(
 
     override fun decode(sampleSize: Int): Image {
         val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
-            inSampleSize = sampleSize
+            this.sampleSize = sampleSize
         }
         val option = request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
@@ -80,7 +80,7 @@ class FFmpegVideoFrameDecodeHelper(
             }
             ?: 0L
 
-        val inSampleSize = config.inSampleSize?.toFloat()
+        val inSampleSize = config.sampleSize?.toFloat()
         val dstWidth = if (inSampleSize != null) {
             (imageInfo.width / inSampleSize).roundToInt()
         } else {

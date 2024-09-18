@@ -75,18 +75,34 @@ actual fun calculateSampledBitmapSizeForRegion(
 )
 
 /**
+ * Decode image width, height, MIME type and other information. Should be able to parse the exif orientation
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
+ */
+actual fun DataSource.readImageInfo(): ImageInfo {
+    val bytes = openSource().buffer().use { it.readByteArray() }
+    val imageSize = SkiaImage.makeFromEncoded(bytes).use {
+        Size(it.width, it.height)
+    }
+    val mimeType = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
+        "image/${it.encodedImageFormat.name.lowercase()}"
+    }
+    return ImageInfo(size = imageSize, mimeType = mimeType)
+}
+
+/**
  * Decode the image by sampling
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecode
  */
-internal fun SkiaImage.decode(decodeConfig: DecodeConfig? = null): SkiaBitmap {
-    val sampleSize = decodeConfig?.inSampleSize ?: 1
+internal fun SkiaImage.decode(config: DecodeConfig? = null): SkiaBitmap {
+    val sampleSize = config?.sampleSize ?: 1
     val bitmapSize = calculateSampledBitmapSize(
         imageSize = Size(width, height),
         sampleSize = sampleSize
     )
-    val newColorType = decodeConfig?.colorType ?: colorType
-    val newColorSpace = decodeConfig?.colorSpace ?: colorSpace
+    val newColorType = config?.colorType ?: colorType
+    val newColorSpace = config?.colorSpace ?: colorSpace
     val newImageInfo = SkiaImageInfo(
         width = bitmapSize.width,
         height = bitmapSize.height,
@@ -111,15 +127,15 @@ internal fun SkiaImage.decode(decodeConfig: DecodeConfig? = null): SkiaBitmap {
  */
 internal fun SkiaImage.decodeRegion(
     srcRect: SketchRect,
-    decodeConfig: DecodeConfig? = null
+    config: DecodeConfig? = null
 ): SkiaBitmap {
-    val sampleSize = decodeConfig?.inSampleSize ?: 1
+    val sampleSize = config?.sampleSize ?: 1
     val bitmapSize = calculateSampledBitmapSize(
         imageSize = Size(srcRect.width(), srcRect.height()),
         sampleSize = sampleSize
     )
-    val newColorType = decodeConfig?.colorType ?: colorType
-    val newColorSpace = decodeConfig?.colorSpace ?: colorSpace
+    val newColorType = config?.colorType ?: colorType
+    val newColorSpace = config?.colorSpace ?: colorSpace
     val newImageInfo = SkiaImageInfo(
         width = bitmapSize.width,
         height = bitmapSize.height,
@@ -135,20 +151,4 @@ internal fun SkiaImage.decodeRegion(
         dst = Rect.makeWH(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
     )
     return bitmap
-}
-
-/**
- * Decode image width, height, MIME type and other information
- *
- * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
- */
-fun DataSource.readImageInfo(): ImageInfo {
-    val bytes = openSource().buffer().use { it.readByteArray() }
-    val imageSize = SkiaImage.makeFromEncoded(bytes).use {
-        Size(it.width, it.height)
-    }
-    val mimeType = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
-        "image/${it.encodedImageFormat.name.lowercase()}"
-    }
-    return ImageInfo(size = imageSize, mimeType = mimeType)
 }

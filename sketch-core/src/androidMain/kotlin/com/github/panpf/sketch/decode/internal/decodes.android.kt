@@ -20,17 +20,21 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
-import android.graphics.Rect
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
 import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
 import com.github.panpf.sketch.decode.internal.ImageFormat.JPEG
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.decode.internal.ImageFormat.WEBP
+import com.github.panpf.sketch.decode.toBitmapOptions
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toAndroidRect
 import okio.buffer
 import java.io.IOException
 import kotlin.math.ceil
@@ -98,28 +102,33 @@ actual fun calculateSampledBitmapSizeForRegion(
 }
 
 /**
- * Read image information using BitmapFactory
+ * Read image information using BitmapFactory. Ignore the Exif orientation
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithExifOrientation
  */
 @Throws(IOException::class)
-fun DataSource.readImageInfo(): ImageInfo {
+fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
+        openSource().buffer().inputStream().use {
+            BitmapFactory.decodeStream(it, null, this@apply)
+        }
     }
-    decodeBitmap(boundOptions)
     val mimeType = boundOptions.outMimeType.orEmpty()
     val imageSize = Size(width = boundOptions.outWidth, height = boundOptions.outHeight)
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
+    }
     return ImageInfo(size = imageSize, mimeType = mimeType)
 }
 
 /**
- * Read image information using BitmapFactory, and correct the image size according to the Exif orientation
+ * Read image information using BitmapFactory. Parse Exif orientation
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithExifOrientation
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
  */
-fun DataSource.readImageInfoWithExifOrientation(helper: ExifOrientationHelper? = null): ImageInfo {
-    val imageInfo = readImageInfo()
+fun DataSource.readImageInfo(helper: ExifOrientationHelper?): ImageInfo {
+    val imageInfo = readImageInfoWithIgnoreExifOrientation()
     val exifOrientationHelper = if (helper != null) {
         helper
     } else {
@@ -131,39 +140,64 @@ fun DataSource.readImageInfoWithExifOrientation(helper: ExifOrientationHelper? =
 }
 
 /**
- * Decode bitmap using BitmapFactory
+ * Decode image width, height, MIME type. Parse Exif orientation
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecodeBitmap
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
  */
-@Throws(IOException::class)
-fun DataSource.decodeBitmap(options: BitmapFactory.Options? = null): Bitmap? =
-    openSource().buffer().inputStream().use {
-        BitmapFactory.decodeStream(it, null, options)
-    }
+actual fun DataSource.readImageInfo(): ImageInfo = readImageInfo(null)
 
 /**
- * Use BitmapRegionDecoder to decode part of a bitmap region
+ * Decode bitmap using BitmapFactory. Parse Exif orientation
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecodeRegionBitmap
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecode
  */
 @Throws(IOException::class)
-fun DataSource.decodeRegionBitmap(
+fun DataSource.decode(
+    config: DecodeConfig? = null,
+    exifOrientationHelper: ExifOrientationHelper? = null
+): Bitmap = openSource().buffer().inputStream().use {
+    val options = config?.toBitmapOptions()
+    val bitmap = BitmapFactory.decodeStream(it, null, options)
+        ?: throw ImageInvalidException("Invalid image. decode return null")
+    val exifOrientationHelper1 =
+        exifOrientationHelper ?: ExifOrientationHelper(readExifOrientation())
+    val correctedImage = exifOrientationHelper1.applyToBitmap(bitmap) ?: bitmap
+    correctedImage
+}
+
+/**
+ * Use BitmapRegionDecoder to decode part of a bitmap region. Parse Exif orientation
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecodeRegion
+ */
+@Throws(IOException::class)
+fun DataSource.decodeRegion(
     srcRect: Rect,
-    options: BitmapFactory.Options? = null
-): Bitmap? =
-    openSource().buffer().inputStream().use {
-        @Suppress("DEPRECATION")
-        val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {
-            BitmapRegionDecoder.newInstance(it)
-        } else {
-            BitmapRegionDecoder.newInstance(it, false)
-        }
-        try {
-            regionDecoder?.decodeRegion(srcRect, options)
-        } finally {
-            regionDecoder?.recycle()
-        }
+    config: DecodeConfig? = null,
+    imageInfo: ImageInfo? = null,
+    exifOrientationHelper: ExifOrientationHelper? = null
+): Bitmap = openSource().buffer().inputStream().use {
+    @Suppress("DEPRECATION")
+    val regionDecoder = if (VERSION.SDK_INT >= VERSION_CODES.S) {
+        BitmapRegionDecoder.newInstance(it)
+    } else {
+        BitmapRegionDecoder.newInstance(it, false)
     }
+    val imageInfo1 = imageInfo ?: readImageInfo()
+    val exifOrientationHelper1 =
+        exifOrientationHelper ?: ExifOrientationHelper(readExifOrientation())
+    val originalRegion =
+        exifOrientationHelper1.applyToRect(srcRect, imageInfo1.size, reverse = true)
+    val bitmapOptions = config?.toBitmapOptions()
+    val regionBitmap = try {
+        regionDecoder?.decodeRegion(originalRegion.toAndroidRect(), bitmapOptions)
+            ?: throw ImageInvalidException("Invalid image. decode return null")
+    } finally {
+        regionDecoder?.recycle()
+    }
+    val correctedRegionImage = exifOrientationHelper1.applyToBitmap(regionBitmap) ?: regionBitmap
+    correctedRegionImage
+}
 
 /**
  * Check if the image format is supported by BitmapRegionDecoder

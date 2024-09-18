@@ -17,12 +17,12 @@
 package com.github.panpf.sketch.decode
 
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 
@@ -45,13 +45,13 @@ fun DecodeConfig(
 
         val userColorType = request.colorType?.getColorType(mimeType, isOpaque)?.colorType
         if (userColorType != null) {
-            inPreferredConfig = userColorType
+            colorType = userColorType
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             val userColorSpace = request.colorSpace?.getColorSpace(mimeType, isOpaque)?.colorSpace
             if (userColorSpace != null) {
-                inPreferredColorSpace = userColorSpace
+                colorSpace = userColorSpace
             }
         }
     }
@@ -61,8 +61,7 @@ fun DecodeConfig(
  *
  * @see com.github.panpf.sketch.core.android.test.decode.DecodeConfigTest
  */
-class DecodeConfig {
-
+data class DecodeConfig(
     /**
      * If set to a value > 1, requests the decoder to subsample the original
      * image, returning a smaller image to save memory. The sample size is
@@ -73,18 +72,7 @@ class DecodeConfig {
      * decoder uses a final value based on powers of 2, any other value will
      * be rounded down to the nearest power of 2.
      */
-    var inSampleSize: Int? = null
-
-    /**
-     * In {@link android.os.Build.VERSION_CODES#M} and below, if
-     * inPreferQualityOverSpeed is set to true, the decoder will try to
-     * decode the reconstructed image to a higher quality even at the
-     * expense of the decoding speed. Currently the field only affects JPEG
-     * decode, in the case of which a more accurate, but slightly slower,
-     * IDCT method will be used instead.
-     */
-    @Deprecated("As of android.os.Build.VERSION_CODES#N, this is ignored. The output will always be high quality.")
-    var inPreferQualityOverSpeed: Boolean? = null
+    var sampleSize: Int? = null,
 
     /**
      * If this is non-null, the decoder will try to decode into this
@@ -96,7 +84,7 @@ class DecodeConfig {
      * Image are loaded with the [Bitmap.Config.ARGB_8888] config by
      * default.
      */
-    var inPreferredConfig: Config? = null
+    var colorType: ColorType? = null,
 
     /**
      *
@@ -127,8 +115,19 @@ class DecodeConfig {
      * [BitmapFactory.Options.outColorSpace].
      */
     @RequiresApi(VERSION_CODES.O)
-    var inPreferredColorSpace: ColorSpace? = null
-}
+    var colorSpace: ColorSpace? = null,
+
+    /**
+     * In {@link android.os.Build.VERSION_CODES#M} and below, if
+     * inPreferQualityOverSpeed is set to true, the decoder will try to
+     * decode the reconstructed image to a higher quality even at the
+     * expense of the decoding speed. Currently the field only affects JPEG
+     * decode, in the case of which a more accurate, but slightly slower,
+     * IDCT method will be used instead.
+     */
+    @Deprecated("As of android.os.Build.VERSION_CODES#N, this is ignored. The output will always be high quality.")
+    var inPreferQualityOverSpeed: Boolean? = null,
+)
 
 /**
  * Convert [DecodeConfig] to [BitmapFactory.Options]
@@ -137,18 +136,18 @@ class DecodeConfig {
  */
 fun DecodeConfig.toBitmapOptions(): BitmapFactory.Options {
     val options = BitmapFactory.Options()
-    inSampleSize?.let {
+    sampleSize?.let {
         options.inSampleSize = it
     }
     @Suppress("DEPRECATION")
     if (VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed == true) {
         options.inPreferQualityOverSpeed = true
     }
-    inPreferredConfig?.let {
+    colorType?.let {
         options.inPreferredConfig = it
     }
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        inPreferredColorSpace?.let {
+        colorSpace?.let {
             options.inPreferredColorSpace = it
         }
     }

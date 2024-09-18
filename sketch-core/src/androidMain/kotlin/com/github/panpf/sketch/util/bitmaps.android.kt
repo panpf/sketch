@@ -393,6 +393,7 @@ actual fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
         /* height = */ mapping.newSize.height,
         /* config = */ inputBitmap.safeConfig.safeToSoftware(),
     )
+    // TODO keep ColorSpace
     Canvas(outBitmap).drawBitmap(
         /* bitmap = */ inputBitmap,
         /* src = */ mapping.srcRect.toAndroidRect(),

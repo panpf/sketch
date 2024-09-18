@@ -92,7 +92,7 @@ open class DrawableDecoder(
         val bitmapSize = Size(width = dstSize.width, height = dstSize.height)
         val decodeConfig = DecodeConfig(request, PNG.mimeType, isOpaque = false)
         val bitmap = drawable.toNewBitmap(
-            preferredConfig = decodeConfig.inPreferredConfig.safeToSoftware(),
+            preferredConfig = decodeConfig.colorType.safeToSoftware(),
             targetSize = bitmapSize
         )
         val imageInfo = ImageInfo(
@@ -109,8 +109,8 @@ open class DrawableDecoder(
             transformeds = transformeds,
             extras = null
         )
-        val resizedResult = decodeResult.appliedResize(resize)
-        return resizedResult
+        val resizeResult = decodeResult.resize(resize)
+        return resizeResult
     }
 
     class Factory : Decoder.Factory {

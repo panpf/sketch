@@ -17,16 +17,16 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.mapping
-import com.github.panpf.sketch.util.requiredWorkThread
 import com.github.panpf.sketch.util.scale
 
 /**
@@ -206,24 +206,32 @@ fun checkSampledBitmapSize(
     return accept
 }
 
-private fun Size.checkSideLimit(limitSize: Size): Boolean {
-    return (limitSize.width <= 0 || this.width <= limitSize.width)
-            && (limitSize.height <= 0 || this.height <= limitSize.height)
+private fun Size.checkSideLimit(targetSize: Size): Boolean {
+    // targetSize.width or targetSize.height less than or equal to 0 means unlimited
+    return (targetSize.width <= 0 || this.width <= targetSize.width)
+            && (targetSize.height <= 0 || this.height <= targetSize.height)
 }
 
-private fun Size.checkAreaLimit(limitSize: Size): Boolean {
-    return (this.width * this.height) <= (limitSize.width * limitSize.height)
+private fun Size.checkAreaLimit(targetSize: Size): Boolean {
+    return (this.width * this.height) <= (targetSize.width * targetSize.height)
 }
+
+
+/**
+ * Decode image width, height, MIME type. Should be able to parse the exif orientation
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
+ */
+expect fun DataSource.readImageInfo(): ImageInfo
 
 /**
  * Resize image according to [Resize]
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testAppliedResize
- * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testAppliedResize
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testResize
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testResize
  */
-@WorkerThread
-fun DecodeResult.appliedResize(resize: Resize): DecodeResult {
-    requiredWorkThread()
+fun DecodeResult.resize(resize: Resize): DecodeResult {
     if (resize.size.isEmpty) return this
     if (image !is BitmapImage) return this
     val inputBitmap = image.bitmap

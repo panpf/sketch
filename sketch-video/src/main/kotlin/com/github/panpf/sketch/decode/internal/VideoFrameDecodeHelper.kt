@@ -70,7 +70,7 @@ class VideoFrameDecodeHelper constructor(
 
     override fun decode(sampleSize: Int): Image {
         val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
-            inSampleSize = sampleSize
+            this.sampleSize = sampleSize
         }
         val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
@@ -82,7 +82,7 @@ class VideoFrameDecodeHelper constructor(
             }
             ?: 0L
 
-        val inSampleSize = config.inSampleSize?.toFloat()
+        val inSampleSize = config.sampleSize?.toFloat()
         val dstWidth = if (inSampleSize != null) {
             (imageInfo.width / inSampleSize).roundToInt()
         } else {
@@ -96,7 +96,7 @@ class VideoFrameDecodeHelper constructor(
         val bitmap = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 val bitmapParams = BitmapParams().apply {
-                    val inPreferredConfigFromRequest = config.inPreferredConfig
+                    val inPreferredConfigFromRequest = config.colorType
                     if (inPreferredConfigFromRequest != null) {
                         preferredConfig = inPreferredConfigFromRequest
                     }
@@ -106,7 +106,7 @@ class VideoFrameDecodeHelper constructor(
                     ?: throw DecodeException(
                         "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d, preferredConfig=%s.".format(
                             frameMicros, optionToName(option), dstWidth, dstHeight,
-                            imageInfo.width, imageInfo.height, config.inPreferredConfig
+                            imageInfo.width, imageInfo.height, config.colorType
                         )
                     )
             }

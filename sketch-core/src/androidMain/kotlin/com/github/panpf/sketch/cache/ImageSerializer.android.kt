@@ -21,10 +21,8 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.decodeBitmap
-import com.github.panpf.sketch.decode.toBitmapOptions
+import com.github.panpf.sketch.decode.internal.decode
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import okio.BufferedSink
@@ -57,13 +55,12 @@ object AndroidBitmapImageSerializer : ImageSerializer {
         imageInfo: ImageInfo,
         dataSource: DataSource
     ): Image {
-        val decodeOptions = DecodeConfig(
+        val decodeConfig = DecodeConfig(
             request = requestContext.request,
             mimeType = imageInfo.mimeType,
             isOpaque = false
-        ).toBitmapOptions()
-        val bitmap = dataSource.decodeBitmap(decodeOptions)
-            ?: throw DecodeException("Decode bitmap return null. '${requestContext.logKey}'")
+        )
+        val bitmap = dataSource.decode(decodeConfig)
         return bitmap.asImage()
     }
 }

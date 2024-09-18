@@ -109,8 +109,8 @@ open class HelperDecoder(
                 transformeds = transformeds.takeIf { it.isNotEmpty() }?.toList(),
                 extras = null,
             )
-            val resizedResult = decodeResult.appliedResize(resize)
-            return resizedResult
+            val resizeResult = decodeResult.resize(resize)
+            return resizeResult
         } finally {
             decodeHelper.close()
         }

@@ -162,6 +162,6 @@ internal actual fun DataSource.decodeSvg(
     )
 
     @Suppress("UnnecessaryVariable", "RedundantSuppression")
-    val resizedResult = decodeResult.appliedResize(resize)
-    return resizedResult
+    val resizeResult = decodeResult.resize(resize)
+    return resizeResult
 }

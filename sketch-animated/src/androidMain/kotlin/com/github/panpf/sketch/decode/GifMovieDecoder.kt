@@ -107,7 +107,7 @@ class GifMovieDecoder(
 
         val decodeConfig =
             DecodeConfig(request, ImageFormat.GIF.mimeType, isOpaque = movie.isOpaque)
-        val config = decodeConfig.inPreferredConfig.safeToSoftware()
+        val config = decodeConfig.colorType.safeToSoftware()
         val movieDrawable = MovieDrawable(movie, config).apply {
             setRepeatCount(request.repeatCount ?: ANIMATION_REPEAT_INFINITE)
 

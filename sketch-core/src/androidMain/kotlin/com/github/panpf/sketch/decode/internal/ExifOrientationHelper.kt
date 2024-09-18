@@ -20,9 +20,11 @@ package com.github.panpf.sketch.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.ColorSpace
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.BitmapImage
@@ -172,17 +174,22 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
     @WorkerThread
     fun applyToImage(image: Image, reverse: Boolean = false): Image? {
         require(image is BitmapImage) { "Only BitmapImage is supported: ${image::class}" }
-        val inBitmap = image.bitmap
+        val outBitmap = applyToBitmap(image.bitmap, reverse = reverse)
+        return outBitmap?.asImage()
+    }
+
+    @WorkerThread
+    fun applyToBitmap(bitmap: Bitmap, reverse: Boolean = false): Bitmap? {
         val rotationDegrees = getRotationDegrees().let {
             if (reverse) it * -1 else it
         }
         val outBitmap = applyFlipAndRotation(
-            inBitmap = inBitmap,
+            inBitmap = bitmap,
             isFlipHorizontally = isFlipHorizontally(),
             rotationDegrees = rotationDegrees,
             apply = !reverse
         ) ?: return null
-        return outBitmap.asImage()
+        return outBitmap
     }
 
     @WorkerThread
@@ -207,11 +214,21 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         val config = inBitmap.safeConfig.safeToSoftware()
         val newWidth = newRect.width().toInt()
         val newHeight = newRect.height().toInt()
-        val outBitmap = Bitmap.createBitmap(
-            /* width = */ newWidth,
-            /* height = */ newHeight,
-            /* config = */ config,
-        )
+        val outBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Bitmap.createBitmap(
+                /* width = */ newWidth,
+                /* height = */ newHeight,
+                /* config = */ config,
+                /* hasAlpha = */ inBitmap.hasAlpha(),
+                /* colorSpace = */ inBitmap.colorSpace ?: ColorSpace.get(ColorSpace.Named.SRGB)
+            )
+        } else {
+            Bitmap.createBitmap(
+                /* width = */ newWidth,
+                /* height = */ newHeight,
+                /* config = */ config,
+            )
+        }
 
         val canvas = Canvas(outBitmap)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)

@@ -22,12 +22,9 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.decode.toBitmapOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
-import com.github.panpf.sketch.util.toAndroidRect
 
 /**
  * Use BitmapFactory to decode statics images
@@ -45,33 +42,31 @@ class BitmapFactoryDecodeHelper(
         ImageFormat.parseMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
     }
     override val imageInfo: ImageInfo by lazy {
-        dataSource.readImageInfoWithExifOrientation(exifOrientationHelper)
+        dataSource.readImageInfo(exifOrientationHelper)
     }
 
     override fun decode(sampleSize: Int): Image {
-        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
-            inSampleSize = sampleSize
+        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
+            this.sampleSize = sampleSize
         }
-        val options = config.toBitmapOptions()
-        val bitmap = dataSource.decodeBitmap(options)
-            ?: throw ImageInvalidException("Invalid image. decode return null")
-        val image = bitmap.asImage()
-        val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
-        return correctedImage
+        val bitmap = dataSource.decode(
+            config = decodeConfig,
+            exifOrientationHelper = exifOrientationHelper
+        )
+        return bitmap.asImage()
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): Image {
-        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
-            inSampleSize = sampleSize
+        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
+            this.sampleSize = sampleSize
         }
-        val options = config.toBitmapOptions()
-        val originalRegion =
-            exifOrientationHelper.applyToRect(region, imageInfo.size, reverse = true)
-        val bitmap = dataSource.decodeRegionBitmap(originalRegion.toAndroidRect(), options)
-            ?: throw ImageInvalidException("Invalid image. region decode return null")
-        val image = bitmap.asImage()
-        val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
-        return correctedImage
+        val bitmap = dataSource.decodeRegion(
+            srcRect = region,
+            config = decodeConfig,
+            imageInfo = imageInfo,
+            exifOrientationHelper = exifOrientationHelper
+        )
+        return bitmap.asImage()
     }
 
     override fun close() {

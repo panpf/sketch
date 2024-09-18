@@ -81,7 +81,7 @@ open class ImageDecoderAnimatedDecoder(
     override val imageInfo: ImageInfo
         get() {
             synchronized(imageInfoLock) {
-                return _imageInfo ?: dataSource.readImageInfo()
+                return _imageInfo ?: dataSource.readImageInfoWithIgnoreExifOrientation()
                     .apply { _imageInfo = this }
             }
         }
@@ -142,7 +142,7 @@ open class ImageDecoderAnimatedDecoder(
                 decoder.setTargetSampleSize(inSampleSize)
 
                 val decodeConfig = DecodeConfig(request, info.mimeType, isOpaque = true)
-                decodeConfig.inPreferredColorSpace?.let {
+                decodeConfig.colorSpace?.let {
                     decoder.setTargetColorSpace(it)
                 }
 

@@ -104,7 +104,7 @@ internal actual fun DataSource.decodeSvg(
         computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
     val bitmapSize = svgSize.times(targetScale)
     val decodeConfig = DecodeConfig(requestContext.request, PNG.mimeType, isOpaque = false)
-    val bitmapConfig = decodeConfig.inPreferredConfig.safeToSoftware()
+    val bitmapConfig = decodeConfig.colorType.safeToSoftware()
     val bitmap = Bitmap.createBitmap(
         /* width = */ bitmapSize.width,
         /* height = */ bitmapSize.height,
@@ -133,6 +133,6 @@ internal actual fun DataSource.decodeSvg(
     )
 
     @Suppress("UnnecessaryVariable", "RedundantSuppression")
-    val resizedResult = decodeResult.appliedResize(resize)
-    return resizedResult
+    val resizeResult = decodeResult.resize(resize)
+    return resizeResult
 }

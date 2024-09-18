@@ -30,8 +30,7 @@ fun DecodeConfig(
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.DecodeConfigTest
  */
-class DecodeConfig {
-
+data class DecodeConfig(
     /**
      * If set to a value > 1, requests the decoder to subsample the original
      * image, returning a smaller image to save memory. The sample size is
@@ -42,15 +41,15 @@ class DecodeConfig {
      * decoder uses a final value based on powers of 2, any other value will
      * be rounded down to the nearest power of 2.
      */
-    var inSampleSize: Int? = null
+    var sampleSize: Int? = null,
 
     /**
      * Color configuration
      */
-    var colorType: ColorType? = null
+    var colorType: ColorType? = null,
 
     /**
      * Color Space
      */
-    var colorSpace: ColorSpace? = null
-}
+    var colorSpace: ColorSpace? = null,
+)
