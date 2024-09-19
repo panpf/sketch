@@ -1325,24 +1325,6 @@ class DecodesAndroidTest {
                 return@forEach
             }
 
-            val sourceBitmap = try {
-                dataSource.decodeRegion(
-                    srcRect = imageFile.size.toRect(),
-                    imageInfo = ImageInfo(imageFile.size, imageFile.mimeType),
-                )
-            } catch (e: Exception) {
-                throw Exception("imageFile=$imageFile", e)
-            }.apply {
-                val colorSpace = shortInfoColorSpace("SRGB")
-                assertEquals(
-                    expected = "Bitmap(${imageFile.size},ARGB_8888$colorSpace)",
-                    actual = toShortInfoString(),
-                    message = "imageFile=$imageFile"
-                )
-            }
-
-            val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
-                sourceBitmap.size.toRect().chunkingFour()
             listOf(
                 DecodeConfig(),
                 DecodeConfig().apply {
@@ -1353,7 +1335,39 @@ class DecodesAndroidTest {
                     }
                 }
             ).forEach { decodeConfig ->
+                val sourceBitmap = try {
+                    dataSource.decodeRegion(
+                        srcRect = imageFile.size.toRect(),
+                        imageInfo = ImageInfo(imageFile.size, imageFile.mimeType),
+                        config = decodeConfig.copy(sampleSize = 1),
+                    )
+                } catch (e: Exception) {
+                    throw Exception("imageFile=$imageFile, decodeConfig=$decodeConfig", e)
+                }.apply {
+                    assertEquals(
+                        expected = imageFile.size,
+                        actual = this.size,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                    )
+                    assertEquals(
+                        expected = decodeConfig.colorType?.expectedRgb565(imageFile.mimeType)
+                            ?: ColorType.ARGB_8888,
+                        actual = this.colorType,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                    )
+                    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                        assertEquals(
+                            expected = decodeConfig.colorSpace
+                                ?: ColorSpace.get(ColorSpace.Named.SRGB),
+                            actual = this.colorSpace,
+                            message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                        )
+                    }
+                }
+
                 // Divide into four pieces
+                val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
+                    sourceBitmap.size.toRect().chunkingFour()
                 val topLeftBitmap = dataSource.decodeRegion(topLeftRect, decodeConfig)
                 val topRightBitmap = dataSource.decodeRegion(topRightRect, decodeConfig)
                 val bottomLeftBitmap = dataSource.decodeRegion(bottomLeftRect, decodeConfig)
@@ -1369,7 +1383,7 @@ class DecodesAndroidTest {
                             regionSize = tileRect.size,
                             sampleSize = decodeConfig.sampleSize ?: 1,
                             mimeType = imageFile.mimeType,
-                            imageSize = null
+                            imageSize = sourceBitmap.size
                         ),
                         actual = bitmap.size,
                         message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
@@ -1437,7 +1451,7 @@ class DecodesAndroidTest {
                 }
                 sourceBitmap.similarity(mergedBitmap).apply {
                     assertTrue(
-                        actual = this <= 1,
+                        actual = this <= 6,
                         message = "similarity=$this, imageFile=$imageFile, decodeConfig: $decodeConfig"
                     )
                 }

@@ -32,27 +32,27 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toPreviewBitmap
+import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.SketchRect
-import com.github.panpf.sketch.util.installIntPixels
 import com.github.panpf.sketch.util.isSameAspectRatio
-import com.github.panpf.sketch.util.readIntPixels
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.times
 import com.github.panpf.sketch.util.toShortInfoString
+import com.github.panpf.sketch.util.toSkiaRect
 import kotlinx.coroutines.test.runTest
 import okio.buffer
 import okio.use
+import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
-import kotlin.math.ceil
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -1153,93 +1153,13 @@ class DecodesNonAndroidTest {
                 return@forEach
             }
 
-            val skiaImage = SkiaImage.makeFromEncoded(bytes)
-            assertEquals(
-                expected = imageFile.size,
-                actual = Size(skiaImage.width, skiaImage.height),
-                message = "item=$item"
-            )
-
-            fun Rect.div(number: Int): Rect {
-                return Rect(
-                    left = ceil(left / number.toFloat()).toInt(),
-                    top = ceil(top / number.toFloat()).toInt(),
-                    right = ceil(right / number.toFloat()).toInt(),
-                    bottom = ceil(bottom / number.toFloat()).toInt(),
+            val skiaImage = SkiaImage.makeFromEncoded(bytes).apply {
+                assertEquals(
+                    expected = imageFile.size,
+                    actual = this.size,
+                    message = "imageFile=$imageFile"
                 )
             }
-
-            val leftTopRect = Rect(
-                left = 0,
-                top = 0,
-                right = skiaImage.width / 2,
-                bottom = skiaImage.height / 2
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(0, actual = left)
-                assertEquals(0, actual = top)
-            }
-            val rightTopRect = Rect(
-                left = leftTopRect.right,
-                top = leftTopRect.top,
-                right = skiaImage.width,
-                bottom = leftTopRect.bottom
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(leftTopRect.right, actual = left)
-                assertEquals(leftTopRect.top, actual = top)
-                assertEquals(skiaImage.width, actual = right)
-                assertEquals(leftTopRect.bottom, actual = bottom)
-            }
-            val leftBottomRect = Rect(
-                left = leftTopRect.left,
-                top = leftTopRect.bottom,
-                right = leftTopRect.right,
-                bottom = skiaImage.height
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(leftTopRect.left, actual = left)
-                assertEquals(leftTopRect.bottom, actual = top)
-                assertEquals(leftTopRect.right, actual = right)
-                assertEquals(skiaImage.height, actual = bottom)
-            }
-            val rightBottomRect = Rect(
-                left = leftTopRect.right,
-                top = leftTopRect.bottom,
-                right = skiaImage.width,
-                bottom = skiaImage.height
-            ).apply {
-                assertTrue(right > left)
-                assertTrue(bottom > top)
-                assertEquals(leftTopRect.right, actual = left)
-                assertEquals(leftTopRect.bottom, actual = top)
-                assertEquals(skiaImage.width, actual = right)
-                assertEquals(skiaImage.height, actual = bottom)
-            }
-            assertEquals(
-                expected = skiaImage.width,
-                actual = leftTopRect.width() + rightTopRect.width(),
-                message = "leftTopRect=$leftTopRect, rightTopRect=$rightTopRect"
-            )
-            assertEquals(
-                expected = skiaImage.width,
-                actual = leftBottomRect.width() + rightBottomRect.width(),
-                message = "leftBottomRect=$leftBottomRect, rightBottomRect=$rightBottomRect"
-            )
-            assertEquals(
-                expected = skiaImage.height,
-                actual = leftTopRect.height() + leftBottomRect.height(),
-                message = "leftTopRect=$leftTopRect, leftBottomRect=$leftBottomRect"
-            )
-            assertEquals(
-                expected = skiaImage.height,
-                actual = rightTopRect.height() + rightBottomRect.height(),
-                message = "rightTopRect=$rightTopRect, rightBottomRect=$rightBottomRect"
-            )
-
             listOf(
                 DecodeConfig(),
                 DecodeConfig().apply {
@@ -1253,190 +1173,130 @@ class DecodesNonAndroidTest {
                     colorSpace = ColorSpace.displayP3
                 }
             ).forEach { decodeConfig ->
-                val leftTopBitmap = skiaImage.decodeRegion(leftTopRect, decodeConfig).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = leftTopRect.size,
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = imageFile.size
+                val sourceBitmap = try {
+                    skiaImage.decodeRegion(
+                        srcRect = imageFile.size.toRect(),
+                        config = decodeConfig.copy(sampleSize = 1),
                     )
+                } catch (e: Exception) {
+                    throw Exception("imageFile=$imageFile, decodeConfig=$decodeConfig", e)
+                }.apply {
                     assertEquals(
-                        expected = bitmapSize,
+                        expected = imageFile.size,
                         actual = this.size,
-                        message = "item=$item, decodeConfig=$decodeConfig"
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
                     )
                     assertEquals(
                         expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
                         actual = this.colorType,
-                        message = "item=$item, decodeConfig=$decodeConfig"
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
                     )
                     assertEquals(
                         expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
                         actual = this.colorSpace,
-                        message = "item=$item, decodeConfig=$decodeConfig"
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
                     )
                 }
-                val rightTopBitmap = skiaImage.decodeRegion(rightTopRect, decodeConfig).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = rightTopRect.size,
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = imageFile.size
-                    )
-                    assertEquals(expected = bitmapSize, actual = this.size)
+
+                // Divide into four pieces
+                val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
+                    sourceBitmap.size.toRect().chunkingFour()
+                val topLeftBitmap = skiaImage.decodeRegion(topLeftRect, decodeConfig)
+                val topRightBitmap = skiaImage.decodeRegion(topRightRect, decodeConfig)
+                val bottomLeftBitmap = skiaImage.decodeRegion(bottomLeftRect, decodeConfig)
+                val bottomRightBitmap = skiaImage.decodeRegion(bottomRightRect, decodeConfig)
+                listOf(
+                    topLeftBitmap to topLeftRect,
+                    topRightBitmap to topRightRect,
+                    bottomLeftBitmap to bottomLeftRect,
+                    bottomRightBitmap to bottomRightRect
+                ).forEach { (bitmap, tileRect) ->
                     assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
-                        actual = this.colorType,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
-                        actual = this.colorSpace,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                }
-                val leftBottomBitmap = skiaImage.decodeRegion(leftBottomRect, decodeConfig).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = leftBottomRect.size,
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = imageFile.size
-                    )
-                    assertEquals(expected = bitmapSize, actual = this.size)
-                    assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
-                        actual = this.colorType,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
-                        actual = this.colorSpace,
-                        message = "item=$item, decodeConfig=$decodeConfig"
-                    )
-                }
-                val rightBottomBitmap =
-                    skiaImage.decodeRegion(rightBottomRect, decodeConfig).apply {
-                        val bitmapSize = calculateSampledBitmapSizeForRegion(
-                            regionSize = rightBottomRect.size,
+                        expected = calculateSampledBitmapSizeForRegion(
+                            regionSize = tileRect.size,
                             sampleSize = decodeConfig.sampleSize ?: 1,
                             mimeType = imageFile.mimeType,
-                            imageSize = imageFile.size
-                        )
-                        assertEquals(expected = bitmapSize, actual = this.size)
-                        assertEquals(
-                            expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
-                            actual = this.colorType,
-                            message = "item=$item, decodeConfig=$decodeConfig"
-                        )
-                        assertEquals(
-                            expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
-                            actual = this.colorSpace,
-                            message = "item=$item, decodeConfig=$decodeConfig"
-                        )
-                    }
-                leftTopBitmap.similarity(rightTopBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                leftTopBitmap.similarity(leftBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                leftTopBitmap.similarity(rightBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                rightTopBitmap.similarity(leftBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                rightTopBitmap.similarity(rightBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-                leftBottomBitmap.similarity(rightBottomBitmap).apply {
-                    assertTrue(
-                        actual = this > 0f,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
-                    )
-                }
-
-                val bitmap = skiaImage.decodeRegion(
-                    SketchRect(0, 0, skiaImage.width, skiaImage.height),
-                    decodeConfig
-                ).apply {
-                    val bitmapSize = calculateSampledBitmapSizeForRegion(
-                        regionSize = Size(skiaImage.width, skiaImage.height),
-                        sampleSize = decodeConfig.sampleSize ?: 1,
-                        mimeType = imageFile.mimeType,
-                        imageSize = imageFile.size
+                            imageSize = sourceBitmap.size
+                        ),
+                        actual = bitmap.size,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                     assertEquals(
-                        expected = bitmapSize,
-                        actual = size,
-                        message = "item=$item, decodeConfig: $decodeConfig"
+                        expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
+                        actual = bitmap.colorType,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                    )
+                    assertEquals(
+                        expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
+                        actual = bitmap.colorSpace,
+                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                 }
-                val intPixels = bitmap.readIntPixels()
-
-                val leftTopIntPexels = leftTopBitmap.readIntPixels()
-                val rightTopIntPexels = rightTopBitmap.readIntPixels()
-                val leftBottomIntPexels = leftBottomBitmap.readIntPixels()
-                val rightBottomIntPexels = rightBottomBitmap.readIntPixels()
-                val sampledLeftTopRect = leftTopRect.div(decodeConfig.sampleSize ?: 1)
-                val sampledRightTopRect = rightTopRect.div(decodeConfig.sampleSize ?: 1)
-                val sampledLeftBottomRect = leftBottomRect.div(decodeConfig.sampleSize ?: 1)
-                val sampledRightBottomRect = rightBottomRect.div(decodeConfig.sampleSize ?: 1)
-                val piecedIntPexels = IntArray(bitmap.width * bitmap.height).apply {
-                    indices.forEach { index ->
-                        val x = index % bitmap.width
-                        val y = index / bitmap.width
-                        val pixel = try {
-                            if (sampledLeftTopRect.contains(x, y)) {
-                                leftTopIntPexels[(y - sampledLeftTopRect.top) * sampledLeftTopRect.width() + (x - sampledLeftTopRect.left)]
-                            } else if (sampledRightTopRect.contains(x, y)) {
-                                rightTopIntPexels[(y - sampledRightTopRect.top) * sampledRightTopRect.width() + (x - sampledRightTopRect.left)]
-                            } else if (sampledLeftBottomRect.contains(x, y)) {
-                                leftBottomIntPexels[(y - sampledLeftBottomRect.top) * sampledLeftBottomRect.width() + (x - sampledLeftBottomRect.left)]
-                            } else if (sampledRightBottomRect.contains(x, y)) {
-                                rightBottomIntPexels[(y - sampledRightBottomRect.top) * sampledRightBottomRect.width() + (x - sampledRightBottomRect.left)]
-                            } else {
-                                throw IllegalArgumentException("Unknown rect, x=$x, y=$y")
-                            }
-                        } catch (e: Exception) {
-                            throw Exception("item=$item, decodeConfig: $decodeConfig", e)
-                        }
-                        this@apply[index] = pixel
-                    }
-                }
-                assertEquals(
-                    expected = bitmap.width * bitmap.height,
-                    actual = piecedIntPexels.size,
-                    message = "item=$item, decodeConfig=$decodeConfig"
-                )
-                assertEquals(
-                    expected = intPixels.size,
-                    actual = piecedIntPexels.size,
-                    message = "item=$item, decodeConfig=$decodeConfig"
-                )
-
-                val newBitmap = SkiaBitmap(bitmap.imageInfo)
-                newBitmap.installIntPixels(piecedIntPexels)
-
-                bitmap.similarity(newBitmap).apply {
+                listOf(
+                    topLeftBitmap.similarity(topRightBitmap),
+                    topLeftBitmap.similarity(bottomLeftBitmap),
+                    topLeftBitmap.similarity(bottomRightBitmap),
+                    topRightBitmap.similarity(bottomLeftBitmap),
+                    topRightBitmap.similarity(bottomRightBitmap),
+                    bottomLeftBitmap.similarity(bottomRightBitmap)
+                ).forEachIndexed { index, similarity ->
                     assertTrue(
-                        actual = this < 10,
-                        message = "similarity=$this, item=$item, decodeConfig: $decodeConfig"
+                        actual = similarity >= 4,
+                        message = "index=$index, similarity=$similarity, imageFile=$imageFile, decodeConfig: $decodeConfig"
+                    )
+                }
+
+                // Merge four pictures
+                val mergedBitmap = SkiaBitmap(
+                    width = skiaImage.width,
+                    height = skiaImage.height,
+                    colorType = topLeftBitmap.colorType,
+                    alphaType = topLeftBitmap.alphaType,
+                    colorSpace = topLeftBitmap.colorSpace!!
+                ).apply {
+                    val canvas = Canvas(this)
+                    canvas.drawImageRect(
+                        /* bitmap = */ SkiaImage.makeFromBitmap(topLeftBitmap),
+                        /* src = */ topLeftBitmap.size.toRect().toSkiaRect(),
+                        /* dst = */ topLeftRect.toSkiaRect(),
+                        /* paint = */ null
+                    )
+                    canvas.drawImageRect(
+                        /* bitmap = */  SkiaImage.makeFromBitmap(topRightBitmap),
+                        /* src = */ topRightBitmap.size.toRect().toSkiaRect(),
+                        /* dst = */ topRightRect.toSkiaRect(),
+                        /* paint = */ null
+                    )
+                    canvas.drawImageRect(
+                        /* bitmap = */  SkiaImage.makeFromBitmap(bottomLeftBitmap),
+                        /* src = */ bottomLeftBitmap.size.toRect().toSkiaRect(),
+                        /* dst = */ bottomLeftRect.toSkiaRect(),
+                        /* paint = */ null
+                    )
+                    canvas.drawImageRect(
+                        /* bitmap = */  SkiaImage.makeFromBitmap(bottomRightBitmap),
+                        /* src = */ bottomRightBitmap.size.toRect().toSkiaRect(),
+                        /* dst = */ bottomRightRect.toSkiaRect(),
+                        /* paint = */ null
+                    )
+                }
+                @Suppress("UNUSED_VARIABLE") val previewSourceBitmap =   // Preview for debugging
+                    sourceBitmap.toPreviewBitmap()
+                @Suppress("UNUSED_VARIABLE") val mergedSourceBitmap =   // Preview for debugging
+                    mergedBitmap.toPreviewBitmap()
+                @Suppress("UNUSED_VARIABLE") val topLeftSourceBitmap =   // Preview for debugging
+                    topLeftBitmap.toPreviewBitmap()
+                @Suppress("UNUSED_VARIABLE") val topRightSourceBitmap =   // Preview for debugging
+                    topRightBitmap.toPreviewBitmap()
+                @Suppress("UNUSED_VARIABLE") val bottomLeftSourceBitmap =   // Preview for debugging
+                    bottomLeftBitmap.toPreviewBitmap()
+                @Suppress("UNUSED_VARIABLE") val bottomRightSourceBitmap =
+                    // Preview for debugging
+                    bottomRightBitmap.toPreviewBitmap()
+                sourceBitmap.similarity(mergedBitmap).apply {
+                    assertTrue(
+                        actual = this <= 5,
+                        message = "similarity=$this, imageFile=$imageFile, decodeConfig: $decodeConfig"
                     )
                 }
             }

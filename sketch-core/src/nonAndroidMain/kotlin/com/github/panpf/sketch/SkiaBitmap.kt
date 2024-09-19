@@ -18,6 +18,7 @@ package com.github.panpf.sketch
 
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorInfo
+import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 
 /**
@@ -44,6 +45,7 @@ fun SkiaBitmap(
     width: Int,
     height: Int,
     colorType: ColorType = ColorType.N32,
-    alphaType: ColorAlphaType = ColorAlphaType.PREMUL
+    alphaType: ColorAlphaType = ColorAlphaType.PREMUL,
+    colorSpace: ColorSpace = ColorSpace.sRGB,
 ): SkiaBitmap = SkiaBitmap()
-    .apply { allocPixels(SkiaImageInfo(width, height, colorType, alphaType)) }
+    .apply { allocPixels(SkiaImageInfo(width, height, colorType, alphaType, colorSpace)) }
